@@ -1,6 +1,6 @@
 import Foundation
-import ZendeskSDK
-import ZendeskCoreSDK
+//import ZendeskSDK
+//import ZendeskCoreSDK
 import WordPressShared
 import CoreTelephony
 import SafariServices
@@ -48,13 +48,13 @@ class ZendeskManager: NSObject {
 
     /// Returns a ZendeskPushProvider Instance (If Possible)
     ///
-    private var zendeskPushProvider: ZDKPushProvider? {
-        guard let zendesk = Zendesk.instance else {
-            return nil
-        }
-
-        return ZDKPushProvider(zendesk: zendesk)
-    }
+//    private var zendeskPushProvider: ZDKPushProvider? {
+//        guard let zendesk = Zendesk.instance else {
+//            return nil
+//        }
+//
+//        return ZDKPushProvider(zendesk: zendesk)
+//    }
 
 
     /// Deinitializer
@@ -67,7 +67,7 @@ class ZendeskManager: NSObject {
     ///
     private override init() {
         super.init()
-        observeZendeskNotifications()
+        //observeZendeskNotifications()
     }
 
 
@@ -82,9 +82,9 @@ class ZendeskManager: NSObject {
             return
         }
 
-        Zendesk.initialize(appId: ApiCredentials.zendeskAppId, clientId: ApiCredentials.zendeskClientId, zendeskUrl: ApiCredentials.zendeskUrl)
-        Support.initialize(withZendesk: Zendesk.instance)
-        Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
+//        Zendesk.initialize(appId: ApiCredentials.zendeskAppId, clientId: ApiCredentials.zendeskClientId, zendeskUrl: ApiCredentials.zendeskUrl)
+//        Support.initialize(withZendesk: Zendesk.instance)
+//        Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
 
         haveUserIdentity = getUserProfile()
         zendeskEnabled = true
@@ -115,43 +115,43 @@ class ZendeskManager: NSObject {
     ///
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
-        createIdentity(presentIn: controller) { success in
-            guard success else {
-                return
-            }
-
-            WooAnalytics.shared.track(.supportNewRequestViewed)
-
-            let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
-            let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
-            self.showZendeskView(newRequestController, from: controller)
-        }
+//        createIdentity(presentIn: controller) { success in
+//            guard success else {
+//                return
+//            }
+//
+//            WooAnalytics.shared.track(.supportNewRequestViewed)
+//
+//            let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
+//            let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
+//            self.showZendeskView(newRequestController, from: controller)
+//        }
     }
 
     /// Displays the Zendesk Request List view from the given controller, allowing user to access their tickets.
     ///
     func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {
 
-        createIdentity(presentIn: controller) { success in
-            guard success else {
-                return
-            }
-
-            WooAnalytics.shared.track(.supportTicketListViewed)
-
-            let requestConfig = self.createRequest(supportSourceTag: sourceTag)
-            let requestListController = RequestUi.buildRequestList(with: [requestConfig])
-            self.showZendeskView(requestListController, from: controller)
-        }
+//        createIdentity(presentIn: controller) { success in
+//            guard success else {
+//                return
+//            }
+//
+//            WooAnalytics.shared.track(.supportTicketListViewed)
+//
+//            let requestConfig = self.createRequest(supportSourceTag: sourceTag)
+//            let requestListController = RequestUi.buildRequestList(with: [requestConfig])
+//            self.showZendeskView(requestListController, from: controller)
+//        }
     }
 
     /// Displays a single ticket's view if possible.
     ///
     func showSingleTicketViewIfPossible(for requestId: String, from navController: UINavigationController) {
-        let requestConfig = self.createRequest(supportSourceTag: nil)
-        let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
-
-        showZendeskView(requestController, from: navController)
+//        let requestConfig = self.createRequest(supportSourceTag: nil)
+//        let requestController = RequestUi.buildRequestUi(requestId: requestId, configurations: [requestConfig])
+//
+//        showZendeskView(requestController, from: navController)
     }
 
     /// Displays an alert allowing the user to change their Support email address.
@@ -213,28 +213,28 @@ class ZendeskManager: NSObject {
 extension ZendeskManager {
     /// Registers the last known DeviceToken in the Zendesk Backend (if any).
     ///
-    func registerDeviceTokenIfNeeded() {
-        guard let deviceToken = deviceToken else {
-            DDLogError("☎️ [Zendesk] Missing Device Token!")
-            return
-        }
-
-        registerDeviceToken(deviceToken)
-    }
+//    func registerDeviceTokenIfNeeded() {
+//        guard let deviceToken = deviceToken else {
+//            DDLogError("☎️ [Zendesk] Missing Device Token!")
+//            return
+//        }
+//
+//        registerDeviceToken(deviceToken)
+//    }
 
     /// Registers the specified DeviceToken in the Zendesk Backend (if possible).
     ///
-    func registerDeviceToken(_ deviceToken: String) {
-        DDLogInfo("☎️ [Zendesk] Registering Device Token...")
-        zendeskPushProvider?.register(deviceIdentifier: deviceToken, locale: Locale.preferredLanguage) { (_, error) in
-            if let error = error {
-                DDLogError("☎️ [Zendesk] Couldn't register Device Token [\(deviceToken)]. Error: \(error)")
-                return
-            }
-
-            DDLogInfo("☎️ [Zendesk] Successfully registered Device Token: [\(deviceToken)]")
-        }
-    }
+//    func registerDeviceToken(_ deviceToken: String) {
+//        DDLogInfo("☎️ [Zendesk] Registering Device Token...")
+//        zendeskPushProvider?.register(deviceIdentifier: deviceToken, locale: Locale.preferredLanguage) { (_, error) in
+//            if let error = error {
+//                DDLogError("☎️ [Zendesk] Couldn't register Device Token [\(deviceToken)]. Error: \(error)")
+//                return
+//            }
+//
+//            DDLogInfo("☎️ [Zendesk] Successfully registered Device Token: [\(deviceToken)]")
+//        }
+//    }
 
     func postNotificationReceived() {
         // Updating unread indicators should trigger UI updates, so send notification in main thread.
@@ -264,8 +264,8 @@ extension ZendeskManager: SupportManagerAdapter {
     /// Unregisters from the Zendesk Push Notifications Service.
     ///
     func unregisterForRemoteNotifications() {
-        DDLogInfo("☎️ [Zendesk] Unregistering for Notifications...")
-        zendeskPushProvider?.unregisterForPush()
+//        DDLogInfo("☎️ [Zendesk] Unregistering for Notifications...")
+//        zendeskPushProvider?.unregisterForPush()
     }
 
     /// This handles Zendesk push notifications.
@@ -321,43 +321,43 @@ private extension ZendeskManager {
 
     func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
 
-        // If we already have an identity, do nothing.
-        guard haveUserIdentity == false else {
-            DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
-            registerDeviceTokenIfNeeded()
-            completion(true)
-            return
-        }
-
-        /*
-         1. Attempt to get user information from User Defaults.
-         2. If we don't have the user's information yet, attempt to get it from the account/site.
-         3. Prompt the user for email & name, pre-populating with user information obtained in step 1.
-         4. Create Zendesk identity with user information.
-         */
-
-        if getUserProfile() {
-            createZendeskIdentity { success in
-                guard success else {
-                    DDLogInfo("Creating Zendesk identity failed.")
-                    completion(false)
-                    return
-                }
-                DDLogDebug("Using User Defaults for Zendesk identity.")
-                self.haveUserIdentity = true
-                self.registerDeviceTokenIfNeeded()
-                completion(true)
-                return
-            }
-        }
-
-        getUserInformationAndShowPrompt(withName: true, from: viewController) { success in
-            if success {
-                self.registerDeviceTokenIfNeeded()
-            }
-
-            completion(success)
-        }
+//        // If we already have an identity, do nothing.
+//        guard haveUserIdentity == false else {
+//            DDLogDebug("Using existing Zendesk identity: \(userEmail ?? ""), \(userName ?? "")")
+//            registerDeviceTokenIfNeeded()
+//            completion(true)
+//            return
+//        }
+//
+//        /*
+//         1. Attempt to get user information from User Defaults.
+//         2. If we don't have the user's information yet, attempt to get it from the account/site.
+//         3. Prompt the user for email & name, pre-populating with user information obtained in step 1.
+//         4. Create Zendesk identity with user information.
+//         */
+//
+//        if getUserProfile() {
+//            createZendeskIdentity { success in
+//                guard success else {
+//                    DDLogInfo("Creating Zendesk identity failed.")
+//                    completion(false)
+//                    return
+//                }
+//                DDLogDebug("Using User Defaults for Zendesk identity.")
+//                self.haveUserIdentity = true
+//                self.registerDeviceTokenIfNeeded()
+//                completion(true)
+//                return
+//            }
+//        }
+//
+//        getUserInformationAndShowPrompt(withName: true, from: viewController) { success in
+//            if success {
+//                self.registerDeviceTokenIfNeeded()
+//            }
+//
+//            completion(success)
+//        }
     }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping (Bool) -> Void) {
@@ -396,20 +396,20 @@ private extension ZendeskManager {
 
     func createZendeskIdentity(completion: @escaping (Bool) -> Void) {
 
-        guard let userEmail = userEmail else {
-            DDLogInfo("No user email to create Zendesk identity with.")
-            let identity = Identity.createAnonymous()
-            Zendesk.instance?.setIdentity(identity)
-            completion(false)
-
-            return
-        }
-
-        let zendeskIdentity = Identity.createAnonymous(name: userName, email: userEmail)
-        Zendesk.instance?.setIdentity(zendeskIdentity)
-
-        DDLogDebug("Zendesk identity created with email '\(userEmail)' and name '\(userName ?? "")'.")
-        completion(true)
+//        guard let userEmail = userEmail else {
+//            DDLogInfo("No user email to create Zendesk identity with.")
+//            let identity = Identity.createAnonymous()
+//            Zendesk.instance?.setIdentity(identity)
+//            completion(false)
+//
+//            return
+//        }
+//
+//        let zendeskIdentity = Identity.createAnonymous(name: userName, email: userEmail)
+//        Zendesk.instance?.setIdentity(zendeskIdentity)
+//
+//        DDLogDebug("Zendesk identity created with email '\(userEmail)' and name '\(userName ?? "")'.")
+//        completion(true)
     }
 
 
@@ -418,37 +418,37 @@ private extension ZendeskManager {
     /// Important: Any time a new request controller is created, these configurations should be attached.
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     ///
-    func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
-
-        let requestConfig = RequestUiConfiguration()
-
-        // Set Zendesk ticket form to use
-        requestConfig.ticketFormID = TicketFieldIDs.form as NSNumber
-
-        // Set form field values
-        let ticketFields = [
-            ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: Bundle.main.version),
-            ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()),
-            ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()),
-            ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()),
-            ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()),
-            ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform),
-            ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: Locale.preferredLanguage),
-            ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory)
-        ].compactMap { $0 }
-
-        requestConfig.fields = ticketFields
-
-        // Set tags
-        requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
-
-        // Set the ticket subject
-        requestConfig.subject = Constants.ticketSubject
-
-        // No extra config needed to attach an image. Hooray!
-
-        return requestConfig
-    }
+//    func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
+//
+//        let requestConfig = RequestUiConfiguration()
+//
+//        // Set Zendesk ticket form to use
+//        requestConfig.ticketFormID = TicketFieldIDs.form as NSNumber
+//
+//        // Set form field values
+//        let ticketFields = [
+//            ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: Bundle.main.version),
+//            ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()),
+//            ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()),
+//            ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()),
+//            ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()),
+//            ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform),
+//            ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: Locale.preferredLanguage),
+//            ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory)
+//        ].compactMap { $0 }
+//
+//        requestConfig.fields = ticketFields
+//
+//        // Set tags
+//        requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
+//
+//        // Set the ticket subject
+//        requestConfig.subject = Constants.ticketSubject
+//
+//        // No extra config needed to attach an image. Hooray!
+//
+//        return requestConfig
+//    }
 
     // MARK: - View
     //
@@ -560,31 +560,31 @@ private extension ZendeskManager {
     }
 
 
-    func getNetworkInformation() -> String {
-        let networkType: String = {
-            let reachibilityStatus = ZDKReachability.forInternetConnection().currentReachabilityStatus()
-            switch reachibilityStatus {
-            case .reachableViaWiFi:
-                return Constants.networkWiFi
-            case .reachableViaWWAN:
-                return Constants.networkWWAN
-            default:
-                return Constants.unknownValue
-            }
-        }()
-
-        let networkCarrier = CTTelephonyNetworkInfo().subscriberCellularProvider
-        let carrierName = networkCarrier?.carrierName ?? Constants.unknownValue
-        let carrierCountryCode = networkCarrier?.isoCountryCode ?? Constants.unknownValue
-
-        let networkInformation = [
-            "\(Constants.networkTypeLabel) \(networkType)",
-            "\(Constants.networkCarrierLabel) \(carrierName)",
-            "\(Constants.networkCountryCodeLabel) \(carrierCountryCode)"
-        ]
-
-        return networkInformation.joined(separator: "\n")
-    }
+//    func getNetworkInformation() -> String {
+//        let networkType: String = {
+//            let reachibilityStatus = ZDKReachability.forInternetConnection().currentReachabilityStatus()
+//            switch reachibilityStatus {
+//            case .reachableViaWiFi:
+//                return Constants.networkWiFi
+//            case .reachableViaWWAN:
+//                return Constants.networkWWAN
+//            default:
+//                return Constants.unknownValue
+//            }
+//        }()
+//
+//        let networkCarrier = CTTelephonyNetworkInfo().subscriberCellularProvider
+//        let carrierName = networkCarrier?.carrierName ?? Constants.unknownValue
+//        let carrierCountryCode = networkCarrier?.isoCountryCode ?? Constants.unknownValue
+//
+//        let networkInformation = [
+//            "\(Constants.networkTypeLabel) \(networkType)",
+//            "\(Constants.networkCarrierLabel) \(carrierName)",
+//            "\(Constants.networkCountryCodeLabel) \(carrierCountryCode)"
+//        ]
+//
+//        return networkInformation.joined(separator: "\n")
+//    }
 
 
     // MARK: - User Information Prompt
@@ -711,39 +711,39 @@ private extension ZendeskManager {
 
     /// Listens to Zendesk Notifications
     ///
-    func observeZendeskNotifications() {
-        // Ticket Attachments
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentError), object: nil)
-
-        // New Ticket Creation
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionError), object: nil)
-
-        // Ticket Reply
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionError), object: nil)
-
-        // View Ticket List
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_RequestsError), object: nil)
-
-        // View Individual Ticket
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentListSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentListError), object: nil)
-
-        // Help Center
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
-    }
+//    func observeZendeskNotifications() {
+//        // Ticket Attachments
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentSuccess), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentError), object: nil)
+//
+//        // New Ticket Creation
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionSuccess), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionError), object: nil)
+//
+//        // Ticket Reply
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionSuccess), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionError), object: nil)
+//
+//        // View Ticket List
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZDKAPI_RequestsError), object: nil)
+//
+//        // View Individual Ticket
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentListSuccess), object: nil)
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentListError), object: nil)
+//
+//        // Help Center
+//        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
+//                                               name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
+//    }
 
 
     /// Removes all of the Notification Hooks.
@@ -754,32 +754,32 @@ private extension ZendeskManager {
 
     /// Handles (all of the) Zendesk Notifications
     ///
-    @objc func zendeskNotification(_ notification: Notification) {
-        switch notification.name.rawValue {
-        case ZDKAPI_RequestSubmissionSuccess:
-            WooAnalytics.shared.track(.supportNewRequestCreated)
-        case ZDKAPI_RequestSubmissionError:
-            WooAnalytics.shared.track(.supportNewRequestFailed)
-        case ZDKAPI_UploadAttachmentSuccess:
-            WooAnalytics.shared.track(.supportNewRequestFileAttached)
-        case ZDKAPI_UploadAttachmentError:
-            WooAnalytics.shared.track(.supportNewRequestFileAttachmentFailed)
-        case ZDKAPI_CommentSubmissionSuccess:
-            WooAnalytics.shared.track(.supportTicketUserReplied)
-        case ZDKAPI_CommentSubmissionError:
-            WooAnalytics.shared.track(.supportTicketUserReplyFailed)
-        case ZDKAPI_RequestsError:
-            WooAnalytics.shared.track(.supportTicketListViewFailed)
-        case ZDKAPI_CommentListSuccess:
-            WooAnalytics.shared.track(.supportTicketUserViewed)
-        case ZDKAPI_CommentListError:
-            WooAnalytics.shared.track(.supportTicketViewFailed)
-        case ZD_HC_SearchSuccess:
-            WooAnalytics.shared.track(.supportHelpCenterUserSearched)
-        default:
-            break
-        }
-    }
+//    @objc func zendeskNotification(_ notification: Notification) {
+//        switch notification.name.rawValue {
+//        case ZDKAPI_RequestSubmissionSuccess:
+//            WooAnalytics.shared.track(.supportNewRequestCreated)
+//        case ZDKAPI_RequestSubmissionError:
+//            WooAnalytics.shared.track(.supportNewRequestFailed)
+//        case ZDKAPI_UploadAttachmentSuccess:
+//            WooAnalytics.shared.track(.supportNewRequestFileAttached)
+//        case ZDKAPI_UploadAttachmentError:
+//            WooAnalytics.shared.track(.supportNewRequestFileAttachmentFailed)
+//        case ZDKAPI_CommentSubmissionSuccess:
+//            WooAnalytics.shared.track(.supportTicketUserReplied)
+//        case ZDKAPI_CommentSubmissionError:
+//            WooAnalytics.shared.track(.supportTicketUserReplyFailed)
+//        case ZDKAPI_RequestsError:
+//            WooAnalytics.shared.track(.supportTicketListViewFailed)
+//        case ZDKAPI_CommentListSuccess:
+//            WooAnalytics.shared.track(.supportTicketUserViewed)
+//        case ZDKAPI_CommentListError:
+//            WooAnalytics.shared.track(.supportTicketViewFailed)
+//        case ZD_HC_SearchSuccess:
+//            WooAnalytics.shared.track(.supportHelpCenterUserSearched)
+//        default:
+//            break
+//        }
+//    }
 }
 
 

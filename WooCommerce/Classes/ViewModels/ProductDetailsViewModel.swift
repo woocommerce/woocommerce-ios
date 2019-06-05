@@ -9,11 +9,13 @@ import WordPressShared
 //
 final class ProductDetailsViewModel {
 
+    // MARK: - public variables
+
     /// Closures
     ///
     var onError: (() -> Void)?
     var onReload: (() -> Void)?
-    var onReloadRow: (() -> Void)?
+    var onPurchaseNoteTapped: (() -> Void)?
 
     /// Yosemite.Product
     ///
@@ -29,11 +31,32 @@ final class ProductDetailsViewModel {
         return product.name
     }
 
+    /// Purchase Note
+    /// - stripped of HTML
+    /// - no ending newline character
+    /// - cannot be a lazy var because it's a computed property
+    ///
+    var cleanedPurchaseNote: String? {
+        guard var cleanedString = product.purchaseNote?.strippedHTML else {
+            return nil
+        }
+
+        let lastChar = cleanedString.suffix(1)
+        let newline = String(lastChar)
+        if newline == Constants.newline {
+            cleanedString.removeSuffix(newline)
+        }
+
+        return cleanedString
+    }
+
     /// Product ID
     ///
     var productID: Int {
         return product.productID
     }
+
+    // MARK: - private variables
 
     /// Sections to be rendered
     ///
@@ -94,25 +117,6 @@ final class ProductDetailsViewModel {
     ///
     private var productImageHeight: CGFloat {
         return productHasImage ? Metrics.productImageHeight : Metrics.emptyProductImageHeight
-    }
-
-    /// Purchase Note
-    /// - stripped of HTML
-    /// - no ending newline character
-    /// - cannot be a lazy var because it's a computed property
-    ///
-    private var cleanedPurchaseNote: String? {
-        guard var cleanedString = product.purchaseNote?.strippedHTML else {
-            return nil
-        }
-
-        let lastChar = cleanedString.suffix(1)
-        let newline = String(lastChar)
-        if newline == Constants.newline {
-            cleanedString.removeSuffix(newline)
-        }
-
-        return cleanedString
     }
 
     /// Table section height.
@@ -556,27 +560,8 @@ extension ProductDetailsViewModel {
 
         cell.moreButton?.setTitle(readMoreTitle, for: .normal)
         cell.onMoreTouchUp = { [weak self] in
-            self?.toggleReadMore(cell)
-            DDLogInfo("Read more was tapped")
+            self?.onPurchaseNoteTapped?()
         }
-    }
-
-    func toggleReadMore(_ cell: ReadMoreTableViewCell) {
-        if readMoreExpanded == false {
-            cell.bodyLabel?.numberOfLines = 0
-            cell.bodyLabel?.lineBreakMode = .byWordWrapping
-            let readLessTitle = NSLocalizedString("Read less",
-                                                  comment: "Read less of the purchase note. All of the text is currently displayed.")
-            cell.moreButton.setTitle(readLessTitle, for: .normal)
-        } else {
-            cell.bodyLabel?.numberOfLines = 2
-            cell.bodyLabel?.lineBreakMode = .byTruncatingTail
-            let readMoreTitle = NSLocalizedString("Read more", comment: "Read more of the purchase note. Only the first two lines are displayed on the cell.")
-            cell.moreButton.setTitle(readMoreTitle, for: .normal)
-        }
-
-        onReloadRow?()
-        readMoreExpanded = !readMoreExpanded
     }
 
 

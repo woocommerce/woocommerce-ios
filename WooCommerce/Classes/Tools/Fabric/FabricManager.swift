@@ -1,8 +1,8 @@
 import Foundation
 import UIKit
 
-import Crashlytics
-import Fabric
+//import Crashlytics
+//import Fabric
 import Yosemite
 
 
@@ -40,7 +40,7 @@ class FabricManager {
             return
         }
 
-        Fabric.with([Crashlytics.self])
+        //Fabric.with([Crashlytics.self])
         startListeningToAuthNotifications()
     }
 
@@ -62,11 +62,11 @@ class FabricManager {
     ///
     @objc func defaultAccountWasUpdated(sender: Notification) {
         let account = sender.object as? Yosemite.Account
-        let crashlytics = Crashlytics.sharedInstance()
-
-        crashlytics.setUserName(account?.username)
-        crashlytics.setUserEmail(account?.email)
-        crashlytics.setUserIdentifier(account?.userID.description)
+//        let crashlytics = Crashlytics.sharedInstance()
+//
+//        crashlytics.setUserName(account?.username)
+//        crashlytics.setUserEmail(account?.email)
+//        crashlytics.setUserIdentifier(account?.userID.description)
 
         if let username = account?.username {
             DDLogInfo("🌡 Fabric Account: [\(username)]")
@@ -78,11 +78,11 @@ class FabricManager {
     /// Clears Crashlytics data after opt-out of tracking event
     ///
     func clearCrashlyticsParameters() {
-        let crashlytics = Crashlytics.sharedInstance()
-
-        crashlytics.setUserName(nil)
-        crashlytics.setUserEmail(nil)
-        crashlytics.setUserIdentifier(nil)
+//        let crashlytics = Crashlytics.sharedInstance()
+//
+//        crashlytics.setUserName(nil)
+//        crashlytics.setUserEmail(nil)
+//        crashlytics.setUserIdentifier(nil)
     }
 }
 

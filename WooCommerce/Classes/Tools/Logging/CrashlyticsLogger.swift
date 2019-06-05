@@ -1,6 +1,6 @@
 import Foundation
 import CocoaLumberjack
-import Crashlytics
+//import Crashlytics
 
 class CrashlyticsLogger: DDAbstractLogger {
     /// Shared Instance
@@ -10,12 +10,12 @@ class CrashlyticsLogger: DDAbstractLogger {
     override func log(message logMessage: DDLogMessage) {
         var message = logMessage.message
 
-        if let ivar = class_getInstanceVariable(object_getClass(self), "_logFormatter"),
-            let logFormatter = object_getIvar(self, ivar) as? DDLogFormatter,
-            let formattedMessage = logFormatter.format(message: logMessage) {
-            message = formattedMessage
-        }
-
-        CLSLogv("%@", getVaList([message]))
+//        if let ivar = class_getInstanceVariable(object_getClass(self), "_logFormatter"),
+//            let logFormatter = object_getIvar(self, ivar) as? DDLogFormatter,
+//            let formattedMessage = logFormatter.format(message: logMessage) {
+//            message = formattedMessage
+//        }
+//
+//        CLSLogv("%@", getVaList([message]))
     }
 }

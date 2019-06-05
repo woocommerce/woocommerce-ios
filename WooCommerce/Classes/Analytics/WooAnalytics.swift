@@ -1,6 +1,40 @@
 import Foundation
 import UIKit
 
+ class MockupAnalyticsProvider: AnalyticsProvider {
+    var receivedEvents = [String]()
+    var receivedProperties = [[AnyHashable: Any]]()
+    var userID: String?
+    var userOptedIn = true
+}
+
+extension MockupAnalyticsProvider {
+    
+    func refreshUserData() {
+        userID = "aGeneratedUserGUID"
+    }
+    
+    func track(_ eventName: String) {
+        track(eventName, withProperties: nil)
+    }
+    
+    func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
+        receivedEvents.append(eventName)
+        if let properties = properties {
+            receivedProperties.append(properties)
+        }
+    }
+    
+    func clearEvents() {
+        receivedEvents.removeAll()
+    }
+    
+    func clearUsers() {
+        userOptedIn = false
+        userID = nil
+    }
+}
+
 
 public class WooAnalytics {
 
@@ -8,7 +42,9 @@ public class WooAnalytics {
 
     /// Shared Instance
     ///
-    static let shared = WooAnalytics(analyticsProvider: TracksProvider())
+    //static let shared = WooAnalytics(analyticsProvider: TracksProvider())
+    //static let shared = MockupAnalyticsProvider
+    static let shared = WooAnalytics(analyticsProvider: MockupAnalyticsProvider())
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///

@@ -40,7 +40,7 @@ struct SessionManager {
 
     /// KeychainAccess Wrapper.
     ///
-    private let keychain: Keychain
+    //private let keychain: Keychain
 
     /// Default Credentials.
     ///
@@ -111,7 +111,7 @@ struct SessionManager {
     ///
     init(defaults: UserDefaults, keychainServiceName: String) {
         self.defaults = defaults
-        self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
+        //self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
     }
 
     /// Nukes all of the known Session's properties.
@@ -133,11 +133,13 @@ private extension SessionManager {
     ///
     func loadCredentials() -> Credentials? {
         guard let username = defaults[.defaultUsername] as? String,
-            let authToken = keychain[username],
+            //let authToken = keychain[username],
+
             let siteAddress = defaults[.defaultSiteAddress] as? String else {
             return nil
         }
 
+        let authToken = "112212"
         return Credentials(username: username, authToken: authToken, siteAddress: siteAddress)
     }
 
@@ -146,7 +148,7 @@ private extension SessionManager {
     func saveCredentials(_ credentials: Credentials) {
         defaults[.defaultUsername] = credentials.username
         defaults[.defaultSiteAddress] = credentials.siteAddress
-        keychain[credentials.username] = credentials.authToken
+        //keychain[credentials.username] = credentials.authToken
     }
 
     /// Nukes both, the AuthToken and Default Username.
@@ -156,7 +158,7 @@ private extension SessionManager {
             return
         }
 
-        keychain[username] = nil
+        //keychain[username] = nil
         defaults[.defaultUsername] = nil
     }
 }

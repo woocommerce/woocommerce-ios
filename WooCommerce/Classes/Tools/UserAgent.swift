@@ -20,7 +20,9 @@ class UserAgent {
     /// Returns the WebKit User Agent
     ///
     static var webkitUserAgent: String {
-        return UIWebView().stringByEvaluatingJavaScript(from: Constants.loadUserAgentScript) ?? String()
+        //return UIWebView().stringByEvaluatingJavaScript(from: Constants.loadUserAgentScript) ?? String()
+        //return WKWebView
+        return String()
     }
 
     /// Returns the Bundle Version ID

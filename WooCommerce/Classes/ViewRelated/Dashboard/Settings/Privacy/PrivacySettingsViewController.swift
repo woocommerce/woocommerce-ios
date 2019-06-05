@@ -3,6 +3,7 @@ import Gridicons
 import SafariServices
 import Yosemite
 
+
 class PrivacySettingsViewController: UIViewController {
 
     /// Main TableView

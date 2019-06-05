@@ -111,9 +111,9 @@ class ProductListMapperTests: XCTestCase {
         XCTAssertEqual(thirdProduct.productType, groupedType)
 
         let fourthProduct = products[3]
-        let externalType = ProductType.external
+        let affiliateType = ProductType.affiliate
         XCTAssertEqual(fourthProduct.productTypeKey, "external")
-        XCTAssertEqual(fourthProduct.productType, externalType)
+        XCTAssertEqual(fourthProduct.productType, affiliateType)
 
         let fifthProduct = products[4]
         let variableType = ProductType.variable

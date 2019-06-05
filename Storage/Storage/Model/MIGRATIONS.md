@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 16 (Release 2.0.0.0)
+- @mindgraffiti 2019-05-29
+    - Add `ProductDownload` entity
+
 ## Model 15 (Release 1.9.0.0)
 - @mindgraffiti 2019-05-03
     - Delete `ProductVariation` entity

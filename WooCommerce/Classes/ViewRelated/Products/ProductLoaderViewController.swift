@@ -168,7 +168,8 @@ private extension ProductLoaderViewController {
     /// Presents the ProductDetailsViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
-        let detailsViewController = ProductDetailsViewController(product: product)
+        let detailsViewModel = ProductDetailsViewModel(product: product)
+        let detailsViewController = ProductDetailsViewController(viewModel: detailsViewModel)
 
         // Attach
         addChild(detailsViewController)

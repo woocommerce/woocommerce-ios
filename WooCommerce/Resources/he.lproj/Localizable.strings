@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-01 08:54:03+0000 */
+/* Translation-Revision-Date: 2019-05-28 11:54:02+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -127,7 +127,7 @@
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Change order status screen - button title for closing the view */
+   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "ביטול";
 
 /* shown in promotional screens during first launch */
@@ -188,7 +188,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "לא ניתן להתחבר. שיטות XML-RPC נדרשות חסרות בשרת.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "לא ניתן להתחבר. קיבלנו שגיאת 403 בעת ניסיון לגשת לנקודת הקצה XMLRPC באתר שלך. כדי שהאפליקציה תוכל לבצע התקשרות עם האתר שלך, יש להפעיל אפשרות זו. יש ליצור קשר עם חברת האחסון שלך כדי לפתור בעיה זו.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "לא ניתן להתחבר. קיבלנו שגיאת 403 בעת ניסיון לגשת לנקודת הקצה XMLRPC באתר שלך. כדי שהאפליקציה תוכל לבצע התקשרות עם האתר שלך, יש להפעיל אפשרות זו. יש ליצור קשר עם חברת האחסון שלך כדי לפתור בעיה זו.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "לא ניתן להתחבר. חברת האחסון שלך חוסמת בקשות POST והאפליקציה דורשת את הפעלת האפשרות הזו כדי לבצע התקשרות עם האתר שלך. יש ליצור קשר עם חברת האחסון שלך כדי לפתור בעיה זו.";
@@ -196,7 +196,11 @@
 /* Cell title: the current date. */
 "Current" = "נוכחי";
 
-/* Title of button to add a custom tracking provider if filtering the list yields no results. */
+/* Name of the section for custom shipment tracking providers */
+"Custom" = "התאמה אישית";
+
+/* Add custom shipping provider. Content of cell titled Shipping Provider
+   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "ספק מותאם";
 
 /* Customer info section title
@@ -216,8 +220,15 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "ימים";
 
-/* Delete Tracking button title */
+/* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
+"Delete" = "מחיקה";
+
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "מחיקת מעקב";
+
+/* Accessibility hint for Delete Shipment button in Order fulfillment screen */
+"Deletes a shipment's tracking information." = "הפעולה מוחקת את מידע המעקב של המשלוח.";
 
 /* The row label to tap for a detailed product list */
 "Details" = "פרטים";
@@ -229,7 +240,7 @@
 "Discount" = "הנחה";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "בטל";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -259,14 +270,8 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "יש להקיש פעמיים כדי לשנות את ההגדרות.";
 
-/* Accessibility hint for Pencil button in an individual Shipment Tracking in the order fulfillment screen */
-"Edit" = "עריכה";
-
-/* Edit tracking screen - title. */
-"Edit Tracking" = "עריכת מעקב";
-
-/* Accessibility hint for Edit Shipment button in Order fulfillment screen */
-"Edits a shipment." = "לעריכת המשלוח.";
+/* Display label for the product's draft status */
+"Draft" = "טיוטה";
 
 /* Email address text field placeholder */
 "Email" = "אימייל";
@@ -286,6 +291,12 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "קישור ריק";
 
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "יש להזין כתובת URL חוקית, לדוגמה example.com.";
+
+/* Add custom shipping provider. Placeholder of cell presenting provider name */
+"Enter provider name" = "יש להזין שם ספק";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "יש להזין את הכתובת של חנות ה-WooCommerce שלך שאליה ברצונך להתחבר.";
 
@@ -294,6 +305,12 @@
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "יש להזין את הסיסמה לחשבון WordPress.com שלך.";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking link */
+"Enter tracking link" = "יש להזין קישור מעקב";
+
+/* Add custom shipping provider. Placeholder of cell presenting tracking number */
+"Enter tracking number" = "יש להזין מספר מעקב";
 
 /* Title of a button on the magic link screen.
    Title of a button. */
@@ -356,9 +373,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "הסתרת חיוב";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "כנראה שאין אתר וורדפרס בכתובת זו. יש לבדוק שנית את האיות ולנסות שוב.";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "אם האפשרות מושבתת, הפתק יהיה פרטי";
@@ -487,6 +501,9 @@
 
 /* Plural of 'month' — a statistical unit */
 "Months" = "חודשים";
+
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "עוד";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "העברת תגובה לתגובות הזבל";
@@ -633,6 +650,9 @@
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "תשלום של (totalvalue) התקבל דרך (order.paymentMethodTitle)";
 
+/* Display label for the product's pending status */
+"Pending" = "ממתין לאישור";
+
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "מספר טלפון: ‎%@";
 
@@ -676,12 +696,15 @@
    Privacy settings screen title */
 "Privacy Settings" = "הגדרות פרטיות";
 
+/* Display label for the product's private status */
+"Private" = "פרטי";
+
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "הערה פרטית";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product - Title of product detail screen. */
+   Product section title - Section header title for the product */
 "Product" = "מוצר";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
@@ -689,6 +712,12 @@
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "הצגת האפשרות להתקשרות או לשליחת הודעה אל הלקוח המשלם.";
+
+/* Add Custom shipping provider. Title of cell presenting the provider name */
+"Provider name" = "שם הספק";
+
+/* Display label for the product's published status */
+"Publish" = "לפרסם";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "שליחה לפרסום כשנמצאים בפארק. כתיבת בלוג כשנוסעים באוטובוס. כתיבת תגובה כשיושבים בבית קפה. השירות של WordPress אתך בכל מקום.";
@@ -735,7 +764,8 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "בדיקה, הכנה ומשלוח של ההזמנות שבהמתנה";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "חוות דעת";
 
 /* SKU label */
@@ -743,9 +773,6 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS נשלח";
-
-/* Edit tracking screen - button title to save a tracking */
-"Save" = "שמירה";
 
 /* Orders Search Placeholder */
 "Search all orders" = "חיפוש בכל ההזמנות";
@@ -796,6 +823,9 @@
 
 /* Footer text to show the billing cell */
 "Show billing" = "הצגת חיוב";
+
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "מציג אפשרויות נוספות.";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "הרשמה";
@@ -944,6 +974,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "כתובת האתר צריכה להיות קצרה מ-64 תווים.";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "כתובת האתר שהזנת אינה עבור אתר ב-WordPress. כדי שנוכל להתחבר לאתר, האתר חייב להשתמש בפלטפורמה של WordPress.";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "לא ניתן למחוק את האתר.";
 
@@ -977,6 +1010,9 @@
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "לא ניתן לטעון את המוצר";
 
+/* Product details screen — product title descriptive label */
+"Title" = "כותרת";
+
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "כדי ליצור חשבון WordPress.com חדש, יש להזין את כתובת האימייל שלך.";
 
@@ -999,26 +1035,29 @@
 /* Total label for payment view */
 "Total" = "סך הכול";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "סך כל ההזמנות";
+
 /* Description for Top Performers right column header */
 "Total Spend" = "הוצאה כוללת";
 
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "סה\"כ הזמנות: %ld";
 
-/* Track package button title */
-"Track package" = "לבצע מעקב אחר החבילה";
+/* Track shipment button title */
+"Track Shipment" = "מעקב אחר משלוח";
 
 /* Order tracking section title */
 "Tracking" = "מבצע מעקב";
+
+/* Add custom shipping provider. Title of cell presenting tracking link */
+"Tracking link (optional)" = "קישור מעקב (אופציונלי)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "מספר מעקב";
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "מספר מעקב %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "מעקב אחר משלוח.";
 
 /* Move a comment to the trash */
 "Trash" = "פח";
@@ -1138,8 +1177,14 @@
 /* View application log cell title */
 "View Application Log" = "צפייה ביומן של האפליקציה";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "צפייה במוצר הממומן";
+
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "הצגה של קריאות תמיכה שנשלחו בעבר";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "צפייה במוצר בחנות";
 
 /* User role badge */
 "Viewer" = "צופה";
@@ -1232,7 +1277,7 @@
 "approved" = "אושר";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "מאוחר יותר היום";

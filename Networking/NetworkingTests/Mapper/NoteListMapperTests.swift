@@ -45,7 +45,7 @@ class NoteListMapperTests: XCTestCase {
         XCTAssertEqual(note.read, false)
         XCTAssert(note.icon == "https://gravatar.tld/some-hash")
         XCTAssert(note.noticon == "\u{f408}")
-        XCTAssertEqual(note.timestamp, "2018-10-22T18:51:33+00:00")
+        XCTAssertEqual(note.timestamp, "2018-10-22T12:00:00+00:00")
         XCTAssertEqual(note.type, "comment_like")
         XCTAssertEqual(note.kind, .commentLike)
         XCTAssert(note.url == "https://someurl.sometld")

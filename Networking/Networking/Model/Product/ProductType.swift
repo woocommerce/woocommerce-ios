@@ -6,9 +6,8 @@ import Foundation
 public enum ProductType: Decodable, Hashable {
     case simple
     case grouped
-    case external
+    case affiliate
     case variable
-    case variation
     case custom(String) // in case there are extensions modifying product types
 }
 
@@ -25,12 +24,10 @@ extension ProductType: RawRepresentable {
             self = .simple
         case Keys.grouped:
             self = .grouped
-        case Keys.external:
-            self = .external
+        case Keys.affiliate:
+            self = .affiliate
         case Keys.variable:
             self = .variable
-        case Keys.variation:
-            self = .variation
         default:
             self = .custom(rawValue)
         }
@@ -42,9 +39,8 @@ extension ProductType: RawRepresentable {
         switch self {
         case .simple:               return Keys.simple
         case .grouped:              return Keys.grouped
-        case .external:             return Keys.external
+        case .affiliate:            return Keys.affiliate
         case .variable:             return Keys.variable
-        case .variation:            return Keys.variation
         case .custom(let payload):  return payload
         }
     }
@@ -54,9 +50,8 @@ extension ProductType: RawRepresentable {
 /// Enum containing the 'Known' ProductType Keys
 ///
 private enum Keys {
-    static let simple   = "simple"
-    static let grouped  = "grouped"
-    static let external = "external"
-    static let variable = "variable"
-    static let variation = "variation"
+    static let simple    = "simple"
+    static let grouped   = "grouped"
+    static let affiliate = "external"
+    static let variable  = "variable"
 }

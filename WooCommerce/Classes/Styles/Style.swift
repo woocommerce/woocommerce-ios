@@ -7,10 +7,14 @@ protocol Style {
 
     /// Fonts
     ///
+    static var maxFontSize: CGFloat { get }
     var actionButtonTitleFont: UIFont { get }
     var alternativeLoginsTitleFont: UIFont { get }
     var chartLabelFont: UIFont { get }
+    var headlineSemiBold: UIFont { get }
     var subheadlineFont: UIFont { get }
+    var subheadlineBoldFont: UIFont { get }
+    var thinCaptionFont: UIFont { get }
 
     /// Colors
     ///
@@ -23,9 +27,15 @@ protocol Style {
     var buttonDisabledColor: UIColor { get }
     var buttonDisabledHighlightedColor: UIColor { get }
     var buttonDisabledTitleColor: UIColor { get }
+
     var cellSeparatorColor: UIColor { get }
+
     var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
+
+    var goldStarColor: UIColor { get }
+    var grayStarColor: UIColor { get }
+
     var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
     var statusDangerColor: UIColor { get }
@@ -37,7 +47,7 @@ protocol Style {
     var statusSuccessColor: UIColor { get }
     var statusSuccessBoldColor: UIColor { get }
     var tableViewBackgroundColor: UIColor { get }
-    var goldStarColor: UIColor { get }
+
     var wooCommerceBrandColor: UIColor { get }
     var wooAccent: UIColor { get }
     var wooGreyLight: UIColor { get }
@@ -64,10 +74,20 @@ class DefaultStyle: Style {
 
     /// Fonts!
     ///
+    static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
+    let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
+                                                                        weight: .semibold,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
     let subheadlineFont                 = UIFont.font(forStyle: .subheadline, weight: .regular)
+    let subheadlineBoldFont             = DefaultStyle.fontForTextStyle(.subheadline,
+                                                                        weight: .bold,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
     let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
+    let thinCaptionFont                 = DefaultStyle.fontForTextStyle(.caption1,
+                                                                        weight: .thin,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
 
     /// Colors!
     ///
@@ -86,7 +106,6 @@ class DefaultStyle: Style {
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
-    let goldStarColor                   = UIColor(red: 238.0/255.0, green: 180.0/255.0, blue: 34.0/255.0, alpha: 1.0)
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed
@@ -105,6 +124,11 @@ class DefaultStyle: Style {
     let wooGreyMid                      = HandbookColors.wooGreyMid
     let wooGreyTextMin                  = HandbookColors.wooGreyTextMin
     let wooWhite                        = HandbookColors.wooWhite
+
+    /// Stars
+    ///
+    let goldStarColor                   = HandbookColors.goldStarColor
+    let grayStarColor                   = HandbookColors.grayStarColor
 
     /// NavBar
     ///
@@ -131,14 +155,45 @@ private extension DefaultStyle {
         static let statusGreenDimmed     = UIColor(red: 239.00/255.0, green: 249.0/255.0, blue: 230.0/255.0, alpha: 1.0)
         static let statusGreen           = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)
 
-        static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
+        static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0) // woo purple
         static let wooSecondary          = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
         static let wooAccent             = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
+
+        // multiple grays
         static let wooGreyLight          = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
         static let wooGreyBorder         = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)
         static let wooWhite              = UIColor.white
         static let wooGreyMid            = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
         static let wooGreyTextMin        = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
+
+        static let goldStarColor         = UIColor(red: 238.0/255.0, green: 180.0/255.0, blue: 34.0/255.0, alpha: 1.0)
+        static let grayStarColor         = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
+    }
+}
+
+
+private extension DefaultStyle {
+
+    class func fontForTextStyle(_ style: UIFont.TextStyle, weight: UIFont.Weight, maximumPointSize: CGFloat = maxFontSize) -> UIFont {
+        let traits = [UIFontDescriptor.TraitKey.weight: weight]
+        if #available(iOS 11, *) {
+            var fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
+            fontDescriptor = fontDescriptor.addingAttributes([.traits: traits])
+            let fontToGetSize = UIFont(descriptor: fontDescriptor, size: CGFloat(0.0))
+            return UIFontMetrics(forTextStyle: style).scaledFont(for: fontToGetSize, maximumPointSize: maximumPointSize)
+        }
+
+        var scaledFontDescriptor = fontDescriptor(style, maximumPointSize: maximumPointSize)
+        scaledFontDescriptor = scaledFontDescriptor.addingAttributes([.traits: traits])
+        return UIFont(descriptor: scaledFontDescriptor, size: CGFloat(0.0))
+    }
+
+
+    private class func fontDescriptor(_ style: UIFont.TextStyle, maximumPointSize: CGFloat = maxFontSize) -> UIFontDescriptor {
+        let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
+        let fontToGetSize = UIFont(descriptor: fontDescriptor, size: CGFloat(0.0))
+        let scaledFontSize = CGFloat.minimum(fontToGetSize.pointSize, maximumPointSize)
+        return fontDescriptor.withSize(scaledFontSize)
     }
 }
 
@@ -174,8 +229,20 @@ class StyleManager {
         return active.chartLabelFont
     }
 
+    static var headlineSemiBold: UIFont {
+        return active.headlineSemiBold
+    }
+
     static var subheadlineFont: UIFont {
         return active.subheadlineFont
+    }
+
+    static var subheadlineBoldFont: UIFont {
+        return active.subheadlineBoldFont
+    }
+
+    static var thinCaptionFont: UIFont {
+        return active.thinCaptionFont
     }
 
     // MARK: - Colors
@@ -306,6 +373,10 @@ class StyleManager {
 
     static var wooWhite: UIColor {
         return active.wooWhite
+    }
+
+    static var grayStarColor: UIColor {
+        return active.grayStarColor
     }
 
     // MARK: - NavBar

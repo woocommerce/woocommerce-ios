@@ -32,6 +32,9 @@
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "Add a note button";
 
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "Add a tracking button";
+
 /* Add Tracking row label
    Add tracking screen - title. */
 "Add Tracking" = "Add Tracking";
@@ -51,6 +54,9 @@
 
 /* Mark all notifications as read notice */
 "All notifications marked as read" = "All notifications marked as read";
+
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "allowed";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Almost there! Please enter the verification code from your authenticator app.";
@@ -108,6 +114,9 @@
 
 /* Application's Background State */
 "Background" = "Background";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "Backorders:";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Bar number %1$i, %2$@, ";
@@ -221,7 +230,8 @@
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "Delete";
 
-/* Delete a Shipment Tracking */
+/* Delete a Shipment Tracking
+   Delete tracking button title */
 "Delete Tracking" = "Delete Tracking";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
@@ -237,7 +247,7 @@
 "Discount" = "Discount";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Product details screen - button title for closing the view */
+   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Dismiss";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -266,6 +276,9 @@
 
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Double tap to toggle setting.";
+
+/* Display label for the product's draft status */
+"Draft" = "Draft";
 
 /* Email address text field placeholder */
 "Email" = "Email";
@@ -374,6 +387,9 @@
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "If disabled the note will be private";
 
+/* Display label for the product's inventory stock status */
+"In stock" = "In stock";
+
 /* Application's Inactive State */
 "Inactive" = "Inactive";
 
@@ -403,6 +419,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "Invalid username";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "Inventory";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username/password isn't associated with this site." = "It looks like this username/password isn't associated with this site.";
@@ -502,6 +522,9 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "Months";
 
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+"More" = "More";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Moves a comment to Spam";
 
@@ -557,6 +580,9 @@
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
 "No results found for \(term)\nAdd a custom provider" = "No results found for \(term)\nAdd a custom provider";
 
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "not allowed";
+
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Not shipped yet";
 
@@ -595,6 +621,9 @@
 
 /* Spoken label to indicate switch control is turned on */
 "On" = "On";
+
+/* Display label for the product's inventory stock status */
+"On back order" = "On back order";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Open Device Settings";
@@ -640,6 +669,9 @@
 /* My Store > Settings > Other app section */
 "Other" = "Other";
 
+/* Display label for the product's inventory stock status */
+"Out of stock" = "Out of stock";
+
 /* Login dialog password placeholder
    Password placeholder */
 "Password" = "Password";
@@ -649,6 +681,9 @@
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of \(totalValue) received via \(order.paymentMethodTitle)" = "Payment of \(totalValue) received via \(order.paymentMethodTitle)";
+
+/* Display label for the product's pending status */
+"Pending" = "Pending";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Phone number: %@";
@@ -686,12 +721,21 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Please open your email app and look for an email from WordPress.com.";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "Price";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "Pricing and Inventory";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacy Policy";
 
 /* Navigates to Privacy Settings screen
    Privacy settings screen title */
 "Privacy Settings" = "Privacy Settings";
+
+/* Display label for the product's private status */
+"Private" = "Private";
 
 /* Labels an order note to let the user know it's private and not seen by the customer
    Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
@@ -713,6 +757,9 @@
 /* Add Custom shipping provider. Title of cell presenting the provider name */
 "Provider name" = "Provider name";
 
+/* Display label for the product's published status */
+"Publish" = "Publish";
+
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do.";
 
@@ -731,6 +778,9 @@
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registered Domain";
+
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "Regular price:";
 
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
@@ -758,8 +808,12 @@
 /* Description text used on the UI element displayed when a user has pending orders to process. */
 "Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review. */
+/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
+   Reviews descriptive label */
 "Reviews" = "Reviews";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "Sale price:";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Search all orders";
@@ -811,6 +865,9 @@
 /* Footer text to show the billing cell */
 "Show billing" = "Show billing";
 
+/* Accessibility hint for Delete Shipment button in Order details screen */
+"Shows more options." = "Shows more options.";
+
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Sign up";
 
@@ -829,7 +886,11 @@
 /* Describes a site redirect domain */
 "Site Redirect" = "Site Redirect";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "SKU";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "SKU:";
 
 /* One Time Code has been sent via SMS */
@@ -888,6 +949,12 @@
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %@, ending period %@" = "Starting period %1$@, ending period %2$@";
+
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "Stock quantity:";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "Stock status:";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Store revenue chart";
@@ -1028,14 +1095,17 @@
 /* Total label for payment view */
 "Total" = "Total";
 
+/* Product details screen - total orders descriptive label */
+"Total Orders" = "Total Orders";
+
 /* Top performers — label for the total number of products ordered */
 "Total orders: %ld" = "Total orders: %ld";
 
 /* Description for Top Performers right column header */
 "Total Spend" = "Total Spend";
 
-/* Track package button title */
-"Track package" = "Track package";
+/* Track shipment button title */
+"Track Shipment" = "Track Shipment";
 
 /* Order tracking section title */
 "Tracking" = "Tracking";
@@ -1048,9 +1118,6 @@
 
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Tracking number %@";
-
-/* Accessibility hint for Track Package button in Order details screen */
-"Tracks a shipment." = "Tracks a shipment.";
 
 /* Notification status description for 'trash' */
 "trash" = "trash";
@@ -1142,9 +1209,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Update Order Status";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %@ at %@" = "Updated %1$@ at %2$@";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Updated %ld hour ago";
 
@@ -1176,11 +1240,17 @@
 /* Displays the version of the App */
 "Version %@" = "Version %@";
 
+/* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
+"View affiliate product" = "View affiliate product";
+
 /* View application log cell title */
 "View Application Log" = "View Application Log";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "View previously submitted support tickets";
+
+/* The descriptive label. Tapping the row will open the product's page in a web view. */
+"View product on store" = "View product on store";
 
 /* User role badge */
 "Viewer" = "Viewer";

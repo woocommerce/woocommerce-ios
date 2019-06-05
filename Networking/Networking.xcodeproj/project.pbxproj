@@ -198,8 +198,11 @@
 		CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */; };
 		CE132BBA223851F80029DB6C /* ProductCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BB9223851F80029DB6C /* ProductCategory.swift */; };
 		CE132BBC223859710029DB6C /* ProductTag.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE132BBB223859710029DB6C /* ProductTag.swift */; };
+		CE17C6B1229462C000AACE1C /* ProductStockStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE17C6B0229462C000AACE1C /* ProductStockStatus.swift */; };
 		CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */ = {isa = PBXBuildFile; fileRef = CE19CB10222486A500E8AF7A /* order-statuses.json */; };
 		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
+		CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227092228DD44C00C0626C /* ProductStatus.swift */; };
+		CE43A8F9229F463000A4FF29 /* ProductDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43A8F8229F463000A4FF29 /* ProductDownload.swift */; };
 		CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345D21B571A7007573C6 /* SitePlanMapper.swift */; };
 		CE50346021B5799F007573C6 /* SitePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345F21B5799F007573C6 /* SitePlan.swift */; };
 		CE50346721B5DCBE007573C6 /* site-plan.json in Resources */ = {isa = PBXBuildFile; fileRef = CE50346621B5DCBE007573C6 /* site-plan.json */; };
@@ -425,8 +428,11 @@
 		CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatus.swift; sourceTree = "<group>"; };
 		CE132BB9223851F80029DB6C /* ProductCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductCategory.swift; sourceTree = "<group>"; };
 		CE132BBB223859710029DB6C /* ProductTag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTag.swift; sourceTree = "<group>"; };
+		CE17C6B0229462C000AACE1C /* ProductStockStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatus.swift; sourceTree = "<group>"; };
 		CE19CB10222486A500E8AF7A /* order-statuses.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-statuses.json"; sourceTree = "<group>"; };
 		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
+		CE227092228DD44C00C0626C /* ProductStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatus.swift; sourceTree = "<group>"; };
+		CE43A8F8229F463000A4FF29 /* ProductDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownload.swift; sourceTree = "<group>"; };
 		CE50345D21B571A7007573C6 /* SitePlanMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlanMapper.swift; sourceTree = "<group>"; };
 		CE50345F21B5799F007573C6 /* SitePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlan.swift; sourceTree = "<group>"; };
 		CE50346621B5DCBE007573C6 /* site-plan.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "site-plan.json"; sourceTree = "<group>"; };
@@ -888,13 +894,16 @@
 			isa = PBXGroup;
 			children = (
 				CE6BFEE42236BF05005C79FB /* Product.swift */,
-				CE6BFEE92236E191005C79FB /* ProductType.swift */,
-				CE132BB9223851F80029DB6C /* ProductCategory.swift */,
-				CE132BBB223859710029DB6C /* ProductTag.swift */,
-				CE0A0F12223942D90075ED8D /* ProductImage.swift */,
 				CE0A0F1422396BF00075ED8D /* ProductAttribute.swift */,
-				CE6BFEE72236D133005C79FB /* ProductDimensions.swift */,
+				CE132BB9223851F80029DB6C /* ProductCategory.swift */,
 				CE0A0F16223970E80075ED8D /* ProductDefaultAttribute.swift */,
+				CE6BFEE72236D133005C79FB /* ProductDimensions.swift */,
+				CE43A8F8229F463000A4FF29 /* ProductDownload.swift */,
+				CE0A0F12223942D90075ED8D /* ProductImage.swift */,
+				CE227092228DD44C00C0626C /* ProductStatus.swift */,
+				CE17C6B0229462C000AACE1C /* ProductStockStatus.swift */,
+				CE6BFEE92236E191005C79FB /* ProductType.swift */,
+				CE132BBB223859710029DB6C /* ProductTag.swift */,
 			);
 			path = Product;
 			sourceTree = "<group>";
@@ -1149,6 +1158,7 @@
 				74A1196C2110F4BB00E1E5F0 /* OrderStats.swift in Sources */,
 				B58E5BEA20FFB3D0003C986E /* CodingUserInfoKey+Woo.swift in Sources */,
 				B59325D3217E4206000B0E8E /* NoteMedia.swift in Sources */,
+				CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */,
 				CE132BBC223859710029DB6C /* ProductTag.swift in Sources */,
 				741B950120EBC8A700DD6E2D /* OrderCouponLine.swift in Sources */,
 				74C8F06420EEB44800B6EDC9 /* OrderNote.swift in Sources */,
@@ -1201,6 +1211,7 @@
 				CE0A0F1522396BF00075ED8D /* ProductAttribute.swift in Sources */,
 				7426CA0F21AF2C90004E9FFC /* SiteAPI.swift in Sources */,
 				D87F6151226591E10031A13B /* NullNetwork.swift in Sources */,
+				CE43A8F9229F463000A4FF29 /* ProductDownload.swift in Sources */,
 				B53EF5322180F21C003E146F /* Dictionary+Woo.swift in Sources */,
 				74A1D26D21189DFF00931DFA /* SiteVisitStatsMapper.swift in Sources */,
 				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,
@@ -1226,6 +1237,7 @@
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
 				B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */,
 				D823D90D2237784A00C90817 /* ShipmentTrackingProvider.swift in Sources */,
+				CE17C6B1229462C000AACE1C /* ProductStockStatus.swift in Sources */,
 				B557DA0420975500005962F4 /* OrdersRemote.swift in Sources */,
 				B5C6FCD420A373BB00A4F8E4 /* OrderMapper.swift in Sources */,
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,

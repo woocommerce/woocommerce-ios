@@ -79,7 +79,7 @@ public extension WooAnalytics {
         track(stat, withProperties: nil)
     }
 
-    /// Track a spcific event with associated properties
+    /// Track a specific event with associated properties
     ///
     /// - Parameters:
     ///   - stat: the event name

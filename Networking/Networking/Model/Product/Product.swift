@@ -32,6 +32,7 @@ public struct Product: Decodable {
     public let virtual: Bool
 
     public let downloadable: Bool
+    public let downloads: [ProductDownload]
     public let downloadLimit: Int       // defaults to -1
     public let downloadExpiry: Int      // defaults to -1
 
@@ -79,6 +80,14 @@ public struct Product: Decodable {
 
     /// Computed Properties
     ///
+    public var productStatus: ProductStatus {
+        return ProductStatus(rawValue: statusKey)
+    }
+
+    public var productStockStatus: ProductStockStatus {
+        return ProductStockStatus(rawValue: stockStatusKey)
+    }
+
     public var productType: ProductType {
         return ProductType(rawValue: productTypeKey)
     }
@@ -107,6 +116,7 @@ public struct Product: Decodable {
                 totalSales: Int,
                 virtual: Bool,
                 downloadable: Bool,
+                downloads: [ProductDownload],
                 downloadLimit: Int,
                 downloadExpiry: Int,
                 externalURL: String?,
@@ -163,6 +173,7 @@ public struct Product: Decodable {
         self.totalSales = totalSales
         self.virtual = virtual
         self.downloadable = downloadable
+        self.downloads = downloads
         self.downloadLimit = downloadLimit
         self.downloadExpiry = downloadExpiry
         self.externalURL = externalURL
@@ -225,9 +236,26 @@ public struct Product: Decodable {
         let briefDescription = try container.decodeIfPresent(String.self, forKey: .briefDescription)
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
 
-        let price = try container.decode(String.self, forKey: .price)
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        var price = ""
+        if let parsedStringValue = container.failsafeDecodeIfPresent(stringForKey: .price) {
+            price = parsedStringValue
+        } else if let parsedDecimalValue = container.failsafeDecodeIfPresent(decimalForKey: .price) {
+            price = NSDecimalNumber(decimal: parsedDecimalValue).stringValue
+        }
+
         let regularPrice = try container.decodeIfPresent(String.self, forKey: .regularPrice)
-        let salePrice = try container.decodeIfPresent(String.self, forKey: .salePrice)
+
+        // Even though a plain install of WooCommerce Core provides string values,
+        // some plugins alter the field value from String to Int or Decimal.
+        var salePrice = ""
+        if let parsedSalePriceString = container.failsafeDecodeIfPresent(stringForKey: .salePrice) {
+            salePrice = parsedSalePriceString
+        } else if let parsedSalePriceDecimal = container.failsafeDecodeIfPresent(decimalForKey: .salePrice) {
+            salePrice = NSDecimalNumber(decimal: parsedSalePriceDecimal).stringValue
+        }
+
         let onSale = try container.decode(Bool.self, forKey: .onSale)
 
         let purchasable = try container.decode(Bool.self, forKey: .purchasable)
@@ -235,6 +263,7 @@ public struct Product: Decodable {
         let virtual = try container.decode(Bool.self, forKey: .virtual)
 
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
+        let downloads = try container.decode([ProductDownload].self, forKey: .downloads)
         let downloadLimit = try container.decode(Int.self, forKey: .downloadLimit)
         let downloadExpiry = try container.decode(Int.self, forKey: .downloadExpiry)
 
@@ -314,6 +343,7 @@ public struct Product: Decodable {
                   totalSales: totalSales,
                   virtual: virtual,
                   downloadable: downloadable,
+                  downloads: downloads,
                   downloadLimit: downloadLimit,
                   downloadExpiry: downloadExpiry,
                   externalURL: externalURL,
@@ -384,6 +414,7 @@ private extension Product {
         case virtual        = "virtual"
 
         case downloadable   = "downloadable"
+        case downloads      = "downloads"
         case downloadLimit  = "download_limit"
         case downloadExpiry = "download_expiry"
 
@@ -449,9 +480,9 @@ extension Product: Comparable {
             lhs.fullDescription == rhs.fullDescription &&
             lhs.briefDescription == rhs.briefDescription &&
             lhs.sku == rhs.sku &&
-            lhs.price == rhs.price &&
+            // lhs.price == rhs.price &&    // can't compare because object type unknown
             lhs.regularPrice == rhs.regularPrice &&
-            lhs.salePrice == rhs.salePrice &&
+            // lhs.salePrice == rhs.salePrice && // can't compare because object type unknown
             lhs.onSale == rhs.onSale &&
             lhs.purchasable == rhs.purchasable &&
             lhs.totalSales == rhs.totalSales &&

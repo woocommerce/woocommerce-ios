@@ -1,26 +1,20 @@
 import UIKit
 import Yosemite
+import Gridicons
+import SafariServices
 
 
 /// ProductDetailsViewController: Displays the details for a given Product.
 ///
 final class ProductDetailsViewController: UIViewController {
 
-    /// Product to be displayed
+    /// Product view model
     ///
-    private var product: Product {
-        didSet {
-            reloadTableViewSectionsAndData()
-        }
-    }
+    private let viewModel: ProductDetailsViewModel
 
     /// Main TableView.
     ///
     @IBOutlet private weak var tableView: UITableView!
-
-    /// Sections to be rendered
-    ///
-    private var sections = [Section]()
 
     /// Pull To Refresh Support.
     ///
@@ -30,29 +24,13 @@ final class ProductDetailsViewController: UIViewController {
         return refreshControl
     }()
 
-    /// EntityListener: Update / Deletion Notifications.
-    ///
-    private lazy var entityListener: EntityListener<Product> = {
-        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: product)
-    }()
-
-    private var imageURL: URL? {
-        guard let productImageURLString = product.images.first?.src else {
-            return nil
-        }
-        return URL(string: productImageURLString)
-    }
-
-    private var productHasImage: Bool {
-        return imageURL != nil
-    }
 
     // MARK: - Initializers
 
     /// Designated Initializer
     ///
-    init(product: Product) {
-        self.product = product
+    init(viewModel: ProductDetailsViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -66,12 +44,17 @@ final class ProductDetailsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        // prepare UI
         configureNavigationTitle()
         configureMainView()
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
-        reloadTableViewSectionsAndData()
+
+        // prepare data
+        initializeData()
+        configureViewModel()
     }
 }
 
@@ -83,7 +66,7 @@ private extension ProductDetailsViewController {
     /// Setup: Navigation Title
     ///
     func configureNavigationTitle() {
-        title = product.name
+        title = viewModel.title
     }
 
     /// Setup: main view
@@ -96,33 +79,39 @@ private extension ProductDetailsViewController {
     ///
     func configureTableView() {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.estimatedSectionHeaderHeight = Metrics.sectionHeight
+        tableView.estimatedSectionHeaderHeight = viewModel.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
-        tableView.estimatedRowHeight = Metrics.estimatedRowHeight
-        tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
-        tableView.separatorInset = .zero
         tableView.tableFooterView = UIView(frame: .zero)
     }
 
-    /// Setup: EntityListener
+    /// Init the data
     ///
-    func configureEntityListener() {
-        entityListener.onUpsert = { [weak self] product in
-            guard let self = self else {
-                return
-            }
+    func initializeData() {
+        viewModel.reloadTableViewSectionsAndData()
+    }
 
-            self.product = product
+    /// Configure view model
+    ///
+    func configureViewModel() {
+        configureViewModelForSuccess()
+        configureViewModelForErrors()
+    }
+
+    /// Configure view model success
+    ///
+    func configureViewModelForSuccess() {
+        viewModel.onReload = {  [weak self] in
+            self?.reloadTableViewDataIfPossible()
         }
+    }
 
-        entityListener.onDelete = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            self.navigationController?.dismiss(animated: true, completion: nil)
-            self.displayProductRemovedNotice()
+    /// Configure view model errors
+    ///
+    func configureViewModelForErrors() {
+        viewModel.onError = { [weak self] in
+            self?.navigationController?.dismiss(animated: true, completion: nil)
+            self?.displayProductRemovedNotice()
         }
     }
 
@@ -131,7 +120,10 @@ private extension ProductDetailsViewController {
     func registerTableViewCells() {
         let cells = [
             LargeImageTableViewCell.self,
-            TitleBodyTableViewCell.self
+            TitleBodyTableViewCell.self,
+            TwoColumnTableViewCell.self,
+            ProductReviewsTableViewCell.self,
+            WooBasicTableViewCell.self
         ]
 
         for cell in cells {
@@ -159,7 +151,7 @@ extension ProductDetailsViewController {
 
     @objc func pullToRefresh() {
         DDLogInfo("♻️ Requesting product detail data be reloaded...")
-        syncProduct() { [weak self] (error) in
+        viewModel.syncProduct() { [weak self] (error) in
             if let error = error {
                  DDLogError("⛔️ Error loading product details: \(error)")
                 self?.displaySyncingErrorNotice()
@@ -180,7 +172,7 @@ private extension ProductDetailsViewController {
         let message = String.localizedStringWithFormat(
             NSLocalizedString("Product %ld has been removed from your store",
                 comment: "Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store."
-        ), product.productID)
+        ), viewModel.productID)
 
         let notice = Notice(title: message, feedbackType: .error)
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
@@ -192,7 +184,7 @@ private extension ProductDetailsViewController {
         let message = String.localizedStringWithFormat(
             NSLocalizedString("Unable to refresh Product #%ld",
                 comment: "Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number}"
-        ), product.productID)
+        ), viewModel.productID)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.refreshControl.beginRefreshing()
@@ -204,117 +196,44 @@ private extension ProductDetailsViewController {
 }
 
 
-// MARK: - Sync'ing Helpers
-//
-private extension ProductDetailsViewController {
-
-    func syncProduct(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.retrieveProduct(siteID: product.siteID, productID: product.productID) { [weak self] (product, error) in
-            guard let self = self, let product = product else {
-                DDLogError("⛔️ Error synchronizing Product: \(error.debugDescription)")
-                onCompletion?(error)
-                return
-            }
-
-            self.product = product
-            onCompletion?(nil)
-        }
-
-        StoresManager.shared.dispatch(action)
-    }
-}
-
-
-// MARK: - Cell Configuration
-//
-private extension ProductDetailsViewController {
-
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as LargeImageTableViewCell:
-            configureProductImage(cell: cell)
-        case let cell as TitleBodyTableViewCell:
-            configureProductName(cell: cell)
-        default:
-            fatalError("Unidentified row type")
-        }
-    }
-
-    func configureProductImage(cell: LargeImageTableViewCell) {
-        guard let mainImageView = cell.mainImageView else {
-            return
-        }
-
-        if productHasImage {
-            cell.heightConstraint.constant = Metrics.productImageHeight
-            mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
-        } else {
-            cell.heightConstraint.constant = Metrics.emptyProductImageHeight
-            let size = CGSize(width: tableView.frame.width, height: Metrics.emptyProductImageHeight)
-            mainImageView.image = StyleManager.wooWhite.image(size)
-        }
-    }
-
-    func configureProductName(cell: TitleBodyTableViewCell) {
-        cell.accessoryType = .none
-        cell.selectionStyle = .none
-        cell.titleLabel?.text = NSLocalizedString("Title", comment: "Product details screen — product title descriptive label")
-        cell.bodyLabel?.text = product.name
-    }
-}
-
-
 // MARK: - UITableViewDataSource Conformance
 //
 extension ProductDetailsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return viewModel.numberOfSections()
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count
+        return viewModel.numberOfRowsInSection(section)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = rowAtIndexPath(indexPath)
-        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row, at: indexPath)
-        return cell
+        return viewModel.tableView(tableView, cellForRowAt: indexPath)
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return viewModel.rowHeight
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        switch rowAtIndexPath(indexPath) {
-        case .productSummary:
-            return productHasImage ? Metrics.productImageHeight : Metrics.emptyProductImageHeight
-        default:
-            return UITableView.automaticDimension
-        }
+        return viewModel.heightForRow(at: indexPath)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        if sections[section].title == nil {
-            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
-            return .leastNonzeroMagnitude
-        }
+        return viewModel.heightForHeader(in: section)
+    }
 
-        return UITableView.automaticDimension
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return viewModel.heightForFooter(in: section)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let leftText = sections[section].title else {
-            return nil
-        }
+        return viewModel.tableView(tableView, viewForHeaderInSection: section)
+    }
 
-        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
-            fatalError()
-        }
-
-        headerView.leftText = leftText
-        headerView.rightText = sections[section].rightTitle
-
-        return headerView
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return viewModel.tableView(tableView, viewForFooterInSection: section)
     }
 }
 
@@ -325,11 +244,7 @@ extension ProductDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        switch rowAtIndexPath(indexPath) {
-        default:
-            break
-        }
+        viewModel.didSelectRow(at: indexPath, sender: self)
     }
 }
 
@@ -337,12 +252,6 @@ extension ProductDetailsViewController: UITableViewDelegate {
 // MARK: - Tableview helpers
 //
 private extension ProductDetailsViewController {
-
-    /// Returns the Row enum value for the provided IndexPath
-    ///
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        return sections[indexPath.section].rows[indexPath.row]
-    }
 
     /// Reloads the tableView's data, assuming the view has been loaded.
     ///
@@ -352,64 +261,5 @@ private extension ProductDetailsViewController {
         }
 
         tableView.reloadData()
-    }
-
-    /// Reloads the tableView's sections and data.
-    ///
-    func reloadTableViewSectionsAndData() {
-        reloadSections()
-        reloadTableViewDataIfPossible()
-    }
-
-    /// Rebuild the section struct
-    ///
-    func reloadSections() {
-        let summary = Section(rows: [.productSummary, .productName])
-        sections = [summary].compactMap { $0 }
-    }
-}
-
-
-// MARK: - Constants
-//
-private extension ProductDetailsViewController {
-
-    enum Metrics {
-        static let estimatedRowHeight = CGFloat(86)
-        static let sectionHeight = CGFloat(44)
-        static let productImageHeight = CGFloat(374)
-        static let emptyProductImageHeight = CGFloat(86)
-    }
-
-    struct Section {
-        let title: String?
-        let rightTitle: String?
-        let footer: String?
-        let rows: [Row]
-
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
-            self.title = title
-            self.rightTitle = rightTitle
-            self.footer = footer
-            self.rows = rows
-        }
-
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
-            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
-        }
-    }
-
-    enum Row {
-        case productSummary
-        case productName
-
-        var reuseIdentifier: String {
-            switch self {
-            case .productSummary:
-                return LargeImageTableViewCell.reuseIdentifier
-            case .productName:
-                return TitleBodyTableViewCell.reuseIdentifier
-            }
-        }
     }
 }

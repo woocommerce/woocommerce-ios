@@ -140,6 +140,7 @@ private extension ManualTrackingViewController {
     }
 
     @objc func primaryButtonTapped() {
+        WooAnalytics.shared.track(.orderShipmentTrackingAddButtonTapped)
         viewModel.isCustom ? addCustomTracking() : addTracking()
     }
 }
@@ -273,6 +274,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
 
         cell.value.isEnabled = false
         cell.accessoryType = .none
+
+        cell.separatorInset = datePickerVisible ? Constants.cellSeparatorInset : .zero
     }
 
     private func configureSecondaryAction(cell: BasicTableViewCell) {
@@ -287,6 +290,8 @@ extension ManualTrackingViewController: UITableViewDataSource {
             self?.viewModel.shipmentDate = date
             self?.reloadDate()
         }
+
+        cell.separatorInset = .zero
     }
 }
 
@@ -393,7 +398,7 @@ private extension ManualTrackingViewController {
 //
 extension ManualTrackingViewController: ShipmentProviderListDelegate {
     func shipmentProviderList(_ list: ShipmentProvidersViewController, didSelect: Yosemite.ShipmentTrackingProvider, groupName: String) {
-        WooAnalytics.shared.track(.orderFulfillmentTrackingCarrierSelected,
+        WooAnalytics.shared.track(.orderShipmentTrackingCarrierSelected,
                                   withProperties: ["option": didSelect.name])
 
         viewModel.shipmentProvider = didSelect
@@ -478,7 +483,7 @@ private extension ManualTrackingViewController {
                                                             if let error = error {
                                                                 DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                                WooAnalytics.shared.track(.orderTrackingFailed,
+                                                                WooAnalytics.shared.track(.orderTrackingAddFailed,
                                                                                           withError: error)
 
                                                                 self?.configureForEditingTracking()
@@ -487,7 +492,7 @@ private extension ManualTrackingViewController {
                                                                 return
                                                             }
 
-                                                        WooAnalytics.shared.track(.orderTrackingSuccess)
+                                                        WooAnalytics.shared.track(.orderTrackingAddSuccess)
 
                                                             self?.dismiss()
         }
@@ -525,7 +530,7 @@ private extension ManualTrackingViewController {
                                                         if let error = error {
                                                             DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                            WooAnalytics.shared.track(.orderTrackingFailed,
+                                                            WooAnalytics.shared.track(.orderTrackingAddFailed,
                                                                                       withError: error)
 
                                                             self?.configureForEditingTracking()
@@ -534,7 +539,7 @@ private extension ManualTrackingViewController {
                                                             return
                                                         }
 
-                                                        WooAnalytics.shared.track(.orderTrackingSuccess)
+                                                        WooAnalytics.shared.track(.orderTrackingAddSuccess)
 
                                                         self?.dismiss()
         }
@@ -577,6 +582,7 @@ private struct Constants {
     static let pickerRowHeight = CGFloat(216)
     static let disabledAlpha = CGFloat(0.7)
     static let enabledAlpha = CGFloat(1.0)
+    static let cellSeparatorInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 0)
 }
 
 

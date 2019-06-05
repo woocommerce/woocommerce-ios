@@ -79,8 +79,8 @@ final class FulfillViewController: UIViewController {
         reloadSections()
     }
 
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
         syncTrackingsHiddingAddButtonIfNecessary()
     }
 
@@ -136,7 +136,7 @@ private extension FulfillViewController {
             CustomerInfoTableViewCell.self,
             LeftImageTableViewCell.self,
             EditableOrderTrackingTableViewCell.self,
-            ProductDetailsTableViewCell.self
+            PickListTableViewCell.self
         ]
 
         for cell in cells {
@@ -265,7 +265,8 @@ extension FulfillViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = sections[section]
 
-        guard let leftTitle = section.title else {
+        guard let leftTitle = section.title,
+            leftTitle.isEmpty != true  else {
             return nil
         }
 
@@ -306,7 +307,7 @@ private extension FulfillViewController {
     /// Setup: Product Cell
     ///
     private func setupProductCell(_ cell: UITableViewCell, with item: OrderItem) {
-        guard let cell = cell as? ProductDetailsTableViewCell else {
+        guard let cell = cell as? PickListTableViewCell else {
             fatalError()
         }
 
@@ -314,8 +315,6 @@ private extension FulfillViewController {
         cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
         cell.name = viewModel.name
         cell.quantity = viewModel.quantity
-        cell.price = viewModel.price
-        cell.tax = viewModel.tax
         cell.sku = viewModel.sku
     }
 
@@ -455,6 +454,7 @@ private extension FulfillViewController {
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
         actionSheet.addCancelActionWithTitle(DeleteAction.cancel)
         actionSheet.addDestructiveActionWithTitle(DeleteAction.delete) { [weak self] _ in
+            WooAnalytics.shared.track(.orderFulfillmentDeleteTrackingButtonTapped)
             self?.deleteTracking(shipmentTracking)
         }
 
@@ -474,18 +474,28 @@ private extension FulfillViewController {
         let orderID = order.orderID
         let trackingID = tracking.trackingID
 
+        let statusKey = order.statusKey
+        let providerName = tracking.trackingProvider ?? ""
+
+        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+                                                                         "status": statusKey,
+                                                                         "carrier": providerName,
+                                                                         "source": "order_fulfill"])
+
         let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
                                                                  orderID: orderID,
                                                                  trackingID: trackingID) { [weak self] error in
                                                                     if let error = error {
                                                                         DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
 
+                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                                                  withError: error)
                                                                         self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
                                                                         return
                                                                     }
 
+                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
                                                                     self?.syncTrackingsHiddingAddButtonIfNecessary()
-
         }
 
         StoresManager.shared.dispatch(deleteTrackingAction)
@@ -610,17 +620,13 @@ private extension FulfillViewController {
                 return nil
             }
 
-            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : ""
+            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
             let row = Row.trackingAdd
 
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        if FeatureFlag.manualShipmentTracking.enabled {
-            sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
-        } else {
-            sections = [products, note, address].compactMap { $0 }
-        }
+        sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
     }
 }
 
@@ -666,7 +672,7 @@ private enum Row {
         case .note:
             return LeftImageTableViewCell.self
         case .product:
-            return ProductDetailsTableViewCell.self
+            return PickListTableViewCell.self
         case .trackingAdd:
             return LeftImageTableViewCell.self
         case .tracking:

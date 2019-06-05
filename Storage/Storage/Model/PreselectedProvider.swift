@@ -4,10 +4,12 @@
 public struct PreselectedProvider: Codable, Equatable {
     public let siteID: Int
     public let providerName: String
+    public let providerURL: String?
 
-    public init(siteID: Int, providerName: String) {
+    public init(siteID: Int, providerName: String, providerURL: String? = nil) {
         self.siteID = siteID
         self.providerName = providerName
+        self.providerURL = providerURL
     }
 
     public static func == (lhs: PreselectedProvider, rhs: PreselectedProvider) -> Bool {

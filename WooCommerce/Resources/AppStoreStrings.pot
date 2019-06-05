@@ -47,11 +47,12 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v1.8-whats-new"
+msgctxt "v1.9-whats-new"
 msgid ""
-"* Support for large text sizes has been improved.\n"
-"* Fixed a bug where Order List did not load for some users.\n"
-"* Updated the app to support iOS 12.0 and up.\n"
+"* Do you use the Shipment Tracking plugin? Now you can manually add shipment tracking to orders.\n"
+"* Sometimes when you’d try to view your store’s Top Performers you’d get an “Unable to load content” error, which was an ironic lack of top performance on the app’s part. That’s fixed now.\n"
+"* If you ever tried to use the Store Picker but weren’t able to continue after logging in, that’s fixed too.\n"
+"* Occasionally, the app would crash when it had a slow network connection. Now it doesn’t, because iffy wifi should never stop you from managing your business.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

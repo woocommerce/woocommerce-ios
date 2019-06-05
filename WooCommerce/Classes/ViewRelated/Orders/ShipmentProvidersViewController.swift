@@ -157,6 +157,7 @@ private extension ShipmentProvidersViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        nc.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
 
     /// Unregisters from the Notification Center
@@ -172,6 +173,13 @@ private extension ShipmentProvidersViewController {
 
         table.contentInset.bottom = bottomInset
         table.scrollIndicatorInsets.bottom = bottomInset
+    }
+
+    /// Executed whenever `UIResponder.keyboardWillhideNotification` note is posted
+    ///
+    @objc func keyboardWillHide(_ note: Notification) {
+        table.contentInset.bottom = .zero
+        table.scrollIndicatorInsets.bottom = .zero
     }
 
     /// Returns the Keyboard Height from a (hopefully) Keyboard Notification.
@@ -240,6 +248,8 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
         }
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
+
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -324,6 +334,8 @@ private extension ShipmentProvidersViewController {
     }
 
     func addCustomProvider() {
+        WooAnalytics.shared.track(.orderShipmentTrackingCustomProviderSelected)
+
         let initialCustomProviderName = searchController.searchBar.text
         let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order,
                                                                     initialName: initialCustomProviderName)

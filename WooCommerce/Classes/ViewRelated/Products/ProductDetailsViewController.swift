@@ -104,6 +104,9 @@ private extension ProductDetailsViewController {
         viewModel.onReload = {  [weak self] in
             self?.reloadTableViewDataIfPossible()
         }
+        viewModel.onReloadRow = { [weak self] in
+            self?.reloadSelectedRowIfPossible()
+        }
     }
 
     /// Configure view model errors
@@ -123,7 +126,8 @@ private extension ProductDetailsViewController {
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
             ProductReviewsTableViewCell.self,
-            WooBasicTableViewCell.self
+            WooBasicTableViewCell.self,
+            ReadMoreTableViewCell.self
         ]
 
         for cell in cells {
@@ -261,5 +265,17 @@ private extension ProductDetailsViewController {
         }
 
         tableView.reloadData()
+    }
+
+    /// Reloads the tableView's rows
+    ///
+    func reloadSelectedRowIfPossible() {
+        guard isViewLoaded else {
+            return
+        }
+
+        tableView.beginUpdates()
+        tableView.reloadSelectedRow()
+        tableView.endUpdates()
     }
 }

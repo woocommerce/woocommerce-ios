@@ -13,6 +13,7 @@ final class ProductDetailsViewModel {
     ///
     var onError: (() -> Void)?
     var onReload: (() -> Void)?
+    var onReloadRow: (() -> Void)?
 
     /// Yosemite.Product
     ///
@@ -125,6 +126,10 @@ final class ProductDetailsViewModel {
     var rowHeight: CGFloat {
         return Metrics.estimatedRowHeight
     }
+
+    /// Read more row is expanded?
+    ///
+    var readMoreExpanded = false
 
     /// Currency Formatter.
     ///
@@ -276,7 +281,7 @@ extension ProductDetailsViewModel {
             configureShipping(cell)
         case let cell as TitleBodyTableViewCell where row == .downloads:
             configureDownloads(cell)
-        case let cell as TitleBodyTableViewCell where row == .purchaseNote:
+        case let cell as ReadMoreTableViewCell:
             configurePurchaseNote(cell)
         default:
             fatalError("Unidentified row type")
@@ -539,10 +544,39 @@ extension ProductDetailsViewModel {
 
     /// Purchase Note cell.
     ///
-    func configurePurchaseNote(_ cell: TitleBodyTableViewCell) {
+    func configurePurchaseNote(_ cell: ReadMoreTableViewCell) {
         cell.titleLabel?.text = NSLocalizedString("Purchase note",
                                                   comment: "Product Details > Purchase Details > Purchase note cell title")
+
         cell.bodyLabel?.text = cleanedPurchaseNote
+
+        let readMoreTitle = NSLocalizedString("Read more",
+                                              comment: "Read more of the purchase note. Only the first two lines of text are displayed.")
+        readMoreExpanded = false
+
+        cell.moreButton?.setTitle(readMoreTitle, for: .normal)
+        cell.onMoreTouchUp = { [weak self] in
+            self?.toggleReadMore(cell)
+            DDLogInfo("Read more was tapped")
+        }
+    }
+
+    func toggleReadMore(_ cell: ReadMoreTableViewCell) {
+        if readMoreExpanded == false {
+            cell.bodyLabel?.numberOfLines = 0
+            cell.bodyLabel?.lineBreakMode = .byWordWrapping
+            let readLessTitle = NSLocalizedString("Read less",
+                                                  comment: "Read less of the purchase note. All of the text is currently displayed.")
+            cell.moreButton.setTitle(readLessTitle, for: .normal)
+        } else {
+            cell.bodyLabel?.numberOfLines = 2
+            cell.bodyLabel?.lineBreakMode = .byTruncatingTail
+            let readMoreTitle = NSLocalizedString("Read more", comment: "Read more of the purchase note. Only the first two lines are displayed on the cell.")
+            cell.moreButton.setTitle(readMoreTitle, for: .normal)
+        }
+
+        onReloadRow?()
+        readMoreExpanded = !readMoreExpanded
     }
 
 
@@ -809,7 +843,7 @@ extension ProductDetailsViewModel {
             case .downloads:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .purchaseNote:
-                return TitleBodyTableViewCell.reuseIdentifier
+                return ReadMoreTableViewCell.reuseIdentifier
             }
         }
     }

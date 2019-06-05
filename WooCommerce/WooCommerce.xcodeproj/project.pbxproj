@@ -308,6 +308,7 @@
 		CEEC9B6021E79CAA0055EEF0 /* FeatureFlagTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */; };
 		CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */; };
 		CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */; };
+		D805B69622A787C9009D75FE /* CoreTelephony.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D805B69522A787C9009D75FE /* CoreTelephony.framework */; };
 		D8149F532251CFE60006A245 /* EditableOrderTrackingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8149F512251CFE50006A245 /* EditableOrderTrackingTableViewCell.swift */; };
 		D8149F542251CFE60006A245 /* EditableOrderTrackingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8149F522251CFE50006A245 /* EditableOrderTrackingTableViewCell.xib */; };
 		D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8149F552251EE300006A245 /* UITextField+Helpers.swift */; };
@@ -697,6 +698,7 @@
 		CEEC9B5F21E79CAA0055EEF0 /* FeatureFlagTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagTests.swift; sourceTree = "<group>"; };
 		CEEC9B6221E79EE00055EEF0 /* AppRatingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManager.swift; sourceTree = "<group>"; };
 		CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppRatingManagerTests.swift; sourceTree = "<group>"; };
+		D805B69522A787C9009D75FE /* CoreTelephony.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreTelephony.framework; path = System/Library/Frameworks/CoreTelephony.framework; sourceTree = SDKROOT; };
 		D8149F512251CFE50006A245 /* EditableOrderTrackingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EditableOrderTrackingTableViewCell.swift; sourceTree = "<group>"; };
 		D8149F522251CFE50006A245 /* EditableOrderTrackingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = EditableOrderTrackingTableViewCell.xib; sourceTree = "<group>"; };
 		D8149F552251EE300006A245 /* UITextField+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITextField+Helpers.swift"; sourceTree = "<group>"; };
@@ -741,6 +743,7 @@
 			files = (
 				B5C3B5E720D189ED0072CB9D /* Yosemite.framework in Frameworks */,
 				B5C3B5E520D189EA0072CB9D /* Storage.framework in Frameworks */,
+				D805B69622A787C9009D75FE /* CoreTelephony.framework in Frameworks */,
 				B5C3B5E320D189E60072CB9D /* Networking.framework in Frameworks */,
 				86DBBB0BDEA3488E2BEBB314 /* Pods_WooCommerce.framework in Frameworks */,
 			);
@@ -865,6 +868,7 @@
 		88A44ABE866401E6DB03AC60 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D805B69522A787C9009D75FE /* CoreTelephony.framework */,
 				B5C3B5E620D189ED0072CB9D /* Yosemite.framework */,
 				B5C3B5E420D189EA0072CB9D /* Storage.framework */,
 				B5C3B5E220D189E60072CB9D /* Networking.framework */,
@@ -1888,7 +1892,6 @@
 				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
 				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
 				"${BUILT_PRODUCTS_DIR}/Gridicons/Gridicons.framework",
-				"${BUILT_PRODUCTS_DIR}/KeychainAccess/KeychainAccess.framework",
 				"${BUILT_PRODUCTS_DIR}/NSObject-SafeExpectations/NSObject_SafeExpectations.framework",
 				"${BUILT_PRODUCTS_DIR}/NSURL+IDN/NSURL_IDN.framework",
 				"${BUILT_PRODUCTS_DIR}/Reachability/Reachability.framework",
@@ -1915,7 +1918,6 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Gridicons.framework",
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/KeychainAccess.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NSObject_SafeExpectations.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/NSURL_IDN.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Reachability.framework",
@@ -2430,7 +2432,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Debug.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Manual;
+				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
@@ -2442,7 +2447,9 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce Development";
+				"PROVISIONING_PROFILE_SPECIFIER[sdk=macosx*]" = "WooCommerce Development UIKit for Mac";
 				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
+				SUPPORTS_UIKITFORMAC = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";
@@ -2457,6 +2464,7 @@
 				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Release.entitlements";
 				CODE_SIGN_IDENTITY = "iPhone Distribution";
 				CODE_SIGN_STYLE = Manual;
+				DERIVE_UIKITFORMAC_PRODUCT_BUNDLE_IDENTIFIER = YES;
 				DEVELOPMENT_TEAM = PZYM8XX95Q;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
@@ -2468,6 +2476,7 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "WooCommerce App Store";
 				SECRETS_PATH = "$HOME/.mobile-secrets/iOS/WCiOS/woo_app_credentials.json";
+				SUPPORTS_UIKITFORMAC = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				USER_HEADER_SEARCH_PATHS = "";

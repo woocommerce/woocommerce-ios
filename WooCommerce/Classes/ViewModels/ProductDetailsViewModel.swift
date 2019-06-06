@@ -293,10 +293,6 @@ extension ProductDetailsViewModel {
         if productHasImage {
             cell.heightConstraint.constant = Metrics.productImageHeight
             mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
-        } else {
-            cell.heightConstraint.constant = Metrics.emptyProductImageHeight
-            let size = CGSize(width: cell.frame.width, height: Metrics.emptyProductImageHeight)
-            mainImageView.image = StyleManager.wooWhite.image(size)
         }
 
         if product.productStatus != .publish {
@@ -595,7 +591,11 @@ extension ProductDetailsViewModel {
 
     /// Large photo section.
     ///
-    func configurePhoto() -> Section {
+    func configurePhoto() -> Section? {
+        if !productHasImage && product.productStatus == .publish {
+            return nil
+        }
+
         return Section(row: .productPhoto)
     }
 

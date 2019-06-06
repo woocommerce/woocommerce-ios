@@ -2,16 +2,20 @@ import Foundation
 import Yosemite
 import UIKit
 import Gridicons
+import WordPressShared
 
 
 // MARK: - Product details view model
 //
 final class ProductDetailsViewModel {
 
+    // MARK: - public variables
+
     /// Closures
     ///
     var onError: (() -> Void)?
     var onReload: (() -> Void)?
+    var onPurchaseNoteTapped: (() -> Void)?
 
     /// Yosemite.Product
     ///
@@ -27,11 +31,27 @@ final class ProductDetailsViewModel {
         return product.name
     }
 
+    /// Purchase Note
+    /// - stripped of HTML
+    /// - no ending newline character
+    /// - cannot be a lazy var because it's a computed property
+    ///
+    var cleanedPurchaseNote: String? {
+        guard let noHTMLString = product.purchaseNote?.strippedHTML else {
+            return nil
+        }
+        let cleanedString = String.stripLastNewline(in: noHTMLString)
+
+        return cleanedString
+    }
+
     /// Product ID
     ///
     var productID: Int {
         return product.productID
     }
+
+    // MARK: - private variables
 
     /// Sections to be rendered
     ///
@@ -78,6 +98,7 @@ final class ProductDetailsViewModel {
         guard let productImageURLString = product.images.first?.src else {
             return nil
         }
+
         return URL(string: productImageURLString)
     }
 
@@ -182,7 +203,8 @@ extension ProductDetailsViewModel {
 
     func heightForHeader(in section: Int) -> CGFloat {
         if sections[section].title == nil {
-            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
+            // iOS 11 table bug.
+            // Must return a tiny value to collapse `nil` or `empty` section headers.
             return .leastNonzeroMagnitude
         }
 
@@ -254,8 +276,8 @@ extension ProductDetailsViewModel {
             configureShipping(cell)
         case let cell as TitleBodyTableViewCell where row == .downloads:
             configureDownloads(cell)
-        case _ as TitleBodyTableViewCell where row == .purchaseNote:
-            break
+        case let cell as ReadMoreTableViewCell:
+            configurePurchaseNote(cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -513,6 +535,23 @@ extension ProductDetailsViewModel {
         let bodyText = numberOfFilesText + "\n" + limitText + "\n" + expirationText
         cell.titleLabel?.text = title
         cell.bodyLabel?.text = bodyText
+    }
+
+    /// Purchase Note cell.
+    ///
+    func configurePurchaseNote(_ cell: ReadMoreTableViewCell) {
+        cell.titleLabel?.text = NSLocalizedString("Purchase note",
+                                                  comment: "Product Details > Purchase Details > Purchase note cell title")
+
+        cell.bodyLabel?.text = cleanedPurchaseNote
+
+        let readMoreTitle = NSLocalizedString("Read more",
+                                              comment: "Read more of the purchase note. Only the first two lines of text are displayed.")
+
+        cell.moreButton?.setTitle(readMoreTitle, for: .normal)
+        cell.onMoreTouchUp = { [weak self] in
+            self?.onPurchaseNoteTapped?()
+        }
     }
 
 
@@ -779,7 +818,7 @@ extension ProductDetailsViewModel {
             case .downloads:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .purchaseNote:
-                return TitleBodyTableViewCell.reuseIdentifier
+                return ReadMoreTableViewCell.reuseIdentifier
             }
         }
     }

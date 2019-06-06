@@ -31,7 +31,7 @@ extension String {
     /// - Returns: a string with the newline character removed, if the
     ///            newline character is the last character in the string.
     ///
-    func stripLastNewline(in string: String) -> String {
+    static func stripLastNewline(in string: String) -> String {
         var newText = string
         let lastChar = newText.suffix(1)
 

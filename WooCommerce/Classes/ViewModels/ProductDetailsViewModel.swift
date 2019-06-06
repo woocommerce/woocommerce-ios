@@ -37,15 +37,10 @@ final class ProductDetailsViewModel {
     /// - cannot be a lazy var because it's a computed property
     ///
     var cleanedPurchaseNote: String? {
-        guard var cleanedString = product.purchaseNote?.strippedHTML else {
+        guard let noHTMLString = product.purchaseNote?.strippedHTML else {
             return nil
         }
-
-        let lastChar = cleanedString.suffix(1)
-        let newline = String(lastChar)
-        if newline == Constants.newline {
-            cleanedString.removeSuffix(newline)
-        }
+        let cleanedString = String.stripLastNewline(in: noHTMLString)
 
         return cleanedString
     }
@@ -130,10 +125,6 @@ final class ProductDetailsViewModel {
     var rowHeight: CGFloat {
         return Metrics.estimatedRowHeight
     }
-
-    /// Read more row is expanded?
-    ///
-    var readMoreExpanded = false
 
     /// Currency Formatter.
     ///
@@ -556,7 +547,6 @@ extension ProductDetailsViewModel {
 
         let readMoreTitle = NSLocalizedString("Read more",
                                               comment: "Read more of the purchase note. Only the first two lines of text are displayed.")
-        readMoreExpanded = false
 
         cell.moreButton?.setTitle(readMoreTitle, for: .normal)
         cell.onMoreTouchUp = { [weak self] in
@@ -845,9 +835,5 @@ extension ProductDetailsViewModel {
     enum Keys {
         static let weightUnit = "woocommerce_weight_unit"
         static let dimensionUnit = "woocommerce_dimension_unit"
-    }
-
-    enum Constants {
-        static let newline = "\n"
     }
 }

@@ -58,7 +58,21 @@ struct JetpackRequest: URLRequestConvertible {
         let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion, method: dotcomMethod, path: dotcomPath)
         let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
-        return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
+        let encodedRequest = try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
+        printRequest(dotcomRequest, encodedRequest)
+
+        return encodedRequest
+    }
+
+
+    /// Logs API request URLs
+    ///
+    func printRequest(_ request: URLRequest, _ encodedRequest: URLRequest) {
+        guard let stringToLog = encodedRequest.urlRequest?.url?.absoluteString.removingPercentEncoding else {
+            return
+        }
+
+        DDLogVerbose("📲 \(stringToLog)")
     }
 }
 

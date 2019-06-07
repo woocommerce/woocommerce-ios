@@ -251,7 +251,7 @@ private extension AppDelegate {
         DDLog.add(fileLogger)
     }
 
-    /// Sets up the current Log Leve.
+    /// Sets up the current Log Level.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
         let rawLevel = Int32(level.rawValue)

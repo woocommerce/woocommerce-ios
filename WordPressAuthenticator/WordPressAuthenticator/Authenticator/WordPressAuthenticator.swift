@@ -423,7 +423,7 @@ import WordPressUI
         let defaultBundle = Bundle(for: WordPressAuthenticator.self)
         // If installed with CocoaPods, resources will be in WordPressAuthenticator.bundle
         if let bundleURL = defaultBundle.resourceURL,
-            let resourceBundle = Bundle(url: bundleURL.appendingPathComponent("WordPressAuthenticator.bundle")) {
+            let resourceBundle = Bundle(url: bundleURL.appendingPathComponent("WordPressAuthenticatorResources.bundle")) {
             return resourceBundle
         }
         // Otherwise, the default bundle is used for resources

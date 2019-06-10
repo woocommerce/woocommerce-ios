@@ -59,20 +59,9 @@ struct JetpackRequest: URLRequestConvertible {
         let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
         let encodedRequest = try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
-        printRequest(dotcomRequest, encodedRequest)
+        DDLogVerbose("📲 " + String(describing: encodedRequest.urlRequest))
 
         return encodedRequest
-    }
-
-
-    /// Logs API request URLs
-    ///
-    func printRequest(_ request: URLRequest, _ encodedRequest: URLRequest) {
-        guard let stringToLog = encodedRequest.urlRequest?.url?.absoluteString.removingPercentEncoding else {
-            return
-        }
-
-        DDLogVerbose("📲 \(stringToLog)")
     }
 }
 

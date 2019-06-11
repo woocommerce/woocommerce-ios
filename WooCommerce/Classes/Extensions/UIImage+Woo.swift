@@ -7,6 +7,11 @@ import Gridicons
 ///
 extension UIImage {
 
+    static var asideImage: UIImage {
+        return Gridicon.iconOfType(.aside)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkImage: UIImage {

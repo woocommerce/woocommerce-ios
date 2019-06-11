@@ -70,7 +70,7 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 private extension StorePickerCoordinator {
 
     func showStorePicker() {
-        if selectedConfiguration == .standard  {
+        if selectedConfiguration == .standard {
             navigationController.present(storePicker, animated: true)
         } else if selectedConfiguration == .switchingStores {
             let wrapper = UINavigationController(rootViewController: storePicker)

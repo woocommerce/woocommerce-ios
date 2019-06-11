@@ -115,6 +115,12 @@ extension UIImage {
         return Gridicon.iconOfType(.camera)
             .imageFlippedForRightToLeftLayoutDirection()
     }
+
+    /// External link Icon
+    static var external: UIImage {
+        return Gridicon.iconOfType(.external)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
 }
 
 private extension UIImage {

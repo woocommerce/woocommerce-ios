@@ -36,6 +36,28 @@ public class ProductsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Retrieves a specific list of `Product`s by `productID`.
+    ///
+    /// - Note: this method makes a single request for a list of products.
+    ///         It is NOT a wrapper for `loadProduct()`
+    ///
+    /// - Parameters:
+    ///     - siteID: We are fetching remote products for this site.
+    ///     - productIDs: The array of product IDs that are requested.
+    ///     - comletion: Closure to be executed upon completion.
+    ///
+    public func loadProducts(for siteID: Int, by productIDs: [Int], completion: @escaping ([Product]?, Error?) -> Void) {
+        let stringOfProductIDs = productIDs.map { String($0) }
+            .filter { !$0.isEmpty }
+            .joined(separator: ",")
+        let parameters = [ ParameterKey.include: stringOfProductIDs ]
+        let path = Path.products
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
 
     /// Retrieves a specific `Product`.
     ///

@@ -136,6 +136,12 @@ extension UIImage {
         .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Stats Alt icon
+    static var statsAltImage: UIImage {
+        return Gridicon.iconOfType(.statsAlt)
+        .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Invisible image
     ///
     static var invisibleImage: UIImage {

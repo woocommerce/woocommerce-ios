@@ -33,7 +33,7 @@ class DashboardViewController: UIViewController {
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         startListeningToNotifications()
-        tabBarItem.image = Gridicon.iconOfType(.statsAlt)
+        tabBarItem.image = .statsAltImage
     }
 
     override func viewDidLoad() {

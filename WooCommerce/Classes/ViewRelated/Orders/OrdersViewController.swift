@@ -267,7 +267,7 @@ private extension OrdersViewController {
     ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
-        tabBarItem.image = Gridicon.iconOfType(.pages)
+        tabBarItem.image = .pagesImage
     }
 
     /// Setup: TableView

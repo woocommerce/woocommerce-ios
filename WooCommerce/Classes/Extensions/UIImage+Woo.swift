@@ -142,6 +142,13 @@ extension UIImage {
         return Gridicon.iconOfType(.filter)
     }
 
+    /// Pages icon
+    ///
+    static var pagesImage: UIImage {
+        return Gridicon.iconOfType(.pages)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// Search icon
     ///
     static var searchImage: UIImage {

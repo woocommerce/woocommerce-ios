@@ -3,7 +3,7 @@ import Gridicons
 
 // MARK: - ShowHideFooterCell
 //
-class ShowHideSectionFooter: UITableViewHeaderFooterView {
+final class ShowHideSectionFooter: UITableViewHeaderFooterView {
     @IBOutlet private weak var footerLabel: UILabel!
     @IBOutlet private weak var footerArrow: UIImageView!
     @IBOutlet private weak var footerButton: UIButton!

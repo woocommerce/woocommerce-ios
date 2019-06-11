@@ -181,8 +181,7 @@ private extension NoteDetailsCommentTableViewCell {
         spamButton.accessibilityLabel = Spam.normalLabel
         spamButton.accessibilityTraits = .button
 
-        let trashImage = Gridicon.iconOfType(.trash)
-        trashButton.setImage(trashImage, for: .normal)
+        trashButton.setImage(.trashImage, for: .normal)
         trashButton.setTitle(Trash.normalTitle, for: .normal)
         trashButton.accessibilityLabel = Trash.normalLabel
         trashButton.accessibilityTraits = .button

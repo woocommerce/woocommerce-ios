@@ -201,9 +201,16 @@ extension UIImage {
     }
 
     /// Stats Alt icon
+    ///
     static var statsAltImage: UIImage {
         return Gridicon.iconOfType(.statsAlt)
         .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Trash can icon
+    ///
+    static var trashImage: UIImage {
+        return Gridicon.iconOfType(.trash)
     }
 
     /// Creates a bitmap image of the Woo "bubble" logo based on a vector image in our asset catalog.

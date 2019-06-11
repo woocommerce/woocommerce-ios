@@ -69,6 +69,26 @@ private extension ProductStore {
         }
     }
 
+    /// Retrieves multiple products with a given siteID + productIDs.
+    /// - Note: This is NOT a wrapper for retrieving a single product.
+    ///
+    func retrieveProducts(siteID: Int,
+                          productIDs: [Int],
+                          onCompletion: @escaping (Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+
+        remote.loadProducts(for: siteID, by: productIDs) { [weak self] (products, error) in
+            guard let products = products else {
+                onCompletion(error)
+                return
+            }
+
+            self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                onCompletion(nil)
+            })
+        }
+    }
+
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
     func retrieveProduct(siteID: Int, productID: Int, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {

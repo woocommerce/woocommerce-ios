@@ -141,6 +141,12 @@ extension UIImage {
     static var invisibleImage: UIImage {
         return Gridicon.iconOfType(.image)
     }
+
+    /// Heart outline
+    ///
+    static var heartOutlineImage: UIImage {
+        return Gridicon.iconOfType(.heartOutline)
+    }
 }
 
 private extension UIImage {

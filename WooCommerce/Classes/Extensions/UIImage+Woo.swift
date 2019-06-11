@@ -123,9 +123,17 @@ extension UIImage {
     }
 
     /// External link Icon
+    ///
     static var externalImage: UIImage {
         return Gridicon.iconOfType(.external)
             .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Stats icon
+    ///
+    static var statsImage: UIImage {
+        return Gridicon.iconOfType(.stats)
+        .imageFlippedForRightToLeftLayoutDirection()
     }
 }
 

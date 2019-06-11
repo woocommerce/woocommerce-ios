@@ -113,7 +113,7 @@ private extension PrivacySettingsViewController {
 
     func configureCollectInfo(cell: SwitchTableViewCell) {
         // image
-        cell.imageView?.image = Gridicon.iconOfType(.stats)
+        cell.imageView?.image = .statsImage
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text

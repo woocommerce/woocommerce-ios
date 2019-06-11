@@ -65,13 +65,18 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Ellipsis icon
+    ///
+    static var ellipsisImage: UIImage {
+        return Gridicon.iconOfType(.ellipsis)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
     /// More icon
     ///
     static var moreImage: UIImage {
         let tintColor = StyleManager.wooCommerceBrandColor
-        return Gridicon.iconOfType(.ellipsis)
-            .imageWithTintColor(tintColor)!
-            .imageFlippedForRightToLeftLayoutDirection()
+        return ellipsisImage.imageWithTintColor(tintColor)!
     }
 
     /// Jetpack Logo Image

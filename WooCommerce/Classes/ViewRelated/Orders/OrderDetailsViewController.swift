@@ -472,7 +472,7 @@ private extension OrderDetailsViewController {
 
         cell.bodyLabel?.text = phoneNumber
         cell.bodyLabel?.applyBodyStyle() // override the woo purple text
-        cell.accessoryImage = Gridicon.iconOfType(.ellipsis)
+        cell.accessoryImage = .ellipsisImage
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button

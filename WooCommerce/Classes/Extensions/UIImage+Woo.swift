@@ -142,6 +142,10 @@ extension UIImage {
         .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    static var cogImage: UIImage {
+        return Gridicon.iconOfType(.cog)
+    }
+
     /// Invisible image
     ///
     static var invisibleImage: UIImage {

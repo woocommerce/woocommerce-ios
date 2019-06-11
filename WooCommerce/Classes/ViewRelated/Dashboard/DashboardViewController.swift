@@ -105,7 +105,7 @@ private extension DashboardViewController {
     }
 
     private func configureNavigationItem() {
-        let rightBarButton = UIBarButtonItem(image: Gridicon.iconOfType(.cog),
+        let rightBarButton = UIBarButtonItem(image: .cogImage,
                                              style: .plain,
                                              target: self,
                                              action: #selector(settingsTapped))

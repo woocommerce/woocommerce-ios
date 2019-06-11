@@ -85,7 +85,7 @@ class ProductDetailsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        productImageView.image = Gridicon.iconOfType(.product)
+        productImageView.image = .productImage
         productImageView.tintColor = StyleManager.wooGreyBorder
         selectionStyle = .none
 

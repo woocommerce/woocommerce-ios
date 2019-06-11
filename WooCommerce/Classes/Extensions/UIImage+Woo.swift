@@ -28,6 +28,12 @@ extension UIImage {
         return Gridicon.iconOfType(.product).imageWithTintColor(tintColor)!
     }
 
+    /// Product Image
+    ///
+    static var productImage: UIImage {
+        return Gridicon.iconOfType(.product)
+    }
+
     /// Gravatar Placeholder Image
     ///
     static var gravatarPlaceholderImage: UIImage {

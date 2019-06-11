@@ -28,6 +28,18 @@ extension UIImage {
         return Gridicon.iconOfType(.chevronRight).imageWithTintColor(tintColor)!
     }
 
+    /// Chevron pointing down
+    ///
+    static var chevronDownImage: UIImage {
+        return Gridicon.iconOfType(.chevronDown)
+    }
+
+    /// Chevron pointing up
+    ///
+    static var chevronUpImage: UIImage {
+        return Gridicon.iconOfType(.chevronUp)
+    }
+
     /// Product Placeholder Image
     ///
     static var productPlaceholderImage: UIImage {

@@ -27,11 +27,17 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Checkmark image, no style applied
+    ///
+    static var checkmarkImage: UIImage {
+        return Gridicon.iconOfType(.checkmark)
+    }
+
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
         let tintColor = StyleManager.wooCommerceBrandColor
-        return Gridicon.iconOfType(.checkmark).imageWithTintColor(tintColor)!
+        return checkmarkImage.imageWithTintColor(tintColor)!
     }
 
     /// Chevron pointing right

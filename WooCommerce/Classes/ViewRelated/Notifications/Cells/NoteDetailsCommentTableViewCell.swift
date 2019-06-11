@@ -186,8 +186,7 @@ private extension NoteDetailsCommentTableViewCell {
         trashButton.accessibilityLabel = Trash.normalLabel
         trashButton.accessibilityTraits = .button
 
-        let checkmarkImage = Gridicon.iconOfType(.checkmark)
-        approvalButton.setImage(checkmarkImage, for: .normal)
+        approvalButton.setImage(.checkmarkImage, for: .normal)
         approvalButton.setTitle(Approve.normalTitle, for: .normal)
         approvalButton.setTitle(Approve.selectedTitle, for: .selected)
         approvalButton.accessibilityLabel = Approve.normalLabel

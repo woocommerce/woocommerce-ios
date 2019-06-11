@@ -18,7 +18,7 @@ class NotificationsViewController: UIViewController {
     /// Mark all as read nav bar button
     ///
     private lazy var leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
+        return UIBarButtonItem(image: .checkmarkImage,
                                style: .plain,
                                target: self,
                                action: #selector(markAllAsRead))

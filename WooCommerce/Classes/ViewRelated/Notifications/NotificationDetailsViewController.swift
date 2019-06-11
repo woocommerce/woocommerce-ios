@@ -310,7 +310,7 @@ private extension NotificationDetailsViewController {
         }
 
         headerCell.leftImage = Gridicon.iconOfType(.product)
-        headerCell.rightImage = .external
+        headerCell.rightImage = .externalImage
         headerCell.plainText = title
     }
 

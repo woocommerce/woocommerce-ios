@@ -117,7 +117,7 @@ extension UIImage {
     }
 
     /// External link Icon
-    static var external: UIImage {
+    static var externalImage: UIImage {
         return Gridicon.iconOfType(.external)
             .imageFlippedForRightToLeftLayoutDirection()
     }

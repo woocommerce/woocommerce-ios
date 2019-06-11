@@ -142,6 +142,12 @@ extension UIImage {
         return Gridicon.iconOfType(.filter)
     }
 
+    /// Mail icon
+    ///
+    static var mailImage: UIImage {
+        return Gridicon.iconOfType(.mail)
+    }
+
     /// Pages icon
     ///
     static var pagesImage: UIImage {

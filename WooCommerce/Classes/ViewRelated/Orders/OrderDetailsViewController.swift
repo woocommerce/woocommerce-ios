@@ -448,7 +448,7 @@ private extension OrderDetailsViewController {
 
         cell.bodyLabel?.text = email
         cell.bodyLabel?.applyBodyStyle() // override the woo purple text
-        cell.accessoryImage = Gridicon.iconOfType(.mail)
+        cell.accessoryImage = .mailImage
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button

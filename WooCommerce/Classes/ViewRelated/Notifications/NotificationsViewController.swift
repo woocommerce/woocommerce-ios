@@ -27,7 +27,7 @@ class NotificationsViewController: UIViewController {
     /// Filter nav bar button
     ///
     private lazy var rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: Gridicon.iconOfType(.filter),
+        return UIBarButtonItem(image: .filterImage,
                                style: .plain,
                                target: self,
                                action: #selector(displayFiltersAlert))

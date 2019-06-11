@@ -227,7 +227,7 @@ private extension OrdersViewController {
         }()
 
         navigationItem.rightBarButtonItem = {
-            let button = UIBarButtonItem(image: Gridicon.iconOfType(.filter),
+            let button = UIBarButtonItem(image: .filterImage,
                                                  style: .plain,
                                                  target: self,
                                                  action: #selector(displayFiltersAlert))

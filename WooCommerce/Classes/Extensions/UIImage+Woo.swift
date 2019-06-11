@@ -136,6 +136,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Filter icon
+    ///
+    static var filterImage: UIImage {
+        return Gridicon.iconOfType(.filter)
+    }
+
     /// Search icon
     ///
     static var searchImage: UIImage {

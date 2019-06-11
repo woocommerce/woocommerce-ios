@@ -20,6 +20,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Bell Icon
+    ///
+    static var bellImage: UIImage {
+        return Gridicon.iconOfType(.bell)
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {

@@ -176,8 +176,7 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Actions!
     ///
     func configureActionButtons() {
-        let spamImage = Gridicon.iconOfType(.spam)
-        spamButton.setImage(spamImage, for: .normal)
+        spamButton.setImage(.spamImage, for: .normal)
         spamButton.setTitle(Spam.normalTitle, for: .normal)
         spamButton.accessibilityLabel = Spam.normalLabel
         spamButton.accessibilityTraits = .button

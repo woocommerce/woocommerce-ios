@@ -173,6 +173,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Spam icon
+    ///
+    static var spamImage: UIImage {
+        return Gridicon.iconOfType(.spam)
+    }
+
     /// Returns a star icon with the given size and color
     ///
     /// - Parameters:

@@ -135,6 +135,12 @@ extension UIImage {
         return Gridicon.iconOfType(.stats)
         .imageFlippedForRightToLeftLayoutDirection()
     }
+
+    /// Invisible image
+    ///
+    static var invisibleImage: UIImage {
+        return Gridicon.iconOfType(.image)
+    }
 }
 
 private extension UIImage {

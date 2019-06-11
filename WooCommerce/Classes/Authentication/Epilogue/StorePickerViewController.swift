@@ -209,13 +209,11 @@ private extension StorePickerViewController {
 
     func setupNavigation() {
         title = NSLocalizedString("Select Store", comment: "Page title for the select a different store screen")
-        // Don't show the previous VC's title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
-
-        navigationItem.backBarButtonItem = backButton
+        let dismissLiteral = NSLocalizedString("Dismiss", comment: "Dismiss button in store picker")
+        navigationItem.leftBarButtonItem = UIBarButtonItem(title: dismissLiteral,
+                                                           style: .plain,
+                                                           target: self,
+                                                           action: #selector(cleanupAndDismiss))
     }
 
     func setupViewForCurrentConfiguration() {
@@ -318,14 +316,15 @@ private extension StorePickerViewController {
 
     /// Dismiss this VC
     ///
-    func cleanupAndDismiss() {
+    @objc func cleanupAndDismiss() {
         if let siteID = currentlySelectedSite?.siteID {
             delegate?.didSelectStore(with: siteID)
         }
 
         switch configuration {
         case .switchingStores:
-            navigationController?.popViewController(animated: true)
+            //navigationController?.popViewController(animated: true)
+            dismiss(animated: true)
         default:
             dismiss(animated: true)
         }

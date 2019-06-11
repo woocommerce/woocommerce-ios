@@ -295,6 +295,8 @@ private struct Approve {
 //
 private struct Star {
     static let size        = Double(18)
-    static let filledImage = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.goldStarColor)
-    static let emptyImage  = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.wooGreyLight)
+    static let filledImage = UIImage.starImage(size: Star.size,
+                                               tintColor: StyleManager.goldStarColor)
+    static let emptyImage = UIImage.starImage(size: Star.size,
+                                              tintColor: StyleManager.wooGreyLight)
 }

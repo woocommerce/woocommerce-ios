@@ -15,8 +15,16 @@ class ShowHideSectionFooter: UITableViewHeaderFooterView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        styleLabel()
+        styleArrow()
+    }
+
+    private func styleLabel() {
         footerLabel.applyFootnoteStyle()
         footerLabel.textColor = StyleManager.sectionTitleColor
+    }
+
+    private func styleArrow() {
         footerArrow.tintColor = StyleManager.wooCommerceBrandColor
     }
 

@@ -211,7 +211,7 @@ private extension OrdersViewController {
     ///
     func configureNavigation() {
         navigationItem.leftBarButtonItem = {
-            let button = UIBarButtonItem(image: Gridicon.iconOfType(.search),
+            let button = UIBarButtonItem(image: .searchImage,
                                          style: .plain,
                                          target: self,
                                          action: #selector(displaySearchOrders))

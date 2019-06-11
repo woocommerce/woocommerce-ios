@@ -7,6 +7,8 @@ import Gridicons
 ///
 extension UIImage {
 
+    /// Aside Image
+    ///
     static var asideImage: UIImage {
         return Gridicon.iconOfType(.aside)
             .imageFlippedForRightToLeftLayoutDirection()
@@ -131,6 +133,13 @@ extension UIImage {
     ///
     static var externalImage: UIImage {
         return Gridicon.iconOfType(.external)
+            .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Search icon
+    ///
+    static var searchImage: UIImage {
+        return Gridicon.iconOfType(.search)
             .imageFlippedForRightToLeftLayoutDirection()
     }
 

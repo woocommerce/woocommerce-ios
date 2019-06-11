@@ -30,6 +30,8 @@ public class ProductStore: Store {
             resetStoredProducts(onCompletion: onCompletion)
         case .retrieveProduct(let siteID, let productID, let onCompletion):
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
+        case .retrieveProducts(let siteID, let productIDs, let onCompletion):
+            retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         }

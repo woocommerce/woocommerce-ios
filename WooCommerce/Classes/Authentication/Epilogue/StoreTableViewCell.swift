@@ -86,6 +86,6 @@ class StoreTableViewCell: UITableViewCell {
     /// Displays a Checkmark (or not) based on the `displaysCheckmark` property.
     ///
     private func refreshCheckmarkImage() {
-        checkmarkImageView.image = displaysCheckmark ? .checkmarkImage : nil
+        checkmarkImageView.image = displaysCheckmark ? .checkmarkStyledImage : nil
     }
 }

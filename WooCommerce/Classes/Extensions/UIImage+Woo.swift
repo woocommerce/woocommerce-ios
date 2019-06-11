@@ -29,7 +29,7 @@ extension UIImage {
 
     /// WooCommerce Styled Checkmark
     ///
-    static var checkmarkImage: UIImage {
+    static var checkmarkStyledImage: UIImage {
         let tintColor = StyleManager.wooCommerceBrandColor
         return Gridicon.iconOfType(.checkmark).imageWithTintColor(tintColor)!
     }

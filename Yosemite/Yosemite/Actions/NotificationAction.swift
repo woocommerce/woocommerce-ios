@@ -39,4 +39,8 @@ public enum NotificationAction: Action {
     ///
     case updateMultipleReadStatus(noteIds: [Int64], read: Bool, onCompletion: (Error?) -> Void)
     case updateLocalDeletedStatus(noteId: Int64, deleteInProgress: Bool, onCompletion: (Error?) -> Void)
+
+    /// Invalidates the cache for a given Notification.
+    ///
+    case invalidateCache(noteId: Int64, onCompletion: () -> Void)
 }

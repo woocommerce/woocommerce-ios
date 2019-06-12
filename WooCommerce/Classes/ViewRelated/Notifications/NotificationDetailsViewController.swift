@@ -377,8 +377,9 @@ private extension NotificationDetailsViewController {
     /// Dispatches the moderation command (Approve/Unapprove, Spam, Trash) to the backend
     ///
     func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
-        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { (error) in
+        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { [weak self] error in
             guard let error = error else {
+                self?.invalidateNotificationCache()
                 WooAnalytics.shared.track(.notificationReviewActionSuccess)
                 return
             }
@@ -390,8 +391,9 @@ private extension NotificationDetailsViewController {
             return
         }
 
-        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { (error) in
+        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { [weak self] error in
             guard let error = error else {
+                self?.invalidateNotificationCache()
                 WooAnalytics.shared.track(.notificationReviewActionSuccess)
                 NotificationDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
                     WooAnalytics.shared.track(.notificationReviewActionUndo)
@@ -466,6 +468,34 @@ private extension NotificationDetailsViewController {
             }
         }
         return action
+    }
+
+//    func resetNoteAction(noteID: Int64) -> Action {
+//        return NotificationAction.invalidateCache(noteId: noteID)
+//    }
+
+    func invalidateNotificationCache() {
+        let noteID = note.noteId
+
+        let group = DispatchGroup()
+
+        group.enter()
+        let action = NotificationAction.invalidateCache(noteId: noteID) {
+            group.leave()
+        }
+        StoresManager.shared.dispatch(action)
+
+        group.enter()
+        let syncNoteAction = NotificationAction.synchronizeNotification(noteId: noteID) { error in
+            group.leave()
+        }
+
+        StoresManager.shared.dispatch(syncNoteAction)
+
+        group.notify(queue: .main) {
+            print("===== clear and update completed ")
+            //onCompletion()
+        }
     }
 }
 

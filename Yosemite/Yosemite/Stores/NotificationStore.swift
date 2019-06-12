@@ -50,6 +50,8 @@ public class NotificationStore: Store {
             updateReadStatus(for: noteIds, read: read, onCompletion: onCompletion)
         case .updateLocalDeletedStatus(let noteId, let deleteInProgress, let onCompletion):
             updateDeletedStatus(noteId: noteId, deleteInProgress: deleteInProgress, onCompletion: onCompletion)
+        case .invalidateCache(let noteId, let onCompletion):
+            invalidateCache(noteId: noteId, onCompletion: onCompletion)
         }
     }
 }
@@ -190,6 +192,12 @@ private extension NotificationStore {
     func updateDeletedStatus(noteId: Int64, deleteInProgress: Bool, onCompletion: @escaping (Error?) -> Void) {
         markLocalNoteAsDeleted(for: noteId, isDeleted: deleteInProgress) {
             onCompletion(nil)
+        }
+    }
+
+    func invalidateCache(noteId: Int64, onCompletion: @escaping () -> Void) {
+        invalidateCache(for: [noteId]) {
+            onCompletion()
         }
     }
 }

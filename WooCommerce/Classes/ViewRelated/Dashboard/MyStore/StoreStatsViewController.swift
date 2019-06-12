@@ -42,7 +42,7 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
     }
 
     // MARK: - RTL support
-    
+
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)
         /// ButtonBarView is a collection view, and it should flip to support

@@ -234,11 +234,6 @@ private extension StoreStatsViewController {
 // MARK: - Private Helpers
 //
 private extension StoreStatsViewController {
-
-    func periodDataVC(for granularity: StatGranularity) -> PeriodDataViewController? {
-        return periodVCs.filter({ $0.granularity == granularity }).first
-    }
-
     func quantity(for granularity: StatGranularity) -> Int {
         switch granularity {
         case .day:

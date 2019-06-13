@@ -160,7 +160,7 @@ private extension OrderDetailsViewController {
     ///
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] order in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -169,7 +169,7 @@ private extension OrderDetailsViewController {
         }
 
         entityListener.onDelete = { [weak self] in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -651,7 +651,7 @@ private extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderAction.retrieveOrder(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
-            guard let `self` = self, let order = order else {
+            guard let self = self, let order = order else {
                 DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
                 onCompletion?(error)
                 return
@@ -844,7 +844,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
         let image = displaysBillingDetails ? Gridicon.iconOfType(.chevronUp) : Gridicon.iconOfType(.chevronDown)
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 

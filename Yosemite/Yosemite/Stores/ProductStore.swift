@@ -77,7 +77,7 @@ private extension ProductStore {
     ///
     func synchronizeProductsFor(_ order: Order, onCompletion: @escaping (Error?) -> Void) {
         let itemIDs = order.items.map { $0.itemID }
-        let productIDs = itemIDs.uniqued()  // remove duplicates
+        let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
         let storage = storageManager.viewStorage
         var missingIDs = [Int]()

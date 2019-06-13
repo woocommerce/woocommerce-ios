@@ -470,23 +470,7 @@ private extension NotificationDetailsViewController {
         return action
     }
 
-//    func resetNoteAction(noteID: Int64) -> Action {
-//        return NotificationAction.invalidateCache(noteId: noteID)
-//    }
-
     func invalidateNotificationCache() {
-//        let noteID = note.noteId
-//        print("==== starting invalidation sequence for note ", noteID)
-////        print("==== body ", note.body)
-//
-//        let action = NotificationAction.invalidateCache(noteId: noteID) {
-//                    let syncNoteAction = NotificationAction.synchronizeNotification(noteId: noteID) { error in
-//
-//                    }
-//
-//                    StoresManager.shared.dispatch(syncNoteAction)
-//        }
-//        StoresManager.shared.dispatch(action)
         let noteID = note.noteId
         print("==== starting invalidation sequence for note ", noteID)
         print("==== body ", note.body)

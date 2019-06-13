@@ -56,6 +56,16 @@ final class OrderDetailsViewController: UIViewController {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// Product ResultsController.
+    ///
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Sections to be rendered
     ///
     private var sections = [Section]()
@@ -80,6 +90,12 @@ final class OrderDetailsViewController: UIViewController {
     ///
     private var orderTracking: [ShipmentTracking] {
         return trackingResultsController.fetchedObjects
+    }
+
+    /// Products from an Order
+    ///
+    private var products: [Product] {
+        return productResultsController.fetchedObjects
     }
 
     /// Indicates if we consider the shipment tracking plugin as reachable
@@ -109,11 +125,13 @@ final class OrderDetailsViewController: UIViewController {
         configureEntityListener()
         configureResultsController()
         configureTrackingResultsController()
+        configureProductResultsController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncNotes()
+        syncProducts()
         syncTrackingsHidingAddButtonIfNecessary()
     }
 
@@ -194,6 +212,18 @@ private extension OrderDetailsViewController {
         }
 
         try? trackingResultsController.performFetch()
+    }
+
+    func configureProductResultsController() {
+        productResultsController.onDidChangeContent = { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+        }
+
+        productResultsController.onDidResetContent = { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+        }
+
+        try? productResultsController.performFetch()
     }
 
     /// Reloads the tableView's data, assuming the view has been loaded.
@@ -372,6 +402,11 @@ extension OrderDetailsViewController {
 
         group.enter()
         syncOrder { _ in
+            group.leave()
+        }
+
+        group.enter()
+        syncProducts() { _ in
             group.leave()
         }
 
@@ -566,12 +601,10 @@ private extension OrderDetailsViewController {
 
     func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let item = viewModel.items[indexPath.row]
-        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
+        let product = lookUpProduct(by: item.productID)
+        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency, product: product)
         cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
-        cell.name = itemViewModel.item.name
-        cell.quantity = itemViewModel.quantity
-        cell.price = itemViewModel.price
-        cell.sku = itemViewModel.sku
+        cell.configure(item: itemViewModel)
     }
 
     func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
@@ -700,9 +733,32 @@ private extension OrderDetailsViewController {
         StoresManager.shared.dispatch(action)
     }
 
+    func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ProductAction.synchronizeProductsFor(viewModel.order) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing Products: \(error)")
+                onCompletion?(error)
+
+                return
+            }
+
+            onCompletion?(nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
             return orderStatus
+        }
+
+        return nil
+    }
+
+    func lookUpProduct(by productID: Int) -> Product? {
+        for product in products where product.productID == productID {
+            return product
         }
 
         return nil

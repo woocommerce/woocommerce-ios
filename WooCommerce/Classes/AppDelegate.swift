@@ -6,6 +6,7 @@ import CocoaLumberjack
 import WordPressUI
 import WordPressKit
 import WordPressAuthenticator
+import AutomatticTracks
 
 
 // MARK: - Woo's App Delegate!
@@ -25,10 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// WordPressAuthenticator Wrapper
     ///
     let authenticationManager = AuthenticationManager()
-
-    /// Fabric: Crash Reporting
-    ///
-    let fabricManager = FabricManager()
 
     /// In-App Notifications Presenter
     ///
@@ -67,7 +64,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupComponentsAppearance()
 
         // Setup Components
-        setupFabric()
+        setupCrashLogging()
         setupAnalytics()
         setupAuthenticationManager()
         setupCocoaLumberjack()
@@ -216,10 +213,10 @@ private extension AppDelegate {
         appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
     }
 
-    /// Sets up the Fabric SDK.
+    /// Sets up Crash Logging
     ///
-    func setupFabric() {
-        fabricManager.initialize()
+    func setupCrashLogging() {
+        CrashLogging.start(withDataProvider: WCCrashLoggingDataProvider())
     }
 
     /// Sets up the Zendesk SDK.
@@ -247,7 +244,6 @@ private extension AppDelegate {
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
 
         DDLog.add(DDOSLogger.sharedInstance)
-        DDLog.add(CrashlyticsLogger.shared)
         DDLog.add(fileLogger)
     }
 

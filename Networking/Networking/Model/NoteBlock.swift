@@ -50,7 +50,7 @@ extension NoteBlock: Decodable {
 
     /// Decodable Initializer.
     ///
-    public init(from decoder: Decoder) throws {
+    public init(from decoder: Decoder) throws {        
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let media = container.failsafeDecodeIfPresent([NoteMedia].self, forKey: .media) ?? []

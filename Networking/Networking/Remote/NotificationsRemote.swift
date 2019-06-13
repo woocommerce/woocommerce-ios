@@ -14,6 +14,9 @@ public class NotificationsRemote: Remote {
     ///     - completion: callback to be executed on completion.
     ///
     public func loadNotes(noteIds: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([Note]?, Error?) -> Void) {
+        print("==== loading note with id====" )
+        print(noteIds)
+        print("//// loading note with id====" )
         let request = requestForNotifications(fields: .all, noteIds: noteIds, pageSize: pageSize)
         let mapper = NoteListMapper()
 

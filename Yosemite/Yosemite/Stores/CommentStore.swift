@@ -64,6 +64,4 @@ private extension CommentStore {
             onCompletion(updatedStatus, error)
         }
     }
-
-    //func 
 }

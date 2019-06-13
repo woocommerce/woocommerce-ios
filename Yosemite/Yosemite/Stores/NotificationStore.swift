@@ -129,6 +129,9 @@ private extension NotificationStore {
     ///     - onCompletion: Closure to be executed on completion.
     ///
     func synchronizeNotification(with noteId: Int64, onCompletion: @escaping (Error?) -> Void) {
+        print("==== synchronize notification ===")
+        print("starting sync with id ", noteId)
+        print("//// synchronize notification ===")
         let remote = NotificationsRemote(network: network)
 
         remote.loadNotes(noteIds: [noteId]) { notes, error in
@@ -137,6 +140,7 @@ private extension NotificationStore {
                 return
             }
 
+            print("ready to update local notes ", notes)
             self.updateLocalNotes(with: notes) {
                 onCompletion(nil)
             }
@@ -312,7 +316,13 @@ extension NotificationStore {
         let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
 
         derivedStorage.perform {
+            print("===== notifications to invalidate ids =====")
+            print(noteIds)
+            print("///// notifications to invalidate ids ====")
             let notifications = noteIds.compactMap { derivedStorage.loadNotification(noteID: $0) }
+            print("===== notifications to invalidate =====")
+            print(notifications)
+            print("///// notifications to invalidate ====")
             for note in notifications {
                 note.noteHash = Int64.min
             }
@@ -322,7 +332,7 @@ extension NotificationStore {
             guard let onCompletion = onCompletion else {
                 return
             }
-
+            print("***** invalidation completed ====")
             DispatchQueue.main.async(execute: onCompletion)
         }
     }

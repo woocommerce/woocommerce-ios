@@ -8,6 +8,10 @@ struct NoteListMapper: Mapper {
     /// (Attempts) to convert an instance of Data into an array of Note Entities.
     ///
     func map(response: Data) throws -> [Note] {
+        let jsonString = String(data: response, encoding: .utf8)
+        print("==== raw json =====")
+        print(jsonString)
+        print("//// raw json /////")
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
 

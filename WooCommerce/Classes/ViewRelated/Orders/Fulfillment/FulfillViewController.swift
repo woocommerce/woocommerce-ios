@@ -28,6 +28,10 @@ final class FulfillViewController: UIViewController {
     ///
     private let order: Order
 
+    /// Products in the Order
+    ///
+    private let products: [Product]?
+
     /// ResultsController fetching ShipemntTracking data
     ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
@@ -53,8 +57,9 @@ final class FulfillViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(order: Order) {
+    init(order: Order, products: [Product]?) {
         self.order = order
+        self.products = products
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -311,11 +316,10 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        let viewModel = OrderItemViewModel(item: item, currency: order.currency)
+        let product = lookUpProduct(by: item.productID)
+        let viewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
         cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
-        cell.name = viewModel.name
-        cell.quantity = viewModel.quantity
-        cell.sku = viewModel.sku
+        cell.configure(item: viewModel)
     }
 
     /// Setup: Note Cell
@@ -563,6 +567,18 @@ private extension FulfillViewController {
         }
 
         return orderTracking[orderIndex]
+    }
+
+    func lookUpProduct(by productID: Int) -> Product? {
+        guard let products = products else {
+            return nil
+        }
+
+        for product in products where product.productID == productID {
+            return product
+        }
+
+        return nil
     }
 }
 

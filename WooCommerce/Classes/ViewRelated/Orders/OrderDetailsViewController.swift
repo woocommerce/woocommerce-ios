@@ -814,7 +814,7 @@ private extension OrderDetailsViewController {
 
     func fulfillWasPressed() {
         WooAnalytics.shared.track(.orderDetailFulfillButtonTapped)
-        let fulfillViewController = FulfillViewController(order: viewModel.order)
+        let fulfillViewController = FulfillViewController(order: viewModel.order, products: products)
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }
 

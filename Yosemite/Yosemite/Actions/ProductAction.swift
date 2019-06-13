@@ -21,4 +21,8 @@ public enum ProductAction: Action {
     /// Deletes all of the cached products.
     ///
     case resetStoredProducts(onCompletion: () -> Void)
+
+    /// Synchronizes the Products found in a specified Order.
+    ///
+    case synchronizeProductsFor(_ order: Order, onCompletion: (Error?) -> Void)
 }

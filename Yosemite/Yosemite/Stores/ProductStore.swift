@@ -34,6 +34,8 @@ public class ProductStore: Store {
             retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .synchronizeProductsFor(let order, let onCompletion):
+            synchronizeProductsFor(order, onCompletion: onCompletion)
         }
     }
 }
@@ -68,6 +70,34 @@ private extension ProductStore {
             self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
                 onCompletion(nil)
             }
+        }
+    }
+
+    /// Synchronizes the Products found in a specified Order.
+    ///
+    func synchronizeProductsFor(_ order: Order, onCompletion: @escaping (Error?) -> Void) {
+        let itemIDs = order.items.map { $0.itemID }
+        let productIDs = itemIDs.uniqued()  // remove duplicates
+
+        let storage = storageManager.viewStorage
+        var missingIDs = [Int]()
+        for productID in productIDs {
+            let storageProduct = storage.loadProduct(siteID: order.siteID, productID: productID)
+            if storageProduct == nil {
+                missingIDs.append(productID)
+            }
+        }
+
+        let remote = ProductsRemote(network: network)
+        remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] (products, error) in
+            guard let products = products else {
+                onCompletion(error)
+                return
+            }
+
+            self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                onCompletion(nil)
+            })
         }
     }
 

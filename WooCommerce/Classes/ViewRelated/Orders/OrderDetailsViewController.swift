@@ -1006,6 +1006,7 @@ extension OrderDetailsViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let productListViewController = segue.destination as? ProductListViewController {
             productListViewController.viewModel = viewModel
+            productListViewController.products = products
         }
     }
 }

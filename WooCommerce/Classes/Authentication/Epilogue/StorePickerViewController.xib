@@ -55,7 +55,7 @@
                     <constraints>
                         <constraint firstAttribute="height" constant="50" id="Mkv-MJ-mSs"/>
                     </constraints>
-                    <state key="normal" title="Connect another site"/>
+                    <state key="normal" title="Try another account"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="NO"/>
                     </userDefinedRuntimeAttributes>

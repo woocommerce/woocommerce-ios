@@ -79,8 +79,8 @@ class StorePickerViewController: UIViewController {
     @IBOutlet weak var secondaryActionButton: FancyAnimatedButton! {
         didSet {
             secondaryActionButton.applySecondaryButtonStyle()
-            secondaryActionButton.setTitle(NSLocalizedString("Connect another site",
-                                                             comment: "Button to trigger connection to another site in store picker"),
+            secondaryActionButton.setTitle(NSLocalizedString("Try another account",
+                                                             comment: "Button to trigger connection to another account in store picker"),
                                            for: .normal)
         }
     }

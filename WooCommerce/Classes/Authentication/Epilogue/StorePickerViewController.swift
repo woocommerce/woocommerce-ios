@@ -74,6 +74,15 @@ class StorePickerViewController: UIViewController {
         }
     }
 
+    /// Secondary Action Button.
+    ///
+    @IBOutlet weak var secondaryActionButton: FancyAnimatedButton! {
+        didSet {
+            secondaryActionButton.applySecondaryButtonStyle()
+            //secondaryActionButton.titleFont = StyleManager.actionButtonTitleFont
+            //secondaryActionButton.setTitleColor(StyleManager.wooSecondary, for: .normal)
+        }
+    }
     /// No Results Placeholder Image
     ///
     @IBOutlet private var noResultsImageView: UIImageView!
@@ -454,6 +463,12 @@ extension StorePickerViewController {
                 self?.cleanupAndDismiss()
             }
         }
+    }
+
+    /// Proceeds with the Logout Flow.
+    ///
+    @IBAction func secondaryActionWasPressed() {
+        restartAuthentication()
     }
 }
 

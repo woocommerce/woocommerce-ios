@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,6 +16,7 @@
                 <outlet property="actionButton" destination="0KD-hY-YaS" id="mJR-Pi-S0z"/>
                 <outlet property="noResultsImageView" destination="Bm8-4s-4Cg" id="5TG-sO-2h6"/>
                 <outlet property="noResultsLabel" destination="1qT-mX-0SF" id="L6b-My-936"/>
+                <outlet property="secondaryActionButton" destination="RXn-iB-MBp" id="oeK-iZ-W7J"/>
                 <outlet property="tableView" destination="oVs-XS-592" id="tgt-K5-nCu"/>
                 <outlet property="view" destination="jLk-oK-hVZ" id="tZZ-hi-Qto"/>
             </connections>
@@ -38,7 +39,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="oVs-XS-592" userLabel="Sites Table View">
-                    <rect key="frame" x="0.0" y="20" width="375" height="577"/>
+                    <rect key="frame" x="0.0" y="20" width="375" height="507"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="m9y-Av-zfJ"/>
@@ -46,9 +47,22 @@
                     </connections>
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5J-Qa-DXp" userLabel="Action Background View">
-                    <rect key="frame" x="0.0" y="577" width="375" height="90"/>
+                    <rect key="frame" x="0.0" y="507" width="375" height="160"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="RXn-iB-MBp" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">
+                    <rect key="frame" x="20" y="527" width="335" height="50"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="Mkv-MJ-mSs"/>
+                    </constraints>
+                    <state key="normal" title="Connect another site"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="NO"/>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="secondaryActionWasPressed" destination="-1" eventType="touchUpInside" id="t15-Iv-2EI"/>
+                    </connections>
+                </button>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0KD-hY-YaS" userLabel="Action Button" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">
                     <rect key="frame" x="20" y="597" width="335" height="50"/>
                     <color key="backgroundColor" red="0.58823529409999997" green="0.34509803919999998" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
@@ -70,23 +84,26 @@
                 <constraint firstAttribute="trailing" secondItem="1qT-mX-0SF" secondAttribute="trailing" constant="10" id="28r-Y1-luC"/>
                 <constraint firstItem="oVs-XS-592" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" id="2Y8-wP-jSa"/>
                 <constraint firstItem="H5J-Qa-DXp" firstAttribute="bottom" secondItem="jLk-oK-hVZ" secondAttribute="bottom" id="3p7-1z-Rhu"/>
-                <constraint firstItem="0KD-hY-YaS" firstAttribute="top" secondItem="oVs-XS-592" secondAttribute="bottom" id="K78-J9-Anh"/>
+                <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="RXn-iB-MBp" secondAttribute="trailing" constant="20" id="5fq-gP-gwV"/>
+                <constraint firstItem="H5J-Qa-DXp" firstAttribute="top" secondItem="RXn-iB-MBp" secondAttribute="top" constant="-20" id="8JF-le-C8G"/>
+                <constraint firstItem="RXn-iB-MBp" firstAttribute="top" secondItem="oVs-XS-592" secondAttribute="bottom" id="AvG-Pt-Xlb"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="oVs-XS-592" secondAttribute="trailing" id="Mr3-k9-GG9"/>
                 <constraint firstItem="1qT-mX-0SF" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="10" id="OAu-kM-52v"/>
                 <constraint firstItem="0KD-hY-YaS" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="20" id="TPA-QP-Qul"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="0KD-hY-YaS" secondAttribute="trailing" constant="20" id="Wdi-mf-a9X"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" constant="175" id="Wt5-9Y-bb1"/>
+                <constraint firstItem="RXn-iB-MBp" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="20" id="brH-7J-WZt"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="exG-7x-7xe"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="trailing" secondItem="t7O-Ph-IKW" secondAttribute="trailing" id="fvk-bR-p20"/>
                 <constraint firstItem="H5J-Qa-DXp" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="hj7-UB-iIW"/>
                 <constraint firstItem="oVs-XS-592" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="hu9-s1-iSg"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="H5J-Qa-DXp" secondAttribute="trailing" id="iDf-P9-Du1"/>
-                <constraint firstItem="H5J-Qa-DXp" firstAttribute="top" secondItem="0KD-hY-YaS" secondAttribute="top" constant="-20" id="qDG-7s-1jf"/>
                 <constraint firstItem="1qT-mX-0SF" firstAttribute="top" secondItem="Bm8-4s-4Cg" secondAttribute="bottom" constant="22" id="qa1-Pc-Opa"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="bottom" secondItem="0KD-hY-YaS" secondAttribute="bottom" constant="20" id="rbX-cd-fij"/>
+                <constraint firstItem="0KD-hY-YaS" firstAttribute="top" secondItem="RXn-iB-MBp" secondAttribute="bottom" constant="20" id="uCm-bI-sHc"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="t7O-Ph-IKW"/>
-            <point key="canvasLocation" x="-474.5" y="19.5"/>
+            <point key="canvasLocation" x="-476" y="19.340329835082461"/>
         </view>
     </objects>
     <resources>

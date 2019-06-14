@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-29 13:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-12 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "Not düğmesi ekleyin";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "Takip düğmesi ekle";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Siparişe not ekler";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "Arka plan";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "Geri dönen siparişler:";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Barkod numarası %1$i, %2$@, ";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Bağlantı kurulamadı. Gerekli XML-RPC yordamları sunucuda bulunmuyor.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Bağlantı kurulamadı. Sitenizin XMLRPC uç noktasına erişmeye çalışırken 403 hatası aldık. Uygulama, sitenizle bağlantı kurabilmek için buna gereksinim duyuyor. Bu sorunu gidermek için sunucunuzla iletişim kurun.";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Bağlantı kurulamadı. Sunucunuz POST isteklerini engelliyor ve uygulama sitenizle iletişim kurmak için buna gereksinim duyuyor. Bu sorunu gidermek için sunucunuzla iletişim kurun.";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Boş adres";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "ornek.com gibi geçerli bir URL girin.";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Sağlayıcı adını girin";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Faturayı saklayın";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hımm, bu URL’de bir WordPress sitesi varmış gibi görünmüyor. Yazımı tekrar kontrol edip yeniden deneyin.";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Devre dışıysa not gizli olur";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "Stokta";
 
 /* Application's Inactive State */
 "Inactive" = "Etkin değil";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "Geçersiz kullanıcı adı";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "Stok";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Bu kullanıcı adı\/parola bu siteyle ilişkili değil gibi görünüyor.";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "Açık";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "Geri dönen sipariş";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Cihaz ayarlarını aç";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "Diğer";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "Stokta kalmadı";
 
 /* Product section title */
 "PRODUCT" = "ÜRÜN";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Lütfen e-posta uygulamanızı açın ve WordPress.com’dan gelen e-postayı arayın.";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "Fiyat";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "Fiyat ve Stok";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Gizlilik Politikası";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Kayıtlı alan adı";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "Normal fiyat:";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "Filtreleri Kaldır";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "İncelemeler";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "SKU";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "SKU:";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Gönderildi";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "İndirimli satış fiyatı:";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Tüm siparişleri ara";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "%1$@ başlangıç süreci, %2$@ bitiş süreci";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "Stok miktarı:";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "Stok durumu:";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Mağaza kazanç çizelgesi";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Site adresi 64 karakterden az olmalıdır. ";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Bu adresteki site bir WordPress sitesi değil. Siteyle bağlantı kurabilmemiz için sitede WordPress kullanılmalıdır.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Site silinemedi.";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Sipariş Durumunu Güncelle";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "%1$@ tarihinde %2$@ saatinde güncellendi";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld saat önce güncellendi";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Sitenizin adresi tarayıcınız ile sitenizi ziyaret ettiğinizde tepede görüntülenir.";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "izin verilen";
+
 /* Notification status description for 'approved' */
 "approved" = "onaylandı";
 
 /* Site Address placeholder */
-"example.com" = "örnek.com";
+"example.wordpress.com" = "ornek.wordress.com";
 
 /* Later today */
 "later today" = "bugün daha sonra";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "izin verilmeyen";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "spam değil";

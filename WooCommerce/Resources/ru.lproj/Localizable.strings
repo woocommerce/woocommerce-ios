@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-28 16:07:41+0000 */
+/* Translation-Revision-Date: 2019-06-11 08:54:26+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "Кнопка \"Добавить примечание\"";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "Добавить кнопку отслеживания";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Добавить примечание к заказу";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "Фон";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "Отложенные заказы:";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Номер столбца %1$i, %2$@, ";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Не удалось подключиться. На сервере отсутствуют необходимые методы XML-RPC.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Получена ошибка 403 при подключении к XMLRPC вашего сайта. Обратитесь в тех.поддержку хостинга.";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Ваш хостинг блокирует POST-запросы XML-RPC, они требуются для обмена информацией с вашим сайтом. Обратитесь в тех. поддержку хостинга.";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Пустой URL-адрес";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "Введите действительный URL-адрес, напр. example.com.";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Введите название компании-поставщика";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Скрыть платёжные сведения";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Похоже, сайта WordPress с таким URL-адресом не существует. Проверьте правильность написания и повторите попытку.";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "При отключении примечание будет закрытым";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "Есть в наличии";
 
 /* Application's Inactive State */
 "Inactive" = "Неактивно";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "Неверное имя пользователя";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "Наличие";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Похоже, введённое имя пользователя или пароль не связаны с этим сайтом.";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "Включить";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "Ожидается поставка";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Открыть настройки устройства";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "Прочее";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "Нет в наличии";
 
 /* Product section title */
 "PRODUCT" = "ТОВАР";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Пожалуйста, откройте ваше приложение email и найдите сообщение от WordPress.com.";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "Цена";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "Цена и наличие";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Политика конфиденциальности";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Зарегистрированный домен";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "Обычная цена:";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "Удалить фильтры";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "Обзоры";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "Артикул";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "АРТИКУЛ:";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS отправлено";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "Цена со скидкой:";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Поиск по всем заказам";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Период начала — %1$@, период окончания — %2$@";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "Количество товара в наличии:";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "Данные о наличии товара:";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "График выручки магазина";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Адрес сайта должен быть короче 64 символов.";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Сайт по этому адресу не относится к платформе WordPress. Чтобы выполнить подключение к сайту, он должен работать на WordPress.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Не удалось удалить сайт.";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Обновить статус заказа";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "Обновлено %1$@ в %2$@";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Обновлено %ld час назад";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "При открытии сайта в браузере Safari его адрес отображается в строке в верхней части экрана.";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "разрешены";
+
 /* Notification status description for 'approved' */
 "approved" = "одобрено";
 
 /* Site Address placeholder */
-"example.com" = "example.com";
+"example.wordpress.com" = "example.wordress.com";
 
 /* Later today */
 "later today" = "позже сегодня";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "запрещены";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "не спам";

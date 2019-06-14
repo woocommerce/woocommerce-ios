@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-28 15:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-11 09:54:03+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "إضافة زر ملاحظة";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "إضافة زر للتتبُّع";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "إضافة ملاحظة إلى طلب";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "الخلفية";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "الطلبات المحجوزة:";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "رقم الشريط %1$i, %2$@, ";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "تعذر الاتصال. تكون طرق XML-RPC المطلوبة مفقودة على الخادم.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. تلقينا الخطأ 403 عند محاولة الوصول إلى نقطة نهاية موقعك XMLRPC. يحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. يحظر مضيفك طلبات POST، ويحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "عنوان URL فارغ";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "أدخل عنوان URL صالحًا، على سبيل المثال example.com.";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "إدخال اسم المزوِّد";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "إخفاء الفوترة";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "عذرًا، لا يبدو أن هناك موقعًا لوردبرس على عنوان URL هذا. تحقق مجددًا من التهجئة وحاول مجددًا.";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "في حالة تعطيلها، فستكون الملاحظة خاصة";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "متوفِّر";
 
 /* Application's Inactive State */
 "Inactive" = "غير نشط";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "اسم المستخدم غير صالح";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "المخزون";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "يبدو أن اسم المستخدم هذا \/ كلمة المرور هذه غير مقترنين بهذه الموقع.";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "تشغيل";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "جارٍ الطلب";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "فتح إعدادات الجهاز";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "أخرى";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "غير متوفِّر";
 
 /* Product section title */
 "PRODUCT" = "المنتج";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "يُرجى فتح تطبيق البريد الإلكتروني والبحث عن بريد إلكتروني من وردبرس.كوم.";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "السعر";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "الأسعار والمخزون";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "سياسة الخصوصية";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "النطاق المُسجل";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "السعر العادي:";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "حذف عوامل التصفية";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "مراجعات";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "وحدة SKU";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "وحدة SKU:";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "تم إرسال SMS";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "سعر البيع:";
 
 /* Orders Search Placeholder */
 "Search all orders" = "البحث عن جميع الطلبات";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "فترة البدء %1$@، فترة الانتهاء %2$@";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "كمية المخزون:";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "حالة المخزون:";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "مخطط إيرادات المتجر";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "يجب أن يكون طول عنوان الموقع أقل من 64 حرفًا.";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "الموقع الموجود على هذا العنوان ليس موقع وردبرس. لكي نتصل بالموقع، يجب أن يستخدم وردبرس.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "تعذر حذف الموقع.";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "تحديث حالة الطلب";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "تم تحديث %1$@ في %2$@";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "تم التحديث منذ %ld مضت من الساعات";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "يظهر عنوان موقعك في الشريط الموجود في أعلى الشاشة عندما تدخل إلى موقعك من متصفح Safari.";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "مسموح";
+
 /* Notification status description for 'approved' */
 "approved" = "تمت الموافقة عليها";
 
 /* Site Address placeholder */
-"example.com" = "example.com";
+"example.wordpress.com" = "example.wordress.com";
 
 /* Later today */
 "later today" = "في وقتٍ لاحقٍ اليوم";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "غير مسموح";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "ليس بريدًا مزعجًا";

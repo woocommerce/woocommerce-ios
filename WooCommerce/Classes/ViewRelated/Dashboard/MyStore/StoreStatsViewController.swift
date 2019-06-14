@@ -41,6 +41,17 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
         ensureGhostContentIsAnimated()
     }
 
+    // MARK: - RTL support
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        /// ButtonBarView is a collection view, and it should flip to support
+        /// RTL languages automatically. And yet it doesn't.
+        /// So, for RTL languages, we flip it. This also flips the cells
+        if traitCollection.layoutDirection == .rightToLeft {
+            buttonBarView.transform = CGAffineTransform(scaleX: -1, y: 1)
+        }
+    }
 
     // MARK: - PagerTabStripDataSource
 
@@ -52,6 +63,11 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
         /// Hide the ImageView:
         /// We don't use it, and if / when "Ghostified" produces a quite awful placeholder UI!
         cell.imageView.isHidden = true
+
+        /// Flip the cells back to their proper state for RTL languages.
+        if traitCollection.layoutDirection == .rightToLeft {
+            cell.transform = CGAffineTransform(scaleX: -1, y: 1)
+        }
     }
 }
 
@@ -234,11 +250,6 @@ private extension StoreStatsViewController {
 // MARK: - Private Helpers
 //
 private extension StoreStatsViewController {
-
-    func periodDataVC(for granularity: StatGranularity) -> PeriodDataViewController? {
-        return periodVCs.filter({ $0.granularity == granularity }).first
-    }
-
     func quantity(for granularity: StatGranularity) -> Int {
         switch granularity {
         case .day:

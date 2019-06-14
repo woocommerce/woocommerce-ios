@@ -34,8 +34,8 @@ public class ProductStore: Store {
             retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
-        case .synchronizeProductsFor(let order, let onCompletion):
-            synchronizeProductsFor(order, onCompletion: onCompletion)
+        case .requestMissingProducts(let order, let onCompletion):
+            requestMissingProducts(for: order, onCompletion: onCompletion)
         }
     }
 }
@@ -75,7 +75,7 @@ private extension ProductStore {
 
     /// Synchronizes the Products found in a specified Order.
     ///
-    func synchronizeProductsFor(_ order: Order, onCompletion: @escaping (Error?) -> Void) {
+    func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
         let itemIDs = order.items.map { $0.itemID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 

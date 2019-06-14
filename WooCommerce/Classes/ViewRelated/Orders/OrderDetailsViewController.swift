@@ -734,7 +734,7 @@ private extension OrderDetailsViewController {
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.synchronizeProductsFor(viewModel.order) { (error) in
+        let action = ProductAction.requestMissingProducts(for: viewModel.order) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
                 onCompletion?(error)

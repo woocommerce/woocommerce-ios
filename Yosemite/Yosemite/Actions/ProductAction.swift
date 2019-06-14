@@ -22,7 +22,7 @@ public enum ProductAction: Action {
     ///
     case resetStoredProducts(onCompletion: () -> Void)
 
-    /// Synchronizes the Products found in a specified Order.
+    /// Requests the Products found in a specified Order.
     ///
-    case synchronizeProductsFor(_ order: Order, onCompletion: (Error?) -> Void)
+    case requestMissingProducts(for: Order, onCompletion: (Error?) -> Void)
 }

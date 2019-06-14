@@ -120,6 +120,12 @@ final class IconsTests: XCTestCase {
         XCTAssertEqual(starImage.size, CGSize(width: size, height: size))
     }
 
+    func testStarOutlineImageMatchesExpectedSize() {
+        let size = Double(1)
+        let starOutlineImage = UIImage.starOutlineImage(size: size, tintColor: .clear)
+        XCTAssertEqual(starOutlineImage.size, CGSize(width: size, height: size))
+    }
+
     func testStatsImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.statsImage)
     }

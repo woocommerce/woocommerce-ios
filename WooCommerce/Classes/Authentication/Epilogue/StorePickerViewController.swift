@@ -323,7 +323,6 @@ private extension StorePickerViewController {
 
         switch configuration {
         case .switchingStores:
-            //navigationController?.popViewController(animated: true)
             dismiss(animated: true)
         default:
             dismiss(animated: true)

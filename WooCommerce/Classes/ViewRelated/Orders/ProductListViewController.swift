@@ -75,7 +75,7 @@ extension ProductListViewController: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? PickListTableViewCell else {
             fatalError()
         }
-        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
+        cell.selectionStyle = .default
         cell.configure(item: itemViewModel)
 
         return cell
@@ -101,11 +101,9 @@ extension ProductListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if FeatureFlag.productDetails.enabled {
-            let orderItem = itemAtIndexPath(indexPath)
-            let productIDToLoad = orderItem.variationID == 0 ? orderItem.productID : orderItem.variationID
-            productWasPressed(for: productIDToLoad)
-        }
+        let orderItem = itemAtIndexPath(indexPath)
+        let productIDToLoad = orderItem.variationID == 0 ? orderItem.productID : orderItem.variationID
+        productWasPressed(for: productIDToLoad)
     }
 }
 

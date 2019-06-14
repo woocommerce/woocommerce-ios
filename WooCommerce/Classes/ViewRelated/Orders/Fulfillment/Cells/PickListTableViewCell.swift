@@ -105,11 +105,10 @@ final class PickListTableViewCell: UITableViewCell {
 //
 extension PickListTableViewCell {
     func configure(item: OrderItemViewModel) {
-        if FeatureFlag.productDetails.enabled && item.productHasImage {
-            if let imageURL = item.imageURL {
+        if item.productHasImage,
+        let imageURL = item.imageURL {
                 productImageView.downloadImage(from: imageURL,
                                                placeholderImage: UIImage.productPlaceholderImage)
-            }
         } else {
             productImageView.image = .productPlaceholderImage
         }

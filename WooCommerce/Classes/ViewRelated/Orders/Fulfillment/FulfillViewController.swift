@@ -570,15 +570,7 @@ private extension FulfillViewController {
     }
 
     func lookUpProduct(by productID: Int) -> Product? {
-        guard let products = products else {
-            return nil
-        }
-
-        for product in products where product.productID == productID {
-            return product
-        }
-
-        return nil
+        return products?.filter({ $0.productID == productID }).first
     }
 }
 

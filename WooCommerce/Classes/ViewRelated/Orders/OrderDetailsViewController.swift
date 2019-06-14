@@ -757,11 +757,7 @@ private extension OrderDetailsViewController {
     }
 
     func lookUpProduct(by productID: Int) -> Product? {
-        for product in products where product.productID == productID {
-            return product
-        }
-
-        return nil
+        return products.filter({ $0.productID == productID }).first
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {

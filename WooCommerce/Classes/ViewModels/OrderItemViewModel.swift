@@ -14,6 +14,10 @@ struct OrderItemViewModel {
     ///
     let currency: String
 
+    /// Yosemite.Product
+    ///
+    let product: Product?
+
     /// Item's Name
     ///
     var name: String {
@@ -64,9 +68,28 @@ struct OrderItemViewModel {
         return prefix + " " + sku
     }
 
-    init(item: OrderItem, currency: String, formatter: CurrencyFormatter = CurrencyFormatter()) {
+    /// Grab the first available image for a product.
+    ///
+    var imageURL: URL? {
+        guard let productImageURLString = product?.images.first?.src else {
+            return nil
+        }
+
+        return URL(string: productImageURLString)
+    }
+
+    /// Check to see if the product has an image URL.
+    ///
+    var productHasImage: Bool {
+        return imageURL != nil
+    }
+
+    init(item: OrderItem, currency: String,
+         formatter: CurrencyFormatter = CurrencyFormatter(),
+         product: Product? = nil) {
         self.item = item
         self.currency = currency
         self.currencyFormatter = formatter
+        self.product = product
     }
 }

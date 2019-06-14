@@ -46,32 +46,32 @@ extension UIImage {
         return checkmarkImage.imageWithTintColor(tintColor)!
     }
 
-    /// Chevron pointing right
+    /// Chevron Pointing Right
     ///
     static var chevronImage: UIImage {
         let tintColor = StyleManager.wooGreyMid
         return Gridicon.iconOfType(.chevronRight).imageWithTintColor(tintColor)!
     }
 
-    /// Chevron pointing down
+    /// Chevron Pointing Down
     ///
     static var chevronDownImage: UIImage {
         return Gridicon.iconOfType(.chevronDown)
     }
 
-    /// Chevron pointing up
+    /// Chevron Pointing Up
     ///
     static var chevronUpImage: UIImage {
         return Gridicon.iconOfType(.chevronUp)
     }
 
-    /// Cog image
+    /// Cog Icon
     ///
     static var cogImage: UIImage {
         return Gridicon.iconOfType(.cog)
     }
 
-    /// Delete icon
+    /// Delete Icon
     ///
     static var deleteImage: UIImage {
         let tintColor = StyleManager.wooCommerceBrandColor
@@ -80,7 +80,7 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Ellipsis icon
+    /// Ellipsis Icon
     ///
     static var ellipsisImage: UIImage {
         return Gridicon.iconOfType(.ellipsis)
@@ -93,14 +93,14 @@ extension UIImage {
         return UIImage(named: "woo-error-state")!
     }
 
-    /// External link Icon
+    /// External Link Icon
     ///
     static var externalImage: UIImage {
         return Gridicon.iconOfType(.external)
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Filter icon
+    /// Filter Icon
     ///
     static var filterImage: UIImage {
         return Gridicon.iconOfType(.filter)
@@ -112,7 +112,7 @@ extension UIImage {
         return UIImage(named: "gravatar")!
     }
 
-    /// Heart outline
+    /// Heart Outline
     ///
     static var heartOutlineImage: UIImage {
         return Gridicon.iconOfType(.heartOutline)
@@ -124,19 +124,19 @@ extension UIImage {
         return UIImage(named: "icon-jetpack-gray")!
     }
 
-    /// Invisible image
+    /// Invisible Image
     ///
     static var invisibleImage: UIImage {
         return Gridicon.iconOfType(.image)
     }
 
-    /// Mail icon
+    /// Mail Icon
     ///
     static var mailImage: UIImage {
         return Gridicon.iconOfType(.mail)
     }
 
-    /// More icon
+    /// More Icon
     ///
     static var moreImage: UIImage {
         let tintColor = StyleManager.wooCommerceBrandColor
@@ -171,21 +171,21 @@ extension UIImage {
         return Gridicon.iconOfType(.quote)
     }
 
-    /// Pages icon
+    /// Pages Icon
     ///
     static var pagesImage: UIImage {
         return Gridicon.iconOfType(.pages)
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Search icon
+    /// Search Icon
     ///
     static var searchImage: UIImage {
         return Gridicon.iconOfType(.search)
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Spam icon
+    /// Spam Icon
     ///
     static var spamImage: UIImage {
         return Gridicon.iconOfType(.spam)
@@ -205,21 +205,21 @@ extension UIImage {
             .imageWithTintColor(tintColor)!
     }
 
-    /// Stats icon
+    /// Stats Icon
     ///
     static var statsImage: UIImage {
         return Gridicon.iconOfType(.stats)
         .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Stats Alt icon
+    /// Stats Alt Icon
     ///
     static var statsAltImage: UIImage {
         return Gridicon.iconOfType(.statsAlt)
         .imageFlippedForRightToLeftLayoutDirection()
     }
 
-    /// Trash can icon
+    /// Trash Can Icon
     ///
     static var trashImage: UIImage {
         return Gridicon.iconOfType(.trash)

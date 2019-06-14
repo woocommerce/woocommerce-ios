@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import Gridicons
 import SafariServices
+import WordPressUI
 
 
 /// ProductDetailsViewController: Displays the details for a given Product.
@@ -104,6 +105,9 @@ private extension ProductDetailsViewController {
         viewModel.onReload = {  [weak self] in
             self?.reloadTableViewDataIfPossible()
         }
+        viewModel.onPurchaseNoteTapped = { [weak self] in
+            self?.presentPurchaseNoteIfPossible()
+        }
     }
 
     /// Configure view model errors
@@ -123,7 +127,8 @@ private extension ProductDetailsViewController {
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
             ProductReviewsTableViewCell.self,
-            WooBasicTableViewCell.self
+            WooBasicTableViewCell.self,
+            ReadMoreTableViewCell.self
         ]
 
         for cell in cells {
@@ -261,5 +266,18 @@ private extension ProductDetailsViewController {
         }
 
         tableView.reloadData()
+    }
+
+    /// Displays the full purchase note
+    ///
+    func presentPurchaseNoteIfPossible() {
+        guard isViewLoaded else {
+            return
+        }
+
+        let fancyAlert = FancyAlertViewController.makePurchaseNoteAlertController(with: viewModel.cleanedPurchaseNote)
+        fancyAlert.modalPresentationStyle = .custom
+        fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
+        present(fancyAlert, animated: true)
     }
 }

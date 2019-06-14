@@ -882,6 +882,15 @@ extension OrderDetailsViewController: UITableViewDelegate {
             let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
+        case .orderItem:
+            if FeatureFlag.productDetails.enabled {
+                let item = viewModel.order.items[indexPath.row]
+                let productID = item.variationID == 0 ? item.productID : item.variationID
+                let loaderViewController = ProductLoaderViewController(productID: productID,
+                                                                       siteID: viewModel.order.siteID)
+                let navController = WooNavigationController(rootViewController: loaderViewController)
+                present(navController, animated: true, completion: nil)
+            }
         case .details:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)

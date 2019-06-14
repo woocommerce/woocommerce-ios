@@ -1,4 +1,2 @@
-* Maak je gebruik van de Shipment Tracking-plugin? Je kunt nu handmatig Shipment Tracking aan bestellingen toevoegen.
-* Soms werd, bij het bekijken van de toppresteerders van je winkel, de foutmelding 'Kan content niet laden' weergegeven, wat ironisch genoeg een gebrek aan topprestaties van de app was. Dat is nu opgelost.
-* Als je ooit hebt geprobeerd om de Winkelkiezer te gebruiken, maar niet verder kon gaan nadat je was ingelogd, dan is dat probleem nu ook opgelost.
-* De app crashte af en toe bij een langzame netwerkverbinding. Dat is niet langer het geval, want slechte wifi zou het beheer van je bedrijf nooit mogen remmen.
+* We ondersteunen nu grotere lettertypes op het inlogscherm.
+* Data in het scherm Bestellingsgegevens zijn nu gelokaliseerd.

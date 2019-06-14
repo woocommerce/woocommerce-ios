@@ -3,7 +3,7 @@ import Gridicons
 
 // MARK: - ShowHideFooterCell
 //
-class ShowHideSectionFooter: UITableViewHeaderFooterView {
+final class ShowHideSectionFooter: UITableViewHeaderFooterView {
     @IBOutlet private weak var footerLabel: UILabel!
     @IBOutlet private weak var footerArrow: UIImageView!
     @IBOutlet private weak var footerButton: UIButton!
@@ -15,8 +15,16 @@ class ShowHideSectionFooter: UITableViewHeaderFooterView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        styleLabel()
+        styleArrow()
+    }
+
+    private func styleLabel() {
         footerLabel.applyFootnoteStyle()
         footerLabel.textColor = StyleManager.sectionTitleColor
+    }
+
+    private func styleArrow() {
         footerArrow.tintColor = StyleManager.wooCommerceBrandColor
     }
 

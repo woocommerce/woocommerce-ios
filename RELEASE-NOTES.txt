@@ -1,6 +1,7 @@
 2.1
 -----
 - bugfix: provide a way to restart the login process if a site is not available after login
+- improvement: improved support for RTL languages in the Dashboard
  
 2.0
 -----

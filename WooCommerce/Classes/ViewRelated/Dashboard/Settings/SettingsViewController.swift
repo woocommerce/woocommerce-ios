@@ -179,7 +179,6 @@ private extension SettingsViewController {
     }
 
     func configureSwitchStore(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString(
             "Switch Store",

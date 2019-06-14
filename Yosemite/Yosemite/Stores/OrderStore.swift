@@ -108,14 +108,6 @@ private extension OrderStore {
 
             self?.upsertStoredOrdersInBackground(readOnlyOrders: [order]) {
                 onCompletion(order, nil)
-//                self?.ensureProductsAreSynchronized(for: order, onCompletion: { (products, error) in
-//                    // Even if there was an error while getting products, we want to continue.
-//                    if let error = error {
-//                        DDLogError("Error synchronizing Products for OrderID: \(order.orderID). \(error)")
-//                    }
-//
-//                    onCompletion(order, nil)
-//                })
             }
         }
     }
@@ -139,19 +131,6 @@ private extension OrderStore {
             onCompletion(error)
         }
     }
-}
-
-
-// MARK: - Private methods
-//
-private extension OrderStore {
-
-    /// Ensures Products are Synced for an Order.
-    ///
-//    func ensureProductsAreSynchronized(for order: Order, onCompletion: @escaping ([Product]?, Error?) -> Void) {
-//        let action = ProductAction.synchronizeProductsFor(order, onCompletion: onCompletion)
-//        dispatcher.dispatch(action)
-//    }
 }
 
 

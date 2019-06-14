@@ -205,6 +205,20 @@ extension UIImage {
             .imageWithTintColor(tintColor)!
     }
 
+    /// Returns a star outline icon with the given size and color
+    ///
+    /// - Parameters:
+    ///   - size: desired size of the resulting star icon
+    ///   - tintColor: desired tint color of the resulting icon
+    /// - Returns: a bitmap image
+    ///
+    static func starOutlineImage(size: Double, tintColor: UIColor) -> UIImage {
+        let starSize = CGSize(width: size, height: size)
+        return Gridicon.iconOfType(.starOutline,
+                                   withSize: starSize)
+            .imageWithTintColor(tintColor)!
+    }
+
     /// Stats Icon
     ///
     static var statsImage: UIImage {

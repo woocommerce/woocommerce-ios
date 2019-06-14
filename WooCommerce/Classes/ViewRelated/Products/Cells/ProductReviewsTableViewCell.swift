@@ -47,7 +47,7 @@ private extension ProductReviewsTableViewCell {
         static let size = Double(20)
         static let filledImage = UIImage.starImage(size: Star.size,
                                                    tintColor: StyleManager.grayStarColor)
-        static let emptyImage = UIImage.starImage(size: Star.size,
-                                                  tintColor: StyleManager.grayStarColor)
+        static let emptyImage = UIImage.starOutlineImage(size: Star.size,
+                                                         tintColor: StyleManager.grayStarColor)
     }
 }

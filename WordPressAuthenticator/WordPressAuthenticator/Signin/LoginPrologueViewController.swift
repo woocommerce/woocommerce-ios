@@ -66,7 +66,7 @@ class LoginPrologueViewController: LoginViewController {
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: true, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
             self?.loginTapped()
         }
-        buttonViewController.setupBottomButton(title: createTitle, isPrimary: false) { [weak self] in
+        buttonViewController.setupBottomButton(title: createTitle, isPrimary: false, accessibilityIdentifier: "Prologue Signup Button") { [weak self] in
             self?.signupTapped()
         }
         if showCancel {

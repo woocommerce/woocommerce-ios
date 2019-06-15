@@ -76,16 +76,19 @@ open class NUXButtonViewController: UIViewController {
     ///
     /// - Parameters:
     ///   - primary: Title string for primary button. Required.
+    ///   - primaryAccessibilityId: Accessibility identifier string for primary button. Optional.
     ///   - secondary: Title string for secondary button. Optional.
+    ///   - secondaryAccessibilityId: Accessibility identifier string for secondary button. Optional.
     ///   - tertiary: Title string for the tertiary button. Optional.
+    ///   - tertiaryAccessibilityId: Accessibility identifier string for tertiary button. Optional.
     ///
-    public func setButtonTitles(primary: String, secondary: String? = nil, tertiary: String? = nil) {
-        bottomButtonConfig = NUXButtonConfig(title: primary, isPrimary: true, callback: nil)
+    public func setButtonTitles(primary: String, primaryAccessibilityId: String? = nil, secondary: String? = nil, secondaryAccessibilityId: String? = nil, tertiary: String? = nil, tertiaryAccessibilityId: String? = nil) {
+        bottomButtonConfig = NUXButtonConfig(title: primary, isPrimary: true, accessibilityIdentifier: primaryAccessibilityId, callback: nil)
         if let secondaryTitle = secondary {
-            topButtonConfig = NUXButtonConfig(title: secondaryTitle, isPrimary: false, callback: nil)
+            topButtonConfig = NUXButtonConfig(title: secondaryTitle, isPrimary: false, accessibilityIdentifier: secondaryAccessibilityId, callback: nil)
         }
         if let tertiaryTitle = tertiary {
-            tertiaryButtonConfig = NUXButtonConfig(title: tertiaryTitle, isPrimary: false, callback: nil)
+            tertiaryButtonConfig = NUXButtonConfig(title: tertiaryTitle, isPrimary: false, accessibilityIdentifier: tertiaryAccessibilityId, callback: nil)
         }
     }
 

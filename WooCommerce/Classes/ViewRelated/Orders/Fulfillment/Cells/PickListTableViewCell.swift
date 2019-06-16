@@ -80,7 +80,7 @@ final class PickListTableViewCell: UITableViewCell {
     }
 
     func setupImageView() {
-        productImageView.image = Gridicon.iconOfType(.product)
+        productImageView.image = .productImage
         productImageView.tintColor = StyleManager.wooGreyBorder
     }
 

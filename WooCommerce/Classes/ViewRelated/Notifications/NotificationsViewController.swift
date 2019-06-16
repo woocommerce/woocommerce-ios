@@ -18,7 +18,7 @@ class NotificationsViewController: UIViewController {
     /// Mark all as read nav bar button
     ///
     private lazy var leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: Gridicon.iconOfType(.checkmark),
+        return UIBarButtonItem(image: .checkmarkImage,
                                style: .plain,
                                target: self,
                                action: #selector(markAllAsRead))
@@ -27,7 +27,7 @@ class NotificationsViewController: UIViewController {
     /// Filter nav bar button
     ///
     private lazy var rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: Gridicon.iconOfType(.filter),
+        return UIBarButtonItem(image: .filterImage,
                                style: .plain,
                                target: self,
                                action: #selector(displayFiltersAlert))
@@ -189,7 +189,7 @@ private extension NotificationsViewController {
     ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Notifications", comment: "Title of the Notifications tab — plural form of Notification")
-        tabBarItem.image = Gridicon.iconOfType(.bell)
+        tabBarItem.image = .bellImage
     }
 
     /// Setup: Navigation

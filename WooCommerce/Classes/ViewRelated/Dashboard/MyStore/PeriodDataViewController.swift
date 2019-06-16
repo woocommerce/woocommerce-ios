@@ -535,7 +535,7 @@ private extension PeriodDataViewController {
             barCount += 1
         }
 
-        let dataSet =  BarChartDataSet(values: dataEntries, label: "Data")
+        let dataSet =  BarChartDataSet(entries: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
         dataSet.highlightColor = StyleManager.wooCommerceBrandColor

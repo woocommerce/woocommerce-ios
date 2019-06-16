@@ -81,7 +81,7 @@ private extension OrderLoaderViewController {
     ///
     func reloadOrder() {
         let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { [weak self] (order, error) in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 

@@ -1,2 +1,2 @@
-* We now support larger font sizes on the login screen.
-* Dates on the Order Details screen are now localized.
+- Improved support for RTL languages in the Dashboard.
+- Tapping on Products in Orders will present a view-only version of the Product's Details.

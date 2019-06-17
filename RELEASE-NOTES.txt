@@ -1,3 +1,6 @@
+2.2
+-----
+ 
 2.1
 -----
 - improvement: improved support for RTL languages in the Dashboard

@@ -30,8 +30,12 @@ public class ProductStore: Store {
             resetStoredProducts(onCompletion: onCompletion)
         case .retrieveProduct(let siteID, let productID, let onCompletion):
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
+        case .retrieveProducts(let siteID, let productIDs, let onCompletion):
+            retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .requestMissingProducts(let order, let onCompletion):
+            requestMissingProducts(for: order, onCompletion: onCompletion)
         }
     }
 }
@@ -66,6 +70,54 @@ private extension ProductStore {
             self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
                 onCompletion(nil)
             }
+        }
+    }
+
+    /// Synchronizes the Products found in a specified Order.
+    ///
+    func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
+        let itemIDs = order.items.map { $0.itemID }
+        let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
+
+        let storage = storageManager.viewStorage
+        var missingIDs = [Int]()
+        for productID in productIDs {
+            let storageProduct = storage.loadProduct(siteID: order.siteID, productID: productID)
+            if storageProduct == nil {
+                missingIDs.append(productID)
+            }
+        }
+
+        let remote = ProductsRemote(network: network)
+        remote.loadProducts(for: order.siteID, by: missingIDs) { [weak self] (products, error) in
+            guard let products = products else {
+                onCompletion(error)
+                return
+            }
+
+            self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                onCompletion(nil)
+            })
+        }
+    }
+
+    /// Retrieves multiple products with a given siteID + productIDs.
+    /// - Note: This is NOT a wrapper for retrieving a single product.
+    ///
+    func retrieveProducts(siteID: Int,
+                          productIDs: [Int],
+                          onCompletion: @escaping (Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+
+        remote.loadProducts(for: siteID, by: productIDs) { [weak self] (products, error) in
+            guard let products = products else {
+                onCompletion(error)
+                return
+            }
+
+            self?.upsertStoredProductsInBackground(readOnlyProducts: products, onCompletion: {
+                onCompletion(nil)
+            })
         }
     }
 

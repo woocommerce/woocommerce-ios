@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-27 14:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-11 13:54:25+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "Een berichtknop toevoegen";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "Een trackingknop toevoegen";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Voegt een bericht toe aan een bestelling";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "Achtergrond";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "Nabestellingen:";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Barcode %1$i, %2$@, ";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Kan geen verbinding maken. Vereiste XML-RPC-methoden ontbreken op de server.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Kan geen verbinding maken. Er is een 403-fout opgetreden tijdens onze poging om het XMLRPC-eindpunt van je site te openen. De app heeft dat nodig om met je site te communiceren. Neem contact op met je host om dit probleem op te lossen.";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Kan geen verbinding maken. Je host blokkeert POST-aanvragen. De app heeft deze nodig om te communiceren met je site. Neem contact op met je host om dit probleem op te lossen.";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Lege URL";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "Voer een geldige URL in, zoals voorbeeld.com.";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Voer naam van provider in";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Facturen verbergen";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm, er is geen WordPress-site gevonden op deze URL. Controleer de spelling en probeer het nogmaals.";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Als deze functie is uitgeschakeld, is de opmerking privé";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "Op voorraad";
 
 /* Application's Inactive State */
 "Inactive" = "Inactief";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "Verkeerde gebruikersnaam";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "Inventaris";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Het lijkt erop dat deze gebruikersnaam\/dit wachtwoord niet aan deze site is gekoppeld.";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "Aan";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "Wordt nabesteld";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Open Apparaatinstellingen";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "Overige";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "Niet op voorraad";
 
 /* Product section title */
 "PRODUCT" = "PRODUCT";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Open jouw e-mail app en kijk naar een e-mail van WordPress.com.";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "Prijs";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "Prijzen en inventaris";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Privacybeleid";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Geregistreerd domein";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "Reguliere prijs:";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "Filters verwijderen";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "Beoordelingen";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "SKU";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "SKU:";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "Sms verzonden";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "Prijs tijdens de sale:";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Alle bestellingen doorzoeken";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Beginperiode %1$@, eindperiode %2$@";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "Aantal op voorraad:";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "Voorraadstatus:";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Inkomstengrafiek opslaan";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "De site-adres moet korter zijn dan 64 karakters.";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "De site op dit adres is geen WordPress-site. Om er verbinding mee te kunnen maken, moet de site gebruikmaken van WordPress.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Verwijderen van site mislukt.";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Bestelstatus bijwerken";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "%1$@ bijgewerkt om %2$@";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld uur geleden bijgewerkt";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Je site-adres verschijnt in de bovenbalk van het scherm wanneer je je site bezoekt in Safari.";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "toegestaan";
+
 /* Notification status description for 'approved' */
 "approved" = "goedgekeurd";
 
 /* Site Address placeholder */
-"example.com" = "voorbeeld.com";
+"example.wordpress.com" = "voorbeeld.wordpress.com";
 
 /* Later today */
 "later today" = "later vandaag";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "niet toegestaan";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "geen spam";

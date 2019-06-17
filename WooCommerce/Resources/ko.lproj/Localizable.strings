@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-28 09:54:05+0000 */
+/* Translation-Revision-Date: 2019-06-11 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "메모 버튼 추가";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "추적 버튼 추가";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "주문에 메모 추가";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "배경";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "이월 주문:";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "표시줄 번호 %1$i, %2$@, ";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "연결할 수 없습니다. 필수 XML-RPC 함수가 서버에 없습니다.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "연결할 수 없습니다. 회원님의 사이트 XMLRPC 엔드포인트에 액세스하려고 할 때 403 오류가 발생했습니다. 사이트와 통신하려면 이 앱에 해당 요청이 필요합니다. 호스트에 문의하여 이 문제를 해결하세요.";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "연결할 수 없습니다. 호스트에서 POST 요청을 차단하고 있으나 앱에서 회원님의 사이트와 통신하려면 이 요청이 필요합니다. 호스트에 문의하여 이 문제를 해결하세요.";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "빈 URL";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "유효한 URL을 입력하세요(예: example.com).";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "공급업체 이름 입력";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "청구 숨기기";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "이 URL에는 워드프레스 사이트가 없는 것 같습니다. 맞춤법을 확인하고 다시 시도하세요.";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "해제된 경우 메모는 비공개가 됩니다.";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "재고 있음";
 
 /* Application's Inactive State */
 "Inactive" = "비활성";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "유효하지 않은 사용자명";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "재고";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "이 사용자명\/비밀번호가 이 사이트에 연결되어 있지 않은 것 같습니다.";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "켬";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "이월 주문";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "기기 설정 열기";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "기타";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "품절";
 
 /* Product section title */
 "PRODUCT" = "상품";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "이메일 앱을 열고 워드프레스닷컴에서 보낸 이메일을 찾으세요.";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "가격";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "가격 및 재고:";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "개인정보 취급방침";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "등록된 도메인";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "정상 가격:";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "필터 제거";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "검토";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "SKU";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "SKU:";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 전송됨";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "할인 가격:";
 
 /* Orders Search Placeholder */
 "Search all orders" = "모든 주문 검색";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "시작 기간 %1$@, 종료 기간 %2$@";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "재고 수량:";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "재고 상태:";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "스토어 수입 차트";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "사이트 주소는 64 글자보다 적어야합니다.";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "이 주소의 사이트는 워드프레스 사이트가 아닙니다. 연결하려면 사이트에서 워드프레스를 사용해야 합니다.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "사이트를 삭제할 수 없습니다.";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "주문 상태 업데이트";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "%2$@에 %1$@ 업데이트";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld시간 전에 업데이트됨";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Safari에서 사이트를 방문하면 화면 위쪽의 표시줄에 사이트 주소가 표시됩니다.";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "허용됨";
+
 /* Notification status description for 'approved' */
 "approved" = "승인됨";
 
 /* Site Address placeholder */
-"example.com" = "example.com";
+"example.wordpress.com" = "example.wordress.com";
 
 /* Later today */
 "later today" = "오늘 중";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "허용되지 않음";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "스팸 아님";

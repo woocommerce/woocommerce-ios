@@ -7,6 +7,7 @@ class ProductListViewController: UIViewController {
     private var items = [OrderItem]()
 
     var viewModel: OrderDetailsViewModel!
+    var products: [Product]? = []
 
     // MARK: - View Lifecycle
 
@@ -43,8 +44,8 @@ private extension ProductListViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
 
-        let nib = ProductDetailsTableViewCell.loadNib()
-        tableView.register(nib, forCellReuseIdentifier: ProductDetailsTableViewCell.reuseIdentifier)
+        let nib = PickListTableViewCell.loadNib()
+        tableView.register(nib, forCellReuseIdentifier: PickListTableViewCell.reuseIdentifier)
 
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
         tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
@@ -66,12 +67,15 @@ extension ProductListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
-        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
-        let cellID = ProductDetailsTableViewCell.reuseIdentifier
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? ProductDetailsTableViewCell else {
+        let product = lookUpProduct(by: item.productID)
+        let itemViewModel = OrderItemViewModel(item: item,
+                                               currency: viewModel.order.currency,
+                                               product: product)
+        let cellID = PickListTableViewCell.reuseIdentifier
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? PickListTableViewCell else {
             fatalError()
         }
-        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
+        cell.selectionStyle = .default
         cell.configure(item: itemViewModel)
 
         return cell
@@ -97,11 +101,9 @@ extension ProductListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        if FeatureFlag.productDetails.enabled {
-            let orderItem = itemAtIndexPath(indexPath)
-            let productIDToLoad = orderItem.variationID == 0 ? orderItem.productID : orderItem.variationID
-            productWasPressed(for: productIDToLoad)
-        }
+        let orderItem = itemAtIndexPath(indexPath)
+        let productIDToLoad = orderItem.variationID == 0 ? orderItem.productID : orderItem.variationID
+        productWasPressed(for: productIDToLoad)
     }
 }
 
@@ -112,6 +114,10 @@ private extension ProductListViewController {
 
     func itemAtIndexPath(_ indexPath: IndexPath) -> OrderItem {
         return items[indexPath.row]
+    }
+
+    func lookUpProduct(by productID: Int) -> Product? {
+        return products?.filter({ $0.productID == productID }).first
     }
 
     /// Displays the product detail screen for the provided ProductID

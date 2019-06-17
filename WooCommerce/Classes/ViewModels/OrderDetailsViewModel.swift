@@ -138,7 +138,7 @@ class OrderDetailsViewModel {
     /// Order Notes Button
     /// - icon and text
     ///
-    let addNoteIcon = Gridicon.iconOfType(.addOutline)
+    let addNoteIcon = UIImage.addOutlineImage
 
     let addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
 

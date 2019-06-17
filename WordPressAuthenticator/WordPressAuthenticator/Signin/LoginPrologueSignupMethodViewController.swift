@@ -38,7 +38,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
 
         let loginTitle = NSLocalizedString("Sign up with Email", comment: "Button title. Tapping begins our normal sign up process.")
         let createTitle = NSLocalizedString("Sign up with Google", comment: "Button title. Tapping begins sign up using Google.")
-        buttonViewController.setupTopButton(title: loginTitle, isPrimary: false) { [weak self] in
+        buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Sign up with Email Button") { [weak self] in
             defer {
                 WordPressAuthenticator.track(.signupEmailButtonTapped)
             }
@@ -46,7 +46,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
             self?.emailTapped?()
         }
 
-        buttonViewController.setupBottomButton(title: createTitle, isPrimary: false) { [weak self] in
+        buttonViewController.setupBottomButton(title: createTitle, isPrimary: false, accessibilityIdentifier: "Sign up with Google Button") { [weak self] in
             defer {
                 WordPressAuthenticator.track(.signupSocialButtonTapped)
             }

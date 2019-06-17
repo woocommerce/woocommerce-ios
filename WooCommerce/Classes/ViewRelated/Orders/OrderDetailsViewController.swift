@@ -603,7 +603,7 @@ private extension OrderDetailsViewController {
         let item = viewModel.items[indexPath.row]
         let product = lookUpProduct(by: item.productID)
         let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency, product: product)
-        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
+        cell.selectionStyle = .default
         cell.configure(item: itemViewModel)
     }
 
@@ -935,14 +935,12 @@ extension OrderDetailsViewController: UITableViewDelegate {
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
         case .orderItem:
-            if FeatureFlag.productDetails.enabled {
-                let item = viewModel.order.items[indexPath.row]
-                let productID = item.variationID == 0 ? item.productID : item.variationID
-                let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                       siteID: viewModel.order.siteID)
-                let navController = WooNavigationController(rootViewController: loaderViewController)
-                present(navController, animated: true, completion: nil)
-            }
+            let item = viewModel.order.items[indexPath.row]
+            let productID = item.variationID == 0 ? item.productID : item.variationID
+            let loaderViewController = ProductLoaderViewController(productID: productID,
+                                                                   siteID: viewModel.order.siteID)
+            let navController = WooNavigationController(rootViewController: loaderViewController)
+            present(navController, animated: true, completion: nil)
         case .details:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)

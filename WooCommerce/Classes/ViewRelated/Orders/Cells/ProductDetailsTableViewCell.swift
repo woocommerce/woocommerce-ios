@@ -106,7 +106,7 @@ class ProductDetailsTableViewCell: UITableViewCell {
 //
 extension ProductDetailsTableViewCell {
     func configure(item: OrderItemViewModel) {
-        if FeatureFlag.productDetails.enabled && item.productHasImage {
+        if item.productHasImage {
             if let imageURL = item.imageURL {
                 productImageView.downloadImage(from: imageURL,
                                                placeholderImage: UIImage.productPlaceholderImage)

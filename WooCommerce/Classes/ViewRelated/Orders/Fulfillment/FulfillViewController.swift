@@ -318,7 +318,7 @@ private extension FulfillViewController {
 
         let product = lookUpProduct(by: item.productID)
         let viewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
-        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
+        cell.selectionStyle = .default
         cell.configure(item: viewModel)
     }
 
@@ -430,10 +430,8 @@ extension FulfillViewController: UITableViewDelegate {
             present(navController, animated: true, completion: nil)
 
         case .product(let item):
-            if FeatureFlag.productDetails.enabled {
-                let productIDToLoad = item.variationID == 0 ? item.productID : item.variationID
-                productWasPressed(for: productIDToLoad)
-            }
+            let productIDToLoad = item.variationID == 0 ? item.productID : item.variationID
+            productWasPressed(for: productIDToLoad)
 
         case .tracking:
             break

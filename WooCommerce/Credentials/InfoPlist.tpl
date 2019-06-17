@@ -13,6 +13,6 @@
 ///
 #define DOTCOM_AUTH_SCHEME %{dotcom_auth_scheme}
 
-/// Fabric / Crashlytics API key
+/// Sentry API key
 ///
-#define FABRIC_API_KEY %{fabric_api_key}
+#define SENTRY_DSN %{sentry_dsn}

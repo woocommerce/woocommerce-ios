@@ -7,10 +7,14 @@ protocol Style {
 
     /// Fonts
     ///
+    static var maxFontSize: CGFloat { get }
     var actionButtonTitleFont: UIFont { get }
     var alternativeLoginsTitleFont: UIFont { get }
     var chartLabelFont: UIFont { get }
+    var headlineSemiBold: UIFont { get }
     var subheadlineFont: UIFont { get }
+    var subheadlineBoldFont: UIFont { get }
+    var thinCaptionFont: UIFont { get }
 
     /// Colors
     ///
@@ -70,10 +74,20 @@ class DefaultStyle: Style {
 
     /// Fonts!
     ///
+    static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
+    let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
+                                                                        weight: .semibold,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
     let subheadlineFont                 = UIFont.font(forStyle: .subheadline, weight: .regular)
+    let subheadlineBoldFont             = DefaultStyle.fontForTextStyle(.subheadline,
+                                                                        weight: .bold,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
     let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
+    let thinCaptionFont                 = DefaultStyle.fontForTextStyle(.caption1,
+                                                                        weight: .thin,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
 
     /// Colors!
     ///
@@ -158,6 +172,32 @@ private extension DefaultStyle {
 }
 
 
+private extension DefaultStyle {
+
+    class func fontForTextStyle(_ style: UIFont.TextStyle, weight: UIFont.Weight, maximumPointSize: CGFloat = maxFontSize) -> UIFont {
+        let traits = [UIFontDescriptor.TraitKey.weight: weight]
+        if #available(iOS 11, *) {
+            var fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
+            fontDescriptor = fontDescriptor.addingAttributes([.traits: traits])
+            let fontToGetSize = UIFont(descriptor: fontDescriptor, size: CGFloat(0.0))
+            return UIFontMetrics(forTextStyle: style).scaledFont(for: fontToGetSize, maximumPointSize: maximumPointSize)
+        }
+
+        var scaledFontDescriptor = fontDescriptor(style, maximumPointSize: maximumPointSize)
+        scaledFontDescriptor = scaledFontDescriptor.addingAttributes([.traits: traits])
+        return UIFont(descriptor: scaledFontDescriptor, size: CGFloat(0.0))
+    }
+
+
+    private class func fontDescriptor(_ style: UIFont.TextStyle, maximumPointSize: CGFloat = maxFontSize) -> UIFontDescriptor {
+        let fontDescriptor = UIFontDescriptor.preferredFontDescriptor(withTextStyle: style)
+        let fontToGetSize = UIFont(descriptor: fontDescriptor, size: CGFloat(0.0))
+        let scaledFontSize = CGFloat.minimum(fontToGetSize.pointSize, maximumPointSize)
+        return fontDescriptor.withSize(scaledFontSize)
+    }
+}
+
+
 // MARK: - StyleManager's Notifications
 //
 extension NSNotification.Name {
@@ -189,8 +229,20 @@ class StyleManager {
         return active.chartLabelFont
     }
 
+    static var headlineSemiBold: UIFont {
+        return active.headlineSemiBold
+    }
+
     static var subheadlineFont: UIFont {
         return active.subheadlineFont
+    }
+
+    static var subheadlineBoldFont: UIFont {
+        return active.subheadlineBoldFont
+    }
+
+    static var thinCaptionFont: UIFont {
+        return active.thinCaptionFont
     }
 
     // MARK: - Colors

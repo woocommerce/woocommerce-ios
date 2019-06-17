@@ -14,7 +14,7 @@ extension UserDefaults {
         case deviceID
         case deviceToken
         case userOptedInAnalytics
-        case userOptedInCrashlytics
+        case userOptedInCrashLogging = "userOptedInCrashlytics"
         case versionOfLastRun
         case analyticsUsername
         case notificationsLastSeenTime

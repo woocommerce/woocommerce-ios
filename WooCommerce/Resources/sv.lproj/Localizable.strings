@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-29 15:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-11 11:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "Lägg till en noteringsknapp";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "Lägg till spårningsknapp";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Lägger till en notering för en order";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "Bakgrund";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "Beställningsvaror:";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Fältnummer %1$i, %2$@, ";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Kunde inte ansluta. XML-RPC-metoder som krävs saknas på servern.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Det gick inte att ansluta. När vi försökte ansluta till XMLRPC-ändpunkten för din webbplats fick vi felkod 403. Appen behöver detta för att kommunicera med webbplatsen. Kontakta webbhotellet för att lösa problemet.";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Det gick inte att ansluta. Din webbserver blockerar POST-transaktioner, vilket appen behöver för att kommunicera med webbplatsen. Kontakta webbhotellet för att lösa problemet.";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL ej angiven";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "Ange en giltig URL, t.ex. exempel.com.";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Ange leverantörens namn";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Dölj fakturering";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm. Det verkar inte finnas någon WordPress-webbplats på denna URL. Kolla stavningen och försök igen.";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Om detta inaktiveras kommer noteringen att vara privat";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "I lager";
 
 /* Application's Inactive State */
 "Inactive" = "Inaktiv";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "Ogiltigt användarnamn";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "Lagersaldo";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Detta användarnamn och lösenord verkar inte fungera på denna webbplats.";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "På";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "Beställningsvara";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Öppna enhetsinställningar";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "Andra";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "Ej i lager";
 
 /* Product section title */
 "PRODUCT" = "PRODUKT";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Öppna ditt e-postprogram och hitta ett brev från WordPress.com.";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "Pris";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "Prissättning och lagersaldo:";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Integritetspolicy";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registrerad domän";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "Ordinarie pris:";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "Ta bort filter";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "Recensioner";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "Artikelnr";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "Artikelnr:";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS skickat";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "Reapris:";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Sök alla ordrar";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Startperiod %1$@, slutperiod %2$@";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "Lagerantal:";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "Lagerstatus:";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Diagram över butiksintäkter";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Adressen till webbplatsen måste vara kortare än 64 tecken.";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Webbplatsen på den här adressen är inte en WordPress-webbplats. Webbplatsen måste använda WordPress för att vi ska kunna ansluta till den.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Webbplatsen kunde inte raderas.";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Uppdatera orderstatus";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "Uppdaterad %1$@ vid %2$@";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Uppdaterades för %ld timme sedan";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Din webbplatsadress visas i listen längst upp på skärmen när du besöker din webbplats i Safari.";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "tillåtet";
+
 /* Notification status description for 'approved' */
 "approved" = "godkänd";
 
 /* Site Address placeholder */
-"example.com" = "exempel.com";
+"example.wordpress.com" = "exempel.wordress.com";
 
 /* Later today */
 "later today" = "senare idag";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "inte tillåtet";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "inte skräppost";

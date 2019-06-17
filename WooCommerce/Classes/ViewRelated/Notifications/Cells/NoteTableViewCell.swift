@@ -140,11 +140,7 @@ private extension NoteTableViewCell {
 
     enum Star {
         static let size = Double(13)
-        static let filledImage = Gridicon.iconOfType(.star,
-                                                     withSize: CGSize(width: Star.size, height: Star.size)
-                                                    ).imageWithTintColor(StyleManager.defaultTextColor)
-        static let emptyImage = Gridicon.iconOfType(.star,
-                                                    withSize: CGSize(width: Star.size, height: Star.size)
-                                                    ).imageWithTintColor(.clear)
+        static let filledImage = UIImage.starImage(size: Star.size, tintColor: StyleManager.defaultTextColor)
+        static let emptyImage = UIImage.starImage(size: Star.size, tintColor: .clear)
     }
 }

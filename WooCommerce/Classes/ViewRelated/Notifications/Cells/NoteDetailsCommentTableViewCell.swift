@@ -176,20 +176,17 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Actions!
     ///
     func configureActionButtons() {
-        let spamImage = Gridicon.iconOfType(.spam)
-        spamButton.setImage(spamImage, for: .normal)
+        spamButton.setImage(.spamImage, for: .normal)
         spamButton.setTitle(Spam.normalTitle, for: .normal)
         spamButton.accessibilityLabel = Spam.normalLabel
         spamButton.accessibilityTraits = .button
 
-        let trashImage = Gridicon.iconOfType(.trash)
-        trashButton.setImage(trashImage, for: .normal)
+        trashButton.setImage(.trashImage, for: .normal)
         trashButton.setTitle(Trash.normalTitle, for: .normal)
         trashButton.accessibilityLabel = Trash.normalLabel
         trashButton.accessibilityTraits = .button
 
-        let checkmarkImage = Gridicon.iconOfType(.checkmark)
-        approvalButton.setImage(checkmarkImage, for: .normal)
+        approvalButton.setImage(.checkmarkImage, for: .normal)
         approvalButton.setTitle(Approve.normalTitle, for: .normal)
         approvalButton.setTitle(Approve.selectedTitle, for: .selected)
         approvalButton.accessibilityLabel = Approve.normalLabel
@@ -295,6 +292,8 @@ private struct Approve {
 //
 private struct Star {
     static let size        = Double(18)
-    static let filledImage = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.goldStarColor)
-    static let emptyImage  = Gridicon.iconOfType(.star, withSize: CGSize(width: Star.size, height: Star.size)).imageWithTintColor(StyleManager.wooGreyLight)
+    static let filledImage = UIImage.starImage(size: Star.size,
+                                               tintColor: StyleManager.goldStarColor)
+    static let emptyImage = UIImage.starImage(size: Star.size,
+                                              tintColor: StyleManager.wooGreyLight)
 }

@@ -483,7 +483,7 @@ private extension OrderDetailsViewController {
 
         cell.bodyLabel?.text = email
         cell.bodyLabel?.applyBodyStyle() // override the woo purple text
-        cell.accessoryImage = Gridicon.iconOfType(.mail)
+        cell.accessoryImage = .mailImage
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
@@ -507,7 +507,7 @@ private extension OrderDetailsViewController {
 
         cell.bodyLabel?.text = phoneNumber
         cell.bodyLabel?.applyBodyStyle() // override the woo purple text
-        cell.accessoryImage = Gridicon.iconOfType(.ellipsis)
+        cell.accessoryImage = .ellipsisImage
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
@@ -893,7 +893,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
         }
 
         let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideSectionFooter.reuseIdentifier) as! ShowHideSectionFooter
-        let image = displaysBillingDetails ? Gridicon.iconOfType(.chevronUp) : Gridicon.iconOfType(.chevronDown)
+        let image = displaysBillingDetails ? UIImage.chevronUpImage : UIImage.chevronDownImage
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
             guard let self = self else {

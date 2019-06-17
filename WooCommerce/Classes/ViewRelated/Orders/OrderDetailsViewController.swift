@@ -162,7 +162,6 @@ private extension OrderDetailsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
-        tableView.separatorInset = .zero
     }
 
     /// Setup: Navigation

@@ -12,8 +12,5 @@ public enum AccountAction: Action {
     case synchronizeAccountSettings(userID: Int, onCompletion: (AccountSettings?, Error?) -> Void)
     case synchronizeSites(onCompletion: (Error?) -> Void)
     case synchronizeSitePlan(siteID: Int, onCompletion: (Error?) -> Void)
-    
-    /// Updates a given AccountSettings' tracksOptOut setting.
-    ///
     case updateAccountSettings(userID: Int, tracksOptOut: Bool, onCompletion: (Error?) -> Void)
 }

@@ -131,7 +131,7 @@ private extension AccountStore {
         let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
         onCompletion(site)
     }
-    
+
     func updateAccountSettings(userID: Int, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
         let remote = AccountRemote(network: network)
         remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in

@@ -53,7 +53,7 @@ class PrivacySettingsViewController: UIViewController {
         configureSections()
 
         registerTableViewCells()
-        
+
         loadAccountSettings()
     }
 
@@ -64,15 +64,15 @@ class PrivacySettingsViewController: UIViewController {
     }
 }
 
-// MARK: - Fetching Account & AccountSettings
 
+// MARK: - Fetching Account & AccountSettings
 private extension PrivacySettingsViewController {
-    
+
     func loadAccountSettings(completion: (()-> Void)? = nil) {
         guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
             return
         }
-        
+
         let userID = defaultAccount.userID
 
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
@@ -263,7 +263,7 @@ private extension PrivacySettingsViewController {
         guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
             return
         }
-        
+
         let userID = defaultAccount.userID
 
         let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { error in

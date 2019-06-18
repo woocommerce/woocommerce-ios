@@ -47,10 +47,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v2.0-whats-new"
+msgctxt "v2.1-whats-new"
 msgid ""
-"* We now support larger font sizes on the login screen.\n"
-"* Dates on the Order Details screen are now localized.\n"
+"* Arabic, Hebrew, Farsi, and Urdu speakers rejoice: there’s improved support for RTL languages in the Dashboard.\n"
+"* Get more info at a tap: Tapping on a product in any order will bring up a view-only version of the product details.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

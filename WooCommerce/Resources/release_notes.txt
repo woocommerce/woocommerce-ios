@@ -1,2 +1,2 @@
-- Improved support for RTL languages in the Dashboard.
-- Tapping on Products in Orders will present a view-only version of the Product's Details.
+* Arabic, Hebrew, Farsi, and Urdu speakers rejoice: there’s improved support for RTL languages in the Dashboard.
+* Get more info at a tap: Tapping on a product in any order will bring up a view-only version of the product details.

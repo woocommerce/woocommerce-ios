@@ -34,6 +34,14 @@ class PrivacySettingsViewController: UIViewController {
         }
     }
 
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
+        return refreshControl
+    }()
+
     // MARK: - Overridden Methods
     //
     override func viewDidLoad() {
@@ -48,13 +56,19 @@ class PrivacySettingsViewController: UIViewController {
         
         loadAccountSettings()
     }
+
+    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+        loadAccountSettings {
+            sender.endRefreshing()
+        }
+    }
 }
 
 // MARK: - Fetching Account & AccountSettings
 
 private extension PrivacySettingsViewController {
     
-    func loadAccountSettings() {
+    func loadAccountSettings(completion: (()-> Void)? = nil) {
         guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
             return
         }
@@ -69,6 +83,8 @@ private extension PrivacySettingsViewController {
 
             // Switch is off when opting out of Tracks
             self.collectInfo = !accountSettings.tracksOptOut
+
+            completion?()
         }
 
         StoresManager.shared.dispatch(action)
@@ -99,6 +115,8 @@ private extension PrivacySettingsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+
+        tableView.refreshControl = refreshControl
     }
 
     func configureSections() {

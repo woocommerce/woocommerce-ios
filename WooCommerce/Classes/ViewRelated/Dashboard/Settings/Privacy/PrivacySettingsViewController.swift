@@ -53,12 +53,14 @@ private extension PrivacySettingsViewController {
         }
         
         let userID = defaultAccount.userID
-        let action = AccountAction.loadAccountSettings(userID: userID) { accountSettings in
-            guard let accountSettings = accountSettings else {
+        let action = AccountAction.loadAccountSettings(userID: userID) { [weak self] accountSettings in
+            guard let self = self,
+                let accountSettings = accountSettings else {
                 return
             }
-            
-            self.collectInfo = !accountSettings.tracksOptOut // Switch is off when opting out of Tracks
+
+            // Switch is off when opting out of Tracks
+            self.collectInfo = !accountSettings.tracksOptOut
         }
         
         StoresManager.shared.dispatch(action)

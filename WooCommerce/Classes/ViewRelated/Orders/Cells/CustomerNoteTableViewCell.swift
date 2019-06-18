@@ -10,7 +10,7 @@ class CustomerNoteTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var iconImageView: UIImageView! {
         didSet {
-            iconImageView.image = Gridicon.iconOfType(.quote)
+            iconImageView.image = .quoteImage
             iconImageView.tintColor = .black
         }
     }

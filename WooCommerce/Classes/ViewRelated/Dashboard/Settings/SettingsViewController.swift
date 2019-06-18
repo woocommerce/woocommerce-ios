@@ -106,7 +106,7 @@ private extension SettingsViewController {
         //
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
-        footerView.iconImage = Gridicon.iconOfType(.heartOutline)
+        footerView.iconImage = .heartOutlineImage
         footerView.iconColor = StyleManager.wooGreyMid
         footerView.footnoteText = NSLocalizedString(
             "Made with love by Automattic",
@@ -179,7 +179,6 @@ private extension SettingsViewController {
     }
 
     func configureSwitchStore(cell: BasicTableViewCell) {
-        cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString(
             "Switch Store",

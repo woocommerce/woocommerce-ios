@@ -2,6 +2,7 @@ import UIKit
 import Gridicons
 import SafariServices
 import Yosemite
+import AutomatticTracks
 
 
 class PrivacySettingsViewController: UIViewController {
@@ -20,9 +21,9 @@ class PrivacySettingsViewController: UIViewController {
     
     /// Send crash reports
     ///
-    private var reportCrashes = AppDelegate.shared.fabricManager.userHasOptedIn {
+    private var reportCrashes = CrashLoggingSettings.didOptIn {
         didSet {
-            reportCrashesWasUpdated(newValue: reportCrashes)
+            CrashLoggingSettings.didOptIn = reportCrashes
         }
     }
 
@@ -132,7 +133,7 @@ private extension PrivacySettingsViewController {
 
     func configureCollectInfo(cell: SwitchTableViewCell) {
         // image
-        cell.imageView?.image = Gridicon.iconOfType(.stats)
+        cell.imageView?.image = .statsImage
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text
@@ -150,7 +151,7 @@ private extension PrivacySettingsViewController {
 
     func configureShareInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.",
@@ -160,7 +161,7 @@ private extension PrivacySettingsViewController {
 
     func configureCookiePolicy(cell: BasicTableViewCell) {
         // To align the 'Learn more' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Settings > Privacy Settings. A text link to the cookie policy.")
         cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
@@ -168,7 +169,7 @@ private extension PrivacySettingsViewController {
 
     func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.",
@@ -178,7 +179,7 @@ private extension PrivacySettingsViewController {
 
     func configurePrivacyPolicy(cell: BasicTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "Read privacy policy",
@@ -189,7 +190,7 @@ private extension PrivacySettingsViewController {
 
     func configureCookieInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "We use other tracking tools, including some from third parties. Read about these and how to control them.",
@@ -199,7 +200,7 @@ private extension PrivacySettingsViewController {
 
     func configureReportCrashes(cell: SwitchTableViewCell) {
         // image
-        cell.imageView?.image = Gridicon.iconOfType(.bug)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text
@@ -217,7 +218,7 @@ private extension PrivacySettingsViewController {
 
     func configureCrashInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.",
@@ -257,9 +258,6 @@ private extension PrivacySettingsViewController {
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {
-        // Save user's preference
-        AppDelegate.shared.fabricManager.setUserHasOptedIn(newValue)
-
         // This event will only report if the user has Analytics currently on
         WooAnalytics.shared.track(.settingsReportCrashesToggled)
     }

@@ -80,7 +80,7 @@ final class PickListTableViewCell: UITableViewCell {
     }
 
     func setupImageView() {
-        productImageView.image = Gridicon.iconOfType(.product)
+        productImageView.image = .productImage
         productImageView.tintColor = StyleManager.wooGreyBorder
     }
 
@@ -104,10 +104,15 @@ final class PickListTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension PickListTableViewCell {
-    func configure(item: OrderItemViewModel, image: UIImage? = nil) {
-        if let itemImage = image {
-            productImageView.image = itemImage
+    func configure(item: OrderItemViewModel) {
+        if item.productHasImage,
+        let imageURL = item.imageURL {
+                productImageView.downloadImage(from: imageURL,
+                                               placeholderImage: UIImage.productPlaceholderImage)
+        } else {
+            productImageView.image = .productPlaceholderImage
         }
+
         name = item.name
         quantity = item.quantity
         sku = item.sku

@@ -14,7 +14,15 @@ public enum ProductAction: Action {
     ///
     case retrieveProduct(siteID: Int, productID: Int, onCompletion: (Product?, Error?) -> Void)
 
+    /// Retrieves a specified list of Products.
+    ///
+    case retrieveProducts(siteID: Int, productIDs: [Int], onCompletion: (Error?) -> Void)
+
     /// Deletes all of the cached products.
     ///
     case resetStoredProducts(onCompletion: () -> Void)
+
+    /// Requests the Products found in a specified Order.
+    ///
+    case requestMissingProducts(for: Order, onCompletion: (Error?) -> Void)
 }

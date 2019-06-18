@@ -2,16 +2,20 @@ import Foundation
 import Yosemite
 import UIKit
 import Gridicons
+import WordPressShared
 
 
 // MARK: - Product details view model
 //
 final class ProductDetailsViewModel {
 
+    // MARK: - public variables
+
     /// Closures
     ///
     var onError: (() -> Void)?
     var onReload: (() -> Void)?
+    var onPurchaseNoteTapped: (() -> Void)?
 
     /// Yosemite.Product
     ///
@@ -27,11 +31,27 @@ final class ProductDetailsViewModel {
         return product.name
     }
 
+    /// Purchase Note
+    /// - stripped of HTML
+    /// - no ending newline character
+    /// - cannot be a lazy var because it's a computed property
+    ///
+    var cleanedPurchaseNote: String? {
+        guard let noHTMLString = product.purchaseNote?.strippedHTML else {
+            return nil
+        }
+        let cleanedString = String.stripLastNewline(in: noHTMLString)
+
+        return cleanedString
+    }
+
     /// Product ID
     ///
     var productID: Int {
         return product.productID
     }
+
+    // MARK: - private variables
 
     /// Sections to be rendered
     ///
@@ -78,6 +98,7 @@ final class ProductDetailsViewModel {
         guard let productImageURLString = product.images.first?.src else {
             return nil
         }
+
         return URL(string: productImageURLString)
     }
 
@@ -182,7 +203,8 @@ extension ProductDetailsViewModel {
 
     func heightForHeader(in section: Int) -> CGFloat {
         if sections[section].title == nil {
-            // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
+            // iOS 11 table bug.
+            // Must return a tiny value to collapse `nil` or `empty` section headers.
             return .leastNonzeroMagnitude
         }
 
@@ -254,8 +276,8 @@ extension ProductDetailsViewModel {
             configureShipping(cell)
         case let cell as TitleBodyTableViewCell where row == .downloads:
             configureDownloads(cell)
-        case _ as TitleBodyTableViewCell where row == .purchaseNote:
-            break
+        case let cell as ReadMoreTableViewCell:
+            configurePurchaseNote(cell)
         default:
             fatalError("Unidentified row type")
         }
@@ -271,10 +293,6 @@ extension ProductDetailsViewModel {
         if productHasImage {
             cell.heightConstraint.constant = Metrics.productImageHeight
             mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
-        } else {
-            cell.heightConstraint.constant = Metrics.emptyProductImageHeight
-            let size = CGSize(width: cell.frame.width, height: Metrics.emptyProductImageHeight)
-            mainImageView.image = StyleManager.wooWhite.image(size)
         }
 
         if product.productStatus != .publish {
@@ -326,7 +344,7 @@ extension ProductDetailsViewModel {
     func configurePermalink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View product on store",
                                                  comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
-        cell.accessoryImage = Gridicon.iconOfType(.external)
+        cell.accessoryImage = .externalImage
     }
 
     /// Affiliate (External) link cell.
@@ -334,7 +352,7 @@ extension ProductDetailsViewModel {
     func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View affiliate product",
                                                  comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
-        cell.accessoryImage = Gridicon.iconOfType(.external)
+        cell.accessoryImage = .externalImage
     }
 
     /// Price cell.
@@ -515,6 +533,23 @@ extension ProductDetailsViewModel {
         cell.bodyLabel?.text = bodyText
     }
 
+    /// Purchase Note cell.
+    ///
+    func configurePurchaseNote(_ cell: ReadMoreTableViewCell) {
+        cell.titleLabel?.text = NSLocalizedString("Purchase note",
+                                                  comment: "Product Details > Purchase Details > Purchase note cell title")
+
+        cell.bodyLabel?.text = cleanedPurchaseNote
+
+        let readMoreTitle = NSLocalizedString("Read more",
+                                              comment: "Read more of the purchase note. Only the first two lines of text are displayed.")
+
+        cell.moreButton?.setTitle(readMoreTitle, for: .normal)
+        cell.onMoreTouchUp = { [weak self] in
+            self?.onPurchaseNoteTapped?()
+        }
+    }
+
 
     // MARK: - Table helper methods
 
@@ -556,7 +591,11 @@ extension ProductDetailsViewModel {
 
     /// Large photo section.
     ///
-    func configurePhoto() -> Section {
+    func configurePhoto() -> Section? {
+        if !productHasImage && product.productStatus == .publish {
+            return nil
+        }
+
         return Section(row: .productPhoto)
     }
 
@@ -779,7 +818,7 @@ extension ProductDetailsViewModel {
             case .downloads:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .purchaseNote:
-                return TitleBodyTableViewCell.reuseIdentifier
+                return ReadMoreTableViewCell.reuseIdentifier
             }
         }
     }

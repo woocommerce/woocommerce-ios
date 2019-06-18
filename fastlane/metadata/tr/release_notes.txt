@@ -1,4 +1,2 @@
-* Gönderim Takibi eklentisini kullanıyor musunuz? Artık siparişlere manuel olarak gönderim takibi ekleyebilirsiniz.
-* Bazen mağazanızın En İyilerini görüntülemeye çalıştığınızda "İçerik yüklenemiyor" hatası alıyordunuz, bu da uygulama performansının en iyi düzeyde olmadığına dair ironik bir göstergeydi. Artık bu sorun düzeltildi.
-* Mağaza Seçici'yi kullanmayı deneyip oturum açtıktan sonra devam edememe sorunu da düzeltildi.
-* Ağ bağlantısı yavaş olduğunda uygulama bazen çöküyordu. Artık çökmüyor çünkü güvenilmez bir wifi işinizi yönetmenize asla engel olmamalı.
+* Şu anda giriş ekranında daha büyük yazı tipi boyutlarını destekliyoruz.
+* Sipariş detayları ekranındaki tarihler artık yerelleştirildi.

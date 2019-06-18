@@ -19,30 +19,29 @@ target 'WooCommerce' do
 
   # Use the latest bugfix for coretelephony
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4-beta.1'
-  pod 'Automattic-Tracks-iOS', '~> 0.3.5'
+  pod 'Automattic-Tracks-iOS', '~> 0.4.0'
 
   pod 'Gridicons', '~> 0.18'
   
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
-  pod 'WordPressAuthenticator', '~> 1.4.0'
+  pod 'WordPressAuthenticator', '~> 1.5.2'
 
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
-  pod 'WordPressShared', '~> 1.7'
+  pod 'WordPressShared', '~> 1.8.2'
   
-  pod 'WordPressUI', '~> 1.2'
+  pod 'WordPressUI', '~> 1.3.3'
 
 
   # External Libraries
   # ==================
   #
   pod 'Alamofire', '~> 4.7'
-  pod 'Crashlytics', '~> 3.10'
   pod 'KeychainAccess', '~> 3.2'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
   pod 'XLPagerTabStrip', '~> 9.0'
-  pod 'Charts', '~> 3.2'
+  pod 'Charts', '~> 3.3.0'
   pod 'ZendeskSDK', '~> 2.3.1'
 
   # Unit Tests

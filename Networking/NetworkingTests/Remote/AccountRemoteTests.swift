@@ -34,4 +34,21 @@ class AccountRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    func testUpdateAccountDetailsProperlyReturnsParsedAccount() {
+        let id = 1
+        let optOut = false
+        let remote = AccountRemote(network: network)
+        let expectation = self.expectation(description: "Load Account Details")
+
+        network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
+        remote.updateAccountSettings(for: id, tracksOptOut: optOut) { (accountSettings, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(accountSettings)
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

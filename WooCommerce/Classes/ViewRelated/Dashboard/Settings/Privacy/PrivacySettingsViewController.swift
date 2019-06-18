@@ -213,8 +213,8 @@ private extension PrivacySettingsViewController {
 
         // switch
         cell.isOn = reportCrashes
-        cell.onChange = { newValue in
-            self.reportCrashes = newValue
+        cell.onChange = { [weak self] newValue in
+            self?.reportCrashes = newValue
         }
     }
 

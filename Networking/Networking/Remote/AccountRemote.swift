@@ -32,6 +32,23 @@ public class AccountRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Updates the tracks opt out setting for the account associated with the Credential's authToken.
+    /// - Parameters:
+    ///   - for: The dotcom user ID - used primarily for persistence not on the actual network call
+    ///
+    public func updateAccountSettings(for userID: Int, tracksOptOut: Bool, completion: @escaping (AccountSettings?, Error?) -> Void) {
+        let path = "me/settings"
+        let parameters = [
+            "fields": "tracks_opt_out",
+            "tracks_opt_out": String(tracksOptOut)
+        ]
+
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
+        let mapper = AccountSettingsMapper(userID: userID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
 
     /// Loads the Sites collection associated with the WordPress.com User.
     ///

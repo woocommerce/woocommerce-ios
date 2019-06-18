@@ -143,19 +143,17 @@ private extension AccountStore {
     func updateAccountSettings(userID: Int, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Tracks Opt Out flag
         let oldTracksOptOut = updateAccountSettingsTracksOptOut(userID: userID, tracksOptOut: tracksOptOut)
-        onCompletion(nil)
-//        let remote = AccountRemote(network: network)
-//        remote.updateOrder(from: siteID, orderID: orderID, statusKey: statusKey) { [weak self] (_, error) in
-//            guard let error = error else {
-//                // NOTE: We're *not* actually updating the whole entity here. Reason: Prevent UI inconsistencies!!
-//                onCompletion(nil)
-//                return
-//            }
-//
-//            /// Revert Optimistic Update
-//            self?.updateOrderStatus(orderID: orderID, statusKey: oldStatus)
-//            onCompletion(error)
-//        }
+
+        let remote = AccountRemote(network: network)
+        remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in
+            guard let accountSettings = accountSettings else {
+                onCompletion(error)
+                return
+            }
+
+            //self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
+            onCompletion(nil)
+        }
     }
 }
 

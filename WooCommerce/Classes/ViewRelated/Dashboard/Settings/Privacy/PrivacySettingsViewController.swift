@@ -16,20 +16,15 @@ class PrivacySettingsViewController: UIViewController {
     private var sections = [Section]()
 
     /// Collect tracking info
-    ///
-    private var collectInfo = false {
+    /// Mimic the behaviour of Calypso:
+    /// the switch in https://wordpress.com/me/privacy
+    /// is initalised as on, and visible animated back to false after a reload
+    private var collectInfo = true {
         didSet {
             configureSections()
-            self.tableView.reloadData()
+            tableView.reloadData()
         }
     }
-
-//    /// EntityListener: Update / Deletion Notifications.
-//    ///
-//    private lazy var entityListener: EntityListener<AccountSettings> = {
-//        return EntityListener(storageManager: AppDelegate.shared.storageManager,
-//                              readOnlyEntity: product)
-//    }()
 
     /// Send crash reports
     ///
@@ -65,25 +60,16 @@ private extension PrivacySettingsViewController {
         }
         
         let userID = defaultAccount.userID
-        let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] accountSettings, error in
 
+        let action = AccountAction.loadAccountSettings(userID: userID) { [weak self] accountSettings in
             guard let self = self,
                 let accountSettings = accountSettings else {
-                    return
+                return
             }
 
+            // Switch is off when opting out of Tracks
             self.collectInfo = !accountSettings.tracksOptOut
-
         }
-//        let action = AccountAction.loadAccountSettings(userID: userID) { [weak self] accountSettings in
-//            guard let self = self,
-//                let accountSettings = accountSettings else {
-//                return
-//            }
-//
-//            // Switch is off when opting out of Tracks
-//            self.collectInfo = !accountSettings.tracksOptOut
-//        }
 
         StoresManager.shared.dispatch(action)
     }

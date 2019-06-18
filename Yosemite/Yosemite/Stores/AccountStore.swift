@@ -30,8 +30,6 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
-        case .loadAccountSettings(let userID, let onCompletion):
-            loadAccountSettings(userID: userID, onCompletion: onCompletion)
         case .loadSite(let siteID, let onCompletion):
             loadSite(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
@@ -127,12 +125,6 @@ private extension AccountStore {
         onCompletion(account)
     }
 
-    /// Loads the AccountSettings associated with the specified userID.
-    func loadAccountSettings(userID: Int, onCompletion: @escaping (AccountSettings?) -> Void) {
-        let accountSettings = storageManager.viewStorage.loadAccountSettings(userId: userID)?.toReadOnly()
-        onCompletion(accountSettings)
-    }
-
     /// Loads the Site associated with the specified siteID (if any!)
     ///
     func loadSite(siteID: Int, onCompletion: @escaping (Site?) -> Void) {
@@ -141,17 +133,13 @@ private extension AccountStore {
     }
     
     func updateAccountSettings(userID: Int, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
-        /// Optimistically update the Tracks Opt Out flag
-        let _ = updateAccountSettingsTracksOptOut(userID: userID, tracksOptOut: tracksOptOut)
-
         let remote = AccountRemote(network: network)
         remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in
-            guard let accountSettings = accountSettings else {
+            guard let _ = accountSettings else {
                 onCompletion(error)
                 return
             }
 
-            //self?.upsertStoredAccountSettings(readOnlyAccountSettings: accountSettings)
             onCompletion(nil)
         }
     }
@@ -216,23 +204,4 @@ extension AccountStore {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }
-    
-    /// Updates the TracksOptOut of the specified User/Account, as requested.
-    ///
-    /// - Returns: TracksOptOut, prior to performing the Update OP.
-    ///
-    @discardableResult
-    func updateAccountSettingsTracksOptOut(userID: Int, tracksOptOut: Bool) -> Bool {
-        let storage = storageManager.viewStorage
-        guard let accountSettings = storage.loadAccountSettings(userId: userID) else {
-            return tracksOptOut
-        }
-        
-        let oldTracksOptOut = accountSettings.tracksOptOut
-        accountSettings.tracksOptOut = tracksOptOut
-        storage.saveIfNeeded()
-        
-        return oldTracksOptOut
-    }
-
 }

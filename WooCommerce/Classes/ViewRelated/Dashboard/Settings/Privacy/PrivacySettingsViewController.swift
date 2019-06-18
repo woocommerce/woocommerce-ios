@@ -61,10 +61,10 @@ private extension PrivacySettingsViewController {
         
         let userID = defaultAccount.userID
 
-        let action = AccountAction.loadAccountSettings(userID: userID) { [weak self] accountSettings in
+        let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
             guard let self = self,
                 let accountSettings = accountSettings else {
-                return
+                    return
             }
 
             // Switch is off when opting out of Tracks

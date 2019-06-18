@@ -232,23 +232,18 @@ private extension PrivacySettingsViewController {
     // MARK: Actions
     //
     func collectInfoWasUpdated(newValue: Bool) {
-        // Save the user's preference
-        
-        // TODO Replace this somewhere
-        //        WooAnalytics.shared.setUserHasOptedOut(!newValue)
-        
+        let userOptedOut = !newValue
+
         guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
             return
         }
         
         let userID = defaultAccount.userID
-        let tracksOptOut = !newValue // Tracks Opt Out is true when the switch is false/off
-        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut) { error in
-            // TODO do something here
-            guard let error = error else {
-                // TODO :: This should get moved to an EntityListener in StoreManager or something alike
-                // Save the user's preference
-                WooAnalytics.shared.setUserHasOptedOut(tracksOptOut)
+
+        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { error in
+
+            guard let _ = error else {
+                WooAnalytics.shared.setUserHasOptedOut(userOptedOut)
 
                 return
             }
@@ -263,7 +258,6 @@ private extension PrivacySettingsViewController {
         // This event will only report if the user has Analytics currently on
         WooAnalytics.shared.track(.settingsReportCrashesToggled)
     }
-
 
     /// Display Automattic's Cookie Policy web page
     ///

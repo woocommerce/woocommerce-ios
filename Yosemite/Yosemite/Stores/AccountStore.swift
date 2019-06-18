@@ -142,7 +142,7 @@ private extension AccountStore {
     
     func updateAccountSettings(userID: Int, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Tracks Opt Out flag
-        let oldTracksOptOut = updateAccountSettingsTracksOptOut(userID: userID, tracksOptOut: tracksOptOut)
+        let _ = updateAccountSettingsTracksOptOut(userID: userID, tracksOptOut: tracksOptOut)
 
         let remote = AccountRemote(network: network)
         remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in

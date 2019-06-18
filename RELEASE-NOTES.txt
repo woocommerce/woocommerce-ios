@@ -1,5 +1,6 @@
 2.2
 -----
+- improvement: opting out of Tracks syncs with WordPress.com
  
 2.1
 -----

@@ -46,16 +46,6 @@ final class OrderDetailsViewController: UIViewController {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    /// Product ResultsController.
-    ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     /// Sections to be rendered
     ///
     private var sections = [Section]()
@@ -74,18 +64,6 @@ final class OrderDetailsViewController: UIViewController {
         didSet {
             reloadTableViewSectionsAndData()
         }
-    }
-
-//    /// Order shipment tracking list
-//    ///
-//    private var orderTracking: [ShipmentTracking] {
-//        return viewModel.trackingResultsController.fetchedObjects
-//    }
-
-    /// Products from an Order
-    ///
-    private var products: [Product] {
-        return productResultsController.fetchedObjects
     }
 
     /// Indicates if we consider the shipment tracking plugin as reachable
@@ -115,7 +93,7 @@ final class OrderDetailsViewController: UIViewController {
         configureEntityListener()
         configureResultsController()
         prepareViewModel()
-        configureProductResultsController()
+        //configureProductResultsController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -195,18 +173,6 @@ private extension OrderDetailsViewController {
     ///
     private func configureResultsController() {
         try? statusResultsController.performFetch()
-    }
-
-    func configureProductResultsController() {
-        productResultsController.onDidChangeContent = { [weak self] in
-            self?.reloadTableViewSectionsAndData()
-        }
-
-        productResultsController.onDidResetContent = { [weak self] in
-            self?.reloadTableViewSectionsAndData()
-        }
-
-        try? productResultsController.performFetch()
     }
 
     /// Reloads the tableView's data, assuming the view has been loaded.
@@ -584,7 +550,7 @@ private extension OrderDetailsViewController {
 
     func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let item = viewModel.items[indexPath.row]
-        let product = lookUpProduct(by: item.productID)
+        let product = viewModel.lookUpProduct(by: item.productID)
         let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency, product: product)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel)
@@ -739,10 +705,6 @@ private extension OrderDetailsViewController {
         return nil
     }
 
-    func lookUpProduct(by productID: Int) -> Product? {
-        return products.filter({ $0.productID == productID }).first
-    }
-
     func deleteTracking(_ tracking: ShipmentTracking) {
         let siteID = viewModel.order.siteID
         let orderID = viewModel.order.orderID
@@ -793,7 +755,7 @@ private extension OrderDetailsViewController {
 
     func fulfillWasPressed() {
         WooAnalytics.shared.track(.orderDetailFulfillButtonTapped)
-        let fulfillViewController = FulfillViewController(order: viewModel.order, products: products)
+        let fulfillViewController = FulfillViewController(order: viewModel.order, products: viewModel.products)
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }
 
@@ -983,7 +945,7 @@ extension OrderDetailsViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let productListViewController = segue.destination as? ProductListViewController {
             productListViewController.viewModel = viewModel
-            productListViewController.products = products
+            productListViewController.products = viewModel.products
         }
     }
 }

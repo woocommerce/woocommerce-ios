@@ -176,12 +176,33 @@ class OrderDetailsViewModel {
     var orderTracking: [ShipmentTracking] {
         return trackingResultsController.fetchedObjects
     }
+
+    /// Product ResultsController.
+    ///
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Products from an Order
+    ///
+    var products: [Product] {
+        return productResultsController.fetchedObjects
+    }
+
+    func lookUpProduct(by productID: Int) -> Product? {
+        return products.filter({ $0.productID == productID }).first
+    }
 }
 
 
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         configureTrackingResultsController(onReload: onReload)
+        configureProductResultsController(onReload: onReload)
     }
 
     private func configureTrackingResultsController(onReload: @escaping () -> Void) {
@@ -190,5 +211,13 @@ extension OrderDetailsViewModel {
         trackingResultsController.onDidResetContent = onReload
 
         try? trackingResultsController.performFetch()
+    }
+
+    private func configureProductResultsController(onReload: @escaping () -> Void) {
+        productResultsController.onDidChangeContent = onReload
+
+        productResultsController.onDidResetContent = onReload
+
+        try? productResultsController.performFetch()
     }
 }

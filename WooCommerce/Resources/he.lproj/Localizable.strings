@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-28 11:54:02+0000 */
+/* Translation-Revision-Date: 2019-06-11 10:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "הוספת של כפתור להערה";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "הוספת כפתור למעקב";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "הפעולה מוסיפה הערה להזמנה";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "רקע";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "הזמנות בהמתנה:";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "עמודה מספר %1$i, %2$@, ";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "לא ניתן להתחבר. שיטות XML-RPC נדרשות חסרות בשרת.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "לא ניתן להתחבר. קיבלנו שגיאת 403 בעת ניסיון לגשת לנקודת הקצה XMLRPC באתר שלך. כדי שהאפליקציה תוכל לבצע התקשרות עם האתר שלך, יש להפעיל אפשרות זו. יש ליצור קשר עם חברת האחסון שלך כדי לפתור בעיה זו.";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "לא ניתן להתחבר. חברת האחסון שלך חוסמת בקשות POST והאפליקציה דורשת את הפעלת האפשרות הזו כדי לבצע התקשרות עם האתר שלך. יש ליצור קשר עם חברת האחסון שלך כדי לפתור בעיה זו.";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "קישור ריק";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "יש להזין כתובת URL חוקית, לדוגמה example.com.";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "יש להזין שם ספק";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "הסתרת חיוב";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "כנראה שאין אתר וורדפרס בכתובת זו. יש לבדוק שנית את האיות ולנסות שוב.";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "אם האפשרות מושבתת, הפתק יהיה פרטי";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "במלאי";
 
 /* Application's Inactive State */
 "Inactive" = "לא פעיל";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "שם המשתמש אינו תקין";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "מלאי";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "נראה ששם המשתמש או הסיסמה לא רשומים באתר זה.";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "מופעל";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "בהזמנה חוזרת";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "יש לפתוח את הגדרות המכשיר";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "אחר";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "לא במלאי";
 
 /* Product section title */
 "PRODUCT" = "מוצר";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "יש לפתוח את אפליקציית האימייל שלך ולחפש את ההודעה שנשלחה מ-WordPress.com.";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "מחיר";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "תמחור וספירת מלאי";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "מדיניות פרטיות";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "דומיין רשום";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "מחיר רגיל:";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "הסרת מסננים";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "חוות דעת";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "מק\"ט";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "מק\"ט:";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS נשלח";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "מחיר מבצע:";
 
 /* Orders Search Placeholder */
 "Search all orders" = "חיפוש בכל ההזמנות";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "תקופת התחלה: %1$@, תקופת סיום: %2$@";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "כמות המלאי:";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "מצב מלאי:";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "טבלת רווחים בחנות";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "כתובת האתר צריכה להיות קצרה מ-64 תווים.";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "כתובת האתר שהזנת אינה עבור אתר ב-WordPress. כדי שנוכל להתחבר לאתר, האתר חייב להשתמש בפלטפורמה של WordPress.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "לא ניתן למחוק את האתר.";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "עדכון מצב הזמנות";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "%1$@ עודכן ב-%2$@";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "עודכן לפני שעה %ld";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "עם הכניסה לאתר בדפדפן Safari, כתובת האתר תופיע בסרגל העליון של המסך.";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "מורשה";
+
 /* Notification status description for 'approved' */
 "approved" = "אושר";
 
 /* Site Address placeholder */
-"example.com" = "example.com";
+"example.wordpress.com" = "example.wordress.com";
 
 /* Later today */
 "later today" = "מאוחר יותר היום";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "לא מורשה";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "לא תגובות זבל";

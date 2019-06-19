@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import SafariServices
+import Yosemite
 import AutomatticTracks
 
 
@@ -15,10 +16,13 @@ class PrivacySettingsViewController: UIViewController {
     private var sections = [Section]()
 
     /// Collect tracking info
-    ///
-    private var collectInfo = WooAnalytics.shared.userHasOptedIn {
+    /// Mimic the behaviour of Calypso:
+    /// the switch in https://wordpress.com/me/privacy
+    /// is initalised as on, and visibly animated back to false after a reload
+    private var collectInfo = true {
         didSet {
-            collectInfoWasUpdated(newValue: collectInfo)
+            configureSections()
+            tableView.reloadData()
         }
     }
 
@@ -29,6 +33,14 @@ class PrivacySettingsViewController: UIViewController {
             CrashLoggingSettings.didOptIn = reportCrashes
         }
     }
+
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh(sender:)), for: .valueChanged)
+        return refreshControl
+    }()
 
     // MARK: - Overridden Methods
     //
@@ -41,9 +53,43 @@ class PrivacySettingsViewController: UIViewController {
         configureSections()
 
         registerTableViewCells()
+
+        loadAccountSettings()
+    }
+
+    @IBAction private func pullToRefresh(sender: UIRefreshControl) {
+        loadAccountSettings {
+            sender.endRefreshing()
+        }
     }
 }
 
+
+// MARK: - Fetching Account & AccountSettings
+private extension PrivacySettingsViewController {
+
+    func loadAccountSettings(completion: (()-> Void)? = nil) {
+        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+            return
+        }
+
+        let userID = defaultAccount.userID
+
+        let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
+            guard let self = self,
+                let accountSettings = accountSettings else {
+                    return
+            }
+
+            // Switch is off when opting out of Tracks
+            self.collectInfo = !accountSettings.tracksOptOut
+
+            completion?()
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+}
 
 // MARK: - View Configuration
 //
@@ -69,6 +115,8 @@ private extension PrivacySettingsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+
+        tableView.refreshControl = refreshControl
     }
 
     func configureSections() {
@@ -113,7 +161,7 @@ private extension PrivacySettingsViewController {
 
     func configureCollectInfo(cell: SwitchTableViewCell) {
         // image
-        cell.imageView?.image = Gridicon.iconOfType(.stats)
+        cell.imageView?.image = .statsImage
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text
@@ -124,14 +172,14 @@ private extension PrivacySettingsViewController {
 
         // switch
         cell.isOn = collectInfo
-        cell.onChange = { newValue in
-            self.collectInfo = newValue
+        cell.onChange = { [weak self] newValue in
+            self?.collectInfoWasUpdated(newValue: newValue)
         }
     }
 
     func configureShareInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.",
@@ -141,7 +189,7 @@ private extension PrivacySettingsViewController {
 
     func configureCookiePolicy(cell: BasicTableViewCell) {
         // To align the 'Learn more' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Settings > Privacy Settings. A text link to the cookie policy.")
         cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
@@ -149,7 +197,7 @@ private extension PrivacySettingsViewController {
 
     func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.",
@@ -159,7 +207,7 @@ private extension PrivacySettingsViewController {
 
     func configurePrivacyPolicy(cell: BasicTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "Read privacy policy",
@@ -170,7 +218,7 @@ private extension PrivacySettingsViewController {
 
     func configureCookieInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "We use other tracking tools, including some from third parties. Read about these and how to control them.",
@@ -180,7 +228,7 @@ private extension PrivacySettingsViewController {
 
     func configureReportCrashes(cell: SwitchTableViewCell) {
         // image
-        cell.imageView?.image = Gridicon.iconOfType(.bug)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = StyleManager.defaultTextColor
 
         // text
@@ -191,14 +239,14 @@ private extension PrivacySettingsViewController {
 
         // switch
         cell.isOn = reportCrashes
-        cell.onChange = { newValue in
-            self.reportCrashes = newValue
+        cell.onChange = { [weak self] newValue in
+            self?.reportCrashes = newValue
         }
     }
 
     func configureCrashInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
-        cell.imageView?.image = Gridicon.iconOfType(.image)
+        cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
             "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.",
@@ -210,8 +258,23 @@ private extension PrivacySettingsViewController {
     // MARK: Actions
     //
     func collectInfoWasUpdated(newValue: Bool) {
-        // Save the user's preference
-        WooAnalytics.shared.setUserHasOptedIn(newValue)
+        let userOptedOut = !newValue
+
+        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+            return
+        }
+
+        let userID = defaultAccount.userID
+
+        let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { error in
+
+            guard let _ = error else {
+                WooAnalytics.shared.setUserHasOptedOut(userOptedOut)
+
+                return
+            }
+        }
+        StoresManager.shared.dispatch(action)
 
         // This event will only report if the user has turned tracking back on
         WooAnalytics.shared.track(.settingsCollectInfoToggled)
@@ -221,7 +284,6 @@ private extension PrivacySettingsViewController {
         // This event will only report if the user has Analytics currently on
         WooAnalytics.shared.track(.settingsReportCrashesToggled)
     }
-
 
     /// Display Automattic's Cookie Policy web page
     ///

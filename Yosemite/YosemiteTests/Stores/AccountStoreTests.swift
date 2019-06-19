@@ -247,45 +247,6 @@ class AccountStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    // MARK: - AccountAction.loadAccountSettings
-
-    func testLoadAccountSettingsActionReturnsExpectedAccount() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Load AccountSettings Action Success")
-
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 0)
-        accountStore.upsertStoredAccountSettings(readOnlyAccountSettings: AccountSettings(userID: 10, tracksOptOut: true))
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
-
-        let action = AccountAction.loadAccountSettings(userID: 10) { accountSettings in
-            XCTAssertNotNil(accountSettings)
-            XCTAssertEqual(accountSettings!, AccountSettings(userID: 10, tracksOptOut: true))
-            expectation.fulfill()
-        }
-
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    func testLoadAccountSettingsActionReturnsNilForUnknownAccount() {
-        let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectation = self.expectation(description: "Load AccountSettings Action Error")
-
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 0)
-        accountStore.upsertStoredAccountSettings(readOnlyAccountSettings: AccountSettings(userID: 10, tracksOptOut: true))
-        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.AccountSettings.self), 1)
-
-        let action = AccountAction.loadAccountSettings(userID: 9999) { accountSettings in
-            XCTAssertNil(accountSettings)
-            expectation.fulfill()
-        }
-
-        accountStore.onAction(action)
-
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
     // MARK: - AccountAction.loadSite
 
     func testLoadSiteActionReturnsExpectedSite() {

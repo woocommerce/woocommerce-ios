@@ -28,6 +28,10 @@ final class FulfillViewController: UIViewController {
     ///
     private let order: Order
 
+    /// Products in the Order
+    ///
+    private let products: [Product]?
+
     /// ResultsController fetching ShipemntTracking data
     ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
@@ -53,8 +57,9 @@ final class FulfillViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(order: Order) {
+    init(order: Order, products: [Product]?) {
         self.order = order
+        self.products = products
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -311,11 +316,10 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        let viewModel = OrderItemViewModel(item: item, currency: order.currency)
-        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
-        cell.name = viewModel.name
-        cell.quantity = viewModel.quantity
-        cell.sku = viewModel.sku
+        let product = lookUpProduct(by: item.productID)
+        let viewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
+        cell.selectionStyle = .default
+        cell.configure(item: viewModel)
     }
 
     /// Setup: Note Cell
@@ -426,10 +430,8 @@ extension FulfillViewController: UITableViewDelegate {
             present(navController, animated: true, completion: nil)
 
         case .product(let item):
-            if FeatureFlag.productDetails.enabled {
-                let productIDToLoad = item.variationID == 0 ? item.productID : item.variationID
-                productWasPressed(for: productIDToLoad)
-            }
+            let productIDToLoad = item.variationID == 0 ? item.productID : item.variationID
+            productWasPressed(for: productIDToLoad)
 
         case .tracking:
             break
@@ -563,6 +565,10 @@ private extension FulfillViewController {
         }
 
         return orderTracking[orderIndex]
+    }
+
+    func lookUpProduct(by productID: Int) -> Product? {
+        return products?.filter({ $0.productID == productID }).first
     }
 }
 

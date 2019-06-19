@@ -1,4 +1,2 @@
-* Använder du tillägget Spåra leverans? Nu kan du lägga till leveransspårning manuellt till ordrar.
-* När du försökta visa din butiks populäraste produkter visades ibland felet ”Unable to load content” (Kunde inte läsa in innehåll), vilket var en ironisk underprestation från appens sida. Det har vi fixat nu.
-* Om du försökte använda butiksväljaren men inte kom vidare efter inloggningen, så har vi fixat det också.
-* Ibland kraschade appen när den hade en långsam nätverksanslutning. Nu gör den inte det, efter som ett svajigt wifi aldrig får hindra dig från att sköta ditt jobb.
+* Vi stöder nu större teckensnitt på inloggningsskärmen.
+* Datum på skärmen Beställningsinformation är nu lokaliserade.

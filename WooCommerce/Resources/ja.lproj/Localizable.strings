@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-31 04:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-13 12:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "メモボタンを追加";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "追跡ボタンを追加";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "注文にメモを追加します";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "背景";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "入荷待ち :";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "バー番号%1$i、%2$@、";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "接続できませんでした。必要な XML-RPC メソッドがサーバーにありません。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。あなたのサイトの XMLRPC エンドポイントにアクセスする際に、403エラーが発生しました。これは、アプリからあなたのサイトと通信するために必要です。ホスティングサービスに連絡して、この問題を解決してください。";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。ご利用のホスティングサービスは POST 要求をブロックしていますが、アプリはあなたのサイトとの通信に POST 要求を必要としています。ホスティングサービスに連絡して、この問題を解決してください。";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空の URL";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "有効な URL を example.com のように入力します。";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "プロバイダ名を入力";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "請求情報を非表示";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "この URL の WordPress サイトはないようです。綴りをもう一度確認してから、やり直してください。";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "無効の場合はメモが非公開になります";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "在庫あり";
 
 /* Application's Inactive State */
 "Inactive" = "停止中";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "無効なユーザー名";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "在庫";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "このユーザー名またはパスワードは、このサイトに関連付けられていないようです。";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "オン";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "入荷待ち";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "デバイス設定を開く";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "その他";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "在庫なし";
 
 /* Product section title */
 "PRODUCT" = "商品";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "メールアプリを開いて、WordPress.com からのメールを探してください。";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "価格";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "価格設定と在庫";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "個人情報保護方針";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "登録済みドメイン";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "標準価格 :";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "フィルターを削除";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "レビュー";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "SKU";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "商品コード:";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 送信完了";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "セール価格 :";
 
 /* Orders Search Placeholder */
 "Search all orders" = "すべての注文を検索";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "開始期間%1$@、終了期間%2$@";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "在庫数 :";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "在庫状況 :";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "ストアの収益グラフ";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "サイトアドレスは64文字以下にしてください。";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "このアドレスのサイトは WordPress のサイトではありません。接続するには、接続先のサイトが WordPress を使用している必要があります。";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "サイトを削除できませんでした。";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "注文ステータスを更新";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "%1$@の%2$@に更新";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld時間前に更新";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Safari でサイトにアクセスすると、画面の上部にあるバーにサイトアドレスが表示されます。";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "許可されている";
+
 /* Notification status description for 'approved' */
 "approved" = "承認";
 
 /* Site Address placeholder */
-"example.com" = "example.com";
+"example.wordpress.com" = "example.wordress.com";
 
 /* Later today */
 "later today" = "今日あとで";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "許可されていない";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "スパムを解除";

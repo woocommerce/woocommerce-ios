@@ -211,7 +211,7 @@ private extension OrdersViewController {
     ///
     func configureNavigation() {
         navigationItem.leftBarButtonItem = {
-            let button = UIBarButtonItem(image: Gridicon.iconOfType(.search),
+            let button = UIBarButtonItem(image: .searchImage,
                                          style: .plain,
                                          target: self,
                                          action: #selector(displaySearchOrders))
@@ -227,7 +227,7 @@ private extension OrdersViewController {
         }()
 
         navigationItem.rightBarButtonItem = {
-            let button = UIBarButtonItem(image: Gridicon.iconOfType(.filter),
+            let button = UIBarButtonItem(image: .filterImage,
                                                  style: .plain,
                                                  target: self,
                                                  action: #selector(displayFiltersAlert))
@@ -267,7 +267,7 @@ private extension OrdersViewController {
     ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
-        tabBarItem.image = Gridicon.iconOfType(.pages)
+        tabBarItem.image = .pagesImage
     }
 
     /// Setup: TableView

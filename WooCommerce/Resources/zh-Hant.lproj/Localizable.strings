@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-30 01:54:29+0000 */
+/* Translation-Revision-Date: 2019-06-13 02:54:02+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "新增備註按鈕";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "新增追蹤按鈕";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "在訂單中新增備註";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "背景";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "無庫存下單：";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "長條數目 %1$i, %2$@,";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "無法連線。伺服器缺少必要的 XML-RPC 方法。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "無法連結。嘗試存取網站的 XMLRPC 終端時發生 403 錯誤。此應用程式需要 XMLRPC 終端才能與你的網站通訊。請聯絡你的主機服務提供者，以解決此問題。";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "無法連結。你的主機服務提供者封鎖了 POST 請求，但此應用程式需要使用 POST 請求才能與你的網站通訊。請聯絡你的主機服務提供者，以解決此問題。";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空的網址";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "請輸入有效的 URL，例如：example.com。";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "輸入供應商名稱";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "隱藏帳單";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "很抱歉，這個 URL 似乎不是 WordPress 網站。請重新檢查拼法是否正確，然後再試一次。";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "若停用，此備註將變成私人狀態";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "尚有存貨";
 
 /* Application's Inactive State */
 "Inactive" = "未啟用";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "無效的使用者名稱";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "庫存";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "使用者名稱\/密碼似乎不適用於這個網站。";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "開啟";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "延期交貨";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "開啟裝置設定";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "其他";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "沒有存貨";
 
 /* Product section title */
 "PRODUCT" = "產品";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "請開啟電子郵件應用程式，找到 WordPress.com 傳送的電子郵件。";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "價格";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "定價和庫存";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "隱私權政策";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已註冊的網域";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "原價：";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "移除篩選條件";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "評論";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "貨號";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "貨號：";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "簡訊已傳送";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "折扣價：";
 
 /* Orders Search Placeholder */
 "Search all orders" = "搜尋全部訂單";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "期限：%1$@ 至 %2$@";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "存貨數量：";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "存貨狀態：";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "商店收益圖";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "網站位址長度必須小於 64 個字元。";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "此位址的網站不是 WordPress 網站。為讓我們進行連結，網站必須使用 WordPress。";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "網站無法刪除。";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "已更新訂單狀態";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "已於 %1$@ %2$@ 更新";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld 小時前已更新";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "當你使用 Safari 造訪自己的網站時，網站位址會顯示在畫面上方的網址列中。";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "允許";
+
 /* Notification status description for 'approved' */
 "approved" = "已核准";
 
 /* Site Address placeholder */
-"example.com" = "example.com";
+"example.wordpress.com" = "example.wordress.com";
 
 /* Later today */
 "later today" = "今日稍晚";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "不允許";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "非垃圾留言";

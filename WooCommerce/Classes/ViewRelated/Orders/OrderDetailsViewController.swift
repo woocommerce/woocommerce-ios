@@ -56,6 +56,16 @@ final class OrderDetailsViewController: UIViewController {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// Product ResultsController.
+    ///
+    private lazy var productResultsController: ResultsController<StorageProduct> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Sections to be rendered
     ///
     private var sections = [Section]()
@@ -80,6 +90,12 @@ final class OrderDetailsViewController: UIViewController {
     ///
     private var orderTracking: [ShipmentTracking] {
         return trackingResultsController.fetchedObjects
+    }
+
+    /// Products from an Order
+    ///
+    private var products: [Product] {
+        return productResultsController.fetchedObjects
     }
 
     /// Indicates if we consider the shipment tracking plugin as reachable
@@ -109,11 +125,13 @@ final class OrderDetailsViewController: UIViewController {
         configureEntityListener()
         configureResultsController()
         configureTrackingResultsController()
+        configureProductResultsController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         syncNotes()
+        syncProducts()
         syncTrackingsHidingAddButtonIfNecessary()
     }
 
@@ -144,7 +162,6 @@ private extension OrderDetailsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
-        tableView.separatorInset = .zero
     }
 
     /// Setup: Navigation
@@ -160,7 +177,7 @@ private extension OrderDetailsViewController {
     ///
     func configureEntityListener() {
         entityListener.onUpsert = { [weak self] order in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -169,7 +186,7 @@ private extension OrderDetailsViewController {
         }
 
         entityListener.onDelete = { [weak self] in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -194,6 +211,18 @@ private extension OrderDetailsViewController {
         }
 
         try? trackingResultsController.performFetch()
+    }
+
+    func configureProductResultsController() {
+        productResultsController.onDidChangeContent = { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+        }
+
+        productResultsController.onDidResetContent = { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+        }
+
+        try? productResultsController.performFetch()
     }
 
     /// Reloads the tableView's data, assuming the view has been loaded.
@@ -376,6 +405,11 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
+        syncProducts() { _ in
+            group.leave()
+        }
+
+        group.enter()
         syncNotes { _ in
             group.leave()
         }
@@ -448,7 +482,7 @@ private extension OrderDetailsViewController {
 
         cell.bodyLabel?.text = email
         cell.bodyLabel?.applyBodyStyle() // override the woo purple text
-        cell.accessoryImage = Gridicon.iconOfType(.mail)
+        cell.accessoryImage = .mailImage
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
@@ -472,7 +506,7 @@ private extension OrderDetailsViewController {
 
         cell.bodyLabel?.text = phoneNumber
         cell.bodyLabel?.applyBodyStyle() // override the woo purple text
-        cell.accessoryImage = Gridicon.iconOfType(.ellipsis)
+        cell.accessoryImage = .ellipsisImage
 
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
@@ -566,12 +600,10 @@ private extension OrderDetailsViewController {
 
     func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let item = viewModel.items[indexPath.row]
-        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency)
-        cell.selectionStyle = FeatureFlag.productDetails.enabled ? .default : .none
-        cell.name = itemViewModel.item.name
-        cell.quantity = itemViewModel.quantity
-        cell.price = itemViewModel.price
-        cell.sku = itemViewModel.sku
+        let product = lookUpProduct(by: item.productID)
+        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency, product: product)
+        cell.selectionStyle = .default
+        cell.configure(item: itemViewModel)
     }
 
     func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
@@ -651,7 +683,7 @@ private extension OrderDetailsViewController {
 private extension OrderDetailsViewController {
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderAction.retrieveOrder(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
-            guard let `self` = self, let order = order else {
+            guard let self = self, let order = order else {
                 DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
                 onCompletion?(error)
                 return
@@ -700,12 +732,31 @@ private extension OrderDetailsViewController {
         StoresManager.shared.dispatch(action)
     }
 
+    func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ProductAction.requestMissingProducts(for: viewModel.order) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing Products: \(error)")
+                onCompletion?(error)
+
+                return
+            }
+
+            onCompletion?(nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
             return orderStatus
         }
 
         return nil
+    }
+
+    func lookUpProduct(by productID: Int) -> Product? {
+        return products.filter({ $0.productID == productID }).first
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {
@@ -758,7 +809,7 @@ private extension OrderDetailsViewController {
 
     func fulfillWasPressed() {
         WooAnalytics.shared.track(.orderDetailFulfillButtonTapped)
-        let fulfillViewController = FulfillViewController(order: viewModel.order)
+        let fulfillViewController = FulfillViewController(order: viewModel.order, products: products)
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }
 
@@ -841,10 +892,10 @@ extension OrderDetailsViewController: UITableViewDataSource {
         }
 
         let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideSectionFooter.reuseIdentifier) as! ShowHideSectionFooter
-        let image = displaysBillingDetails ? Gridicon.iconOfType(.chevronUp) : Gridicon.iconOfType(.chevronDown)
+        let image = displaysBillingDetails ? UIImage.chevronUpImage : UIImage.chevronDownImage
         cell.configure(text: footerText, image: image)
         cell.didSelectFooter = { [weak self] in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -883,14 +934,12 @@ extension OrderDetailsViewController: UITableViewDelegate {
             let navController = WooNavigationController(rootViewController: addTracking)
             present(navController, animated: true, completion: nil)
         case .orderItem:
-            if FeatureFlag.productDetails.enabled {
-                let item = viewModel.order.items[indexPath.row]
-                let productID = item.variationID == 0 ? item.productID : item.variationID
-                let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                       siteID: viewModel.order.siteID)
-                let navController = WooNavigationController(rootViewController: loaderViewController)
-                present(navController, animated: true, completion: nil)
-            }
+            let item = viewModel.order.items[indexPath.row]
+            let productID = item.variationID == 0 ? item.productID : item.variationID
+            let loaderViewController = ProductLoaderViewController(productID: productID,
+                                                                   siteID: viewModel.order.siteID)
+            let navController = WooNavigationController(rootViewController: loaderViewController)
+            present(navController, animated: true, completion: nil)
         case .details:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
@@ -950,6 +999,7 @@ extension OrderDetailsViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if let productListViewController = segue.destination as? ProductListViewController {
             productListViewController.viewModel = viewModel
+            productListViewController.products = products
         }
     }
 }

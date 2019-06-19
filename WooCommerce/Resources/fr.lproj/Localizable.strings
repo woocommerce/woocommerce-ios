@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-05-27 11:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-12 10:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -40,6 +40,9 @@
 
 /* Accessibility label for the 'Add a note' button */
 "Add a note button" = "Ajouter un bouton de note";
+
+/* Accessibility label for the 'Add a tracking' button */
+"Add a tracking button" = "Ajouter un bouton de suivi";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Ajoute une note à une commande";
@@ -110,6 +113,9 @@
 
 /* Application's Background State */
 "Background" = "Arrière-plan";
+
+/* A descriptive label prefix. Example: 'Backorders: not allowed' */
+"Backorders:" = "Commandes en réapprovisionnement :";
 
 /* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Nombre de barres %1$i, %2$@, ";
@@ -188,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Connexion impossible. Les méthodes XML-RPC obligatoires sont manquantes sur ce serveur.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Impossible de se connecter. Nous avons reçu une erreur 403 en se connectant au point de terminaison XMLRPC de votre site. L’app a besoin de cela pour communiquer avec votre site. Contactez votre hébergeur pour résoudre ce problème.";
+"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Impossible de se connecter. Votre hébergeur bloque les requêtes POST et l’app a besoin de cela pour communiquer avec votre site. Contactez votre hébergeur pour résoudre ce problème.";
@@ -291,9 +297,6 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Adresse vide";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "Enter a valid URL eg. example.com.";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Saisir le nom du fournisseur";
 
@@ -374,8 +377,14 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Masquer la facturation";
 
+/* Error message shown a URL does not point to an existing site. */
+"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Humm, il semblerait ne pas y avoir de site WordPress à cette URL. Vérifiez l’orthographe et essayez à nouveau.";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Si cette option est désactivée, la note sera privée";
+
+/* Display label for the product's inventory stock status */
+"In stock" = "En stock";
 
 /* Application's Inactive State */
 "Inactive" = "Inactif";
@@ -406,6 +415,10 @@
 
 /* No comment provided by engineer. */
 "Invalid username" = "Identifiant non valide";
+
+/* Product Details - inventory section title
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+"Inventory" = "Stock";
 
 /* An error message shown during log in when the username or password is incorrect. */
 "It looks like this username\/password isn't associated with this site." = "Il semblerait que cet identifiant\/mot de passe n’est pas associé à ce site.";
@@ -593,6 +606,9 @@
 /* Spoken label to indicate switch control is turned on */
 "On" = "Activé";
 
+/* Display label for the product's inventory stock status */
+"On back order" = "Commande différée";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Réglages des appareils ouverts";
 
@@ -636,6 +652,9 @@
 
 /* My Store > Settings > Other app section */
 "Other" = "Autre";
+
+/* Display label for the product's inventory stock status */
+"Out of stock" = "Rupture de stock";
 
 /* Product section title */
 "PRODUCT" = "PRODUIT";
@@ -689,6 +708,12 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Merci d'ouvrir votre boîte de réception et de rechercher un e-mail de WordPress.com.";
 
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+"Price" = "Prix";
+
+/* Product Details - pricing and inventory section title */
+"Pricing and Inventory" = "Prix et stock";
+
 /* Opens the Privacy Policy web page */
 "Privacy Policy" = "Politique de confidentialité";
 
@@ -738,6 +763,9 @@
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Domaine enregistré";
 
+/* A descriptive label prefix. Example: 'Regular price: $20.00' */
+"Regular price:" = "Tarif standard :";
+
 /* Action: Opens the Store in a browser
    Action: removes the current filters from the notifications list */
 "Remove Filters" = "Supprimer les filtres";
@@ -768,11 +796,18 @@
    Reviews descriptive label */
 "Reviews" = "Avis";
 
-/* SKU label */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+"SKU" = "UGS";
+
+/* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "UGS :";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS envoyé";
+
+/* A descriptive label prefix. Example: 'Sale price: $18.00' */
+"Sale price:" = "Tarif promo :";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Rechercher toutes les commandes";
@@ -896,6 +931,12 @@
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Période commençant le %1$@ et se terminant le %2$@";
 
+/* A descriptive label prefix. Example: 'Stock quantity: 19' */
+"Stock quantity:" = "Quantité en stock :";
+
+/* A descriptive label prefix. Example: 'Stock status: In stock' */
+"Stock status:" = "État du stock :";
+
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Tableau des recettes de la boutique";
 
@@ -973,9 +1014,6 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "L'adresse du site doit compter moins de 64 caractères.";
-
-/* Error message shown a URL does not point to an existing site. */
-"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Le site à cette adresse n'est pas un site WordPress. Le site doit utiliser WordPress pour que nous puissions nous y connecter.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Ce site ne peux pas être supprimé.";
@@ -1140,9 +1178,6 @@
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Modifier l'état des commandes";
 
-/* Order updated summary date. It reads: Updated {medium formatted date} at {short style time} */
-"Updated %1$@ at %2$@" = "%1$@ remplacée par %2$@";
-
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Mises à jour il y a %ld heure";
 
@@ -1273,14 +1308,20 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "L’adresse de votre site apparait dans la barre en haut de l’écran quand vous visitez votre site dans Safari.";
 
+/* Backorders status. Example: 'Backorders: allowed' */
+"allowed" = "autorisée";
+
 /* Notification status description for 'approved' */
 "approved" = "approuvé";
 
 /* Site Address placeholder */
-"example.com" = "exemple.com";
+"example.wordpress.com" = "example.wordress.com";
 
 /* Later today */
 "later today" = "ultérieurement aujourd'hui";
+
+/* Backorders status. Example: 'Backorders: not allowed' */
+"not allowed" = "non autorisée";
 
 /* Notification status description for 'unspam' (opposite of spam) */
 "not spam" = "aucun indésirable";

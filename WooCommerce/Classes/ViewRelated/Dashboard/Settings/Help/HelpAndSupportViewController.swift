@@ -117,7 +117,7 @@ private extension HelpAndSupportViewController {
     /// Warn devs that logged in with an Automattic email.
     ///
     func warnDeveloperIfNeeded() {
-        guard accountEmail.contains(Constants.devEmail) else {
+        guard DeveloperEmailChecker.isDeveloperEmail(email: accountEmail) else {
             return
         }
 
@@ -333,7 +333,6 @@ extension HelpAndSupportViewController: UITableViewDelegate {
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 44
-    static let devEmail = "@automattic.com"
     static let appLogSegue = "ShowApplicationLogViewController"
 }
 

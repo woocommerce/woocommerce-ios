@@ -85,6 +85,8 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func signupTapped() {
+        // This stat is part of a funnel that provides critical information.  Before
+        // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         WordPressAuthenticator.track(.signupButtonTapped)
         performSegue(withIdentifier: NUXViewController.SegueIdentifier.showSignupMethod.rawValue, sender: self)
     }

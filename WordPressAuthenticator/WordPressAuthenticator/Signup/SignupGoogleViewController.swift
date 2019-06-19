@@ -130,6 +130,8 @@ private extension SignupGoogleViewController {
     /// Social Signup Successful: Analytics + Pushing the Signup Epilogue.
     ///
     func socialSignupWasSuccessful(with credentials: AuthenticatorCredentials) {
+        // This stat is part of a funnel that provides critical information.  Before
+        // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         WordPressAuthenticator.track(.createdAccount, properties: ["source": "google"])
         WordPressAuthenticator.track(.signupSocialSuccess)
 

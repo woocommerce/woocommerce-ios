@@ -36,16 +36,6 @@ final class OrderDetailsViewController: UIViewController {
         return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
     }()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
-    ///
-    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     /// Sections to be rendered
     ///
     private var sections = [Section]()
@@ -71,12 +61,6 @@ final class OrderDetailsViewController: UIViewController {
     ///
     private var trackingIsReachable: Bool = false
 
-    /// Order statuses list
-    ///
-    private var currentSiteStatuses: [OrderStatus] {
-        return statusResultsController.fetchedObjects
-    }
-
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -91,9 +75,7 @@ final class OrderDetailsViewController: UIViewController {
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureEntityListener()
-        configureResultsController()
         prepareViewModel()
-        //configureProductResultsController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -149,7 +131,7 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            let orderStatus = self.lookUpOrderStatus(for: order)
+            let orderStatus = self.viewModel.lookUpOrderStatus(for: order)
             self.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
         }
 
@@ -167,12 +149,6 @@ private extension OrderDetailsViewController {
         viewModel.configureResultsControllers { [weak self] in
             self?.reloadTableViewSectionsAndData()
         }
-    }
-
-    /// Setup: Results Controller
-    ///
-    private func configureResultsController() {
-        try? statusResultsController.performFetch()
     }
 
     /// Reloads the tableView's data, assuming the view has been loaded.
@@ -639,7 +615,7 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            let orderStatus = self.lookUpOrderStatus(for: order)
+            let orderStatus = self.viewModel.lookUpOrderStatus(for: order)
             self.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
             onCompletion?(nil)
         }
@@ -695,14 +671,6 @@ private extension OrderDetailsViewController {
         }
 
         StoresManager.shared.dispatch(action)
-    }
-
-    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
-            return orderStatus
-        }
-
-        return nil
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {

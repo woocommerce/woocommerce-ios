@@ -193,6 +193,26 @@ class OrderDetailsViewModel {
         return productResultsController.fetchedObjects
     }
 
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Order statuses list
+    ///
+    var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
+    }
+
+    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+        return currentSiteStatuses.filter({$0.slug == order.statusKey}).first
+    }
+
     func lookUpProduct(by productID: Int) -> Product? {
         return products.filter({ $0.productID == productID }).first
     }
@@ -203,6 +223,7 @@ extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         configureTrackingResultsController(onReload: onReload)
         configureProductResultsController(onReload: onReload)
+        configureStatusResultsController()
     }
 
     private func configureTrackingResultsController(onReload: @escaping () -> Void) {
@@ -219,5 +240,9 @@ extension OrderDetailsViewModel {
         productResultsController.onDidResetContent = onReload
 
         try? productResultsController.performFetch()
+    }
+
+    private func configureStatusResultsController() {
+        try? statusResultsController.performFetch()
     }
 }

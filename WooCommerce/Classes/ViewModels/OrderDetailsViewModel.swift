@@ -729,7 +729,7 @@ extension OrderDetailsViewModel {
         cell.display(viewModel: self)
     }
 
-    func rowAtIndexPath(_ indexPath: IndexPath) -> OrderDetailsViewModel.Row {
+    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
 

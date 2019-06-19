@@ -39,7 +39,7 @@ class AccountRemoteTests: XCTestCase {
         let id = 1
         let optOut = false
         let remote = AccountRemote(network: network)
-        let expectation = self.expectation(description: "Load Account Details")
+        let expectation = self.expectation(description: "Update Account Details")
 
         network.simulateResponse(requestUrlSuffix: "me/settings", filename: "me-settings")
         remote.updateAccountSettings(for: id, tracksOptOut: optOut) { (accountSettings, error) in

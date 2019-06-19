@@ -218,7 +218,9 @@ private extension StoresManager {
         }
 
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
-            if let `self` = self, let accountSettings = accountSettings, self.isAuthenticated {
+            if let self = self,
+                let accountSettings = accountSettings,
+                self.isAuthenticated {
                 // Save the user's preference
                 WooAnalytics.shared.setUserHasOptedOut(accountSettings.tracksOptOut)
             }

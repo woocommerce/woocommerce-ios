@@ -34,7 +34,7 @@ public class AccountRemote: Remote {
 
     /// Updates the tracks opt out setting for the account associated with the Credential's authToken.
     /// - Parameters:
-    ///   - for: The dotcom user ID - used primarily for persistence not on the actual network call
+    ///   - userID: The dotcom user ID - used primarily for persistence not on the actual network call
     ///
     public func updateAccountSettings(for userID: Int, tracksOptOut: Bool, completion: @escaping (AccountSettings?, Error?) -> Void) {
         let path = "me/settings"

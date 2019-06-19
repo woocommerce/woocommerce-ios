@@ -18,7 +18,7 @@ class PrivacySettingsViewController: UIViewController {
     /// Collect tracking info
     /// Mimic the behaviour of Calypso:
     /// the switch in https://wordpress.com/me/privacy
-    /// is initalised as on, and visible animated back to false after a reload
+    /// is initalised as on, and visibly animated back to false after a reload
     private var collectInfo = true {
         didSet {
             configureSections()

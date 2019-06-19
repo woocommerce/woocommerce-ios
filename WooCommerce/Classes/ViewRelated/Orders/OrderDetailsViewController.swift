@@ -171,35 +171,13 @@ private extension OrderDetailsViewController {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
-        let cells = [
-            LeftImageTableViewCell.self,
-            CustomerNoteTableViewCell.self,
-            CustomerInfoTableViewCell.self,
-            WooBasicTableViewCell.self,
-            OrderNoteTableViewCell.self,
-            PaymentTableViewCell.self,
-            ProductDetailsTableViewCell.self,
-            OrderTrackingTableViewCell.self,
-            SummaryTableViewCell.self,
-            FulfillButtonTableViewCell.self
-        ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        viewModel.registerTableViewCells(tableView)
     }
 
     /// Registers all of the available TableViewHeaderFooters
     ///
     func registerTableViewHeaderFooters() {
-        let headersAndFooters = [
-            TwoColumnSectionHeaderView.self,
-            ShowHideSectionFooter.self
-        ]
-
-        for kind in headersAndFooters {
-            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
-        }
+        viewModel.registerTableViewHeaderFooters(tableView)
     }
 }
 

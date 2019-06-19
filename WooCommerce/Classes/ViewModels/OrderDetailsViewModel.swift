@@ -246,3 +246,40 @@ extension OrderDetailsViewModel {
         try? statusResultsController.performFetch()
     }
 }
+
+
+extension OrderDetailsViewModel {
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells(_ tableView: UITableView) {
+        let cells = [
+            LeftImageTableViewCell.self,
+            CustomerNoteTableViewCell.self,
+            CustomerInfoTableViewCell.self,
+            WooBasicTableViewCell.self,
+            OrderNoteTableViewCell.self,
+            PaymentTableViewCell.self,
+            ProductDetailsTableViewCell.self,
+            OrderTrackingTableViewCell.self,
+            SummaryTableViewCell.self,
+            FulfillButtonTableViewCell.self
+        ]
+
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
+    }
+
+    /// Registers all of the available TableViewHeaderFooters
+    ///
+    func registerTableViewHeaderFooters(_ tableView: UITableView) {
+        let headersAndFooters = [
+            TwoColumnSectionHeaderView.self,
+            ShowHideSectionFooter.self
+        ]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
+    }
+}

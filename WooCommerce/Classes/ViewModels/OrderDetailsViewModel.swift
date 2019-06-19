@@ -232,12 +232,13 @@ class OrderDetailsViewModel {
     ///
     var orderNotes: [OrderNote] = [] {
         didSet {
-            //reloadTableViewSectionsAndData()
             onUIReloadRequired?()
         }
     }
 
     var onUIReloadRequired: (() -> Void)?
+
+    var onCellAction: ((CellActionType, IndexPath?) -> Void)?
 
     /// Haptic Feedback!
     ///
@@ -482,6 +483,12 @@ extension OrderDetailsViewModel {
         }
     }
 
+    enum CellActionType {
+        case fulfill
+        case tracking
+        case summary
+    }
+
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as WooBasicTableViewCell where row == .details:
@@ -662,7 +669,7 @@ extension OrderDetailsViewModel {
     func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
         cell.fulfillButton.setTitle(fulfillTitle, for: .normal)
         cell.onFullfillTouchUp = { [weak self] in
-            //self?.fulfillWasPressed()
+            self?.onCellAction?(.fulfill, nil)
         }
     }
 
@@ -675,7 +682,7 @@ extension OrderDetailsViewModel {
         cell.middleText = tracking.trackingNumber
 
         cell.onEllipsisTouchUp = { [weak self] in
-            //self?.trackingWasPressed(at: indexPath)
+            self?.onCellAction?(.tracking, indexPath)
         }
 
         if let dateShipped = tracking.dateShipped?.toString(dateStyle: .long, timeStyle: .none) {
@@ -723,7 +730,7 @@ extension OrderDetailsViewModel {
         cell.title = summaryTitle
         cell.dateCreated = summaryDateCreated
         cell.onEditTouchUp = { [weak self] in
-            //self?.displayOrderStatusList()
+            self?.onCellAction?(.summary, nil)
         }
 
         cell.display(viewModel: self)

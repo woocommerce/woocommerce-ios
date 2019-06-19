@@ -128,8 +128,13 @@ private extension OrderDetailsViewController {
         viewModel.onUIReloadRequired = { [weak self] in
             self?.reloadTableViewSectionsAndData()
         }
+
         viewModel.configureResultsControllers { [weak self] in
             self?.reloadTableViewSectionsAndData()
+        }
+
+        viewModel.onCellAction = {[weak self] (actionType, indexPath) in
+            self?.handleCellAction(actionType, at: indexPath)
         }
     }
 
@@ -329,6 +334,20 @@ private extension OrderDetailsViewController {
             WooAnalytics.shared.track(.orderDetailShowBillingTapped)
         } else {
             WooAnalytics.shared.track(.orderDetailHideBillingTapped)
+        }
+    }
+
+    func handleCellAction(_ type: OrderDetailsViewModel.CellActionType, at indexPath: IndexPath?) {
+        switch type {
+        case .fulfill:
+            fulfillWasPressed()
+        case .summary:
+            displayOrderStatusList()
+        case .tracking:
+            guard let indexPath = indexPath else {
+                break
+            }
+            trackingWasPressed(at: indexPath)
         }
     }
 

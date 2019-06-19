@@ -172,8 +172,8 @@ private extension PrivacySettingsViewController {
 
         // switch
         cell.isOn = collectInfo
-        cell.onChange = { newValue in
-            self.collectInfoWasUpdated(newValue: newValue)
+        cell.onChange = { [weak self] newValue in
+            self?.collectInfoWasUpdated(newValue: newValue)
         }
     }
 

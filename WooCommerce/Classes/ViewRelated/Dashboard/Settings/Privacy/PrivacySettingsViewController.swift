@@ -57,7 +57,7 @@ class PrivacySettingsViewController: UIViewController {
         loadAccountSettings()
     }
 
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+    @IBAction private func pullToRefresh(sender: UIRefreshControl) {
         loadAccountSettings {
             sender.endRefreshing()
         }

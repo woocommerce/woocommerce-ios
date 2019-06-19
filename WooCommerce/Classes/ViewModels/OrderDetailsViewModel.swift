@@ -6,13 +6,12 @@ import Yosemite
 class OrderDetailsViewModel {
     let order: Order
     let orderStatus: OrderStatus?
-    let currencyFormatter: CurrencyFormatter
+    let currencyFormatter = CurrencyFormatter()
     let couponLines: [OrderCouponLine]?
 
     init(order: Order, orderStatus: OrderStatus? = nil) {
         self.order = order
         self.orderStatus = orderStatus
-        self.currencyFormatter = CurrencyFormatter()
         self.couponLines = order.coupons
     }
 

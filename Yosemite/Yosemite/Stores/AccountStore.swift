@@ -132,6 +132,8 @@ private extension AccountStore {
         onCompletion(site)
     }
 
+    /// Submits the tracks opt-in / opt-out setting to be synced globally. 
+    ///
     func updateAccountSettings(userID: Int, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
         let remote = AccountRemote(network: network)
         remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in

@@ -243,6 +243,10 @@ class OrderDetailsViewModel {
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
+
+//    var dataSource: UITableViewDataSource {
+//        return self
+//    }
 }
 
 
@@ -487,8 +491,174 @@ extension OrderDetailsViewModel {
         case fulfill
         case tracking
         case summary
+        case footer
     }
 
+    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+        return sections[indexPath.section].rows[indexPath.row]
+    }
+
+    func note(at indexPath: IndexPath) -> OrderNote? {
+        // We need to subtract 1 here because the first order note row is the "Add Order" cell
+        let noteIndex = indexPath.row - 1
+        guard orderNotes.indices.contains(noteIndex) else {
+            return nil
+        }
+
+        return orderNotes[noteIndex]
+    }
+
+    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
+        let orderIndex = indexPath.row
+        guard orderTracking.indices.contains(orderIndex) else {
+            return nil
+        }
+
+        return orderTracking[orderIndex]
+    }
+
+    /// Sends the provided Row's text data to the pasteboard
+    ///
+    /// - Parameter indexPath: IndexPath to copy text data from
+    ///
+    func copyText(at indexPath: IndexPath) {
+        let row = rowAtIndexPath(indexPath)
+
+        switch row {
+        case .billingAddress:
+            sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
+        case .shippingAddress:
+            sendToPasteboard(order.shippingAddress?.fullNameWithCompanyAndAddress)
+        case .tracking:
+            sendToPasteboard(orderTracking(at: indexPath)?.trackingNumber, includeTrailingNewline: false)
+        default:
+            break // We only send text to the pasteboard from the address rows right meow
+        }
+    }
+
+    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
+    /// is nil, nothing is sent to the pasteboard.
+    ///
+    /// - Parameter
+    ///   - text: string value to send to the pasteboard
+    ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
+    ///
+    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
+        guard var text = text, text.isEmpty == false else {
+            return
+        }
+
+        if includeTrailingNewline {
+            text += "\n"
+        }
+
+        UIPasteboard.general.string = text
+        hapticGenerator.notificationOccurred(.success)
+    }
+
+    /// Checks if copying the row data at the provided indexPath is allowed
+    ///
+    /// - Parameter indexPath: index path of the row to check
+    /// - Returns: true is copying is allowed, false otherwise
+    ///
+    func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
+        let row = rowAtIndexPath(indexPath)
+        switch row {
+        case .billingAddress:
+            if let _ = order.billingAddress {
+                return true
+            }
+        case .shippingAddress:
+            if let _ = order.shippingAddress {
+                return true
+            }
+        case .tracking:
+            if orderTracking(at: indexPath)?.trackingNumber.isEmpty == false {
+                return true
+            }
+        default:
+            break
+        }
+
+        return false
+    }
+}
+
+
+// MARK: - UITableViewDataSource
+extension OrderDetailsViewModel {
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].rows.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+        return cell
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let leftText = sections[section].title else {
+            return nil
+        }
+
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
+            fatalError()
+        }
+
+        headerView.leftText = leftText
+        headerView.rightText = sections[section].rightTitle
+
+        return headerView
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        let lastSectionIndex = sections.count - 1
+
+        if sections[section].footer != nil || section == lastSectionIndex {
+            return UITableView.automaticDimension
+        }
+
+        return .leastNonzeroMagnitude
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        guard let footerText = sections[section].footer else {
+            return nil
+        }
+
+        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideSectionFooter.reuseIdentifier) as! ShowHideSectionFooter
+        let image = displaysBillingDetails ? UIImage.chevronUpImage : UIImage.chevronDownImage
+        cell.configure(text: footerText, image: image)
+        cell.didSelectFooter = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            let sections = IndexSet(integer: section)
+            //self.toggleBillingFooter()
+            self.onCellAction?(.footer, nil)
+            tableView.reloadSections(sections, with: .fade)
+        }
+
+        return cell
+    }
+
+}
+
+
+// MARK: - Support for UITableViewDataSource
+extension OrderDetailsViewModel {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as WooBasicTableViewCell where row == .details:
@@ -734,95 +904,6 @@ extension OrderDetailsViewModel {
         }
 
         cell.display(viewModel: self)
-    }
-
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        return sections[indexPath.section].rows[indexPath.row]
-    }
-
-    func note(at indexPath: IndexPath) -> OrderNote? {
-        // We need to subtract 1 here because the first order note row is the "Add Order" cell
-        let noteIndex = indexPath.row - 1
-        guard orderNotes.indices.contains(noteIndex) else {
-            return nil
-        }
-
-        return orderNotes[noteIndex]
-    }
-
-    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
-        let orderIndex = indexPath.row
-        guard orderTracking.indices.contains(orderIndex) else {
-            return nil
-        }
-
-        return orderTracking[orderIndex]
-    }
-
-    /// Sends the provided Row's text data to the pasteboard
-    ///
-    /// - Parameter indexPath: IndexPath to copy text data from
-    ///
-    func copyText(at indexPath: IndexPath) {
-        let row = rowAtIndexPath(indexPath)
-
-        switch row {
-        case .billingAddress:
-            sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
-        case .shippingAddress:
-            sendToPasteboard(order.shippingAddress?.fullNameWithCompanyAndAddress)
-        case .tracking:
-            sendToPasteboard(orderTracking(at: indexPath)?.trackingNumber, includeTrailingNewline: false)
-        default:
-            break // We only send text to the pasteboard from the address rows right meow
-        }
-    }
-
-    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
-    /// is nil, nothing is sent to the pasteboard.
-    ///
-    /// - Parameter
-    ///   - text: string value to send to the pasteboard
-    ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
-    ///
-    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
-        guard var text = text, text.isEmpty == false else {
-            return
-        }
-
-        if includeTrailingNewline {
-            text += "\n"
-        }
-
-        UIPasteboard.general.string = text
-        hapticGenerator.notificationOccurred(.success)
-    }
-
-    /// Checks if copying the row data at the provided indexPath is allowed
-    ///
-    /// - Parameter indexPath: index path of the row to check
-    /// - Returns: true is copying is allowed, false otherwise
-    ///
-    func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
-        let row = rowAtIndexPath(indexPath)
-        switch row {
-        case .billingAddress:
-            if let _ = order.billingAddress {
-                return true
-            }
-        case .shippingAddress:
-            if let _ = order.shippingAddress {
-                return true
-            }
-        case .tracking:
-            if orderTracking(at: indexPath)?.trackingNumber.isEmpty == false {
-                return true
-            }
-        default:
-            break
-        }
-
-        return false
     }
 }
 

@@ -348,6 +348,8 @@ private extension OrderDetailsViewController {
                 break
             }
             trackingWasPressed(at: indexPath)
+        case .footer:
+            toggleBillingFooter()
         }
     }
 
@@ -386,69 +388,31 @@ private extension OrderDetailsViewController {
 //
 extension OrderDetailsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.sections.count
+        return viewModel.numberOfSections(in: tableView)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.sections[section].rows.count
+        return viewModel.tableView(tableView, numberOfRowsInSection: section)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
-        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        viewModel.configure(cell, for: row, at: indexPath)
-        return cell
+        return viewModel.tableView(tableView, cellForRowAt: indexPath)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
+        return viewModel.tableView(tableView, heightForHeaderInSection: section)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let leftText = viewModel.sections[section].title else {
-            return nil
-        }
-
-        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
-        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
-            fatalError()
-        }
-
-        headerView.leftText = leftText
-        headerView.rightText = viewModel.sections[section].rightTitle
-
-        return headerView
+        return viewModel.tableView(tableView, viewForHeaderInSection: section)
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let lastSectionIndex = viewModel.sections.count - 1
-
-        if viewModel.sections[section].footer != nil || section == lastSectionIndex {
-            return UITableView.automaticDimension
-        }
-
-        return .leastNonzeroMagnitude
+        return viewModel.tableView(tableView, heightForFooterInSection: section)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard let footerText = viewModel.sections[section].footer else {
-            return nil
-        }
-
-        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideSectionFooter.reuseIdentifier) as! ShowHideSectionFooter
-        let image = displaysBillingDetails ? UIImage.chevronUpImage : UIImage.chevronDownImage
-        cell.configure(text: footerText, image: image)
-        cell.didSelectFooter = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            let sections = IndexSet(integer: section)
-            self.toggleBillingFooter()
-            self.tableView.reloadSections(sections, with: .fade)
-        }
-
-        return cell
+        return viewModel.tableView(tableView, viewForFooterInSection: section)
     }
 }
 

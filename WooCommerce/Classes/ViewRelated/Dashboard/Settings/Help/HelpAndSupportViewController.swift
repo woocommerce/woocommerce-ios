@@ -248,10 +248,17 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskManager.shared.showSupportEmailPrompt(from: navController) { success in
+        ZendeskManager.shared.showSupportEmailPrompt(from: navController) { [weak self] (success, email) in
             guard success else {
                 return
             }
+
+            guard let self = self else {
+                return
+            }
+
+            self.warnDeveloperIfNeeded()
+
             // Tracking when the dialog's "OK" button is pressed, not necessarily if the value changed.
             WooAnalytics.shared.track(.supportIdentitySet)
             self.tableView.reloadData()

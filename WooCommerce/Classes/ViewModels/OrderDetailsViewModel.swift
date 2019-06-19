@@ -159,4 +159,23 @@ class OrderDetailsViewModel {
 
         return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
     }
+
+    // MARK: - Results controllers
+    private(set) lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    self.order.siteID,
+                                    self.order.orderID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
+
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+    /// Order shipment tracking list
+    ///
+    var orderTracking: [ShipmentTracking] {
+        return trackingResultsController.fetchedObjects
+    }
 }
+
+

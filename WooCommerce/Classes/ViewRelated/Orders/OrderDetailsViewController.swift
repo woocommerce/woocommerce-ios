@@ -22,16 +22,6 @@ final class OrderDetailsViewController: UIViewController {
         return refreshControl
     }()
 
-    private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
-                                    viewModel.order.siteID,
-                                    viewModel.order.orderID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     /// Indicates if the Billing details should be rendered.
     ///
     private var displaysBillingDetails = false {
@@ -86,11 +76,11 @@ final class OrderDetailsViewController: UIViewController {
         }
     }
 
-    /// Order shipment tracking list
-    ///
-    private var orderTracking: [ShipmentTracking] {
-        return trackingResultsController.fetchedObjects
-    }
+//    /// Order shipment tracking list
+//    ///
+//    private var orderTracking: [ShipmentTracking] {
+//        return viewModel.trackingResultsController.fetchedObjects
+//    }
 
     /// Products from an Order
     ///
@@ -202,15 +192,15 @@ private extension OrderDetailsViewController {
     }
 
     func configureTrackingResultsController() {
-        trackingResultsController.onDidChangeContent = { [weak self] in
+        viewModel.trackingResultsController.onDidChangeContent = { [weak self] in
             self?.reloadTableViewSectionsAndData()
         }
 
-        trackingResultsController.onDidResetContent = { [weak self] in
+        viewModel.trackingResultsController.onDidResetContent = { [weak self] in
             self?.reloadTableViewSectionsAndData()
         }
 
-        try? trackingResultsController.performFetch()
+        try? viewModel.trackingResultsController.performFetch()
     }
 
     func configureProductResultsController() {
@@ -340,11 +330,11 @@ private extension OrderDetailsViewController {
         let payment = Section(title: Title.payment, row: .payment)
 
         let tracking: Section? = {
-            guard orderTracking.count > 0 else {
+            guard viewModel.orderTracking.count > 0 else {
                 return nil
             }
 
-            let rows: [Row] = Array(repeating: .tracking, count: orderTracking.count)
+            let rows: [Row] = Array(repeating: .tracking, count: viewModel.orderTracking.count)
             return Section(title: Title.tracking, rows: rows)
         }()
 
@@ -355,7 +345,7 @@ private extension OrderDetailsViewController {
                 return nil
             }
 
-            let title = orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
+            let title = viewModel.orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
             let row = Row.trackingAdd
 
             return Section(title: title, rightTitle: nil, rows: [row])
@@ -1025,11 +1015,11 @@ private extension OrderDetailsViewController {
 
     func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
         let orderIndex = indexPath.row
-        guard orderTracking.indices.contains(orderIndex) else {
+        guard viewModel.orderTracking.indices.contains(orderIndex) else {
             return nil
         }
 
-        return orderTracking[orderIndex]
+        return viewModel.orderTracking[orderIndex]
     }
 
     /// Checks if copying the row data at the provided indexPath is allowed

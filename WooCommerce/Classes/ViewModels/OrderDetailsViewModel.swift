@@ -161,7 +161,7 @@ class OrderDetailsViewModel {
     }
 
     // MARK: - Results controllers
-    private(set) lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
+    private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = AppDelegate.shared.storageManager
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
                                     self.order.siteID,
@@ -179,3 +179,16 @@ class OrderDetailsViewModel {
 }
 
 
+extension OrderDetailsViewModel {
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        configureTrackingResultsController(onReload: onReload)
+    }
+
+    private func configureTrackingResultsController(onReload: @escaping () -> Void) {
+        trackingResultsController.onDidChangeContent = onReload
+
+        trackingResultsController.onDidResetContent = onReload
+
+        try? trackingResultsController.performFetch()
+    }
+}

@@ -114,7 +114,7 @@ final class OrderDetailsViewController: UIViewController {
         registerTableViewHeaderFooters()
         configureEntityListener()
         configureResultsController()
-        configureTrackingResultsController()
+        prepareViewModel()
         configureProductResultsController()
     }
 
@@ -185,22 +185,16 @@ private extension OrderDetailsViewController {
         }
     }
 
+    private func prepareViewModel() {
+        viewModel.configureResultsControllers { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+        }
+    }
+
     /// Setup: Results Controller
     ///
     private func configureResultsController() {
         try? statusResultsController.performFetch()
-    }
-
-    func configureTrackingResultsController() {
-        viewModel.trackingResultsController.onDidChangeContent = { [weak self] in
-            self?.reloadTableViewSectionsAndData()
-        }
-
-        viewModel.trackingResultsController.onDidResetContent = { [weak self] in
-            self?.reloadTableViewSectionsAndData()
-        }
-
-        try? viewModel.trackingResultsController.performFetch()
     }
 
     func configureProductResultsController() {

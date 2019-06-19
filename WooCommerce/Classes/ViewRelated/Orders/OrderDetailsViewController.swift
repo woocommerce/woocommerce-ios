@@ -26,6 +26,7 @@ final class OrderDetailsViewController: UIViewController {
     ///
     private var displaysBillingDetails = false {
         didSet {
+            viewModel.displaysBillingDetails = displaysBillingDetails
             reloadSections()
         }
     }
@@ -36,9 +37,9 @@ final class OrderDetailsViewController: UIViewController {
         return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
     }()
 
-    /// Sections to be rendered
-    ///
-    private var sections = [Section]()
+//    /// Sections to be rendered
+//    ///
+//    private var sections = [Section]()
 
     /// Order to be rendered!
     ///
@@ -48,22 +49,22 @@ final class OrderDetailsViewController: UIViewController {
         }
     }
 
-    /// Order Notes
-    ///
-    private var orderNotes: [OrderNote] = [] {
-        didSet {
-            reloadTableViewSectionsAndData()
-        }
-    }
+//    /// Order Notes
+//    ///
+//    private var orderNotes: [OrderNote] = [] {
+//        didSet {
+//            reloadTableViewSectionsAndData()
+//        }
+//    }
 
-    /// Indicates if we consider the shipment tracking plugin as reachable
-    /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
-    ///
-    private var trackingIsReachable: Bool = false
+//    /// Indicates if we consider the shipment tracking plugin as reachable
+//    /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
+//    ///
+//    private var trackingIsReachable: Bool = false
 
-    /// Haptic Feedback!
-    ///
-    private let hapticGenerator = UINotificationFeedbackGenerator()
+//    /// Haptic Feedback!
+//    ///
+//    private let hapticGenerator = UINotificationFeedbackGenerator()
 
 
     // MARK: - View Lifecycle
@@ -88,7 +89,7 @@ final class OrderDetailsViewController: UIViewController {
     private func syncTrackingsHidingAddButtonIfNecessary() {
         syncTracking { [weak self] error in
             if error == nil {
-                self?.trackingIsReachable = true
+                self?.viewModel.trackingIsReachable = true
             }
 
             self?.reloadSections()
@@ -146,6 +147,9 @@ private extension OrderDetailsViewController {
     }
 
     private func prepareViewModel() {
+        viewModel.onUIReloadRequired = { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+        }
         viewModel.configureResultsControllers { [weak self] in
             self?.reloadTableViewSectionsAndData()
         }
@@ -195,82 +199,83 @@ private extension OrderDetailsViewController {
     ///     When: Shipping != nil && Billing != nil     >>>     Display: Shipping / Billing / Footer
     ///
     func reloadSections() {
-        let summary = Section(row: .summary)
-
-        let products: Section? = {
-            guard viewModel.items.isEmpty == false else {
-                return nil
-            }
-
-            var rows: [Row] = Array(repeating: .orderItem, count: viewModel.items.count)
-            if viewModel.isProcessingPayment {
-                rows.append(.fulfillButton)
-            } else {
-                rows.append(.details)
-            }
-
-            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
-        }()
-
-        let customerNote: Section? = {
-            guard viewModel.customerNote.isEmpty == false else {
-                return nil
-            }
-
-            return Section(title: Title.customerNote, row: .customerNote)
-        }()
-
-        let customerInformation: Section = {
-            guard let address = viewModel.order.billingAddress else {
-                return Section(title: Title.information, row: .shippingAddress)
-            }
-
-            guard displaysBillingDetails else {
-                return Section(title: Title.information, footer: Footer.showBilling, row: .shippingAddress)
-            }
-
-            var rows: [Row] = [.shippingAddress, .billingAddress]
-            if address.hasPhoneNumber {
-                rows.append(.billingPhone)
-            }
-
-            if address.hasEmailAddress {
-                rows.append(.billingEmail)
-            }
-
-            return Section(title: Title.information, footer: Footer.hideBilling, rows: rows)
-        }()
-
-        let payment = Section(title: Title.payment, row: .payment)
-
-        let tracking: Section? = {
-            guard viewModel.orderTracking.count > 0 else {
-                return nil
-            }
-
-            let rows: [Row] = Array(repeating: .tracking, count: viewModel.orderTracking.count)
-            return Section(title: Title.tracking, rows: rows)
-        }()
-
-        let addTracking: Section? = {
-            // Hide the section if the shipment
-            // tracking plugin is not installed
-            guard trackingIsReachable else {
-                return nil
-            }
-
-            let title = viewModel.orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
-            let row = Row.trackingAdd
-
-            return Section(title: title, rightTitle: nil, rows: [row])
-        }()
-
-        let notes: Section = {
-            let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
-            return Section(title: Title.notes, rows: rows)
-        }()
-
-        sections = [summary, products, customerNote, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
+        viewModel.reloadSections()
+//        let summary = Section(row: .summary)
+//
+//        let products: Section? = {
+//            guard viewModel.items.isEmpty == false else {
+//                return nil
+//            }
+//
+//            var rows: [Row] = Array(repeating: .orderItem, count: viewModel.items.count)
+//            if viewModel.isProcessingPayment {
+//                rows.append(.fulfillButton)
+//            } else {
+//                rows.append(.details)
+//            }
+//
+//            return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+//        }()
+//
+//        let customerNote: Section? = {
+//            guard viewModel.customerNote.isEmpty == false else {
+//                return nil
+//            }
+//
+//            return Section(title: Title.customerNote, row: .customerNote)
+//        }()
+//
+//        let customerInformation: Section = {
+//            guard let address = viewModel.order.billingAddress else {
+//                return Section(title: Title.information, row: .shippingAddress)
+//            }
+//
+//            guard displaysBillingDetails else {
+//                return Section(title: Title.information, footer: Footer.showBilling, row: .shippingAddress)
+//            }
+//
+//            var rows: [Row] = [.shippingAddress, .billingAddress]
+//            if address.hasPhoneNumber {
+//                rows.append(.billingPhone)
+//            }
+//
+//            if address.hasEmailAddress {
+//                rows.append(.billingEmail)
+//            }
+//
+//            return Section(title: Title.information, footer: Footer.hideBilling, rows: rows)
+//        }()
+//
+//        let payment = Section(title: Title.payment, row: .payment)
+//
+//        let tracking: Section? = {
+//            guard viewModel.orderTracking.count > 0 else {
+//                return nil
+//            }
+//
+//            let rows: [Row] = Array(repeating: .tracking, count: viewModel.orderTracking.count)
+//            return Section(title: Title.tracking, rows: rows)
+//        }()
+//
+//        let addTracking: Section? = {
+//            // Hide the section if the shipment
+//            // tracking plugin is not installed
+//            guard trackingIsReachable else {
+//                return nil
+//            }
+//
+//            let title = viewModel.orderTracking.count == 0 ? NSLocalizedString("Optional Tracking Information", comment: "") : nil
+//            let row = Row.trackingAdd
+//
+//            return Section(title: title, rightTitle: nil, rows: [row])
+//        }()
+//
+//        let notes: Section = {
+//            let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
+//            return Section(title: Title.notes, rows: rows)
+//        }()
+//
+//        sections = [summary, products, customerNote, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
     }
 }
 
@@ -333,252 +338,252 @@ extension OrderDetailsViewController {
 // MARK: - Cell Configuration
 //
 private extension OrderDetailsViewController {
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as WooBasicTableViewCell where row == .details:
-            configureDetails(cell: cell)
-        case let cell as WooBasicTableViewCell where row == .billingEmail:
-            configureBillingEmail(cell: cell)
-        case let cell as WooBasicTableViewCell where row == .billingPhone:
-            configureBillingPhone(cell: cell)
-        case let cell as CustomerInfoTableViewCell where row == .billingAddress:
-            configureBillingAddress(cell: cell)
-        case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
-            configureShippingAddress(cell: cell)
-        case let cell as CustomerNoteTableViewCell:
-            configureCustomerNote(cell: cell)
-        case let cell as LeftImageTableViewCell where row == .addOrderNote:
-            configureNewNote(cell: cell)
-        case let cell as OrderNoteTableViewCell:
-            configureOrderNote(cell: cell, at: indexPath)
-        case let cell as PaymentTableViewCell:
-            configurePayment(cell: cell)
-        case let cell as ProductDetailsTableViewCell:
-            configureOrderItem(cell: cell, at: indexPath)
-        case let cell as FulfillButtonTableViewCell:
-            configureFulfillmentButton(cell: cell)
-        case let cell as OrderTrackingTableViewCell:
-            configureTracking(cell: cell, at: indexPath)
-        case let cell as LeftImageTableViewCell where row == .trackingAdd:
-            configureNewTracking(cell: cell)
-        case let cell as SummaryTableViewCell:
-            configureSummary(cell: cell)
-        default:
-            fatalError("Unidentified customer info row type")
-        }
-    }
-
-    func configureBillingAddress(cell: CustomerInfoTableViewCell) {
-        let billingAddress = viewModel.order.billingAddress
-
-        cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
-        cell.name = billingAddress?.fullNameWithCompany
-        cell.address = billingAddress?.formattedPostalAddress ??
-            NSLocalizedString("No address specified.",
-                              comment: "Order details > customer info > billing details. This is where the address would normally display.")
-    }
-
-    func configureBillingEmail(cell: WooBasicTableViewCell) {
-        guard let email = viewModel.order.billingAddress?.email else {
-            // TODO: This should actually be an assert. To be revisited!
-            return
-        }
-
-        cell.bodyLabel?.text = email
-        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
-        cell.accessoryImage = .mailImage
-
-        cell.isAccessibilityElement = true
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Email: %@",
-                              comment: "Accessibility label that lets the user know the billing customer's email address"),
-            email
-        )
-
-        cell.accessibilityHint = NSLocalizedString(
-            "Composes a new email message to the billing customer.",
-            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear."
-        )
-    }
-
-    func configureBillingPhone(cell: WooBasicTableViewCell) {
-        guard let phoneNumber = viewModel.order.billingAddress?.phone else {
-            // TODO: This should actually be an assert. To be revisited!
-            return
-        }
-
-        cell.bodyLabel?.text = phoneNumber
-        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
-        cell.accessoryImage = .ellipsisImage
-
-        cell.isAccessibilityElement = true
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Phone number: %@",
-                comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."
-            ),
-            phoneNumber
-        )
-
-        cell.accessibilityHint = NSLocalizedString(
-            "Prompts with the option to call or message the billing customer.",
-            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer."
-        )
-    }
-
-    func configureCustomerNote(cell: CustomerNoteTableViewCell) {
-        cell.quote = viewModel.customerNote
-    }
-
-    func configureNewNote(cell: LeftImageTableViewCell) {
-        cell.leftImage = viewModel.addNoteIcon
-        cell.labelText = viewModel.addNoteText
-
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = NSLocalizedString(
-            "Add a note button",
-            comment: "Accessibility label for the 'Add a note' button"
-        )
-
-        cell.accessibilityHint = NSLocalizedString(
-            "Composes a new order note.",
-            comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note."
-        )
-    }
-
-    func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
-        guard let note = note(at: indexPath) else {
-            return
-        }
-
-        cell.isSystemAuthor = note.isSystemAuthor
-        cell.isCustomerNote = note.isCustomerNote
-        cell.dateCreated = note.dateCreated.toString(dateStyle: .long, timeStyle: .short)
-        cell.contents = note.note.strippedHTML
-    }
-
-    func configurePayment(cell: PaymentTableViewCell) {
-        cell.subtotalLabel.text = viewModel.subtotalLabel
-        cell.subtotalValue.text = viewModel.subtotalValue
-
-        cell.discountLabel.text = viewModel.discountLabel
-        cell.discountValue.text = viewModel.discountValue
-        cell.discountView.isHidden = viewModel.discountValue == nil
-
-        cell.shippingLabel.text = viewModel.shippingLabel
-        cell.shippingValue.text = viewModel.shippingValue
-
-        cell.taxesLabel.text = viewModel.taxesLabel
-        cell.taxesValue.text = viewModel.taxesValue
-        cell.taxesView.isHidden = viewModel.taxesValue == nil
-
-        cell.totalLabel.text = viewModel.totalLabel
-        cell.totalValue.text = viewModel.totalValue
-
-        cell.footerText = viewModel.paymentSummary
-
-        cell.accessibilityElements = [cell.subtotalLabel as Any,
-                                      cell.subtotalValue as Any,
-                                      cell.discountLabel as Any,
-                                      cell.discountValue as Any,
-                                      cell.shippingLabel as Any,
-                                      cell.shippingValue as Any,
-                                      cell.taxesLabel as Any,
-                                      cell.taxesValue as Any,
-                                      cell.totalLabel as Any,
-                                      cell.totalValue as Any]
-
-        if let footerText = cell.footerText {
-            cell.accessibilityElements?.append(footerText)
-        }
-    }
-
-    func configureDetails(cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = viewModel.productDetails
-        cell.bodyLabel?.applyBodyStyle() // override the custom purple with black
-        cell.accessoryType = .disclosureIndicator
-        cell.selectionStyle = .default
-    }
-
-    func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        let item = viewModel.items[indexPath.row]
-        let product = viewModel.lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency, product: product)
-        cell.selectionStyle = .default
-        cell.configure(item: itemViewModel)
-    }
-
-    func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
-        cell.fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
-        cell.onFullfillTouchUp = { [weak self] in
-            self?.fulfillWasPressed()
-        }
-    }
-
-    func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
-        guard let tracking = orderTracking(at: indexPath) else {
-            return
-        }
-
-        cell.topText = tracking.trackingProvider
-        cell.middleText = tracking.trackingNumber
-
-        cell.onEllipsisTouchUp = { [weak self] in
-            self?.trackingWasPressed(at: indexPath)
-        }
-
-        if let dateShipped = tracking.dateShipped?.toString(dateStyle: .long, timeStyle: .none) {
-            cell.bottomText = String.localizedStringWithFormat(
-                NSLocalizedString("Shipped %@",
-                                  comment: "Date an item was shipped"),
-                                  dateShipped)
-        } else {
-            cell.bottomText = NSLocalizedString("Not shipped yet",
-                                                comment: "Order details > tracking. " +
-                " This is where the shipping date would normally display.")
-        }
-    }
-
-    func configureNewTracking(cell: LeftImageTableViewCell) {
-        let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
-        cell.leftImage = .addOutlineImage
-        cell.labelText = cellTextContent
-
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = NSLocalizedString(
-            "Add a tracking button",
-            comment: "Accessibility label for the 'Add a tracking' button"
-        )
-
-        cell.accessibilityHint = NSLocalizedString(
-            "Adds tracking to an order.",
-            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
-        )
-    }
-
-    func configureShippingAddress(cell: CustomerInfoTableViewCell) {
-        let shippingAddress = viewModel.order.shippingAddress
-
-        cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
-        cell.name = shippingAddress?.fullNameWithCompany
-        cell.address = shippingAddress?.formattedPostalAddress ??
-            NSLocalizedString(
-                "No address specified.",
-                comment: "Order details > customer info > shipping details. This is where the address would normally display."
-        )
-    }
-
-    func configureSummary(cell: SummaryTableViewCell) {
-        cell.title = viewModel.summaryTitle
-        cell.dateCreated = viewModel.summaryDateCreated
-        cell.onEditTouchUp = { [weak self] in
-            self?.displayOrderStatusList()
-        }
-
-        cell.display(viewModel: viewModel)
-    }
+//    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+//        switch cell {
+//        case let cell as WooBasicTableViewCell where row == .details:
+//            configureDetails(cell: cell)
+//        case let cell as WooBasicTableViewCell where row == .billingEmail:
+//            configureBillingEmail(cell: cell)
+//        case let cell as WooBasicTableViewCell where row == .billingPhone:
+//            configureBillingPhone(cell: cell)
+//        case let cell as CustomerInfoTableViewCell where row == .billingAddress:
+//            configureBillingAddress(cell: cell)
+//        case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
+//            configureShippingAddress(cell: cell)
+//        case let cell as CustomerNoteTableViewCell:
+//            configureCustomerNote(cell: cell)
+//        case let cell as LeftImageTableViewCell where row == .addOrderNote:
+//            configureNewNote(cell: cell)
+//        case let cell as OrderNoteTableViewCell:
+//            configureOrderNote(cell: cell, at: indexPath)
+//        case let cell as PaymentTableViewCell:
+//            configurePayment(cell: cell)
+//        case let cell as ProductDetailsTableViewCell:
+//            configureOrderItem(cell: cell, at: indexPath)
+//        case let cell as FulfillButtonTableViewCell:
+//            configureFulfillmentButton(cell: cell)
+//        case let cell as OrderTrackingTableViewCell:
+//            configureTracking(cell: cell, at: indexPath)
+//        case let cell as LeftImageTableViewCell where row == .trackingAdd:
+//            configureNewTracking(cell: cell)
+//        case let cell as SummaryTableViewCell:
+//            configureSummary(cell: cell)
+//        default:
+//            fatalError("Unidentified customer info row type")
+//        }
+//    }
+//
+//    func configureBillingAddress(cell: CustomerInfoTableViewCell) {
+//        let billingAddress = viewModel.order.billingAddress
+//
+//        cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
+//        cell.name = billingAddress?.fullNameWithCompany
+//        cell.address = billingAddress?.formattedPostalAddress ??
+//            NSLocalizedString("No address specified.",
+//                              comment: "Order details > customer info > billing details. This is where the address would normally display.")
+//    }
+//
+//    func configureBillingEmail(cell: WooBasicTableViewCell) {
+//        guard let email = viewModel.order.billingAddress?.email else {
+//            // TODO: This should actually be an assert. To be revisited!
+//            return
+//        }
+//
+//        cell.bodyLabel?.text = email
+//        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
+//        cell.accessoryImage = .mailImage
+//
+//        cell.isAccessibilityElement = true
+//        cell.accessibilityTraits = .button
+//        cell.accessibilityLabel = String.localizedStringWithFormat(
+//            NSLocalizedString("Email: %@",
+//                              comment: "Accessibility label that lets the user know the billing customer's email address"),
+//            email
+//        )
+//
+//        cell.accessibilityHint = NSLocalizedString(
+//            "Composes a new email message to the billing customer.",
+//            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear."
+//        )
+//    }
+//
+//    func configureBillingPhone(cell: WooBasicTableViewCell) {
+//        guard let phoneNumber = viewModel.order.billingAddress?.phone else {
+//            // TODO: This should actually be an assert. To be revisited!
+//            return
+//        }
+//
+//        cell.bodyLabel?.text = phoneNumber
+//        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
+//        cell.accessoryImage = .ellipsisImage
+//
+//        cell.isAccessibilityElement = true
+//        cell.accessibilityTraits = .button
+//        cell.accessibilityLabel = String.localizedStringWithFormat(
+//            NSLocalizedString(
+//                "Phone number: %@",
+//                comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."
+//            ),
+//            phoneNumber
+//        )
+//
+//        cell.accessibilityHint = NSLocalizedString(
+//            "Prompts with the option to call or message the billing customer.",
+//            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer."
+//        )
+//    }
+//
+//    func configureCustomerNote(cell: CustomerNoteTableViewCell) {
+//        cell.quote = viewModel.customerNote
+//    }
+//
+//    func configureNewNote(cell: LeftImageTableViewCell) {
+//        cell.leftImage = viewModel.addNoteIcon
+//        cell.labelText = viewModel.addNoteText
+//
+//        cell.accessibilityTraits = .button
+//        cell.accessibilityLabel = NSLocalizedString(
+//            "Add a note button",
+//            comment: "Accessibility label for the 'Add a note' button"
+//        )
+//
+//        cell.accessibilityHint = NSLocalizedString(
+//            "Composes a new order note.",
+//            comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note."
+//        )
+//    }
+//
+//    func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
+//        guard let note = note(at: indexPath) else {
+//            return
+//        }
+//
+//        cell.isSystemAuthor = note.isSystemAuthor
+//        cell.isCustomerNote = note.isCustomerNote
+//        cell.dateCreated = note.dateCreated.toString(dateStyle: .long, timeStyle: .short)
+//        cell.contents = note.note.strippedHTML
+//    }
+//
+//    func configurePayment(cell: PaymentTableViewCell) {
+//        cell.subtotalLabel.text = viewModel.subtotalLabel
+//        cell.subtotalValue.text = viewModel.subtotalValue
+//
+//        cell.discountLabel.text = viewModel.discountLabel
+//        cell.discountValue.text = viewModel.discountValue
+//        cell.discountView.isHidden = viewModel.discountValue == nil
+//
+//        cell.shippingLabel.text = viewModel.shippingLabel
+//        cell.shippingValue.text = viewModel.shippingValue
+//
+//        cell.taxesLabel.text = viewModel.taxesLabel
+//        cell.taxesValue.text = viewModel.taxesValue
+//        cell.taxesView.isHidden = viewModel.taxesValue == nil
+//
+//        cell.totalLabel.text = viewModel.totalLabel
+//        cell.totalValue.text = viewModel.totalValue
+//
+//        cell.footerText = viewModel.paymentSummary
+//
+//        cell.accessibilityElements = [cell.subtotalLabel as Any,
+//                                      cell.subtotalValue as Any,
+//                                      cell.discountLabel as Any,
+//                                      cell.discountValue as Any,
+//                                      cell.shippingLabel as Any,
+//                                      cell.shippingValue as Any,
+//                                      cell.taxesLabel as Any,
+//                                      cell.taxesValue as Any,
+//                                      cell.totalLabel as Any,
+//                                      cell.totalValue as Any]
+//
+//        if let footerText = cell.footerText {
+//            cell.accessibilityElements?.append(footerText)
+//        }
+//    }
+//
+//    func configureDetails(cell: WooBasicTableViewCell) {
+//        cell.bodyLabel?.text = viewModel.productDetails
+//        cell.bodyLabel?.applyBodyStyle() // override the custom purple with black
+//        cell.accessoryType = .disclosureIndicator
+//        cell.selectionStyle = .default
+//    }
+//
+//    func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+//        let item = viewModel.items[indexPath.row]
+//        let product = viewModel.lookUpProduct(by: item.productID)
+//        let itemViewModel = OrderItemViewModel(item: item, currency: viewModel.order.currency, product: product)
+//        cell.selectionStyle = .default
+//        cell.configure(item: itemViewModel)
+//    }
+//
+//    func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
+//        cell.fulfillButton.setTitle(viewModel.fulfillTitle, for: .normal)
+//        cell.onFullfillTouchUp = { [weak self] in
+//            self?.fulfillWasPressed()
+//        }
+//    }
+//
+//    func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
+//        guard let tracking = orderTracking(at: indexPath) else {
+//            return
+//        }
+//
+//        cell.topText = tracking.trackingProvider
+//        cell.middleText = tracking.trackingNumber
+//
+//        cell.onEllipsisTouchUp = { [weak self] in
+//            self?.trackingWasPressed(at: indexPath)
+//        }
+//
+//        if let dateShipped = tracking.dateShipped?.toString(dateStyle: .long, timeStyle: .none) {
+//            cell.bottomText = String.localizedStringWithFormat(
+//                NSLocalizedString("Shipped %@",
+//                                  comment: "Date an item was shipped"),
+//                                  dateShipped)
+//        } else {
+//            cell.bottomText = NSLocalizedString("Not shipped yet",
+//                                                comment: "Order details > tracking. " +
+//                " This is where the shipping date would normally display.")
+//        }
+//    }
+//
+//    func configureNewTracking(cell: LeftImageTableViewCell) {
+//        let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
+//        cell.leftImage = .addOutlineImage
+//        cell.labelText = cellTextContent
+//
+//        cell.accessibilityTraits = .button
+//        cell.accessibilityLabel = NSLocalizedString(
+//            "Add a tracking button",
+//            comment: "Accessibility label for the 'Add a tracking' button"
+//        )
+//
+//        cell.accessibilityHint = NSLocalizedString(
+//            "Adds tracking to an order.",
+//            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period."
+//        )
+//    }
+//
+//    func configureShippingAddress(cell: CustomerInfoTableViewCell) {
+//        let shippingAddress = viewModel.order.shippingAddress
+//
+//        cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+//        cell.name = shippingAddress?.fullNameWithCompany
+//        cell.address = shippingAddress?.formattedPostalAddress ??
+//            NSLocalizedString(
+//                "No address specified.",
+//                comment: "Order details > customer info > shipping details. This is where the address would normally display."
+//        )
+//    }
+//
+//    func configureSummary(cell: SummaryTableViewCell) {
+//        cell.title = viewModel.summaryTitle
+//        cell.dateCreated = viewModel.summaryDateCreated
+//        cell.onEditTouchUp = { [weak self] in
+//            self?.displayOrderStatusList()
+//        }
+//
+//        cell.display(viewModel: viewModel)
+//    }
 }
 
 
@@ -619,21 +624,22 @@ private extension OrderDetailsViewController {
     }
 
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
-            guard let orderNotes = orderNotes else {
-                DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
-                self?.orderNotes = []
-                onCompletion?(error)
-
-                return
-            }
-
-            self?.orderNotes = orderNotes
-            WooAnalytics.shared.track(.orderNotesLoaded, withProperties: ["id": self?.viewModel.order.orderID ?? 0])
-            onCompletion?(nil)
-        }
-
-        StoresManager.shared.dispatch(action)
+        viewModel.syncNotes(onCompletion: onCompletion)
+//        let action = OrderNoteAction.retrieveOrderNotes(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (orderNotes, error) in
+//            guard let orderNotes = orderNotes else {
+//                DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
+//                self?.viewModel.orderNotes = []
+//                onCompletion?(error)
+//
+//                return
+//            }
+//
+//            self?.orderNotes = orderNotes
+//            WooAnalytics.shared.track(.orderNotesLoaded, withProperties: ["id": self?.viewModel.order.orderID ?? 0])
+//            onCompletion?(nil)
+//        }
+//
+//        StoresManager.shared.dispatch(action)
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
@@ -734,17 +740,17 @@ private extension OrderDetailsViewController {
 //
 extension OrderDetailsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return sections.count
+        return viewModel.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return sections[section].rows.count
+        return viewModel.sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let row = sections[indexPath.section].rows[indexPath.row]
+        let row = viewModel.sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-        configure(cell, for: row, at: indexPath)
+        viewModel.configure(cell, for: row, at: indexPath)
         return cell
     }
 
@@ -753,7 +759,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        guard let leftText = sections[section].title else {
+        guard let leftText = viewModel.sections[section].title else {
             return nil
         }
 
@@ -763,15 +769,15 @@ extension OrderDetailsViewController: UITableViewDataSource {
         }
 
         headerView.leftText = leftText
-        headerView.rightText = sections[section].rightTitle
+        headerView.rightText = viewModel.sections[section].rightTitle
 
         return headerView
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        let lastSectionIndex = sections.count - 1
+        let lastSectionIndex = viewModel.sections.count - 1
 
-        if sections[section].footer != nil || section == lastSectionIndex {
+        if viewModel.sections[section].footer != nil || section == lastSectionIndex {
             return UITableView.automaticDimension
         }
 
@@ -779,7 +785,7 @@ extension OrderDetailsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        guard let footerText = sections[section].footer else {
+        guard let footerText = viewModel.sections[section].footer else {
             return nil
         }
 
@@ -808,7 +814,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        switch sections[indexPath.section].rows[indexPath.row] {
+        switch viewModel.sections[indexPath.section].rows[indexPath.row] {
 
         case .addOrderNote:
             WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
@@ -846,14 +852,14 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        guard checkIfCopyingIsAllowed(for: indexPath) else {
+        guard viewModel.checkIfCopyingIsAllowed(for: indexPath) else {
             // Only allow the leading swipe action on the address rows
             return UISwipeActionsConfiguration(actions: [])
         }
 
         let copyActionTitle = NSLocalizedString("Copy", comment: "Copy address text button title — should be one word and as short as possible.")
         let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
-            self?.copyText(at: indexPath)
+            self?.viewModel.copyText(at: indexPath)
             success(true)
         }
         copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
@@ -867,7 +873,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
-        return checkIfCopyingIsAllowed(for: indexPath)
+        return viewModel.checkIfCopyingIsAllowed(for: indexPath)
     }
 
     func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
@@ -879,7 +885,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             return
         }
 
-        copyText(at: indexPath)
+        viewModel.copyText(at: indexPath)
     }
 }
 
@@ -901,94 +907,94 @@ extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
 
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
-        return sections[indexPath.section].rows[indexPath.row]
-    }
+//    func rowAtIndexPath(_ indexPath: IndexPath) -> OrderDetailsViewModel.Row {
+//        return viewModel.sections[indexPath.section].rows[indexPath.row]
+//    }
 
-    func note(at indexPath: IndexPath) -> OrderNote? {
-        // We need to subtract 1 here because the first order note row is the "Add Order" cell
-        let noteIndex = indexPath.row - 1
-        guard orderNotes.indices.contains(noteIndex) else {
-            return nil
-        }
+//    func note(at indexPath: IndexPath) -> OrderNote? {
+//        // We need to subtract 1 here because the first order note row is the "Add Order" cell
+//        let noteIndex = indexPath.row - 1
+//        guard viewModel.orderNotes.indices.contains(noteIndex) else {
+//            return nil
+//        }
+//
+//        return viewModel.orderNotes[noteIndex]
+//    }
 
-        return orderNotes[noteIndex]
-    }
+//    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
+//        let orderIndex = indexPath.row
+//        guard viewModel.orderTracking.indices.contains(orderIndex) else {
+//            return nil
+//        }
+//
+//        return viewModel.orderTracking[orderIndex]
+//    }
 
-    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
-        let orderIndex = indexPath.row
-        guard viewModel.orderTracking.indices.contains(orderIndex) else {
-            return nil
-        }
+//    /// Checks if copying the row data at the provided indexPath is allowed
+//    ///
+//    /// - Parameter indexPath: index path of the row to check
+//    /// - Returns: true is copying is allowed, false otherwise
+//    ///
+//    func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
+//        let row = rowAtIndexPath(indexPath)
+//        switch row {
+//        case .billingAddress:
+//            if let _ = viewModel.order.billingAddress {
+//                return true
+//            }
+//        case .shippingAddress:
+//            if let _ = viewModel.order.shippingAddress {
+//                return true
+//            }
+//        case .tracking:
+//            if orderTracking(at: indexPath)?.trackingNumber.isEmpty == false {
+//                return true
+//            }
+//        default:
+//            break
+//        }
+//
+//        return false
+//    }
 
-        return viewModel.orderTracking[orderIndex]
-    }
+//    /// Sends the provided Row's text data to the pasteboard
+//    ///
+//    /// - Parameter indexPath: IndexPath to copy text data from
+//    ///
+//    func copyText(at indexPath: IndexPath) {
+//        let row = rowAtIndexPath(indexPath)
+//
+//        switch row {
+//        case .billingAddress:
+//            sendToPasteboard(viewModel.order.billingAddress?.fullNameWithCompanyAndAddress)
+//        case .shippingAddress:
+//            sendToPasteboard(viewModel.order.shippingAddress?.fullNameWithCompanyAndAddress)
+//        case .tracking:
+//            sendToPasteboard(orderTracking(at: indexPath)?.trackingNumber, includeTrailingNewline: false)
+//        default:
+//            break // We only send text to the pasteboard from the address rows right meow
+//        }
+//    }
 
-    /// Checks if copying the row data at the provided indexPath is allowed
-    ///
-    /// - Parameter indexPath: index path of the row to check
-    /// - Returns: true is copying is allowed, false otherwise
-    ///
-    func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
-        let row = rowAtIndexPath(indexPath)
-        switch row {
-        case .billingAddress:
-            if let _ = viewModel.order.billingAddress {
-                return true
-            }
-        case .shippingAddress:
-            if let _ = viewModel.order.shippingAddress {
-                return true
-            }
-        case .tracking:
-            if orderTracking(at: indexPath)?.trackingNumber.isEmpty == false {
-                return true
-            }
-        default:
-            break
-        }
-
-        return false
-    }
-
-    /// Sends the provided Row's text data to the pasteboard
-    ///
-    /// - Parameter indexPath: IndexPath to copy text data from
-    ///
-    func copyText(at indexPath: IndexPath) {
-        let row = rowAtIndexPath(indexPath)
-
-        switch row {
-        case .billingAddress:
-            sendToPasteboard(viewModel.order.billingAddress?.fullNameWithCompanyAndAddress)
-        case .shippingAddress:
-            sendToPasteboard(viewModel.order.shippingAddress?.fullNameWithCompanyAndAddress)
-        case .tracking:
-            sendToPasteboard(orderTracking(at: indexPath)?.trackingNumber, includeTrailingNewline: false)
-        default:
-            break // We only send text to the pasteboard from the address rows right meow
-        }
-    }
-
-    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
-    /// is nil, nothing is sent to the pasteboard.
-    ///
-    /// - Parameter
-    ///   - text: string value to send to the pasteboard
-    ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
-    ///
-    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
-        guard var text = text, text.isEmpty == false else {
-            return
-        }
-
-        if includeTrailingNewline {
-            text += "\n"
-        }
-
-        UIPasteboard.general.string = text
-        hapticGenerator.notificationOccurred(.success)
-    }
+//    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
+//    /// is nil, nothing is sent to the pasteboard.
+//    ///
+//    /// - Parameter
+//    ///   - text: string value to send to the pasteboard
+//    ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
+//    ///
+//    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
+//        guard var text = text, text.isEmpty == false else {
+//            return
+//        }
+//
+//        if includeTrailingNewline {
+//            text += "\n"
+//        }
+//
+//        UIPasteboard.general.string = text
+//        hapticGenerator.notificationOccurred(.success)
+//    }
 }
 
 
@@ -1000,7 +1006,7 @@ private extension OrderDetailsViewController {
     ///
 
     func displayShipmentTrackingAlert(from sourceView: UIView, indexPath: IndexPath) {
-        guard let tracking = orderTracking(at: indexPath) else {
+        guard let tracking = viewModel.orderTracking(at: indexPath) else {
             return
         }
 
@@ -1202,86 +1208,86 @@ private extension OrderDetailsViewController {
         static let orderStatusListSegue = "ShowOrderStatusListViewController"
     }
 
-    enum Title {
-        static let product = NSLocalizedString("Product", comment: "Product section title")
-        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
-        static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
-        static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
-        static let information = NSLocalizedString("Customer Information", comment: "Customer info section title")
-        static let payment = NSLocalizedString("Payment", comment: "Payment section title")
-        static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
-    }
-
-    enum Footer {
-        static let hideBilling = NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
-        static let showBilling = NSLocalizedString("Show billing", comment: "Footer text to show the billing cell")
-    }
-
-    struct Section {
-        let title: String?
-        let rightTitle: String?
-        let footer: String?
-        let rows: [Row]
-
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
-            self.title = title
-            self.rightTitle = rightTitle
-            self.footer = footer
-            self.rows = rows
-        }
-
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
-            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
-        }
-    }
-
-    enum Row {
-        case summary
-        case fulfillButton
-        case orderItem
-        case details
-        case tracking
-        case trackingAdd
-        case customerNote
-        case shippingAddress
-        case billingAddress
-        case billingPhone
-        case billingEmail
-        case addOrderNote
-        case orderNote
-        case payment
-
-        var reuseIdentifier: String {
-            switch self {
-            case .summary:
-                return SummaryTableViewCell.reuseIdentifier
-            case .fulfillButton:
-                return FulfillButtonTableViewCell.reuseIdentifier
-            case .orderItem:
-                return ProductDetailsTableViewCell.reuseIdentifier
-            case .details:
-                return WooBasicTableViewCell.reuseIdentifier
-            case .tracking:
-                return OrderTrackingTableViewCell.reuseIdentifier
-            case .trackingAdd:
-                return LeftImageTableViewCell.reuseIdentifier
-            case .customerNote:
-                return CustomerNoteTableViewCell.reuseIdentifier
-            case .shippingAddress:
-                return CustomerInfoTableViewCell.reuseIdentifier
-            case .billingAddress:
-                return CustomerInfoTableViewCell.reuseIdentifier
-            case .billingPhone:
-                return WooBasicTableViewCell.reuseIdentifier
-            case .billingEmail:
-                return WooBasicTableViewCell.reuseIdentifier
-            case .addOrderNote:
-                return LeftImageTableViewCell.reuseIdentifier
-            case .orderNote:
-                return OrderNoteTableViewCell.reuseIdentifier
-            case .payment:
-                return PaymentTableViewCell.reuseIdentifier
-            }
-        }
-    }
+//    enum Title {
+//        static let product = NSLocalizedString("Product", comment: "Product section title")
+//        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+//        static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
+//        static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
+//        static let information = NSLocalizedString("Customer Information", comment: "Customer info section title")
+//        static let payment = NSLocalizedString("Payment", comment: "Payment section title")
+//        static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
+//    }
+//
+//    enum Footer {
+//        static let hideBilling = NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
+//        static let showBilling = NSLocalizedString("Show billing", comment: "Footer text to show the billing cell")
+//    }
+//
+//    struct Section {
+//        let title: String?
+//        let rightTitle: String?
+//        let footer: String?
+//        let rows: [Row]
+//
+//        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
+//            self.title = title
+//            self.rightTitle = rightTitle
+//            self.footer = footer
+//            self.rows = rows
+//        }
+//
+//        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
+//            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
+//        }
+//    }
+//
+//    enum Row {
+//        case summary
+//        case fulfillButton
+//        case orderItem
+//        case details
+//        case tracking
+//        case trackingAdd
+//        case customerNote
+//        case shippingAddress
+//        case billingAddress
+//        case billingPhone
+//        case billingEmail
+//        case addOrderNote
+//        case orderNote
+//        case payment
+//
+//        var reuseIdentifier: String {
+//            switch self {
+//            case .summary:
+//                return SummaryTableViewCell.reuseIdentifier
+//            case .fulfillButton:
+//                return FulfillButtonTableViewCell.reuseIdentifier
+//            case .orderItem:
+//                return ProductDetailsTableViewCell.reuseIdentifier
+//            case .details:
+//                return WooBasicTableViewCell.reuseIdentifier
+//            case .tracking:
+//                return OrderTrackingTableViewCell.reuseIdentifier
+//            case .trackingAdd:
+//                return LeftImageTableViewCell.reuseIdentifier
+//            case .customerNote:
+//                return CustomerNoteTableViewCell.reuseIdentifier
+//            case .shippingAddress:
+//                return CustomerInfoTableViewCell.reuseIdentifier
+//            case .billingAddress:
+//                return CustomerInfoTableViewCell.reuseIdentifier
+//            case .billingPhone:
+//                return WooBasicTableViewCell.reuseIdentifier
+//            case .billingEmail:
+//                return WooBasicTableViewCell.reuseIdentifier
+//            case .addOrderNote:
+//                return LeftImageTableViewCell.reuseIdentifier
+//            case .orderNote:
+//                return OrderNoteTableViewCell.reuseIdentifier
+//            case .payment:
+//                return PaymentTableViewCell.reuseIdentifier
+//            }
+//        }
+//    }
 }

@@ -117,7 +117,8 @@ private extension HelpAndSupportViewController {
     /// Warn devs that logged in with an Automattic email.
     ///
     func warnDeveloperIfNeeded() {
-        guard DeveloperEmailChecker.isDeveloperEmail(email: accountEmail) else {
+        let developerEmailChecker = DeveloperEmailChecker()
+        guard developerEmailChecker.isDeveloperEmail(email: accountEmail) else {
             return
         }
 

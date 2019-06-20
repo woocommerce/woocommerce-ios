@@ -21,7 +21,7 @@ class ZendeskManager: NSObject {
     ///
     static let shared = ZendeskManager()
 
-    typealias UserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
+    typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
 
     /// Indicates if Zendesk is Enabled (or not)
     ///
@@ -158,7 +158,7 @@ class ZendeskManager: NSObject {
 
     /// Displays an alert allowing the user to change their Support email address.
     ///
-    func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping UserInformationCompletion) {
+    func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {
         WooAnalytics.shared.track(.supportIdentityFormViewed)
         presentInController = controller
 
@@ -362,7 +362,7 @@ private extension ZendeskManager {
         }
     }
 
-    func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping UserInformationCompletion) {
+    func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
         getUserInformationIfAvailable()
         promptUserForInformation(withName: withName, from: viewController) { (success, email) in
             guard success else {
@@ -591,7 +591,7 @@ private extension ZendeskManager {
 
     // MARK: - User Information Prompt
     //
-    func promptUserForInformation(withName: Bool, from viewController: UIViewController, completion: @escaping UserInformationCompletion) {
+    func promptUserForInformation(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
 
         let alertMessage = withName ? LocalizedText.alertMessageWithName : LocalizedText.alertMessage
         let alertController = UIAlertController(title: nil, message: alertMessage, preferredStyle: .alert)

@@ -16,13 +16,6 @@ class PaddedLabel: UILabel {
         super.drawText(in: rect.inset(by: textInsets))
     }
 
-    override var intrinsicContentSize: CGSize {
-        var intrinsicSuperViewContentSize = super.intrinsicContentSize
-        intrinsicSuperViewContentSize.height += textInsets.top + textInsets.bottom
-        intrinsicSuperViewContentSize.width += textInsets.left + textInsets.right
-        return intrinsicSuperViewContentSize
-    }
-
     override func textRect(forBounds bounds: CGRect, limitedToNumberOfLines numberOfLines: Int) -> CGRect {
         let insetRect = bounds.inset(by: textInsets)
         let textRect = super.textRect(forBounds: insetRect, limitedToNumberOfLines: numberOfLines)

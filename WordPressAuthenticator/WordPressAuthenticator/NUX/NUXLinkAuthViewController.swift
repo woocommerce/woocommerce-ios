@@ -33,6 +33,8 @@ class NUXLinkAuthViewController: LoginViewController {
         if let linkSource = loginFields.meta.emailMagicLinkSource {
             switch linkSource {
             case .signup:
+                // This stat is part of a funnel that provides critical information.  Before
+                // making ANY modification to this stat please refer to: p4qSXL-35X-p2
                 WordPressAuthenticator.track(.createdAccount, properties: ["source": "email"])
                 WordPressAuthenticator.track(.signupMagicLinkSucceeded)
             case .login:

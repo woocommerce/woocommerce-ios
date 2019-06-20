@@ -87,5 +87,6 @@ private extension OrderTableViewCell {
         titleLabel.applyHeadlineStyle()
         totalLabel.applyBodyStyle()
         paymentStatusLabel.applyFootnoteStyle()
+        paymentStatusLabel.numberOfLines = 0
     }
 }

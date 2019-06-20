@@ -974,4 +974,37 @@ extension OrderDetailsViewModel {
 
         StoresManager.shared.dispatch(action)
     }
+
+    func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
+        let siteID = order.siteID
+        let orderID = order.orderID
+        let trackingID = tracking.trackingID
+
+        let statusKey = order.statusKey
+        let providerName = tracking.trackingProvider ?? ""
+
+        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+                                                                         "status": statusKey,
+                                                                         "carrier": providerName,
+                                                                         "source": "order_detail"])
+
+        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
+                                                                 orderID: orderID,
+                                                                 trackingID: trackingID) { error in
+                                                                    if let error = error {
+                                                                        DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
+
+                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                                                  withError: error)
+                                                                        onCompletion(error)
+                                                                        return
+                                                                    }
+
+                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
+                                                                    onCompletion(nil)
+
+        }
+
+        StoresManager.shared.dispatch(deleteTrackingAction)
+    }
 }

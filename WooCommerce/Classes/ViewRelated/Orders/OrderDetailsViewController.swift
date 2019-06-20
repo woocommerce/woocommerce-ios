@@ -246,6 +246,7 @@ private extension OrderDetailsViewController {
 
             let orderStatus = self.viewModel.lookUpOrderStatus(for: order)
             self.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
+
             onCompletion?(nil)
         }
     }
@@ -263,36 +264,15 @@ private extension OrderDetailsViewController {
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {
-        let siteID = viewModel.order.siteID
         let orderID = viewModel.order.orderID
-        let trackingID = tracking.trackingID
+        viewModel.deleteTracking(tracking) { [weak self] error in
+            if let _ = error {
+                self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
+                return
+            }
 
-        let statusKey = viewModel.order.statusKey
-        let providerName = tracking.trackingProvider ?? ""
-
-        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
-                                                                         "status": statusKey,
-                                                                         "carrier": providerName,
-                                                                         "source": "order_detail"])
-
-        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
-                                                                 orderID: orderID,
-                                                                 trackingID: trackingID) { [weak self] error in
-                                                                    if let error = error {
-                                                                        DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
-
-                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
-                                                                                                  withError: error)
-                                                                        self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
-                                                                        return
-                                                                    }
-
-                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
-                                                                    self?.reloadSections()
-
+            self?.reloadSections()
         }
-
-        StoresManager.shared.dispatch(deleteTrackingAction)
     }
 }
 

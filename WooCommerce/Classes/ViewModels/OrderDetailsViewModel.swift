@@ -22,7 +22,7 @@ class OrderDetailsViewModel {
         return "#\(order.number)"
     }
 
-    var summaryDateCreated: String {
+    private var summaryDateCreated: String {
         return order.dateModified.relativelyFormattedUpdateString
     }
 
@@ -30,9 +30,9 @@ class OrderDetailsViewModel {
         return order.items
     }
 
-    let fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
+    private let fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
 
-    var isProcessingPayment: Bool {
+    private var isProcessingPayment: Bool {
         return order.statusKey == OrderStatusEnum.processing.rawValue
     }
 
@@ -42,16 +42,16 @@ class OrderDetailsViewModel {
 
     let productDetails = NSLocalizedString("Details", comment: "The row label to tap for a detailed product list")
 
-    var customerNote: String {
+    private var customerNote: String {
         return order.customerNote ?? String()
     }
 
     /// Subtotal
     /// - returns: 'Subtotal' label and calculated subtotal for all items
     ///
-    let subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
+    private let subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
 
-    var subtotal: Decimal {
+    private var subtotal: Decimal {
         let subtotal = order.items.reduce(Decimal(0)) { (output, item) in
             let itemSubtotal = Decimal(string: item.subtotal) ?? Decimal(0)
             return output + itemSubtotal
@@ -60,7 +60,7 @@ class OrderDetailsViewModel {
         return subtotal
     }
 
-    var subtotalValue: String {
+    private var subtotalValue: String {
         let subAmount = NSDecimalNumber(decimal: subtotal).stringValue
 
         return CurrencyFormatter().formatAmount(subAmount, with: order.currency) ?? String()
@@ -69,11 +69,11 @@ class OrderDetailsViewModel {
     /// Discounts
     /// - returns: 'Discount' label and a list of discount codes, or nil if zero.
     ///
-    var discountLabel: String? {
+    private var discountLabel: String? {
         return summarizeCoupons(from: couponLines)
     }
 
-    var discountValue: String? {
+    private var discountValue: String? {
         guard let discount = currencyFormatter.convertToDecimal(from: order.discountTotal), discount.isZero() == false else {
             return nil
         }
@@ -88,29 +88,29 @@ class OrderDetailsViewModel {
     /// Shipping
     /// - returns 'Shipping' label and amount, including zero amounts.
     ///
-    let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
+    private let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
 
-    var shippingValue: String {
+    private var shippingValue: String {
         return currencyFormatter.formatAmount(order.shippingTotal, with: order.currency) ?? String()
     }
 
     /// Taxes
     /// - returns: 'Taxes' label and total taxes, including zero amounts.
     ///
-    var taxesLabel: String? {
+    private var taxesLabel: String? {
         return NSLocalizedString("Taxes", comment: "Taxes label for payment view")
     }
 
-    var taxesValue: String? {
+    private var taxesValue: String? {
         return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
     }
 
     /// Total
     /// - returns: 'Total' label and total amount, including zero amounts.
     ///
-    let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
+    private let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
-    var totalValue: String {
+    private var totalValue: String {
         return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
     }
 
@@ -123,7 +123,7 @@ class OrderDetailsViewModel {
     /// Payment Summary
     /// - returns: A full sentence summary of how much was paid and using what method.
     ///
-    var paymentSummary: String? {
+    private var paymentSummary: String? {
         if order.paymentMethodTitle.isEmpty {
             return nil
         }
@@ -137,9 +137,9 @@ class OrderDetailsViewModel {
     /// Order Notes Button
     /// - icon and text
     ///
-    let addNoteIcon = UIImage.addOutlineImage
+    private let addNoteIcon = UIImage.addOutlineImage
 
-    let addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
+    private let addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
 
     /// MARK: Private
     ///
@@ -173,7 +173,7 @@ class OrderDetailsViewModel {
 
     /// Order shipment tracking list
     ///
-    var orderTracking: [ShipmentTracking] {
+    private var orderTracking: [ShipmentTracking] {
         return trackingResultsController.fetchedObjects
     }
 
@@ -205,7 +205,7 @@ class OrderDetailsViewModel {
 
     /// Order statuses list
     ///
-    var currentSiteStatuses: [OrderStatus] {
+    private var currentSiteStatuses: [OrderStatus] {
         return statusResultsController.fetchedObjects
     }
 

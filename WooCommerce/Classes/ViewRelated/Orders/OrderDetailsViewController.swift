@@ -1,7 +1,6 @@
 import UIKit
 import Gridicons
 import Contacts
-import MessageUI
 import Yosemite
 import SafariServices
 
@@ -376,42 +375,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
-        switch viewModel.sections[indexPath.section].rows[indexPath.row] {
-
-        case .addOrderNote:
-            WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
-
-            let newNoteViewController = NewNoteViewController()
-            newNoteViewController.viewModel = viewModel
-
-            let navController = WooNavigationController(rootViewController: newNoteViewController)
-            present(navController, animated: true, completion: nil)
-        case .trackingAdd:
-            WooAnalytics.shared.track(.orderDetailAddTrackingButtonTapped)
-
-            let addTrackingViewModel = AddTrackingViewModel(order: viewModel.order)
-            let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
-            let navController = WooNavigationController(rootViewController: addTracking)
-            present(navController, animated: true, completion: nil)
-        case .orderItem:
-            let item = viewModel.order.items[indexPath.row]
-            let productID = item.variationID == 0 ? item.productID : item.variationID
-            let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                   siteID: viewModel.order.siteID)
-            let navController = WooNavigationController(rootViewController: loaderViewController)
-            present(navController, animated: true, completion: nil)
-        case .details:
-            WooAnalytics.shared.track(.orderDetailProductDetailTapped)
-            performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
-        case .billingEmail:
-            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
-            displayEmailComposerIfPossible()
-        case .billingPhone:
-            displayContactCustomerAlert(from: view)
-        default:
-            break
-        }
+        viewModel.tableView(tableView, in: self, didSelectRowAt: indexPath)
     }
 
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
@@ -503,56 +467,6 @@ private extension OrderDetailsViewController {
 }
 
 
-// MARK: - Contact Alert
-//
-private extension OrderDetailsViewController {
-
-    /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
-    ///
-    func displayContactCustomerAlert(from sourceView: UIView) {
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
-
-        actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
-        actionSheet.addDefaultActionWithTitle(ContactAction.call) { [weak self] _ in
-            guard let phoneURL = self?.viewModel.order.billingAddress?.cleanedPhoneNumberAsActionableURL else {
-                return
-            }
-
-            WooAnalytics.shared.track(.orderDetailCustomerPhoneOptionTapped)
-            self?.callCustomerIfPossible(at: phoneURL)
-        }
-
-        actionSheet.addDefaultActionWithTitle(ContactAction.message) { [weak self] _ in
-            WooAnalytics.shared.track(.orderDetailCustomerSMSOptionTapped)
-            self?.displayMessageComposerIfPossible()
-        }
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.sourceView = sourceView
-        popoverController?.sourceRect = sourceView.bounds
-
-        present(actionSheet, animated: true)
-
-        WooAnalytics.shared.track(.orderDetailCustomerPhoneMenuTapped)
-    }
-
-    /// Attempts to perform a phone call at the specified URL
-    ///
-    func callCustomerIfPossible(at phoneURL: URL) {
-        guard UIApplication.shared.canOpenURL(phoneURL) else {
-            return
-        }
-
-        UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
-        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": self.viewModel.order.orderID,
-                                                                        "status": self.viewModel.order.statusKey,
-                                                                        "type": "call"])
-
-    }
-}
-
-
 // MARK: - Present Order Status List
 //
 private extension OrderDetailsViewController {
@@ -563,70 +477,6 @@ private extension OrderDetailsViewController {
         let navigationController = UINavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)
-    }
-}
-
-
-// MARK: - MFMessageComposeViewControllerDelegate Conformance
-//
-extension OrderDetailsViewController: MFMessageComposeViewControllerDelegate {
-    func displayMessageComposerIfPossible() {
-        guard let phoneNumber = viewModel.order.billingAddress?.cleanedPhoneNumber,
-            MFMessageComposeViewController.canSendText()
-            else {
-                return
-        }
-
-        displayMessageComposer(for: phoneNumber)
-        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                        "status": viewModel.order.statusKey,
-                                                                        "type": "sms"])
-    }
-
-    private func displayMessageComposer(for phoneNumber: String) {
-        let controller = MFMessageComposeViewController()
-        controller.recipients = [phoneNumber]
-        controller.messageComposeDelegate = self
-        present(controller, animated: true, completion: nil)
-    }
-
-    func messageComposeViewController(_ controller: MFMessageComposeViewController, didFinishWith result: MessageComposeResult) {
-        dismiss(animated: true, completion: nil)
-    }
-}
-
-
-// MARK: - MFMailComposeViewControllerDelegate Conformance
-//
-extension OrderDetailsViewController: MFMailComposeViewControllerDelegate {
-    func displayEmailComposerIfPossible() {
-        guard let email = viewModel.order.billingAddress?.email, MFMailComposeViewController.canSendMail() else {
-            return
-        }
-
-        displayEmailComposer(for: email)
-        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": viewModel.order.orderID,
-                                                                        "status": viewModel.order.statusKey,
-                                                                        "type": "email"])
-    }
-
-    private func displayEmailComposer(for email: String) {
-        // Workaround: MFMailCompose isn't *FULLY* picking up UINavigationBar's WC's appearance. Title / Buttons look awful.
-        // We're falling back to iOS's default appearance
-        UINavigationBar.applyDefaultAppearance()
-
-        // Composer
-        let controller = MFMailComposeViewController()
-        controller.setToRecipients([email])
-        controller.mailComposeDelegate = self
-        present(controller, animated: true, completion: nil)
-    }
-
-    func mailComposeController(_ controller: MFMailComposeViewController, didFinishWith result: MFMailComposeResult, error: Error?) {
-        controller.dismiss(animated: true, completion: nil)
-
-        // Workaround: Restore WC's navBar appearance
-        UINavigationBar.applyWooAppearance()
     }
 }
 
@@ -657,12 +507,6 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
 
-    enum ContactAction {
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let call = NSLocalizedString("Call", comment: "Call phone number button title")
-        static let message = NSLocalizedString("Message", comment: "Message phone number button title")
-    }
-
     enum TrackingAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the shipment tracking action sheet")
         static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
@@ -672,7 +516,5 @@ private extension OrderDetailsViewController {
     enum Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
-        static let productDetailsSegue = "ShowProductListViewController"
-        static let orderStatusListSegue = "ShowOrderStatusListViewController"
     }
 }

@@ -109,6 +109,11 @@ class StoresManager {
         }
 
         group.enter()
+        synchronizeAccountSettings { _ in
+            group.leave()
+        }
+
+        group.enter()
         synchronizeSites { _ in
             group.leave()
         }
@@ -196,6 +201,28 @@ private extension StoresManager {
             if let `self` = self, let account = account, self.isAuthenticated {
                 self.sessionManager.defaultAccount = account
                 WooAnalytics.shared.refreshUserData()
+            }
+
+            onCompletion(error)
+        }
+
+        dispatch(action)
+    }
+
+    /// Synchronizes the WordPress.com Account Settings, associated with the current credentials.
+    ///
+    func synchronizeAccountSettings(onCompletion: @escaping (Error?) -> Void) {
+        guard let userID = self.sessionManager.defaultAccount?.userID else {
+            onCompletion(StoresManagerError.missingDefaultSite)
+            return
+        }
+
+        let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
+            if let self = self,
+                let accountSettings = accountSettings,
+                self.isAuthenticated {
+                // Save the user's preference
+                WooAnalytics.shared.setUserHasOptedOut(accountSettings.tracksOptOut)
             }
 
             onCompletion(error)

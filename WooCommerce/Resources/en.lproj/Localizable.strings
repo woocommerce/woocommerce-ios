@@ -195,7 +195,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Couldn't connect. Required XML-RPC methods are missing on the server.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem.";
@@ -247,7 +247,7 @@
 "Discount" = "Discount";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Dismiss";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -277,6 +277,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Double tap to toggle setting.";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "Downloads";
+
 /* Display label for the product's draft status */
 "Draft" = "Draft";
 
@@ -297,6 +300,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Empty URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Enter a valid URL eg. example.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Enter provider name";
@@ -321,7 +327,13 @@
 "Enter your password instead." = "Enter your password instead.";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordpress.com";
+"example.com" = "example.com";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "Expiry: %ld day";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "Expiry: %ld days";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Failed to serialize request to the REST API.";
@@ -377,9 +389,6 @@
 
 /* Footer text to hide the billing cell */
 "Hide billing" = "Hide billing";
-
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again.";
 
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HOW CAN WE HELP?";
@@ -441,6 +450,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support.";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "Limit: %ld download";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "Limit: %ld downloads";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Loading Order";
@@ -603,6 +618,9 @@
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "Notifications: %@";
 
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "Number of files:";
+
 /* Spoken label to indicate switch control is turned off. */
 "Off" = "Off";
 
@@ -763,6 +781,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do.";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "Purchase Details";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "Purchase note";
+
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
 
@@ -772,6 +796,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Reach our happiness engineers who can help answer tough questions";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "Read more";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Read privacy policy";
@@ -850,8 +877,12 @@
    Date an item was shipped */
 "Shipped %@" = "Shipped %@";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "Shipping";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "Shipping class:";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Shipping details";
@@ -885,6 +916,9 @@
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Site Redirect";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "Size:";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
 "SKU" = "SKU";
@@ -1030,6 +1064,9 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "The site address must be shorter than 64 characters.";
+
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "The site could not be deleted.";
@@ -1287,6 +1324,9 @@
 
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Weeks";
+
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "Weight:";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "What's my site address?";

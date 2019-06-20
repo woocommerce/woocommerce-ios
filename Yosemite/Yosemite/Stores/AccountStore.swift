@@ -30,8 +30,6 @@ public class AccountStore: Store {
         switch action {
         case .loadAccount(let userID, let onCompletion):
             loadAccount(userID: userID, onCompletion: onCompletion)
-        case .loadAccountSettings(let userID, let onCompletion):
-            loadAccountSettings(userID: userID, onCompletion: onCompletion)
         case .loadSite(let siteID, let onCompletion):
             loadSite(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeAccount(let onCompletion):
@@ -42,6 +40,8 @@ public class AccountStore: Store {
             synchronizeSites(onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
             synchronizeSitePlan(siteID: siteID, onCompletion: onCompletion)
+        case .updateAccountSettings(let userID, let tracksOptOut, let onCompletion):
+            updateAccountSettings(userID: userID, tracksOptOut: tracksOptOut, onCompletion: onCompletion)
         }
     }
 }
@@ -125,17 +125,25 @@ private extension AccountStore {
         onCompletion(account)
     }
 
-    /// Loads the AccountSettings associated with the specified userID.
-    func loadAccountSettings(userID: Int, onCompletion: @escaping (AccountSettings?) -> Void) {
-        let accountSettings = storageManager.viewStorage.loadAccountSettings(userId: userID)?.toReadOnly()
-        onCompletion(accountSettings)
-    }
-
     /// Loads the Site associated with the specified siteID (if any!)
     ///
     func loadSite(siteID: Int, onCompletion: @escaping (Site?) -> Void) {
         let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
         onCompletion(site)
+    }
+
+    /// Submits the tracks opt-in / opt-out setting to be synced globally. 
+    ///
+    func updateAccountSettings(userID: Int, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
+        let remote = AccountRemote(network: network)
+        remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in
+            guard let _ = accountSettings else {
+                onCompletion(error)
+                return
+            }
+
+            onCompletion(nil)
+        }
     }
 }
 
@@ -198,5 +206,4 @@ extension AccountStore {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }
-
 }

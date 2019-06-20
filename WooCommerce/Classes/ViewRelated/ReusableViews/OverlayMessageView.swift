@@ -83,6 +83,8 @@ class OverlayMessageView: UIView {
         backgroundColor = StyleManager.tableViewBackgroundColor
         messageLabel.applyBodyStyle()
         actionButton.applySecondaryButtonStyle()
+        actionButton.enableMultipleLines()
+        actionButton.titleLabel?.textAlignment = .center
     }
 
 

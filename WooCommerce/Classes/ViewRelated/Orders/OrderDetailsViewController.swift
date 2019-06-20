@@ -44,6 +44,8 @@ final class OrderDetailsViewController: UIViewController {
         }
     }
 
+    private let notices = OrderDetailsNotices()
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -119,7 +121,7 @@ private extension OrderDetailsViewController {
             }
 
             self.navigationController?.popViewController(animated: true)
-            self.displayOrderDeletedNotice()
+            self.displayOrderDeletedNotice(order: self.viewModel.order)
         }
     }
 
@@ -184,17 +186,16 @@ private extension OrderDetailsViewController {
 
     /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
     ///
-    func displayOrderDeletedNotice() {
-        let message = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Order %@ has been deleted from your store",
-                comment: "Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store."
-            ),
-            viewModel.order.number
-        )
+    func displayOrderDeletedNotice(order: Order) {
+        notices.displayOrderDeletedNotice(order: order)
+    }
 
-        let notice = Notice(title: message, feedbackType: .error)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    /// Displays the `Unable to delete tracking` Notice.
+    ///
+    func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
+        notices.displayDeleteErrorNotice(order: order, tracking: tracking) { [weak self] in
+            self?.deleteTracking(tracking)
+        }
     }
 }
 
@@ -263,10 +264,10 @@ private extension OrderDetailsViewController {
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {
-        let orderID = viewModel.order.orderID
+        let order = viewModel.order
         viewModel.deleteTracking(tracking) { [weak self] error in
             if let _ = error {
-                self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
+                self?.displayDeleteErrorNotice(order: order, tracking: tracking)
                 return
             }
 
@@ -477,28 +478,6 @@ private extension OrderDetailsViewController {
         let navigationController = UINavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)
-    }
-}
-
-
-// MARK: - Error notice
-private extension OrderDetailsViewController {
-    /// Displays the `Unable to delete tracking` Notice.
-    ///
-    func displayDeleteErrorNotice(orderID: Int, tracking: ShipmentTracking) {
-        let title = NSLocalizedString(
-            "Unable to delete tracking for order #\(orderID)",
-            comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
-        )
-        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) { [weak self] in
-                                self?.deleteTracking(tracking)
-        }
-
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
 

@@ -908,7 +908,40 @@ extension OrderDetailsViewModel {
 }
 
 
+// MARK: - Syning data. Yosemite related stuff
 extension OrderDetailsViewModel {
+    func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
+        let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { (order, error) in
+            guard let _ = order else {
+                DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
+                onCompletion?(nil, error)
+                return
+            }
+
+            onCompletion?(order, nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
+        let orderID = order.orderID
+        let siteID = order.siteID
+        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
+                                                                    orderID: orderID) { error in
+                                                                        if let error = error {
+                                                                            DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                                                                            onCompletion?(error)
+                                                                            return
+                                                                        }
+
+                                                                        WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+                                                                        onCompletion?(nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: order.siteID, orderID: order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
@@ -921,6 +954,21 @@ extension OrderDetailsViewModel {
 
             self?.orderNotes = orderNotes
             WooAnalytics.shared.track(.orderNotesLoaded, withProperties: ["id": self?.order.orderID ?? 0])
+            onCompletion?(nil)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
+        let action = ProductAction.requestMissingProducts(for: order) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing Products: \(error)")
+                onCompletion?(error)
+
+                return
+            }
+
             onCompletion?(nil)
         }
 

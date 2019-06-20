@@ -238,9 +238,8 @@ extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
-        let action = OrderAction.retrieveOrder(siteID: viewModel.order.siteID, orderID: viewModel.order.orderID) { [weak self] (order, error) in
+        viewModel.syncOrder { [weak self] (order, error) in
             guard let self = self, let order = order else {
-                DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
                 onCompletion?(error)
                 return
             }
@@ -249,25 +248,10 @@ private extension OrderDetailsViewController {
             self.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
             onCompletion?(nil)
         }
-
-        StoresManager.shared.dispatch(action)
     }
 
     func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
-        let orderID = viewModel.order.orderID
-        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: viewModel.order.siteID,
-                                                                    orderID: orderID) { error in
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
-                onCompletion?(error)
-                return
-            }
-
-            WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
-            onCompletion?(nil)
-        }
-
-        StoresManager.shared.dispatch(action)
+        viewModel.syncTracking(onCompletion: onCompletion)
     }
 
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
@@ -275,18 +259,7 @@ private extension OrderDetailsViewController {
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.requestMissingProducts(for: viewModel.order) { (error) in
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing Products: \(error)")
-                onCompletion?(error)
-
-                return
-            }
-
-            onCompletion?(nil)
-        }
-
-        StoresManager.shared.dispatch(action)
+        viewModel.syncProducts(onCompletion: onCompletion)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {

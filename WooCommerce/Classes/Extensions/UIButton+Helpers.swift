@@ -43,7 +43,7 @@ extension UIButton {
     }
 
     /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.
-    func enableMultipleLines() {
+    private func enableMultipleLines() {
         titleLabel?.lineBreakMode = .byWordWrapping
         if let label = titleLabel {
             pinSubviewToAllEdgeMargins(label)

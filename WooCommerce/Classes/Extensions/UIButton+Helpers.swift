@@ -27,6 +27,8 @@ extension UIButton {
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
+        enableMultipleLines()
+        titleLabel?.textAlignment = .center
     }
 
     /// Applies the Terciary Button Style: Clear BG / Top Outline

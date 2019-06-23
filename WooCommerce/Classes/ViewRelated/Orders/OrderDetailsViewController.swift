@@ -290,7 +290,7 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func handleCellAction(_ type: OrderDetailsViewModel.CellActionType, at indexPath: IndexPath?) {
+    func handleCellAction(_ type: OrderDetailsDataSource.CellActionType, at indexPath: IndexPath?) {
         switch type {
         case .fulfill:
             fulfillWasPressed()
@@ -341,31 +341,31 @@ private extension OrderDetailsViewController {
 //
 extension OrderDetailsViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.numberOfSections(in: tableView)
+        return viewModel.dataSource.numberOfSections(in: tableView)
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.tableView(tableView, numberOfRowsInSection: section)
+        return viewModel.dataSource.tableView(tableView, numberOfRowsInSection: section)
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return viewModel.tableView(tableView, cellForRowAt: indexPath)
+        return viewModel.dataSource.tableView(tableView, cellForRowAt: indexPath)
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return viewModel.tableView(tableView, heightForHeaderInSection: section)
+        return viewModel.dataSource.tableView(tableView, heightForHeaderInSection: section)
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return viewModel.tableView(tableView, viewForHeaderInSection: section)
+        return viewModel.dataSource.tableView(tableView, viewForHeaderInSection: section)
     }
 
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return viewModel.tableView(tableView, heightForFooterInSection: section)
+        return viewModel.dataSource.tableView(tableView, heightForFooterInSection: section)
     }
 
     func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return viewModel.tableView(tableView, viewForFooterInSection: section)
+        return viewModel.dataSource.tableView(tableView, viewForFooterInSection: section)
     }
 }
 
@@ -380,14 +380,14 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        guard viewModel.checkIfCopyingIsAllowed(for: indexPath) else {
+        guard viewModel.dataSource.checkIfCopyingIsAllowed(for: indexPath) else {
             // Only allow the leading swipe action on the address rows
             return UISwipeActionsConfiguration(actions: [])
         }
 
         let copyActionTitle = NSLocalizedString("Copy", comment: "Copy address text button title — should be one word and as short as possible.")
         let copyAction = UIContextualAction(style: .normal, title: copyActionTitle) { [weak self] (action, view, success) in
-            self?.viewModel.copyText(at: indexPath)
+            self?.viewModel.dataSource.copyText(at: indexPath)
             success(true)
         }
         copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
@@ -401,7 +401,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
-        return viewModel.checkIfCopyingIsAllowed(for: indexPath)
+        return viewModel.dataSource.checkIfCopyingIsAllowed(for: indexPath)
     }
 
     func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
@@ -413,7 +413,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             return
         }
 
-        viewModel.copyText(at: indexPath)
+        viewModel.dataSource.copyText(at: indexPath)
     }
 }
 
@@ -439,7 +439,7 @@ private extension OrderDetailsViewController {
     ///
 
     func displayShipmentTrackingAlert(from sourceView: UIView, indexPath: IndexPath) {
-        guard let tracking = viewModel.orderTracking(at: indexPath) else {
+        guard let tracking = viewModel.dataSource.orderTracking(at: indexPath) else {
             return
         }
 

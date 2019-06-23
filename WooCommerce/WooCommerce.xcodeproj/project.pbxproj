@@ -317,6 +317,7 @@
 		D817585E22BB5E8700289CFE /* OrderEmailComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */; };
 		D817586022BB614A00289CFE /* OrderMessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817585F22BB614A00289CFE /* OrderMessageComposer.swift */; };
 		D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817586122BB64C300289CFE /* OrderDetailsNotices.swift */; };
+		D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */; };
 		D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */; };
 		D81D9229222E7F0800FFA585 /* OrderStatusListViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */; };
 		D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */ = {isa = PBXBuildFile; fileRef = D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */; };
@@ -712,6 +713,7 @@
 		D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderEmailComposer.swift; sourceTree = "<group>"; };
 		D817585F22BB614A00289CFE /* OrderMessageComposer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderMessageComposer.swift; sourceTree = "<group>"; };
 		D817586122BB64C300289CFE /* OrderDetailsNotices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsNotices.swift; sourceTree = "<group>"; };
+		D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsDataSource.swift; sourceTree = "<group>"; };
 		D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatusListViewController.swift; sourceTree = "<group>"; };
 		D81D9227222E7F0800FFA585 /* OrderStatusListViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderStatusListViewController.xib; sourceTree = "<group>"; };
 		D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = EmptyListMessageWithActionView.xib; sourceTree = "<group>"; };
@@ -1584,6 +1586,7 @@
 				D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */,
 				D817585F22BB614A00289CFE /* OrderMessageComposer.swift */,
 				D817586122BB64C300289CFE /* OrderDetailsNotices.swift */,
+				D817586322BDD81600289CFE /* OrderDetailsDataSource.swift */,
 			);
 			path = OrderDetailsViewModel;
 			sourceTree = "<group>";
@@ -2174,6 +2177,7 @@
 				743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
+				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

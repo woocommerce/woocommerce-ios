@@ -4,7 +4,7 @@ import Yosemite
 
 // MARK: - OrderTableViewCell
 //
-class OrderTableViewCell: UITableViewCell {
+final class OrderTableViewCell: UITableViewCell {
 
     /// Order's Title
     ///

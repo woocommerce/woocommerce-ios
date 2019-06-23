@@ -11,10 +11,6 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
 
-    private let productDetails = NSLocalizedString("Details", comment: "The row label to tap for a detailed product list")
-
-    private let fulfillTitle = NSLocalizedString("Fulfill order", comment: "Fulfill order button title")
-
     /// Sections to be rendered
     ///
     private(set) var sections = [Section]()
@@ -34,18 +30,6 @@ final class OrderDetailsDataSource: NSObject {
     var displaysBillingDetails: Bool = false
 
     var trackingIsReachable: Bool = false
-
-    /// Order Notes Button
-    /// - icon and text
-    ///
-    private let addNoteIcon = UIImage.addOutlineImage
-
-    private let addNoteText = NSLocalizedString("Add a note", comment: "Button text for adding a new order note")
-
-    /// Subtotal
-    /// - returns: 'Subtotal' label and calculated subtotal for all items
-    ///
-    private let subtotalLabel = NSLocalizedString("Subtotal", comment: "Subtotal label for payment view")
 
     private var subtotal: Decimal {
         let subtotal = order.items.reduce(Decimal(0)) { (output, item) in
@@ -81,30 +65,13 @@ final class OrderDetailsDataSource: NSObject {
         return "-" + formattedDiscount
     }
 
-    /// Shipping
-    /// - returns 'Shipping' label and amount, including zero amounts.
-    ///
-    private let shippingLabel = NSLocalizedString("Shipping", comment: "Shipping label for payment view")
-
     private var shippingValue: String {
         return currencyFormatter.formatAmount(order.shippingTotal, with: order.currency) ?? String()
-    }
-
-    /// Taxes
-    /// - returns: 'Taxes' label and total taxes, including zero amounts.
-    ///
-    private var taxesLabel: String? {
-        return NSLocalizedString("Taxes", comment: "Taxes label for payment view")
     }
 
     private var taxesValue: String? {
         return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
     }
-
-    /// Total
-    /// - returns: 'Total' label and total amount, including zero amounts.
-    ///
-    private let totalLabel = NSLocalizedString("Total", comment: "Total label for payment view")
 
     private var totalValue: String {
         return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
@@ -354,8 +321,8 @@ extension OrderDetailsDataSource {
     }
 
     func configureNewNote(cell: LeftImageTableViewCell) {
-        cell.leftImage = addNoteIcon
-        cell.labelText = addNoteText
+        cell.leftImage = Icons.addNoteIcon
+        cell.labelText = Titles.addNoteText
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
@@ -381,21 +348,21 @@ extension OrderDetailsDataSource {
     }
 
     func configurePayment(cell: PaymentTableViewCell) {
-        cell.subtotalLabel.text = subtotalLabel
+        cell.subtotalLabel.text = Titles.subtotalLabel
         cell.subtotalValue.text = subtotalValue
 
         cell.discountLabel.text = discountLabel
         cell.discountValue.text = discountValue
         cell.discountView.isHidden = discountValue == nil
 
-        cell.shippingLabel.text = shippingLabel
+        cell.shippingLabel.text = Titles.shippingLabel
         cell.shippingValue.text = shippingValue
 
-        cell.taxesLabel.text = taxesLabel
+        cell.taxesLabel.text = Titles.taxesLabel
         cell.taxesValue.text = taxesValue
         cell.taxesView.isHidden = taxesValue == nil
 
-        cell.totalLabel.text = totalLabel
+        cell.totalLabel.text = Titles.totalLabel
         cell.totalValue.text = totalValue
 
         cell.footerText = paymentSummary
@@ -417,7 +384,7 @@ extension OrderDetailsDataSource {
     }
 
     func configureDetails(cell: WooBasicTableViewCell) {
-        cell.bodyLabel?.text = productDetails
+        cell.bodyLabel?.text = Titles.productDetails
         cell.bodyLabel?.applyBodyStyle() // override the custom purple with black
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -432,7 +399,7 @@ extension OrderDetailsDataSource {
     }
 
     func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
-        cell.fulfillButton.setTitle(fulfillTitle, for: .normal)
+        cell.fulfillButton.setTitle(Titles.fulfillTitle, for: .normal)
         cell.onFullfillTouchUp = { [weak self] in
             self?.onCellAction?(.fulfill, nil)
         }
@@ -776,5 +743,28 @@ extension OrderDetailsDataSource {
         }
 
         return false
+    }
+}
+
+extension OrderDetailsDataSource {
+    enum Titles {
+        static let productDetails = NSLocalizedString("Details",
+                                                      comment: "The row label to tap for a detailed product list")
+        static let fulfillTitle = NSLocalizedString("Fulfill order",
+                                                    comment: "Fulfill order button title")
+        static let subtotalLabel = NSLocalizedString("Subtotal",
+                                                     comment: "Subtotal label for payment view")
+        static let addNoteText = NSLocalizedString("Add a note",
+                                                   comment: "Button text for adding a new order note")
+        static let shippingLabel = NSLocalizedString("Shipping",
+                                                     comment: "Shipping label for payment view")
+        static let taxesLabel = NSLocalizedString("Taxes",
+                                                  comment: "Taxes label for payment view")
+        static let totalLabel = NSLocalizedString("Total",
+                                                  comment: "Total label for payment view")
+    }
+
+    enum Icons {
+        static let addNoteIcon = UIImage.addOutlineImage
     }
 }

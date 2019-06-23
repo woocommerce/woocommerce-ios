@@ -268,12 +268,11 @@ extension OrderDetailsDataSource {
 
     func configureBillingEmail(cell: WooBasicTableViewCell) {
         guard let email = order.billingAddress?.email else {
-            // TODO: This should actually be an assert. To be revisited!
             return
         }
 
         cell.bodyLabel?.text = email
-        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
+        cell.bodyLabel?.applyBodyStyle()
         cell.accessoryImage = .mailImage
 
         cell.isAccessibilityElement = true
@@ -292,12 +291,11 @@ extension OrderDetailsDataSource {
 
     func configureBillingPhone(cell: WooBasicTableViewCell) {
         guard let phoneNumber = order.billingAddress?.phone else {
-            // TODO: This should actually be an assert. To be revisited!
             return
         }
 
         cell.bodyLabel?.text = phoneNumber
-        cell.bodyLabel?.applyBodyStyle() // override the woo purple text
+        cell.bodyLabel?.applyBodyStyle()
         cell.accessoryImage = .ellipsisImage
 
         cell.isAccessibilityElement = true
@@ -385,7 +383,7 @@ extension OrderDetailsDataSource {
 
     func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Titles.productDetails
-        cell.bodyLabel?.applyBodyStyle() // override the custom purple with black
+        cell.bodyLabel?.applyBodyStyle()
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
     }

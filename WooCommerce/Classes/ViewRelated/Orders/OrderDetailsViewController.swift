@@ -92,6 +92,8 @@ private extension OrderDetailsViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
+
+        tableView.dataSource = viewModel.dataSource
     }
 
     /// Setup: Navigation
@@ -335,40 +337,6 @@ private extension OrderDetailsViewController {
         present(safariViewController, animated: true, completion: nil)
     }
 }
-
-
-// MARK: - UITableViewDataSource Conformance
-//
-extension OrderDetailsViewController: UITableViewDataSource {
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return viewModel.dataSource.numberOfSections(in: tableView)
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.dataSource.tableView(tableView, numberOfRowsInSection: section)
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        return viewModel.dataSource.tableView(tableView, cellForRowAt: indexPath)
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return viewModel.dataSource.tableView(tableView, heightForHeaderInSection: section)
-    }
-
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
-        return viewModel.dataSource.tableView(tableView, viewForHeaderInSection: section)
-    }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return viewModel.dataSource.tableView(tableView, heightForFooterInSection: section)
-    }
-
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return viewModel.dataSource.tableView(tableView, viewForFooterInSection: section)
-    }
-}
-
 
 // MARK: - UITableViewDelegate Conformance
 //

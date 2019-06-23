@@ -465,8 +465,12 @@ extension OrderDetailsDataSource {
             self?.onCellAction?(.summary, nil)
         }
 
-        // TODO. Find a way around this
-        //cell.display(viewModel: self)
+
+        let status = lookUpOrderStatus(for: order)?.status ?? OrderStatusEnum(rawValue: order.statusKey)
+        let statusName = lookUpOrderStatus(for: order)?.name ?? order.statusKey
+        let presentation = SummaryTableViewCellPresentation(status: status, statusName: statusName)
+
+        cell.display(presentation: presentation)
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {

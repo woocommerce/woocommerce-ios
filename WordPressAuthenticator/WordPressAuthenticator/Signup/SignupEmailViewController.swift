@@ -44,7 +44,6 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        WPStyleGuide.configureColors(for: view, andTableView: nil)
         localizeControls()
         WordPressAuthenticator.track(.createAccountInitiated)
     }

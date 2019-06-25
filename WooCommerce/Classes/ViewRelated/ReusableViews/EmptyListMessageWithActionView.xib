@@ -39,7 +39,6 @@
                             <constraints>
                                 <constraint firstAttribute="trailing" secondItem="Mgi-it-aQ1" secondAttribute="trailing" constant="16" id="fDu-ac-2KI"/>
                                 <constraint firstItem="Mgi-it-aQ1" firstAttribute="top" secondItem="Lfm-8q-CzH" secondAttribute="top" constant="14" id="iZo-y8-TIo"/>
-                                <constraint firstAttribute="height" constant="48" id="jtx-gb-DND"/>
                                 <constraint firstAttribute="bottom" secondItem="Mgi-it-aQ1" secondAttribute="bottom" constant="13" id="ltl-Gt-ebO"/>
                                 <constraint firstItem="Mgi-it-aQ1" firstAttribute="leading" secondItem="Lfm-8q-CzH" secondAttribute="leading" constant="16" id="ubc-Eh-WQT"/>
                             </constraints>

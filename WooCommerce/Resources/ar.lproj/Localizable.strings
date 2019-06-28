@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-11 09:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-27 06:54:07+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "تعذر الاتصال. تكون طرق XML-RPC المطلوبة مفقودة على الخادم.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "تعذر الاتصال. يحظر مضيفك طلبات POST، ويحتاج التطبيق إلى ذلك للاتصال بموقعك. يُرجى الاتصال بالمضيف لحل هذه المشكلة.";
@@ -246,7 +246,7 @@
 "Discount" = "خصم";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "رفض";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -276,6 +276,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "اضغط ضغطًا مزدوجًا لتبديل الإعداد.";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "التنزيلات";
+
 /* Display label for the product's draft status */
 "Draft" = "مسودة";
 
@@ -296,6 +299,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "عنوان URL فارغ";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "أدخل عنوان URL صالحًا، على سبيل المثال example.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "إدخال اسم المزوِّد";
@@ -318,6 +324,12 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "بدلاً من ذلك، أدخل كلمة المرور.";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "تاريخ انتهاء الصلاحية: %ld من الأيام";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "تاريخ انتهاء الصلاحية: %ld من الأيام";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "فشل في تسلسل الطلب إلى REST API.";
@@ -377,9 +389,6 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "إخفاء الفوترة";
 
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "عذرًا، لا يبدو أن هناك موقعًا لوردبرس على عنوان URL هذا. تحقق مجددًا من التهجئة وحاول مجددًا.";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "في حالة تعطيلها، فستكون الملاحظة خاصة";
 
@@ -434,6 +443,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "تم الوصول إلى الحد المسموح به. يمكنك المحاولة مرة أخرى في غضون دقيقة واحدة. حاول مرة أخرى لأن ذلك سيؤدي إلى زيادة الوقت الذي ينبغي لك انتظاره قبل رفع الحظر. إذا كنت تعتقد أن ذلك خطأ داخلي، فاتصل بالدعم.";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "الحد: %ld من التنزيلات";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "الحد: %ld من التنزيلات";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "تحميل الطلب";
@@ -586,6 +601,9 @@
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "التنبيهات: %@";
+
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "عدد الملفات:";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -747,6 +765,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "نشر من قائمة الانتظار. تدوين من قائمة النقل. تعليق من المقهى. يذهب وردبرس حيثما تُحدد.";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "تفاصيل الشراء";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "ملحوظة الشراء";
+
 /* Quantity abbreviation for section title */
 "QTY" = "الكمية";
 
@@ -756,6 +780,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "يمكنك الوصول إلى مهندسينا الذين تسرهم مساعدتك في الإجابة عن الأسئلة الصعبة";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "قراءة المزيد";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "قراءة سياسة الخصوصية";
@@ -844,11 +871,15 @@
    Date an item was shipped */
 "Shipped %@" = "تم شحن %@";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "الشحن";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "مزوِّدو الشحن";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "فئة الشحن:";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "تفاصيل الشحن";
@@ -879,6 +910,9 @@
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "يجب أن يحتوي عنوان الموقع على 4 حروف على الأقل.";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "الحجم:";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "عذرًا، اسم المستخدم الخاص بك يحتوي على عبارة غير صالحة %@.";
@@ -1014,6 +1048,9 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "يجب أن يكون طول عنوان الموقع أقل من 64 حرفًا.";
+
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "الموقع الموجود على هذا العنوان ليس موقع وردبرس. لكي نتصل بالموقع، يجب أن يستخدم وردبرس.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "تعذر حذف الموقع.";
@@ -1260,6 +1297,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "أسابيع";
 
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "الوزن:";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "ما عنوان الموقع الخاص بي؟";
 
@@ -1315,7 +1355,7 @@
 "approved" = "تمت الموافقة عليها";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "في وقتٍ لاحقٍ اليوم";

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-11 11:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-26 09:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Kunde inte ansluta. XML-RPC-metoder som krävs saknas på servern.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Det gick inte att ansluta. Din webbserver blockerar POST-transaktioner, vilket appen behöver för att kommunicera med webbplatsen. Kontakta webbhotellet för att lösa problemet.";
@@ -246,7 +246,7 @@
 "Discount" = "Rabatt";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Stäng";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -276,6 +276,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Dubbelpeka för att växla inställning.";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "Nedladdningar";
+
 /* Display label for the product's draft status */
 "Draft" = "Utkast";
 
@@ -296,6 +299,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL ej angiven";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Ange en giltig URL, t.ex. exempel.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Ange leverantörens namn";
@@ -318,6 +324,12 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Skriv in ditt lösenord istället.";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "Går ut: %ld dag";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "Går ut: %ld dagar";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Det gick inte att serialisera förfrågan till REST API.";
@@ -377,9 +389,6 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Dölj fakturering";
 
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm. Det verkar inte finnas någon WordPress-webbplats på denna URL. Kolla stavningen och försök igen.";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Om detta inaktiveras kommer noteringen att vara privat";
 
@@ -434,6 +443,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Gräns nådd. Du kan försöka igen om 1 minut. Att försöka igen innan kommer bara öka tiden du måste vänta innan förbudet är upphävt. Vänligen kontakta support om du tror detta är ett fel.";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "Gräns: %ld nedladdning";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "Gräns: %ld nedladdningar";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Hämtar beställning";
@@ -586,6 +601,9 @@
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "Aviseringar: %@";
+
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "Antal filer:";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -747,6 +765,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publicera från parkbänken. Blogga på bussen. Kommentera på ditt favoritkafé. WordPress har du alltid med dig.";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "Köpinformation";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "Köpmeddelande";
+
 /* Quantity abbreviation for section title */
 "QTY" = "Antal";
 
@@ -756,6 +780,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Kontakta våra supporttekniker för att få svar på svåra frågor";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "Läs mer";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Läs integritetspolicyn";
@@ -844,11 +871,15 @@
    Date an item was shipped */
 "Shipped %@" = "Skickad %@";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "Frakt";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Transportleverantörer";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "Fraktklass:";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Leveransadress";
@@ -879,6 +910,9 @@
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Adressen till webbplatsen måste bestå av minst 4 bokstäver.";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "Storlek:";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Tyvärr innehåller ditt användarnamn en ogiltig fras %@.";
@@ -1014,6 +1048,9 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Adressen till webbplatsen måste vara kortare än 64 tecken.";
+
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Webbplatsen på den här adressen är inte en WordPress-webbplats. Webbplatsen måste använda WordPress för att vi ska kunna ansluta till den.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Webbplatsen kunde inte raderas.";
@@ -1260,6 +1297,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Veckor";
 
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "Vikt:";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Vilken adress har min webbplats?";
 
@@ -1315,7 +1355,7 @@
 "approved" = "godkänd";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "exempel.wordress.com";
+"example.com" = "exempel.com";
 
 /* Later today */
 "later today" = "senare idag";

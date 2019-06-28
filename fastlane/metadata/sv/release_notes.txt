@@ -1,2 +1,2 @@
-* Vi stöder nu större teckensnitt på inloggningsskärmen.
-* Datum på skärmen Beställningsinformation är nu lokaliserade.
+* Goda nyheter för dig som talar arabiska, hebreiska, farsi och urdu: Vi har förbättrat supporten för RTL-språk på instrumentpanelen.
+* Få mer information med ett tryck: Om du trycker på en produkt i en beställning får du se en skrivskyddad version av produktinformationen.

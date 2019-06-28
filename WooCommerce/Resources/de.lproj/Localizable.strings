@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-11 13:54:25+0000 */
+/* Translation-Revision-Date: 2019-06-27 08:54:49+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Verbindung nicht möglich. Die erforderlichen XML-RPC-Methoden sind auf dem Server nicht vorhanden.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Verbindung fehlgeschlagen. Dein Host blockiert POST-Anforderungen und die App benötigt diese, um mit deiner Website zu kommunizieren. Kontaktiere deinen Host, um dieses Problem zu beheben.";
@@ -246,7 +246,7 @@
 "Discount" = "Rabatt";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Überspringen";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -276,6 +276,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Zum Umschalten der Einstellung doppeltippen.";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "Downloads";
+
 /* Display label for the product's draft status */
 "Draft" = "Entwurf";
 
@@ -296,6 +299,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Leere URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Gib eine gültige URL ein, zum Beispiel „example.com“.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Name des Anbieters eingeben";
@@ -318,6 +324,12 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Gib stattdessen dein Passwort ein.";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "Ablaufdatum: %ld Tag";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "Ablaufdatum: %ld Tage";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Fehler beim Serialisieren der Anforderung an die REST API.";
@@ -377,9 +389,6 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Abrechnung ausblenden";
 
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm, unter dieser URL gibt es anscheinend keine WordPress-Website. Überprüfe die Schreibweise und versuche es noch einmal.";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Bei Deaktivierung wird der Hinweis privat";
 
@@ -434,6 +443,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limit erreicht. Du kannst es noch einmal in 1 Minute probieren. Wenn Du es vorher weiter versuchst wird sich die Zeit bis zur Aufhebung der Sperre nur weiter erhöhen. Wenn Du glaubst, es handelt sich um einen Fehler, kontaktiere bitte den Support.";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "Limit: %ld Download";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "Limit: %ld Downloads";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Bestellung wird geladen";
@@ -586,6 +601,9 @@
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "Benachrichtigungen: %@";
+
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "Anzahl der Dateien:";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -747,6 +765,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Veröffentliche deine Beiträge im Park. Blogge im Bus. Kommentiere im Café. WordPress ist immer und überall für dich verfügbar.";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "Kaufdetails";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "Kaufbestätigung";
+
 /* Quantity abbreviation for section title */
 "QTY" = "MGE";
 
@@ -756,6 +780,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Wende dich an unsere Support-Mitarbeiter, die dir bei schwierigen Fragen weiterhelfen können";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "Weitere Informationen";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Datenschutzerklärung lesen";
@@ -844,11 +871,15 @@
    Date an item was shipped */
 "Shipped %@" = "Versendet am %@";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "Versand";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Lieferanbieter";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "Versandklasse:";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Versanddetails";
@@ -879,6 +910,9 @@
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Website-Adresse muss mindestens 4 Zeichen lang sein.";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "Größe:";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Bedaure, aber dein Benutzername enthält einen ungültigen Ausdruck%@.";
@@ -1015,6 +1049,9 @@
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Die Website-Adresse muss kürzer als 64 Zeichen sein.";
 
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Die Website mit dieser Adresse ist keine WordPress-Website. Damit wir uns mit ihr verbinden können, muss die Website WordPress verwenden.";
+
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Die Website konnte nicht gelöscht werden.";
 
@@ -1074,7 +1111,7 @@
 "Total" = "Gesamt";
 
 /* Product details screen - total orders descriptive label */
-"Total Orders" = "Total Orders";
+"Total Orders" = "Bestellungen gesamt";
 
 /* Description for Top Performers right column header */
 "Total Spend" = "Gesamtausgaben";
@@ -1083,7 +1120,7 @@
 "Total orders: %ld" = "Bestellungen gesamt: %ld";
 
 /* Track shipment button title */
-"Track Shipment" = "Track Shipment";
+"Track Shipment" = "Sendung verfolgen";
 
 /* Order tracking section title */
 "Tracking" = "Sendungsverfolgung";
@@ -1260,6 +1297,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Wochen";
 
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "Gewicht:";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Wie lautet meine Website-Adresse?";
 
@@ -1315,7 +1355,7 @@
 "approved" = "genehmigt";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "später heute";

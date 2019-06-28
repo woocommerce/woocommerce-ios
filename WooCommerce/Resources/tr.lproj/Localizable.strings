@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-12 15:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-27 10:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Bağlantı kurulamadı. Gerekli XML-RPC yordamları sunucuda bulunmuyor.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Bağlantı kurulamadı. Sunucunuz POST isteklerini engelliyor ve uygulama sitenizle iletişim kurmak için buna gereksinim duyuyor. Bu sorunu gidermek için sunucunuzla iletişim kurun.";
@@ -246,7 +246,7 @@
 "Discount" = "İndirim";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Kapat";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -276,6 +276,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Ayarı değiştirmek için çift tıklayın.";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "İndirmeler";
+
 /* Display label for the product's draft status */
 "Draft" = "Taslak";
 
@@ -296,6 +299,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Boş adres";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "ornek.com gibi geçerli bir URL girin.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Sağlayıcı adını girin";
@@ -318,6 +324,12 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Bunun yerine parolanızı girin.";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "Son tarih: %ld gün";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "Son tarih: %ld gün";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API isteği serileştirmesi başarısız oldu.";
@@ -377,9 +389,6 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Faturayı saklayın";
 
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hımm, bu URL’de bir WordPress sitesi varmış gibi görünmüyor. Yazımı tekrar kontrol edip yeniden deneyin.";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Devre dışıysa not gizli olur";
 
@@ -434,6 +443,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limite ulaşıldı. Bir dakika içinde tekrar deneyebilirsiniz. Bundan önceki denemeler, sadece engellemenin kalkması için beklemeniz gereken süreyi arttıracaktır. Eğer bunun bir hata olduğunu düşünüyorsanız destek ile iletişime geçin. ";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "Sınır: %ld indirme";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "Sınır: %ld indirme";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Sipariş Yükleniyor";
@@ -586,6 +601,9 @@
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "Bildirimler: %@";
+
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "Dosya sayısı:";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -747,6 +765,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Gönderinizi parktan yayımlayın. Otobüste blog yazısı hazırlayın. Kafeden yorum yapın. WordPress gittiğiniz her yere gelir.";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "Satın Alma Detayları";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "Satın alma notu";
+
 /* Quantity abbreviation for section title */
 "QTY" = "QTY";
 
@@ -756,6 +780,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Zor sorulara yanıt verilmesine yardımcı olabilecek mutluluk mühendislerimize ulaşın";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "Devamını oku";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Gizlilik politikasını okuyun";
@@ -844,11 +871,15 @@
    Date an item was shipped */
 "Shipped %@" = "Sevkiyat tarihi: %@";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "Gönderim";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Gönderim Sağlayıcıları";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "Gönderim sınıfı:";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Gönderim ayrıntıları";
@@ -879,6 +910,9 @@
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Site adresiniz en az dört karakter olmalı.";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "Boyut:";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Üzgünüm, kullanıcı adınız geçersiz bir ifade içeriyor %@.";
@@ -1014,6 +1048,9 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Site adresi 64 karakterden az olmalıdır. ";
+
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Bu adresteki site bir WordPress sitesi değil. Siteyle bağlantı kurabilmemiz için sitede WordPress kullanılmalıdır.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Site silinemedi.";
@@ -1260,6 +1297,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Haftalar";
 
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "Ağırlık:";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Sitemin adresi ne?";
 
@@ -1315,7 +1355,7 @@
 "approved" = "onaylandı";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "ornek.wordress.com";
+"example.com" = "örnek.com";
 
 /* Later today */
 "later today" = "bugün daha sonra";

@@ -70,7 +70,7 @@ class SettingsViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        updateFooterHeight(for: tableView)
+        tableView.updateFooterHeight()
     }
 }
 

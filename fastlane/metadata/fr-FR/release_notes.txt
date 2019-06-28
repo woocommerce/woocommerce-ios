@@ -1,2 +1,2 @@
-* Nous prenons désormais en charge des tailles de police plus large sur l'écran de connexion.
-* Les dates sur l'écran Détails de la commande sont désormais localisées.
+* Pour les utilisateurs des langues s'écrivant de droite à gauche (arabe, hébreu, farsi et ourdou) : amélioration de la prise en charge des langues dans le tableau de bord.
+* Obtenez davantage d'informations en un clic : dans une commande, appuyez sur un produit pour afficher une vue en lecture seule des détails le concernant.

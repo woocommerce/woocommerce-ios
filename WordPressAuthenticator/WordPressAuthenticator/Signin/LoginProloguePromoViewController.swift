@@ -46,12 +46,7 @@ class LoginProloguePromoViewController: UIViewController {
         }
 
         var headlineColor: UIColor {
-            switch self {
-            case .post, .reader, .jetpack:
-                return UIColor(hexString: "204E80")
-            default:
-                return UIColor.white
-            }
+            return WordPressAuthenticator.shared.style.prologueTitleColor
         }
     }
 

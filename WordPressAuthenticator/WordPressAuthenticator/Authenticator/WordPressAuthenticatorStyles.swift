@@ -61,7 +61,7 @@ public struct WordPressAuthenticatorStyle {
 
     /// Designated initializer
     ///
-    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, subheadlineColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage, prologueBackgroundColor: UIColor? = nil, prologueTitleColor: UIColor? = nil) {
+    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, subheadlineColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage, prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(), prologueTitleColor: UIColor = .white) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -78,8 +78,8 @@ public struct WordPressAuthenticatorStyle {
         self.subheadlineColor = subheadlineColor
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
         self.navBarImage = navBarImage
-        self.prologueBackgroundColor = prologueBackgroundColor ?? WPStyleGuide.wordPressBlue()
-        self.prologueTitleColor = prologueTitleColor ?? .white
+        self.prologueBackgroundColor = prologueBackgroundColor
+        self.prologueTitleColor = prologueTitleColor
     }
 }
 

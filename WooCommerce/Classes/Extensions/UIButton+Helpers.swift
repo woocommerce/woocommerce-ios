@@ -27,6 +27,8 @@ extension UIButton {
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
+        enableMultipleLines()
+        titleLabel?.textAlignment = .center
     }
 
     /// Applies the Terciary Button Style: Clear BG / Top Outline
@@ -38,6 +40,14 @@ extension UIButton {
         layer.borderColor = StyleManager.wooCommerceBrandColor.cgColor
         titleLabel?.applySubheadlineStyle()
         titleLabel?.textAlignment = .natural
+    }
+
+    /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.
+    private func enableMultipleLines() {
+        titleLabel?.lineBreakMode = .byWordWrapping
+        if let label = titleLabel {
+            pinSubviewToAllEdgeMargins(label)
+        }
     }
 }
 

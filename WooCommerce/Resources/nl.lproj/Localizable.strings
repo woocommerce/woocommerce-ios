@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-11 13:54:25+0000 */
+/* Translation-Revision-Date: 2019-06-26 15:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Kan geen verbinding maken. Vereiste XML-RPC-methoden ontbreken op de server.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Kan geen verbinding maken. Je host blokkeert POST-aanvragen. De app heeft deze nodig om te communiceren met je site. Neem contact op met je host om dit probleem op te lossen.";
@@ -246,7 +246,7 @@
 "Discount" = "Korting";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Afbreken";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -276,6 +276,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Tik tweemaal om instelling in\/uit te schakelen.";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "Downloads";
+
 /* Display label for the product's draft status */
 "Draft" = "Concept";
 
@@ -296,6 +299,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Lege URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Voer een geldige URL in, zoals voorbeeld.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Voer naam van provider in";
@@ -318,6 +324,12 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Voer je wachtwoord in.";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "Verloopt op: %ld dag";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "Verloopt op: %ld dagen";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Aanvraag naar de REST API serialiseren mislukt.";
@@ -377,9 +389,6 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Facturen verbergen";
 
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Hmm, er is geen WordPress-site gevonden op deze URL. Controleer de spelling en probeer het nogmaals.";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Als deze functie is uitgeschakeld, is de opmerking privé";
 
@@ -434,6 +443,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limiet bereikt. Je kan het na 1 minuut nogmaals proberen. Als je het eerder probeert dan zul je langer moeten wachten totdat de ban wordt opgeheven. Neem contact op met de helpdesk wanneer je denk dat dit niet klopt.";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "Limiet: %ld download";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "Limiet: %ld downloads";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Bestelling wordt geladen";
@@ -586,6 +601,9 @@
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "Meldingen: %@";
+
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "Aantal bestanden:";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -747,6 +765,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publiceren in het park. Bloggen in de bus. Reageren in het restaurant. WordPress gaat altijd met je mee.";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "Aankoopgegevens";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "Aankoopnotitie";
+
 /* Quantity abbreviation for section title */
 "QTY" = "Aantal";
 
@@ -756,6 +780,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Neem contact op met onze Happiness Engineers, die alle lastige vragen kunnen beantwoorden";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "Meer informatie";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Lees privacybeleid";
@@ -844,11 +871,15 @@
    Date an item was shipped */
 "Shipped %@" = "Verzonden op %@";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "Verzending";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Bezorgservices";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "Verzendingsklasse:";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Verzendgegevens";
@@ -879,6 +910,9 @@
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Site-adres moet minimaal 4 karakters zijn.";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "Afmetingen:";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Sorry, je gebruikersnaam bevat een onjuiste zin%@.";
@@ -1014,6 +1048,9 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "De site-adres moet korter zijn dan 64 karakters.";
+
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "De site op dit adres is geen WordPress-site. Om er verbinding mee te kunnen maken, moet de site gebruikmaken van WordPress.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Verwijderen van site mislukt.";
@@ -1260,6 +1297,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Weken";
 
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "Gewicht:";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Wat is het adres van mijn site?";
 
@@ -1315,7 +1355,7 @@
 "approved" = "goedgekeurd";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "voorbeeld.wordpress.com";
+"example.com" = "voorbeeld.com";
 
 /* Later today */
 "later today" = "later vandaag";

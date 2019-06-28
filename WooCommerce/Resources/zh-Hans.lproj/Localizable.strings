@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-11 10:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-26 10:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "无法连接。服务器上没有所需的 XML-RPC 方法。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "无法连接。您的主机会阻止 POST 请求，而应用程序需要通过该请求与您的站点通信。请联系您的托管服务提供商以解决此问题。";
@@ -246,7 +246,7 @@
 "Discount" = "折扣";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "关闭";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -276,6 +276,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "双击切换设置。";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "下载";
+
 /* Display label for the product's draft status */
 "Draft" = "草稿";
 
@@ -296,6 +299,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空 URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "请输入有效的 URL，例如 example.com。";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "输入提供商名称";
@@ -318,6 +324,12 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "改为输入密码。";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "到期日期：%ld 天";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "到期日期：%ld 天";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "未能将请求序列化至 REST API。";
@@ -377,9 +389,6 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "隐藏账单";
 
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "此 URL 可能并未指向 WordPress 站点。请仔细检查拼写，然后重试。";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "如果禁用，备注将不会公开";
 
@@ -434,6 +443,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "达到上限。请在 1 分钟后重试。在之前重试只会导致限制时间加长。如果你认为出错了，请联系支持。";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "限制：%ld 次下载";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "限制：%ld 次下载";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "正在加载命令";
@@ -586,6 +601,9 @@
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "通知：%@";
+
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "文件数：";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -747,6 +765,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "在公园中发布文章，在公共汽车上写博客，在咖啡馆中发表评论，WordPress 永远都陪着您。";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "购买详情";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "购买备注";
+
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
 
@@ -756,6 +780,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "请与我们快乐的工程师联系，他们可以帮助解答棘手的问题";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "阅读更多";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "阅读隐私政策";
@@ -844,11 +871,15 @@
    Date an item was shipped */
 "Shipped %@" = "配送日期：%@";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "配送";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "配送服务提供商";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "运费类：";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "配送详情";
@@ -879,6 +910,9 @@
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "站点地址至少要包含 4 个字符。";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "大小：";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "对不起，您的用户名中包含非法短语 %@.";
@@ -1014,6 +1048,9 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "站点地址必须短于64个字符。";
+
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "此地址下的站点不是 WordPress 站点。站点必须使用 WordPress，我们才能建立连接。";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "无法删除该站点。";
@@ -1260,6 +1297,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "周";
 
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "重量：";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的站点地址是什么？";
 
@@ -1315,7 +1355,7 @@
 "approved" = "已批准";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "稍后再说";

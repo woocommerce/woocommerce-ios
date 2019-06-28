@@ -23,7 +23,7 @@ class LoginProloguePageViewController: UIPageViewController {
         pages.append(LoginProloguePromoViewController(as: .jetpack))
 
         setViewControllers([pages[0]], direction: .forward, animated: false)
-        view.backgroundColor = backgroundColor(for: 0)
+        view.backgroundColor = WordPressAuthenticator.shared.style.prologueBackgroundColor
 
         addPageControl()
     }
@@ -54,25 +54,6 @@ class LoginProloguePageViewController: UIPageViewController {
         let direction: UIPageViewController.NavigationDirection = sender.currentPage > currentIndex ? .forward : .reverse
         setViewControllers([pages[sender.currentPage]], direction: direction, animated: true)
         WordPressAuthenticator.track(.loginProloguePaged)
-    }
-
-    fileprivate func animateBackground(for index: Int, duration: TimeInterval = 0.5) {
-        bgAnimation?.stopAnimation(true)
-        bgAnimation = UIViewPropertyAnimator(duration: 0.5, curve: .easeOut) { [weak self] in
-            self?.view.backgroundColor = self?.backgroundColor(for: index)
-        }
-        bgAnimation?.startAnimation()
-    }
-
-    fileprivate func backgroundColor(for index: Int) -> UIColor {
-        switch index % 2 {
-        case 0:
-            return WPStyleGuide.lightBlue()
-        case 1:
-            fallthrough
-        default:
-            return WPStyleGuide.wordPressBlue()
-        }
     }
 }
 
@@ -107,7 +88,6 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
         }
         if !completed {
             pageControl?.currentPage = index
-            animateBackground(for: index, duration: 0.2)
         } else {
             WordPressAuthenticator.track(.loginProloguePaged)
         }
@@ -118,7 +98,6 @@ extension LoginProloguePageViewController: UIPageViewControllerDelegate {
         guard let index = pages.index(of: toVC) else {
             return
         }
-        animateBackground(for: index)
         pageControl?.currentPage = index
     }
 }

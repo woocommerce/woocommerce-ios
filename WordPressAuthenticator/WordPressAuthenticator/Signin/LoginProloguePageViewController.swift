@@ -67,11 +67,12 @@ class LoginProloguePageViewController: UIPageViewController {
     fileprivate func backgroundColor(for index: Int) -> UIColor {
         switch index % 2 {
         case 0:
-            return WPStyleGuide.lightBlue()
+            // this uses the "odd" color because it is zero indexed
+            return WordPressAuthenticator.shared.style.prologueBackgroundColors.odd
         case 1:
             fallthrough
         default:
-            return WPStyleGuide.wordPressBlue()
+            return WordPressAuthenticator.shared.style.prologueBackgroundColors.even
         }
     }
 }

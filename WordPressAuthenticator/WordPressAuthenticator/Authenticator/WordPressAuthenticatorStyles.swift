@@ -5,6 +5,8 @@ import WordPressShared
 // MARK: - WordPress Authenticator Styles
 //
 public struct WordPressAuthenticatorStyle {
+    public typealias PrologueColors = (odd: UIColor, even: UIColor)
+
     /// Style: Primary + Normal State
     ///
     public let primaryNormalBackgroundColor: UIColor
@@ -51,9 +53,13 @@ public struct WordPressAuthenticatorStyle {
     ///
     public let navBarImage: UIImage
 
+    /// Style: prologue background colors
+    ///
+    public let prologueBackgroundColors: PrologueColors
+
     /// Designated initializer
     ///
-    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, subheadlineColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage) {
+    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, subheadlineColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage, prologueBackgroundColors: PrologueColors? = nil) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -70,6 +76,7 @@ public struct WordPressAuthenticatorStyle {
         self.subheadlineColor = subheadlineColor
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
         self.navBarImage = navBarImage
+        self.prologueBackgroundColors = prologueBackgroundColors ?? (odd: WPStyleGuide.lightBlue(), even: WPStyleGuide.wordPressBlue())
     }
 }
 

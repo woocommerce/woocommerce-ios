@@ -63,6 +63,7 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
 
     private func configureBottomLine() {
         bottomLine.applyBodyStyle()
+        bottomLine.numberOfLines = 0
     }
 
     private func configureActionButton() {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-11 08:54:26+0000 */
+/* Translation-Revision-Date: 2019-06-26 09:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Не удалось подключиться. На сервере отсутствуют необходимые методы XML-RPC.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Ваш хостинг блокирует POST-запросы XML-RPC, они требуются для обмена информацией с вашим сайтом. Обратитесь в тех. поддержку хостинга.";
@@ -246,7 +246,7 @@
 "Discount" = "Скидка";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Игнорировать";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -276,6 +276,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "Коснитесь два раза, чтобы изменить настройку.";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "Загрузки";
+
 /* Display label for the product's draft status */
 "Draft" = "Черновик";
 
@@ -296,6 +299,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "Пустой URL-адрес";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "Введите действительный URL-адрес, напр. example.com.";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Введите название компании-поставщика";
@@ -318,6 +324,12 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Введите пароль.";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "До окончания срока действия: %ld день";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "До окончания срока действия: %ld дн.";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "Не удалось сериализировать запрос в API-интерфейс REST.";
@@ -377,9 +389,6 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "Скрыть платёжные сведения";
 
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "Похоже, сайта WordPress с таким URL-адресом не существует. Проверьте правильность написания и повторите попытку.";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "При отключении примечание будет закрытым";
 
@@ -434,6 +443,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Достигнут лимит попыток. Вы можете попробовать снова через 1 минуту. Если вы попытаетесь подключиться раньше, время ожидания только увеличится. Если вы считаете, что произошла ошибка, обратитесь в службу поддержки.";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "Максимум загрузок: %ld";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "Максимум загрузок: %ld";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Загрузка заказа";
@@ -586,6 +601,9 @@
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "Уведомления: %@";
+
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "Количество файлов:";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -747,6 +765,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Публикуйте записи, гуляя в парке. Ведите блог прямо из автобуса. Отправляйте комментарии из-за столика в кафе. WordPress можно брать с собой повсюду!";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "Подробные сведения о приобретении";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "Уведомление о приобретении";
+
 /* Quantity abbreviation for section title */
 "QTY" = "КОЛ-ВО";
 
@@ -756,6 +780,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Обратитесь к инженерам поддержки за помощью при решении сложных вопросов";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "Читать далее";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Прочитать политику конфиденциальности";
@@ -844,11 +871,15 @@
    Date an item was shipped */
 "Shipped %@" = "Отправлено %@";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "Доставка";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Shipping Providers";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "Класс отправления:";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Сведения о доставке";
@@ -879,6 +910,9 @@
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Адрес сайта должен содержать не менее 4 символов.";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "Размер:";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Извините, но имя содержит недопустимую фразу%@.";
@@ -1014,6 +1048,9 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "Адрес сайта должен быть короче 64 символов.";
+
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "Сайт по этому адресу не относится к платформе WordPress. Чтобы выполнить подключение к сайту, он должен работать на WordPress.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "Не удалось удалить сайт.";
@@ -1260,6 +1297,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Недели";
 
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "Вес:";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Какой адрес у моего сайта?";
 
@@ -1315,7 +1355,7 @@
 "approved" = "одобрено";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "позже сегодня";

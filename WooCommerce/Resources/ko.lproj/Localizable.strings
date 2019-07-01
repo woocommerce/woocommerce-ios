@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-11 09:54:03+0000 */
+/* Translation-Revision-Date: 2019-06-26 09:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "연결할 수 없습니다. 필수 XML-RPC 함수가 서버에 없습니다.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "연결할 수 없습니다. 호스트에서 POST 요청을 차단하고 있으나 앱에서 회원님의 사이트와 통신하려면 이 요청이 필요합니다. 호스트에 문의하여 이 문제를 해결하세요.";
@@ -246,7 +246,7 @@
 "Discount" = "할인";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "무시";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -276,6 +276,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "설정을 전환하려면 두 번 누르세요.";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "다운로드";
+
 /* Display label for the product's draft status */
 "Draft" = "임시글";
 
@@ -296,6 +299,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "빈 URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "유효한 URL을 입력하세요(예: example.com).";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "공급업체 이름 입력";
@@ -318,6 +324,12 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "비밀번호를 입력하세요.";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "만료: %ld일";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "만료: %ld일";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API에 요청을 일련화할 수 없습니다.";
@@ -377,9 +389,6 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "청구 숨기기";
 
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "이 URL에는 워드프레스 사이트가 없는 것 같습니다. 맞춤법을 확인하고 다시 시도하세요.";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "해제된 경우 메모는 비공개가 됩니다.";
 
@@ -434,6 +443,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "한계에 이르렀습니다. 1분 후에 다시 할 수 있습니다. 제한이 해제 되기까지 기다리는 시간을 증가시키기 전에 다시 해보세요. 이것이 에러라면 지원 센터에 연락하세요. ";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "제한: %ld회 다운로드";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "제한: %ld회 다운로드";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "주문 로드 중";
@@ -586,6 +601,9 @@
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "알림: %@";
+
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "파일 수:";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -747,6 +765,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "공원에서 글을 발행하세요. 버스에서 블로그를 방문하세요. 카페에서 댓글을 다세요. 워드프레스는 어디에서든 사용할 수 있습니다.";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "구매 세부 정보";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "구매 메모";
+
 /* Quantity abbreviation for section title */
 "QTY" = "수량";
 
@@ -756,6 +780,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "해피니스 엔지니어에게 문의하여 어려운 질문에 대한 답변 받기";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "더 보기";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "개인정보 취급방침 읽기";
@@ -844,11 +871,15 @@
    Date an item was shipped */
 "Shipped %@" = "%@에 배송됨";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "배송";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "배송 업체";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "배송 클래스:";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "배송 상세 내역";
@@ -879,6 +910,9 @@
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "사이트 주소는 최소한 4 글자 이상이어야 합니다.";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "크기:";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "죄송합니다, 사용자명에 잘못된 구문 %@이 포함되어 있습니다";
@@ -1014,6 +1048,9 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "사이트 주소는 64 글자보다 적어야합니다.";
+
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "이 주소의 사이트는 워드프레스 사이트가 아닙니다. 연결하려면 사이트에서 워드프레스를 사용해야 합니다.";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "사이트를 삭제할 수 없습니다.";
@@ -1260,6 +1297,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "주";
 
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "무게:";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "내 사이트 주소는 무엇인가요?";
 
@@ -1315,7 +1355,7 @@
 "approved" = "승인됨";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "오늘 중";

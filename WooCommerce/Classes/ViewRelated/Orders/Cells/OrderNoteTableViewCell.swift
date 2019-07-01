@@ -104,8 +104,7 @@ private extension OrderNoteTableViewCell {
     /// Setup: Icon Button
     ///
     func configureIconButton() {
-        let image = Gridicon.iconOfType(.aside)
-        iconButton.setImage(image, for: .normal)
+        iconButton.setImage(.asideImage, for: .normal)
         iconButton.layer.cornerRadius = iconButton.frame.width / 2
         iconButton.tintColor = .white
     }

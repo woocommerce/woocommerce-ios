@@ -127,7 +127,7 @@ private extension NewNoteViewController {
             fatalError()
         }
 
-        cell.iconImage = Gridicon.iconOfType(.aside)
+        cell.iconImage = .asideImage
         cell.iconTint = isCustomerNote ? StyleManager.statusPrimaryBoldColor : StyleManager.wooGreyMid
         cell.iconImage?.accessibilityLabel = isCustomerNote ?
             NSLocalizedString("Note to customer",

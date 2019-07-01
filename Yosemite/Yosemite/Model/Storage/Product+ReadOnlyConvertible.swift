@@ -72,6 +72,7 @@ extension Storage.Product: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.Product {
 
         let productCategories = categories?.map { $0.toReadOnly() } ?? [Yosemite.ProductCategory]()
+        let productDownloads = downloads?.map { $0.toReadOnly() } ?? [Yosemite.ProductDownload]()
         let productTags = tags?.map { $0.toReadOnly() } ?? [Yosemite.ProductTag]()
         let productImages = images?.map { $0.toReadOnly() } ?? [Yosemite.ProductImage]()
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
@@ -104,6 +105,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        totalSales: Int(totalSales),
                        virtual: virtual,
                        downloadable: downloadable,
+                       downloads: productDownloads.sorted(),
                        downloadLimit: Int(downloadLimit),
                        downloadExpiry: Int(downloadExpiry),
                        externalURL: externalURL,

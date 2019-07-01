@@ -87,6 +87,7 @@ private extension ShipmentProvidersViewController {
                                                                                     if let error = error {
                                                                                         self?.presentNotice(error)
                                                                                     }
+                                                                                    WooAnalytics.shared.track(.orderTrackingProvidersLoaded)
                                                                                     self?.footerSpinnerView.stopAnimating()
         }
 

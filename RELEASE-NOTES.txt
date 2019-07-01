@@ -1,5 +1,10 @@
+2.2
+-----
+ 
 2.1
 -----
+- improvement: improved support for RTL languages in the Dashboard
+- enhancement: You can now view product images on orders. Tapping on Products in Orders will present a view-only version of the Product's Details.
  
 2.0
 -----

@@ -85,7 +85,7 @@ class ProductDetailsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        productImageView.image = Gridicon.iconOfType(.product)
+        productImageView.image = .productPlaceholderImage
         productImageView.tintColor = StyleManager.wooGreyBorder
         selectionStyle = .none
 
@@ -105,10 +105,16 @@ class ProductDetailsTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension ProductDetailsTableViewCell {
-    func configure(item: OrderItemViewModel, image: UIImage? = nil) {
-        if let itemImage = image {
-            productImageView.image = itemImage
+    func configure(item: OrderItemViewModel) {
+        if item.productHasImage {
+            if let imageURL = item.imageURL {
+                productImageView.downloadImage(from: imageURL,
+                                               placeholderImage: UIImage.productPlaceholderImage)
+            }
+        } else {
+            productImageView.image = .productPlaceholderImage
         }
+
         name = item.name
         quantity = item.quantity
         price = item.price

@@ -28,3 +28,10 @@ Third party libraries and resources managed by CocoaPods will be installed by th
 #### Peril
 
 The woocommerce-ios project uses [Peril](https://danger.systems/js/guides/peril.html) to enforce Pull Request guidelines.
+
+#### Circle CI
+
+The woocommerce-ios project uses [Circle CI](https://circleci.com/gh/woocommerce/woocommerce-ios) for continuous integration.
+
+#### Hound
+The woocommerce-ios project uses [Hound](https://houndci.com) to enforce basic Swift styles. (Not all Woo styles are defined in Hound.)

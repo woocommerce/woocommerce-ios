@@ -55,10 +55,12 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
 
     private func configureTopLine() {
         topLine.applyBodyStyle()
+        topLine.numberOfLines = 0
     }
 
     private func configureMiddleLine() {
         middleLine.applyHeadlineStyle()
+        middleLine.numberOfLines = 0
     }
 
     private func configureBottomLine() {

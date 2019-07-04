@@ -1,1 +1,1 @@
-- We have made some improvements and bug fixes.
+Nothing huge here! Just some improvements and bug fixes — you won’t notice anything except a smooth-running app.

@@ -309,7 +309,7 @@ extension OrderDetailsDataSource {
 
         cell.accessibilityHint = NSLocalizedString(
             "Prompts with the option to call or message the billing customer.",
-            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer."
+            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer."
         )
     }
 

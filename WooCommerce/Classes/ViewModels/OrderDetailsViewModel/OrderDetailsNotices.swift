@@ -8,7 +8,7 @@ final class OrderDetailsNotices {
         let message = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Order %@ has been deleted from your store",
-                comment: "Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store."
+                comment: "Displayed whenever an Order gets deleted. It reads: Order {order number} has been deleted from your store."
             ),
             order.number
         )

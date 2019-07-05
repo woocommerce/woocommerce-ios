@@ -284,7 +284,7 @@ extension OrderDetailsDataSource {
 
         cell.accessibilityHint = NSLocalizedString(
             "Composes a new email message to the billing customer.",
-            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear."
+            comment: "Accessibility hint, informing that a row can be tapped and an email composer view will appear."
         )
     }
 

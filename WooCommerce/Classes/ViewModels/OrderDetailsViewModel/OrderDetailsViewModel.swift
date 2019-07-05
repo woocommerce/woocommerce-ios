@@ -443,4 +443,3 @@ private extension OrderDetailsViewModel {
         static let orderStatusListSegue = "ShowOrderStatusListViewController"
     }
 }
-

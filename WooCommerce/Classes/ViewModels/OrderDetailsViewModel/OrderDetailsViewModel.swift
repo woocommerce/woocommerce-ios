@@ -7,13 +7,10 @@ import MessageUI
 final class OrderDetailsViewModel {
     let order: Order
     let orderStatus: OrderStatus?
-    //let currencyFormatter = CurrencyFormatter()
-    //let couponLines: [OrderCouponLine]?
 
     init(order: Order, orderStatus: OrderStatus? = nil) {
         self.order = order
         self.orderStatus = orderStatus
-        //self.couponLines = order.coupons
     }
 
     var summaryTitle: String? {
@@ -52,12 +49,6 @@ final class OrderDetailsViewModel {
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    /// Products from an Order
-    ///
-    var products: [Product] {
-        return productResultsController.fetchedObjects
-    }
-
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
@@ -68,12 +59,10 @@ final class OrderDetailsViewModel {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        return dataSource.lookUpOrderStatus(for: order)
-    }
-
-    func lookUpProduct(by productID: Int) -> Product? {
-        return dataSource.lookUpProduct(by: productID)
+    /// Products from an Order
+    ///
+    var products: [Product] {
+        return productResultsController.fetchedObjects
     }
 
     /// Indicates if we consider the shipment tracking plugin as reachable
@@ -94,7 +83,9 @@ final class OrderDetailsViewModel {
         }
     }
 
-    lazy var dataSource: OrderDetailsDataSource = {
+    /// The datasource that will be used to render the Order Details screen
+    ///
+    private(set) lazy var dataSource: OrderDetailsDataSource = {
         return OrderDetailsDataSource(order: self.order)
     }()
 
@@ -107,17 +98,32 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// Closure to be executed when the UI needs to be reloaded.
+    /// That could happen, for example, when new incoming data is detected
+    ///
     var onUIReloadRequired: (() -> Void)?
 
+    /// Closure to be executed when a cell triggers an action
+    ///
     var onCellAction: ((OrderDetailsDataSource.CellActionType, IndexPath?) -> Void)? {
         didSet {
             dataSource.onCellAction = onCellAction
         }
     }
 
+    /// Helper
+    ///
     private let emailComposer = OrderEmailComposer()
 
-    private let messageComposer = OrderMessgeComposer()
+    private let messageComposer = OrderMessageComposer()
+
+    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+        return dataSource.lookUpOrderStatus(for: order)
+    }
+
+    func lookUpProduct(by productID: Int) -> Product? {
+        return dataSource.lookUpProduct(by: productID)
+    }
 }
 
 

@@ -209,7 +209,6 @@ extension OrderDetailsDataSource: UITableViewDataSource {
             }
 
             let sections = IndexSet(integer: section)
-            //self.toggleBillingFooter()
             self.onCellAction?(.footer, nil)
             tableView.reloadSections(sections, with: .fade)
         }

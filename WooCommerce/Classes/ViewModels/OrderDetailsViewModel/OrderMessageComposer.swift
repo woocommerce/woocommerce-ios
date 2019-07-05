@@ -1,7 +1,7 @@
 import Yosemite
 import MessageUI
 
-final class OrderMessgeComposer: NSObject, MFMessageComposeViewControllerDelegate {
+final class OrderMessageComposer: NSObject, MFMessageComposeViewControllerDelegate {
     func displayMessageComposerIfPossible(order: Order, from: UIViewController) {
         guard let phoneNumber = order.billingAddress?.cleanedPhoneNumber,
             MFMessageComposeViewController.canSendText()

@@ -89,6 +89,11 @@ final class FulfillViewController: UIViewController {
         syncTrackingsHiddingAddButtonIfNecessary()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateFooterHeight()
+    }
+
     private func syncTrackingsHiddingAddButtonIfNecessary() {
         syncTracking { [weak self] error in
             if error == nil {
@@ -122,7 +127,11 @@ private extension FulfillViewController {
     /// Setup: TableView
     ///
     func setupTableView() {
-        tableView.tableFooterView = actionView
+        let container = UIView(frame: CGRect(origin: .zero, size: CGSize(width: tableView.frame.width, height: 0)))
+        container.addSubview(actionView)
+        actionView.translatesAutoresizingMaskIntoConstraints = false
+        container.pinSubviewToAllEdges(actionView)
+        tableView.tableFooterView = container
     }
 
     ///Setup: Action Button!

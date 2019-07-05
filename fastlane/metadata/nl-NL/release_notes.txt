@@ -1,2 +1,2 @@
-* We ondersteunen nu grotere lettertypes op het inlogscherm.
-* Data in het scherm Bestellingsgegevens zijn nu gelokaliseerd.
+* Sprekers van het Arabisch, Hebreeuws, Farsi en Urdu worden verrast: er is nu verbeterde ondersteuning voor RTL-talen in het dashboard.
+* Meer info met één druk op de knop: door in welke bestelling dan ook op een product te tikken, wordt een alleen-weergeven versie van de productgegevens geopend.

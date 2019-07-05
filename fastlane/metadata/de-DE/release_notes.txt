@@ -1,2 +1,2 @@
-* Wir unterstützen jetzt größere Schriftgrößen auf dem Anmeldebildschirm.
-* Datumsangaben auf dem Bildschirm der Bestelldetails sind jetzt lokalisiert.
+* Wer Arabisch, Hebräisch oder Urdu spricht, darf sich freuen: Linksläufige Sprachen werden nun im Dashboard besser unterstützt.
+* Mehr Infos durch Antippen: Wenn du auf ein Produkt in einer Bestellung tippst, wird dir eine reine Leseversion der Produktdetails angezeigt.

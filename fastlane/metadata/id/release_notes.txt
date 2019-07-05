@@ -1,2 +1,2 @@
-* Kini mendukung ukuran font yang lebih besar di layar login.
-* Tanggal pada layar Detail Pesanan kini telah dilokalkan.
+* Kabar gembira untuk penutur bahasa Arab, Ibrani, Persia, dan Urdu: terdapat perbaikan dukungan untuk bahasa RTL di Dasbor.
+* Dapatkan info selengkapnya dengan sekali ketuk: Anda bisa menampilkan versi hanya lihat dari detail produk dengan mengetuk produk di pesanan mana pun.

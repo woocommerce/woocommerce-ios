@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-13 12:54:02+0000 */
+/* Translation-Revision-Date: 2019-06-27 06:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "接続できませんでした。必要な XML-RPC メソッドがサーバーにありません。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "接続できませんでした。ご利用のホスティングサービスは POST 要求をブロックしていますが、アプリはあなたのサイトとの通信に POST 要求を必要としています。ホスティングサービスに連絡して、この問題を解決してください。";
@@ -246,7 +246,7 @@
 "Discount" = "割引";
 
 /* Add a note screen - button title for closing the view
-   Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "非表示";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -276,6 +276,9 @@
 /* VoiceOver accessibility hint, informing the user that double-tapping will toggle the switch off and on. */
 "Double tap to toggle setting." = "設定を切り替えるにはダブルタップします。";
 
+/* Product Details > Purchase Details > Downloads cell title */
+"Downloads" = "ダウンロード";
+
 /* Display label for the product's draft status */
 "Draft" = "下書き";
 
@@ -296,6 +299,9 @@
 
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空の URL";
+
+/* Error message shown when a URL is invalid. */
+"Enter a valid URL eg. example.com." = "有効な URL を example.com のように入力します。";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "プロバイダ名を入力";
@@ -318,6 +324,12 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "代わりにパスワードを入力してください。";
+
+/* Expiry: 1 day */
+"Expiry: %ld day" = "有効期限 :%ld日";
+
+/* For example: 'Expiry: 30 days' */
+"Expiry: %ld days" = "有効期限 :%ld日";
 
 /* Error message to show when wrong URL format is used to access the REST API */
 "Failed to serialize request to the REST API." = "REST API へのリクエストをシリアライズできませんでした。";
@@ -377,9 +389,6 @@
 /* Footer text to hide the billing cell */
 "Hide billing" = "請求情報を非表示";
 
-/* Error message shown a URL does not point to an existing site. */
-"Hmm, it doesn't look like there's a WordPress site at this URL. Double-check the spelling and try again." = "この URL の WordPress サイトはないようです。綴りをもう一度確認してから、やり直してください。";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "無効の場合はメモが非公開になります";
 
@@ -434,6 +443,12 @@
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "ログイン試行の上限に達しました。1分後にもう一度お試しいただけます。それ以前にログインしようとした場合、制限解除までの時間がさらに延長されます。エラーだと思われる場合はサポートにご連絡ください。";
+
+/* 'Limit: 1 download', for example. */
+"Limit: %ld download" = "上限 :%ld件のダウンロード";
+
+/* 'Limit: 2 downloads', for example. */
+"Limit: %ld downloads" = "上限 :%ld件のダウンロード";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "注文を読み込み中";
@@ -586,6 +601,9 @@
 
 /* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
 "Notifications: %@" = "通知:%@";
+
+/* Label prefix. Example: 'Number of files: 2' */
+"Number of files:" = "ファイル数 :";
 
 /* Alert dismissal title
    Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
@@ -747,6 +765,12 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "公園で投稿を公開。バスからブログに投稿。カフェでコメントを送信。WordPress をどこでも使えます。";
 
+/* Product Details - purchase details section title */
+"Purchase Details" = "購入情報";
+
+/* Product Details > Purchase Details > Purchase note cell title */
+"Purchase note" = "注意事項";
+
 /* Quantity abbreviation for section title */
 "QTY" = "数量";
 
@@ -756,6 +780,9 @@
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "サポートスタッフにお問い合わせください。難しい質問にもお答えします";
+
+/* Read more of the purchase note. Only the first two lines of text are displayed. */
+"Read more" = "続きを読む";
 
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "個人情報保護方針を読む";
@@ -844,11 +871,15 @@
    Date an item was shipped */
 "Shipped %@" = "出荷日: %@";
 
-/* Shipping label for payment view */
+/* Product Details > Purchase Details > Shipping cell title
+   Shipping label for payment view */
 "Shipping" = "配送";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "配送業者";
+
+/* Label prefix. Example: 'Shipping class: Free Shipping' */
+"Shipping class:" = "送料区分 :";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "配送詳細";
@@ -879,6 +910,9 @@
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "サイトアドレスは4文字以上にしてください。";
+
+/* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
+"Size:" = "寸法 :";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "ユーザー名に利用できない単語%@が含まれています。";
@@ -1014,6 +1048,9 @@
 
 /* No comment provided by engineer. */
 "The site address must be shorter than 64 characters." = "サイトアドレスは64文字以下にしてください。";
+
+/* Error message shown a URL does not point to an existing site. */
+"The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress." = "このアドレスのサイトは WordPress のサイトではありません。接続するには、接続先のサイトが WordPress を使用している必要があります。";
 
 /* Message shown when site deletion API failed */
 "The site could not be deleted." = "サイトを削除できませんでした。";
@@ -1260,6 +1297,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "週";
 
+/* Label prefix. Example: 'Weight: 1kg' */
+"Weight:" = "重量 :";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "ご使用のサイトアドレス。";
 
@@ -1315,7 +1355,7 @@
 "approved" = "承認";
 
 /* Site Address placeholder */
-"example.wordpress.com" = "example.wordress.com";
+"example.com" = "example.com";
 
 /* Later today */
 "later today" = "今日あとで";

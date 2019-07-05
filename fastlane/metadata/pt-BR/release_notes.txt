@@ -1,2 +1,2 @@
-* Agora oferecemos suporte para fontes maiores na tela de login.
-* Agora as datas na tela Detalhes do pedido são localizadas.
+* Falantes de árabe, hebreu, persa ou urdu, animem-se: temos melhorias no suporte aos idiomas RTL (com leitura da direita para a esquerda) no Painel.
+* Mais informações em um só toque: Ao tocar em um produto, em qualquer pedido, surgirá uma versão exclusiva para visualizar os detalhes do produto.

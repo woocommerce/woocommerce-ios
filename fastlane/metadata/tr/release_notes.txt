@@ -1,2 +1,2 @@
-* Şu anda giriş ekranında daha büyük yazı tipi boyutlarını destekliyoruz.
-* Sipariş detayları ekranındaki tarihler artık yerelleştirildi.
+* Arapça, İbranice, Farsça ve Urduca konuşanlar için sevindirici haber: Panoda sağdan sola yazılan diller için gelişmiş destek bulunuyor.
+* Bir dokunuşla daha fazla bilgi edinin: Herhangi bir siparişte bir ürüne dokunduğunuzda ürün ayrıntılarının salt okunur bir versiyonu karşınıza çıkar.

@@ -1,6 +1,8 @@
 import Yosemite
 import MessageUI
 
+/// Encapsulates logic necessary to share an Order via Message
+///
 final class OrderMessageComposer: NSObject, MFMessageComposeViewControllerDelegate {
     func displayMessageComposerIfPossible(order: Order, from: UIViewController) {
         guard let phoneNumber = order.billingAddress?.cleanedPhoneNumber,

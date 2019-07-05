@@ -1,6 +1,8 @@
 import Yosemite
 import MessageUI
 
+/// Encapsulates logic to share an Order via email
+///
 final class OrderEmailComposer: NSObject, MFMailComposeViewControllerDelegate {
     func displayEmailComposerIfPossible(for order: Order, from: UIViewController) {
         guard let email = order.billingAddress?.email, MFMailComposeViewController.canSendMail() else {

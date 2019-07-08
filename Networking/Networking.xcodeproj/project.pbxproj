@@ -224,6 +224,7 @@
 		D8FBFF0F22D3B25E006E3336 /* WooAPIVersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */; };
 		D8FBFF1122D3B3FC006E3336 /* EnhancedOrderStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF1022D3B3FC006E3336 /* EnhancedOrderStatsMapper.swift */; };
 		D8FBFF1322D3BDBC006E3336 /* EnhancedOrderStatsTotals.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF1222D3BDBC006E3336 /* EnhancedOrderStatsTotals.swift */; };
+		D8FBFF1522D3BE09006E3336 /* order-stats-v4.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF1422D3BE09006E3336 /* order-stats-v4.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -459,6 +460,7 @@
 		D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WooAPIVersionTests.swift; path = NetworkingTests/Requests/WooAPIVersionTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1022D3B3FC006E3336 /* EnhancedOrderStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedOrderStatsMapper.swift; sourceTree = "<group>"; };
 		D8FBFF1222D3BDBC006E3336 /* EnhancedOrderStatsTotals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedOrderStatsTotals.swift; sourceTree = "<group>"; };
+		D8FBFF1422D3BE09006E3336 /* order-stats-v4.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -787,6 +789,7 @@
 				74ABA1C6213F19FD00FFAD30 /* top-performers-month.json */,
 				74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */,
 				7495AACE225D366D00801A89 /* variation-as-product.json */,
+				D8FBFF1422D3BE09006E3336 /* order-stats-v4.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -1073,6 +1076,7 @@
 				B53EF53621813681003E146F /* generic_success.json in Resources */,
 				74A1D265211898F000931DFA /* site-visits-month.json in Resources */,
 				74159623224D2C86003C21CF /* settings-product.json in Resources */,
+				D8FBFF1522D3BE09006E3336 /* order-stats-v4.json in Resources */,
 				7495AACF225D366D00801A89 /* variation-as-product.json in Resources */,
 				74A1D266211898F000931DFA /* site-visits-year.json in Resources */,
 				743BF8BE21191B63008A9D87 /* site-visits.json in Resources */,

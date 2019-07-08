@@ -98,7 +98,7 @@ class NoteTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        noticonLabel.font = UIFont.noticon(forStyle: .title1, baseSize: 25.0)
+        noticonLabel.font = UIFont.noticon(forStyle: .body, baseSize: 25.0)
         configureStarView()
     }
 

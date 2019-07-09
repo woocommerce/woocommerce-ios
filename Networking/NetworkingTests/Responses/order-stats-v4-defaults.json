@@ -1,16 +1,16 @@
 {
     "data": {
         "totals": {
-            "orders_count": 0,
-            "num_items_sold": 0,
-            "gross_revenue": 0,
+            "orders_count": 3,
+            "num_items_sold": 5,
+            "gross_revenue": 800,
             "coupons": 0,
             "coupons_count": 0,
             "refunds": 0,
             "taxes": 0,
             "shipping": 0,
-            "net_revenue": 0,
-            "products": 0,
+            "net_revenue": 800,
+            "products": 2,
             "segments": []
         },
         "intervals": [
@@ -18,25 +18,25 @@
                 "interval": "2019-28",
                 "date_start": "2019-07-08 00:00:00",
                 "date_start_gmt": "2019-07-08 00:00:00",
-                "date_end": "2019-07-08 18:04:24",
-                "date_end_gmt": "2019-07-08 18:04:24",
+                "date_end": "2019-07-09 14:02:29",
+                "date_end_gmt": "2019-07-09 14:02:29",
                 "subtotals": {
-                    "orders_count": 0,
-                    "num_items_sold": 0,
-                    "gross_revenue": 0,
+                    "orders_count": 3,
+                    "num_items_sold": 5,
+                    "gross_revenue": 800,
                     "coupons": 0,
                     "coupons_count": 0,
                     "refunds": 0,
                     "taxes": 0,
                     "shipping": 0,
-                    "net_revenue": 0,
+                    "net_revenue": 800,
                     "segments": []
                 }
             },
             {
                 "interval": "2019-27",
-                "date_start": "2019-07-01 18:04:24",
-                "date_start_gmt": "2019-07-01 18:04:24",
+                "date_start": "2019-07-02 14:02:29",
+                "date_start_gmt": "2019-07-02 14:02:29",
                 "date_end": "2019-07-07 23:59:59",
                 "date_end_gmt": "2019-07-07 23:59:59",
                 "subtotals": {

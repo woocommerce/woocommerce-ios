@@ -219,7 +219,7 @@
 		D823D91222377DF300C90817 /* ShipmentTrackingProviderListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */; };
 		D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D91322377EE600C90817 /* shipment_tracking_providers.json */; };
 		D87F6151226591E10031A13B /* NullNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F6150226591E10031A13B /* NullNetwork.swift */; };
-		D8FBFF0B22D3ADB1006E3336 /* EnhancedOrderStatsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0A22D3ADB1006E3336 /* EnhancedOrderStatsRemote.swift */; };
+		D8FBFF0B22D3ADB1006E3336 /* OrderStatsRemoteV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */; };
 		D8FBFF0D22D3AF4A006E3336 /* EnhancedStatsGranularity.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0C22D3AF4A006E3336 /* EnhancedStatsGranularity.swift */; };
 		D8FBFF0F22D3B25E006E3336 /* WooAPIVersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */; };
 		D8FBFF1122D3B3FC006E3336 /* EnhancedOrderStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF1022D3B3FC006E3336 /* EnhancedOrderStatsMapper.swift */; };
@@ -456,7 +456,7 @@
 		D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShipmentTrackingProviderListMapper.swift; sourceTree = "<group>"; };
 		D823D91322377EE600C90817 /* shipment_tracking_providers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_providers.json; sourceTree = "<group>"; };
 		D87F6150226591E10031A13B /* NullNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullNetwork.swift; sourceTree = "<group>"; };
-		D8FBFF0A22D3ADB1006E3336 /* EnhancedOrderStatsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedOrderStatsRemote.swift; sourceTree = "<group>"; };
+		D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemoteV4.swift; sourceTree = "<group>"; };
 		D8FBFF0C22D3AF4A006E3336 /* EnhancedStatsGranularity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedStatsGranularity.swift; sourceTree = "<group>"; };
 		D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WooAPIVersionTests.swift; path = NetworkingTests/Requests/WooAPIVersionTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1022D3B3FC006E3336 /* EnhancedOrderStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedOrderStatsMapper.swift; sourceTree = "<group>"; };
@@ -667,7 +667,7 @@
 				74046E1A217A684D007DD7BF /* SiteSettingsRemote.swift */,
 				74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */,
 				74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */,
-				D8FBFF0A22D3ADB1006E3336 /* EnhancedOrderStatsRemote.swift */,
+				D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1278,7 +1278,7 @@
 				B59325D5217E4206000B0E8E /* NoteRange.swift in Sources */,
 				B59325C7217E22FC000B0E8E /* Note.swift in Sources */,
 				CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */,
-				D8FBFF0B22D3ADB1006E3336 /* EnhancedOrderStatsRemote.swift in Sources */,
+				D8FBFF0B22D3ADB1006E3336 /* OrderStatsRemoteV4.swift in Sources */,
 				CE0A0F1B223989670075ED8D /* ProductsRemote.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

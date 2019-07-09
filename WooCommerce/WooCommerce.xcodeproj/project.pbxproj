@@ -743,6 +743,7 @@
 		D8AB131D225DC25F002BB5D1 /* MockOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrders.swift; sourceTree = "<group>"; };
 		D8C62470227AE0030011A7D6 /* SiteCountry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCountry.swift; sourceTree = "<group>"; };
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
+		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1009,6 +1010,7 @@
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
+				D8FBFF1622D4CC2F006E3336 /* docs */,
 				8CA4F6DC220B24EB00A47B5D /* config */,
 				B55D4BF920B5CDE600D7A50F /* Credentials */,
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,

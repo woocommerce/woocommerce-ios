@@ -225,6 +225,7 @@
 		D8FBFF1122D3B3FC006E3336 /* EnhancedOrderStatsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF1022D3B3FC006E3336 /* EnhancedOrderStatsMapper.swift */; };
 		D8FBFF1322D3BDBC006E3336 /* EnhancedOrderStatsTotals.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF1222D3BDBC006E3336 /* EnhancedOrderStatsTotals.swift */; };
 		D8FBFF1522D3BE09006E3336 /* order-stats-v4-defaults.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF1422D3BE09006E3336 /* order-stats-v4-defaults.json */; };
+		D8FBFF1822D4DDB9006E3336 /* order-stats-v4-hour.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF1722D4DDB9006E3336 /* order-stats-v4-hour.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -461,6 +462,7 @@
 		D8FBFF1022D3B3FC006E3336 /* EnhancedOrderStatsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedOrderStatsMapper.swift; sourceTree = "<group>"; };
 		D8FBFF1222D3BDBC006E3336 /* EnhancedOrderStatsTotals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedOrderStatsTotals.swift; sourceTree = "<group>"; };
 		D8FBFF1422D3BE09006E3336 /* order-stats-v4-defaults.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-defaults.json"; sourceTree = "<group>"; };
+		D8FBFF1722D4DDB9006E3336 /* order-stats-v4-hour.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-hour.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -790,6 +792,7 @@
 				74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */,
 				7495AACE225D366D00801A89 /* variation-as-product.json */,
 				D8FBFF1422D3BE09006E3336 /* order-stats-v4-defaults.json */,
+				D8FBFF1722D4DDB9006E3336 /* order-stats-v4-hour.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -1060,6 +1063,7 @@
 				743FDB9E210FB36900AC737F /* order-stats-week.json in Resources */,
 				D823D9032237450A00C90817 /* shipment_tracking_new.json in Resources */,
 				7412A8F021B6E416005D182A /* report-orders.json in Resources */,
+				D8FBFF1822D4DDB9006E3336 /* order-stats-v4-hour.json in Resources */,
 				B554FA8D2180B59700C54DFF /* notifications-load-hashes.json in Resources */,
 				743FDB9C210FB36900AC737F /* order-stats-month.json in Resources */,
 				743FDB9D210FB36900AC737F /* order-stats-year.json in Resources */,

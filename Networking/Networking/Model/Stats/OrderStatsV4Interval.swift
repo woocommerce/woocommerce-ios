@@ -30,6 +30,9 @@ public struct OrderStatsV4Interval: Decodable {
     }
 }
 
+
+// MARK: - Conformance to Comparable
+//
 extension OrderStatsV4Interval: Comparable {
     public static func == (lhs: OrderStatsV4Interval, rhs: OrderStatsV4Interval) -> Bool {
         return lhs.interval == rhs.interval &&
@@ -44,6 +47,9 @@ extension OrderStatsV4Interval: Comparable {
     }
 }
 
+
+// MARK: - Constants!
+//
 private extension OrderStatsV4Interval {
     enum CodingKeys: String, CodingKey {
         case interval = "interval"

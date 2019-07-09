@@ -1,7 +1,7 @@
 import Foundation
 
-
-
+/// Represents order stats over a specific period.
+/// v4 API
 public struct OrderStatsV4: Decodable {
     public let totals: OrderStatsV4Totals
     public let intervals: [OrderStatsV4Interval]
@@ -24,7 +24,6 @@ public struct OrderStatsV4: Decodable {
 
 // MARK: - Constants!
 //
-
 private extension OrderStatsV4 {
 
     enum CodingKeys: String, CodingKey {
@@ -32,4 +31,3 @@ private extension OrderStatsV4 {
         case intervals = "intervals"
     }
 }
-

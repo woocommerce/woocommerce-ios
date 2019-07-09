@@ -1,3 +1,5 @@
+/// Represents the data assoicated to order stats over a specific period.
+/// v4
 public struct OrderStatsV4Totals: Decodable {
     public let orders: Int
     public let itemsSold: Int
@@ -58,22 +60,9 @@ public struct OrderStatsV4Totals: Decodable {
     }
 }
 
-private extension OrderStatsV4Totals {
-    enum CodingKeys: String, CodingKey {
-        case ordersCount = "orders_count"
-        case itemsSold = "num_items_sold"
-        case grossRevenue = "gross_revenue"
-        case couponDiscount = "coupons"
-        case coupons = "coupons_count"
-        case refunds = "refunds"
-        case taxes = "taxes"
-        case shipping = "shipping"
-        case netRevenue = "net_revenue"
-        case products = "products"
-    }
-}
 
-
+// MARK: - Conformance to Equatable
+//
 extension OrderStatsV4Totals: Equatable {
     public static func == (lhs: OrderStatsV4Totals, rhs: OrderStatsV4Totals) -> Bool {
         return lhs.orders == rhs.orders &&
@@ -91,5 +80,23 @@ extension OrderStatsV4Totals: Equatable {
     public static func < (lhs: OrderStatsV4Totals, rhs: OrderStatsV4Totals) -> Bool {
         return lhs.grossRevenue < rhs.grossRevenue ||
             (lhs.grossRevenue == rhs.grossRevenue && lhs.orders < rhs.orders)
+    }
+}
+
+
+// MARK: - Constants!
+//
+private extension OrderStatsV4Totals {
+    enum CodingKeys: String, CodingKey {
+        case ordersCount = "orders_count"
+        case itemsSold = "num_items_sold"
+        case grossRevenue = "gross_revenue"
+        case couponDiscount = "coupons"
+        case coupons = "coupons_count"
+        case refunds = "refunds"
+        case taxes = "taxes"
+        case shipping = "shipping"
+        case netRevenue = "net_revenue"
+        case products = "products"
     }
 }

@@ -1,3 +1,3 @@
 Welcome to the woocommerce-ios wiki!
 
-[Architecture Documentation](ARCHITECTURE)
+[Architecture Documentation](ARCHITECTURE.md)

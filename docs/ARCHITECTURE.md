@@ -108,7 +108,7 @@ replace CoreData with any other database. Key notes:
 Our Networking framework offers a Swift API around the WooCommerce's RESTful endpoints. In this section we'll do a walkthru around several
 key points.
 
-More on [Networking](NETWORKING)
+More on [Networking](NETWORKING.md)
 
 ### Model Entities
 
@@ -189,10 +189,10 @@ tool, which was designed to simulate Backend Responses.
 
 ## **Yosemite.framework**
 
-The [Yosemite framework](YOSEMITE) is the keystone of our architecture. Encapsulates all of the Business Logic of our app, and interacts with both the Networking and
+The [Yosemite framework](YOSEMITE.md) is the keystone of our architecture. Encapsulates all of the Business Logic of our app, and interacts with both the Networking and
 Storage layers.
 
-More on [Yosemite](YOSEMITE)
+More on [Yosemite](YOSEMITE.md)
 
 
 ### Main Concepts

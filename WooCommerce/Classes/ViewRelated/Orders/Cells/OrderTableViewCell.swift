@@ -18,7 +18,8 @@ class OrderTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var paymentStatusLabel: PaddedLabel!
 
-
+    @IBOutlet weak var contentStackView: UIStackView!
+    
     /// Renders the specified Order ViewModel
     ///
     func configureCell(viewModel: OrderDetailsViewModel) {
@@ -38,6 +39,14 @@ class OrderTableViewCell: UITableViewCell {
         }
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.preferredContentSizeCategory > .extraExtraLarge {
+            contentStackView.axis = .vertical
+        } else {
+            contentStackView.axis = .horizontal
+        }
+    }
 
     // MARK: - Overridden Methods
 
@@ -86,6 +95,7 @@ private extension OrderTableViewCell {
     func configureLabels() {
         titleLabel.applyHeadlineStyle()
         totalLabel.applyBodyStyle()
+        totalLabel.numberOfLines = 0
         paymentStatusLabel.applyFootnoteStyle()
         paymentStatusLabel.numberOfLines = 0
     }

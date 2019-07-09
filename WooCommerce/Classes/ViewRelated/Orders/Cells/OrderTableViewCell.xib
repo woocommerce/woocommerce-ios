@@ -18,39 +18,45 @@
                 <rect key="frame" x="0.0" y="0.0" width="341" height="85.5"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="#00 First Last" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nzo-QV-IP1">
-                        <rect key="frame" x="16" y="19" width="228" height="20.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="750" horizontalCompressionResistancePriority="1000" text="$75,894.63" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9oo-9a-Tey">
-                        <rect key="frame" x="252" y="32.5" width="89" height="20.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="240" text="Order Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6EE-dX-ERE" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                        <rect key="frame" x="16" y="45.5" width="97.5" height="21.5"/>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                        <nil key="textColor"/>
-                        <nil key="highlightedColor"/>
-                    </label>
+                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="w2s-RF-ahH">
+                        <rect key="frame" x="16" y="19" width="317" height="48"/>
+                        <subviews>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="wZx-1J-JYV">
+                                <rect key="frame" x="0.0" y="0.0" width="106" height="48"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="#00 First Last" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nzo-QV-IP1">
+                                        <rect key="frame" x="0.0" y="0.0" width="106" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="240" text="Order Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6EE-dX-ERE" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="27.5" width="97.5" height="20.5"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" text="$75,894.63" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9oo-9a-Tey">
+                                <rect key="frame" x="228" y="0.0" width="89" height="48"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <nil key="textColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
+                    </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailing" secondItem="9oo-9a-Tey" secondAttribute="trailing" id="4wV-3W-Gw5"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="6EE-dX-ERE" secondAttribute="bottom" constant="8" id="E7C-1I-fBa"/>
-                    <constraint firstItem="Nzo-QV-IP1" firstAttribute="leading" secondItem="C8B-hF-50d" secondAttribute="leadingMargin" id="Fyt-cN-Zuf"/>
-                    <constraint firstItem="9oo-9a-Tey" firstAttribute="leading" secondItem="Nzo-QV-IP1" secondAttribute="trailing" constant="8" id="Z3T-Yr-vpl"/>
-                    <constraint firstItem="9oo-9a-Tey" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="6EE-dX-ERE" secondAttribute="trailing" id="bOm-Iy-5WN"/>
-                    <constraint firstItem="6EE-dX-ERE" firstAttribute="top" secondItem="Nzo-QV-IP1" secondAttribute="bottom" constant="6" id="cyW-pT-2Ky"/>
-                    <constraint firstItem="9oo-9a-Tey" firstAttribute="centerY" secondItem="C8B-hF-50d" secondAttribute="centerY" id="niS-lS-Ohf"/>
-                    <constraint firstItem="6EE-dX-ERE" firstAttribute="leading" secondItem="C8B-hF-50d" secondAttribute="leadingMargin" id="pGY-nk-6hr"/>
-                    <constraint firstItem="Nzo-QV-IP1" firstAttribute="top" secondItem="C8B-hF-50d" secondAttribute="topMargin" constant="8" id="vl2-TI-cVy"/>
+                    <constraint firstItem="w2s-RF-ahH" firstAttribute="top" secondItem="C8B-hF-50d" secondAttribute="topMargin" constant="8" id="PYm-SD-sSv"/>
+                    <constraint firstItem="w2s-RF-ahH" firstAttribute="leading" secondItem="C8B-hF-50d" secondAttribute="leadingMargin" id="Vj7-Ev-DBC"/>
+                    <constraint firstAttribute="trailing" secondItem="w2s-RF-ahH" secondAttribute="trailing" constant="8" id="Wgd-sx-xWk"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="w2s-RF-ahH" secondAttribute="bottom" constant="8" id="YAb-lm-rXp"/>
                 </constraints>
             </tableViewCellContentView>
             <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
+                <outlet property="contentStackView" destination="w2s-RF-ahH" id="ULq-Dn-l9Q"/>
                 <outlet property="paymentStatusLabel" destination="6EE-dX-ERE" id="9ur-nE-PKb"/>
                 <outlet property="titleLabel" destination="Nzo-QV-IP1" id="c4l-JL-JKc"/>
                 <outlet property="totalLabel" destination="9oo-9a-Tey" id="OzG-Y4-pOm"/>

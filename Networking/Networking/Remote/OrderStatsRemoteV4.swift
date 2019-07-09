@@ -19,13 +19,13 @@ public final class OrderStatsRemoteV4: Remote {
                                unit: EnhancedStatsGranularity,
                                latestDateToInclude: String,
                                quantity: Int,
-                               completion: @escaping (OrderStats?, Error?) -> Void) {
+                               completion: @escaping (OrderStatsV4?, Error?) -> Void) {
         let parameters = [ParameterKeys.interval: unit.rawValue,
                           ParameterKeys.before: latestDateToInclude,
                           ParameterKeys.quantity: String(quantity)]
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Constants.orderStatsPath, parameters: parameters)
-        let mapper = EnhancedOrderStatsMapper()
+        let mapper = OrderStatsV4Mapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

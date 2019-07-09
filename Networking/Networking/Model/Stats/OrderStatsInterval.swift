@@ -10,7 +10,7 @@ public struct OrderStatsTotals: Decodable {
     public let taxes: Double
     public let shipping: Double
     public let netRevenue: Double
-    public let products: Int
+    public let products: Int?
 
     public init(orders: Int,
                 itemsSold: Int,
@@ -21,7 +21,7 @@ public struct OrderStatsTotals: Decodable {
                 taxes: Double,
                 shipping: Double,
                 netRevenue: Double,
-                products: Int) {
+                products: Int?) {
         self.orders = orders
         self.itemsSold = itemsSold
         self.grossRevenue = grossRevenue
@@ -45,7 +45,7 @@ public struct OrderStatsTotals: Decodable {
         let taxes = try container.decode(Double.self, forKey: .taxes)
         let shipping = try container.decode(Double.self, forKey: .shipping)
         let netRevenue = try container.decode(Double.self, forKey: .netRevenue)
-        let products = try container.decode(Int.self, forKey: .products)
+        let products = try container.decodeIfPresent(Int.self, forKey: .products)
 
         self.init(orders: orders,
                   itemsSold: itemsSold,

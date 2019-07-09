@@ -9,7 +9,7 @@ A Jetpack-powered companion app for WooCommerce.
 
 ### Download Xcode
 
-At the moment *WooCommerce for iOS* uses Swift 4.2 and requires Xcode 10.2 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action).*
+At the moment *WooCommerce for iOS* uses Swift 5 and requires Xcode 10.2 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action).*
 
 ### Third party tools
 

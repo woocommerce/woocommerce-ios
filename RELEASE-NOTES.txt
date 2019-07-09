@@ -2,6 +2,7 @@
 -----
 - Improvement: improved Dynamic Type support in the body of the notification in the Notifications tab.
 
+ 
 2.2
 -----
 - improvement: opting out of Tracks syncs with WordPress.com

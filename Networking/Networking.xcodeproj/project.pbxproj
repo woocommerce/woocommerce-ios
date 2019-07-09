@@ -231,6 +231,7 @@
 		D8FBFF2022D52553006E3336 /* OrderStatsV4Totals.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF1F22D52553006E3336 /* OrderStatsV4Totals.swift */; };
 		D8FBFF2222D5266E006E3336 /* OrderStatsV4Interval.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF2122D5266E006E3336 /* OrderStatsV4Interval.swift */; };
 		D8FBFF2422D52815006E3336 /* order-stats-v4-daily.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF2322D52815006E3336 /* order-stats-v4-daily.json */; };
+		D8FBFF2722D529F2006E3336 /* order-stats-v4-month.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF2622D529F2006E3336 /* order-stats-v4-month.json */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -473,6 +474,7 @@
 		D8FBFF1F22D52553006E3336 /* OrderStatsV4Totals.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsV4Totals.swift; sourceTree = "<group>"; };
 		D8FBFF2122D5266E006E3336 /* OrderStatsV4Interval.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsV4Interval.swift; sourceTree = "<group>"; };
 		D8FBFF2322D52815006E3336 /* order-stats-v4-daily.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-daily.json"; sourceTree = "<group>"; };
+		D8FBFF2622D529F2006E3336 /* order-stats-v4-month.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-month.json"; sourceTree = "<group>"; };
 		F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Networking.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		F6CEE1CA2AD376C0C28AE9F6 /* Pods-NetworkingTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-NetworkingTests.release.xcconfig"; path = "../Pods/Target Support Files/Pods-NetworkingTests/Pods-NetworkingTests.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -805,6 +807,7 @@
 				74ABA1C7213F19FE00FFAD30 /* top-performers-year.json */,
 				7495AACE225D366D00801A89 /* variation-as-product.json */,
 				D8FBFF2322D52815006E3336 /* order-stats-v4-daily.json */,
+				D8FBFF2622D529F2006E3336 /* order-stats-v4-month.json */,
 				D8FBFF1422D3BE09006E3336 /* order-stats-v4-defaults.json */,
 				D8FBFF1722D4DDB9006E3336 /* order-stats-v4-hour.json */,
 			);
@@ -1056,6 +1059,7 @@
 				B5A24179217F98F600595DEF /* notifications-load-all.json in Resources */,
 				743E84FC22174CE100FAC9D7 /* restnoroute_error.json in Resources */,
 				CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */,
+				D8FBFF2722D529F2006E3336 /* order-stats-v4-month.json in Resources */,
 				740211DF2193985A002248DA /* comment-moderate-spam.json in Resources */,
 				B5147876211B9227007562E5 /* broken-orders-mark-2.json in Resources */,
 				B58D10C82114D21D00107ED4 /* generic_error.json in Resources */,

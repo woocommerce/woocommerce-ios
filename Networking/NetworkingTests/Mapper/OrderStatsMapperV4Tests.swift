@@ -115,6 +115,43 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroWeekTotals.netRevenue, 800)
         XCTAssertNil(nonZeroWeekTotals.products)
     }
+
+    /// Verifies that all of the monthly unit OrderStatsV4 fields are parsed correctly.
+    ///
+    func testMonthlyUnitStatFieldsAreProperlyParsed() {
+        guard let monthlyStats = mapOrderStatsWithMonthlyUnitResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(monthlyStats.totals.orders, 3)
+        XCTAssertEqual(monthlyStats.totals.itemsSold, 5)
+        XCTAssertEqual(monthlyStats.totals.grossRevenue, 800)
+        XCTAssertEqual(monthlyStats.totals.coupons, 0)
+        XCTAssertEqual(monthlyStats.totals.couponDiscount, 0)
+        XCTAssertEqual(monthlyStats.totals.refunds, 0)
+        XCTAssertEqual(monthlyStats.totals.taxes, 0)
+        XCTAssertEqual(monthlyStats.totals.shipping, 0)
+        XCTAssertEqual(monthlyStats.totals.netRevenue, 800)
+        XCTAssertEqual(monthlyStats.totals.products, 2)
+
+        XCTAssertEqual(monthlyStats.intervals.count, 1)
+
+        let nonZeroMonth = monthlyStats.intervals[0]
+        let nonZeroMonthTotals = nonZeroMonth.subtotals
+
+        XCTAssertEqual(nonZeroMonth.interval, "2019-07")
+
+        XCTAssertEqual(nonZeroMonthTotals.orders, 3)
+        XCTAssertEqual(nonZeroMonthTotals.grossRevenue, 800)
+        XCTAssertEqual(nonZeroMonthTotals.coupons, 0)
+        XCTAssertEqual(nonZeroMonthTotals.couponDiscount, 0)
+        XCTAssertEqual(nonZeroMonthTotals.refunds, 0)
+        XCTAssertEqual(nonZeroMonthTotals.taxes, 0)
+        XCTAssertEqual(nonZeroMonthTotals.shipping, 0)
+        XCTAssertEqual(nonZeroMonthTotals.netRevenue, 800)
+        XCTAssertNil(nonZeroMonthTotals.products)
+    }
 }
 
 private extension OrderStatsV4MapperTests {
@@ -130,10 +167,16 @@ private extension OrderStatsV4MapperTests {
         return mapStatItems(from: "order-stats-v4-daily")
     }
 
-    /// Returns the OrderStatsMapper output upon receiving `order-stats-v4-default`
+    /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
     ///
     func mapOrderStatsWithWeeklyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-defaults")
+    }
+
+    /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
+    ///
+    func mapOrderStatsWithMonthlyUnitResponse() -> OrderStatsV4? {
+        return mapStatItems(from: "order-stats-v4-month")
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `filename` (Data Encoded)

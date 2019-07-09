@@ -152,6 +152,43 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroMonthTotals.netRevenue, 800)
         XCTAssertNil(nonZeroMonthTotals.products)
     }
+
+    /// Verifies that all of the yearly unit OrderStatsV4 fields are parsed correctly.
+    ///
+    func testYearlyUnitStatFieldsAreProperlyParsed() {
+        guard let yearlyStats = mapOrderStatsWithYearlyUnitResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(yearlyStats.totals.orders, 3)
+        XCTAssertEqual(yearlyStats.totals.itemsSold, 5)
+        XCTAssertEqual(yearlyStats.totals.grossRevenue, 800)
+        XCTAssertEqual(yearlyStats.totals.coupons, 0)
+        XCTAssertEqual(yearlyStats.totals.couponDiscount, 0)
+        XCTAssertEqual(yearlyStats.totals.refunds, 0)
+        XCTAssertEqual(yearlyStats.totals.taxes, 0)
+        XCTAssertEqual(yearlyStats.totals.shipping, 0)
+        XCTAssertEqual(yearlyStats.totals.netRevenue, 800)
+        XCTAssertEqual(yearlyStats.totals.products, 2)
+
+        XCTAssertEqual(yearlyStats.intervals.count, 1)
+
+        let nonZeroYear = yearlyStats.intervals[0]
+        let nonZeroYearTotals = nonZeroYear.subtotals
+
+        XCTAssertEqual(nonZeroYear.interval, "2019")
+
+        XCTAssertEqual(nonZeroYearTotals.orders, 3)
+        XCTAssertEqual(nonZeroYearTotals.grossRevenue, 800)
+        XCTAssertEqual(nonZeroYearTotals.coupons, 0)
+        XCTAssertEqual(nonZeroYearTotals.couponDiscount, 0)
+        XCTAssertEqual(nonZeroYearTotals.refunds, 0)
+        XCTAssertEqual(nonZeroYearTotals.taxes, 0)
+        XCTAssertEqual(nonZeroYearTotals.shipping, 0)
+        XCTAssertEqual(nonZeroYearTotals.netRevenue, 800)
+        XCTAssertNil(nonZeroYearTotals.products)
+    }
 }
 
 private extension OrderStatsV4MapperTests {
@@ -173,10 +210,16 @@ private extension OrderStatsV4MapperTests {
         return mapStatItems(from: "order-stats-v4-defaults")
     }
 
-    /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
+    /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-month`
     ///
     func mapOrderStatsWithMonthlyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-month")
+    }
+
+    /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-year`
+    ///
+    func mapOrderStatsWithYearlyUnitResponse() -> OrderStatsV4? {
+        return mapStatItems(from: "order-stats-v4-year")
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `filename` (Data Encoded)

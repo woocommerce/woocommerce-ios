@@ -42,6 +42,43 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertNil(nonZeroHourTotals.products)
     }
 
+    /// Verifies that all of the daily unit OrderStatsV4 fields are parsed correctly.
+    ///
+    func testDailyUnitStatFieldsAreProperlyParsed() {
+        guard let dailyStats = mapOrderStatsWithDailyUnitResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(dailyStats.totals.orders, 3)
+        XCTAssertEqual(dailyStats.totals.itemsSold, 5)
+        XCTAssertEqual(dailyStats.totals.grossRevenue, 800)
+        XCTAssertEqual(dailyStats.totals.coupons, 0)
+        XCTAssertEqual(dailyStats.totals.couponDiscount, 0)
+        XCTAssertEqual(dailyStats.totals.refunds, 0)
+        XCTAssertEqual(dailyStats.totals.taxes, 0)
+        XCTAssertEqual(dailyStats.totals.shipping, 0)
+        XCTAssertEqual(dailyStats.totals.netRevenue, 800)
+        XCTAssertEqual(dailyStats.totals.products, 2)
+
+        XCTAssertEqual(dailyStats.intervals.count, 1)
+
+        let nonZeroDay = dailyStats.intervals[0]
+        let nonZeroDayTotals = nonZeroDay.subtotals
+
+        XCTAssertEqual(nonZeroDay.interval, "2019-07-09")
+
+        XCTAssertEqual(nonZeroDayTotals.orders, 3)
+        XCTAssertEqual(nonZeroDayTotals.grossRevenue, 800)
+        XCTAssertEqual(nonZeroDayTotals.coupons, 0)
+        XCTAssertEqual(nonZeroDayTotals.couponDiscount, 0)
+        XCTAssertEqual(nonZeroDayTotals.refunds, 0)
+        XCTAssertEqual(nonZeroDayTotals.taxes, 0)
+        XCTAssertEqual(nonZeroDayTotals.shipping, 0)
+        XCTAssertEqual(nonZeroDayTotals.netRevenue, 800)
+        XCTAssertNil(nonZeroDayTotals.products)
+    }
+
     /// Verifies that all of the weekly unit OrderStatsV4 fields are parsed correctly.
     ///
     func testWeeklyUnitStatFieldsAreProperlyParsed() {
@@ -81,10 +118,16 @@ final class OrderStatsV4MapperTests: XCTestCase {
 }
 
 private extension OrderStatsV4MapperTests {
-    /// Returns the OrderStatsMapper output upon receiving `order-stats-v4-hour`
+    /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-hour`
     ///
     func mapOrderStatsWithHourlyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-hour")
+    }
+
+    /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
+    ///
+    func mapOrderStatsWithDailyUnitResponse() -> OrderStatsV4? {
+        return mapStatItems(from: "order-stats-v4-daily")
     }
 
     /// Returns the OrderStatsMapper output upon receiving `order-stats-v4-default`

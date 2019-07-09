@@ -5,9 +5,9 @@ import XCTest
 /// OrderStatsV4Mapper Unit Tests
 ///
 final class OrderStatsV4MapperTests: XCTestCase {
-    /// Verifies that all of the day unit OrderStats fields are parsed correctly.
+    /// Verifies that all of the hourly unit OrderStatsV4 fields are parsed correctly.
     ///
-    func testDayUnitStatFieldsAreProperlyParsed() {
+    func testHourlyUnitStatFieldsAreProperlyParsed() {
         guard let hourlyStats = mapOrderStatsWithHourlyUnitResponse() else {
             XCTFail()
             return
@@ -41,13 +41,56 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(nonZeroHourTotals.netRevenue, 350)
         XCTAssertNil(nonZeroHourTotals.products)
     }
+
+    /// Verifies that all of the weekly unit OrderStatsV4 fields are parsed correctly.
+    ///
+    func testWeeklyUnitStatFieldsAreProperlyParsed() {
+        guard let weeklyStats = mapOrderStatsWithWeeklyUnitResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(weeklyStats.totals.orders, 3)
+        XCTAssertEqual(weeklyStats.totals.itemsSold, 5)
+        XCTAssertEqual(weeklyStats.totals.grossRevenue, 800)
+        XCTAssertEqual(weeklyStats.totals.coupons, 0)
+        XCTAssertEqual(weeklyStats.totals.couponDiscount, 0)
+        XCTAssertEqual(weeklyStats.totals.refunds, 0)
+        XCTAssertEqual(weeklyStats.totals.taxes, 0)
+        XCTAssertEqual(weeklyStats.totals.shipping, 0)
+        XCTAssertEqual(weeklyStats.totals.netRevenue, 800)
+        XCTAssertEqual(weeklyStats.totals.products, 2)
+
+        XCTAssertEqual(weeklyStats.intervals.count, 2)
+
+        let nonZeroWeek = weeklyStats.intervals[0]
+        let nonZeroWeekTotals = nonZeroWeek.subtotals
+
+        XCTAssertEqual(nonZeroWeek.interval, "2019-28")
+
+        XCTAssertEqual(nonZeroWeekTotals.orders, 3)
+        XCTAssertEqual(nonZeroWeekTotals.grossRevenue, 800)
+        XCTAssertEqual(nonZeroWeekTotals.coupons, 0)
+        XCTAssertEqual(nonZeroWeekTotals.couponDiscount, 0)
+        XCTAssertEqual(nonZeroWeekTotals.refunds, 0)
+        XCTAssertEqual(nonZeroWeekTotals.taxes, 0)
+        XCTAssertEqual(nonZeroWeekTotals.shipping, 0)
+        XCTAssertEqual(nonZeroWeekTotals.netRevenue, 800)
+        XCTAssertNil(nonZeroWeekTotals.products)
+    }
 }
 
 private extension OrderStatsV4MapperTests {
-    /// Returns the OrderStatsMapper output upon receiving `order-stats-day`
+    /// Returns the OrderStatsMapper output upon receiving `order-stats-v4-hour`
     ///
     func mapOrderStatsWithHourlyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-hour")
+    }
+
+    /// Returns the OrderStatsMapper output upon receiving `order-stats-v4-default`
+    ///
+    func mapOrderStatsWithWeeklyUnitResponse() -> OrderStatsV4? {
+        return mapStatItems(from: "order-stats-v4-defaults")
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `filename` (Data Encoded)

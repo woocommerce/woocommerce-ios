@@ -16,7 +16,7 @@ public final class OrderStatsRemoteV4: Remote {
     /// Note: by limiting the return values with the `_fields` param, we shrink the response size by over 90%! (~40kb to ~3kb)
     ///
     public func loadOrderStats(for siteID: Int,
-                               unit: EnhancedStatsGranularity,
+                               unit: StatsGranularityV4,
                                latestDateToInclude: String,
                                quantity: Int,
                                completion: @escaping (OrderStatsV4?, Error?) -> Void) {

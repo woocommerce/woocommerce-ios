@@ -220,7 +220,7 @@
 		D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D91322377EE600C90817 /* shipment_tracking_providers.json */; };
 		D87F6151226591E10031A13B /* NullNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F6150226591E10031A13B /* NullNetwork.swift */; };
 		D8FBFF0B22D3ADB1006E3336 /* OrderStatsRemoteV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */; };
-		D8FBFF0D22D3AF4A006E3336 /* EnhancedStatsGranularity.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0C22D3AF4A006E3336 /* EnhancedStatsGranularity.swift */; };
+		D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */; };
 		D8FBFF0F22D3B25E006E3336 /* WooAPIVersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */; };
 		D8FBFF1122D3B3FC006E3336 /* OrderStatsV4Mapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF1022D3B3FC006E3336 /* OrderStatsV4Mapper.swift */; };
 		D8FBFF1522D3BE09006E3336 /* order-stats-v4-defaults.json in Resources */ = {isa = PBXBuildFile; fileRef = D8FBFF1422D3BE09006E3336 /* order-stats-v4-defaults.json */; };
@@ -457,7 +457,7 @@
 		D823D91322377EE600C90817 /* shipment_tracking_providers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_providers.json; sourceTree = "<group>"; };
 		D87F6150226591E10031A13B /* NullNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullNetwork.swift; sourceTree = "<group>"; };
 		D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemoteV4.swift; sourceTree = "<group>"; };
-		D8FBFF0C22D3AF4A006E3336 /* EnhancedStatsGranularity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnhancedStatsGranularity.swift; sourceTree = "<group>"; };
+		D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsGranularityV4.swift; sourceTree = "<group>"; };
 		D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = WooAPIVersionTests.swift; path = NetworkingTests/Requests/WooAPIVersionTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1022D3B3FC006E3336 /* OrderStatsV4Mapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsV4Mapper.swift; sourceTree = "<group>"; };
 		D8FBFF1422D3BE09006E3336 /* order-stats-v4-defaults.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-defaults.json"; sourceTree = "<group>"; };
@@ -508,7 +508,7 @@
 				74A1D26A21189B8100931DFA /* SiteVisitStatsItem.swift */,
 				74ABA1CC213F1B6B00FFAD30 /* TopEarnerStats.swift */,
 				74ABA1CE213F1D1600FFAD30 /* TopEarnerStatsItem.swift */,
-				D8FBFF0C22D3AF4A006E3336 /* EnhancedStatsGranularity.swift */,
+				D8FBFF0C22D3AF4A006E3336 /* StatsGranularityV4.swift */,
 				D8FBFF1922D4DF7A006E3336 /* OrderStatsInterval.swift */,
 			);
 			path = Stats;
@@ -1245,7 +1245,7 @@
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
-				D8FBFF0D22D3AF4A006E3336 /* EnhancedStatsGranularity.swift in Sources */,
+				D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */,
 				74046E1B217A684D007DD7BF /* SiteSettingsRemote.swift in Sources */,
 				B5C6FCCF20A3592900A4F8E4 /* OrderItem.swift in Sources */,
 				B524193F21AC5FE400D6FC0A /* DotcomDeviceMapper.swift in Sources */,

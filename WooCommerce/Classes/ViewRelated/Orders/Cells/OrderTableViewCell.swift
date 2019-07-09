@@ -18,6 +18,8 @@ class OrderTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var paymentStatusLabel: PaddedLabel!
 
+    /// Top-level stack view that contains the stack view of title and payment status labels, and total price label.
+    ///
     @IBOutlet weak var contentStackView: UIStackView!
     
     /// Renders the specified Order ViewModel

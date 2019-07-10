@@ -146,12 +146,14 @@
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderStats" inverseName="items" inverseEntity="OrderStats" syncable="YES"/>
     </entity>
     <entity name="OrderStatsV4" representedClassName="OrderStatsV4" syncable="YES">
+        <relationship name="intervals" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="OrderStatsV4Interval" inverseName="stats" inverseEntity="OrderStatsV4Interval" syncable="YES"/>
         <relationship name="totals" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OrderStatsV4Totals" inverseName="stats" inverseEntity="OrderStatsV4Totals" syncable="YES"/>
     </entity>
     <entity name="OrderStatsV4Interval" representedClassName="OrderStatsV4Interval" syncable="YES" codeGenerationType="class">
         <attribute name="dateEnd" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dateStart" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="interval" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderStatsV4" inverseName="intervals" inverseEntity="OrderStatsV4" syncable="YES"/>
         <relationship name="subtotals" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OrderStatsV4Totals" inverseName="interval" inverseEntity="OrderStatsV4Totals" syncable="YES"/>
     </entity>
     <entity name="OrderStatsV4Totals" representedClassName="OrderStatsV4Totals" syncable="YES" codeGenerationType="class">
@@ -373,8 +375,8 @@
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="OrderStatsV4" positionX="-693" positionY="36" width="128" height="60"/>
+        <element name="OrderStatsV4" positionX="-693" positionY="36" width="128" height="75"/>
         <element name="OrderStatsV4Totals" positionX="-684" positionY="45" width="128" height="225"/>
-        <element name="OrderStatsV4Interval" positionX="-675" positionY="54" width="128" height="105"/>
+        <element name="OrderStatsV4Interval" positionX="-675" positionY="54" width="128" height="120"/>
     </elements>
 </model>

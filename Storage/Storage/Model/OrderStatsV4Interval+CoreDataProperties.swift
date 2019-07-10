@@ -1,3 +1,12 @@
+//
+//  OrderStatsV4Interval+CoreDataProperties.swift
+//  Storage
+//
+//  Created by Cesar Tardaguila on 10/7/2019.
+//  Copyright © 2019 Automattic. All rights reserved.
+//
+//
+
 import Foundation
 import CoreData
 
@@ -12,5 +21,6 @@ extension OrderStatsV4Interval {
     @NSManaged public var dateStart: String?
     @NSManaged public var dateEnd: String?
     @NSManaged public var subtotals: OrderStatsV4Totals?
+    @NSManaged public var stats: OrderStatsV4?
 
 }

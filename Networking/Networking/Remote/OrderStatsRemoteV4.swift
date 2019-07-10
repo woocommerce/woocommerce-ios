@@ -25,7 +25,7 @@ public final class OrderStatsRemoteV4: Remote {
                           ParameterKeys.quantity: String(quantity)]
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Constants.orderStatsPath, parameters: parameters)
-        let mapper = OrderStatsV4Mapper()
+        let mapper = OrderStatsV4Mapper(siteID: siteID, granularity: unit)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

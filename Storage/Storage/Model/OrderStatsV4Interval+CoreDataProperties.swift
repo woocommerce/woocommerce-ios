@@ -1,11 +1,3 @@
-//
-//  OrderStatsV4Interval+CoreDataProperties.swift
-//  
-//
-//  Created by Cesar Tardaguila on 10/7/2019.
-//
-//
-
 import Foundation
 import CoreData
 

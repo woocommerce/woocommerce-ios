@@ -5,6 +5,14 @@ import XCTest
 /// OrderStatsV4Mapper Unit Tests
 ///
 final class OrderStatsV4MapperTests: XCTestCase {
+    private struct Constants {
+        static let siteID = 1234
+        static let hourlyGranularity = StatsGranularityV4.hourly
+        static let dailyGranularity = StatsGranularityV4.daily
+        static let weeklyGranularity = StatsGranularityV4.weekly
+        static let monthlyGranularity = StatsGranularityV4.monthly
+        static let yearlyGranularity = StatsGranularityV4.yearly
+    }
     /// Verifies that all of the hourly unit OrderStatsV4 fields are parsed correctly.
     ///
     func testHourlyUnitStatFieldsAreProperlyParsed() {
@@ -12,6 +20,9 @@ final class OrderStatsV4MapperTests: XCTestCase {
             XCTFail()
             return
         }
+
+        XCTAssertEqual(hourlyStats.siteID, Constants.siteID)
+        XCTAssertEqual(hourlyStats.granularity, .hourly)
 
         XCTAssertEqual(hourlyStats.totals.orders, 3)
         XCTAssertEqual(hourlyStats.totals.itemsSold, 5)
@@ -50,6 +61,9 @@ final class OrderStatsV4MapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(dailyStats.siteID, Constants.siteID)
+        XCTAssertEqual(dailyStats.granularity, .daily)
+
         XCTAssertEqual(dailyStats.totals.orders, 3)
         XCTAssertEqual(dailyStats.totals.itemsSold, 5)
         XCTAssertEqual(dailyStats.totals.grossRevenue, 800)
@@ -86,6 +100,9 @@ final class OrderStatsV4MapperTests: XCTestCase {
             XCTFail()
             return
         }
+
+        XCTAssertEqual(weeklyStats.siteID, Constants.siteID)
+        XCTAssertEqual(weeklyStats.granularity, .weekly)
 
         XCTAssertEqual(weeklyStats.totals.orders, 3)
         XCTAssertEqual(weeklyStats.totals.itemsSold, 5)
@@ -124,6 +141,9 @@ final class OrderStatsV4MapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(monthlyStats.siteID, Constants.siteID)
+        XCTAssertEqual(monthlyStats.granularity, .monthly)
+
         XCTAssertEqual(monthlyStats.totals.orders, 3)
         XCTAssertEqual(monthlyStats.totals.itemsSold, 5)
         XCTAssertEqual(monthlyStats.totals.grossRevenue, 800)
@@ -161,6 +181,9 @@ final class OrderStatsV4MapperTests: XCTestCase {
             return
         }
 
+        XCTAssertEqual(yearlyStats.siteID, Constants.siteID)
+        XCTAssertEqual(yearlyStats.granularity, .yearly)
+
         XCTAssertEqual(yearlyStats.totals.orders, 3)
         XCTAssertEqual(yearlyStats.totals.itemsSold, 5)
         XCTAssertEqual(yearlyStats.totals.grossRevenue, 800)
@@ -195,40 +218,41 @@ private extension OrderStatsV4MapperTests {
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-hour`
     ///
     func mapOrderStatsWithHourlyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-hour")
+        return mapStatItems(from: "order-stats-v4-hour", granularity: .hourly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
     ///
     func mapOrderStatsWithDailyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-daily")
+        return mapStatItems(from: "order-stats-v4-daily", granularity: .daily)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
     ///
     func mapOrderStatsWithWeeklyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-defaults")
+        return mapStatItems(from: "order-stats-v4-defaults", granularity: .weekly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-month`
     ///
     func mapOrderStatsWithMonthlyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-month")
+        return mapStatItems(from: "order-stats-v4-month", granularity: .monthly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-year`
     ///
     func mapOrderStatsWithYearlyUnitResponse() -> OrderStatsV4? {
-        return mapStatItems(from: "order-stats-v4-year")
+        return mapStatItems(from: "order-stats-v4-year", granularity: .yearly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapStatItems(from filename: String) -> OrderStatsV4? {
+    func mapStatItems(from filename: String, granularity: StatsGranularityV4) -> OrderStatsV4? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! OrderStatsV4Mapper().map(response: response)
+        return try! OrderStatsV4Mapper(siteID: Constants.siteID,
+                                       granularity: granularity).map(response: response)
     }
 }

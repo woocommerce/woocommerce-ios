@@ -567,7 +567,6 @@
 		B58B4AB52108F11C00076FDD /* Notice.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notice.swift; sourceTree = "<group>"; };
 		B58B4AB72108F14700076FDD /* NoticeNotificationInfo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticeNotificationInfo.swift; sourceTree = "<group>"; };
 		B58B4ABF2108FF6100076FDD /* Array+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Helpers.swift"; sourceTree = "<group>"; };
-		B597D0BE212476E100577E35 /* ARCHITECTURE.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; name = ARCHITECTURE.md; path = ../ARCHITECTURE.md; sourceTree = "<group>"; };
 		B5980A6021AC878900EBF596 /* UIDevice+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIDevice+Woo.swift"; sourceTree = "<group>"; };
 		B5980A6221AC879F00EBF596 /* Bundle+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Bundle+Woo.swift"; sourceTree = "<group>"; };
 		B5980A6421AC905C00EBF596 /* UIDeviceWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIDeviceWooTests.swift; sourceTree = "<group>"; };
@@ -752,6 +751,7 @@
 		D8AB131D225DC25F002BB5D1 /* MockOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrders.swift; sourceTree = "<group>"; };
 		D8C62470227AE0030011A7D6 /* SiteCountry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCountry.swift; sourceTree = "<group>"; };
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
+		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -1018,6 +1018,7 @@
 		B56DB3BD2049BFAA00D4AA8E = {
 			isa = PBXGroup;
 			children = (
+				D8FBFF1622D4CC2F006E3336 /* docs */,
 				8CA4F6DC220B24EB00A47B5D /* config */,
 				B55D4BF920B5CDE600D7A50F /* Credentials */,
 				B5A8F8A620B84CF600D211DE /* DerivedSources */,
@@ -1028,7 +1029,6 @@
 				B56DB3C72049BFAA00D4AA8E /* Products */,
 				8CD41D4921F8A7E300CF3C2B /* RELEASE-NOTES.txt */,
 				B559EBAD20A0BF8E00836CD4 /* README.md */,
-				B597D0BE212476E100577E35 /* ARCHITECTURE.md */,
 				B559EBAE20A0BF8F00836CD4 /* LICENSE */,
 				F4B77A83B2A3D94EA331691B /* Pods */,
 			);

@@ -62,6 +62,20 @@ extension UIFont {
         return UIFont(name: name, size: size)!
     }
 
+    /// Returns a Noticons UIFont instance with the specified text style based on the specified size.
+    ///
+    /// - Parameters:
+    ///   - style: The text style to apply to the font.
+    ///   - baseSize: this size corresponds to the font size at the 4th stop of font size from the smallest for `body` text style and the 3rd stop for `title1`
+    ///     text style.
+    /// - Returns: A Noticons font that scales to support Dynamic Type.
+    static func noticon(forStyle style: UIFont.TextStyle, baseSize: CGFloat) -> UIFont {
+        guard let noticonFont = UIFont(name: "Noticons", size: baseSize) else {
+            fatalError("Failed to load the 'Noticons' font.")
+        }
+        return UIFontMetrics(forTextStyle: style).scaledFont(for: noticonFont)
+    }
+
     /// Returns a UIFont instance for the specified Style + Weight.
     ///
     class func font(forStyle style: UIFont.TextStyle, weight: UIFont.Weight) -> UIFont {

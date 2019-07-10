@@ -55,7 +55,7 @@ final class OrderDetailsViewController: UIViewController {
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureEntityListener()
-        prepareViewModel()
+        configureViewModel()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -127,7 +127,7 @@ private extension OrderDetailsViewController {
         }
     }
 
-    private func prepareViewModel() {
+    private func configureViewModel() {
         viewModel.onUIReloadRequired = { [weak self] in
             self?.reloadTableViewSectionsAndData()
         }

@@ -111,7 +111,7 @@ final class OrderDetailsViewModel {
         }
     }
 
-    /// Helper
+    /// Helpers
     ///
     private let emailComposer = OrderEmailComposer()
 
@@ -263,7 +263,7 @@ extension OrderDetailsViewModel {
 }
 
 
-// MARK: - MFMailComposeViewControllerDelegate Conformance
+// MARK: - Initiate communication with a customer (i.e. via email, phone call)
 //
 private extension OrderDetailsViewModel {
     func displayEmailComposerIfPossible(from: UIViewController) {
@@ -330,7 +330,7 @@ private extension OrderDetailsViewModel {
 }
 
 
-// MARK: - Syning data. Yosemite related stuff
+// MARK: - Syncing data. Yosemite related stuff
 extension OrderDetailsViewModel {
     func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
         let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { (order, error) in

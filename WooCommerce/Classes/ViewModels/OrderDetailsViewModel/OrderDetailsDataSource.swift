@@ -219,7 +219,7 @@ extension OrderDetailsDataSource: UITableViewDataSource {
 
 
 // MARK: - Support for UITableViewDataSource
-extension OrderDetailsDataSource {
+private extension OrderDetailsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as WooBasicTableViewCell where row == .details:
@@ -469,7 +469,11 @@ extension OrderDetailsDataSource {
 
         cell.display(presentation: presentation)
     }
+}
 
+
+// MARK: - Lookup orders and statuses
+extension OrderDetailsDataSource {
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         return currentSiteStatuses.filter({$0.slug == order.statusKey}).first
     }
@@ -477,8 +481,11 @@ extension OrderDetailsDataSource {
     func lookUpProduct(by productID: Int) -> Product? {
         return products.filter({ $0.productID == productID }).first
     }
+
 }
 
+
+// MARK: - Sections
 extension OrderDetailsDataSource {
     /// Setup: Sections
     ///
@@ -567,7 +574,7 @@ extension OrderDetailsDataSource {
         sections = [summary, products, customerNotes, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
     }
 
-    enum Title {
+    private enum Title {
         static let product = NSLocalizedString("Product", comment: "Product section title")
         static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
@@ -577,7 +584,7 @@ extension OrderDetailsDataSource {
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
     }
 
-    enum Footer {
+    private enum Footer {
         static let hideBilling = NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
         static let showBilling = NSLocalizedString("Show billing", comment: "Footer text to show the billing cell")
     }
@@ -747,7 +754,9 @@ extension OrderDetailsDataSource {
     }
 }
 
-extension OrderDetailsDataSource {
+
+// MARK: - Constants
+private extension OrderDetailsDataSource {
     enum Titles {
         static let productDetails = NSLocalizedString("Details",
                                                       comment: "The row label to tap for a detailed product list")

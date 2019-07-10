@@ -1,12 +1,3 @@
-//
-//  OrderStatsV4Totals+CoreDataProperties.swift
-//  Storage
-//
-//  Created by Cesar Tardaguila on 10/7/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
-//
-
 import Foundation
 import CoreData
 
@@ -29,5 +20,4 @@ extension OrderStatsV4Totals {
     @NSManaged public var products: Int64
     @NSManaged public var interval: OrderStatsV4Interval?
     @NSManaged public var stats: OrderStatsV4?
-
 }

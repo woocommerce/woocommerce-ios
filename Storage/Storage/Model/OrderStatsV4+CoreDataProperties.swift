@@ -1,12 +1,3 @@
-//
-//  OrderStatsV4+CoreDataProperties.swift
-//  Storage
-//
-//  Created by Cesar Tardaguila on 10/7/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
-//
-
 import Foundation
 import CoreData
 
@@ -54,5 +45,4 @@ extension OrderStatsV4 {
 
     @objc(removeIntervals:)
     @NSManaged public func removeFromIntervals(_ values: NSOrderedSet)
-
 }

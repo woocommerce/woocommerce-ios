@@ -149,14 +149,14 @@
         <relationship name="intervals" optional="YES" toMany="YES" deletionRule="Nullify" ordered="YES" destinationEntity="OrderStatsV4Interval" inverseName="stats" inverseEntity="OrderStatsV4Interval" syncable="YES"/>
         <relationship name="totals" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OrderStatsV4Totals" inverseName="stats" inverseEntity="OrderStatsV4Totals" syncable="YES"/>
     </entity>
-    <entity name="OrderStatsV4Interval" representedClassName="OrderStatsV4Interval" syncable="YES" codeGenerationType="class">
+    <entity name="OrderStatsV4Interval" representedClassName="OrderStatsV4Interval" syncable="YES">
         <attribute name="dateEnd" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="dateStart" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="interval" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderStatsV4" inverseName="intervals" inverseEntity="OrderStatsV4" syncable="YES"/>
         <relationship name="subtotals" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="OrderStatsV4Totals" inverseName="interval" inverseEntity="OrderStatsV4Totals" syncable="YES"/>
     </entity>
-    <entity name="OrderStatsV4Totals" representedClassName="OrderStatsV4Totals" syncable="YES" codeGenerationType="class">
+    <entity name="OrderStatsV4Totals" representedClassName="OrderStatsV4Totals" syncable="YES">
         <attribute name="couponDiscount" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="coupons" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="grossRevenue" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>

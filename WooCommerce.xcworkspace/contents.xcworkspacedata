@@ -2,24 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/ctarda/Development/woocommerce-ios/Storage/Storage/Model/OrderStatsV4Totals+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/ctarda/Development/woocommerce-ios/Storage/Storage/Model/OrderStatsV4Totals+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/ctarda/Development/woocommerce-ios/Storage/Storage/Model/OrderStatsV4+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/ctarda/Development/woocommerce-ios/Storage/Storage/Model/OrderStatsV4+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/ctarda/Development/woocommerce-ios/Storage/Storage/Model/OrderStatsV4Interval+CoreDataClass.swift">
-   </FileRef>
-   <FileRef
-      location = "group:/Users/ctarda/Development/woocommerce-ios/Storage/Storage/Model/OrderStatsV4Interval+CoreDataProperties.swift">
-   </FileRef>
-   <FileRef
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
    <FileRef

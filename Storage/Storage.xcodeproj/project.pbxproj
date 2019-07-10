@@ -262,6 +262,12 @@
 		7471A518216CF12900219F7E /* Stats */ = {
 			isa = PBXGroup;
 			children = (
+				D8FBFF3022D63F97006E3336 /* OrderStatsV4Totals+CoreDataClass.swift */,
+				D8FBFF2B22D63F96006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift */,
+				D8FBFF2D22D63F97006E3336 /* OrderStatsV4+CoreDataClass.swift */,
+				D8FBFF2E22D63F97006E3336 /* OrderStatsV4+CoreDataProperties.swift */,
+				D8FBFF2C22D63F97006E3336 /* OrderStatsV4Interval+CoreDataClass.swift */,
+				D8FBFF2F22D63F97006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift */,
 				74938EC6216FA9B200540BA1 /* OrderStats+CoreDataClass.swift */,
 				74938EC7216FA9B200540BA1 /* OrderStats+CoreDataProperties.swift */,
 				74938EC4216FA9B200540BA1 /* OrderStatsItem+CoreDataClass.swift */,
@@ -424,12 +430,6 @@
 				B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */,
 				CE3B7AD02225E62C0050FE4B /* OrderStatus+CoreDataClass.swift */,
 				CE3B7AD12225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift */,
-				D8FBFF3022D63F97006E3336 /* OrderStatsV4Totals+CoreDataClass.swift */,
-				D8FBFF2B22D63F96006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift */,
-				D8FBFF2D22D63F97006E3336 /* OrderStatsV4+CoreDataClass.swift */,
-				D8FBFF2E22D63F97006E3336 /* OrderStatsV4+CoreDataProperties.swift */,
-				D8FBFF2C22D63F97006E3336 /* OrderStatsV4Interval+CoreDataClass.swift */,
-				D8FBFF2F22D63F97006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift */,
 				747453952242C85E00E0B5EE /* Product+CoreDataClass.swift */,
 				747453962242C85E00E0B5EE /* Product+CoreDataProperties.swift */,
 				7474538F2242C85E00E0B5EE /* ProductAttribute+CoreDataClass.swift */,

@@ -8,6 +8,8 @@ extension OrderStatsV4 {
         return NSFetchRequest<OrderStatsV4>(entityName: "OrderStatsV4")
     }
 
+    @NSManaged public var siteID: Int
+    @NSManaged public var granularity: String
     @NSManaged public var totals: OrderStatsV4Totals?
     @NSManaged public var intervals: NSOrderedSet?
 

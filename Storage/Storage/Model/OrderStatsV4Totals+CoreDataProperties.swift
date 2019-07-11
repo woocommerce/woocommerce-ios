@@ -10,13 +10,13 @@ extension OrderStatsV4Totals {
 
     @NSManaged public var orders: Int64
     @NSManaged public var itemsSold: Int64
-    @NSManaged public var grossRevenue: Double
-    @NSManaged public var couponDiscount: Double
+    @NSManaged public var grossRevenue: Decimal
+    @NSManaged public var couponDiscount: Decimal
     @NSManaged public var coupons: Int64
-    @NSManaged public var refunds: Double
-    @NSManaged public var taxes: Double
-    @NSManaged public var shipping: Double
-    @NSManaged public var netRevenue: Double
+    @NSManaged public var refunds: Decimal
+    @NSManaged public var taxes: Decimal
+    @NSManaged public var shipping: Decimal
+    @NSManaged public var netRevenue: Decimal
     @NSManaged public var products: Int64
     @NSManaged public var interval: OrderStatsV4Interval?
     @NSManaged public var stats: OrderStatsV4?

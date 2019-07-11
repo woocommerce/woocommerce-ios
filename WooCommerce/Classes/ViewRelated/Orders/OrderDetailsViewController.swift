@@ -154,6 +154,7 @@ private extension OrderDetailsViewController {
     /// Reloads the tableView's sections and data.
     ///
     func reloadTableViewSectionsAndData() {
+        print("reloading sections and data")
         reloadSections()
         reloadTableViewDataIfPossible()
     }
@@ -382,6 +383,22 @@ extension OrderDetailsViewController: UITableViewDelegate {
         }
 
         viewModel.dataSource.copyText(at: indexPath)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return viewModel.dataSource.viewForHeaderInSection(section, tableView: tableView)
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return viewModel.dataSource.heightForFooterInSection(section)
+    }
+
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return viewModel.dataSource.viewForFooterInSection(section, tableView: tableView)
     }
 }
 

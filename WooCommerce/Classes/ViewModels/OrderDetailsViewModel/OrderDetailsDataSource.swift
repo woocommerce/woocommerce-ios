@@ -149,8 +149,10 @@ final class OrderDetailsDataSource: NSObject {
 }
 
 
+// MARK: - Conformance to UITableViewDataSource
 extension OrderDetailsDataSource: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
+        print("==== number of sections ", sections.count)
         return sections.count
     }
 
@@ -164,12 +166,12 @@ extension OrderDetailsDataSource: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
         return cell
     }
+}
 
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
 
-    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+// MARK: - Support for UITableViewDelegate
+extension OrderDetailsDataSource {
+    func viewForHeaderInSection(_ section: Int, tableView: UITableView) -> UIView? {
         guard let leftText = sections[section].title else {
             return nil
         }
@@ -185,7 +187,7 @@ extension OrderDetailsDataSource: UITableViewDataSource {
         return headerView
     }
 
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+    func heightForFooterInSection(_ section: Int) -> CGFloat {
         let lastSectionIndex = sections.count - 1
 
         if sections[section].footer != nil || section == lastSectionIndex {
@@ -195,7 +197,7 @@ extension OrderDetailsDataSource: UITableViewDataSource {
         return .leastNonzeroMagnitude
     }
 
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+    func viewForFooterInSection(_ section: Int, tableView: UITableView) -> UIView? {
         guard let footerText = sections[section].footer else {
             return nil
         }
@@ -216,7 +218,6 @@ extension OrderDetailsDataSource: UITableViewDataSource {
         return cell
     }
 }
-
 
 // MARK: - Support for UITableViewDataSource
 private extension OrderDetailsDataSource {
@@ -496,6 +497,7 @@ extension OrderDetailsDataSource {
     ///     When: Shipping != nil && Billing != nil     >>>     Display: Shipping / Billing / Footer
     ///
     func reloadSections() {
+        print("==== reload sections in data source")
         let summary = Section(row: .summary)
 
         let products: Section? = {

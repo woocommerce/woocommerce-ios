@@ -51,6 +51,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 
     private func configureTopLine() {
         topLine.applySubheadlineStyle()
+        topLine.numberOfLines = 0
     }
 
     private func configureMiddleLine() {
@@ -59,6 +60,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 
     private func configureBottomLine() {
         bottomLine.applySubheadlineStyle()
+        bottomLine.numberOfLines = 0
     }
 
     private func configureActionButton() {

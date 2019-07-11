@@ -39,8 +39,8 @@ private extension OrderStatsRemoteV4 {
     }
 
     enum ParameterKeys {
-        static let interval: String     = "interval"
-        static let before: String     = "before"
+        static let interval: String = "interval"
+        static let before: String   = "before"
         static let quantity: String = "per_page"
         static let fields: String   = "_fields"
     }

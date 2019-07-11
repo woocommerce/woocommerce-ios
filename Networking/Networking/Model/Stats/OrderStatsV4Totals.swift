@@ -3,24 +3,24 @@
 public struct OrderStatsV4Totals: Decodable {
     public let orders: Int
     public let itemsSold: Int
-    public let grossRevenue: Double
-    public let couponDiscount: Double
+    public let grossRevenue: Decimal
+    public let couponDiscount: Decimal
     public let coupons: Int
-    public let refunds: Double
-    public let taxes: Double
-    public let shipping: Double
-    public let netRevenue: Double
+    public let refunds: Decimal
+    public let taxes: Decimal
+    public let shipping: Decimal
+    public let netRevenue: Decimal
     public let products: Int?
 
     public init(orders: Int,
                 itemsSold: Int,
-                grossRevenue: Double,
-                couponDiscount: Double,
+                grossRevenue: Decimal,
+                couponDiscount: Decimal,
                 coupons: Int,
-                refunds: Double,
-                taxes: Double,
-                shipping: Double,
-                netRevenue: Double,
+                refunds: Decimal,
+                taxes: Decimal,
+                shipping: Decimal,
+                netRevenue: Decimal,
                 products: Int?) {
         self.orders = orders
         self.itemsSold = itemsSold
@@ -38,13 +38,13 @@ public struct OrderStatsV4Totals: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let orders = try container.decode(Int.self, forKey: .ordersCount)
         let itemsSold = try container.decode(Int.self, forKey: .itemsSold)
-        let grossRevenue = try container.decode(Double.self, forKey: .grossRevenue)
-        let couponDiscount = try container.decode(Double.self, forKey: .couponDiscount)
+        let grossRevenue = try container.decode(Decimal.self, forKey: .grossRevenue)
+        let couponDiscount = try container.decode(Decimal.self, forKey: .couponDiscount)
         let coupons = try container.decode(Int.self, forKey: .coupons)
-        let refunds = try container.decode(Double.self, forKey: .refunds)
-        let taxes = try container.decode(Double.self, forKey: .taxes)
-        let shipping = try container.decode(Double.self, forKey: .shipping)
-        let netRevenue = try container.decode(Double.self, forKey: .netRevenue)
+        let refunds = try container.decode(Decimal.self, forKey: .refunds)
+        let taxes = try container.decode(Decimal.self, forKey: .taxes)
+        let shipping = try container.decode(Decimal.self, forKey: .shipping)
+        let netRevenue = try container.decode(Decimal.self, forKey: .netRevenue)
         let products = try container.decodeIfPresent(Int.self, forKey: .products)
 
         self.init(orders: orders,

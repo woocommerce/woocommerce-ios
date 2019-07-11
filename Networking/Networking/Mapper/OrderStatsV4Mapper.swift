@@ -31,8 +31,8 @@ struct OrderStatsV4Mapper: Mapper {
 
 /// OrderStatsV4Envelope Disposable Entity
 ///
-/// `Load Order` endpoint returns the requested order document in the `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
+/// `Order Stats` endpoint returns the requested stats in the `data` key. This entity
+/// allows us to parse all the things with JSONDecoder.
 ///
 private struct OrderStatsV4Envelope: Decodable {
     let orderStats: OrderStatsV4

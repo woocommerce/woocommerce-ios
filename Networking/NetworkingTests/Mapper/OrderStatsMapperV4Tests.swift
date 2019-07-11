@@ -13,6 +13,7 @@ final class OrderStatsV4MapperTests: XCTestCase {
         static let monthlyGranularity = StatsGranularityV4.monthly
         static let yearlyGranularity = StatsGranularityV4.yearly
     }
+
     /// Verifies that all of the hourly unit OrderStatsV4 fields are parsed correctly.
     ///
     func testHourlyUnitStatFieldsAreProperlyParsed() {

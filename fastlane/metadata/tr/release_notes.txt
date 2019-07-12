@@ -1,2 +1,1 @@
-* Arapça, İbranice, Farsça ve Urduca konuşanlar için sevindirici haber: Panoda sağdan sola yazılan diller için gelişmiş destek bulunuyor.
-* Bir dokunuşla daha fazla bilgi edinin: Herhangi bir siparişte bir ürüne dokunduğunuzda ürün ayrıntılarının salt okunur bir versiyonu karşınıza çıkar.
+Burada çok önemli bir şey yok! Sadece bazı iyileştirmeler ve hata düzeltmeleri. Sorunsuz çalışan bir uygulamadan başka hiçbir şey görmeyeceksiniz.

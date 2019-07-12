@@ -93,10 +93,10 @@ private extension OrderStatsV4Totals {
         case grossRevenue = "gross_revenue"
         case couponDiscount = "coupons"
         case coupons = "coupons_count"
-        case refunds = "refunds"
-        case taxes = "taxes"
-        case shipping = "shipping"
+        case refunds
+        case taxes
+        case shipping
         case netRevenue = "net_revenue"
-        case products = "products"
+        case products
     }
 }

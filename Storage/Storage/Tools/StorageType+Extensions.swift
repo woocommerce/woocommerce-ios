@@ -92,7 +92,7 @@ public extension StorageType {
     /// Retrieves the Stored OrderStats for V4 API.
     ///
     func loadOrderStatsV4(siteID: String, granularity: String) -> OrderStatsV4? {
-        let predicate = NSPredicate(format: "siteID = %ld AND ==[c] %@", granularity)
+        let predicate = NSPredicate(format: "siteID = %ld AND granularity ==[c] %@", siteID, granularity)
         return firstObject(ofType: OrderStatsV4.self, matching: predicate)
     }
 

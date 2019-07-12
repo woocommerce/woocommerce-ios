@@ -1,2 +1,1 @@
-* Wer Arabisch, Hebräisch oder Urdu spricht, darf sich freuen: Linksläufige Sprachen werden nun im Dashboard besser unterstützt.
-* Mehr Infos durch Antippen: Wenn du auf ein Produkt in einer Bestellung tippst, wird dir eine reine Leseversion der Produktdetails angezeigt.
+Es ist nichts Weltbewegendes passiert! Wir haben nur einige Verbesserungen und Fehlerbehebungen vorgenommen. Du wirst davon nichts bemerken – außer, dass deine App jetzt noch besser läuft.

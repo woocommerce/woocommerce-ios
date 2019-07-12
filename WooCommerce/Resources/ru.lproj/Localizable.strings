@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-26 09:54:03+0000 */
+/* Translation-Revision-Date: 2019-07-10 16:55:52+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -194,7 +194,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Не удалось подключиться. На сервере отсутствуют необходимые методы XML-RPC.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Получена ошибка 403 при подключении к XMLRPC вашего сайта. Обратитесь в тех.поддержку хостинга.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Невозможно подключиться. Ваш хостинг блокирует POST-запросы XML-RPC, они требуются для обмена информацией с вашим сайтом. Обратитесь в тех. поддержку хостинга.";
@@ -1177,7 +1177,7 @@
 "Unable to load content" = "Не удалось загрузить содержимое";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
-"Unable to mark review as %@" = "Unable to mark review as %@";
+"Unable to mark review as %@" = "Не удалось пометить обзор %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Не удалось найти веб-сайт WordPress по этому URL-адресу. Нажмите кнопку «Нужна помощь?», чтобы просмотреть ответы на часто задаваемые вопросы.";

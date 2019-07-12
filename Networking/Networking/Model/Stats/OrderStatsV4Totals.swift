@@ -1,62 +1,62 @@
 /// Represents the data associated with order stats over a specific period.
 /// v4
 public struct OrderStatsV4Totals: Decodable {
-    public let orders: Int
-    public let itemsSold: Int
+    public let totalOrders: Int
+    public let totalItemsSold: Int
     public let grossRevenue: Decimal
     public let couponDiscount: Decimal
-    public let coupons: Int
+    public let totalCoupons: Int
     public let refunds: Decimal
     public let taxes: Decimal
     public let shipping: Decimal
     public let netRevenue: Decimal
-    public let products: Int?
+    public let totalProducts: Int?
 
-    public init(orders: Int,
-                itemsSold: Int,
+    public init(totalOrders: Int,
+                totalItemsSold: Int,
                 grossRevenue: Decimal,
                 couponDiscount: Decimal,
-                coupons: Int,
+                totalCoupons: Int,
                 refunds: Decimal,
                 taxes: Decimal,
                 shipping: Decimal,
                 netRevenue: Decimal,
-                products: Int?) {
-        self.orders = orders
-        self.itemsSold = itemsSold
+                totalProducts: Int?) {
+        self.totalOrders = totalOrders
+        self.totalItemsSold = totalItemsSold
         self.grossRevenue = grossRevenue
         self.couponDiscount = couponDiscount
-        self.coupons = coupons
+        self.totalCoupons = totalCoupons
         self.refunds = refunds
         self.taxes = taxes
         self.shipping = shipping
         self.netRevenue = netRevenue
-        self.products = products
+        self.totalProducts = totalProducts
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let orders = try container.decode(Int.self, forKey: .ordersCount)
-        let itemsSold = try container.decode(Int.self, forKey: .itemsSold)
+        let totalOrders = try container.decode(Int.self, forKey: .ordersCount)
+        let totalItemsSold = try container.decode(Int.self, forKey: .itemsSold)
         let grossRevenue = try container.decode(Decimal.self, forKey: .grossRevenue)
         let couponDiscount = try container.decode(Decimal.self, forKey: .couponDiscount)
-        let coupons = try container.decode(Int.self, forKey: .coupons)
+        let totalCoupons = try container.decode(Int.self, forKey: .coupons)
         let refunds = try container.decode(Decimal.self, forKey: .refunds)
         let taxes = try container.decode(Decimal.self, forKey: .taxes)
         let shipping = try container.decode(Decimal.self, forKey: .shipping)
         let netRevenue = try container.decode(Decimal.self, forKey: .netRevenue)
-        let products = try container.decodeIfPresent(Int.self, forKey: .products)
+        let totalProducts = try container.decodeIfPresent(Int.self, forKey: .products)
 
-        self.init(orders: orders,
-                  itemsSold: itemsSold,
+        self.init(totalOrders: totalOrders,
+                  totalItemsSold: totalItemsSold,
                   grossRevenue: grossRevenue,
                   couponDiscount: couponDiscount,
-                  coupons: coupons,
+                  totalCoupons: totalCoupons,
                   refunds: refunds,
                   taxes: taxes,
                   shipping: shipping,
                   netRevenue: netRevenue,
-                  products: products)
+                  totalProducts: totalProducts)
     }
 }
 
@@ -65,21 +65,21 @@ public struct OrderStatsV4Totals: Decodable {
 //
 extension OrderStatsV4Totals: Equatable {
     public static func == (lhs: OrderStatsV4Totals, rhs: OrderStatsV4Totals) -> Bool {
-        return lhs.orders == rhs.orders &&
-            lhs.itemsSold == rhs.itemsSold &&
+        return lhs.totalOrders == rhs.totalOrders &&
+            lhs.totalItemsSold == rhs.totalItemsSold &&
             lhs.grossRevenue == rhs.grossRevenue &&
             lhs.couponDiscount == rhs.couponDiscount &&
-            lhs.coupons == rhs.coupons &&
+            lhs.totalCoupons == rhs.totalCoupons &&
             lhs.refunds == rhs.refunds &&
             lhs.taxes == rhs.taxes &&
             lhs.shipping == rhs.shipping &&
             lhs.netRevenue == rhs.netRevenue &&
-            lhs.products == rhs.products
+            lhs.totalProducts == rhs.totalProducts
     }
 
     public static func < (lhs: OrderStatsV4Totals, rhs: OrderStatsV4Totals) -> Bool {
         return lhs.grossRevenue < rhs.grossRevenue ||
-            (lhs.grossRevenue == rhs.grossRevenue && lhs.orders < rhs.orders)
+            (lhs.grossRevenue == rhs.grossRevenue && lhs.totalOrders < rhs.totalOrders)
     }
 }
 

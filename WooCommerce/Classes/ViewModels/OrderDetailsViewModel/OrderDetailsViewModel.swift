@@ -124,17 +124,11 @@ final class OrderDetailsViewModel {
     func lookUpProduct(by productID: Int) -> Product? {
         return dataSource.lookUpProduct(by: productID)
     }
-
-    func refreshOrderTracking() {
-        dataSource.orderTracking = trackingResultsController.fetchedObjects
-    }
-
-    func refreshOrderProducts() {
-        dataSource.products = productResultsController.fetchedObjects
-    }
 }
 
 
+// MARK: - Configuring results controllers
+//
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         configureTrackingResultsController(onReload: onReload)
@@ -144,13 +138,11 @@ extension OrderDetailsViewModel {
 
     private func configureTrackingResultsController(onReload: @escaping () -> Void) {
         trackingResultsController.onDidChangeContent = { [weak self] in
-            print("==== tracking did change content===")
             self?.dataSource.orderTracking = self?.trackingResultsController.fetchedObjects ?? []
             onReload()
         }
 
         trackingResultsController.onDidResetContent = { [weak self] in
-            print("==== tracking did reset content===")
             self?.dataSource.orderTracking = self?.trackingResultsController.fetchedObjects ?? []
             onReload()
         }
@@ -186,6 +178,8 @@ extension OrderDetailsViewModel {
 }
 
 
+// MARK: - Register table view cells
+//
 extension OrderDetailsViewModel {
     /// Registers all of the available TableViewCells
     ///
@@ -333,6 +327,9 @@ private extension OrderDetailsViewModel {
     }
 }
 
+
+// MARK: - Initiate communication with a customer via message
+//
 private extension OrderDetailsViewModel {
     func displayMessageComposerIfPossible(from: UIViewController) {
         messageComposer.displayMessageComposerIfPossible(order: order, from: from)
@@ -439,6 +436,14 @@ extension OrderDetailsViewModel {
         }
 
         StoresManager.shared.dispatch(deleteTrackingAction)
+    }
+
+    private func refreshOrderTracking() {
+        dataSource.orderTracking = trackingResultsController.fetchedObjects
+    }
+
+    private func refreshOrderProducts() {
+        dataSource.products = productResultsController.fetchedObjects
     }
 }
 

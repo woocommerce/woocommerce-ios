@@ -7,18 +7,24 @@ A Jetpack-powered companion app for WooCommerce.
 
 ## Build Instructions
 
-### Download Xcode
+- Download Xcode
+  - At the moment *WooCommerce for iOS* uses Swift 5 and requires Xcode 10.2 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action)
+- Clone project by `git clone https://github.com/woocommerce/woocommerce-ios.git` in the folder of your preference
+- Enter the project directory by `cd woocommerce-ios`
+- Install the third party dependencies and tools required to run the project
+  - We use a few tools to help with development. To install or update the required dependencies, run the follow command on the command line: `bundle exec pod install`
+  - In some cases, you may also have to: `bundle install`
+- Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
+  
+#### SwiftLint
 
-At the moment *WooCommerce for iOS* uses Swift 5 and requires Xcode 10.2 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action).*
+We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce a common style for Swift code. The app should build and work without it, but if you plan to write code, you are encouraged to run it locally by `rake lint` (first run will install SwiftLint if you don't have it). No pull requests should have lint warnings or errors before merging, and we also have `Hound` (mentioned below) to help us in pull requests on GitHub.
 
-### Third party tools
+If your code has any style violations, you can try to automatically correct them by running:
 
-We use a few tools to help with development. To install or update the required dependencies, run the follow command on the command line:
+`rake lint:autocorrect`
 
-`bundle exec pod install`
-
-you may also have to:
-`bundle install`
+Otherwise, you can also fix them manually.
 
 #### CocoaPods
 

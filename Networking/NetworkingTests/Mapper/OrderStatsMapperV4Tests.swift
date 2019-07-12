@@ -25,16 +25,16 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(hourlyStats.siteID, Constants.siteID)
         XCTAssertEqual(hourlyStats.granularity, .hourly)
 
-        XCTAssertEqual(hourlyStats.totals.orders, 3)
-        XCTAssertEqual(hourlyStats.totals.itemsSold, 5)
+        XCTAssertEqual(hourlyStats.totals.totalOrders, 3)
+        XCTAssertEqual(hourlyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(hourlyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(hourlyStats.totals.coupons, 0)
+        XCTAssertEqual(hourlyStats.totals.totalCoupons, 0)
         XCTAssertEqual(hourlyStats.totals.couponDiscount, 0)
         XCTAssertEqual(hourlyStats.totals.refunds, 0)
         XCTAssertEqual(hourlyStats.totals.taxes, 0)
         XCTAssertEqual(hourlyStats.totals.shipping, 0)
         XCTAssertEqual(hourlyStats.totals.netRevenue, 800)
-        XCTAssertEqual(hourlyStats.totals.products, 2)
+        XCTAssertEqual(hourlyStats.totals.totalProducts, 2)
 
         XCTAssertEqual(hourlyStats.intervals.count, 24)
 
@@ -43,15 +43,15 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroHour.interval, "2019-07-09 13")
 
-        XCTAssertEqual(nonZeroHourTotals.orders, 2)
+        XCTAssertEqual(nonZeroHourTotals.totalOrders, 2)
         XCTAssertEqual(nonZeroHourTotals.grossRevenue, 350)
-        XCTAssertEqual(nonZeroHourTotals.coupons, 0)
+        XCTAssertEqual(nonZeroHourTotals.totalCoupons, 0)
         XCTAssertEqual(nonZeroHourTotals.couponDiscount, 0)
         XCTAssertEqual(nonZeroHourTotals.refunds, 0)
         XCTAssertEqual(nonZeroHourTotals.taxes, 0)
         XCTAssertEqual(nonZeroHourTotals.shipping, 0)
         XCTAssertEqual(nonZeroHourTotals.netRevenue, 350)
-        XCTAssertNil(nonZeroHourTotals.products)
+        XCTAssertNil(nonZeroHourTotals.totalProducts)
     }
 
     /// Verifies that all of the daily unit OrderStatsV4 fields are parsed correctly.
@@ -65,16 +65,16 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(dailyStats.siteID, Constants.siteID)
         XCTAssertEqual(dailyStats.granularity, .daily)
 
-        XCTAssertEqual(dailyStats.totals.orders, 3)
-        XCTAssertEqual(dailyStats.totals.itemsSold, 5)
+        XCTAssertEqual(dailyStats.totals.totalOrders, 3)
+        XCTAssertEqual(dailyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(dailyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(dailyStats.totals.coupons, 0)
+        XCTAssertEqual(dailyStats.totals.totalCoupons, 0)
         XCTAssertEqual(dailyStats.totals.couponDiscount, 0)
         XCTAssertEqual(dailyStats.totals.refunds, 0)
         XCTAssertEqual(dailyStats.totals.taxes, 0)
         XCTAssertEqual(dailyStats.totals.shipping, 0)
         XCTAssertEqual(dailyStats.totals.netRevenue, 800)
-        XCTAssertEqual(dailyStats.totals.products, 2)
+        XCTAssertEqual(dailyStats.totals.totalProducts, 2)
 
         XCTAssertEqual(dailyStats.intervals.count, 1)
 
@@ -83,15 +83,15 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroDay.interval, "2019-07-09")
 
-        XCTAssertEqual(nonZeroDayTotals.orders, 3)
+        XCTAssertEqual(nonZeroDayTotals.totalOrders, 3)
         XCTAssertEqual(nonZeroDayTotals.grossRevenue, 800)
-        XCTAssertEqual(nonZeroDayTotals.coupons, 0)
+        XCTAssertEqual(nonZeroDayTotals.totalCoupons, 0)
         XCTAssertEqual(nonZeroDayTotals.couponDiscount, 0)
         XCTAssertEqual(nonZeroDayTotals.refunds, 0)
         XCTAssertEqual(nonZeroDayTotals.taxes, 0)
         XCTAssertEqual(nonZeroDayTotals.shipping, 0)
         XCTAssertEqual(nonZeroDayTotals.netRevenue, 800)
-        XCTAssertNil(nonZeroDayTotals.products)
+        XCTAssertNil(nonZeroDayTotals.totalProducts)
     }
 
     /// Verifies that all of the weekly unit OrderStatsV4 fields are parsed correctly.
@@ -105,16 +105,16 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(weeklyStats.siteID, Constants.siteID)
         XCTAssertEqual(weeklyStats.granularity, .weekly)
 
-        XCTAssertEqual(weeklyStats.totals.orders, 3)
-        XCTAssertEqual(weeklyStats.totals.itemsSold, 5)
+        XCTAssertEqual(weeklyStats.totals.totalOrders, 3)
+        XCTAssertEqual(weeklyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(weeklyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(weeklyStats.totals.coupons, 0)
+        XCTAssertEqual(weeklyStats.totals.totalCoupons, 0)
         XCTAssertEqual(weeklyStats.totals.couponDiscount, 0)
         XCTAssertEqual(weeklyStats.totals.refunds, 0)
         XCTAssertEqual(weeklyStats.totals.taxes, 0)
         XCTAssertEqual(weeklyStats.totals.shipping, 0)
         XCTAssertEqual(weeklyStats.totals.netRevenue, 800)
-        XCTAssertEqual(weeklyStats.totals.products, 2)
+        XCTAssertEqual(weeklyStats.totals.totalProducts, 2)
 
         XCTAssertEqual(weeklyStats.intervals.count, 2)
 
@@ -123,15 +123,15 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroWeek.interval, "2019-28")
 
-        XCTAssertEqual(nonZeroWeekTotals.orders, 3)
+        XCTAssertEqual(nonZeroWeekTotals.totalOrders, 3)
         XCTAssertEqual(nonZeroWeekTotals.grossRevenue, 800)
-        XCTAssertEqual(nonZeroWeekTotals.coupons, 0)
+        XCTAssertEqual(nonZeroWeekTotals.totalCoupons, 0)
         XCTAssertEqual(nonZeroWeekTotals.couponDiscount, 0)
         XCTAssertEqual(nonZeroWeekTotals.refunds, 0)
         XCTAssertEqual(nonZeroWeekTotals.taxes, 0)
         XCTAssertEqual(nonZeroWeekTotals.shipping, 0)
         XCTAssertEqual(nonZeroWeekTotals.netRevenue, 800)
-        XCTAssertNil(nonZeroWeekTotals.products)
+        XCTAssertNil(nonZeroWeekTotals.totalProducts)
     }
 
     /// Verifies that all of the monthly unit OrderStatsV4 fields are parsed correctly.
@@ -145,16 +145,16 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(monthlyStats.siteID, Constants.siteID)
         XCTAssertEqual(monthlyStats.granularity, .monthly)
 
-        XCTAssertEqual(monthlyStats.totals.orders, 3)
-        XCTAssertEqual(monthlyStats.totals.itemsSold, 5)
+        XCTAssertEqual(monthlyStats.totals.totalOrders, 3)
+        XCTAssertEqual(monthlyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(monthlyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(monthlyStats.totals.coupons, 0)
+        XCTAssertEqual(monthlyStats.totals.totalCoupons, 0)
         XCTAssertEqual(monthlyStats.totals.couponDiscount, 0)
         XCTAssertEqual(monthlyStats.totals.refunds, 0)
         XCTAssertEqual(monthlyStats.totals.taxes, 0)
         XCTAssertEqual(monthlyStats.totals.shipping, 0)
         XCTAssertEqual(monthlyStats.totals.netRevenue, 800)
-        XCTAssertEqual(monthlyStats.totals.products, 2)
+        XCTAssertEqual(monthlyStats.totals.totalProducts, 2)
 
         XCTAssertEqual(monthlyStats.intervals.count, 1)
 
@@ -163,15 +163,15 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroMonth.interval, "2019-07")
 
-        XCTAssertEqual(nonZeroMonthTotals.orders, 3)
+        XCTAssertEqual(nonZeroMonthTotals.totalOrders, 3)
         XCTAssertEqual(nonZeroMonthTotals.grossRevenue, 800)
-        XCTAssertEqual(nonZeroMonthTotals.coupons, 0)
+        XCTAssertEqual(nonZeroMonthTotals.totalCoupons, 0)
         XCTAssertEqual(nonZeroMonthTotals.couponDiscount, 0)
         XCTAssertEqual(nonZeroMonthTotals.refunds, 0)
         XCTAssertEqual(nonZeroMonthTotals.taxes, 0)
         XCTAssertEqual(nonZeroMonthTotals.shipping, 0)
         XCTAssertEqual(nonZeroMonthTotals.netRevenue, 800)
-        XCTAssertNil(nonZeroMonthTotals.products)
+        XCTAssertNil(nonZeroMonthTotals.totalProducts)
     }
 
     /// Verifies that all of the yearly unit OrderStatsV4 fields are parsed correctly.
@@ -185,16 +185,16 @@ final class OrderStatsV4MapperTests: XCTestCase {
         XCTAssertEqual(yearlyStats.siteID, Constants.siteID)
         XCTAssertEqual(yearlyStats.granularity, .yearly)
 
-        XCTAssertEqual(yearlyStats.totals.orders, 3)
-        XCTAssertEqual(yearlyStats.totals.itemsSold, 5)
+        XCTAssertEqual(yearlyStats.totals.totalOrders, 3)
+        XCTAssertEqual(yearlyStats.totals.totalItemsSold, 5)
         XCTAssertEqual(yearlyStats.totals.grossRevenue, 800)
-        XCTAssertEqual(yearlyStats.totals.coupons, 0)
+        XCTAssertEqual(yearlyStats.totals.totalCoupons, 0)
         XCTAssertEqual(yearlyStats.totals.couponDiscount, 0)
         XCTAssertEqual(yearlyStats.totals.refunds, 0)
         XCTAssertEqual(yearlyStats.totals.taxes, 0)
         XCTAssertEqual(yearlyStats.totals.shipping, 0)
         XCTAssertEqual(yearlyStats.totals.netRevenue, 800)
-        XCTAssertEqual(yearlyStats.totals.products, 2)
+        XCTAssertEqual(yearlyStats.totals.totalProducts, 2)
 
         XCTAssertEqual(yearlyStats.intervals.count, 1)
 
@@ -203,15 +203,15 @@ final class OrderStatsV4MapperTests: XCTestCase {
 
         XCTAssertEqual(nonZeroYear.interval, "2019")
 
-        XCTAssertEqual(nonZeroYearTotals.orders, 3)
+        XCTAssertEqual(nonZeroYearTotals.totalOrders, 3)
         XCTAssertEqual(nonZeroYearTotals.grossRevenue, 800)
-        XCTAssertEqual(nonZeroYearTotals.coupons, 0)
+        XCTAssertEqual(nonZeroYearTotals.totalCoupons, 0)
         XCTAssertEqual(nonZeroYearTotals.couponDiscount, 0)
         XCTAssertEqual(nonZeroYearTotals.refunds, 0)
         XCTAssertEqual(nonZeroYearTotals.taxes, 0)
         XCTAssertEqual(nonZeroYearTotals.shipping, 0)
         XCTAssertEqual(nonZeroYearTotals.netRevenue, 800)
-        XCTAssertNil(nonZeroYearTotals.products)
+        XCTAssertNil(nonZeroYearTotals.totalProducts)
     }
 }
 

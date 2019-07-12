@@ -1,4 +1,4 @@
-/// Represents an single order stat for a specific period.
+/// Represents a single order stat for a specific period.
 /// v4 API
 public struct OrderStatsV4Interval: Decodable {
     public let interval: String

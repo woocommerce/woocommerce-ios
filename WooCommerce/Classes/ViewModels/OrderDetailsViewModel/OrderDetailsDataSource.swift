@@ -152,7 +152,6 @@ final class OrderDetailsDataSource: NSObject {
 // MARK: - Conformance to UITableViewDataSource
 extension OrderDetailsDataSource: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        print("==== number of sections ", sections.count)
         return sections.count
     }
 
@@ -497,7 +496,6 @@ extension OrderDetailsDataSource {
     ///     When: Shipping != nil && Billing != nil     >>>     Display: Shipping / Billing / Footer
     ///
     func reloadSections() {
-        print("==== reload sections in data source")
         let summary = Section(row: .summary)
 
         let products: Section? = {

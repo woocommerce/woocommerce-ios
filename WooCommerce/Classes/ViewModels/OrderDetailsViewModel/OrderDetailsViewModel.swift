@@ -124,6 +124,14 @@ final class OrderDetailsViewModel {
     func lookUpProduct(by productID: Int) -> Product? {
         return dataSource.lookUpProduct(by: productID)
     }
+
+    func refreshOrderTracking() {
+        dataSource.orderTracking = trackingResultsController.fetchedObjects
+    }
+
+    func refreshOrderProducts() {
+        dataSource.products = productResultsController.fetchedObjects
+    }
 }
 
 
@@ -136,11 +144,13 @@ extension OrderDetailsViewModel {
 
     private func configureTrackingResultsController(onReload: @escaping () -> Void) {
         trackingResultsController.onDidChangeContent = { [weak self] in
+            print("==== tracking did change content===")
             self?.dataSource.orderTracking = self?.trackingResultsController.fetchedObjects ?? []
             onReload()
         }
 
         trackingResultsController.onDidResetContent = { [weak self] in
+            print("==== tracking did reset content===")
             self?.dataSource.orderTracking = self?.trackingResultsController.fetchedObjects ?? []
             onReload()
         }
@@ -350,7 +360,7 @@ extension OrderDetailsViewModel {
         let orderID = order.orderID
         let siteID = order.siteID
         let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
-                                                                    orderID: orderID) { error in
+                                                                    orderID: orderID) { [weak self] error in
                                                                         if let error = error {
                                                                             DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
                                                                             onCompletion?(error)
@@ -358,6 +368,7 @@ extension OrderDetailsViewModel {
                                                                         }
 
                                                                         WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+                                                                        self?.refreshOrderTracking()
                                                                         onCompletion?(nil)
         }
 
@@ -383,14 +394,14 @@ extension OrderDetailsViewModel {
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.requestMissingProducts(for: order) { (error) in
+        let action = ProductAction.requestMissingProducts(for: order) { [weak self] (error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
                 onCompletion?(error)
 
                 return
             }
-
+            self?.refreshOrderProducts()
             onCompletion?(nil)
         }
 

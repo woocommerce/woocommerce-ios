@@ -216,7 +216,7 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
-        syncProducts() { _ in
+        syncProducts { _ in
             group.leave()
         }
 

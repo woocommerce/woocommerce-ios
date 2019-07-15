@@ -8,7 +8,6 @@ NSInteger const LeftImageSpacing = 8;
 @import Gridicons;
 
 @interface WPWalkthroughTextField ()
-@property (nonatomic, strong) UIButton *secureTextEntryToggle;
 @property (nonatomic, strong) UIImage *secureTextEntryImageVisible;
 @property (nonatomic, strong) UIImage *secureTextEntryImageHidden;
 @end

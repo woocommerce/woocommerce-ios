@@ -82,25 +82,3 @@ public struct WordPressAuthenticatorStyle {
         self.prologueTitleColor = prologueTitleColor
     }
 }
-
-public extension WordPressAuthenticatorStyle {
-    static var defaultStyle: WordPressAuthenticatorStyle {
-        return WordPressAuthenticatorStyle(primaryNormalBackgroundColor: WPStyleGuide.mediumBlue(),
-                                           primaryNormalBorderColor: WPStyleGuide.wordPressBlue(),
-                                           primaryHighlightBackgroundColor: WPStyleGuide.wordPressBlue(),
-                                           primaryHighlightBorderColor: WPStyleGuide.wordPressBlue(),
-                                           secondaryNormalBackgroundColor: UIColor.white,
-                                           secondaryNormalBorderColor: WPStyleGuide.greyLighten20(),
-                                           secondaryHighlightBackgroundColor: WPStyleGuide.greyLighten20(),
-                                           secondaryHighlightBorderColor: WPStyleGuide.greyLighten20(),
-                                           disabledBackgroundColor: UIColor.white,
-                                           disabledBorderColor: WPStyleGuide.greyLighten30(),
-                                           primaryTitleColor: UIColor.white,
-                                           secondaryTitleColor: WPStyleGuide.darkGrey(),
-                                           disabledTitleColor: WPStyleGuide.greyLighten30(),
-                                           subheadlineColor: WPStyleGuide.wordPressBlue(),
-                                           viewControllerBackgroundColor: WPStyleGuide.lightGrey(),
-                                           navBarImage: Gridicon.iconOfType(.mySites)
-        )
-    }
-}

@@ -2,6 +2,12 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 17 (Release 2.3.0.0)
+- @ctarda 2019-07-10
+    - Add `OrderStatsV4` entity
+    - Add `OrderStatsV4Totals` entity
+    - Add `OrderStatsV4Interval` entity
+
 ## Model 16 (Release 2.0.0.0)
 - @mindgraffiti 2019-05-29
     - Add `ProductDownload` entity

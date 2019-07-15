@@ -1,2 +1,1 @@
-* Sprekers van het Arabisch, Hebreeuws, Farsi en Urdu worden verrast: er is nu verbeterde ondersteuning voor RTL-talen in het dashboard.
-* Meer info met één druk op de knop: door in welke bestelling dan ook op een product te tikken, wordt een alleen-weergeven versie van de productgegevens geopend.
+Hier geen grote veranderingen! Gewoon wat verbeteringen en bugfixes — je zult er niets van merken, behalve dat de app soepel draait.

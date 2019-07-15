@@ -1,7 +1,7 @@
 2.3
 -----
 - Improvement: improved Dynamic Type support in the body of the notification in the Notifications tab.
-
+- New feature: in Order Details > Shipment Tracking, a new action is added to the "more" action menu for copying tracking number.
  
 2.2
 -----

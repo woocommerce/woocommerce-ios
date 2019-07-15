@@ -171,6 +171,8 @@ private extension OrderSearchViewController {
         emptyStateLabel.text = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
         emptyStateLabel.textColor = StyleManager.wooGreyMid
         emptyStateLabel.font = .headline
+        emptyStateLabel.adjustsFontForContentSizeCategory = true
+        emptyStateLabel.numberOfLines = 0
     }
 
     /// Setup: Results Controller

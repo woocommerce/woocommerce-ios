@@ -131,99 +131,35 @@ final class OrderDetailsDataSource: NSObject {
     /// Order shipment tracking list
     ///
     var orderTracking: [ShipmentTracking] {
-        return trackingResultsController.fetchedObjects
+        return resultsControllers.orderTracking
     }
 
     /// Order statuses list
     ///
     var currentSiteStatuses: [OrderStatus] {
-        return statusResultsController.fetchedObjects
+        return resultsControllers.currentSiteStatuses
     }
 
     /// Products from an Order
     ///
     var products: [Product] {
-        return productResultsController.fetchedObjects
+        return resultsControllers.products
     }
 
-    // MARK: - Results controllers
-    private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
-                                    self.order.siteID,
-                                    self.order.orderID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
-    /// Product ResultsController.
-    ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
-    /// Status Results Controller.
-    ///
-    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     var orderNotes: [OrderNote] = []
+
+    private lazy var resultsControllers: OrderDetailsResultsControllers = {
+        return OrderDetailsResultsControllers(order: self.order)
+    }()
 
     init(order: Order) {
         self.order = order
         self.couponLines = order.coupons
         super.init()
-        //configureResultsController()
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
-        configureResultsController()
-        configureTrackingResultsController(onReload: onReload)
-        configureProductResultsController(onReload: onReload)
-    }
-}
-
-
-// MARK: - Configuring results controllers
-//
-private extension OrderDetailsDataSource {
-
-    func configureResultsController() {
-        try? statusResultsController.performFetch()
-    }
-
-    private func configureTrackingResultsController(onReload: @escaping () -> Void) {
-        trackingResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        trackingResultsController.onDidResetContent = {
-            onReload()
-        }
-
-        try? trackingResultsController.performFetch()
-    }
-
-    private func configureProductResultsController(onReload: @escaping () -> Void) {
-        productResultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        productResultsController.onDidResetContent = {
-            onReload()
-        }
-
-        try? productResultsController.performFetch()
+        resultsControllers.configureResultsControllers(onReload: onReload)
     }
 }
 

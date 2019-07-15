@@ -39,8 +39,10 @@ public struct WordPressAuthenticatorStyle {
 
     public let disabledTitleColor: UIColor
 
-    /// Style: Subheadline
+    /// Style: Labels
     ///
+    public let instructionColor: UIColor
+
     public let subheadlineColor: UIColor
 
     /// Style: Login screen background colors
@@ -61,7 +63,7 @@ public struct WordPressAuthenticatorStyle {
 
     /// Designated initializer
     ///
-    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, subheadlineColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage, prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(), prologueTitleColor: UIColor = .white) {
+    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, instructionColor: UIColor, subheadlineColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage, prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(), prologueTitleColor: UIColor = .white) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -75,6 +77,7 @@ public struct WordPressAuthenticatorStyle {
         self.primaryTitleColor = primaryTitleColor
         self.secondaryTitleColor = secondaryTitleColor
         self.disabledTitleColor = disabledTitleColor
+        self.instructionColor = instructionColor
         self.subheadlineColor = subheadlineColor
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
         self.navBarImage = navBarImage

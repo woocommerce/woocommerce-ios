@@ -86,6 +86,11 @@ NSInteger const LeftImageSpacing = 8;
     self.showTopLineSeparator = NO;
     self.showSecureTextEntryToggle = NO;
 
+    [self setupPlaceholder];
+}
+
+- (void)setupPlaceholder
+{
     // Apply styles to the placeholder if one was set in IB.
     if (self.placeholder) {
         NSDictionary *attributes = @{
@@ -146,7 +151,6 @@ NSInteger const LeftImageSpacing = 8;
     CGContextAddPath(context, path.CGPath);
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.87 alpha:1.0].CGColor);
     CGContextStrokePath(context);
-
 }
 
 

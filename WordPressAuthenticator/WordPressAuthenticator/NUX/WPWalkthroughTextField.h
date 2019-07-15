@@ -38,5 +38,6 @@ IB_DESIGNABLE
 @property (nonatomic) UIEdgeInsets contentInsets;
 
 - (instancetype)initWithLeftViewImage:(UIImage *)image;
+- (void)setupPlaceholder;
 
 @end

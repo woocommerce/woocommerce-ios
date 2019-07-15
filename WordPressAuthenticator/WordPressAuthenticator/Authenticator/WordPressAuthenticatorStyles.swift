@@ -51,6 +51,8 @@ public struct WordPressAuthenticatorStyle {
 
     public let subheadlineColor: UIColor
 
+    public let placeholderColor: UIColor
+
     /// Style: Login screen background colors
     ///
     public let viewControllerBackgroundColor: UIColor
@@ -69,7 +71,7 @@ public struct WordPressAuthenticatorStyle {
 
     /// Designated initializer
     ///
-    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, textButton: UIColor, textButtonHighlight: UIColor, instructionColor: UIColor, subheadlineColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage, prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(), prologueTitleColor: UIColor = .white) {
+    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, textButton: UIColor, textButtonHighlight: UIColor, instructionColor: UIColor, subheadlineColor: UIColor, placeholderColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage, prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(), prologueTitleColor: UIColor = .white) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -87,6 +89,7 @@ public struct WordPressAuthenticatorStyle {
         self.textButtonHighlight = textButtonHighlight
         self.instructionColor = instructionColor
         self.subheadlineColor = subheadlineColor
+        self.placeholderColor = placeholderColor
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
         self.navBarImage = navBarImage
         self.prologueBackgroundColor = prologueBackgroundColor

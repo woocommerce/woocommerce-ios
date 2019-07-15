@@ -226,6 +226,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     private func configureAlternativeLabel() {
         alternativeLoginLabel?.font = WPStyleGuide.fontForTextStyle(.subheadline)
+        alternativeLoginLabel?.textColor = WordPressAuthenticator.shared.style.subheadlineColor
     }
 
     /// Configures whether appearance of the submit button.

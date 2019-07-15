@@ -27,32 +27,10 @@ final class OrderDetailsViewModel {
         return dataSource.totalFriendlyString
     }
 
-
-    // MARK: - Results controllers
-    private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
-                                    self.order.siteID,
-                                    self.order.orderID)
-        let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
-
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
-    /// Product ResultsController.
-    ///
-    private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
-
     /// Products from an Order
     ///
     var products: [Product] {
-        return productResultsController.fetchedObjects
+        return dataSource.products
     }
 
     /// Indicates if we consider the shipment tracking plugin as reachable
@@ -121,36 +99,7 @@ final class OrderDetailsViewModel {
 //
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
-        configureTrackingResultsController(onReload: onReload)
-        configureProductResultsController(onReload: onReload)
-    }
-
-    private func configureTrackingResultsController(onReload: @escaping () -> Void) {
-        trackingResultsController.onDidChangeContent = { [weak self] in
-            self?.dataSource.orderTracking = self?.trackingResultsController.fetchedObjects ?? []
-            onReload()
-        }
-
-        trackingResultsController.onDidResetContent = { [weak self] in
-            self?.dataSource.orderTracking = self?.trackingResultsController.fetchedObjects ?? []
-            onReload()
-        }
-
-        try? trackingResultsController.performFetch()
-    }
-
-    private func configureProductResultsController(onReload: @escaping () -> Void) {
-        productResultsController.onDidChangeContent = { [weak self] in
-            self?.dataSource.products = self?.productResultsController.fetchedObjects ?? []
-            onReload()
-        }
-
-        productResultsController.onDidResetContent = {[weak self] in
-            self?.dataSource.products = self?.productResultsController.fetchedObjects ?? []
-            onReload()
-        }
-
-        try? productResultsController.performFetch()
+        dataSource.configureResultsControllers(onReload: onReload)
     }
 }
 
@@ -334,7 +283,7 @@ extension OrderDetailsViewModel {
         let orderID = order.orderID
         let siteID = order.siteID
         let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
-                                                                    orderID: orderID) { [weak self] error in
+                                                                    orderID: orderID) { error in
                                                                         if let error = error {
                                                                             DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
                                                                             onCompletion?(error)
@@ -342,7 +291,7 @@ extension OrderDetailsViewModel {
                                                                         }
 
                                                                         WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
-                                                                        self?.refreshOrderTracking()
+                                                                        //self?.refreshOrderTracking()
                                                                         onCompletion?(nil)
         }
 
@@ -368,14 +317,14 @@ extension OrderDetailsViewModel {
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
-        let action = ProductAction.requestMissingProducts(for: order) { [weak self] (error) in
+        let action = ProductAction.requestMissingProducts(for: order) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
                 onCompletion?(error)
 
                 return
             }
-            self?.refreshOrderProducts()
+//            self?.refreshOrderProducts()
             onCompletion?(nil)
         }
 
@@ -413,14 +362,6 @@ extension OrderDetailsViewModel {
         }
 
         StoresManager.shared.dispatch(deleteTrackingAction)
-    }
-
-    private func refreshOrderTracking() {
-        dataSource.orderTracking = trackingResultsController.fetchedObjects
-    }
-
-    private func refreshOrderProducts() {
-        dataSource.products = productResultsController.fetchedObjects
     }
 }
 

@@ -273,8 +273,17 @@ private extension DashboardViewController {
 
     private func handleSyncError(error: Error) {
         switch error {
-        case is SiteVisitStatsStoreError:
-            return
+        case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
+            handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
+        default:
+            displaySyncingErrorNotice()
+        }
+    }
+
+    private func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
+        switch error {
+        case .statsModuleDisabled:
+            break
         default:
             displaySyncingErrorNotice()
         }

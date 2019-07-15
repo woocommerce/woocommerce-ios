@@ -18,6 +18,9 @@ final class OrderTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var paymentStatusLabel: PaddedLabel!
 
+    /// Top-level stack view that contains the stack view of title and payment status labels, and total price label.
+    ///
+    @IBOutlet weak var contentStackView: UIStackView!
 
     /// Renders the specified Order ViewModel
     ///
@@ -38,6 +41,14 @@ final class OrderTableViewCell: UITableViewCell {
         }
     }
 
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection.preferredContentSizeCategory > .extraExtraLarge {
+            contentStackView.axis = .vertical
+        } else {
+            contentStackView.axis = .horizontal
+        }
+    }
 
     // MARK: - Overridden Methods
 
@@ -86,6 +97,8 @@ private extension OrderTableViewCell {
     func configureLabels() {
         titleLabel.applyHeadlineStyle()
         totalLabel.applyBodyStyle()
+        totalLabel.numberOfLines = 0
         paymentStatusLabel.applyFootnoteStyle()
+        paymentStatusLabel.numberOfLines = 0
     }
 }

@@ -1,2 +1,1 @@
-* Buenas noticias para los hablantes de árabe, hebreo, persa y urdu: se ha mejorado la compatibilidad del Escritorio con los idiomas que se escriben de derecha a izquierda.
-* Más información con un solo toque: al tocar un producto de cualquier pedido, se mostrará una versión solo de lectura de los detalles del pedido.
+No hay novedades importantes. Hemos llevado cabo algunas mejoras y correcciones de errores. No apreciarás ningún cambio, tan solo notarás que la aplicación funciona a la perfección.

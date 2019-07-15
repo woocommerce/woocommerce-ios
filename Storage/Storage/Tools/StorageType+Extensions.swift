@@ -89,6 +89,13 @@ public extension StorageType {
         return firstObject(ofType: OrderStatsItem.self, matching: predicate)
     }
 
+    /// Retrieves the Stored OrderStats for V4 API.
+    ///
+    func loadOrderStatsV4(siteID: String, granularity: String) -> OrderStatsV4? {
+        let predicate = NSPredicate(format: "siteID = %ld AND granularity ==[c] %@", siteID, granularity)
+        return firstObject(ofType: OrderStatsV4.self, matching: predicate)
+    }
+
     /// Retrieves all of the Stores OrderStatuses for the provided siteID.
     ///
     func loadOrderStatuses(siteID: Int) -> [OrderStatus]? {

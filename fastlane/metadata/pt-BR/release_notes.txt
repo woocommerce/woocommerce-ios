@@ -1,2 +1,1 @@
-* Falantes de árabe, hebreu, persa ou urdu, animem-se: temos melhorias no suporte aos idiomas RTL (com leitura da direita para a esquerda) no Painel.
-* Mais informações em um só toque: Ao tocar em um produto, em qualquer pedido, surgirá uma versão exclusiva para visualizar os detalhes do produto.
+Nada demais aqui! Apenas algumas melhorias e correções de bugs. Você não vai notar nada além de um aplicativo funcionando perfeitamente.

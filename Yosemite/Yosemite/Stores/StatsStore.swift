@@ -112,7 +112,7 @@ private extension StatsStore {
                                     latestDateToInclude: latestDateToInclude,
                                     quantity: quantity) { [weak self] (siteVisitStats, error) in
             guard let siteVisitStats = siteVisitStats else {
-                onCompletion(error)
+                onCompletion(error.flatMap({ SiteVisitStatsStoreError(remoteError: $0) }))
                 return
             }
 
@@ -281,5 +281,24 @@ extension StatsStore {
         /// Default limit value for TopEarnerStats
         ///
         static let defaultTopEarnerStatsLimit: Int = 3
+    }
+}
+
+/// An error with site visit stats, currently mapped from `SiteVisitStatsRemoteError`.
+///
+/// - statsModuleDisabled: Jetpack site stats module is disabled for the site.
+/// - unknown: other error cases.
+///
+public enum SiteVisitStatsStoreError: Error {
+    case statsModuleDisabled
+    case unknown
+
+    init(remoteError: SiteVisitStatsRemoteError) {
+        switch remoteError {
+        case .statsModuleDisabled:
+            self = .statsModuleDisabled
+        default:
+            self = .unknown
+        }
     }
 }

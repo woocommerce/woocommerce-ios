@@ -1,7 +1,6 @@
 import Foundation
 import Alamofire
 
-
 /// SiteVisitStats: Remote Endpoints
 ///
 public class SiteVisitStatsRemote: Remote {
@@ -19,7 +18,7 @@ public class SiteVisitStatsRemote: Remote {
                                      unit: StatGranularity,
                                      latestDateToInclude: Date,
                                      quantity: Int,
-                                     completion: @escaping (SiteVisitStats?, Error?) -> Void) {
+                                     completion: @escaping (SiteVisitStats?, SiteVisitStatsRemoteError?) -> Void) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.siteVisitStatsPath)/"
         let parameters = [ParameterKeys.unit: unit.rawValue,
                           ParameterKeys.date: DateFormatter.Stats.statsDayFormatter.string(from: latestDateToInclude),
@@ -27,7 +26,13 @@ public class SiteVisitStatsRemote: Remote {
                           ParameterKeys.statFields: Constants.visitorStatFieldValue]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = SiteVisitStatsMapper()
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(request, mapper: mapper, completion: { siteVisitStats, error in
+            if let error = error {
+                completion(siteVisitStats, SiteVisitStatsRemoteError(error: error))
+                return
+            }
+            completion(siteVisitStats, nil)
+        })
     }
 }
 
@@ -46,5 +51,39 @@ private extension SiteVisitStatsRemote {
         static let date: String       = "date"
         static let quantity: String   = "quantity"
         static let statFields: String = "stat_fields"
+    }
+}
+
+/// An error that occurs at site visit stats networking layer.
+/// API documentation of possible errors:
+/// https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/
+///
+public enum SiteVisitStatsRemoteError: Error {
+    case statsModuleDisabled
+    case unknown
+
+    private enum ErrorIdentifiers {
+        static let invalidBlog: String = "invalid_blog"
+    }
+
+    private enum ErrorMessages {
+        static let statsModuleDisabled: String = "This blog does not have the Stats module enabled"
+    }
+
+    init(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            self = .unknown
+            return
+        }
+        switch dotcomError {
+        case .unknown(let code, let message):
+            if code == ErrorIdentifiers.invalidBlog && message == ErrorMessages.statsModuleDisabled {
+                self = .statsModuleDisabled
+            } else {
+                self = .unknown
+            }
+        default:
+            self = .unknown
+        }
     }
 }

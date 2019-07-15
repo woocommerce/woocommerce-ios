@@ -241,7 +241,7 @@ private extension DashboardViewController {
 
             if let error = reloadError {
                 DDLogError("⛔️ Error loading dashboard: \(error)")
-                self?.displaySyncingErrorNotice()
+                self?.handleSyncError(error: error)
             }
         }
     }
@@ -269,6 +269,15 @@ private extension DashboardViewController {
             view.isHidden = true
             view.alpha = UIKitConstants.alphaZero
         })
+    }
+
+    private func handleSyncError(error: Error) {
+        switch error {
+        case is SiteVisitStatsStoreError:
+            return
+        default:
+            displaySyncingErrorNotice()
+        }
     }
 
     private func displaySyncingErrorNotice() {

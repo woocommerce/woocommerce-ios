@@ -73,6 +73,7 @@ class NUXLinkMailViewController: LoginViewController {
                 return NSLocalizedString("We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up.", comment: "Instructional text on how to open the email containing a magic link.")
             }
         }()
+        label?.textColor = WordPressAuthenticator.shared.style.instructionColor
     }
 
     // MARK: - Dynamic type

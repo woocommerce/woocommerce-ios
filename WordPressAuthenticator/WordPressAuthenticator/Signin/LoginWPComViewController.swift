@@ -10,6 +10,7 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
     @IBOutlet weak var bottomContentConstraint: NSLayoutConstraint?
     @IBOutlet weak var verticalCenterConstraint: NSLayoutConstraint?
     @objc var onePasswordButton: UIButton!
+    @IBOutlet var emailIcon: UIImageView?
     @IBOutlet var emailLabel: UITextField?
     @IBOutlet var emailStackView: UIStackView?
     override var sourceTag: WordPressSupportSourceTag {
@@ -43,6 +44,7 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         loginFields.meta.userIsDotCom = true
 
         configureTextFields()
+        configureEmailIcon()
         configureSubmitButton(animating: false)
         configureViewForEditingIfNeeded()
     }
@@ -116,6 +118,14 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
         passwordField?.text = loginFields.password
         passwordField?.contentInsets = WPStyleGuide.edgeInsetForLoginTextFields()
         emailLabel?.text = loginFields.username
+        emailLabel?.textColor = WordPressAuthenticator.shared.style.subheadlineColor
+    }
+
+    func configureEmailIcon() {
+        guard let image = emailIcon?.image else {
+            return
+        }
+        emailIcon?.image = image.imageWithTintColor(WordPressAuthenticator.shared.style.subheadlineColor)
     }
 
     @objc func localizeControls() {

@@ -434,7 +434,7 @@ private extension OrderDetailsViewController {
         actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
 
         actionSheet.addDefaultActionWithTitle(TrackingAction.copyTrackingNumber) { [weak self] _ in
-            self?.sendToPasteboard(tracking.trackingNumber, includeTrailingNewline: false)
+            self?.viewModel.dataSource.copyText(at: indexPath)
         }
 
         if tracking.trackingURL?.isEmpty == false {

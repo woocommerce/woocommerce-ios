@@ -1,0 +1,475 @@
+{
+    "data": {
+        "totals": {
+            "orders_count": 3,
+            "num_items_sold": 5,
+            "gross_revenue": 800,
+            "coupons": 0,
+            "coupons_count": 0,
+            "refunds": 0,
+            "taxes": 0,
+            "shipping": 0,
+            "net_revenue": 800,
+            "products": 2,
+            "segments": []
+        },
+        "intervals": [
+            {
+                "interval": "2019-07-09 00",
+                "date_start": "2019-07-09 00:00:00",
+                "date_start_gmt": "2019-07-09 00:00:00",
+                "date_end": "2019-07-09 00:59:59",
+                "date_end_gmt": "2019-07-09 00:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 01",
+                "date_start": "2019-07-09 01:00:00",
+                "date_start_gmt": "2019-07-09 01:00:00",
+                "date_end": "2019-07-09 01:59:59",
+                "date_end_gmt": "2019-07-09 01:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 02",
+                "date_start": "2019-07-09 02:00:00",
+                "date_start_gmt": "2019-07-09 02:00:00",
+                "date_end": "2019-07-09 02:59:59",
+                "date_end_gmt": "2019-07-09 02:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 03",
+                "date_start": "2019-07-09 03:00:00",
+                "date_start_gmt": "2019-07-09 03:00:00",
+                "date_end": "2019-07-09 03:59:59",
+                "date_end_gmt": "2019-07-09 03:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 04",
+                "date_start": "2019-07-09 04:00:00",
+                "date_start_gmt": "2019-07-09 04:00:00",
+                "date_end": "2019-07-09 04:59:59",
+                "date_end_gmt": "2019-07-09 04:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 05",
+                "date_start": "2019-07-09 05:00:00",
+                "date_start_gmt": "2019-07-09 05:00:00",
+                "date_end": "2019-07-09 05:59:59",
+                "date_end_gmt": "2019-07-09 05:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 06",
+                "date_start": "2019-07-09 06:00:00",
+                "date_start_gmt": "2019-07-09 06:00:00",
+                "date_end": "2019-07-09 06:59:59",
+                "date_end_gmt": "2019-07-09 06:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 07",
+                "date_start": "2019-07-09 07:00:00",
+                "date_start_gmt": "2019-07-09 07:00:00",
+                "date_end": "2019-07-09 07:59:59",
+                "date_end_gmt": "2019-07-09 07:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 08",
+                "date_start": "2019-07-09 08:00:00",
+                "date_start_gmt": "2019-07-09 08:00:00",
+                "date_end": "2019-07-09 08:59:59",
+                "date_end_gmt": "2019-07-09 08:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 09",
+                "date_start": "2019-07-09 09:00:00",
+                "date_start_gmt": "2019-07-09 09:00:00",
+                "date_end": "2019-07-09 09:59:59",
+                "date_end_gmt": "2019-07-09 09:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 10",
+                "date_start": "2019-07-09 10:00:00",
+                "date_start_gmt": "2019-07-09 10:00:00",
+                "date_end": "2019-07-09 10:59:59",
+                "date_end_gmt": "2019-07-09 10:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 11",
+                "date_start": "2019-07-09 11:00:00",
+                "date_start_gmt": "2019-07-09 11:00:00",
+                "date_end": "2019-07-09 11:59:59",
+                "date_end_gmt": "2019-07-09 11:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 12",
+                "date_start": "2019-07-09 12:00:00",
+                "date_start_gmt": "2019-07-09 12:00:00",
+                "date_end": "2019-07-09 12:59:59",
+                "date_end_gmt": "2019-07-09 12:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 13",
+                "date_start": "2019-07-09 13:00:00",
+                "date_start_gmt": "2019-07-09 13:00:00",
+                "date_end": "2019-07-09 13:59:59",
+                "date_end_gmt": "2019-07-09 13:59:59",
+                "subtotals": {
+                    "orders_count": 2,
+                    "num_items_sold": 2,
+                    "gross_revenue": 350,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 350,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 14",
+                "date_start": "2019-07-09 14:00:00",
+                "date_start_gmt": "2019-07-09 14:00:00",
+                "date_end": "2019-07-09 14:59:59",
+                "date_end_gmt": "2019-07-09 14:59:59",
+                "subtotals": {
+                    "orders_count": 1,
+                    "num_items_sold": 3,
+                    "gross_revenue": 450,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 450,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 15",
+                "date_start": "2019-07-09 15:00:00",
+                "date_start_gmt": "2019-07-09 15:00:00",
+                "date_end": "2019-07-09 15:59:59",
+                "date_end_gmt": "2019-07-09 15:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 16",
+                "date_start": "2019-07-09 16:00:00",
+                "date_start_gmt": "2019-07-09 16:00:00",
+                "date_end": "2019-07-09 16:59:59",
+                "date_end_gmt": "2019-07-09 16:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 17",
+                "date_start": "2019-07-09 17:00:00",
+                "date_start_gmt": "2019-07-09 17:00:00",
+                "date_end": "2019-07-09 17:59:59",
+                "date_end_gmt": "2019-07-09 17:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 18",
+                "date_start": "2019-07-09 18:00:00",
+                "date_start_gmt": "2019-07-09 18:00:00",
+                "date_end": "2019-07-09 18:59:59",
+                "date_end_gmt": "2019-07-09 18:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 19",
+                "date_start": "2019-07-09 19:00:00",
+                "date_start_gmt": "2019-07-09 19:00:00",
+                "date_end": "2019-07-09 19:59:59",
+                "date_end_gmt": "2019-07-09 19:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 20",
+                "date_start": "2019-07-09 20:00:00",
+                "date_start_gmt": "2019-07-09 20:00:00",
+                "date_end": "2019-07-09 20:59:59",
+                "date_end_gmt": "2019-07-09 20:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 21",
+                "date_start": "2019-07-09 21:00:00",
+                "date_start_gmt": "2019-07-09 21:00:00",
+                "date_end": "2019-07-09 21:59:59",
+                "date_end_gmt": "2019-07-09 21:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 22",
+                "date_start": "2019-07-09 22:00:00",
+                "date_start_gmt": "2019-07-09 22:00:00",
+                "date_end": "2019-07-09 22:59:59",
+                "date_end_gmt": "2019-07-09 22:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            },
+            {
+                "interval": "2019-07-09 23",
+                "date_start": "2019-07-09 23:00:00",
+                "date_start_gmt": "2019-07-09 23:00:00",
+                "date_end": "2019-07-09 23:59:59",
+                "date_end_gmt": "2019-07-09 23:59:59",
+                "subtotals": {
+                    "orders_count": 0,
+                    "num_items_sold": 0,
+                    "gross_revenue": 0,
+                    "coupons": 0,
+                    "coupons_count": 0,
+                    "refunds": 0,
+                    "taxes": 0,
+                    "shipping": 0,
+                    "net_revenue": 0,
+                    "segments": []
+                }
+            }
+        ]
+    }
+}

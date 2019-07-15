@@ -132,9 +132,22 @@ final class OrderDetailsDataSource: NSObject {
     ///
     var orderTracking = [ShipmentTracking]()
 
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+
+        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
+
     /// Order statuses list
     ///
-    var currentSiteStatuses = [OrderStatus]()
+    var currentSiteStatuses: [OrderStatus] {
+        return statusResultsController.fetchedObjects
+    }
 
     /// Products from an Order
     ///
@@ -145,6 +158,14 @@ final class OrderDetailsDataSource: NSObject {
     init(order: Order) {
         self.order = order
         self.couponLines = order.coupons
+        super.init()
+        configureResultsController()
+    }
+}
+
+private extension OrderDetailsDataSource {
+    func configureResultsController() {
+        try? statusResultsController.performFetch()
     }
 }
 

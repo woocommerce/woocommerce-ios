@@ -1117,6 +1117,10 @@ private extension OrderDetailsViewController {
 
         actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
 
+        actionSheet.addDefaultActionWithTitle(TrackingAction.copyTrackingNumber) { [weak self] _ in
+            self?.sendToPasteboard(tracking.trackingNumber, includeTrailingNewline: false)
+        }
+
         if tracking.trackingURL?.isEmpty == false {
             actionSheet.addDefaultActionWithTitle(TrackingAction.trackShipment) { [weak self] _ in
                 self?.openTrackingDetails(tracking)
@@ -1299,6 +1303,7 @@ private extension OrderDetailsViewController {
 
     enum TrackingAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the shipment tracking action sheet")
+        static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "Copy tracking number button title")
         static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
         static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
     }

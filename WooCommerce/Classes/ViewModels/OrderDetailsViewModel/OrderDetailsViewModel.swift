@@ -5,12 +5,17 @@ import Yosemite
 import MessageUI
 
 final class OrderDetailsViewModel {
-    let order: Order
-    var orderStatus: OrderStatus?
+    private(set) var order: Order
+    var orderStatus: OrderStatus? {
+        return lookUpOrderStatus(for: order)
+    }
 
-    init(order: Order, orderStatus: OrderStatus? = nil) {
+    init(order: Order) {
         self.order = order
-        self.orderStatus = orderStatus
+    }
+
+    func update(order newOrder: Order) {
+        self.order = newOrder
     }
 
     var summaryTitle: String? {
@@ -79,11 +84,11 @@ final class OrderDetailsViewModel {
         }
     }
 
-    /// EntityListener: Update / Deletion Notifications.
-    ///
-    private lazy var orderListener: EntityListener<Order> = {
-        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: order)
-    }()
+//    /// EntityListener: Update / Deletion Notifications.
+//    ///
+//    private lazy var orderListener: EntityListener<Order> = {
+//        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: order)
+//    }()
 
 
     /// Helpers
@@ -107,19 +112,24 @@ final class OrderDetailsViewModel {
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         dataSource.configureResultsControllers(onReload: onReload)
-        configureOrderListener()
+        //configureOrderListener()
     }
 
-    func configureOrderListener() {
-        orderListener.onUpsert = { [weak self] order in
-            guard let self = self else {
-                return
-            }
-
-            let orderStatus = self.lookUpOrderStatus(for: order)
-            self.orderStatus = orderStatus
-        }
+    func updateOrderStatus(order: Order) {
+        update(order: order)
+        dataSource.update(order: order)
     }
+
+//    func configureOrderListener() {
+//        orderListener.onUpsert = { [weak self] order in
+//            guard let self = self else {
+//                return
+//            }
+//
+//            let orderStatus = self.lookUpOrderStatus(for: order)
+//            self.orderStatus = orderStatus
+//        }
+//    }
 }
 
 

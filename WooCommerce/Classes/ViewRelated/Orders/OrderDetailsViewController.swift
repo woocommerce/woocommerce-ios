@@ -108,6 +108,13 @@ private extension OrderDetailsViewController {
     /// Setup: EntityListener
     ///
     func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] order in
+            guard let self = self else {
+                return
+            }
+            self.viewModel.updateOrderStatus(order: order)
+            self.tableView.reloadData()
+        }
         entityListener.onDelete = { [weak self] in
             guard let self = self else {
                 return
@@ -237,8 +244,8 @@ private extension OrderDetailsViewController {
                 return
             }
 
-            let orderStatus = self.viewModel.lookUpOrderStatus(for: order)
-            self.viewModel.orderStatus = orderStatus
+            //let orderStatus = self.viewModel.lookUpOrderStatus(for: order)
+            self.viewModel.update(order: order)
 
             onCompletion?(nil)
         }

@@ -3,7 +3,7 @@ import UIKit
 import Yosemite
 
 final class OrderDetailsDataSource: NSObject {
-    private let order: Order
+    private(set) var order: Order
     private let currencyFormatter = CurrencyFormatter()
     private let couponLines: [OrderCouponLine]?
 
@@ -156,6 +156,10 @@ final class OrderDetailsDataSource: NSObject {
         self.order = order
         self.couponLines = order.coupons
         super.init()
+    }
+
+    func update(order: Order) {
+        self.order = order
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {

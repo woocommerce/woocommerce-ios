@@ -621,9 +621,9 @@ private extension OrdersViewController {
 
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
-        let orderStatus = lookUpOrderStatus(for: order)
+        //let orderStatus = lookUpOrderStatus(for: order)
 
-        return OrderDetailsViewModel(order: order, orderStatus: orderStatus)
+        return OrderDetailsViewModel(order: order)
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {

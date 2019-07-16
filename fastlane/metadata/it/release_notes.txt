@@ -1,2 +1,1 @@
-* Chi parla arabo, ebraico, farsi e urdu ne sarà felice: il supporto per le lingue sinistroverse nella Bacheca è stato migliorato.
-* Ottieni più informazioni con un tocco: quando tocchi un prodotto in un qualsiasi ordine apparirà una versione di sola visualizzazione dei dettagli di quel prodotto.
+Niente di clamoroso! Solo alcuni miglioramenti e alcune correzioni di bug: non ti accorgerai di nulla, noterai solo un'app più veloce.

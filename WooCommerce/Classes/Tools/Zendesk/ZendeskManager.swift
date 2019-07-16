@@ -21,6 +21,8 @@ class ZendeskManager: NSObject {
     ///
     static let shared = ZendeskManager()
 
+    typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
+
     /// Indicates if Zendesk is Enabled (or not)
     ///
     private (set) var zendeskEnabled = false {
@@ -156,7 +158,7 @@ class ZendeskManager: NSObject {
 
     /// Displays an alert allowing the user to change their Support email address.
     ///
-    func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping (Bool) -> Void) {
+    func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {
         WooAnalytics.shared.track(.supportIdentityFormViewed)
         presentInController = controller
 
@@ -166,8 +168,8 @@ class ZendeskManager: NSObject {
             withName = false
         }
 
-        getUserInformationAndShowPrompt(withName: withName, from: controller) { success in
-            completion(success)
+        getUserInformationAndShowPrompt(withName: withName, from: controller) { (success, email) in
+            completion(success, email)
         }
     }
 
@@ -351,7 +353,7 @@ private extension ZendeskManager {
             }
         }
 
-        getUserInformationAndShowPrompt(withName: true, from: viewController) { success in
+        getUserInformationAndShowPrompt(withName: true, from: viewController) { (success, _) in
             if success {
                 self.registerDeviceTokenIfNeeded()
             }
@@ -360,25 +362,25 @@ private extension ZendeskManager {
         }
     }
 
-    func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping (Bool) -> Void) {
+    func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
         getUserInformationIfAvailable()
-        promptUserForInformation(withName: withName, from: viewController) { success in
+        promptUserForInformation(withName: withName, from: viewController) { (success, email) in
             guard success else {
                 DDLogInfo("No user information to create Zendesk identity with.")
-                completion(false)
+                completion(false, nil)
                 return
             }
 
             self.createZendeskIdentity { success in
                 guard success else {
                     DDLogInfo("Creating Zendesk identity failed.")
-                    completion(false)
+                    completion(false, nil)
                     return
                 }
 
                 DDLogDebug("Using information from prompt for Zendesk identity.")
                 self.haveUserIdentity = true
-                completion(true)
+                completion(true, email)
                 return
             }
         }
@@ -589,21 +591,21 @@ private extension ZendeskManager {
 
     // MARK: - User Information Prompt
     //
-    func promptUserForInformation(withName: Bool, from viewController: UIViewController, completion: @escaping (Bool) -> Void) {
+    func promptUserForInformation(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
 
         let alertMessage = withName ? LocalizedText.alertMessageWithName : LocalizedText.alertMessage
         let alertController = UIAlertController(title: nil, message: alertMessage, preferredStyle: .alert)
 
         // Cancel Action
         alertController.addCancelActionWithTitle(LocalizedText.alertCancel) { _ in
-            completion(false)
+            completion(false, nil)
             return
         }
 
         // Submit Action
         let submitAction = alertController.addDefaultActionWithTitle(LocalizedText.alertSubmit) { [weak alertController] _ in
             guard let email = alertController?.textFields?.first?.text else {
-                completion(false)
+                completion(false, nil)
                 return
             }
 
@@ -614,7 +616,7 @@ private extension ZendeskManager {
             }
 
             self.saveUserProfile()
-            completion(true)
+            completion(true, email)
             return
         }
 

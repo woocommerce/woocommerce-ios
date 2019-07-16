@@ -1,2 +1,1 @@
-* Goda nyheter för dig som talar arabiska, hebreiska, farsi och urdu: Vi har förbättrat supporten för RTL-språk på instrumentpanelen.
-* Få mer information med ett tryck: Om du trycker på en produkt i en beställning får du se en skrivskyddad version av produktinformationen.
+Inga stora grejer! Bara lite förbättringar och buggfixar – du kommer inte märka mer än en välfungerande app.

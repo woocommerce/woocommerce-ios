@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-26 10:54:04+0000 */
+/* Translation-Revision-Date: 2019-07-09 18:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
@@ -301,7 +301,7 @@
 "Empty URL" = "URL vacía";
 
 /* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "Enter a valid URL eg. example.com.";
+"Enter a valid URL eg. example.com." = "Introduce una URL válida (p. ej.: ejemplo.com)";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Introducir nombre de proveedor";
@@ -891,7 +891,7 @@
 "Show billing" = "Mostrar facturación";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
-"Shows more options." = "Shows more options.";
+"Shows more options." = "Muestra más opciones.";
 
 /* When social login fails, this button offers to let them signup for a new WordPress.com account */
 "Sign up" = "Crear Cuenta";
@@ -1111,7 +1111,7 @@
 "Total" = "Total";
 
 /* Product details screen - total orders descriptive label */
-"Total Orders" = "Total Orders";
+"Total Orders" = "Total de pedidos";
 
 /* Description for Top Performers right column header */
 "Total Spend" = "Gasto total";
@@ -1120,7 +1120,7 @@
 "Total orders: %ld" = "Total de pedidos: %ld";
 
 /* Track shipment button title */
-"Track Shipment" = "Track Shipment";
+"Track Shipment" = "Hacer un seguimiento del envío";
 
 /* Order tracking section title */
 "Tracking" = "Seguimiento";

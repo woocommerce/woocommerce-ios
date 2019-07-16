@@ -41,6 +41,7 @@ class NewOrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureView()
+        configureActionButtonForVoiceOver()
     }
 
     override func viewDidLayoutSubviews() {
@@ -96,6 +97,11 @@ private extension NewOrdersViewController {
             comment: "Description text used on the UI element displayed when a user has pending orders to process."
         )
         chevronImageView.image = UIImage.chevronImage.imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    func configureActionButtonForVoiceOver() {
+        actionButton.accessibilityLabel = descriptionLabel.text
+        actionButton.accessibilityHint = titleLabel.text
     }
 }
 

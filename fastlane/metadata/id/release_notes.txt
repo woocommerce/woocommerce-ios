@@ -1,2 +1,1 @@
-* Kabar gembira untuk penutur bahasa Arab, Ibrani, Persia, dan Urdu: terdapat perbaikan dukungan untuk bahasa RTL di Dasbor.
-* Dapatkan info selengkapnya dengan sekali ketuk: Anda bisa menampilkan versi hanya lihat dari detail produk dengan mengetuk produk di pesanan mana pun.
+Tidak ada yang istimewa di sini! Hanya beberapa peningkatan dan perbaikan bug — Anda tidak akan menemukan apa pun selain aplikasi yang berjalan dengan lancar.

@@ -117,7 +117,8 @@ private extension HelpAndSupportViewController {
     /// Warn devs that logged in with an Automattic email.
     ///
     func warnDeveloperIfNeeded() {
-        guard accountEmail.contains(Constants.devEmail) else {
+        let developerEmailChecker = DeveloperEmailChecker()
+        guard developerEmailChecker.isDeveloperEmail(email: accountEmail) else {
             return
         }
 
@@ -248,10 +249,17 @@ private extension HelpAndSupportViewController {
             return
         }
 
-        ZendeskManager.shared.showSupportEmailPrompt(from: navController) { success in
+        ZendeskManager.shared.showSupportEmailPrompt(from: navController) { [weak self] (success, email) in
             guard success else {
                 return
             }
+
+            guard let self = self else {
+                return
+            }
+
+            self.warnDeveloperIfNeeded()
+
             // Tracking when the dialog's "OK" button is pressed, not necessarily if the value changed.
             WooAnalytics.shared.track(.supportIdentitySet)
             self.tableView.reloadData()
@@ -326,7 +334,6 @@ extension HelpAndSupportViewController: UITableViewDelegate {
 private struct Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 44
-    static let devEmail = "@automattic.com"
     static let appLogSegue = "ShowApplicationLogViewController"
 }
 

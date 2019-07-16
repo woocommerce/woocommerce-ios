@@ -18,6 +18,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     // MARK: - Private Properties
 
+    @IBOutlet private weak var visitorsStackView: UIStackView!
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsData: UILabel!
     @IBOutlet private weak var ordersTitle: UILabel!
@@ -142,6 +143,10 @@ extension PeriodDataViewController {
     func clearAllFields() {
         barChartView?.clear()
         reloadAllFields(animateChart: false)
+    }
+
+    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
+        visitorsStackView?.isHidden = !shouldShowSiteVisitStats
     }
 }
 

@@ -49,7 +49,7 @@ msgstr ""
 
 msgctxt "v2.3-whats-new"
 msgid ""
-"This version of the app does a better job with large font sizes.\n"
+"This version of the app does a better job adjust large font sizes for little phone screens — if you use iOS’s dynamic type settings, you won’t see any more comically large text.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

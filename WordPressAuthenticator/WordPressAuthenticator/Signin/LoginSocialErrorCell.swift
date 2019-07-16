@@ -81,6 +81,6 @@ open class LoginSocialErrorCell: UITableViewCell {
             descriptionLabel.text = errorDescription
         }
 
-        backgroundColor = WPStyleGuide.greyLighten30()
+        backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 }

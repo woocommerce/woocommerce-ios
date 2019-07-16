@@ -119,7 +119,7 @@ extension StoreStatsViewController {
 
     func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
         for periodVC in periodVCs {
-            periodVC.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+            periodVC.shouldShowSiteVisitStats = shouldShowSiteVisitStats
         }
     }
 }

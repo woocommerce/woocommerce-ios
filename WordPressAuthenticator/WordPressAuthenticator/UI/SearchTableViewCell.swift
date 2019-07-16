@@ -47,7 +47,9 @@ open class SearchTableViewCell: UITableViewCell {
         textField.returnKeyType = .search
         textField.contentInsets = Constants.textInsetsWithIcon
         textField.accessibilityIdentifier = "Search field"
-        textField.leftViewImage = textField?.leftViewImage?.imageWithTintColor(Constants.leftImageTintColor)
+        textField.leftViewImage = textField?.leftViewImage?.imageWithTintColor(WordPressAuthenticator.shared.style.placeholderColor)
+
+        contentView.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 }
 
@@ -57,7 +59,6 @@ open class SearchTableViewCell: UITableViewCell {
 private extension SearchTableViewCell {
     enum Constants {
         static let textInsetsWithIcon = WPStyleGuide.edgeInsetForLoginTextFields()
-        static let leftImageTintColor = WPStyleGuide.grey()
     }
 }
 

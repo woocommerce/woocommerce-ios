@@ -68,7 +68,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
             self?.present(safariViewController, animated: true, completion: nil)
         }
         buttonViewController.stackView?.insertArrangedSubview(termsButton, at: 0)
-        buttonViewController.backgroundColor = WPStyleGuide.lightGrey()
+        buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 
     @IBAction func dismissTapped() {

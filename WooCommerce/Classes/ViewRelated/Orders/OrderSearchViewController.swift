@@ -320,7 +320,9 @@ extension OrderSearchViewController: UITableViewDataSource {
         }
 
         let viewModel = detailsViewModel(at: indexPath)
-        cell.configureCell(viewModel: viewModel)
+        let order = resultsController.object(at: indexPath)
+        let orderStatus = lookUpOrderStatus(for: order)
+        cell.configureCell(viewModel: viewModel, orderStatus: orderStatus)
 
         return cell
     }

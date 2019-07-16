@@ -6,7 +6,7 @@ import MessageUI
 
 final class OrderDetailsViewModel {
     let order: Order
-    let orderStatus: OrderStatus?
+    var orderStatus: OrderStatus?
 
     init(order: Order, orderStatus: OrderStatus? = nil) {
         self.order = order
@@ -79,6 +79,13 @@ final class OrderDetailsViewModel {
         }
     }
 
+    /// EntityListener: Update / Deletion Notifications.
+    ///
+    private lazy var orderListener: EntityListener<Order> = {
+        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: order)
+    }()
+
+
     /// Helpers
     ///
     private let emailComposer = OrderEmailComposer()
@@ -100,6 +107,18 @@ final class OrderDetailsViewModel {
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         dataSource.configureResultsControllers(onReload: onReload)
+        configureOrderListener()
+    }
+
+    func configureOrderListener() {
+        orderListener.onUpsert = { [weak self] order in
+            guard let self = self else {
+                return
+            }
+
+            let orderStatus = self.lookUpOrderStatus(for: order)
+            self.orderStatus = orderStatus
+        }
     }
 }
 

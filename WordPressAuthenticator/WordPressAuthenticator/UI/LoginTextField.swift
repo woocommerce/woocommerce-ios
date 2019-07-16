@@ -23,7 +23,8 @@ open class LoginTextField: WPWalkthroughTextField {
     }
 
     override open func setupPlaceholder() {
-        guard let placeholder = placeholder else {
+        guard let placeholder = placeholder,
+            let font = font else {
             return
         }
         let attributes: [NSAttributedString.Key: Any] = [

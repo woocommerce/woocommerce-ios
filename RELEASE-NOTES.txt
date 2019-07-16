@@ -1,3 +1,6 @@
+2.4
+-----
+ 
 2.3
 -----
 - Improvement: improved Dynamic Type support in the body of the notification in the Notifications tab.

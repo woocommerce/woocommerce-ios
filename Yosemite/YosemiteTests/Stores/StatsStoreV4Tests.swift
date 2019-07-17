@@ -63,6 +63,39 @@ final class StatsStoreV4Tests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `StatsAction.retrieveStats` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveOrderReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve order stats error response")
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "generic_error")
+        let action = StatsActionV4.retrieveStats(siteID: sampleSiteID, granularity: .yearly,
+                                                    latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
+                                                        XCTAssertNotNil(error)
+                                                        expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `StatsAction.retrieveStats` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveStatsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve site visit stats empty response")
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = StatsActionV4.retrieveStats(siteID: sampleSiteID, granularity: .yearly,
+                                                    latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
+                                                        XCTAssertNotNil(error)
+                                                        expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
 
     // MARK: - Misc
 

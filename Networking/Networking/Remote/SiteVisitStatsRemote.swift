@@ -1,7 +1,6 @@
 import Foundation
 import Alamofire
 
-
 /// SiteVisitStats: Remote Endpoints
 ///
 public class SiteVisitStatsRemote: Remote {

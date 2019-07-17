@@ -186,7 +186,7 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         siteHeaderView.subtitleIsHidden = true
 
         siteHeaderView.blavatarBorderIsHidden = true
-        siteHeaderView.blavatarImage = .linkFieldImage
+        siteHeaderView.blavatarImage = UIImage.linkFieldImage.imageWithTintColor(WordPressAuthenticator.shared.style.placeholderColor)
     }
 
 

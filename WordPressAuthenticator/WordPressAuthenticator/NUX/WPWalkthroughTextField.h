@@ -6,7 +6,6 @@ IB_DESIGNABLE
 @property (nonatomic) IBInspectable BOOL showTopLineSeparator;
 @property (nonatomic) IBInspectable BOOL showSecureTextEntryToggle;
 @property (nonatomic) IBInspectable UIImage *leftViewImage;
-@property (nonatomic, strong) UIButton *secureTextEntryToggle;
 
 /// Width for the left view. Set to 0 to use the given frame in the view.
 /// Default is: 30
@@ -39,6 +38,5 @@ IB_DESIGNABLE
 @property (nonatomic) UIEdgeInsets contentInsets;
 
 - (instancetype)initWithLeftViewImage:(UIImage *)image;
-- (void)setupPlaceholder;
 
 @end

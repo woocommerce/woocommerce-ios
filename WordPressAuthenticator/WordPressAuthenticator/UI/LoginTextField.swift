@@ -3,14 +3,6 @@ import WordPressShared
 
 open class LoginTextField: WPWalkthroughTextField {
 
-    override open func awakeFromNib() {
-        super.awakeFromNib()
-        guard let secureTextEntryToggle = secureTextEntryToggle else {
-            return
-        }
-        secureTextEntryToggle.tintColor = WordPressAuthenticator.shared.style.placeholderColor
-    }
-
     override open func draw(_ rect: CGRect) {
         if showTopLineSeparator {
             guard let context = UIGraphicsGetCurrentContext() else {
@@ -22,16 +14,19 @@ open class LoginTextField: WPWalkthroughTextField {
         }
     }
 
-    override open func setupPlaceholder() {
-        guard let placeholder = placeholder,
-            let font = font else {
-            return
+    override open var placeholder: String? {
+        didSet {
+            guard let placeholder = placeholder,
+                let font = font else {
+                return
+            }
+
+            let attributes: [NSAttributedString.Key : Any] = [
+                .foregroundColor: WordPressAuthenticator.shared.style.placeholderColor,
+                .font: font
+            ]
+            attributedPlaceholder = NSAttributedString(string: placeholder, attributes: attributes)
         }
-        let attributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: WordPressAuthenticator.shared.style.placeholderColor,
-            .font: font
-        ]
-        self.attributedPlaceholder = NSAttributedString(string: placeholder, attributes: attributes)
     }
 
     override open var leftViewImage: UIImage! {

@@ -52,7 +52,7 @@ final class StatsStoreV4Tests: XCTestCase {
                                                     latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
                                                         XCTAssertNil(error)
                                                         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 1)
-                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsV4Interval.self), 2)
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsV4Interval.self), 1)
                                                         let readOnlyOrderStats = self.viewStorage.firstObject(ofType: Storage.OrderStatsV4.self)?.toReadOnly()
                                                         XCTAssertEqual(readOnlyOrderStats, self.sampleStats())
 

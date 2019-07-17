@@ -63,6 +63,33 @@ final class StatsStoreV4Tests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that `StatsActionV4.retrieveStats` effectively persists any updated OrderStatsV4Interval.
+    ///
+    func testRetrieveStatsEffectivelyPersistsUpdatedIntervals() {
+        let expectation = self.expectation(description: "Persist updated order stats items")
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 0)
+        statsStore.upsertStoredOrderStats(readOnlyStats: sampleStats())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsV4Interval.self), 1)
+
+        network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "order-stats-v4-year-alt")
+        let action = StatsActionV4.retrieveStats(siteID: sampleSiteID, granularity: .yearly,
+                                                    latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
+                                                        XCTAssertNil(error)
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 2)
+                                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsV4Interval.self), 1)
+                                                        let readOnlyOrderStats = self.viewStorage.firstObject(ofType: Storage.OrderStatsV4.self)?.toReadOnly()
+                                                        XCTAssertEqual(readOnlyOrderStats, self.sampleStatsMutated())
+
+                                                        expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that `StatsAction.retrieveStats` returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveOrderReturnsErrorUponReponseError() {
@@ -143,5 +170,36 @@ private extension StatsStoreV4Tests {
                                     dateStart: "2019-07-09 00:00:00",
                                     dateEnd: "2019-07-09 23:59:59",
                                     subtotals: sampleTotals())
+    }
+
+    func sampleStatsMutated() -> Networking.OrderStatsV4 {
+        return OrderStatsV4(siteID: sampleSiteID,
+                            granularity: .yearly,
+                            totals: sampleTotalsMutated(),
+                            intervals: sampleIntervalsMutated())
+    }
+
+    func sampleIntervalsMutated() -> [Networking.OrderStatsV4Interval] {
+        return [sampleIntervalYearMutated()]
+    }
+
+    func sampleIntervalYearMutated() -> Networking.OrderStatsV4Interval {
+        return OrderStatsV4Interval(interval: "2019",
+                                    dateStart: "2019-07-09 00:00:00",
+                                    dateEnd: "2019-07-09 23:59:59",
+                                    subtotals: sampleTotalsMutated())
+    }
+
+    func sampleTotalsMutated() -> Networking.OrderStatsV4Totals {
+        return OrderStatsV4Totals(totalOrders: 10,
+                                  totalItemsSold: 0,
+                                  grossRevenue: 0,
+                                  couponDiscount: 0,
+                                  totalCoupons: 0,
+                                  refunds: 0,
+                                  taxes: 0,
+                                  shipping: 0,
+                                  netRevenue: 0,
+                                  totalProducts: 0)
     }
 }

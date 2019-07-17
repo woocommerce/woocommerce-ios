@@ -115,6 +115,9 @@
 		D8BD6A4C229D07C9007CAD6C /* custom-shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */; };
 		D8C11A5022DF2D9400D4A88D /* StatsStoreV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A4F22DF2D9400D4A88D /* StatsStoreV4.swift */; };
 		D8C11A5222DF2DA200D4A88D /* StatsActionV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5122DF2DA200D4A88D /* StatsActionV4.swift */; };
+		D8C11A5422DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5322DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift */; };
+		D8C11A5622DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */; };
+		D8C11A5822DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -243,6 +246,9 @@
 		D8BD6A4B229D07C8007CAD6C /* custom-shipment-provider.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "custom-shipment-provider.plist"; sourceTree = "<group>"; };
 		D8C11A4F22DF2D9400D4A88D /* StatsStoreV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsStoreV4.swift; sourceTree = "<group>"; };
 		D8C11A5122DF2DA200D4A88D /* StatsActionV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsActionV4.swift; sourceTree = "<group>"; };
+		D8C11A5322DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Totals+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -289,6 +295,9 @@
 				74B7D6AF20F910AF002667AC /* OrderNote+ReadOnlyConvertible.swift */,
 				74FD596C216FB6ED00A5AE83 /* OrderStats+ReadOnlyConvertible.swift */,
 				74FD596D216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift */,
+				D8C11A5322DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift */,
+				D8C11A5722DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift */,
+				D8C11A5522DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift */,
 				CE12FBDA221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift */,
 				749375032249691D007D85D1 /* Product+ReadOnlyConvertible.swift */,
 				7493750B224987D9007D85D1 /* ProductAttribute+ReadOnlyConvertible.swift */,
@@ -727,6 +736,7 @@
 				B52E0030211A439E00700FDE /* Account+ReadOnlyType.swift in Sources */,
 				744A3218216D55F80051439B /* SiteVisitStats+ReadOnlyConvertible.swift in Sources */,
 				7493750A22498700007D85D1 /* ProductCategory+ReadOnlyConvertible.swift in Sources */,
+				D8C11A5622DFB0BE00D4A88D /* OrderStatsV4Totals+ReadOnlyConvertible.swift in Sources */,
 				74685D4E20F7EFA7008958C1 /* OrderItem+ReadOnlyConvertible.swift in Sources */,
 				7471401121877668009A11CC /* NotificationAction.swift in Sources */,
 				74FD596F216FB6ED00A5AE83 /* OrderStatsItem+ReadOnlyConvertible.swift in Sources */,
@@ -777,6 +787,7 @@
 				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
 				B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */,
+				D8C11A5822DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift in Sources */,
 				CE12FBDB221F406100C59248 /* OrderStatus+ReadOnlyConvertible.swift in Sources */,
 				74D42DBC221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift in Sources */,
 				7455D4672141B57600FA8C1F /* TopEarnerStats+ReadOnlyConvertible.swift in Sources */,
@@ -787,6 +798,7 @@
 				B5F2AE9720EBB54A00FEDC59 /* FetchedResultsControllerDelegateWrapper.swift in Sources */,
 				7492FADF217FB11D00ED2C69 /* SettingAction.swift in Sources */,
 				D87F614C22657B150031A13B /* AppSettingsStore.swift in Sources */,
+				D8C11A5422DFAE9500D4A88D /* OrderStatsV4+ReadOnlyConvertible.swift in Sources */,
 				749737672141CC8C0008C490 /* TopEarnerStats+ReadOnlyType.swift in Sources */,
 				7493751222498B2C007D85D1 /* ProductTag+ReadOnlyConvertible.swift in Sources */,
 				74A18C58211382A000DCF8A8 /* StatsAction.swift in Sources */,

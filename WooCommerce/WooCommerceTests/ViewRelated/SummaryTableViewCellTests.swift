@@ -32,7 +32,7 @@ final class SummaryTableViewCellTests: XCTestCase {
 
     func testDisplayStatusSetsPaymentDateLabel() {
         let mockStatus = OrderStatus(name: "Automattic", siteID: 123, slug: "automattic", total: 0)
-        let presentation = SummaryTableViewCellPresentation(status: mockStatus.status , statusName: mockStatus.name!)
+        let presentation = SummaryTableViewCellPresentation(status: mockStatus.status, statusName: mockStatus.name!)
 
         cell?.display(presentation: presentation)
 

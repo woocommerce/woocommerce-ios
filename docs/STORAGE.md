@@ -19,6 +19,11 @@ When clients of this class request a `StorageType`, `CoreDataManager` will retur
 
 When `CoreDataManager` is requested a  `viewContext`, it will provide  the persistent container’s `viewContext` . When it is requested a `newDerivedStorage` it will return a new child context with  a private dispatch queue.
 
+## File storage
+The Storage module also exposes a protocol, called `FileStorage` to abstract saving and reading data to and from local storage. 
+
+The default implementation of this protocol, `PListFileStorage` provided support for `.plist` files.  
+
 ## Model objects
 This module also provides extensions to make the model objects declared in the `Networking` module coredata-compliant.  
 

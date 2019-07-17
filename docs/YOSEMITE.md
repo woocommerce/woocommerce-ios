@@ -43,7 +43,7 @@ At the moment, we provide the following subclasses of `Store`:
 * `OrderNoteStore`. Business logic pertaining order notes. Registers and responds to operation declared in `OrderNoteAction`
 * `OrderStatusStore`. Business logic related to order payment statuses, implementing operations declared in `OrderStatusAction`
 * `SettingStore` registers and responds to operations declared in `SettingAction`
-* `ShipmentStore` implements support for the operations declared in `SettingAction`
+* `ShipmentStore` implements support for the operations declared in `ShipmentAction`
 * Finally, `StatStore`implements the logic to present statistics, supporting operations declared in `StatsAction`
 
 ## Operations with domain level concerns. Action

@@ -8,6 +8,7 @@ NSInteger const LeftImageSpacing = 8;
 @import Gridicons;
 
 @interface WPWalkthroughTextField ()
+@property (nonatomic, strong) UIButton *secureTextEntryToggle;
 @property (nonatomic, strong) UIImage *secureTextEntryImageVisible;
 @property (nonatomic, strong) UIImage *secureTextEntryImageHidden;
 @end
@@ -85,13 +86,9 @@ NSInteger const LeftImageSpacing = 8;
     self.showTopLineSeparator = NO;
     self.showSecureTextEntryToggle = NO;
 
-    [self setupPlaceholder];
-}
-
-- (void)setupPlaceholder
-{
     // Apply styles to the placeholder if one was set in IB.
     if (self.placeholder) {
+        // colors here are overridden in LoginTextField
         NSDictionary *attributes = @{
                                      NSForegroundColorAttributeName : WPStyleGuide.greyLighten10,
                                      NSFontAttributeName : self.font,
@@ -114,6 +111,7 @@ NSInteger const LeftImageSpacing = 8;
 
     self.secureTextEntryToggle = [UIButton buttonWithType:UIButtonTypeCustom];
     self.secureTextEntryToggle.clipsToBounds = true;
+    // colors here are overridden in LoginTextField
     self.secureTextEntryToggle.tintColor = [WPStyleGuide greyLighten10];
     [self.secureTextEntryToggle addTarget:self action:@selector(secureTextEntryToggleAction:) forControlEvents:UIControlEventTouchUpInside];
 

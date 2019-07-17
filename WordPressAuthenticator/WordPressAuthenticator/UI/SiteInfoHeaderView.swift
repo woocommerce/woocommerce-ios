@@ -113,9 +113,9 @@ private extension SiteInfoHeaderView {
             blavatarImageView.layer.borderWidth = 0
             blavatarImageView.tintColor = .clear
         } else {
-            blavatarImageView.layer.borderColor = WPStyleGuide.greyLighten20().cgColor
+            blavatarImageView.layer.borderColor = WordPressAuthenticator.shared.style.instructionColor.cgColor
             blavatarImageView.layer.borderWidth = 1
-            blavatarImageView.tintColor = WPStyleGuide.greyLighten10()
+            blavatarImageView.tintColor = WordPressAuthenticator.shared.style.instructionColor
         }
     }
 }

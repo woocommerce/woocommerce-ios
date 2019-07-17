@@ -39,9 +39,19 @@ public struct WordPressAuthenticatorStyle {
 
     public let disabledTitleColor: UIColor
 
-    /// Style: Subheadline
+    /// Style: Text Buttons
     ///
+    public let textButtonColor: UIColor
+
+    public let textButtonHighlightColor: UIColor
+
+    /// Style: Labels
+    ///
+    public let instructionColor: UIColor
+
     public let subheadlineColor: UIColor
+
+    public let placeholderColor: UIColor
 
     /// Style: Login screen background colors
     ///
@@ -61,7 +71,7 @@ public struct WordPressAuthenticatorStyle {
 
     /// Designated initializer
     ///
-    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, subheadlineColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage, prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(), prologueTitleColor: UIColor = .white) {
+    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, textButtonColor: UIColor, textButtonHighlightColor: UIColor, instructionColor: UIColor, subheadlineColor: UIColor, placeholderColor: UIColor, viewControllerBackgroundColor: UIColor, navBarImage: UIImage, prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(), prologueTitleColor: UIColor = .white) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -75,32 +85,14 @@ public struct WordPressAuthenticatorStyle {
         self.primaryTitleColor = primaryTitleColor
         self.secondaryTitleColor = secondaryTitleColor
         self.disabledTitleColor = disabledTitleColor
+        self.textButtonColor = textButtonColor
+        self.textButtonHighlightColor = textButtonHighlightColor
+        self.instructionColor = instructionColor
         self.subheadlineColor = subheadlineColor
+        self.placeholderColor = placeholderColor
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
         self.navBarImage = navBarImage
         self.prologueBackgroundColor = prologueBackgroundColor
         self.prologueTitleColor = prologueTitleColor
-    }
-}
-
-public extension WordPressAuthenticatorStyle {
-    static var defaultStyle: WordPressAuthenticatorStyle {
-        return WordPressAuthenticatorStyle(primaryNormalBackgroundColor: WPStyleGuide.mediumBlue(),
-                                           primaryNormalBorderColor: WPStyleGuide.wordPressBlue(),
-                                           primaryHighlightBackgroundColor: WPStyleGuide.wordPressBlue(),
-                                           primaryHighlightBorderColor: WPStyleGuide.wordPressBlue(),
-                                           secondaryNormalBackgroundColor: UIColor.white,
-                                           secondaryNormalBorderColor: WPStyleGuide.greyLighten20(),
-                                           secondaryHighlightBackgroundColor: WPStyleGuide.greyLighten20(),
-                                           secondaryHighlightBorderColor: WPStyleGuide.greyLighten20(),
-                                           disabledBackgroundColor: UIColor.white,
-                                           disabledBorderColor: WPStyleGuide.greyLighten30(),
-                                           primaryTitleColor: UIColor.white,
-                                           secondaryTitleColor: WPStyleGuide.darkGrey(),
-                                           disabledTitleColor: WPStyleGuide.greyLighten30(),
-                                           subheadlineColor: WPStyleGuide.wordPressBlue(),
-                                           viewControllerBackgroundColor: WPStyleGuide.lightGrey(),
-                                           navBarImage: Gridicon.iconOfType(.mySites)
-        )
     }
 }

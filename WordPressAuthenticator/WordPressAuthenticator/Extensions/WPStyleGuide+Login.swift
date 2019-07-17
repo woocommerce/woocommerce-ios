@@ -7,7 +7,8 @@ final class SubheadlineButton: UIButton {
         super.traitCollectionDidChange(previousTraitCollection)
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
             titleLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
-            setTitleColor(WordPressAuthenticator.shared.style.subheadlineColor, for: .normal)
+            setTitleColor(WordPressAuthenticator.shared.style.textButtonColor, for: .normal)
+            setTitleColor(WordPressAuthenticator.shared.style.textButtonHighlightColor, for: .highlighted)
         }
     }
 }
@@ -103,8 +104,8 @@ extension WPStyleGuide {
     class func googleLoginButton() -> UIButton {
         let baseString =  NSLocalizedString("{G} Log in with Google.", comment: "Label for button to log in using Google. The {G} will be replaced with the Google logo.")
 
-        let attrStrNormal = googleButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.primaryNormalBorderColor)
-        let attrStrHighlight = googleButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.primaryHighlightBorderColor)
+        let attrStrNormal = googleButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.textButtonColor)
+        let attrStrHighlight = googleButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.textButtonHighlightColor)
 
         let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
 
@@ -118,8 +119,8 @@ extension WPStyleGuide {
     class func selfHostedLoginButton() -> UIButton {
         let baseString =  NSLocalizedString("Log in by entering your site address.", comment: "Label for button to log in using your site address.")
 
-        let attrStrNormal = selfHostedButtonString(baseString, linkColor:  WordPressAuthenticator.shared.style.primaryNormalBorderColor)
-        let attrStrHighlight = selfHostedButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.primaryHighlightBorderColor)
+        let attrStrNormal = selfHostedButtonString(baseString, linkColor:  WordPressAuthenticator.shared.style.textButtonColor)
+        let attrStrHighlight = selfHostedButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.textButtonHighlightColor)
 
         let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
 
@@ -210,7 +211,7 @@ extension WPStyleGuide {
 
         let labelString = NSMutableAttributedString(string: "")
 
-        if let originalDomainsIcon = Gridicon.iconOfType(.domains).imageWithTintColor(WPStyleGuide.greyLighten10()) {
+        if let originalDomainsIcon = Gridicon.iconOfType(.domains).imageWithTintColor(WordPressAuthenticator.shared.style.placeholderColor) {
             var domainsIcon = originalDomainsIcon.cropping(to: CGRect(x: Constants.domainsIconPaddingToRemove,
                                                                       y: Constants.domainsIconPaddingToRemove,
                                                                       width: originalDomainsIcon.size.width - Constants.domainsIconPaddingToRemove * 2,

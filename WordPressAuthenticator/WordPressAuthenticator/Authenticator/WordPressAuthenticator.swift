@@ -70,7 +70,7 @@ import WordPressUI
     /// Initializes the WordPressAuthenticator with the specified Configuration.
     ///
     public static func initialize(configuration: WordPressAuthenticatorConfiguration,
-                                  style: WordPressAuthenticatorStyle = .defaultStyle,
+                                  style: WordPressAuthenticatorStyle,
                                   displayStrings: WordPressAuthenticatorDisplayStrings = .defaultStrings) {
         guard privateInstance == nil else {
             fatalError("WordPressAuthenticator is already initialized")

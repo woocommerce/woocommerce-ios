@@ -88,6 +88,7 @@ NSInteger const LeftImageSpacing = 8;
 
     // Apply styles to the placeholder if one was set in IB.
     if (self.placeholder) {
+        // colors here are overridden in LoginTextField
         NSDictionary *attributes = @{
                                      NSForegroundColorAttributeName : WPStyleGuide.greyLighten10,
                                      NSFontAttributeName : self.font,
@@ -110,6 +111,7 @@ NSInteger const LeftImageSpacing = 8;
 
     self.secureTextEntryToggle = [UIButton buttonWithType:UIButtonTypeCustom];
     self.secureTextEntryToggle.clipsToBounds = true;
+    // colors here are overridden in LoginTextField
     self.secureTextEntryToggle.tintColor = [WPStyleGuide greyLighten10];
     [self.secureTextEntryToggle addTarget:self action:@selector(secureTextEntryToggleAction:) forControlEvents:UIControlEventTouchUpInside];
 
@@ -146,7 +148,6 @@ NSInteger const LeftImageSpacing = 8;
     CGContextAddPath(context, path.CGPath);
     CGContextSetStrokeColorWithColor(context, [UIColor colorWithWhite:0.87 alpha:1.0].CGColor);
     CGContextStrokePath(context);
-
 }
 
 

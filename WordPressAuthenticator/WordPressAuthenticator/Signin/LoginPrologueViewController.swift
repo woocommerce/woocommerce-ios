@@ -75,7 +75,7 @@ class LoginPrologueViewController: LoginViewController {
                 self?.dismiss(animated: true, completion: nil)
             }
         }
-        buttonViewController.backgroundColor = WPStyleGuide.lightGrey()
+        buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 
     // MARK: - Actions

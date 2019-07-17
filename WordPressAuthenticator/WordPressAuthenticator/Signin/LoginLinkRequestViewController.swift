@@ -56,6 +56,7 @@ class LoginLinkRequestViewController: LoginViewController {
         let format = NSLocalizedString("We'll email you a magic link that'll log you in instantly, no password needed. Hunt and peck no more!", comment: "Instructional text for the magic link login flow.")
         label?.text = NSString(format: format as NSString, loginFields.username) as String
         label?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
+        label?.textColor = WordPressAuthenticator.shared.style.instructionColor
         label?.adjustsFontForContentSizeCategory = true
 
         let sendLinkButtonTitle = NSLocalizedString("Send Link", comment: "Title of a button. The text should be uppercase.  Clicking requests a hyperlink be emailed ot the user.")

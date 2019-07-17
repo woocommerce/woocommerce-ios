@@ -70,6 +70,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     func styleInstructions() {
         instructionLabel?.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
         instructionLabel?.adjustsFontForContentSizeCategory = true
+        instructionLabel?.textColor = WordPressAuthenticator.shared.style.instructionColor
     }
 
     func configureViewLoading(_ loading: Bool) {

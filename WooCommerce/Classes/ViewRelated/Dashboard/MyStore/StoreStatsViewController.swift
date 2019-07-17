@@ -116,6 +116,12 @@ extension StoreStatsViewController {
             onCompletion?(syncError)
         }
     }
+
+    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
+        for periodVC in periodVCs {
+            periodVC.shouldShowSiteVisitStats = shouldShowSiteVisitStats
+        }
+    }
 }
 
 

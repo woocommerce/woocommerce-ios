@@ -1,9 +1,14 @@
-//
-//  StatsActionV4.swift
-//  Yosemite
-//
-//  Created by Cesar Tardaguila on 17/7/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
-
 import Foundation
+import Networking
+
+// MARK: - StatsActionV4: Defines stats operations (supported by the StatsStoreV4).
+//
+public enum StatsActionV4: Action {
+    /// Clears all of the stats data.
+    ///
+    case resetStoredStats(onCompletion: () -> Void)
+
+    /// Synchronizes `OrderStats` for the provided siteID, StatGranularity, and date.
+    ///
+    case retrieveStats(siteID: Int, granularity: StatsGranularityV4, latestDateToInclude: Date, quantity: Int, onCompletion: (Error?) -> Void)
+}

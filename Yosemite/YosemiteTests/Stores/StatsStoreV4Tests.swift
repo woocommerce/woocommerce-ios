@@ -106,9 +106,9 @@ private extension StatsStoreV4Tests {
     }
 
     func sampleIntervalYear() -> Networking.OrderStatsV4Interval {
-        return OrderStatsV4Interval(interval: "Cesar",
-                                    dateStart: "today",
-                                    dateEnd: "today",
+        return OrderStatsV4Interval(interval: "2019",
+                                    dateStart: "2019-07-09 00:00:00",
+                                    dateEnd: "2019-07-09 23:59:59",
                                     subtotals: sampleTotals())
     }
 }

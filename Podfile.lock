@@ -41,7 +41,7 @@ PODS:
   - Sentry/Core (4.3.4)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.1.4)
-  - WordPressAuthenticator (1.5.2):
+  - WordPressAuthenticator (1.7.0-beta.2):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.3)
     - CocoaLumberjack (~> 3.5)
@@ -53,7 +53,7 @@ PODS:
     - WordPressKit (~> 4.1)
     - WordPressShared (~> 1.8)
     - WordPressUI (~> 1.3)
-  - WordPressKit (4.1.2):
+  - WordPressKit (4.2.0):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.3)
@@ -84,7 +84,7 @@ DEPENDENCIES:
   - CocoaLumberjack/Swift (~> 3.5)
   - Gridicons (~> 0.18)
   - KeychainAccess (~> 3.2)
-  - WordPressAuthenticator (~> 1.5.2)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/wcios-1113-sign-in-site-address`)
   - WordPressShared (~> 1.8.2)
   - WordPressUI (~> 1.3.3)
   - XLPagerTabStrip (~> 9.0)
@@ -110,13 +110,22 @@ SPEC REPOS:
     - Sentry
     - SVProgressHUD
     - UIDeviceIdentifier
-    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
     - wpxmlrpc
     - XLPagerTabStrip
     - ZendeskSDK
+
+EXTERNAL SOURCES:
+  WordPressAuthenticator:
+    :branch: issue/wcios-1113-sign-in-site-address
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+
+CHECKOUT OPTIONS:
+  WordPressAuthenticator:
+    :commit: ef2d6cfb17287f80d1b46a235f2a2dbbec49386b
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
@@ -137,14 +146,14 @@ SPEC CHECKSUMS:
   Sentry: 26f0e6492b103e87434d1a5eea2d241a36f2c2a2
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
-  WordPressAuthenticator: e8617f67da0cb013ffaade1f4410f8cfbbe30d97
-  WordPressKit: 09a28afc17dc63d35b6bd76c69fa94a7049183eb
+  WordPressAuthenticator: 7cb2f4430cf1fb7c8a8b9b91ae8096baef43e9f9
+  WordPressKit: 0b6672d1b24f0eb7c4386df826ae80307fc0fa00
   WordPressShared: 34f7a1386d28d7e4650c1a225c554ee024401ca3
   WordPressUI: 065de4c33212b9ca3ae458d43c73f2ce2738d3d4
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: cbd49d65efb2f2cdbdcaac84e618896ae87b861e
 
-PODFILE CHECKSUM: dffedc66a4f42b53661132fcf59c782238035605
+PODFILE CHECKSUM: 5f615f5db1e18840f375895c93f429a18b2f0cbf
 
 COCOAPODS: 1.6.1

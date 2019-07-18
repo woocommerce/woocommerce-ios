@@ -258,7 +258,7 @@ private extension OrderDetailsViewModel {
 
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
         WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": order.orderID,
-                                                                        "status": self.order.statusKey,
+                                                                        "status": order.statusKey,
                                                                         "type": "call"])
 
     }

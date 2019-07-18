@@ -4,7 +4,7 @@ import Yosemite
 
 // MARK: - OrderTableViewCell
 //
-class OrderTableViewCell: UITableViewCell {
+final class OrderTableViewCell: UITableViewCell {
 
     /// Order's Title
     ///
@@ -24,11 +24,11 @@ class OrderTableViewCell: UITableViewCell {
 
     /// Renders the specified Order ViewModel
     ///
-    func configureCell(viewModel: OrderDetailsViewModel) {
+    func configureCell(viewModel: OrderDetailsViewModel, orderStatus: OrderStatus?) {
         titleLabel.text = viewModel.summaryTitle
         totalLabel.text = viewModel.totalFriendlyString
 
-        if let orderStatus = viewModel.orderStatus {
+        if let orderStatus = orderStatus {
             paymentStatusLabel.applyStyle(for: orderStatus.status)
             paymentStatusLabel.text = orderStatus.name
         } else {

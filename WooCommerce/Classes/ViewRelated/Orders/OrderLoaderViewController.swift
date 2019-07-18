@@ -182,8 +182,7 @@ private extension OrderLoaderViewController {
         }
 
         // Setup the DetailsViewController
-        let orderStatus = lookUpOrderStatus(for: order.statusKey)
-        detailsViewController.viewModel = OrderDetailsViewModel(order: order, orderStatus: orderStatus)
+        detailsViewController.viewModel = OrderDetailsViewModel(order: order)
 
         // Attach
         addChild(detailsViewController)

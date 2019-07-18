@@ -242,6 +242,8 @@ private extension DashboardViewController {
             if let error = reloadError {
                 DDLogError("⛔️ Error loading dashboard: \(error)")
                 self?.handleSyncError(error: error)
+            } else {
+                self?.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
             }
         }
     }
@@ -283,7 +285,7 @@ private extension DashboardViewController {
     private func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
         switch error {
         case .statsModuleDisabled:
-            break
+            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
         default:
             displaySyncingErrorNotice()
         }
@@ -299,6 +301,10 @@ private extension DashboardViewController {
         }
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
+    private func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
+        storeStatsViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
     }
 }
 

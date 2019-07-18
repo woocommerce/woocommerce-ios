@@ -16,8 +16,15 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
         return siteStatsResultsController.fetchedObjects.first
     }
 
+    var shouldShowSiteVisitStats: Bool = true {
+        didSet {
+            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+        }
+    }
+
     // MARK: - Private Properties
 
+    @IBOutlet private weak var visitorsStackView: UIStackView!
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsData: UILabel!
     @IBOutlet private weak var ordersTitle: UILabel!
@@ -233,6 +240,9 @@ private extension PeriodDataViewController {
         lastUpdated.font = UIFont.footnote
         lastUpdated.textColor = StyleManager.wooGreyMid
 
+        // Visibility
+        updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
         xAxisAccessibilityView.accessibilityTraits = .staticText
@@ -298,6 +308,13 @@ private extension PeriodDataViewController {
     }
 }
 
+// MARK: - UI Updates
+//
+private extension PeriodDataViewController {
+    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
+        visitorsStackView?.isHidden = !shouldShowSiteVisitStats
+    }
+}
 
 // MARK: - IndicatorInfoProvider Conformance (Tab Bar)
 //
@@ -456,16 +473,16 @@ private extension PeriodDataViewController {
         reloadSiteFields()
         reloadChart(animateChart: animateChart)
         reloadLastUpdatedField()
-        view.accessibilityElements = [visitorsTitle as Any,
-                                      visitorsData as Any,
-                                      ordersTitle as Any,
-                                      ordersData as Any,
-                                      revenueTitle as Any,
-                                      revenueData as Any,
-                                      lastUpdated as Any,
-                                      yAxisAccessibilityView as Any,
-                                      xAxisAccessibilityView as Any,
-                                      chartAccessibilityView as Any]
+        let visitStatsElements = shouldShowSiteVisitStats ? [visitorsTitle as Any,
+                                                             visitorsData as Any]: []
+        view.accessibilityElements = visitStatsElements + [ordersTitle as Any,
+                                                           ordersData as Any,
+                                                           revenueTitle as Any,
+                                                           revenueData as Any,
+                                                           lastUpdated as Any,
+                                                           yAxisAccessibilityView as Any,
+                                                           xAxisAccessibilityView as Any,
+                                                           chartAccessibilityView as Any]
     }
 
     func reloadOrderFields() {

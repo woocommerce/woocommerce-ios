@@ -621,9 +621,8 @@ private extension OrdersViewController {
 
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
-        let orderStatus = lookUpOrderStatus(for: order)
 
-        return OrderDetailsViewModel(order: order, orderStatus: orderStatus)
+        return OrderDetailsViewModel(order: order)
     }
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
@@ -654,7 +653,8 @@ extension OrdersViewController: UITableViewDataSource {
         }
 
         let viewModel = detailsViewModel(at: indexPath)
-        cell.configureCell(viewModel: viewModel)
+        let orderStatus = lookUpOrderStatus(for: viewModel.order)
+        cell.configureCell(viewModel: viewModel, orderStatus: orderStatus)
 
         return cell
     }

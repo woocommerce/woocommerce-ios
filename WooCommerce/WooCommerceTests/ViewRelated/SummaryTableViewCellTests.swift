@@ -31,11 +31,10 @@ final class SummaryTableViewCellTests: XCTestCase {
     }
 
     func testDisplayStatusSetsPaymentDateLabel() {
-        let mockOrder = sampleOrder()
         let mockStatus = OrderStatus(name: "Automattic", siteID: 123, slug: "automattic", total: 0)
-        let mockViewModel = OrderDetailsViewModel(order: mockOrder, orderStatus: mockStatus)
+        let presentation = SummaryTableViewCellPresentation(status: mockStatus.status, statusName: mockStatus.name!)
 
-        cell?.display(viewModel: mockViewModel)
+        cell?.display(presentation: presentation)
 
         XCTAssertEqual(cell?.getStatusLabel().text, mockStatus.name)
     }

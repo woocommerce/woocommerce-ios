@@ -5,7 +5,7 @@ open class WPHelpIndicatorView: UIView {
 
     struct Constants {
         static let defaultInsets = UIEdgeInsets.zero
-        static let defaultBackgroundColor = WPStyleGuide.jazzyOrange()
+        static let defaultBackgroundColor = WordPressAuthenticator.shared.style.navBarBadgeColor
     }
     
     var insets: UIEdgeInsets = Constants.defaultInsets {

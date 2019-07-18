@@ -5,6 +5,7 @@ import Storage
 // MARK: - Storage.OrderStatsV4Totals: ReadOnlyConvertible
 //
 extension Storage.OrderStatsV4Totals: ReadOnlyConvertible {
+
     /// Updates the Storage.OrderStatsV4Totals with the ReadOnly.
     ///
     public func update(with statsTotals: Yosemite.OrderStatsV4Totals) {

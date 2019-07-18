@@ -5,6 +5,7 @@ import Storage
 // MARK: - Storage.OrderStatsV4: ReadOnlyConvertible
 //
 extension Storage.OrderStatsV4: ReadOnlyConvertible {
+
     /// Updates the Storage.OrderStatsV4 with the ReadOnly.
     ///
     public func update(with stats: Yosemite.OrderStatsV4) {

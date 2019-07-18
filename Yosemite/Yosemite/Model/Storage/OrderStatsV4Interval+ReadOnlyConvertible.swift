@@ -5,6 +5,7 @@ import Storage
 // MARK: - Storage.OrderStatsV4Interval: ReadOnlyConvertible
 //
 extension Storage.OrderStatsV4Interval: ReadOnlyConvertible {
+
     /// Updates the StorageOrderStatsV4Interval with the ReadOnly.
     ///
     public func update(with statsInterval: Yosemite.OrderStatsV4Interval) {

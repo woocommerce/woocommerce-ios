@@ -81,13 +81,13 @@ extension StatsStoreV4 {
         let storageOrderStats = storage.loadOrderStatsV4(siteID: String(readOnlyStats.siteID),
                                                          granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
         storageOrderStats.update(with: readOnlyStats)
-        handleOrderStatsItems(readOnlyStats, storageOrderStats, storage)
+        handleOrderStatsIntervals(readOnlyStats, storageOrderStats, storage)
         storage.saveIfNeeded()
     }
 
     /// Updates the provided StorageOrderStats items using the provided read-only OrderStats items
     ///
-    private func handleOrderStatsItems(_ readOnlyStats: Networking.OrderStatsV4, _ storageStats: Storage.OrderStatsV4, _ storage: StorageType) {
+    private func handleOrderStatsIntervals(_ readOnlyStats: Networking.OrderStatsV4, _ storageStats: Storage.OrderStatsV4, _ storage: StorageType) {
 
         let readOnlyIntervals = readOnlyStats.intervals
 

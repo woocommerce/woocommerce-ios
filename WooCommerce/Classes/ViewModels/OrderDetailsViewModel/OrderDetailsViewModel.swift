@@ -302,7 +302,7 @@ extension OrderDetailsViewModel {
                                                                         }
 
                                                                         WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
-                                                                        //self?.refreshOrderTracking()
+
                                                                         onCompletion?(nil)
         }
 
@@ -335,7 +335,7 @@ extension OrderDetailsViewModel {
 
                 return
             }
-//            self?.refreshOrderProducts()
+
             onCompletion?(nil)
         }
 

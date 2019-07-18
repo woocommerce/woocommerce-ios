@@ -20,13 +20,13 @@ extension Storage.OrderStatsV4: ReadOnlyConvertible {
 
         return OrderStatsV4(siteID: siteID,
                             granularity: StatsGranularityV4(rawValue: granularity) ?? .hourly,
-                            totals: totals?.toReadOnly() ?? createReadOnlySubTotals(),
+                            totals: totals?.toReadOnly() ?? createReadOnlyTotals(),
                             intervals: statsIntervals)
     }
 
     // MARK: - Private Helpers
     //
-    private func createReadOnlySubTotals() -> Yosemite.OrderStatsV4Totals {
+    private func createReadOnlyTotals() -> Yosemite.OrderStatsV4Totals {
         return OrderStatsV4Totals(totalOrders: 0,
                                   totalItemsSold: 0,
                                   grossRevenue: 0,

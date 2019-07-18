@@ -96,6 +96,13 @@ public extension StorageType {
         return firstObject(ofType: OrderStatsV4.self, matching: predicate)
     }
 
+    /// Retrieves the Stored OrderStatsV4interval.
+    ///
+    func loadOrderStatsInterval(interval: String) -> OrderStatsV4Interval? {
+        let predicate = NSPredicate(format: "interval ==[c] %@", interval)
+        return firstObject(ofType: OrderStatsV4Interval.self, matching: predicate)
+    }
+
     /// Retrieves all of the Stores OrderStatuses for the provided siteID.
     ///
     func loadOrderStatuses(siteID: Int) -> [OrderStatus]? {

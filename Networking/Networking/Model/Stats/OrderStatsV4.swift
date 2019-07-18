@@ -50,6 +50,17 @@ private extension OrderStatsV4 {
 }
 
 
+// MARK: - Equatable Conformance
+//
+extension OrderStatsV4: Equatable {
+    public static func == (lhs: OrderStatsV4, rhs: OrderStatsV4) -> Bool {
+        return lhs.siteID == rhs.siteID &&
+            lhs.granularity == rhs.granularity &&
+            lhs.totals == rhs.totals &&
+            lhs.intervals == rhs.intervals
+    }
+}
+
 // MARK: - Decoding Errors
 //
 enum OrderStatsV4APIError: Error {

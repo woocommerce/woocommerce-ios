@@ -60,7 +60,7 @@ final class OrderDetailsResultsControllers {
     }
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
-        configureResultsController()
+        configureStatusResultsController()
         configureTrackingResultsController(onReload: onReload)
         configureProductResultsController(onReload: onReload)
     }
@@ -70,7 +70,7 @@ final class OrderDetailsResultsControllers {
 //
 private extension OrderDetailsResultsControllers {
 
-    func configureResultsController() {
+    func configureStatusResultsController() {
         try? statusResultsController.performFetch()
     }
 

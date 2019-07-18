@@ -95,22 +95,18 @@ final class StatsStoreV4Tests: XCTestCase {
         statsStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-
-
-    // MARK: - Misc
-
-    func date(with dateString: String) -> Date {
-        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
-            return Date()
-        }
-        return date
-    }
 }
 
 
 // MARK: - Private Methods
 //
 private extension StatsStoreV4Tests {
+    func date(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+            return Date()
+        }
+        return date
+    }
 
     // MARK: - Order Stats V4 Sample
 

@@ -78,7 +78,8 @@ extension StatsStoreV4 {
 
         let storage = storageManager.viewStorage
 
-        let storageOrderStats = storage.loadOrderStatsV4(siteID: String(readOnlyStats.siteID), granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
+        let storageOrderStats = storage.loadOrderStatsV4(siteID: String(readOnlyStats.siteID),
+                                                         granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.OrderStatsV4.self)
         storageOrderStats.update(with: readOnlyStats)
         handleOrderStatsItems(readOnlyStats, storageOrderStats, storage)
         storage.saveIfNeeded()

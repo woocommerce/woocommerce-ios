@@ -17,13 +17,11 @@ extension Storage.OrderStatsV4: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.OrderStatsV4 {
         let statsIntervals = intervals?.map { $0.toReadOnly()} ?? [Yosemite.OrderStatsV4Interval]()
-        
+
         return OrderStatsV4(siteID: siteID,
                             granularity: StatsGranularityV4(rawValue: granularity) ?? .hourly,
                             totals: totals?.toReadOnly() ?? createReadOnlySubTotals(),
                             intervals: statsIntervals)
-
-
     }
 
     // MARK: - Private Helpers

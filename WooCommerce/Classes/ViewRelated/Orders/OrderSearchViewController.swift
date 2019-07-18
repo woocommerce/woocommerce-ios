@@ -350,7 +350,6 @@ private extension OrderSearchViewController {
 
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
-        //let orderStatus = lookUpOrderStatus(for: order)
 
         return OrderDetailsViewModel(order: order)
     }

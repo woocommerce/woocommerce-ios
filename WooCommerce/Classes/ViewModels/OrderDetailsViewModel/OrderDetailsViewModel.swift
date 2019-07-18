@@ -84,13 +84,6 @@ final class OrderDetailsViewModel {
         }
     }
 
-//    /// EntityListener: Update / Deletion Notifications.
-//    ///
-//    private lazy var orderListener: EntityListener<Order> = {
-//        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: order)
-//    }()
-
-
     /// Helpers
     ///
     private let emailComposer = OrderEmailComposer()
@@ -119,17 +112,6 @@ extension OrderDetailsViewModel {
         update(order: order)
         dataSource.update(order: order)
     }
-
-//    func configureOrderListener() {
-//        orderListener.onUpsert = { [weak self] order in
-//            guard let self = self else {
-//                return
-//            }
-//
-//            let orderStatus = self.lookUpOrderStatus(for: order)
-//            self.orderStatus = orderStatus
-//        }
-//    }
 }
 
 

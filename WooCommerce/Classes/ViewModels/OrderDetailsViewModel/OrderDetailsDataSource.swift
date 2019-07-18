@@ -49,7 +49,7 @@ final class OrderDetailsDataSource: NSObject {
     /// Discounts
     /// - returns: 'Discount' label and a list of discount codes, or nil if zero.
     ///
-    private var discountLabel: String? {
+    private var discountText: String? {
         return summarizeCoupons(from: couponLines)
     }
 
@@ -367,7 +367,7 @@ private extension OrderDetailsDataSource {
         cell.subtotalLabel.text = Titles.subtotalLabel
         cell.subtotalValue.text = subtotalValue
 
-        cell.discountLabel.text = discountLabel
+        cell.discountLabel.text = discountText
         cell.discountValue.text = discountValue
         cell.discountView.isHidden = discountValue == nil
 

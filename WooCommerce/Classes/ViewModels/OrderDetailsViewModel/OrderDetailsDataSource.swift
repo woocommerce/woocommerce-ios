@@ -97,23 +97,6 @@ final class OrderDetailsDataSource: NSObject {
         )
     }
 
-    private func summarizeCoupons(from lines: [OrderCouponLine]?) -> String? {
-        guard let couponLines = lines else {
-            return nil
-        }
-
-        let output = couponLines.reduce("") { (output, line) in
-            let prefix = output.isEmpty ? "" : ","
-            return output + prefix + line.code
-        }
-
-        guard !output.isEmpty else {
-            return nil
-        }
-
-        return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
-    }
-
     var summaryTitle: String? {
         if let billingAddress = order.billingAddress {
             return "#\(order.number) \(billingAddress.firstName) \(billingAddress.lastName)"
@@ -164,6 +147,23 @@ final class OrderDetailsDataSource: NSObject {
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
         resultsControllers.configureResultsControllers(onReload: onReload)
+    }
+
+    private func summarizeCoupons(from lines: [OrderCouponLine]?) -> String? {
+        guard let couponLines = lines else {
+            return nil
+        }
+
+        let output = couponLines.reduce("") { (output, line) in
+            let prefix = output.isEmpty ? "" : ","
+            return output + prefix + line.code
+        }
+
+        guard !output.isEmpty else {
+            return nil
+        }
+
+        return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
     }
 }
 

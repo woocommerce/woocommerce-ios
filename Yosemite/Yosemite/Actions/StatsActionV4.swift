@@ -4,6 +4,7 @@ import Networking
 // MARK: - StatsActionV4: Defines stats operations (supported by the StatsStoreV4).
 //
 public enum StatsActionV4: Action {
+
     /// Clears all of the stats data.
     ///
     case resetStoredStats(onCompletion: () -> Void)

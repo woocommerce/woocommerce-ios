@@ -11,6 +11,7 @@ extension Storage.OrderStatsV4Interval: ReadOnlyConvertible {
         interval = statsInterval.interval
         dateStart = statsInterval.dateStart
         dateEnd = statsInterval.dateEnd
+        subtotals?.update(with: statsInterval.subtotals)
     }
 
     /// Returns a ReadOnly version of the receiver.

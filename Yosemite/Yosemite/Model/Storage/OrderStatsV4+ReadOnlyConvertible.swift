@@ -10,6 +10,7 @@ extension Storage.OrderStatsV4: ReadOnlyConvertible {
     public func update(with stats: Yosemite.OrderStatsV4) {
         siteID = stats.siteID
         granularity = stats.granularity.rawValue
+        totals?.update(with: stats.totals)
     }
 
     /// Returns a ReadOnly version of the receiver.

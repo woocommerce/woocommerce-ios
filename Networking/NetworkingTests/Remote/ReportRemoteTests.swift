@@ -60,7 +60,7 @@ class ReportRemoteTests: XCTestCase {
                 return
             }
 
-            XCTAssert(error == .unauthorized)
+            XCTAssert(error.case == .unauthorized)
             XCTAssertEqual(reportTotals?.isEmpty, true)
 
             expectation.fulfill()
@@ -99,7 +99,7 @@ class ReportRemoteTests: XCTestCase {
                 return
             }
 
-            XCTAssert(error == .unauthorized)
+            XCTAssert(error.case == .unauthorized)
             XCTAssertEqual(reportTotals?.isEmpty, true)
 
             expectation.fulfill()

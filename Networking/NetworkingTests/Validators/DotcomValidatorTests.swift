@@ -16,7 +16,7 @@ class DotcomValidatorTests: XCTestCase {
                 return
         }
 
-        XCTAssert(dotcomError == .unauthorized)
+        XCTAssert(dotcomError.case == .unauthorized)
     }
 
     /// Verifies that the DotcomValidator successfully extracts the rest_no_route Dotcom Error contained within a `Data` instance.

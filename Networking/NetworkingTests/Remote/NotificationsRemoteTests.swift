@@ -87,7 +87,7 @@ class NotificationsRemoteTests: XCTestCase {
                 return
             }
 
-            XCTAssert(error.case == .unauthorized)
+            XCTAssert(error == .unauthorized)
             expectation.fulfill()
         }
 
@@ -124,7 +124,7 @@ class NotificationsRemoteTests: XCTestCase {
                 return
             }
 
-            XCTAssert(error.case == .unauthorized)
+            XCTAssert(error == .unauthorized)
 
             expectation.fulfill()
         }

@@ -146,7 +146,7 @@ class CommentRemoteTests: XCTestCase {
                 return
             }
 
-            XCTAssert(error.case == .unauthorized)
+            XCTAssert(error == .unauthorized)
             XCTAssertNil(updatedStatus)
 
             expectation.fulfill()

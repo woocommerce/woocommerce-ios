@@ -51,12 +51,6 @@ final class OrderPaymentDetailsViewModel {
         return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
     }
 
-//    /// Anything above 999.99 or below -999.99 should display a truncated amount
-//    ///
-//    var totalFriendlyString: String? {
-//        return currencyFormatter.formatHumanReadableAmount(order.total, with: order.currency, roundSmallNumbers: false) ?? String()
-//    }
-
     /// Payment Summary
     /// - returns: A full sentence summary of how much was paid and using what method.
     ///

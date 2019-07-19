@@ -7,6 +7,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     private var subject: OrderPaymentDetailsViewModel?
 
     override func setUp() {
+        super.setUp()
         order = MockOrders().sampleOrder()
         subject = OrderPaymentDetailsViewModel(order: order!)
     }
@@ -14,6 +15,7 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     override func tearDown() {
         subject = nil
         order = nil
+        super.tearDown()
     }
 
     func testSubtotalMatchesExpectation() {

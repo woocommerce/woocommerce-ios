@@ -3,31 +3,31 @@ import UIKit
 final class PaymentTableViewCell: UITableViewCell {
     @IBOutlet var verticalStackView: UIStackView!
     @IBOutlet var subtotalView: UIView!
-    @IBOutlet public weak var subtotalLabel: UILabel!
-    @IBOutlet public weak var subtotalValue: UILabel!
+    @IBOutlet private weak var subtotalLabel: UILabel!
+    @IBOutlet private weak var subtotalValue: UILabel!
 
-    @IBOutlet public var discountView: UIView!
-    @IBOutlet public weak var discountLabel: UILabel!
-    @IBOutlet public weak var discountValue: UILabel!
+    @IBOutlet private var discountView: UIView!
+    @IBOutlet private weak var discountLabel: UILabel!
+    @IBOutlet private weak var discountValue: UILabel!
 
-    @IBOutlet var shippingView: UIView!
-    @IBOutlet public weak var shippingLabel: UILabel!
-    @IBOutlet public weak var shippingValue: UILabel!
+    @IBOutlet private var shippingView: UIView!
+    @IBOutlet private weak var shippingLabel: UILabel!
+    @IBOutlet private weak var shippingValue: UILabel!
 
-    @IBOutlet public var taxesView: UIView!
-    @IBOutlet public weak var taxesLabel: UILabel!
-    @IBOutlet public weak var taxesValue: UILabel!
+    @IBOutlet private var taxesView: UIView!
+    @IBOutlet private weak var taxesLabel: UILabel!
+    @IBOutlet private weak var taxesValue: UILabel!
 
-    @IBOutlet var totalView: UIView!
-    @IBOutlet public weak var totalLabel: UILabel!
-    @IBOutlet public weak var totalValue: UILabel!
+    @IBOutlet private var totalView: UIView!
+    @IBOutlet private weak var totalLabel: UILabel!
+    @IBOutlet private weak var totalValue: UILabel!
 
     @IBOutlet private var footerView: UIView?
     @IBOutlet private weak var separatorLine: UIView?
     @IBOutlet private weak var footerLabel: UILabel?
     @IBOutlet private weak var totalBottomConstraint: NSLayoutConstraint?
 
-    public var footerText: String? {
+    private var footerText: String? {
         get {
             return footerLabel?.text
         }
@@ -109,5 +109,53 @@ private extension PaymentTableViewCell {
                                                   comment: "Taxes label for payment view")
         static let totalLabel = NSLocalizedString("Total",
                                                   comment: "Total label for payment view")
+    }
+}
+
+
+// Indirectly expose outlets for tests
+extension PaymentTableViewCell {
+    func getSubtotalLabel() -> UILabel {
+        return subtotalLabel
+    }
+
+    func getSubtotalValue() -> UILabel {
+        return subtotalValue
+    }
+
+    func getDiscountLabel() -> UILabel {
+        return discountLabel
+    }
+
+    func getDiscountValue() -> UILabel {
+        return discountValue
+    }
+
+    func getShippingLabel() -> UILabel {
+        return shippingLabel
+    }
+
+    func getShippingValue() -> UILabel {
+        return shippingValue
+    }
+
+    func getTaxesLabel() -> UILabel {
+        return taxesLabel
+    }
+
+    func getTaxesValue() -> UILabel {
+        return taxesValue
+    }
+
+    func getTotalLabel() -> UILabel {
+        return totalLabel
+    }
+
+    func getTotalValue() -> UILabel {
+        return totalValue
+    }
+
+    func getFooterText() -> String? {
+        return footerText
     }
 }

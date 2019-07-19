@@ -15,6 +15,7 @@ protocol Style {
     var subheadlineFont: UIFont { get }
     var subheadlineBoldFont: UIFont { get }
     var thinCaptionFont: UIFont { get }
+    var footerLabelFont: UIFont { get }
 
     /// Colors
     ///
@@ -88,10 +89,11 @@ class DefaultStyle: Style {
     let thinCaptionFont                 = DefaultStyle.fontForTextStyle(.caption1,
                                                                         weight: .thin,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
+    let footerLabelFont                 = UIFont.font(forStyle: .footnote, weight: .regular)
 
     /// Colors!
     ///
-    let buttonPrimaryColor              = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
+    let buttonPrimaryColor              = HandbookColors.wooPrimary
     let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryTitleColor         = HandbookColors.wooWhite
     let buttonSecondaryColor            = HandbookColors.wooWhite
@@ -243,6 +245,10 @@ class StyleManager {
 
     static var thinCaptionFont: UIFont {
         return active.thinCaptionFont
+    }
+
+    static var footerLabelFont: UIFont {
+        return active.footerLabelFont
     }
 
     // MARK: - Colors

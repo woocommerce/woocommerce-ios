@@ -112,12 +112,9 @@ private extension SettingsViewController {
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.iconImage = .heartOutlineImage
-        footerView.iconColor = StyleManager.wooGreyMid
-        footerView.footnoteText = NSLocalizedString(
-            "Made with love by Automattic",
-            comment: "Tagline after the heart icon, displayed to the user"
-        )
-        footerView.footnoteColor = StyleManager.wooGreyMid
+        footerView.iconColor = StyleManager.wooCommerceBrandColor
+        footerView.footnote.delegate = self
+
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }
@@ -316,6 +313,26 @@ private extension SettingsViewController {
     func logOutUser() {
         StoresManager.shared.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
+    }
+
+    func weAreHiringWasPressed(url: URL) {
+        WooAnalytics.shared.track(.loginPrologueJetpackInstructions)
+
+        let safariViewController = SFSafariViewController(url: url)
+        safariViewController.modalPresentationStyle = .pageSheet
+        present(safariViewController, animated: true, completion: nil)
+    }
+}
+
+
+// MARK: - UITextViewDeletgate Conformance
+//
+extension SettingsViewController: UITextViewDelegate {
+
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
+                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        weAreHiringWasPressed(url: URL)
+        return false
     }
 }
 

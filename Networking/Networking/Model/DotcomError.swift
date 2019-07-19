@@ -71,11 +71,11 @@ public enum DotcomError: Error, Decodable {
     }
 
 
-    /// Constants for possible error identifiers
+    /// Constants for Possible Error Identifiers
     ///
     private enum Constants {
         static let unauthorized     = "unauthorized"
-        static let invalidBlog: String = "invalid_blog"
+        static let invalidBlog      = "invalid_blog"
         static let invalidToken     = "invalid_token"
         static let requestFailed    = "http_request_failed"
         static let noRestRoute      = "rest_no_route"

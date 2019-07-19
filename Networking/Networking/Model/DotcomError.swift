@@ -9,9 +9,9 @@ public enum DotcomError: Error, Decodable {
     ///
     case empty
 
-    /// Missing Token!
+    /// Missing Token or no permission
     ///
-    case unauthorized
+    case unauthorized(message: String?)
 
     /// We're not properly authenticated
     ///
@@ -36,6 +36,7 @@ public enum DotcomError: Error, Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let error = try container.decode(String.self, forKey: .error)
+        let message = try container.decodeIfPresent(String.self, forKey: .message)
 
         switch error {
         case Constants.invalidToken:
@@ -43,11 +44,10 @@ public enum DotcomError: Error, Decodable {
         case Constants.requestFailed:
             self = .requestFailed
         case Constants.unauthorized:
-            self = .unauthorized
+            self = .unauthorized(message: message)
         case Constants.noRestRoute:
             self = .noRestRoute
         default:
-            let message = try container.decodeIfPresent(String.self, forKey: .message)
             self = .unknown(code: error, message: message)
         }
     }

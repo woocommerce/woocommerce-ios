@@ -284,7 +284,7 @@ private extension DashboardViewController {
 
     private func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
         switch error {
-        case .statsModuleDisabled:
+        case .statsModuleDisabled, .noPermission:
             updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
         default:
             displaySyncingErrorNotice()

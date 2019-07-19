@@ -91,8 +91,8 @@ public enum DotcomError: Error, Decodable {
     /// Possible Error Messages
     ///
     private enum ErrorMessages {
-        static let statsModuleDisabled: String = "This blog does not have the Stats module enabled"
-        static let noStatsPermission: String = "user cannot view stats"
+        static let statsModuleDisabled = "This blog does not have the Stats module enabled"
+        static let noStatsPermission = "user cannot view stats"
     }
 }
 

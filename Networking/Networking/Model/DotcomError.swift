@@ -9,9 +9,9 @@ public enum DotcomError: Error, Decodable {
     ///
     case empty
 
-    /// Missing Token or no permission
+    /// Missing Token!
     ///
-    case unauthorized(message: String?)
+    case unauthorized
 
     /// We're not properly authenticated
     ///
@@ -29,7 +29,15 @@ public enum DotcomError: Error, Decodable {
     ///
     case unknown(code: String, message: String?)
 
+    /// Stats error cases - API documentation of possible errors:
+    /// https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/
+    /// Note: when the cases get large, consider refactoring them into a separate error enum that conforms to a Dotcom error protocol
 
+    /// No permission to view site stats
+    case noStatsPermission
+
+    /// Jetpack site stats module disabled
+    case statsModuleDisabled
 
     /// Decodable Initializer.
     ///
@@ -44,19 +52,30 @@ public enum DotcomError: Error, Decodable {
         case Constants.requestFailed:
             self = .requestFailed
         case Constants.unauthorized:
-            self = .unauthorized(message: message)
+            if message == ErrorMessages.noStatsPermission {
+                self = .noStatsPermission
+            } else {
+                self = .unauthorized
+            }
         case Constants.noRestRoute:
             self = .noRestRoute
+        case Constants.invalidBlog:
+            if message == ErrorMessages.statsModuleDisabled {
+                self = .statsModuleDisabled
+            } else {
+                self = .unknown(code: error, message: message)
+            }
         default:
             self = .unknown(code: error, message: message)
         }
     }
 
 
-    /// Constants
+    /// Constants for possible error identifiers
     ///
     private enum Constants {
         static let unauthorized     = "unauthorized"
+        static let invalidBlog: String = "invalid_blog"
         static let invalidToken     = "invalid_token"
         static let requestFailed    = "http_request_failed"
         static let noRestRoute      = "rest_no_route"
@@ -67,6 +86,13 @@ public enum DotcomError: Error, Decodable {
     private enum CodingKeys: String, CodingKey {
         case error
         case message
+    }
+
+    /// Possible Error Messages
+    ///
+    private enum ErrorMessages {
+        static let statsModuleDisabled: String = "This blog does not have the Stats module enabled"
+        static let noStatsPermission: String = "user cannot view stats"
     }
 }
 
@@ -87,6 +113,10 @@ extension DotcomError: CustomStringConvertible {
             return NSLocalizedString("Dotcom Missing Token", comment: "WordPress.com Missing Token")
         case .noRestRoute:
             return NSLocalizedString("Dotcom Invalid REST Route", comment: "WordPress.com error thrown when the the request REST API url is invalid.")
+        case .noStatsPermission:
+            return NSLocalizedString("Dotcom No Stats Permission", comment: "WordPress.com error thrown when the user has no permission to view site stats.")
+        case .statsModuleDisabled:
+            return NSLocalizedString("Dotcom Stats Module Disabled", comment: "WordPress.com error thrown when the Jetpack site stats module is disabled.")
         case .unknown(let code, let message):
             let theMessage = message ?? String()
             return NSLocalizedString("Dotcom Error: [\(code)] \(theMessage)", comment: "WordPress.com (unmapped!) error")
@@ -104,6 +134,10 @@ public func ==(lhs: DotcomError, rhs: DotcomError) -> Bool {
     case (.unauthorized, .unauthorized):
         return true
     case (.noRestRoute, .noRestRoute):
+        return true
+    case (.noStatsPermission, .noStatsPermission):
+        return true
+    case (.statsModuleDisabled, .statsModuleDisabled):
         return true
     case let (.unknown(codeLHS, _), .unknown(codeRHS, _)):
         return codeLHS == codeRHS

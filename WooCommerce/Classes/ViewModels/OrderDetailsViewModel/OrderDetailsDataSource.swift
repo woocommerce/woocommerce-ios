@@ -31,71 +31,71 @@ final class OrderDetailsDataSource: NSObject {
 
     var trackingIsReachable: Bool = false
 
-    private var subtotal: Decimal {
-        let subtotal = order.items.reduce(Decimal(0)) { (output, item) in
-            let itemSubtotal = Decimal(string: item.subtotal) ?? Decimal(0)
-            return output + itemSubtotal
-        }
+//    private var subtotal: Decimal {
+//        let subtotal = order.items.reduce(Decimal(0)) { (output, item) in
+//            let itemSubtotal = Decimal(string: item.subtotal) ?? Decimal(0)
+//            return output + itemSubtotal
+//        }
+//
+//        return subtotal
+//    }
+//
+//    private var subtotalValue: String {
+//        let subAmount = NSDecimalNumber(decimal: subtotal).stringValue
+//
+//        return CurrencyFormatter().formatAmount(subAmount, with: order.currency) ?? String()
+//    }
 
-        return subtotal
-    }
-
-    private var subtotalValue: String {
-        let subAmount = NSDecimalNumber(decimal: subtotal).stringValue
-
-        return CurrencyFormatter().formatAmount(subAmount, with: order.currency) ?? String()
-    }
-
-    /// Discounts
-    /// - returns: 'Discount' label and a list of discount codes, or nil if zero.
-    ///
-    private var discountText: String? {
-        return summarizeCoupons(from: couponLines)
-    }
-
-    private var discountValue: String? {
-        guard let discount = currencyFormatter.convertToDecimal(from: order.discountTotal), discount.isZero() == false else {
-            return nil
-        }
-
-        guard let formattedDiscount = currencyFormatter.formatAmount(order.discountTotal, with: order.currency) else {
-            return nil
-        }
-
-        return "-" + formattedDiscount
-    }
-
-    private var shippingValue: String {
-        return currencyFormatter.formatAmount(order.shippingTotal, with: order.currency) ?? String()
-    }
-
-    private var taxesValue: String? {
-        return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
-    }
-
-    private var totalValue: String {
-        return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
-    }
-
+//    /// Discounts
+//    /// - returns: 'Discount' label and a list of discount codes, or nil if zero.
+//    ///
+//    private var discountText: String? {
+//        return summarizeCoupons(from: couponLines)
+//    }
+//
+//    private var discountValue: String? {
+//        guard let discount = currencyFormatter.convertToDecimal(from: order.discountTotal), discount.isZero() == false else {
+//            return nil
+//        }
+//
+//        guard let formattedDiscount = currencyFormatter.formatAmount(order.discountTotal, with: order.currency) else {
+//            return nil
+//        }
+//
+//        return "-" + formattedDiscount
+//    }
+//
+//    private var shippingValue: String {
+//        return currencyFormatter.formatAmount(order.shippingTotal, with: order.currency) ?? String()
+//    }
+//
+//    private var taxesValue: String? {
+//        return currencyFormatter.formatAmount(order.totalTax, with: order.currency)
+//    }
+//
+//    private var totalValue: String {
+//        return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
+//    }
+//
     /// Anything above 999.99 or below -999.99 should display a truncated amount
     ///
     var totalFriendlyString: String? {
         return currencyFormatter.formatHumanReadableAmount(order.total, with: order.currency, roundSmallNumbers: false) ?? String()
     }
-
-    /// Payment Summary
-    /// - returns: A full sentence summary of how much was paid and using what method.
-    ///
-    private var paymentSummary: String? {
-        if order.paymentMethodTitle.isEmpty {
-            return nil
-        }
-
-        return NSLocalizedString(
-            "Payment of \(totalValue) received via \(order.paymentMethodTitle)",
-            comment: "Payment of <currency symbol><payment total> received via (payment method title)"
-        )
-    }
+//
+//    /// Payment Summary
+//    /// - returns: A full sentence summary of how much was paid and using what method.
+//    ///
+//    private var paymentSummary: String? {
+//        if order.paymentMethodTitle.isEmpty {
+//            return nil
+//        }
+//
+//        return NSLocalizedString(
+//            "Payment of \(totalValue) received via \(order.paymentMethodTitle)",
+//            comment: "Payment of <currency symbol><payment total> received via (payment method title)"
+//        )
+//    }
 
     var summaryTitle: String? {
         if let billingAddress = order.billingAddress {
@@ -149,22 +149,22 @@ final class OrderDetailsDataSource: NSObject {
         resultsControllers.configureResultsControllers(onReload: onReload)
     }
 
-    private func summarizeCoupons(from lines: [OrderCouponLine]?) -> String? {
-        guard let couponLines = lines else {
-            return nil
-        }
-
-        let output = couponLines.reduce("") { (output, line) in
-            let prefix = output.isEmpty ? "" : ","
-            return output + prefix + line.code
-        }
-
-        guard !output.isEmpty else {
-            return nil
-        }
-
-        return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
-    }
+//    private func summarizeCoupons(from lines: [OrderCouponLine]?) -> String? {
+//        guard let couponLines = lines else {
+//            return nil
+//        }
+//
+//        let output = couponLines.reduce("") { (output, line) in
+//            let prefix = output.isEmpty ? "" : ","
+//            return output + prefix + line.code
+//        }
+//
+//        guard !output.isEmpty else {
+//            return nil
+//        }
+//
+//        return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
+//    }
 }
 
 
@@ -364,39 +364,41 @@ private extension OrderDetailsDataSource {
     }
 
     func configurePayment(cell: PaymentTableViewCell) {
-        cell.subtotalLabel.text = Titles.subtotalLabel
-        cell.subtotalValue.text = subtotalValue
-
-        cell.discountLabel.text = discountText
-        cell.discountValue.text = discountValue
-        cell.discountView.isHidden = discountValue == nil
-
-        cell.shippingLabel.text = Titles.shippingLabel
-        cell.shippingValue.text = shippingValue
-
-        cell.taxesLabel.text = Titles.taxesLabel
-        cell.taxesValue.text = taxesValue
-        cell.taxesView.isHidden = taxesValue == nil
-
-        cell.totalLabel.text = Titles.totalLabel
-        cell.totalValue.text = totalValue
-
-        cell.footerText = paymentSummary
-
-        cell.accessibilityElements = [cell.subtotalLabel as Any,
-                                      cell.subtotalValue as Any,
-                                      cell.discountLabel as Any,
-                                      cell.discountValue as Any,
-                                      cell.shippingLabel as Any,
-                                      cell.shippingValue as Any,
-                                      cell.taxesLabel as Any,
-                                      cell.taxesValue as Any,
-                                      cell.totalLabel as Any,
-                                      cell.totalValue as Any]
-
-        if let footerText = cell.footerText {
-            cell.accessibilityElements?.append(footerText)
-        }
+        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
+        cell.configure(with: paymentViewModel)
+//        cell.subtotalLabel.text = Titles.subtotalLabel
+//        cell.subtotalValue.text = subtotalValue
+//
+//        cell.discountLabel.text = discountText
+//        cell.discountValue.text = discountValue
+//        cell.discountView.isHidden = discountValue == nil
+//
+//        cell.shippingLabel.text = Titles.shippingLabel
+//        cell.shippingValue.text = shippingValue
+//
+//        cell.taxesLabel.text = Titles.taxesLabel
+//        cell.taxesValue.text = taxesValue
+//        cell.taxesView.isHidden = taxesValue == nil
+//
+//        cell.totalLabel.text = Titles.totalLabel
+//        cell.totalValue.text = totalValue
+//
+//        cell.footerText = paymentSummary
+//
+//        cell.accessibilityElements = [cell.subtotalLabel as Any,
+//                                      cell.subtotalValue as Any,
+//                                      cell.discountLabel as Any,
+//                                      cell.discountValue as Any,
+//                                      cell.shippingLabel as Any,
+//                                      cell.shippingValue as Any,
+//                                      cell.taxesLabel as Any,
+//                                      cell.taxesValue as Any,
+//                                      cell.totalLabel as Any,
+//                                      cell.totalValue as Any]
+//
+//        if let footerText = cell.footerText {
+//            cell.accessibilityElements?.append(footerText)
+//        }
     }
 
     func configureDetails(cell: WooBasicTableViewCell) {
@@ -781,16 +783,16 @@ private extension OrderDetailsDataSource {
                                                       comment: "The row label to tap for a detailed product list")
         static let fulfillTitle = NSLocalizedString("Fulfill order",
                                                     comment: "Fulfill order button title")
-        static let subtotalLabel = NSLocalizedString("Subtotal",
-                                                     comment: "Subtotal label for payment view")
+//        static let subtotalLabel = NSLocalizedString("Subtotal",
+//                                                     comment: "Subtotal label for payment view")
         static let addNoteText = NSLocalizedString("Add a note",
                                                    comment: "Button text for adding a new order note")
-        static let shippingLabel = NSLocalizedString("Shipping",
-                                                     comment: "Shipping label for payment view")
-        static let taxesLabel = NSLocalizedString("Taxes",
-                                                  comment: "Taxes label for payment view")
-        static let totalLabel = NSLocalizedString("Total",
-                                                  comment: "Total label for payment view")
+//        static let shippingLabel = NSLocalizedString("Shipping",
+//                                                     comment: "Shipping label for payment view")
+//        static let taxesLabel = NSLocalizedString("Taxes",
+//                                                  comment: "Taxes label for payment view")
+//        static let totalLabel = NSLocalizedString("Total",
+//                                                  comment: "Total label for payment view")
     }
 
     enum Icons {

@@ -293,6 +293,7 @@ extension StatsStore {
 ///
 public enum SiteVisitStatsStoreError: Error {
     case statsModuleDisabled
+    case noPermission
     case unknown
 
     private enum ErrorIdentifiers {
@@ -301,6 +302,7 @@ public enum SiteVisitStatsStoreError: Error {
 
     private enum ErrorMessages {
         static let statsModuleDisabled: String = "This blog does not have the Stats module enabled"
+        static let noPermission: String = "user cannot view stats"
     }
 
     init(error: Error) {
@@ -309,6 +311,12 @@ public enum SiteVisitStatsStoreError: Error {
             return
         }
         switch dotcomError {
+        case .unauthorized(let message):
+            if message == ErrorMessages.noPermission {
+                self = .noPermission
+            } else {
+                self = .unknown
+            }
         case .unknown(let code, let message):
             if code == ErrorIdentifiers.invalidBlog && message == ErrorMessages.statsModuleDisabled {
                 self = .statsModuleDisabled

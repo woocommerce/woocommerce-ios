@@ -19,47 +19,48 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func testSubtotalMatchesExpectation() {
-        XCTAssertEqual(subject?.subtotal, 0)
+        XCTAssertEqual(subject.subtotal, 0)
     }
 
     func testSubtotalValueMatchesExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(0, with: order!.currency) ?? String()
-        XCTAssertEqual(subject?.subtotalValue, expectedValue)
+        let expectedValue = CurrencyFormatter().formatAmount(0, with: order.currency) ?? String()
+        XCTAssertEqual(subject.subtotalValue, expectedValue)
     }
 
     func testDiscountTextMatchesExpectation() {
-        XCTAssertNil(subject?.discountText)
+        XCTAssertNil(subject.discountText)
     }
 
     func testDiscountValueMatchesExpectation() {
-        let expectedValue = "-" + CurrencyFormatter().formatAmount(order!.discountTotal, with: order!.currency)!
-        XCTAssertEqual(subject?.discountValue, expectedValue)
+        let expectedValue = "-" + CurrencyFormatter().formatAmount(order.discountTotal, with: order.currency)!
+        XCTAssertEqual(subject.discountValue, expectedValue)
     }
 
     func testShippingValueMatchesExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(order!.shippingTotal, with: order!.currency)
-        XCTAssertEqual(subject?.shippingValue, expectedValue)
+        let expectedValue = CurrencyFormatter().formatAmount(order.shippingTotal, with: order.currency)
+        XCTAssertEqual(subject.shippingValue, expectedValue)
     }
 
     func testTaxesValueMatchesExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(order!.totalTax, with: order!.currency)
-        XCTAssertEqual(subject?.taxesValue, expectedValue)
+        let expectedValue = CurrencyFormatter().formatAmount(order.totalTax, with: order.currency)
+        XCTAssertEqual(subject.taxesValue, expectedValue)
     }
 
     func testTotalValueMatchedExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(order!.total, with: order!.currency)
-        XCTAssertEqual(subject?.totalValue, expectedValue)
+        let expectedValue = CurrencyFormatter().formatAmount(order.total,
+                                                             with: order.currency)
+        XCTAssertEqual(subject.totalValue, expectedValue)
     }
 
     func testPaymentSummaryMatchesExpectation() {
         let expectedValue = NSLocalizedString(
-            "Payment of \(subject!.totalValue) received via \(order!.paymentMethodTitle)",
+            "Payment of \(subject.totalValue) received via \(order.paymentMethodTitle)",
             comment: "Payment of <currency symbol><payment total> received via (payment method title)"
         )
-        XCTAssertEqual(subject?.paymentSummary, expectedValue)
+        XCTAssertEqual(subject.paymentSummary, expectedValue)
     }
 
     func testCouponLinesMatchesExpectation() {
-        XCTAssertEqual(subject?.couponLines, order?.coupons)
+        XCTAssertEqual(subject.couponLines, order.coupons)
     }
 }

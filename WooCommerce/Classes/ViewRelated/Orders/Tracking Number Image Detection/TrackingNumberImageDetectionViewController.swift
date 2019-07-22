@@ -260,6 +260,21 @@ private extension TrackingNumberImageDetectionViewController {
         return rect
     }
 
+    func textShapeLayer(color: UIColor, frame: CGRect) -> TextShapeLayer {
+        // Create a new layer.
+        let layer = TextShapeLayer(color: color)
+
+        // Locate the layer.
+        layer.anchorPoint = .zero
+        layer.frame = frame
+        layer.masksToBounds = true
+
+        // Transform the layer to have same coordinate system as the imageView underneath it.
+        layer.transform = CATransform3DMakeScale(1, -1, 1)
+
+        return layer
+    }
+
     func shapeLayer(color: UIColor, frame: CGRect) -> CAShapeLayer {
         // Create a new layer.
         let layer = CAShapeLayer()
@@ -297,26 +312,12 @@ private extension TrackingNumberImageDetectionViewController {
         CATransaction.commit()
     }
 
-    // Faces are YELLOW.
-    /// - Tag: DrawBoundingBox
-    func draw(faces: [VNFaceObservation], onImageWithBounds bounds: CGRect) {
-        CATransaction.begin()
-        for observation in faces {
-            let faceBox = boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: bounds)
-            let faceLayer = shapeLayer(color: .yellow, frame: faceBox)
-
-            // Add to pathLayer on top of image.
-            pathLayer?.addSublayer(faceLayer)
-        }
-        CATransaction.commit()
-    }
-
     // Lines of text are RED.  Individual characters are PURPLE.
     func draw(text: [VNTextObservation], onImageWithBounds bounds: CGRect) {
         CATransaction.begin()
         for wordObservation in text {
             let wordBox = boundingBox(forRegionOfInterest: wordObservation.boundingBox, withinImageBounds: bounds)
-            let wordLayer = shapeLayer(color: .red, frame: wordBox)
+            let wordLayer = textShapeLayer(color: .red, frame: wordBox)
 
             // Add to pathLayer on top of image.
             pathLayer?.addSublayer(wordLayer)

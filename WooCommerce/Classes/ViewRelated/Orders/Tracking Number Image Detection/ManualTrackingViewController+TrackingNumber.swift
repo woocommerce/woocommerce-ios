@@ -70,12 +70,13 @@ extension ManualTrackingViewController: UIImagePickerControllerDelegate, UINavig
         let originalImage: UIImage = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
 
         // Display image on screen.
-        let imageDetectionViewController = TrackingNumberImageDetectionViewController(image: originalImage)
-
-        // Dismiss the picker to return to original view controller.
-        dismiss(animated: true, completion: { [weak self] in
-            self?.navigationController?.pushViewController(imageDetectionViewController, animated: true)
-//            (imageDetectionViewController, animated: true, completion: nil)
-        })
+        if #available(iOS 13.0, *) {
+            let imageDetectionViewController = TrackingNumberImageDetectionViewController(image: originalImage)
+            dismiss(animated: true, completion: { [weak self] in
+                self?.navigationController?.pushViewController(imageDetectionViewController, animated: true)
+            })
+        } else {
+            // Fallback on earlier versions
+        }
     }
 }

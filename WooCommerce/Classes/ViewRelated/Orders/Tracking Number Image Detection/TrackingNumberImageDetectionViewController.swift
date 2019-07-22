@@ -20,12 +20,15 @@ private extension CGMutablePath {
     }
 }
 
+@available(iOS 13.0, *)
 class TrackingNumberImageDetectionViewController: UIViewController {
     private let image: UIImage
 
     private lazy var imageView: UIImageView = {
         return UIImageView(image: nil)
     }()
+
+    private var debugImageView: UIImageView = UIImageView(image: nil)
 
     // Layer into which to draw bounding box paths.
     private var pathLayer: CALayer?
@@ -48,6 +51,15 @@ class TrackingNumberImageDetectionViewController: UIViewController {
         return barcodeDetectRequest
     }()
 
+    @available(iOS 13.0, *)
+    lazy var textRecognitionRequest: VNRecognizeTextRequest = {
+        let request = VNRecognizeTextRequest(completionHandler: self.handleRecognizedText)
+        // This doesn't require OCR on a live camera feed, select accurate for more accurate results.
+        request.recognitionLevel = .accurate
+        request.usesLanguageCorrection = true
+        return request
+    }()
+
     init(image: UIImage) {
         self.image = image
         super.init(nibName: nil, bundle: nil)
@@ -67,6 +79,9 @@ class TrackingNumberImageDetectionViewController: UIViewController {
         view.addSubview(imageView)
         view.pinSubviewToAllEdges(imageView)
         imageView.contentMode = .scaleAspectFit
+
+        view.addSubview(debugImageView)
+        debugImageView.frame.origin = CGPoint(x: 30, y: 30)
 
         show(image)
 
@@ -88,25 +103,20 @@ class TrackingNumberImageDetectionViewController: UIViewController {
 
         guard let point = touch?.location(in: imageView) else { return }
 
-        if let hitPresentationLayer = pathLayer?.presentation()?.hitTest(point) {
-            print(hitPresentationLayer)
+        if let touchedLayer = pathLayer?.presentation()?.hitTest(point) {
+            guard let croppedImage = image.cgImage?.cropping(to: touchedLayer.frame) else {
+                assertionFailure()
+                return
+            }
+            let debugImage = UIImage(cgImage: croppedImage)
+            debugImageView.image = debugImage
+            debugImageView.frame.size = debugImage.size
+            performTextRecognition(cgImage: croppedImage)
         }
-//        CALayer *hitPresentationLayer = [view.layer.presentationLayer hitTest:location];
-//        if (hitPresentationLayer) {
-//            return hitPresentationLayer.modelLayer;
-//        }
-
-
-//        guard let sublayers = pathLayer?.sublayers as? [CAShapeLayer] else { return }
-//
-//        for layer in sublayers {
-//            if let path = layer.path, path.contains(point) {
-//                print(layer)
-//            }
-//        }
     }
 }
 
+@available(iOS 13.0, *)
 private extension TrackingNumberImageDetectionViewController {
     func show(_ image: UIImage) {
 
@@ -151,7 +161,7 @@ private extension TrackingNumberImageDetectionViewController {
         drawingLayer.position = CGPoint(x: xLayer, y: yLayer)
         drawingLayer.opacity = 0.5
         pathLayer = drawingLayer
-        self.view.layer.addSublayer(pathLayer!)
+        view.layer.addSublayer(pathLayer!)
     }
 
     // MARK: - Vision
@@ -321,19 +331,6 @@ private extension TrackingNumberImageDetectionViewController {
 
             // Add to pathLayer on top of image.
             pathLayer?.addSublayer(wordLayer)
-
-            // Iterate through each character within the word and draw its box.
-            guard let charBoxes = wordObservation.characterBoxes else {
-                continue
-            }
-            for charObservation in charBoxes {
-                let charBox = boundingBox(forRegionOfInterest: charObservation.boundingBox, withinImageBounds: bounds)
-                let charLayer = shapeLayer(color: .purple, frame: charBox)
-                charLayer.borderWidth = 1
-
-                // Add to pathLayer on top of image.
-//                pathLayer?.addSublayer(charLayer)
-            }
         }
         CATransaction.commit()
     }
@@ -352,6 +349,7 @@ private extension TrackingNumberImageDetectionViewController {
     }
 }
 
+@available(iOS 13.0, *)
 private extension TrackingNumberImageDetectionViewController {
     // MARK: - Helper Methods
 
@@ -436,6 +434,32 @@ private extension TrackingNumberImageDetectionViewController {
     }
 }
 
+// MARK: iOS 13+
+@available(iOS 13.0, *)
+private extension TrackingNumberImageDetectionViewController {
+    func performTextRecognition(cgImage: CGImage) {
+        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+        do {
+            try handler.perform([textRecognitionRequest])
+        } catch {
+            print(error)
+        }
+    }
+
+    func handleRecognizedText(request: VNRequest, error: Error?) {
+        if let results = request.results, !results.isEmpty {
+            if let requestResults = request.results as? [VNRecognizedTextObservation] {
+                DispatchQueue.main.async {
+                    for requestResult in requestResults {
+                        print(requestResult.topCandidates(10))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@available(iOS 13.0, *)
 private extension TrackingNumberImageDetectionViewController {
     func presentAlert(_ title: String, error: NSError) {
         // Always present alert on main thread.

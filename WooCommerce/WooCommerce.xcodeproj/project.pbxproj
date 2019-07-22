@@ -24,6 +24,7 @@
 		0207F17722E5430000B17189 /* ManualTrackingViewController+TrackingNumber.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0207F17622E5430000B17189 /* ManualTrackingViewController+TrackingNumber.swift */; };
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
+		02571FFF22E548830056A426 /* TrackingNumberImageDetectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02571FFE22E548830056A426 /* TrackingNumberImageDetectionViewController.swift */; };
 		02820F3422C257B700DE0D37 /* UITableView+FooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */; };
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */; };
@@ -394,6 +395,7 @@
 		0207F17622E5430000B17189 /* ManualTrackingViewController+TrackingNumber.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ManualTrackingViewController+TrackingNumber.swift"; sourceTree = "<group>"; };
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
+		02571FFE22E548830056A426 /* TrackingNumberImageDetectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingNumberImageDetectionViewController.swift; sourceTree = "<group>"; };
 		02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+FooterHelpers.swift"; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -1364,9 +1366,10 @@
 				CE21B3DC20FF9BC200A259D5 /* ProductListViewController.swift */,
 				D83F5932225B2EB800626E75 /* ManualTrackingViewController.swift */,
 				D843D5C622434A08001BFA55 /* ManualTrackingViewController.xib */,
+				0207F17622E5430000B17189 /* ManualTrackingViewController+TrackingNumber.swift */,
 				D843D5D122485009001BFA55 /* ShipmentProvidersViewController.swift */,
 				D843D5D222485009001BFA55 /* ShipmentProvidersViewController.xib */,
-				0207F17622E5430000B17189 /* ManualTrackingViewController+TrackingNumber.swift */,
+				02571FFE22E548830056A426 /* TrackingNumberImageDetectionViewController.swift */,
 			);
 			path = Orders;
 			sourceTree = "<group>";
@@ -2071,6 +2074,7 @@
 				CE4DA5C621DD755E00074607 /* CurrencyFormatter.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
 				CE1AFE622200B1BD00432745 /* ApplicationLogDetailViewController.swift in Sources */,
+				02571FFF22E548830056A426 /* TrackingNumberImageDetectionViewController.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,

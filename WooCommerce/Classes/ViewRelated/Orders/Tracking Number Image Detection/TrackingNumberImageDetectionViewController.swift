@@ -71,6 +71,7 @@ class TrackingNumberImageDetectionViewController: UIViewController {
 
         view.addSubview(imageView)
         view.pinSubviewToAllEdges(imageView)
+        imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
 
         view.addSubview(debugImageView)
@@ -155,7 +156,8 @@ private extension TrackingNumberImageDetectionViewController {
         drawingLayer.position = CGPoint(x: xLayer, y: yLayer)
         drawingLayer.opacity = 0.5
         pathLayer = drawingLayer
-        view.layer.addSublayer(pathLayer!)
+        imageView.layer.addSublayer(pathLayer!)
+        drawingLayer.frame = imageView.bounds
     }
 
     // MARK: - Vision
@@ -321,7 +323,26 @@ private extension TrackingNumberImageDetectionViewController {
         CATransaction.begin()
         for wordObservation in text {
             let wordBox = boundingBox(forRegionOfInterest: wordObservation.boundingBox, withinImageBounds: bounds)
-            let wordLayer = textShapeLayer(color: .red, frame: wordBox)
+
+            let containerSize = imageView.frame.size
+            let originalSize = image.size
+
+            let scale = min(containerSize.width / originalSize.width, containerSize.height / originalSize.height)
+            let scaleTransform = CGAffineTransform(scaleX: scale, y: scale)
+
+            // Scale rect with image.
+            let size = wordBox.size.applying(scaleTransform)
+
+            // Offset rect with image.
+            let newSize = image.size.applying(scaleTransform)
+            let offsetTransform = CGAffineTransform(translationX: (containerSize.width - newSize.width) / 2.0,
+                                                    y: (containerSize.height - newSize.height) / 2.0)
+            let origin = wordBox.origin
+                .applying(scaleTransform)
+                .applying(offsetTransform)
+            let frame = CGRect(origin: origin, size: size)
+
+            let wordLayer = textShapeLayer(color: .red, frame: frame)
 
             // Add to pathLayer on top of image.
             pathLayer?.addSublayer(wordLayer)

@@ -7,7 +7,6 @@ extension ManualTrackingViewController {
 }
 
 private extension ManualTrackingViewController {
-    @objc
     func promptImage() {
 
         let prompt = UIAlertController(title: "Choose a Photo",
@@ -55,6 +54,11 @@ private extension ManualTrackingViewController {
 
         present(prompt, animated: true, completion: nil)
     }
+
+    func trackingNumberDetected(trackingNumber: String) {
+        navigationController?.popToViewController(self, animated: true)
+        updateTrackingNumber(trackingNumber: trackingNumber)
+    }
 }
 
 // MARK: - UIImagePickerControllerDelegate
@@ -64,14 +68,15 @@ extension ManualTrackingViewController: UIImagePickerControllerDelegate, UINavig
         dismiss(animated: true, completion: nil)
     }
 
-    internal func imagePickerController(_ picker: UIImagePickerController,
+    func imagePickerController(_ picker: UIImagePickerController,
                                         didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey: Any]) {
         // Extract chosen image.
         let originalImage: UIImage = info[UIImagePickerController.InfoKey.originalImage] as! UIImage
 
         // Display image on screen.
         if #available(iOS 13.0, *) {
-            let imageDetectionViewController = TrackingNumberImageDetectionViewController(image: originalImage)
+            let imageDetectionViewController = TrackingNumberImageDetectionViewController(image: originalImage,
+                                                                                          onTrackingNumberDetection: trackingNumberDetected)
             dismiss(animated: true, completion: { [weak self] in
                 self?.navigationController?.pushViewController(imageDetectionViewController, animated: true)
             })

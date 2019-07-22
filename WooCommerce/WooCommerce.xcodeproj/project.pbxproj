@@ -27,6 +27,7 @@
 		02571FFF22E548830056A426 /* TrackingNumberImageDetectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02571FFE22E548830056A426 /* TrackingNumberImageDetectionViewController.swift */; };
 		02820F3422C257B700DE0D37 /* UITableView+FooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */; };
 		02B51EE122E55CEE00A3F18B /* TextShapeLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B51EE022E55CEE00A3F18B /* TextShapeLayer.swift */; };
+		02FC9BF722E59DA300871D35 /* TrackingNumberImageDetectionResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FC9BF622E59DA300871D35 /* TrackingNumberImageDetectionResultsViewController.swift */; };
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */; };
 		740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */; };
@@ -399,6 +400,7 @@
 		02571FFE22E548830056A426 /* TrackingNumberImageDetectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingNumberImageDetectionViewController.swift; sourceTree = "<group>"; };
 		02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+FooterHelpers.swift"; sourceTree = "<group>"; };
 		02B51EE022E55CEE00A3F18B /* TextShapeLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextShapeLayer.swift; sourceTree = "<group>"; };
+		02FC9BF622E59DA300871D35 /* TrackingNumberImageDetectionResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingNumberImageDetectionResultsViewController.swift; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
@@ -799,6 +801,7 @@
 				0207F17622E5430000B17189 /* ManualTrackingViewController+TrackingNumber.swift */,
 				02571FFE22E548830056A426 /* TrackingNumberImageDetectionViewController.swift */,
 				02B51EE022E55CEE00A3F18B /* TextShapeLayer.swift */,
+				02FC9BF622E59DA300871D35 /* TrackingNumberImageDetectionResultsViewController.swift */,
 			);
 			path = "Tracking Number Image Detection";
 			sourceTree = "<group>";
@@ -2218,6 +2221,7 @@
 				74EC34A5225FE21F004BBC2E /* ProductLoaderViewController.swift in Sources */,
 				B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */,
 				743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */,
+				02FC9BF722E59DA300871D35 /* TrackingNumberImageDetectionResultsViewController.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,

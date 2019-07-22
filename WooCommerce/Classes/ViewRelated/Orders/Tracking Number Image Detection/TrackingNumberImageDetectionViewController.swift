@@ -1,38 +1,30 @@
 import UIKit
 import Vision
 
-private extension CGMutablePath {
-    // Helper function to add lines to a path.
-    func addPoints(in landmarkRegion: VNFaceLandmarkRegion2D,
-                   applying affineTransform: CGAffineTransform,
-                   closingWhenComplete closePath: Bool) {
-        let pointCount = landmarkRegion.pointCount
-
-        // Draw line if and only if path contains multiple points.
-        guard pointCount > 1 else {
-            return
-        }
-        self.addLines(between: landmarkRegion.normalizedPoints, transform: affineTransform)
-
-        if closePath {
-            closeSubpath()
-        }
-    }
-}
+@available(iOS 13.0, *)
+extension VNRecognizedText: TrackingNumberImageDetectionResult {}
 
 @available(iOS 13.0, *)
 class TrackingNumberImageDetectionViewController: UIViewController {
+    // MARK: init properties
     private let image: UIImage
 
+    typealias OnTrackingNumberDetection = (_ trackingNumber: String) -> ()
+    private let onTrackingNumberDetection: OnTrackingNumberDetection
+
+    // MARK: subviews
     private lazy var imageView: UIImageView = {
         return UIImageView(image: nil)
     }()
 
     private var debugImageView: UIImageView = UIImageView(image: nil)
+    // Selected image.
+    private var selectedImage: UIImage?
 
     // Layer into which to draw bounding box paths.
     private var pathLayer: CALayer?
 
+    // MARK: internal states
     // Image parameters for reuse throughout app
     private var imageWidth: CGFloat = 0
     private var imageHeight: CGFloat = 0
@@ -60,8 +52,9 @@ class TrackingNumberImageDetectionViewController: UIViewController {
         return request
     }()
 
-    init(image: UIImage) {
+    init(image: UIImage, onTrackingNumberDetection: @escaping OnTrackingNumberDetection) {
         self.image = image
+        self.onTrackingNumberDetection = onTrackingNumberDetection
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -108,9 +101,10 @@ class TrackingNumberImageDetectionViewController: UIViewController {
                 assertionFailure()
                 return
             }
-            let debugImage = UIImage(cgImage: croppedImage)
-            debugImageView.image = debugImage
-            debugImageView.frame.size = debugImage.size
+            let selectedImage = UIImage(cgImage: croppedImage)
+            self.selectedImage = selectedImage
+            debugImageView.image = selectedImage
+            debugImageView.frame.size = selectedImage.size
             performTextRecognition(cgImage: croppedImage)
         }
     }
@@ -447,15 +441,28 @@ private extension TrackingNumberImageDetectionViewController {
     }
 
     func handleRecognizedText(request: VNRequest, error: Error?) {
-        if let results = request.results, !results.isEmpty {
-            if let requestResults = request.results as? [VNRecognizedTextObservation] {
-                DispatchQueue.main.async {
-                    for requestResult in requestResults {
-                        print(requestResult.topCandidates(10))
-                    }
-                }
-            }
+        guard let result = request.results?.first as? VNRecognizedTextObservation else {
+            return
         }
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            guard let selectedImage = self.selectedImage else {
+                assertionFailure()
+                return
+            }
+            let resultsViewController = TrackingNumberImageDetectionResultsViewController(image: selectedImage,
+                                                                                          results: result.topCandidates(10),
+                                                                                          onResultSelection: self.didSelectResult)
+            self.navigationController?.pushViewController(resultsViewController, animated: true)
+            print(result.topCandidates(10))
+        }
+    }
+
+    func didSelectResult(string: String) {
+        print(string)
+        onTrackingNumberDetection(string)
     }
 }
 

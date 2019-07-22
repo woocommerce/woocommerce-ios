@@ -45,6 +45,10 @@ final class ManualTrackingViewController: UIViewController {
         table.reloadData()
         activateActionButtonIfNecessary()
     }
+
+    func updateTrackingNumber(trackingNumber: String) {
+        viewModel.trackingNumber = trackingNumber
+    }
 }
 
 

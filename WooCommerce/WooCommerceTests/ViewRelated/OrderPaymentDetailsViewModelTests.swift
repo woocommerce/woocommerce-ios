@@ -3,8 +3,8 @@ import XCTest
 @testable import Networking
 
 final class OrderPaymentDetailsViewModelTests: XCTestCase {
-    private var order: Order?
-    private var subject: OrderPaymentDetailsViewModel?
+    private var order: Order!
+    private var subject: OrderPaymentDetailsViewModel!
 
     override func setUp() {
         super.setUp()

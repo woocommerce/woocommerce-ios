@@ -1,6 +1,27 @@
 import UIKit
 import Vision
 
+extension CGRect {
+    // TODO: unit tests.
+    func calculateFrame(originalParentSize: CGSize, toFitIn containerSize: CGSize) -> CGRect {
+        let scale = min(containerSize.width / originalParentSize.width, containerSize.height / originalParentSize.height)
+        let scaleTransform = CGAffineTransform(scaleX: scale, y: scale)
+
+        // Scale rect with image.
+        let newSize = size.applying(scaleTransform)
+
+        // Offset rect with image.
+        let newParentSize = originalParentSize.applying(scaleTransform)
+        let offsetTransform = CGAffineTransform(translationX: (containerSize.width - newParentSize.width) / 2.0,
+                                                y: (containerSize.height - newParentSize.height) / 2.0)
+        let newOrigin = origin
+            .applying(scaleTransform)
+            .applying(offsetTransform)
+        let frame = CGRect(origin: newOrigin, size: newSize)
+        return frame
+    }
+}
+
 @available(iOS 13.0, *)
 extension VNRecognizedText: TrackingNumberImageDetectionResult {}
 
@@ -327,20 +348,8 @@ private extension TrackingNumberImageDetectionViewController {
             let containerSize = imageView.frame.size
             let originalSize = image.size
 
-            let scale = min(containerSize.width / originalSize.width, containerSize.height / originalSize.height)
-            let scaleTransform = CGAffineTransform(scaleX: scale, y: scale)
-
-            // Scale rect with image.
-            let size = wordBox.size.applying(scaleTransform)
-
-            // Offset rect with image.
-            let newSize = image.size.applying(scaleTransform)
-            let offsetTransform = CGAffineTransform(translationX: (containerSize.width - newSize.width) / 2.0,
-                                                    y: (containerSize.height - newSize.height) / 2.0)
-            let origin = wordBox.origin
-                .applying(scaleTransform)
-                .applying(offsetTransform)
-            let frame = CGRect(origin: origin, size: size)
+            let frame = wordBox.calculateFrame(originalParentSize: originalSize,
+                                               toFitIn: containerSize)
 
             let wordLayer = textShapeLayer(color: .red, frame: frame)
 

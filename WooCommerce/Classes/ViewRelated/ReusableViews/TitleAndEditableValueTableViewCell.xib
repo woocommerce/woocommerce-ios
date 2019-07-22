@@ -22,22 +22,26 @@
                         <rect key="frame" x="16" y="16" width="288" height="44.5"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="7" translatesAutoresizingMaskIntoConstraints="NO" id="OWZ-oT-ESt">
-                                <rect key="frame" x="0.0" y="0.0" width="288" height="44.5"/>
+                                <rect key="frame" x="0.0" y="0.0" width="242" height="44.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Tkk-vL-bFn">
-                                        <rect key="frame" x="0.0" y="0.0" width="288" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="242" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="6kq-Y6-uD9">
-                                        <rect key="frame" x="0.0" y="27.5" width="288" height="17"/>
+                                        <rect key="frame" x="0.0" y="27.5" width="242" height="17"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits"/>
                                     </textField>
                                 </subviews>
                             </stackView>
+                            <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UvN-zE-vZM">
+                                <rect key="frame" x="242" y="0.0" width="46" height="44.5"/>
+                                <state key="normal" title="Button"/>
+                            </button>
                         </subviews>
                     </stackView>
                 </subviews>
@@ -49,6 +53,7 @@
                 </constraints>
             </tableViewCellContentView>
             <connections>
+                <outlet property="button" destination="UvN-zE-vZM" id="8u6-ub-2d4"/>
                 <outlet property="title" destination="Tkk-vL-bFn" id="2uw-eg-WME"/>
                 <outlet property="value" destination="6kq-Y6-uD9" id="X7D-cK-teS"/>
             </connections>

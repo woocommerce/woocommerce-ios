@@ -250,6 +250,10 @@ extension ManualTrackingViewController: UITableViewDataSource {
         cell.value.text = viewModel.trackingNumber
         cell.value.isEnabled = true
 
+        cell.button.isHidden = false
+        cell.button.setTitle("📷", for: .normal)
+        cell.button.addTarget(self, action: #selector(trackingNumberImageTapped), for: .touchUpInside)
+
         cell.value.addTarget(self, action: #selector(didChangeTrackingNumber), for: .editingChanged)
         cell.accessoryType = .none
     }

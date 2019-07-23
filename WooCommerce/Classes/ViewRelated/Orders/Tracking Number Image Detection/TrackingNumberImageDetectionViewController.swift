@@ -118,8 +118,11 @@ class TrackingNumberImageDetectionViewController: UIViewController {
 
         guard let point = touch?.location(in: imageView) else { return }
 
-        if let touchedLayer = pathLayer?.presentation()?.hitTest(point) {
-            guard let croppedImage = image.cgImage?.cropping(to: touchedLayer.frame) else {
+        if let touchedLayer = pathLayer?.presentation()?.hitTest(point) as? TextShapeLayer {
+            // Notes: somehow have to transform the frame like `layer.transform = CATransform3DMakeScale(1, -1, 1)`
+            let frame = touchedLayer.frameInOrigialImage
+                .applying(CGAffineTransform(translationX: 0, y: -touchedLayer.frameInOrigialImage.height))
+            guard let croppedImage = image.cgImage?.cropping(to: frame) else {
                 assertionFailure()
                 return
             }
@@ -146,7 +149,6 @@ private extension TrackingNumberImageDetectionViewController {
 
         // Place photo inside imageView.
         imageView.image = correctedImage
-        imageView.frame.size = correctedImage.size
 
         // Transform image to fit screen.
         guard let cgImage = correctedImage.cgImage else {
@@ -244,7 +246,7 @@ private extension TrackingNumberImageDetectionViewController {
                 let results = request?.results as? [VNTextObservation] else {
                     return
             }
-            self.draw(text: results, onImageWithBounds: drawLayer.bounds)
+            self.draw(text: results, onImageWithBounds: self.imageView.bounds)
             drawLayer.setNeedsDisplay()
         }
     }
@@ -287,9 +289,9 @@ private extension TrackingNumberImageDetectionViewController {
         return rect
     }
 
-    func textShapeLayer(color: UIColor, frame: CGRect) -> TextShapeLayer {
+    func textShapeLayer(color: UIColor, frame: CGRect, frameInOrigialImage: CGRect) -> TextShapeLayer {
         // Create a new layer.
-        let layer = TextShapeLayer(color: color)
+        let layer = TextShapeLayer(color: color, frameInOrigialImage: frameInOrigialImage)
 
         // Locate the layer.
         layer.anchorPoint = .zero
@@ -343,15 +345,15 @@ private extension TrackingNumberImageDetectionViewController {
     func draw(text: [VNTextObservation], onImageWithBounds bounds: CGRect) {
         CATransaction.begin()
         for wordObservation in text {
-            let wordBox = boundingBox(forRegionOfInterest: wordObservation.boundingBox, withinImageBounds: bounds)
-
             let containerSize = imageView.frame.size
             let originalSize = image.size
+
+            let wordBox = boundingBox(forRegionOfInterest: wordObservation.boundingBox, withinImageBounds: CGRect(origin: .zero, size: originalSize))
 
             let frame = wordBox.calculateFrame(originalParentSize: originalSize,
                                                toFitIn: containerSize)
 
-            let wordLayer = textShapeLayer(color: .red, frame: frame)
+            let wordLayer = textShapeLayer(color: .red, frame: frame, frameInOrigialImage: wordBox)
 
             // Add to pathLayer on top of image.
             pathLayer?.addSublayer(wordLayer)

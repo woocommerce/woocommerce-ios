@@ -7,7 +7,7 @@ import UIKit
 final class TableFooterView: UIView {
 
     @IBOutlet private var icon: UIImageView!
-    @IBOutlet public var footnote: UITextView!
+    @IBOutlet var footnote: UITextView!
     @IBOutlet private var iconHeight: NSLayoutConstraint!
     @IBOutlet private var iconWidth: NSLayoutConstraint!
 
@@ -53,29 +53,6 @@ extension TableFooterView {
         }
         set {
             icon?.tintColor = newValue
-        }
-    }
-
-    /// Footnote label text.
-    ///
-    var footnoteText: String? {
-        get {
-            return footnote?.text
-        }
-        set {
-            footnote.attributedText = nil
-            footnote?.text = newValue
-        }
-    }
-
-    /// Footnote label color.
-    ///
-    var footnoteColor: UIColor? {
-        get {
-            return footnote?.textColor
-        }
-        set {
-            footnote?.textColor = newValue
         }
     }
 

@@ -360,7 +360,7 @@ private extension TrackingNumberImageDetectionViewController {
             let frame = wordBox.calculateFrame(originalParentSize: originalSize,
                                                toFitIn: containerSize)
 
-            let wordLayer = textShapeLayer(color: .red, frame: frame, frameInOrigialImage: wordBox)
+            let wordLayer = textShapeLayer(color: StyleManager.buttonPrimaryColor, frame: frame, frameInOrigialImage: wordBox)
 
             // Add to pathLayer on top of image.
             pathLayer?.addSublayer(wordLayer)

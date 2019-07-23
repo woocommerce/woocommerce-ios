@@ -56,6 +56,7 @@ class TrackingNumberImageDetectionResultsViewController: UIViewController {
 private extension TrackingNumberImageDetectionResultsViewController {
     func configure(stackView: UIStackView) {
         stackView.axis = .vertical
+        stackView.spacing = 10
         stackView.translatesAutoresizingMaskIntoConstraints = false
     }
 

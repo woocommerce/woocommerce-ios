@@ -37,5 +37,6 @@ private extension TextShapeLayer {
 
         // Vary the line color according to input.
         borderColor = color.cgColor
+        borderWidth = 3
     }
 }

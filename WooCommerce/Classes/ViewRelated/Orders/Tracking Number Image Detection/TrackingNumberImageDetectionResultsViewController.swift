@@ -3,6 +3,7 @@ import Vision
 
 protocol TrackingNumberImageDetectionResult {
     var string: String { get }
+    var confidence: Float { get }
 }
 
 class TrackingNumberImageDetectionResultsViewController: UIViewController {
@@ -64,9 +65,9 @@ private extension TrackingNumberImageDetectionResultsViewController {
     }
 
     func configure(tableView: UITableView) {
-        let cells = [StatusListTableViewCell.self]
+        let cells = [TrackingNumberImageDetectionResultTableViewCell.self]
         for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+            tableView.register(cell.self, forCellReuseIdentifier: cell.reuseIdentifier)
         }
         tableView.dataSource = self
         tableView.delegate = self
@@ -83,12 +84,12 @@ extension TrackingNumberImageDetectionResultsViewController: UITableViewDataSour
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StatusListTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? StatusListTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: TrackingNumberImageDetectionResultTableViewCell.reuseIdentifier,
+                                                       for: indexPath) as? TrackingNumberImageDetectionResultTableViewCell else {
                                                         fatalError()
         }
         let result = results[indexPath.row]
-        cell.textLabel?.text = result.string
+        cell.update(title: result.string, detail: "\(Int(round(result.confidence * 100)))%")
         return cell
     }
 }

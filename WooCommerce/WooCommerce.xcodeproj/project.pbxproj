@@ -25,6 +25,7 @@
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
 		02571FFF22E548830056A426 /* TrackingNumberImageDetectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02571FFE22E548830056A426 /* TrackingNumberImageDetectionViewController.swift */; };
+		025E330E22E6B60300784DA4 /* TrackingNumberImageDetectionResultTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025E330D22E6B60300784DA4 /* TrackingNumberImageDetectionResultTableViewCell.swift */; };
 		02820F3422C257B700DE0D37 /* UITableView+FooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */; };
 		02B51EE122E55CEE00A3F18B /* TextShapeLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B51EE022E55CEE00A3F18B /* TextShapeLayer.swift */; };
 		02FC9BF722E59DA300871D35 /* TrackingNumberImageDetectionResultsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FC9BF622E59DA300871D35 /* TrackingNumberImageDetectionResultsViewController.swift */; };
@@ -398,6 +399,7 @@
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
 		02571FFE22E548830056A426 /* TrackingNumberImageDetectionViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingNumberImageDetectionViewController.swift; sourceTree = "<group>"; };
+		025E330D22E6B60300784DA4 /* TrackingNumberImageDetectionResultTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingNumberImageDetectionResultTableViewCell.swift; sourceTree = "<group>"; };
 		02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+FooterHelpers.swift"; sourceTree = "<group>"; };
 		02B51EE022E55CEE00A3F18B /* TextShapeLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextShapeLayer.swift; sourceTree = "<group>"; };
 		02FC9BF622E59DA300871D35 /* TrackingNumberImageDetectionResultsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackingNumberImageDetectionResultsViewController.swift; sourceTree = "<group>"; };
@@ -802,6 +804,7 @@
 				02571FFE22E548830056A426 /* TrackingNumberImageDetectionViewController.swift */,
 				02B51EE022E55CEE00A3F18B /* TextShapeLayer.swift */,
 				02FC9BF622E59DA300871D35 /* TrackingNumberImageDetectionResultsViewController.swift */,
+				025E330D22E6B60300784DA4 /* TrackingNumberImageDetectionResultTableViewCell.swift */,
 			);
 			path = "Tracking Number Image Detection";
 			sourceTree = "<group>";
@@ -2110,6 +2113,7 @@
 				CE855364209BA6A700938BDC /* ShowHideSectionFooter.swift in Sources */,
 				D82DFB4A225F22D400EFE2CB /* UISearchBar+Appearance.swift in Sources */,
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
+				025E330E22E6B60300784DA4 /* TrackingNumberImageDetectionResultTableViewCell.swift in Sources */,
 				B517EA1D218B41F200730EC4 /* String+Woo.swift in Sources */,
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,

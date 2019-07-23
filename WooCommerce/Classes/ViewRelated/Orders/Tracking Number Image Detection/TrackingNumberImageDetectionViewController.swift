@@ -1,3 +1,4 @@
+import SVProgressHUD
 import UIKit
 import Vision
 
@@ -46,6 +47,9 @@ class TrackingNumberImageDetectionViewController: UIViewController {
     private var pathLayer: CALayer?
 
     // MARK: internal states
+    // Whether a text region is being recognized.
+    private var isTextRecognitionRunning: Bool = false
+
     // Image parameters for reuse throughout app
     private var imageWidth: CGFloat = 0
     private var imageHeight: CGFloat = 0
@@ -130,6 +134,10 @@ class TrackingNumberImageDetectionViewController: UIViewController {
             self.selectedImage = selectedImage
             debugImageView.image = selectedImage
             debugImageView.frame.size = selectedImage.size
+
+            // Show spinner.
+            updateSpinner(shouldShow: true)
+
             performTextRecognition(cgImage: croppedImage)
         }
     }
@@ -310,6 +318,14 @@ private extension TrackingNumberImageDetectionViewController {
 
     // Lines of text are RED.  Individual characters are PURPLE.
     func draw(text: [VNTextObservation], onImageWithBounds bounds: CGRect) {
+        guard !text.isEmpty else {
+            presentAlert(title: NSLocalizedString("No text found", comment: ""),
+                         messsage: NSLocalizedString("Please try another image with clear text", comment: "")) { [weak self] in
+                            self?.navigationController?.popViewController(animated: true)
+            }
+            return
+        }
+
         CATransaction.begin()
         for wordObservation in text {
             let containerSize = imageView.frame.size
@@ -418,19 +434,30 @@ private extension TrackingNumberImageDetectionViewController {
 @available(iOS 13.0, *)
 private extension TrackingNumberImageDetectionViewController {
     func performTextRecognition(cgImage: CGImage) {
-        let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
-        do {
-            try handler.perform([textRecognitionRequest])
-        } catch {
-            print(error)
+        guard !isTextRecognitionRunning else {
+            return
+        }
+        isTextRecognitionRunning = true
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else {
+                return
+            }
+            let handler = VNImageRequestHandler(cgImage: cgImage, options: [:])
+            do {
+                try handler.perform([self.textRecognitionRequest])
+                self.isTextRecognitionRunning = false
+            } catch {
+                print(error)
+            }
         }
     }
 
     func handleRecognizedText(request: VNRequest, error: Error?) {
-        guard let result = request.results?.first as? VNRecognizedTextObservation else {
-            return
-        }
         DispatchQueue.main.async { [weak self] in
+            self?.updateSpinner(shouldShow: false)
+            guard let result = request.results?.first as? VNRecognizedTextObservation else {
+                return
+            }
             guard let self = self else {
                 return
             }
@@ -455,17 +482,29 @@ private extension TrackingNumberImageDetectionViewController {
 @available(iOS 13.0, *)
 private extension TrackingNumberImageDetectionViewController {
     func presentAlert(_ title: String, error: NSError) {
+        presentAlert(title: title, messsage: error.localizedDescription)
+    }
+
+    func presentAlert(title: String?, messsage: String?, action: (() -> ())? = nil) {
         // Always present alert on main thread.
         DispatchQueue.main.async {
             let alertController = UIAlertController(title: title,
-                                                    message: error.localizedDescription,
+                                                    message: messsage,
                                                     preferredStyle: .alert)
             let okAction = UIAlertAction(title: "OK",
                                          style: .default) { _ in
-                                            // Do nothing -- simply dismiss alert.
+                                            action?()
             }
             alertController.addAction(okAction)
             self.present(alertController, animated: true, completion: nil)
+        }
+    }
+
+    func updateSpinner(shouldShow: Bool) {
+        if shouldShow {
+            SVProgressHUD.show(withStatus: NSLocalizedString("Detecting text...", comment: ""))
+        } else {
+            SVProgressHUD.dismiss()
         }
     }
 }

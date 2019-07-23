@@ -93,6 +93,8 @@ private extension AboutViewController {
         /// Hence the container view with a defined frame.
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
+        footerView.footnoteText = footerTitleText
+        footerView.footnoteColor = StyleManager.wooGreyMid
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }

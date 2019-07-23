@@ -51,20 +51,14 @@ public enum DotcomError: Error, Decodable {
             self = .invalidToken
         case Constants.requestFailed:
             self = .requestFailed
+        case Constants.unauthorized where message == ErrorMessages.noStatsPermission:
+            self = .noStatsPermission
         case Constants.unauthorized:
-            if message == ErrorMessages.noStatsPermission {
-                self = .noStatsPermission
-            } else {
-                self = .unauthorized
-            }
+            self = .unauthorized
         case Constants.noRestRoute:
             self = .noRestRoute
-        case Constants.invalidBlog:
-            if message == ErrorMessages.statsModuleDisabled {
-                self = .statsModuleDisabled
-            } else {
-                self = .unknown(code: error, message: message)
-            }
+        case Constants.invalidBlog where message == ErrorMessages.statsModuleDisabled:
+            self = .statsModuleDisabled
         default:
             self = .unknown(code: error, message: message)
         }

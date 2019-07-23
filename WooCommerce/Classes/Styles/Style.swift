@@ -89,7 +89,10 @@ class DefaultStyle: Style {
     let thinCaptionFont                 = DefaultStyle.fontForTextStyle(.caption1,
                                                                         weight: .thin,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
-    let footerLabelFont                 = UIFont.font(forStyle: .footnote, weight: .regular)
+    //let footerLabelFont                 = UIFont.font(forStyle: .footnote, weight: .regular)
+    let footerLabelFont                 = DefaultStyle.fontForTextStyle(.footnote,
+                                                                        weight: .regular,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
 
     /// Colors!
     ///

@@ -60,6 +60,7 @@ private extension TrackingNumberImageDetectionResultsViewController {
 
     func configure(imageView: UIImageView) {
         imageView.image = image
+        imageView.contentMode = .scaleAspectFit
     }
 
     func configure(tableView: UITableView) {

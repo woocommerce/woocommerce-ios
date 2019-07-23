@@ -86,7 +86,7 @@ class TrackingNumberImageDetectionViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        title = NSLocalizedString("Tap box to select", comment: "")
+        title = NSLocalizedString("Tap tracking number", comment: "")
 
         view.backgroundColor = UIColor.white
 
@@ -97,6 +97,7 @@ class TrackingNumberImageDetectionViewController: UIViewController {
 
         view.addSubview(debugImageView)
         debugImageView.frame.origin = CGPoint(x: 30, y: 30)
+        debugImageView.isHidden = true
 
         show(image)
 
@@ -126,7 +127,13 @@ class TrackingNumberImageDetectionViewController: UIViewController {
                 assertionFailure()
                 return
             }
-            let selectedImage = UIImage(cgImage: croppedImage)
+            // Add some margin to the text region for the selected image to be shown in the next screen.
+            let frameForSelectedImage = frame.inset(by: UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
+            guard let selectedCgImage = image.cgImage?.cropping(to: frameForSelectedImage) else {
+                assertionFailure()
+                return
+            }
+            let selectedImage = UIImage(cgImage: selectedCgImage)
             self.selectedImage = selectedImage
             debugImageView.image = selectedImage
             debugImageView.frame.size = selectedImage.size

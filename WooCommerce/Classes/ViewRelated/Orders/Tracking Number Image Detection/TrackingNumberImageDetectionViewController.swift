@@ -57,13 +57,6 @@ class TrackingNumberImageDetectionViewController: UIViewController {
         return textDetectRequest
     }()
 
-    lazy var barcodeDetectionRequest: VNDetectBarcodesRequest = {
-        let barcodeDetectRequest = VNDetectBarcodesRequest(completionHandler: self.handleDetectedBarcodes)
-        // Restrict detection to most common symbologies.
-        barcodeDetectRequest.symbologies = [.QR, .Aztec, .UPCE]
-        return barcodeDetectRequest
-    }()
-
     @available(iOS 13.0, *)
     lazy var textRecognitionRequest: VNRecognizeTextRequest = {
         let request = VNRecognizeTextRequest(completionHandler: self.handleRecognizedText)
@@ -220,26 +213,9 @@ private extension TrackingNumberImageDetectionViewController {
         // Create an array to collect all desired requests.
         var requests: [VNRequest] = []
         requests.append(self.textDetectionRequest)
-        requests.append(self.barcodeDetectionRequest)
 
         // Return grouped requests as a single array.
         return requests
-    }
-
-    func handleDetectedRectangles(request: VNRequest?, error: Error?) {
-        if let nsError = error as NSError? {
-            self.presentAlert("Rectangle Detection Error", error: nsError)
-            return
-        }
-        // Since handlers are executing on a background thread, explicitly send draw calls to the main thread.
-        DispatchQueue.main.async {
-            guard let drawLayer = self.pathLayer,
-                let results = request?.results as? [VNRectangleObservation] else {
-                    return
-            }
-            self.draw(rectangles: results, onImageWithBounds: drawLayer.bounds)
-            drawLayer.setNeedsDisplay()
-        }
     }
 
     func handleDetectedText(request: VNRequest?, error: Error?) {
@@ -254,22 +230,6 @@ private extension TrackingNumberImageDetectionViewController {
                     return
             }
             self.draw(text: results, onImageWithBounds: self.imageView.bounds)
-            drawLayer.setNeedsDisplay()
-        }
-    }
-
-    func handleDetectedBarcodes(request: VNRequest?, error: Error?) {
-        if let nsError = error as NSError? {
-            self.presentAlert("Barcode Detection Error", error: nsError)
-            return
-        }
-        // Perform drawing on the main thread.
-        DispatchQueue.main.async {
-            guard let drawLayer = self.pathLayer,
-                let results = request?.results as? [VNBarcodeObservation] else {
-                    return
-            }
-            self.draw(barcodes: results, onImageWithBounds: drawLayer.bounds)
             drawLayer.setNeedsDisplay()
         }
     }
@@ -364,19 +324,6 @@ private extension TrackingNumberImageDetectionViewController {
 
             // Add to pathLayer on top of image.
             pathLayer?.addSublayer(wordLayer)
-        }
-        CATransaction.commit()
-    }
-
-    // Barcodes are ORANGE.
-    func draw(barcodes: [VNBarcodeObservation], onImageWithBounds bounds: CGRect) {
-        CATransaction.begin()
-        for observation in barcodes {
-            let barcodeBox = boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: bounds)
-            let barcodeLayer = shapeLayer(color: .orange, frame: barcodeBox)
-
-            // Add to pathLayer on top of image.
-            pathLayer?.addSublayer(barcodeLayer)
         }
         CATransaction.commit()
     }

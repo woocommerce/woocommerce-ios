@@ -318,9 +318,7 @@ private extension SettingsViewController {
     func weAreHiringWasPressed(url: URL) {
         WooAnalytics.shared.track(.settingsWereHiringTapped)
 
-        let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
+        WebviewHelper.launch(url, with: self)
     }
 }
 

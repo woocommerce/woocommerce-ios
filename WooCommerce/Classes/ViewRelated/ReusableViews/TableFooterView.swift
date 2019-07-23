@@ -16,7 +16,7 @@ final class TableFooterView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        setupFootnoteLabel()
+        setupFootnoteTextView()
     }
 
     override func layoutSubviews() {
@@ -58,7 +58,7 @@ extension TableFooterView {
 
     /// Initialization method for footnote textview
     ///
-    func setupFootnoteLabel() {
+    func setupFootnoteTextView() {
         footnote.attributedText = hiringAttributedText
         footnote.adjustsFontForContentSizeCategory = true
         footnote.textContainerInset = .zero

@@ -268,29 +268,6 @@ private extension TrackingNumberImageDetectionViewController {
         // Create a new layer.
         let layer = TextShapeLayer(color: color, frameInOrigialImage: frameInOrigialImage)
 
-        // Locate the layer.
-        layer.anchorPoint = .zero
-        layer.frame = frame
-        layer.masksToBounds = true
-
-        // Transform the layer to have same coordinate system as the imageView underneath it.
-        layer.transform = CATransform3DMakeScale(1, -1, 1)
-
-        return layer
-    }
-
-    func shapeLayer(color: UIColor, frame: CGRect) -> CAShapeLayer {
-        // Create a new layer.
-        let layer = CAShapeLayer()
-
-        // Configure layer's appearance.
-        layer.fillColor = nil // No fill to show boxed object
-        layer.shadowOpacity = 0
-        layer.shadowRadius = 0
-        layer.borderWidth = 2
-
-        // Vary the line color according to input.
-        layer.borderColor = color.cgColor
 
         // Locate the layer.
         layer.anchorPoint = .zero

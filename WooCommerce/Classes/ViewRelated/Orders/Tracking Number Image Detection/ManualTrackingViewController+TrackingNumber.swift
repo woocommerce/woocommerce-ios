@@ -16,40 +16,45 @@ private extension ManualTrackingViewController {
         let imagePicker = UIImagePickerController()
         imagePicker.delegate = self
 
-        func presentCamera(_ _: UIAlertAction) {
-            imagePicker.sourceType = .camera
-            self.present(imagePicker, animated: true)
+        if UIImagePickerController.isSourceTypeAvailable(.camera) {
+            func presentCamera(_ _: UIAlertAction) {
+                imagePicker.sourceType = .camera
+                self.present(imagePicker, animated: true)
+            }
+
+            let cameraAction = UIAlertAction(title: NSLocalizedString("Camera", comment: ""),
+                                             style: .default,
+                                             handler: presentCamera)
+            prompt.addAction(cameraAction)
         }
 
-        let cameraAction = UIAlertAction(title: "Camera",
-                                         style: .default,
-                                         handler: presentCamera)
+        if UIImagePickerController.isSourceTypeAvailable(.photoLibrary) {
+            func presentLibrary(_ _: UIAlertAction) {
+                imagePicker.sourceType = .photoLibrary
+                self.present(imagePicker, animated: true)
+            }
 
-        func presentLibrary(_ _: UIAlertAction) {
-            imagePicker.sourceType = .photoLibrary
-            self.present(imagePicker, animated: true)
+            let libraryAction = UIAlertAction(title: NSLocalizedString("Photo Library", comment: ""),
+                                              style: .default,
+                                              handler: presentLibrary)
+            prompt.addAction(libraryAction)
         }
 
-        let libraryAction = UIAlertAction(title: "Photo Library",
-                                          style: .default,
-                                          handler: presentLibrary)
+        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum) {
+            func presentAlbums(_ _: UIAlertAction) {
+                imagePicker.sourceType = .savedPhotosAlbum
+                self.present(imagePicker, animated: true)
+            }
 
-        func presentAlbums(_ _: UIAlertAction) {
-            imagePicker.sourceType = .savedPhotosAlbum
-            self.present(imagePicker, animated: true)
+            let albumsAction = UIAlertAction(title: NSLocalizedString("Saved Albums", comment: ""),
+                                             style: .default,
+                                             handler: presentAlbums)
+            prompt.addAction(albumsAction)
         }
 
-        let albumsAction = UIAlertAction(title: "Saved Albums",
-                                         style: .default,
-                                         handler: presentAlbums)
-
-        let cancelAction = UIAlertAction(title: "Cancel",
+        let cancelAction = UIAlertAction(title: NSLocalizedString("Cancel", comment: ""),
                                          style: .cancel,
                                          handler: nil)
-
-        prompt.addAction(cameraAction)
-        prompt.addAction(libraryAction)
-        prompt.addAction(albumsAction)
         prompt.addAction(cancelAction)
 
         present(prompt, animated: true, completion: nil)

@@ -59,7 +59,6 @@ extension TableFooterView {
     /// Initialization method for footnote textview
     ///
     func setupFootnoteTextView() {
-        footnote.attributedText = hiringAttributedText
         footnote.adjustsFontForContentSizeCategory = true
         footnote.textContainerInset = .zero
         footnote.textAlignment = .center
@@ -68,31 +67,5 @@ extension TableFooterView {
             .underlineColor: UIColor.clear,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
-    }
-}
-
-
-// MARK: - Private methods
-//
-private extension TableFooterView {
-
-    /// Returns the Settings Footer Attributed Text
-    /// (which contains a link to the "Work with us" URL)
-    ///
-    var hiringAttributedText: NSAttributedString {
-        let hiringText = NSLocalizedString("Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
-                                               comment: "Made with love tagline and we're hiring promotional blurb. It reads: 'Made with love by Automattic. We’re hiring!' and it links to a web page on the words 'We’re hiring!'. Place the phrase, \'We’re hiring!' between the opening `<a` tag and the closing `</a>` tags."
-        )
-        let hiringAttributes: [NSAttributedString.Key: Any] = [
-            .font: StyleManager.footerLabelFont,
-            .foregroundColor: StyleManager.wooGreyMid
-        ]
-
-        let hiringAttrText = NSMutableAttributedString()
-        hiringAttrText.append(hiringText.htmlToAttributedString)
-        let range = NSRange(location: 0, length: hiringAttrText.length)
-        hiringAttrText.addAttributes(hiringAttributes, range: range)
-
-        return hiringAttrText
     }
 }

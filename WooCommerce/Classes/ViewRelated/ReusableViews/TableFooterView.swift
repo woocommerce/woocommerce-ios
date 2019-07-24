@@ -72,7 +72,7 @@ extension TableFooterView {
 }
 
 
-// MARK - Private methods
+// MARK: - Private methods
 //
 private extension TableFooterView {
 
@@ -81,7 +81,7 @@ private extension TableFooterView {
     ///
     var hiringAttributedText: NSAttributedString {
         let hiringText = NSLocalizedString("Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
-                                               comment: "Made with love tagline and we're hiring promotional blurb. It reads: 'Made with love by Automattic. We’re hiring!' and it links to a web page on the words 'We’re hiring!'. Place the phrase, \'We’re hiring!' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'We’re hiring!' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: we are hiring page' or any alternative that sounds natural in your language."
+                                               comment: "Made with love tagline and we're hiring promotional blurb. It reads: 'Made with love by Automattic. We’re hiring!' and it links to a web page on the words 'We’re hiring!'. Place the phrase, \'We’re hiring!' between the opening `<a` tag and the closing `</a>` tags."
         )
         let hiringAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,

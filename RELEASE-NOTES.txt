@@ -3,6 +3,7 @@
 - New feature: in Order Details > Shipment Tracking, a new action is added to the "more" action menu for copying tracking number.
 - bugfix & improvement: when Jetpack site stats module is turned off, the generic error toast is not shown to the user anymore. Additionally, the visitors stats UI is shown/hidden when the Jetpack module is activated/deactivated respectively.
 - Enhancement: updated the footer in Settings to inform users that we're hiring.
+- bugfix & improvement: when Jetpack site stats module is turned off or when user has no permission to view site stats, the generic error toast is not shown to the user anymore. Additionally, the visitors stats UI is shown/hidden when the Jetpack module is activated/deactivated respectively.
 
 2.3
 -----

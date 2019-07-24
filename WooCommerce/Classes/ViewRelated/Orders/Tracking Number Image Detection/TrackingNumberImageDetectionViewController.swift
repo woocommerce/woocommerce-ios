@@ -303,19 +303,6 @@ private extension TrackingNumberImageDetectionViewController {
         return layer
     }
 
-    // Rectangles are BLUE.
-    func draw(rectangles: [VNRectangleObservation], onImageWithBounds bounds: CGRect) {
-        CATransaction.begin()
-        for observation in rectangles {
-            let rectBox = boundingBox(forRegionOfInterest: observation.boundingBox, withinImageBounds: bounds)
-            let rectLayer = shapeLayer(color: .blue, frame: rectBox)
-
-            // Add to pathLayer on top of image.
-            pathLayer?.addSublayer(rectLayer)
-        }
-        CATransaction.commit()
-    }
-
     // Lines of text are RED.  Individual characters are PURPLE.
     func draw(text: [VNTextObservation], onImageWithBounds bounds: CGRect) {
         guard !text.isEmpty else {

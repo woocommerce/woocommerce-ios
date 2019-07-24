@@ -29,7 +29,12 @@ extension VNRecognizedText: TrackingNumberImageDetectionResult {}
 @available(iOS 13.0, *)
 class TrackingNumberImageDetectionViewController: UIViewController {
     // MARK: init properties
-    private let image: UIImage
+    private let originalImage: UIImage
+
+    // Account for image orientation by transforming view.
+    private lazy var correctedImage: UIImage = {
+        return scaleAndOrient(image: originalImage)
+    }()
 
     typealias OnTrackingNumberDetection = (_ trackingNumber: String) -> ()
     private let onTrackingNumberDetection: OnTrackingNumberDetection
@@ -71,7 +76,7 @@ class TrackingNumberImageDetectionViewController: UIViewController {
     }()
 
     init(image: UIImage, onTrackingNumberDetection: @escaping OnTrackingNumberDetection) {
-        self.image = image
+        self.originalImage = image
         self.onTrackingNumberDetection = onTrackingNumberDetection
         super.init(nibName: nil, bundle: nil)
     }
@@ -96,15 +101,15 @@ class TrackingNumberImageDetectionViewController: UIViewController {
         debugImageView.frame.origin = CGPoint(x: 30, y: 30)
         debugImageView.isHidden = true
 
-        show(image)
+        show(correctedImage)
 
         // Convert from UIImageOrientation to CGImagePropertyOrientation.
-        guard let cgOrientation = CGImagePropertyOrientation(rawValue: UInt32(image.imageOrientation.rawValue)) else {
+        guard let cgOrientation = CGImagePropertyOrientation(rawValue: UInt32(correctedImage.imageOrientation.rawValue)) else {
             return
         }
 
         // Fire off request based on URL of chosen photo.
-        guard let cgImage = image.cgImage else {
+        guard let cgImage = correctedImage.cgImage else {
             return
         }
         performVisionRequest(image: cgImage,
@@ -120,17 +125,13 @@ class TrackingNumberImageDetectionViewController: UIViewController {
             // Notes: somehow have to transform the frame like `layer.transform = CATransform3DMakeScale(1, -1, 1)`
             let frame = touchedLayer.frameInOrigialImage
                 .applying(CGAffineTransform(translationX: 0, y: -touchedLayer.frameInOrigialImage.height))
-            guard let croppedImage = image.cgImage?.cropping(to: frame) else {
+            guard let croppedImage = correctedImage.cropping(to: frame).cgImage else {
                 assertionFailure()
                 return
             }
             // Add some margin to the text region for the selected image to be shown in the next screen.
-            let frameForSelectedImage = frame.inset(by: UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
-            guard let selectedCgImage = image.cgImage?.cropping(to: frameForSelectedImage) else {
-                assertionFailure()
-                return
-            }
-            let selectedImage = UIImage(cgImage: selectedCgImage)
+            let frameForSelectedImage = frame
+            let selectedImage = correctedImage.cropping(to: frameForSelectedImage)
             self.selectedImage = selectedImage
             debugImageView.image = selectedImage
             debugImageView.frame.size = selectedImage.size
@@ -152,11 +153,8 @@ private extension TrackingNumberImageDetectionViewController {
         pathLayer = nil
         imageView.image = nil
 
-        // Account for image orientation by transforming view.
-        let correctedImage = scaleAndOrient(image: image)
-
         // Place photo inside imageView.
-        imageView.image = correctedImage
+        imageView.image = image
 
         // Transform image to fit screen.
         guard let cgImage = correctedImage.cgImage else {
@@ -268,7 +266,6 @@ private extension TrackingNumberImageDetectionViewController {
         // Create a new layer.
         let layer = TextShapeLayer(color: color, frameInOrigialImage: frameInOrigialImage)
 
-
         // Locate the layer.
         layer.anchorPoint = .zero
         layer.frame = frame
@@ -293,7 +290,7 @@ private extension TrackingNumberImageDetectionViewController {
         CATransaction.begin()
         for wordObservation in text {
             let containerSize = imageView.frame.size
-            let originalSize = image.size
+            let originalSize = correctedImage.size
 
             let wordBox = boundingBox(forRegionOfInterest: wordObservation.boundingBox, withinImageBounds: CGRect(origin: .zero, size: originalSize))
 
@@ -315,9 +312,8 @@ private extension TrackingNumberImageDetectionViewController {
 
     /// - Tag: PreprocessImage
     func scaleAndOrient(image: UIImage) -> UIImage {
-
         // Set a default value for limiting image size.
-        let maxResolution: CGFloat = 640
+        let maxResolution: CGFloat = min(max(image.size.width, image.size.height), 1600)
 
         guard let cgImage = image.cgImage else {
             print("UIImage has no CGImage backing it!")

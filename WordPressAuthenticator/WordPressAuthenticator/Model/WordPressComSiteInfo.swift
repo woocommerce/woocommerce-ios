@@ -37,7 +37,7 @@ public class WordPressComSiteInfo {
         name        = remote["name"] as? String         ?? ""
         tagline     = remote["description"] as? String  ?? ""
         url         = remote["URL"] as? String          ?? ""
-        hasJetpack  = remote["jetpack"] as? Bool        ?? false
+        hasJetpack  = remote["hasJetpack"] as? Bool     ?? false
         icon        = remote["icon.img"] as? String     ?? ""
         isWPCom     = remote["isWordPressDotCom"] as? Bool ?? false
         

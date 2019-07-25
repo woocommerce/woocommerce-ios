@@ -108,7 +108,7 @@ class TrackingNumberImageDetectionViewController: UIViewController {
                 return
             }
             // Add some margin to the text region for the selected image to be shown in the next screen.
-            let frameForSelectedImage = frame
+            let frameForSelectedImage = frame.inset(by: UIEdgeInsets(top: -10, left: -10, bottom: -10, right: -10))
             let selectedImage = correctedImage.cropping(to: frameForSelectedImage)
             self.selectedImage = selectedImage
 

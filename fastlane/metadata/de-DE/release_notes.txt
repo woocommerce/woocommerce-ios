@@ -1,1 +1,1 @@
-Es ist nichts Weltbewegendes passiert! Wir haben nur einige Verbesserungen und Fehlerbehebungen vorgenommen. Du wirst davon nichts bemerken – außer, dass deine App jetzt noch besser läuft.
+This version of the app does a better job adjust large font sizes for little phone screens — if you use iOS’s dynamic type settings, you won’t see any more comically large text.

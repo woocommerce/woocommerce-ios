@@ -485,7 +485,7 @@ private extension SettingsViewController {
     ///
     var hiringAttributedText: NSAttributedString {
         let hiringText = NSLocalizedString("Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
-                                           comment: "It reads: 'Made with love by Automattic. We’re hiring!' and it links to a web page on the words 'We’re hiring!'. Place the phrase, \'We’re hiring!' between the opening `<a` tag and the closing `</a>` tags."
+                                           comment: "It reads: 'Made with love by Automattic. We’re hiring!'. Place the phrase, \'We’re hiring!' between the opening `<a` tag and the closing `</a>` tags."
         )
         let hiringAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,

@@ -2,49 +2,31 @@ import SVProgressHUD
 import UIKit
 import Vision
 
-extension CGRect {
-    // TODO: unit tests.
-    func calculateFrame(originalParentSize: CGSize, toFitIn containerSize: CGSize) -> CGRect {
-        let scale = min(containerSize.width / originalParentSize.width, containerSize.height / originalParentSize.height)
-        let scaleTransform = CGAffineTransform(scaleX: scale, y: scale)
-
-        // Scale rect with image.
-        let newSize = size.applying(scaleTransform)
-
-        // Offset rect with image.
-        let newParentSize = originalParentSize.applying(scaleTransform)
-        let offsetTransform = CGAffineTransform(translationX: (containerSize.width - newParentSize.width) / 2.0,
-                                                y: (containerSize.height - newParentSize.height) / 2.0)
-        let newOrigin = origin
-            .applying(scaleTransform)
-            .applying(offsetTransform)
-        let frame = CGRect(origin: newOrigin, size: newSize)
-        return frame
-    }
-}
-
 @available(iOS 13.0, *)
 extension VNRecognizedText: TrackingNumberImageDetectionResult {}
 
 @available(iOS 13.0, *)
+/// `VNRecognizeTextRequest` is the only class that requires iOS 13+.
 class TrackingNumberImageDetectionViewController: UIViewController {
     // MARK: init properties
     private let originalImage: UIImage
 
-    // Account for image orientation by transforming view.
+    // Account for image orientation by transforming the original image.
     private lazy var correctedImage: UIImage = {
-        return scaleAndOrient(image: originalImage)
+        return originalImage.scaleAndOrient(maxDimension: maxImageDimension)
     }()
 
     typealias OnTrackingNumberDetection = (_ trackingNumber: String) -> ()
     private let onTrackingNumberDetection: OnTrackingNumberDetection
+
+    // MARK: constants
+    private let maxImageDimension = CGFloat(1600)
 
     // MARK: subviews
     private lazy var imageView: UIImageView = {
         return UIImageView(image: nil)
     }()
 
-    private var debugImageView: UIImageView = UIImageView(image: nil)
     // Selected image.
     private var selectedImage: UIImage?
 
@@ -97,10 +79,6 @@ class TrackingNumberImageDetectionViewController: UIViewController {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
 
-        view.addSubview(debugImageView)
-        debugImageView.frame.origin = CGPoint(x: 30, y: 30)
-        debugImageView.isHidden = true
-
         show(correctedImage)
 
         // Convert from UIImageOrientation to CGImagePropertyOrientation.
@@ -112,7 +90,7 @@ class TrackingNumberImageDetectionViewController: UIViewController {
         guard let cgImage = correctedImage.cgImage else {
             return
         }
-        performVisionRequest(image: cgImage,
+        performTextDetection(image: cgImage,
                              orientation: cgOrientation)
     }
 
@@ -133,8 +111,6 @@ class TrackingNumberImageDetectionViewController: UIViewController {
             let frameForSelectedImage = frame
             let selectedImage = correctedImage.cropping(to: frameForSelectedImage)
             self.selectedImage = selectedImage
-            debugImageView.image = selectedImage
-            debugImageView.frame.size = selectedImage.size
 
             // Show spinner.
             updateSpinner(shouldShow: true)
@@ -147,8 +123,7 @@ class TrackingNumberImageDetectionViewController: UIViewController {
 @available(iOS 13.0, *)
 private extension TrackingNumberImageDetectionViewController {
     func show(_ image: UIImage) {
-
-        // Remove previous paths & image
+        // Remove previous paths & image.
         pathLayer?.removeFromSuperlayer()
         pathLayer = nil
         imageView.image = nil
@@ -192,19 +167,17 @@ private extension TrackingNumberImageDetectionViewController {
     // MARK: - Vision
 
     /// - Tag: PerformRequests
-    func performVisionRequest(image: CGImage, orientation: CGImagePropertyOrientation) {
-
-        // Fetch desired requests based on switch status.
-        let requests = createVisionRequests()
-        // Create a request handler.
+    func performTextDetection(image: CGImage, orientation: CGImagePropertyOrientation) {
         let imageRequestHandler = VNImageRequestHandler(cgImage: image,
                                                         orientation: orientation,
                                                         options: [:])
 
-        // Send the requests to the request handler.
-        DispatchQueue.global(qos: .userInitiated).async {
+        DispatchQueue.global(qos: .userInitiated).async { [weak self] in
+            guard let self = self else {
+                return
+            }
             do {
-                try imageRequestHandler.perform(requests)
+                try imageRequestHandler.perform([self.textDetectionRequest])
             } catch let error as NSError {
                 print("Failed to perform image request: \(error)")
                 self.presentAlert("Image Request Failed", error: error)
@@ -213,24 +186,16 @@ private extension TrackingNumberImageDetectionViewController {
         }
     }
 
-    /// - Tag: CreateRequests
-    func createVisionRequests() -> [VNRequest] {
-
-        // Create an array to collect all desired requests.
-        var requests: [VNRequest] = []
-        requests.append(self.textDetectionRequest)
-
-        // Return grouped requests as a single array.
-        return requests
-    }
-
     func handleDetectedText(request: VNRequest?, error: Error?) {
         if let nsError = error as NSError? {
             self.presentAlert("Text Detection Error", error: nsError)
             return
         }
         // Perform drawing on the main thread.
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
             guard let drawLayer = self.pathLayer,
                 let results = request?.results as? [VNTextObservation] else {
                     return
@@ -243,7 +208,6 @@ private extension TrackingNumberImageDetectionViewController {
     // MARK: - Path-Drawing
 
     func boundingBox(forRegionOfInterest: CGRect, withinImageBounds bounds: CGRect) -> CGRect {
-
         let imageWidth = bounds.width
         let imageHeight = bounds.height
 
@@ -306,90 +270,6 @@ private extension TrackingNumberImageDetectionViewController {
     }
 }
 
-@available(iOS 13.0, *)
-private extension TrackingNumberImageDetectionViewController {
-    // MARK: - Helper Methods
-
-    /// - Tag: PreprocessImage
-    func scaleAndOrient(image: UIImage) -> UIImage {
-        // Set a default value for limiting image size.
-        let maxResolution: CGFloat = min(max(image.size.width, image.size.height), 1600)
-
-        guard let cgImage = image.cgImage else {
-            print("UIImage has no CGImage backing it!")
-            return image
-        }
-
-        // Compute parameters for transform.
-        let width = CGFloat(cgImage.width)
-        let height = CGFloat(cgImage.height)
-        var transform = CGAffineTransform.identity
-
-        var bounds = CGRect(x: 0, y: 0, width: width, height: height)
-
-        if width > maxResolution ||
-            height > maxResolution {
-            let ratio = width / height
-            if width > height {
-                bounds.size.width = maxResolution
-                bounds.size.height = round(maxResolution / ratio)
-            } else {
-                bounds.size.width = round(maxResolution * ratio)
-                bounds.size.height = maxResolution
-            }
-        }
-
-        let scaleRatio = bounds.size.width / width
-        let orientation = image.imageOrientation
-        switch orientation {
-        case .up:
-            transform = .identity
-        case .down:
-            transform = CGAffineTransform(translationX: width, y: height).rotated(by: .pi)
-        case .left:
-            let boundsHeight = bounds.size.height
-            bounds.size.height = bounds.size.width
-            bounds.size.width = boundsHeight
-            transform = CGAffineTransform(translationX: 0, y: width).rotated(by: 3.0 * .pi / 2.0)
-        case .right:
-            let boundsHeight = bounds.size.height
-            bounds.size.height = bounds.size.width
-            bounds.size.width = boundsHeight
-            transform = CGAffineTransform(translationX: height, y: 0).rotated(by: .pi / 2.0)
-        case .upMirrored:
-            transform = CGAffineTransform(translationX: width, y: 0).scaledBy(x: -1, y: 1)
-        case .downMirrored:
-            transform = CGAffineTransform(translationX: 0, y: height).scaledBy(x: 1, y: -1)
-        case .leftMirrored:
-            let boundsHeight = bounds.size.height
-            bounds.size.height = bounds.size.width
-            bounds.size.width = boundsHeight
-            transform = CGAffineTransform(translationX: height, y: width).scaledBy(x: -1, y: 1).rotated(by: 3.0 * .pi / 2.0)
-        case .rightMirrored:
-            let boundsHeight = bounds.size.height
-            bounds.size.height = bounds.size.width
-            bounds.size.width = boundsHeight
-            transform = CGAffineTransform(scaleX: -1, y: 1).rotated(by: .pi / 2.0)
-        @unknown default:
-            assertionFailure()
-        }
-
-        return UIGraphicsImageRenderer(size: bounds.size).image { rendererContext in
-            let context = rendererContext.cgContext
-
-            if orientation == .right || orientation == .left {
-                context.scaleBy(x: -scaleRatio, y: scaleRatio)
-                context.translateBy(x: -height, y: 0)
-            } else {
-                context.scaleBy(x: scaleRatio, y: -scaleRatio)
-                context.translateBy(x: 0, y: -height)
-            }
-            context.concatenate(transform)
-            context.draw(cgImage, in: CGRect(x: 0, y: 0, width: width, height: height))
-        }
-    }
-}
-
 // MARK: iOS 13+
 @available(iOS 13.0, *)
 private extension TrackingNumberImageDetectionViewController {
@@ -429,12 +309,10 @@ private extension TrackingNumberImageDetectionViewController {
                                                                                           results: result.topCandidates(10),
                                                                                           onResultSelection: self.didSelectResult)
             self.navigationController?.pushViewController(resultsViewController, animated: true)
-            print(result.topCandidates(10))
         }
     }
 
     func didSelectResult(string: String) {
-        print(string)
         onTrackingNumberDetection(string)
     }
 }
@@ -447,7 +325,10 @@ private extension TrackingNumberImageDetectionViewController {
 
     func presentAlert(title: String?, messsage: String?, action: (() -> ())? = nil) {
         // Always present alert on main thread.
-        DispatchQueue.main.async {
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else {
+                return
+            }
             let alertController = UIAlertController(title: title,
                                                     message: messsage,
                                                     preferredStyle: .alert)

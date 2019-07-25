@@ -2,6 +2,11 @@ import SVProgressHUD
 import UIKit
 import Vision
 
+private struct RecognizedText: TrackingNumberImageDetectionResult {
+    let string: String
+    let confidence: Float
+}
+
 @available(iOS 13.0, *)
 extension VNRecognizedText: TrackingNumberImageDetectionResult {}
 
@@ -305,8 +310,37 @@ private extension TrackingNumberImageDetectionViewController {
                 assertionFailure()
                 return
             }
+
+            // Remove any non-alphanumerical characters in each result text, deduplicate and sort by confidence.
+            guard let nonAlphanumericRegex = try? NSRegularExpression(pattern: "[^a-zA-Z0-9]", options: []) else {
+                return
+            }
+            let results = result.topCandidates(10)
+                .map({ (result: VNRecognizedText) -> TrackingNumberImageDetectionResult in
+                    let text = result.string
+                    let range = NSMakeRange(0, text.count)
+                    let alphanumericalText = nonAlphanumericRegex.stringByReplacingMatches(in: text,
+                                                                         options: [],
+                                                                         range: range,
+                                                                         withTemplate: "")
+                    return RecognizedText(string: alphanumericalText, confidence: result.confidence)
+                })
+                .sorted { (lhs, rhs) -> Bool in
+                    return lhs.confidence > rhs.confidence
+                }
+
+            var deduplicatedResults = [TrackingNumberImageDetectionResult]()
+            for result in results {
+                let hasDuplicateText = deduplicatedResults.contains(where: { (anotherResult: TrackingNumberImageDetectionResult) -> Bool in
+                    return result.string == anotherResult.string
+                })
+                if !hasDuplicateText {
+                    deduplicatedResults.append(result)
+                }
+            }
+
             let resultsViewController = TrackingNumberImageDetectionResultsViewController(image: selectedImage,
-                                                                                          results: result.topCandidates(10),
+                                                                                          results: deduplicatedResults,
                                                                                           onResultSelection: self.didSelectResult)
             self.navigationController?.pushViewController(resultsViewController, animated: true)
         }

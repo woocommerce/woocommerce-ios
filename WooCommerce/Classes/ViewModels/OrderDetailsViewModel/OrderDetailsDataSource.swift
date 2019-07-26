@@ -15,7 +15,9 @@ class DynamicDataSource<T>: NSObject {
         return dictionary[key]
     }
 
-    func calculateAsynchronouslyAndSetValue(calculation: @escaping () -> (T), at key: AnyHashable) {
+    func calculateAsynchronouslyAndSetValue(at key: AnyHashable,
+                                            calculation: @escaping () -> (T),
+                                            onSet: @escaping (T) -> ()) {
         DispatchQueue.global().async {
             let value = calculation()
             DispatchQueue.main.async { [weak self] in
@@ -23,6 +25,7 @@ class DynamicDataSource<T>: NSObject {
                     return
                 }
                 self.dictionary[key] = value
+                onSet(value)
             }
         }
     }
@@ -80,6 +83,8 @@ final class OrderDetailsDataSource: NSObject {
 
 
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
+
+    var onReloadTableView: (() -> Void)?
 
     /// Order shipment tracking list
     ///
@@ -523,9 +528,15 @@ extension OrderDetailsDataSource {
     private func updateOrderNoteContentDataSource(orderNotes: [OrderNote]) {
         orderNoteContentDataSource.clear()
         for orderNote in orderNotes {
-            orderNoteContentDataSource.calculateAsynchronouslyAndSetValue(calculation: { () -> (String) in
+            let calculation = { () -> (String) in
                 return orderNote.note.strippedHTML
-            }, at: orderNote.noteID)
+            }
+            let onSet = { [weak self] (_: String) -> () in
+                self?.onReloadTableView?()
+            }
+            orderNoteContentDataSource.calculateAsynchronouslyAndSetValue(at: orderNote.noteID,
+                                                                          calculation: calculation,
+                                                                          onSet: onSet)
         }
     }
 

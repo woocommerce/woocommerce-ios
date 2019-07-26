@@ -94,6 +94,9 @@ private extension OrderDetailsViewController {
         tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
+        viewModel.dataSource.onReloadTableView = { [weak self] in
+            self?.tableView.reloadData()
+        }
     }
 
     /// Setup: Navigation

@@ -2,6 +2,36 @@ import Foundation
 import UIKit
 import Yosemite
 
+/// A data source that can be updated dynamically.
+class DynamicDataSource<T>: NSObject {
+
+    private var dictionary: [AnyHashable: T] = [:]
+
+    override init() {
+        super.init()
+    }
+
+    func value(at key: AnyHashable) -> T? {
+        return dictionary[key]
+    }
+
+    func calculateAsynchronouslyAndSetValue(calculation: @escaping () -> (T), at key: AnyHashable) {
+        DispatchQueue.global().async {
+            let value = calculation()
+            DispatchQueue.main.async { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                self.dictionary[key] = value
+            }
+        }
+    }
+
+    func clear() {
+        dictionary.removeAll()
+    }
+}
+
 final class OrderDetailsDataSource: NSObject {
     private(set) var order: Order
     private let currencyFormatter = CurrencyFormatter()
@@ -73,6 +103,10 @@ final class OrderDetailsDataSource: NSObject {
 
     private lazy var resultsControllers: OrderDetailsResultsControllers = {
         return OrderDetailsResultsControllers(order: self.order)
+    }()
+
+    private lazy var orderNoteContentDataSource: DynamicDataSource<String> = {
+        return DynamicDataSource()
     }()
 
     init(order: Order) {
@@ -283,7 +317,7 @@ private extension OrderDetailsDataSource {
         cell.isSystemAuthor = note.isSystemAuthor
         cell.isCustomerNote = note.isCustomerNote
         cell.dateCreated = note.dateCreated.toString(dateStyle: .long, timeStyle: .short)
-        cell.contents = note.note.strippedHTML
+        cell.contents = orderNoteContentDataSource.value(at: note.noteID)
     }
 
     func configurePayment(cell: PaymentTableViewCell) {
@@ -479,10 +513,20 @@ extension OrderDetailsDataSource {
 
         let notes: Section = {
             let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
+            updateOrderNoteContentDataSource(orderNotes: orderNotes)
             return Section(title: Title.notes, rows: rows)
         }()
 
         sections = [summary, products, customerNotes, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
+    }
+
+    private func updateOrderNoteContentDataSource(orderNotes: [OrderNote]) {
+        orderNoteContentDataSource.clear()
+        for orderNote in orderNotes {
+            orderNoteContentDataSource.calculateAsynchronouslyAndSetValue(calculation: { () -> (String) in
+                return orderNote.note.strippedHTML
+            }, at: orderNote.noteID)
+        }
     }
 
     private enum Title {

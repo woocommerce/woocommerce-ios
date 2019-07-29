@@ -91,6 +91,12 @@
 		D87F61552265AA900031A13B /* PListFileStorage.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F61542265AA900031A13B /* PListFileStorage.swift */; };
 		D87F61572265AD980031A13B /* FileStorageTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F61562265AD980031A13B /* FileStorageTests.swift */; };
 		D87F615C2265AF190031A13B /* shipment-provider.plist in Resources */ = {isa = PBXBuildFile; fileRef = D87F615B2265AF190031A13B /* shipment-provider.plist */; };
+		D8FBFF5522D66A06006E3336 /* OrderStatsV4Interval+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF4F22D66A06006E3336 /* OrderStatsV4Interval+CoreDataClass.swift */; };
+		D8FBFF5622D66A06006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5022D66A06006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift */; };
+		D8FBFF5722D66A06006E3336 /* OrderStatsV4Totals+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5122D66A06006E3336 /* OrderStatsV4Totals+CoreDataClass.swift */; };
+		D8FBFF5822D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5222D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift */; };
+		D8FBFF5922D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5322D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift */; };
+		D8FBFF5A22D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF5422D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -210,6 +216,13 @@
 		D87F61542265AA900031A13B /* PListFileStorage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PListFileStorage.swift; sourceTree = "<group>"; };
 		D87F61562265AD980031A13B /* FileStorageTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FileStorageTests.swift; path = StorageTests/Tools/FileStorageTests.swift; sourceTree = SOURCE_ROOT; };
 		D87F615B2265AF190031A13B /* shipment-provider.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "shipment-provider.plist"; sourceTree = "<group>"; };
+		D8FBFF2A22D63B12006E3336 /* Model 17.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 17.xcdatamodel"; sourceTree = "<group>"; };
+		D8FBFF4F22D66A06006E3336 /* OrderStatsV4Interval+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D8FBFF5022D66A06006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		D8FBFF5122D66A06006E3336 /* OrderStatsV4Totals+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Totals+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D8FBFF5222D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Totals+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		D8FBFF5322D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4+CoreDataClass.swift"; sourceTree = "<group>"; };
+		D8FBFF5422D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		DF3D3B298350F68191CD1DAD /* Pods_Storage.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Storage.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -249,6 +262,12 @@
 		7471A518216CF12900219F7E /* Stats */ = {
 			isa = PBXGroup;
 			children = (
+				D8FBFF4F22D66A06006E3336 /* OrderStatsV4Interval+CoreDataClass.swift */,
+				D8FBFF5022D66A06006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift */,
+				D8FBFF5122D66A06006E3336 /* OrderStatsV4Totals+CoreDataClass.swift */,
+				D8FBFF5222D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift */,
+				D8FBFF5322D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift */,
+				D8FBFF5422D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift */,
 				74938EC6216FA9B200540BA1 /* OrderStats+CoreDataClass.swift */,
 				74938EC7216FA9B200540BA1 /* OrderStats+CoreDataProperties.swift */,
 				74938EC4216FA9B200540BA1 /* OrderStatsItem+CoreDataClass.swift */,
@@ -652,6 +671,7 @@
 				B54CA5BB20A4BD2800F38CD1 /* NSManagedObject+Object.swift in Sources */,
 				D821645D2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift in Sources */,
 				7471A514216CF0FE00219F7E /* SiteVisitStats+CoreDataClass.swift in Sources */,
+				D8FBFF5722D66A06006E3336 /* OrderStatsV4Totals+CoreDataClass.swift in Sources */,
 				7474539C2242C85E00E0B5EE /* ProductDimensions+CoreDataProperties.swift in Sources */,
 				74938ECB216FA9B200540BA1 /* OrderStats+CoreDataProperties.swift in Sources */,
 				7426A05120F69D00002A4E07 /* OrderCoupon+CoreDataProperties.swift in Sources */,
@@ -681,6 +701,7 @@
 				7492FAD6217FA9C100ED2C69 /* SiteSetting+CoreDataClass.swift in Sources */,
 				B505F6E020BEEA8100BB1B69 /* StorageType.swift in Sources */,
 				747453A82242C85E00E0B5EE /* ProductTag+CoreDataProperties.swift in Sources */,
+				D8FBFF5A22D66A06006E3336 /* OrderStatsV4+CoreDataProperties.swift in Sources */,
 				7474539F2242C85E00E0B5EE /* ProductImage+CoreDataClass.swift in Sources */,
 				7474539D2242C85E00E0B5EE /* ProductAttribute+CoreDataClass.swift in Sources */,
 				747453A42242C85E00E0B5EE /* Product+CoreDataProperties.swift in Sources */,
@@ -693,7 +714,10 @@
 				7471A516216CF0FE00219F7E /* SiteVisitStatsItem+CoreDataClass.swift in Sources */,
 				B505F6DA20BEEA3200BB1B69 /* Account+CoreDataProperties.swift in Sources */,
 				7474539E2242C85E00E0B5EE /* ProductAttribute+CoreDataProperties.swift in Sources */,
+				D8FBFF5522D66A06006E3336 /* OrderStatsV4Interval+CoreDataClass.swift in Sources */,
+				D8FBFF5822D66A06006E3336 /* OrderStatsV4Totals+CoreDataProperties.swift in Sources */,
 				CE3B7AD22225E62C0050FE4B /* OrderStatus+CoreDataClass.swift in Sources */,
+				D8FBFF5922D66A06006E3336 /* OrderStatsV4+CoreDataClass.swift in Sources */,
 				74B7D6AE20F90CBB002667AC /* OrderNote+CoreDataProperties.swift in Sources */,
 				D87F614E22657C2F0031A13B /* PreselectedProvider.swift in Sources */,
 				CE12FBCF221F0E1A00C59248 /* Order+CoreDataProperties.swift in Sources */,
@@ -706,6 +730,7 @@
 				74F009C02183B99B002B4566 /* Note+CoreDataClass.swift in Sources */,
 				7499FA44221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift in Sources */,
 				D87F61532265AA230031A13B /* FileStorage.swift in Sources */,
+				D8FBFF5622D66A06006E3336 /* OrderStatsV4Interval+CoreDataProperties.swift in Sources */,
 				B505F6DE20BEEA4F00BB1B69 /* CoreDataManager.swift in Sources */,
 				7492FAD7217FA9C100ED2C69 /* SiteSetting+CoreDataProperties.swift in Sources */,
 				B5FD111F21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift in Sources */,
@@ -1010,6 +1035,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				D8FBFF2A22D63B12006E3336 /* Model 17.xcdatamodel */,
 				CE43A8FA229F475400A4FF29 /* Model 16.xcdatamodel */,
 				CE6B4810227C915B00488C39 /* Model 15.xcdatamodel */,
 				93D8BBF9226A6B3200AD2EB3 /* Model 14.xcdatamodel */,
@@ -1027,7 +1053,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = CE43A8FA229F475400A4FF29 /* Model 16.xcdatamodel */;
+			currentVersion = D8FBFF2A22D63B12006E3336 /* Model 17.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

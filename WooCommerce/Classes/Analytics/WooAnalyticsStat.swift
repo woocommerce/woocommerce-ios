@@ -117,6 +117,7 @@ public enum WooAnalyticsStat: String {
 
     case settingsLogoutTapped                   = "settings_logout_button_tapped"
     case settingsLogoutConfirmation             = "settings_logout_confirmation_dialog_result"
+    case settingsWereHiringTapped               = "settings_we_are_hiring_button_tapped"
 
     // Order View Events
     //

@@ -33,7 +33,7 @@ extension UIButton {
         titleLabel?.textAlignment = .center
     }
 
-    /// Applies the Terciary Button Style: Clear BG / Top Outline
+    /// Applies the Tertiary Button Style: Clear BG / Top Outline
     ///
     func applyTertiaryButtonStyle() {
         backgroundColor = .clear

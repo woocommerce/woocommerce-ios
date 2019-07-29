@@ -51,6 +51,8 @@ final class OrderDetailsDataSource: NSObject {
 
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
 
+    /// Called when table view should reload
+    ///
     var onReloadTableView: (() -> Void)?
 
     /// Order shipment tracking list
@@ -77,7 +79,7 @@ final class OrderDetailsDataSource: NSObject {
         return OrderDetailsResultsControllers(order: self.order)
     }()
 
-    private lazy var orderNoteContentDataSource: AsyncDictionary<Int, String> = {
+    private lazy var orderNoteAsyncDictionary: AsyncDictionary<Int, String> = {
         return AsyncDictionary()
     }()
 
@@ -289,7 +291,7 @@ private extension OrderDetailsDataSource {
         cell.isSystemAuthor = note.isSystemAuthor
         cell.isCustomerNote = note.isCustomerNote
         cell.dateCreated = note.dateCreated.toString(dateStyle: .long, timeStyle: .short)
-        cell.contents = orderNoteContentDataSource.value(forKey: note.noteID)
+        cell.contents = orderNoteAsyncDictionary.value(forKey: note.noteID)
     }
 
     func configurePayment(cell: PaymentTableViewCell) {
@@ -493,7 +495,7 @@ extension OrderDetailsDataSource {
     }
 
     private func updateOrderNoteContentDataSource(orderNotes: [OrderNote]) {
-        orderNoteContentDataSource.clear()
+        orderNoteAsyncDictionary.clear()
         for orderNote in orderNotes {
             let calculation = { () -> (String) in
                 return orderNote.note.strippedHTML
@@ -501,7 +503,7 @@ extension OrderDetailsDataSource {
             let onSet = { [weak self] (_: String) -> () in
                 self?.onReloadTableView?()
             }
-            orderNoteContentDataSource.calculateAsynchronouslyAndUpdateValue(forKey: orderNote.noteID,
+            orderNoteAsyncDictionary.calculateAsynchronouslyAndUpdateValue(forKey: orderNote.noteID,
                                                                              calculation: calculation,
                                                                              onUpdate: onSet)
         }

@@ -2,22 +2,18 @@ import Foundation
 import UIKit
 import Yosemite
 
-/// A data source that can be updated dynamically.
-class DynamicDataSource<T>: NSObject {
+/// A wrapper of dictionary that can be updated asynchronously.
+///
+class AsyncDictionary<Key, Value> where Key : Hashable {
+    private var dictionary: [Key: Value] = [:]
 
-    private var dictionary: [AnyHashable: T] = [:]
-
-    override init() {
-        super.init()
-    }
-
-    func value(at key: AnyHashable) -> T? {
+    func value(at key: Key) -> Value? {
         return dictionary[key]
     }
 
-    func calculateAsynchronouslyAndSetValue(at key: AnyHashable,
-                                            calculation: @escaping () -> (T),
-                                            onSet: @escaping (T) -> ()) {
+    func calculateAsynchronouslyAndSetValue(at key: Key,
+                                            calculation: @escaping () -> (Value),
+                                            onSet: @escaping (Value) -> ()) {
         DispatchQueue.global().async {
             let value = calculation()
             DispatchQueue.main.async { [weak self] in
@@ -110,8 +106,8 @@ final class OrderDetailsDataSource: NSObject {
         return OrderDetailsResultsControllers(order: self.order)
     }()
 
-    private lazy var orderNoteContentDataSource: DynamicDataSource<String> = {
-        return DynamicDataSource()
+    private lazy var orderNoteContentDataSource: AsyncDictionary<Int, String> = {
+        return AsyncDictionary()
     }()
 
     init(order: Order) {

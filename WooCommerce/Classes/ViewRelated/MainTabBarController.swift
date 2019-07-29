@@ -47,6 +47,10 @@ final class MainTabBarController: UITabBarController {
     ///
     private let notificationsBadge = NotificationsBadgeController()
 
+    /// Orders badge
+    ///
+    private let ordersBadge = OrdersBadgeController()
+
 
     // MARK: - Overridden Methods
 
@@ -63,6 +67,7 @@ final class MainTabBarController: UITabBarController {
         /// loaded the childViewControllers, and the tabBar isn't fully initialized.
         ///
         startListeningToBadgeUpdatesIfNeeded()
+        startListeningToOrdersBadge()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -258,5 +263,11 @@ private extension MainTabBarController {
     ///
     func badgeCountWasUpdated(newValue: Int) {
         notificationsBadge.badgeCountWasUpdated(newValue: newValue, in: tabBar)
+    }
+}
+
+private extension MainTabBarController {
+    func startListeningToOrdersBadge() {
+        ordersBadge.badgeCountWasUpdated(newValue: 10, in: tabBar)
     }
 }

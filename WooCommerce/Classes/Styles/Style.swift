@@ -10,6 +10,7 @@ protocol Style {
     static var maxFontSize: CGFloat { get }
     var actionButtonTitleFont: UIFont { get }
     var alternativeLoginsTitleFont: UIFont { get }
+    var badgeFont: UIFont { get }
     var chartLabelFont: UIFont { get }
     var headlineSemiBold: UIFont { get }
     var subheadlineFont: UIFont { get }
@@ -78,6 +79,7 @@ class DefaultStyle: Style {
     static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
+    let badgeFont                        = UIFont.font(forStyle: .caption1, weight: .semibold)
     let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
                                                                         weight: .semibold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
@@ -227,6 +229,10 @@ class StyleManager {
 
     static var alternativeLoginsTitleFont: UIFont {
         return active.alternativeLoginsTitleFont
+    }
+
+    static var badgeFont: UIFont {
+        return active.badgeFont
     }
 
     static var chartLabelFont: UIFont {

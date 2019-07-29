@@ -487,14 +487,14 @@ extension OrderDetailsDataSource {
 
         let notes: Section = {
             let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
-            updateOrderNoteContentDataSource(orderNotes: orderNotes)
             return Section(title: Title.notes, rows: rows)
         }()
 
         sections = [summary, products, customerNotes, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
+        updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
 
-    private func updateOrderNoteContentDataSource(orderNotes: [OrderNote]) {
+    private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {
         orderNoteAsyncDictionary.clear()
         for orderNote in orderNotes {
             let calculation = { () -> (String) in

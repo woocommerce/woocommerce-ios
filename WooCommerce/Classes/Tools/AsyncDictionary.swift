@@ -2,7 +2,7 @@ import Foundation
 
 /// A wrapper of dictionary that can be updated asynchronously.
 ///
-class AsyncDictionary<Key, Value> where Key : Hashable {
+class AsyncDictionary<Key, Value> where Key: Hashable {
     private var dictionary: [Key: Value] = [:]
 
     /// Returns value for key.

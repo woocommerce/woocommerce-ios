@@ -5,13 +5,21 @@ import Foundation
 class AsyncDictionary<Key, Value> where Key : Hashable {
     private var dictionary: [Key: Value] = [:]
 
-    func value(at key: Key) -> Value? {
+    /// Returns value for key.
+    ///
+    func value(forKey key: Key) -> Value? {
         return dictionary[key]
     }
 
-    func calculateAsynchronouslyAndSetValue(at key: Key,
-                                            calculation: @escaping () -> (Value),
-                                            onSet: @escaping (Value) -> ()) {
+    /// Calculates the value for a key asynchronously, updates the dictionary, and then calls the update callback.
+    ///
+    /// - Parameters:
+    ///   - key: key for value
+    ///   - calculation: called to calculate the value for key asynchronously
+    ///   - onUpdate: called on main thread after the calculated value is updated for key
+    func calculateAsynchronouslyAndUpdateValue(forKey key: Key,
+                                               calculation: @escaping () -> (Value),
+                                               onUpdate: @escaping (Value) -> ()) {
         DispatchQueue.global().async {
             let value = calculation()
             DispatchQueue.main.async { [weak self] in
@@ -19,11 +27,13 @@ class AsyncDictionary<Key, Value> where Key : Hashable {
                     return
                 }
                 self.dictionary[key] = value
-                onSet(value)
+                onUpdate(value)
             }
         }
     }
 
+    /// Removes all entries in the dictionary.
+    ///
     func clear() {
         dictionary.removeAll()
     }

@@ -289,7 +289,7 @@ private extension OrderDetailsDataSource {
         cell.isSystemAuthor = note.isSystemAuthor
         cell.isCustomerNote = note.isCustomerNote
         cell.dateCreated = note.dateCreated.toString(dateStyle: .long, timeStyle: .short)
-        cell.contents = orderNoteContentDataSource.value(at: note.noteID)
+        cell.contents = orderNoteContentDataSource.value(forKey: note.noteID)
     }
 
     func configurePayment(cell: PaymentTableViewCell) {
@@ -501,9 +501,9 @@ extension OrderDetailsDataSource {
             let onSet = { [weak self] (_: String) -> () in
                 self?.onReloadTableView?()
             }
-            orderNoteContentDataSource.calculateAsynchronouslyAndSetValue(at: orderNote.noteID,
-                                                                          calculation: calculation,
-                                                                          onSet: onSet)
+            orderNoteContentDataSource.calculateAsynchronouslyAndUpdateValue(forKey: orderNote.noteID,
+                                                                             calculation: calculation,
+                                                                             onUpdate: onSet)
         }
     }
 

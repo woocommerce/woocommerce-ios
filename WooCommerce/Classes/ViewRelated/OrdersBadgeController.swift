@@ -17,16 +17,21 @@ final class OrdersBadgeController {
     ///
     func showBadgeOn(_ tab: WooTab, in tabBar: UITabBar) {
         hideBadgeOn(tab, in: tabBar)
-        let dot = BadgeView(frame: CGRect(x: DotConstants.xOffset,
-                                          y: DotConstants.yOffset,
-                                          width: DotConstants.diameter,
-                                          height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
-//        let dot = BadgeLabel(frame: CGRect(x: DotConstants.xOffset,
-//                                           y: DotConstants.yOffset,
-//                                           width: DotConstants.diameter,
-//                                           height: DotConstants.diameter))
+//        let dot = BadgeView(frame: CGRect(x: DotConstants.xOffset,
+//                                          y: DotConstants.yOffset,
+//                                          width: DotConstants.diameter,
+//                                          height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
+        let dot = BadgeLabel(frame: CGRect(x: DotConstants.xOffset, y: DotConstants.yOffset, width: 23, height: 17))
         dot.tag = dotTag(for: tab)
-        //dot.text = "Cesar"
+        dot.font = StyleManager.badgeFont
+        dot.backgroundColor = StyleManager.wooCommerceBrandColor
+        dot.borderColor = StyleManager.wooWhite
+        dot.borderWidth = 1
+        dot.textColor = StyleManager.wooWhite
+        dot.horizontalPadding = 2
+        dot.cornerRadius = 8
+        dot.textAlignment = .center
+        dot.text = "9+"
         dot.isHidden = true
         tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
         dot.fadeIn()
@@ -59,8 +64,8 @@ private extension OrdersBadgeController {
     enum DotConstants {
         static let diameter    = CGFloat(10)
         static let borderWidth = CGFloat(1)
-        static let xOffset     = CGFloat(2)
-        static let yOffset     = CGFloat(0)
+        static let xOffset     = CGFloat(14)
+        static let yOffset     = CGFloat(1)
         static let tagOffset   = 999
     }
 }

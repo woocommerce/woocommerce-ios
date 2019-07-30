@@ -38,6 +38,8 @@ public class OrderStore: Store {
             synchronizeOrders(siteID: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let statusKey, let onCompletion):
             updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: onCompletion)
+        case .countProcessingOrders(let siteID, let onCompletion):
+            countProcessingOrders(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -130,6 +132,10 @@ private extension OrderStore {
             self?.updateOrderStatus(orderID: orderID, statusKey: oldStatus)
             onCompletion(error)
         }
+    }
+
+    func countProcessingOrders(siteID: Int, onCompletion: (OrderCount?, Error?) -> Void) {
+
     }
 }
 

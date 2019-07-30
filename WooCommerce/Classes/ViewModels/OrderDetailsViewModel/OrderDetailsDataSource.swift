@@ -500,7 +500,10 @@ extension OrderDetailsDataSource {
             let calculation = { () -> (String) in
                 return orderNote.note.strippedHTML
             }
-            let onSet = { [weak self] (_: String) -> () in
+            let onSet = { [weak self] (note: String?) -> () in
+                guard note != nil else {
+                    return
+                }
                 self?.onUIReloadRequired?()
             }
             orderNoteAsyncDictionary.calculate(forKey: orderNote.noteID,

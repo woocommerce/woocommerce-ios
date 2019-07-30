@@ -240,7 +240,7 @@ final class OrdersRemoteTests: XCTestCase {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Count Orders")
 
-        network.simulateResponse(requestUrlSuffix: "orders/totals", filename: "orders-count")
+        network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "orders-count")
 
         remote.countOrders(for: sampleSiteID,
                            statusKey: "processing") { orderCount, error in

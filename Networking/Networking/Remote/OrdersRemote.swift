@@ -143,7 +143,7 @@ public class OrdersRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func countOrders(for siteID: Int, statusKey: String, completion: @escaping (OrderCount?, Error?) -> Void) {
-        let path = "\(Constants.ordersPath)/" + "\(Constants.totalsPath)"
+        let path = "\(Constants.totalsPath)"
         let parameters = [ParameterKeys.statusKey: statusKey]
 
         let mapper = OrderCountMapper(siteID: siteID)
@@ -166,7 +166,7 @@ public extension OrdersRemote {
     private enum Constants {
         static let ordersPath: String       = "orders"
         static let notesPath: String        = "notes"
-        static let totalsPath: String       = "totals"
+        static let totalsPath: String       = "reports/orders/totals"
     }
 
     private enum ParameterKeys {

@@ -61,6 +61,13 @@ public extension StorageType {
         return firstObject(ofType: OrderNote.self, matching: predicate)
     }
 
+    /// Retrieves the Stored OrderCount.
+    ///
+    func loadOrderCount(siteID: Int) -> OrderCount? {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        return firstObject(ofType: OrderCount.self, matching: predicate)
+    }
+
     /// Retrieves the Stored TopEarnerStats.
     ///
     func loadTopEarnerStats(date: String, granularity: String) -> TopEarnerStats? {

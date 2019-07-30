@@ -4,7 +4,7 @@ import Foundation
 /// Mapper: Order count
 ///
 struct OrderCountMapper: Mapper {
-    
+
     /// Site Identifier associated to the order that will be parsed.
     ///
     /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Order Endpoints.
@@ -18,7 +18,7 @@ struct OrderCountMapper: Mapper {
         decoder.userInfo = [
             .siteID: siteID
         ]
-        
+
         return try decoder.decode(OrderCount.self, from: response)
     }
 }

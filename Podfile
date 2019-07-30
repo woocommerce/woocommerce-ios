@@ -1,5 +1,6 @@
 inhibit_all_warnings!
-use_frameworks!
+use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
+use_modular_headers!
 
 platform :ios, '12.0'
 workspace 'WooCommerce.xcworkspace'
@@ -131,7 +132,37 @@ end
 # Workarounds:
 # ============
 #
+
+# Static Frameworks:
+# ============
+#
+# Make all pods that are not shared across multiple targets into static frameworks by overriding the static_framework? function to return true
+# Linking the shared frameworks statically would lead to duplicate symbols
+# A future version of CocoaPods may make this easier to do. See https://github.com/CocoaPods/CocoaPods/issues/7428
+shared_targets = ['Storage', 'Networking', 'Yosemite']
+# Statically linking Sentry results in a conflict with `NSDictionary.objectAtKeyPath`, but dynamically
+# linking it resolves this.
+dynamic_pods = ['Sentry']
 pre_install do |installer|
+  static = []
+  dynamic = []
+  installer.pod_targets.each do |pod|
+    # If this pod is a dependency of one of our shared targets or its explicitly excluded, it must be linked dynamically
+    if pod.target_definitions.any? { |t| shared_targets.include? t.name } || dynamic_pods.include?(pod.name)
+      dynamic << pod
+      next
+    end
+    static << pod
+    def pod.static_framework?;
+      true
+    end
+  end
+
+
+  puts "Installing #{static.count} pods as static frameworks"
+  puts "Installing #{dynamic.count} pods as dynamic frameworks"
+
+  # Force CocoaLumberjack Swift version
   installer.analysis_result.specifications.each do |s|
     if s.name == 'CocoaLumberjack'
       s.swift_version = '5.0'

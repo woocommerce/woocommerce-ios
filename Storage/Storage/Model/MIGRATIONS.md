@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 18 (Release 2.5.0.0)
+- @ctarda 2019-07-30
+    - Add `OrderCount` entity
+    - Add `OrderCountItem` entity
 ## Model 17 (Release 2.3.0.0)
 - @ctarda 2019-07-10
     - Add `OrderStatsV4` entity

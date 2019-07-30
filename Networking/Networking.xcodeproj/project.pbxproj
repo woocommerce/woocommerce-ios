@@ -222,6 +222,8 @@
 		D823D91422377EE600C90817 /* shipment_tracking_providers.json in Resources */ = {isa = PBXBuildFile; fileRef = D823D91322377EE600C90817 /* shipment_tracking_providers.json */; };
 		D8736B5C22F083C500A14A29 /* OrderCount.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5B22F083C500A14A29 /* OrderCount.swift */; };
 		D8736B5E22F0849700A14A29 /* OrderCountItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5D22F0849700A14A29 /* OrderCountItem.swift */; };
+		D8736B6022F0887900A14A29 /* OrderCountMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5F22F0887900A14A29 /* OrderCountMapper.swift */; };
+		D8736B6222F089E200A14A29 /* orders-count.json in Resources */ = {isa = PBXBuildFile; fileRef = D8736B6122F089E200A14A29 /* orders-count.json */; };
 		D87F6151226591E10031A13B /* NullNetwork.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F6150226591E10031A13B /* NullNetwork.swift */; };
 		D8C11A5C22DFCF8100D4A88D /* order-stats-v4-year-alt.json in Resources */ = {isa = PBXBuildFile; fileRef = D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */; };
 		D8FBFF0B22D3ADB1006E3336 /* OrderStatsRemoteV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */; };
@@ -471,6 +473,8 @@
 		D823D91322377EE600C90817 /* shipment_tracking_providers.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = shipment_tracking_providers.json; sourceTree = "<group>"; };
 		D8736B5B22F083C500A14A29 /* OrderCount.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCount.swift; sourceTree = "<group>"; };
 		D8736B5D22F0849700A14A29 /* OrderCountItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCountItem.swift; sourceTree = "<group>"; };
+		D8736B5F22F0887900A14A29 /* OrderCountMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderCountMapper.swift; sourceTree = "<group>"; };
+		D8736B6122F089E200A14A29 /* orders-count.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "orders-count.json"; sourceTree = "<group>"; };
 		D87F6150226591E10031A13B /* NullNetwork.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NullNetwork.swift; sourceTree = "<group>"; };
 		D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-stats-v4-year-alt.json"; sourceTree = "<group>"; };
 		D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderStatsRemoteV4.swift; sourceTree = "<group>"; };
@@ -828,6 +832,7 @@
 				D8FBFF1422D3BE09006E3336 /* order-stats-v4-defaults.json */,
 				D8FBFF1722D4DDB9006E3336 /* order-stats-v4-hour.json */,
 				D8C11A5B22DFCF8100D4A88D /* order-stats-v4-year-alt.json */,
+				D8736B6122F089E200A14A29 /* orders-count.json */,
 			);
 			path = Responses;
 			sourceTree = "<group>";
@@ -843,6 +848,7 @@
 				B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */,
 				B59325CB217E2B4C000B0E8E /* NoteListMapper.swift */,
 				B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */,
+				D8736B5F22F0887900A14A29 /* OrderCountMapper.swift */,
 				B567AF2A20A0FA4200AB6C62 /* OrderListMapper.swift */,
 				74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */,
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
@@ -1087,6 +1093,7 @@
 				743E84F422172D0A00FAC9D7 /* shipment_tracking_multiple.json in Resources */,
 				74AB5B4F21AF3F0E00859C12 /* site-api-no-woo.json in Resources */,
 				D8FBFF2422D52815006E3336 /* order-stats-v4-daily.json in Resources */,
+				D8736B6222F089E200A14A29 /* orders-count.json in Resources */,
 				D823D90B22376EFE00C90817 /* shipment_tracking_delete.json in Resources */,
 				74C947832193A6C70024CB60 /* comment-moderate-trash.json in Resources */,
 				B58D10CA2114D22E00107ED4 /* new-order-note.json in Resources */,
@@ -1246,6 +1253,7 @@
 				D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */,
 				743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
+				D8736B6022F0887900A14A29 /* OrderCountMapper.swift in Sources */,
 				7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */,
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,
 				93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */,

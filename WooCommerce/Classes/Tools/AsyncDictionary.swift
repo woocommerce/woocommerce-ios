@@ -2,7 +2,7 @@ import Foundation
 
 /// A wrapper of dictionary that can be updated asynchronously.
 ///
-class AsyncDictionary<Key, Value> where Key: Hashable {
+final class AsyncDictionary<Key, Value> where Key: Hashable {
     private var dictionary: [Key: Value] = [:]
 
     /// Returns value for key.
@@ -15,19 +15,19 @@ class AsyncDictionary<Key, Value> where Key: Hashable {
     ///
     /// - Parameters:
     ///   - key: key for value
-    ///   - calculation: called to calculate the value for key asynchronously
-    ///   - onUpdate: called on main thread after the calculated value is updated for key
-    func calculateAsynchronouslyAndUpdateValue(forKey key: Key,
-                                               calculation: @escaping () -> (Value),
-                                               onUpdate: @escaping (Value) -> ()) {
+    ///   - operation: called to calculate the value for key asynchronously
+    ///   - onCompletion: called on main thread after the calculated value is updated for key
+    func calculate(forKey key: Key,
+                   operation: @escaping () -> (Value),
+                   onCompletion: @escaping (Value) -> ()) {
         DispatchQueue.global().async {
-            let value = calculation()
+            let value = operation()
             DispatchQueue.main.async { [weak self] in
                 guard let self = self else {
                     return
                 }
                 self.dictionary[key] = value
-                onUpdate(value)
+                onCompletion(value)
             }
         }
     }

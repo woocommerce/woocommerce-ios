@@ -503,9 +503,9 @@ extension OrderDetailsDataSource {
             let onSet = { [weak self] (_: String) -> () in
                 self?.onUIReloadRequired?()
             }
-            orderNoteAsyncDictionary.calculateAsynchronouslyAndUpdateValue(forKey: orderNote.noteID,
-                                                                             calculation: calculation,
-                                                                             onUpdate: onSet)
+            orderNoteAsyncDictionary.calculate(forKey: orderNote.noteID,
+                                               operation: calculation,
+                                               onCompletion: onSet)
         }
     }
 

@@ -20,7 +20,7 @@ class AsyncDictionaryTests: XCTestCase {
             XCTAssertTrue(Thread.current.isMainThread)
             expectationForOnUpdate.fulfill()
         }
-        asyncDictionary.calculateAsynchronouslyAndUpdateValue(forKey: key, calculation: calculation, onUpdate: onUpdate)
+        asyncDictionary.calculate(forKey: key, operation: calculation, onCompletion: onUpdate)
         waitForExpectations(timeout: 0.5, handler: nil)
         XCTAssertEqual(asyncDictionary.value(forKey: key), value)
     }

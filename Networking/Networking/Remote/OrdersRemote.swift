@@ -134,6 +134,10 @@ public class OrdersRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    public func countOrders(for siteID: Int, statusKey: String) {
+        
+    }
 }
 
 

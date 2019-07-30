@@ -27,9 +27,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
                                                     trackingURL: nil,
                                                     dateShipped: nil)
 
-        viewModel.deleteTracking(mockShipmentTracking) { error in
-           //
-        }
+        viewModel.deleteTracking(mockShipmentTracking) { _ in }
 
         let analytics = WooAnalytics.shared.analyticsProvider as! MockupAnalyticsProvider
         let receivedEvents = analytics.receivedEvents

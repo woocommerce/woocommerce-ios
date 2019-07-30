@@ -94,9 +94,6 @@ private extension OrderDetailsViewController {
         tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
-        viewModel.dataSource.onReloadTableView = { [weak self] in
-            self?.tableView.reloadData()
-        }
     }
 
     /// Setup: Navigation
@@ -130,7 +127,7 @@ private extension OrderDetailsViewController {
 
     private func configureViewModel() {
         viewModel.onUIReloadRequired = { [weak self] in
-            self?.reloadTableViewSectionsAndData()
+            self?.reloadTableViewDataIfPossible()
         }
 
         viewModel.configureResultsControllers { [weak self] in

@@ -51,9 +51,9 @@ final class OrderDetailsDataSource: NSObject {
 
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
 
-    /// Called when table view should reload
+    /// Closure to be executed when the UI needs to be reloaded.
     ///
-    var onReloadTableView: (() -> Void)?
+    var onUIReloadRequired: (() -> Void)?
 
     /// Order shipment tracking list
     ///
@@ -501,7 +501,7 @@ extension OrderDetailsDataSource {
                 return orderNote.note.strippedHTML
             }
             let onSet = { [weak self] (_: String) -> () in
-                self?.onReloadTableView?()
+                self?.onUIReloadRequired?()
             }
             orderNoteAsyncDictionary.calculateAsynchronouslyAndUpdateValue(forKey: orderNote.noteID,
                                                                              calculation: calculation,

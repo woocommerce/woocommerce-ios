@@ -647,6 +647,24 @@ class OrderStoreTests: XCTestCase {
         orderStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that OrderAction.countProcessingOrders returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveOrderCountReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve order count error response")
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")
+
+        let action = OrderAction.countProcessingOrders(siteID: sampleSiteID) { orderCount, error in
+            XCTAssertNotNil(error)
+
+            expectation.fulfill()
+        }
+
+        orderStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

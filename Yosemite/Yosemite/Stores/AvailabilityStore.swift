@@ -1,16 +1,18 @@
 import Networking
 
-class StatsV4AvailabilityStore: Store {
+/// MARK: AvailabilityStore
+///
+final class AvailabilityStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: StatsV4AvailabilityAction.self)
+        dispatcher.register(processor: self, for: AvailabilityAction.self)
     }
 
     /// Receives and executes Actions.
     ///
     override public func onAction(_ action: Action) {
-        guard let action = action as? StatsV4AvailabilityAction else {
+        guard let action = action as? AvailabilityAction else {
             assertionFailure("\(String(describing: self)) received an unsupported action")
             return
         }
@@ -24,7 +26,7 @@ class StatsV4AvailabilityStore: Store {
 
 // MARK: - Services!
 //
-private extension StatsV4AvailabilityStore {
+private extension AvailabilityStore {
     /// Checks if Stats v4 is available for the site.
     ///
     func checkStatsV4Availability(siteID: Int,

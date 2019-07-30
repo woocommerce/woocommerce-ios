@@ -18,7 +18,7 @@ class StatsV4AvailabilityStoreTests: XCTestCase {
     /// Dummy Site ID
     ///
     private let sampleSiteID = 123
-    
+
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -33,13 +33,13 @@ class StatsV4AvailabilityStoreTests: XCTestCase {
     ///
     func testCheckingStatsV4AvailabilityWithWCAdminActivated() {
         let expectation = self.expectation(description: "Check stats v4 availability")
-        let statsStore = StatsV4AvailabilityStore(dispatcher: dispatcher,
+        let statsStore = AvailabilityStore(dispatcher: dispatcher,
                                                   storageManager: storageManager,
                                                   network: network)
 
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "order-stats-v4-wcadmin-activated")
 
-        let action = StatsV4AvailabilityAction.checkStatsV4Availability(siteID: sampleSiteID, onCompletion: { isStatsV4Available in
+        let action = AvailabilityAction.checkStatsV4Availability(siteID: sampleSiteID, onCompletion: { isStatsV4Available in
             XCTAssertTrue(isStatsV4Available)
             expectation.fulfill()
         })
@@ -53,13 +53,13 @@ class StatsV4AvailabilityStoreTests: XCTestCase {
     ///
     func testCheckingStatsV4AvailabilityWithWCAdminDeactivated() {
         let expectation = self.expectation(description: "Check stats v4 availability")
-        let statsStore = StatsV4AvailabilityStore(dispatcher: dispatcher,
+        let statsStore = AvailabilityStore(dispatcher: dispatcher,
                                                   storageManager: storageManager,
                                                   network: network)
 
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "order-stats-v4-wcadmin-deactivated")
 
-        let action = StatsV4AvailabilityAction.checkStatsV4Availability(siteID: sampleSiteID, onCompletion: { isStatsV4Available in
+        let action = AvailabilityAction.checkStatsV4Availability(siteID: sampleSiteID, onCompletion: { isStatsV4Available in
             XCTAssertFalse(isStatsV4Available)
             expectation.fulfill()
         })

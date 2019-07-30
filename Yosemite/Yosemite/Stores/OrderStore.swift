@@ -134,8 +134,21 @@ private extension OrderStore {
         }
     }
 
-    func countProcessingOrders(siteID: Int, onCompletion: (OrderCount?, Error?) -> Void) {
+    func countProcessingOrders(siteID: Int, onCompletion: @escaping (OrderCount?, Error?) -> Void) {
+        let remote = OrdersRemote(network: network)
 
+        let status = "processing"
+
+        remote.countOrders(for: siteID, statusKey: status) { [weak self] (orderCount, error) in
+            guard let orderCount = orderCount else {
+                onCompletion(nil, error)
+                return
+            }
+
+            self?.upsertOrderCountInBackground(siteID: siteID, readOnlyOrderCount: orderCount) {
+                onCompletion(orderCount, nil)
+            }
+        }
     }
 }
 
@@ -313,6 +326,39 @@ private extension OrderStore {
                 storageOrder.removeFromCoupons(storageCoupon)
                 storage.deleteObject(storageCoupon)
             }
+        }
+    }
+}
+
+
+// MARK: - Storage: Order count
+//
+private extension OrderStore {
+
+    /// Updates the stored OrderCount with the new OrderCount fetched from the remote
+    ///
+    private func upsertOrderCountInBackground(siteID: Int, readOnlyOrderCount: Networking.OrderCount, onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform {
+            self.updateOrderCountResults(siteID: siteID, readOnlyOrderCount: readOnlyOrderCount, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    private func updateOrderCountResults(siteID: Int, readOnlyOrderCount: Networking.OrderCount, in storage: StorageType) {
+        storage.deleteAllObjects(ofType: Storage.OrderCountItem.self)
+        storage.deleteAllObjects(ofType: Storage.OrderCount.self)
+
+        let newOrderCount = storage.insertNewObject(ofType: Storage.OrderCount.self)
+        newOrderCount.update(with: readOnlyOrderCount)
+
+        for item in readOnlyOrderCount.items {
+            let newOrderCountItem = storage.insertNewObject(ofType: Storage.OrderCountItem.self)
+            newOrderCountItem.update(with: item)
+            newOrderCount.addToItems(newOrderCountItem)
         }
     }
 }

@@ -9,7 +9,7 @@ extension OrderCount {
     }
 
     @NSManaged public var siteID: Int64
-    @NSManaged public var items: NSSet?
+    @NSManaged public var items: Set<OrderCountItem>?
 
 }
 

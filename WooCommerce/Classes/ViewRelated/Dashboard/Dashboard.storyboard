@@ -365,7 +365,7 @@
         <!--New Orders View Controller-->
         <scene sceneID="v0S-ON-fMC">
             <objects>
-                <viewController id="lX1-IT-Jsn" customClass="NewOrdersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewOrdersViewController" id="lX1-IT-Jsn" customClass="NewOrdersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8sG-kb-Kk9">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="128"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
@@ -461,7 +461,7 @@
         <!--Top Performers View Controller-->
         <scene sceneID="cVB-Jf-xe7">
             <objects>
-                <viewController id="Djg-dC-a51" customClass="TopPerformersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TopPerformersViewController" id="Djg-dC-a51" customClass="TopPerformersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1eR-hd-IG4">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="465"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

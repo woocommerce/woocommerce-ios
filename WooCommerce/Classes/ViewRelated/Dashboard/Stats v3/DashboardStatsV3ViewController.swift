@@ -2,17 +2,7 @@ import UIKit
 import WordPressUI
 import Yosemite
 
-extension UIView {
-    public func pinSubviewToAllEdges(_ subview: UIView, insets: UIEdgeInsets) {
-        NSLayoutConstraint.activate([
-            leadingAnchor.constraint(equalTo: subview.leadingAnchor),
-            trailingAnchor.constraint(equalTo: subview.trailingAnchor),
-            topAnchor.constraint(equalTo: subview.topAnchor),
-            bottomAnchor.constraint(equalTo: subview.bottomAnchor),
-            ])
-    }
-}
-
+// TODO: move this helper to its own file.
 extension UIStoryboard {
     func instantiateViewController<T: NSObject>(ofClass classType: T.Type) -> T? {
         let identifier = classType.classNameWithoutNamespaces
@@ -22,6 +12,8 @@ extension UIStoryboard {
 
 class DashboardStatsV3ViewController: UIViewController {
     // MARK: subviews
+    //
+    // TODO: make refresh control work.
     var refreshControl: UIRefreshControl = {
         return UIRefreshControl(frame: .zero)
     }()
@@ -38,7 +30,13 @@ class DashboardStatsV3ViewController: UIViewController {
         return storeStatsViewController.view
     }
 
+    private var newOrdersContainerView: UIView = {
+        return UIView(frame: .zero)
+    }()
+    private var newOrdersHeightConstraint: NSLayoutConstraint?
+
     // MARK: child view controllers
+    //
     private var storeStatsViewController: StoreStatsViewController = {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: StoreStatsViewController.self) else {
             fatalError()
@@ -46,20 +44,48 @@ class DashboardStatsV3ViewController: UIViewController {
         return viewController
     }()
 
+    private var newOrdersViewController: NewOrdersViewController = {
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: NewOrdersViewController.self) else {
+            fatalError()
+        }
+        return viewController
+    }()
+
+    private var topPerformersViewController: TopPerformersViewController = {
+        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: TopPerformersViewController.self) else {
+            fatalError()
+        }
+        return viewController
+    }()
+
+    // MARK: overrides
+    //
     override func viewDidLoad() {
         super.viewDidLoad()
 
         scrollView.refreshControl = refreshControl
+        newOrdersContainerView.isHidden = true // Hide the new orders vc by default
+
+        newOrdersViewController.delegate = self
+
+        stackView.axis = .vertical
 
         configureContainerViews()
-        configureChildViewControllers()
         configureChildViewControllerContainerViews()
+    }
+
+    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
+        super.preferredContentSizeDidChange(forChildContentContainer: container)
+        if let containerVC = container as? NewOrdersViewController {
+            newOrdersHeightConstraint?.constant = containerVC.preferredContentSize.height
+        }
     }
 }
 
 extension DashboardStatsV3ViewController: DashboardUI {
     func defaultAccountDidUpdate() {
         storeStatsViewController.clearAllFields()
+        applyHideAnimation(for: newOrdersContainerView)
     }
 
     func reloadData(completion: @escaping () -> Void) {
@@ -75,21 +101,21 @@ extension DashboardStatsV3ViewController: DashboardUI {
             group.leave()
         }
 
-//        group.enter()
-//        newOrdersViewController.syncNewOrders() { error in
-//            if let error = error {
-//                reloadError = error
-//            }
-//            group.leave()
-//        }
-//
-//        group.enter()
-//        topPerformersViewController.syncTopPerformers() { error in
-//            if let error = error {
-//                reloadError = error
-//            }
-//            group.leave()
-//        }
+        group.enter()
+        newOrdersViewController.syncNewOrders() { error in
+            if let error = error {
+                reloadError = error
+            }
+            group.leave()
+        }
+
+        group.enter()
+        topPerformersViewController.syncTopPerformers() { error in
+            if let error = error {
+                reloadError = error
+            }
+            group.leave()
+        }
 
         group.notify(queue: .main) { [weak self] in
             completion()
@@ -126,6 +152,45 @@ private extension DashboardStatsV3ViewController {
             displaySyncingErrorNotice()
         }
     }
+
+    func applyUnhideAnimation(for view: UIView) {
+        UIView.animate(withDuration: Constants.showAnimationDuration,
+                       delay: 0,
+                       usingSpringWithDamping: Constants.showSpringDamping,
+                       initialSpringVelocity: Constants.showSpringVelocity,
+                       options: .curveEaseOut,
+                       animations: {
+                        view.isHidden = false
+                        view.alpha = UIKitConstants.alphaFull
+        }) { _ in
+            view.isHidden = false
+            view.alpha = UIKitConstants.alphaFull
+        }
+    }
+
+    func applyHideAnimation(for view: UIView) {
+        UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
+            view.isHidden = true
+            view.alpha = UIKitConstants.alphaZero
+        }, completion: { _ in
+            view.isHidden = true
+            view.alpha = UIKitConstants.alphaZero
+        })
+    }
+}
+
+// MARK: - NewOrdersDelegate Conformance
+//
+extension DashboardStatsV3ViewController: NewOrdersDelegate {
+    func didUpdateNewOrdersData(hasNewOrders: Bool) {
+        if hasNewOrders {
+            applyUnhideAnimation(for: newOrdersContainerView)
+            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "true"])
+        } else {
+            applyHideAnimation(for: newOrdersContainerView)
+            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "false"])
+        }
+    }
 }
 
 private extension DashboardStatsV3ViewController {
@@ -147,29 +212,65 @@ private extension DashboardStatsV3ViewController {
 
     func configureChildViewControllerContainerViews() {
         // Store stats.
-        let storeStatsContainerView = UIView(frame: .zero)
-        storeStatsContainerView.addSubview(storeStatsView)
-        storeStatsContainerView.pinSubviewAtCenter(storeStatsView)
-        storeStatsContainerView.translatesAutoresizingMaskIntoConstraints = false
-        storeStatsView.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([
-            storeStatsContainerView.heightAnchor.constraint(equalToConstant: 380),
-            storeStatsView.widthAnchor.constraint(equalTo: storeStatsContainerView.widthAnchor),
-            storeStatsView.heightAnchor.constraint(equalTo: storeStatsContainerView.heightAnchor)
+            storeStatsView.heightAnchor.constraint(equalToConstant: 380),
             ])
 
+        // Spacer view.
+        let spacerView = UIView(frame: .zero)
+        NSLayoutConstraint.activate([
+            spacerView.heightAnchor.constraint(equalToConstant: 18),
+            ])
+
+        // New orders.
+        let newOrdersView = newOrdersViewController.view!
+        newOrdersContainerView.addSubview(newOrdersView)
+        newOrdersContainerView.pinSubviewToAllEdges(newOrdersView)
+        let newOrdersHeightConstraint = newOrdersContainerView.heightAnchor.constraint(equalToConstant: 80)
+        self.newOrdersHeightConstraint = newOrdersHeightConstraint
+        NSLayoutConstraint.activate([
+            newOrdersHeightConstraint,
+            newOrdersContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 80)
+            ])
+
+        // Top performers.
+        let topPerformersView = topPerformersViewController.view!
+        NSLayoutConstraint.activate([
+            topPerformersView.heightAnchor.constraint(equalToConstant: 465),
+            topPerformersView.heightAnchor.constraint(greaterThanOrEqualToConstant: 465)
+            ])
+
+        // Add all child view controllers and their container/view to stack view's arranged subviews.
+        let childViewControllers = [storeStatsViewController, newOrdersViewController, topPerformersViewController]
+        childViewControllers.forEach { childViewController in
+            addChild(childViewController)
+            childViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        }
+
         let arrangedSubviews = [
-            storeStatsContainerView
-            ]
+            storeStatsView,
+            spacerView,
+            newOrdersContainerView,
+            topPerformersView
+        ]
         arrangedSubviews.forEach { subview in
+            subview.translatesAutoresizingMaskIntoConstraints = false
             stackView.addArrangedSubview(subview)
         }
-    }
 
-    func configureChildViewControllers() {
-        let childViewControllers = [storeStatsViewController]
         childViewControllers.forEach { (childViewController) in
-            add(childViewController)
+            childViewController.didMove(toParent: self)
         }
+    }
+}
+
+// MARK: - Constants
+//
+private extension DashboardStatsV3ViewController {
+    struct Constants {
+        static let hideAnimationDuration: TimeInterval  = 0.25
+        static let showAnimationDuration: TimeInterval  = 0.50
+        static let showSpringDamping: CGFloat           = 0.7
+        static let showSpringVelocity: CGFloat          = 0.0
     }
 }

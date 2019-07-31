@@ -9,6 +9,9 @@ import Yosemite
 class DashboardViewController: UIViewController {
 
     // MARK: Properties
+    private var dashboardUI: DashboardUI = {
+        return DashboardUIFactory.dashboardUI()
+    }()
 
     @IBOutlet private weak var scrollView: UIScrollView!
     @IBOutlet private weak var newOrdersContainerView: UIView!
@@ -40,6 +43,18 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
+
+        // `dashboardUI` could be showing Stats v3 or v4.
+        // TODO: remove existing content view from Storyboard and its code in this file.
+        let contentViewController = dashboardUI
+        add(contentViewController)
+        let contentView = contentViewController.view!
+        NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            ])
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -155,6 +170,7 @@ extension DashboardViewController {
 
         resetTitle()
 
+        dashboardUI.defaultAccountDidUpdate()
         storeStatsViewController.clearAllFields()
         applyHideAnimation(for: newOrdersContainerView)
     }
@@ -206,6 +222,10 @@ extension DashboardViewController: NewOrdersDelegate {
 private extension DashboardViewController {
 
     func reloadData() {
+        dashboardUI.reloadData(completion: { [weak self] in
+            self?.configureTitle()
+        })
+
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
         let group = DispatchGroup()
 

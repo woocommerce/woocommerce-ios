@@ -143,12 +143,11 @@ public class OrdersRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func countOrders(for siteID: Int, statusKey: String, completion: @escaping (OrderCount?, Error?) -> Void) {
-        let path = "\(Constants.totalsPath)"
         let parameters = [ParameterKeys.statusKey: statusKey]
 
         let mapper = OrderCountMapper(siteID: siteID)
 
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Constants.totalsPath, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)
     }
 }

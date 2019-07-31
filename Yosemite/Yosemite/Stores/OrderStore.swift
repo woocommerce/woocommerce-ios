@@ -137,7 +137,7 @@ private extension OrderStore {
     func countProcessingOrders(siteID: Int, onCompletion: @escaping (OrderCount?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
-        let status = "processing"
+        let status = OrderStatusEnum.processing.rawValue
 
         remote.countOrders(for: siteID, statusKey: status) { [weak self] (orderCount, error) in
             guard let orderCount = orderCount else {

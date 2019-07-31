@@ -23,9 +23,9 @@ extension OrderCount {
     @NSManaged public func removeFromItems(_ value: OrderCountItem)
 
     @objc(addItems:)
-    @NSManaged public func addToItems(_ values: NSSet)
+    @NSManaged public func addToItems(_ values: Set<OrderCountItem>)
 
     @objc(removeItems:)
-    @NSManaged public func removeFromItems(_ values: NSSet)
+    @NSManaged public func removeFromItems(_ values: Set<OrderCountItem>)
 
 }

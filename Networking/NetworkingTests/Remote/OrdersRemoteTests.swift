@@ -247,7 +247,7 @@ final class OrdersRemoteTests: XCTestCase {
                             XCTAssertNil(error)
                             XCTAssertNotNil(orderCount)
 
-                            // Take the opportunity to test the customvsubscript works
+                            // Take the opportunity to test the custom subscript works
                             let numberOfProcessingOrders = orderCount!["processing"]?.total
 
                             XCTAssertEqual(numberOfProcessingOrders, 1)

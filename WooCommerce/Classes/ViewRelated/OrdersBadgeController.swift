@@ -2,20 +2,10 @@ import Foundation
 import UIKit
 
 final class OrdersBadgeController {
-    /// Displays or Hides the Dot, depending on the new Badge Value
-    ///
-    func badgeCountWasUpdated(newValue: Int, in tabBar: UITabBar) {
-        guard newValue > 0 else {
-            hideBadgeOn(.orders, in: tabBar)
-            return
-        }
-
-        showBadgeOn(.orders, in: tabBar)
-    }
 
     /// Shows the Badge in the specified WooTab
     ///
-    func showBadgeOn(_ tab: WooTab, in tabBar: UITabBar) {
+    func showBadgeOn(_ tab: WooTab, in tabBar: UITabBar, withValue badgeText: String) {
         hideBadgeOn(tab, in: tabBar)
         let badge = BadgeLabel(frame: CGRect(x: Constants.xOffset,
                                              y: Constants.yOffset,
@@ -30,7 +20,7 @@ final class OrdersBadgeController {
         badge.horizontalPadding = 2
         badge.cornerRadius = 8
         badge.textAlignment = .center
-        badge.text = "9+"
+        badge.text = badgeText
         badge.isHidden = true
         tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(badge, at: 1)
         badge.fadeIn()

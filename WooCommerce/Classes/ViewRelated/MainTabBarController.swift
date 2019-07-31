@@ -272,11 +272,17 @@ private extension MainTabBarController {
 
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
-        viewModel.onReload = { [weak self] in
+        viewModel.onReload = { [weak self] countRedableString in
             guard let self = self else {
                 return
             }
-            self.ordersBadge.badgeCountWasUpdated(newValue: 10, in: self.tabBar)
+
+            guard let badgeText = countRedableString else {
+                self.ordersBadge.hideBadgeOn(.orders, in: self.tabBar)
+                return
+            }
+            
+            self.ordersBadge.showBadgeOn(.orders, in: self.tabBar, withValue: badgeText)
         }
 
         viewModel.startObservingOrdersCount()

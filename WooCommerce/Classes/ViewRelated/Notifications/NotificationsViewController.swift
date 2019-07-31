@@ -188,7 +188,7 @@ private extension NotificationsViewController {
     /// Setup: TabBar
     ///
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Notifications", comment: "Title of the Notifications tab — plural form of Notification")
+        tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
         tabBarItem.image = .bellImage
     }
 
@@ -246,16 +246,16 @@ private extension NotificationsViewController {
     func refreshTitle() {
         guard currentTypeFilter != .all else {
             navigationItem.title = NSLocalizedString(
-                "Notifications",
-                comment: "Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification)."
+                "Reviews",
+                comment: "Title that appears on top of the main Reviews screen when there is no filter applied to the list (plural form of the word Review)."
             )
             return
         }
 
         let title = String.localizedStringWithFormat(
             NSLocalizedString(
-                "Notifications: %@",
-                comment: "Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter}"
+                "Reviews: %@",
+                comment: "Title that appears on top of the Reviews screen when a filter is applied. It reads: Reviews: {name of filter}"
             ),
             currentTypeFilter.description.capitalized
         )

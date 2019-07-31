@@ -621,50 +621,6 @@ class OrderStoreTests: XCTestCase {
 
         wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
     }
-
-
-    // MARK: - OrderAction.countProcessingOrders
-
-    /// Verifies that OrderAction.countProcessingOrders returns the expected OrderCount.
-    ///
-    func testCountProcessingOrdersReturnsExpectedFields() {
-        let expectation = self.expectation(description: "Count processing orders")
-        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "orders-count")
-
-        let action = OrderAction.countProcessingOrders(siteID: sampleSiteID) { orderCount, error in
-            XCTAssertNil(error)
-            // Assert the entity is saved to coredata
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderCount.self), 1)
-            // And assert it is returned
-            XCTAssertNotNil(orderCount)
-            XCTAssertEqual(orderCount!["processing"]?.total, 1)
-
-            expectation.fulfill()
-        }
-
-        orderStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
-    /// Verifies that OrderAction.countProcessingOrders returns an error whenever there is an error response from the backend.
-    ///
-    func testRetrieveOrderCountReturnsErrorUponReponseError() {
-        let expectation = self.expectation(description: "Retrieve order count error response")
-        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-
-        network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "generic_error")
-
-        let action = OrderAction.countProcessingOrders(siteID: sampleSiteID) { orderCount, error in
-            XCTAssertNotNil(error)
-
-            expectation.fulfill()
-        }
-
-        orderStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
 }
 
 

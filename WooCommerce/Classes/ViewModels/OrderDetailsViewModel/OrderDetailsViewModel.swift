@@ -67,6 +67,7 @@ final class OrderDetailsViewModel {
     var orderNotes: [OrderNote] = [] {
         didSet {
             dataSource.orderNotes = orderNotes
+            dataSource.reloadSections()
             onUIReloadRequired?()
         }
     }
@@ -74,7 +75,11 @@ final class OrderDetailsViewModel {
     /// Closure to be executed when the UI needs to be reloaded.
     /// That could happen, for example, when new incoming data is detected
     ///
-    var onUIReloadRequired: (() -> Void)?
+    var onUIReloadRequired: (() -> Void)? {
+        didSet {
+            dataSource.onUIReloadRequired = onUIReloadRequired
+        }
+    }
 
     /// Closure to be executed when a cell triggers an action
     ///

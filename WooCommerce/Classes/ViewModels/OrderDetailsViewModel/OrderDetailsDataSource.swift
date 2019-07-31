@@ -51,6 +51,10 @@ final class OrderDetailsDataSource: NSObject {
 
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
 
+    /// Closure to be executed when the UI needs to be reloaded.
+    ///
+    var onUIReloadRequired: (() -> Void)?
+
     /// Order shipment tracking list
     ///
     var orderTracking: [ShipmentTracking] {
@@ -73,6 +77,10 @@ final class OrderDetailsDataSource: NSObject {
 
     private lazy var resultsControllers: OrderDetailsResultsControllers = {
         return OrderDetailsResultsControllers(order: self.order)
+    }()
+
+    private lazy var orderNoteAsyncDictionary: AsyncDictionary<Int, String> = {
+        return AsyncDictionary()
     }()
 
     init(order: Order) {
@@ -283,7 +291,7 @@ private extension OrderDetailsDataSource {
         cell.isSystemAuthor = note.isSystemAuthor
         cell.isCustomerNote = note.isCustomerNote
         cell.dateCreated = note.dateCreated.toString(dateStyle: .long, timeStyle: .short)
-        cell.contents = note.note.strippedHTML
+        cell.contents = orderNoteAsyncDictionary.value(forKey: note.noteID)
     }
 
     func configurePayment(cell: PaymentTableViewCell) {
@@ -483,6 +491,25 @@ extension OrderDetailsDataSource {
         }()
 
         sections = [summary, products, customerNotes, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
+        updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
+    }
+
+    private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {
+        orderNoteAsyncDictionary.clear()
+        for orderNote in orderNotes {
+            let calculation = { () -> (String) in
+                return orderNote.note.strippedHTML
+            }
+            let onSet = { [weak self] (note: String?) -> () in
+                guard note != nil else {
+                    return
+                }
+                self?.onUIReloadRequired?()
+            }
+            orderNoteAsyncDictionary.calculate(forKey: orderNote.noteID,
+                                               operation: calculation,
+                                               onCompletion: onSet)
+        }
     }
 
     private enum Title {

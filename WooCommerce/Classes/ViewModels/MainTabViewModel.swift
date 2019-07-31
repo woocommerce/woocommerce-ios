@@ -12,6 +12,9 @@ extension NSNotification.Name {
 }
 
 final class MainTabViewModel {
+    /// Callback to be executed when this view model receives new data
+    /// passing the string to be presented in the badge as a parameter
+    ///
     var onReload: ((String?) -> Void)?
 
     /// Bootstrap the data pipeline for the orders badge
@@ -48,7 +51,7 @@ private extension MainTabViewModel {
     }
 
     func processBadgeCount(_ orderCount: OrderCount?) {
-        /// Exit early if there is not data, or the count is zero
+        // Exit early if there is not data, or the count is zero
         guard let orderCount = orderCount,
             let processingCount = orderCount[OrderStatusEnum.processing.rawValue]?.total,
             processingCount > 0 else {

@@ -190,6 +190,7 @@ private extension OrderStatusListViewController {
     private func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
+                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
                 WooAnalytics.shared.track(.orderStatusChangeSuccess)
                 return
             }

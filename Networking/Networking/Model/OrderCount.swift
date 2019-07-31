@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents an OrderCount Entity.
 /// An OrderCount contains an array of OrderCountItem.
-/// Each OrderCountItem representes the number of Orders for a given status
+/// Each OrderCountItem represents the number of Orders for a given status
 ///
 public struct OrderCount: Decodable {
     public let siteID: Int
@@ -26,16 +26,12 @@ public struct OrderCount: Decodable {
         self.init(siteID: siteID, items: items)
     }
 
-    /// Returns the first OrderCountItem mathing a order status slug
+    /// Returns the first OrderCountItem matching a order status slug
     ///
     public subscript(slug: String) -> OrderCountItem? {
-        get {
-            return items.filter {
-                $0.slug == slug
+        return items.filter {
+            $0.slug == slug
             }.first
-        }
-        set {
-        }
     }
 }
 

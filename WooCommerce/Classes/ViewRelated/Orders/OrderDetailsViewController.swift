@@ -127,7 +127,7 @@ private extension OrderDetailsViewController {
 
     private func configureViewModel() {
         viewModel.onUIReloadRequired = { [weak self] in
-            self?.reloadTableViewSectionsAndData()
+            self?.reloadTableViewDataIfPossible()
         }
 
         viewModel.configureResultsControllers { [weak self] in

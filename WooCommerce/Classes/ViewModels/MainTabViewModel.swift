@@ -1,10 +1,36 @@
 import Foundation
 import Yosemite
 
+
+// MARK: - MainTabViewModel Notifications
+//
+extension NSNotification.Name {
+
+    /// Posted whenever an OrderBadge refresh is required.
+    ///
+    public static let ordersBadgeReloadRequired = Foundation.Notification.Name(rawValue: "com.woocommerce.ios.ordersBadgeReloadRequired")
+}
+
 final class MainTabViewModel {
     var onReload: ((String?) -> Void)?
 
+    /// Bootstrap the data pipeline for the orders badge
+    /// Fetches the initial badge count and observes notifications requesting a refresh
+    /// The notification observed will be `ordersBadgeReloadRequired`
+    ///
     func startObservingOrdersCount() {
+        observeBadgeRefreshNotifications()
+        requestBadgeCount()
+    }
+}
+
+
+private extension MainTabViewModel {
+    enum Constants {
+        static let ninePlus = "9+"
+    }
+
+    @objc func requestBadgeCount() {
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
             DDLogError("# Error: Cannot fetch order count")
             return
@@ -19,13 +45,6 @@ final class MainTabViewModel {
         }
 
         StoresManager.shared.dispatch(action)
-    }
-}
-
-
-private extension MainTabViewModel {
-    enum Constants {
-        static let ninePlus = "9+"
     }
 
     func processBadgeCount(_ orderCount: OrderCount?) {
@@ -44,5 +63,12 @@ private extension MainTabViewModel {
 
     private func readableCount(_ count: Int) -> String {
         return count > 9 ? Constants.ninePlus : String(count)
+    }
+
+    private func observeBadgeRefreshNotifications() {
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(requestBadgeCount),
+                                               name: .ordersBadgeReloadRequired,
+                                               object: nil)
     }
 }

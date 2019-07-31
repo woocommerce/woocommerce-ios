@@ -13,34 +13,33 @@ final class OrdersBadgeController {
         showBadgeOn(.orders, in: tabBar)
     }
 
-    /// Shows the dot in the specified WooTab
+    /// Shows the Badge in the specified WooTab
     ///
     func showBadgeOn(_ tab: WooTab, in tabBar: UITabBar) {
         hideBadgeOn(tab, in: tabBar)
-//        let dot = BadgeView(frame: CGRect(x: DotConstants.xOffset,
-//                                          y: DotConstants.yOffset,
-//                                          width: DotConstants.diameter,
-//                                          height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
-        let dot = BadgeLabel(frame: CGRect(x: DotConstants.xOffset, y: DotConstants.yOffset, width: 23, height: 17))
-        dot.tag = dotTag(for: tab)
-        dot.font = StyleManager.badgeFont
-        dot.backgroundColor = StyleManager.wooCommerceBrandColor
-        dot.borderColor = StyleManager.wooWhite
-        dot.borderWidth = 1
-        dot.textColor = StyleManager.wooWhite
-        dot.horizontalPadding = 2
-        dot.cornerRadius = 8
-        dot.textAlignment = .center
-        dot.text = "9+"
-        dot.isHidden = true
-        tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
-        dot.fadeIn()
+        let badge = BadgeLabel(frame: CGRect(x: Constants.xOffset,
+                                             y: Constants.yOffset,
+                                             width: Constants.width,
+                                             height: Constants.height))
+        badge.tag = badgeTag(for: tab)
+        badge.font = StyleManager.badgeFont
+        badge.backgroundColor = StyleManager.wooCommerceBrandColor
+        badge.borderColor = StyleManager.wooWhite
+        badge.borderWidth = 1
+        badge.textColor = StyleManager.wooWhite
+        badge.horizontalPadding = 2
+        badge.cornerRadius = 8
+        badge.textAlignment = .center
+        badge.text = "9+"
+        badge.isHidden = true
+        tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(badge, at: 1)
+        badge.fadeIn()
     }
 
     /// Hides the Dot in the specified WooTab
     ///
     func hideBadgeOn(_ tab: WooTab, in tabBar: UITabBar) {
-        let tag = dotTag(for: tab)
+        let tag = badgeTag(for: tab)
         if let subviews = tabBar.subviews[tab.rawValue].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
                 subview.fadeOut() { _ in
@@ -52,8 +51,8 @@ final class OrdersBadgeController {
 
     /// Returns the DotView's Tag for the specified WooTab
     ///
-    func dotTag(for tab: WooTab) -> Int {
-        return tab.rawValue + DotConstants.tagOffset
+    func badgeTag(for tab: WooTab) -> Int {
+        return tab.rawValue + Constants.tagOffset
     }
 }
 
@@ -61,12 +60,14 @@ final class OrdersBadgeController {
 //
 private extension OrdersBadgeController {
 
-    enum DotConstants {
+    enum Constants {
         static let diameter    = CGFloat(10)
         static let borderWidth = CGFloat(1)
         static let xOffset     = CGFloat(14)
         static let yOffset     = CGFloat(1)
         static let tagOffset   = 999
+        static let width       = CGFloat(23)
+        static let height      = CGFloat(17)
     }
 }
 

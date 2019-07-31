@@ -13,7 +13,7 @@
         <!--Store Stats View Controller-->
         <scene sceneID="gpf-E1-UPO">
             <objects>
-                <viewController id="zaY-no-5X6" customClass="StoreStatsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="StoreStatsViewController" id="zaY-no-5X6" customClass="StoreStatsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EgO-Cw-kVD">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

@@ -51,6 +51,10 @@ final class MainTabBarController: UITabBarController {
     ///
     private let ordersBadge = OrdersBadgeController()
 
+    /// ViewModel
+    ///
+    private let viewModel = MainTabViewModel()
+
 
     // MARK: - Overridden Methods
 
@@ -268,6 +272,13 @@ private extension MainTabBarController {
 
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
-        ordersBadge.badgeCountWasUpdated(newValue: 10, in: tabBar)
+        viewModel.onReload = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            self.ordersBadge.badgeCountWasUpdated(newValue: 10, in: self.tabBar)
+        }
+
+        viewModel.startObservingOrdersCount()
     }
 }

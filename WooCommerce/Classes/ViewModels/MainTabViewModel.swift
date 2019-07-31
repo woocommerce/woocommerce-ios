@@ -10,5 +10,13 @@ final class MainTabViewModel {
             return
         }
 
+        let action = OrderAction.countProcessingOrders(siteID: siteID) { [weak self] orderCount, error in
+            print("===== fetched order count ====")
+            print(orderCount?[OrderStatusEnum.processing.rawValue]?.total)
+            print("//////")
+            self?.onReload?()
+        }
+
+        StoresManager.shared.dispatch(action)
     }
 }

@@ -113,6 +113,7 @@
 		D80F758C223F74B6002F4A3B /* ShipmentTrackingProvider+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80F758B223F74B6002F4A3B /* ShipmentTrackingProvider+ReadOnlyConvertible.swift */; };
 		D8736B6D22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */; };
 		D8736B6F22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */; };
+		D8736B7322F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */; };
 		D87F614A22657A690031A13B /* AppSettingsAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F614922657A690031A13B /* AppSettingsAction.swift */; };
 		D87F614C22657B150031A13B /* AppSettingsStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F614B22657B150031A13B /* AppSettingsStore.swift */; };
 		D87F615E2265B1BC0031A13B /* AppSettingsStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */; };
@@ -250,6 +251,7 @@
 		D80F758B223F74B6002F4A3B /* ShipmentTrackingProvider+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProvider+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8736B6C22F0CE0900A14A29 /* OrderCount+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCount+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D8736B6E22F0CE5200A14A29 /* OrderCountItem+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCountItem+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderCount+ReadOnlyType.swift"; sourceTree = "<group>"; };
 		D87F614922657A690031A13B /* AppSettingsAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsAction.swift; sourceTree = "<group>"; };
 		D87F614B22657B150031A13B /* AppSettingsStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStore.swift; sourceTree = "<group>"; };
 		D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSettingsStoreTests.swift; sourceTree = "<group>"; };
@@ -349,6 +351,7 @@
 				7492FADA217FAE4D00ED2C69 /* SiteSetting+ReadOnlyType.swift */,
 				744A321A216D57D30051439B /* SiteVisitStats+ReadOnlyType.swift */,
 				749737662141CC8B0008C490 /* TopEarnerStats+ReadOnlyType.swift */,
+				D8736B7222F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift */,
 			);
 			path = ReadOnly;
 			sourceTree = "<group>";
@@ -812,6 +815,7 @@
 				74D42DBC221C983F00B4977D /* ShipmentTracking+ReadOnlyConvertible.swift in Sources */,
 				7455D4672141B57600FA8C1F /* TopEarnerStats+ReadOnlyConvertible.swift in Sources */,
 				B56C1EBE20EABD2B00D749F9 /* ResultsController.swift in Sources */,
+				D8736B7322F1F41B00A14A29 /* OrderCount+ReadOnlyType.swift in Sources */,
 				02BA23C222EEEABC009539E7 /* AvailabilityStore.swift in Sources */,
 				B5EED1A820F4F3CF00652449 /* Account+ReadOnlyConvertible.swift in Sources */,
 				74D7FFFA221F01E90008CC0E /* ShipmentStore.swift in Sources */,

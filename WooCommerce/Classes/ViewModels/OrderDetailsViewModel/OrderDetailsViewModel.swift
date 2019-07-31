@@ -105,7 +105,6 @@ final class OrderDetailsViewModel {
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         dataSource.configureResultsControllers(onReload: onReload)
-        //configureOrderListener()
     }
 
     func updateOrderStatus(order: Order) {
@@ -336,6 +335,7 @@ extension OrderDetailsViewModel {
                 return
             }
 
+            self.onUIReloadRequired?()
             onCompletion?(nil)
         }
 

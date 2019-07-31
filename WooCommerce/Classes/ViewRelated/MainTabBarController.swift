@@ -281,8 +281,10 @@ private extension MainTabBarController {
                 self.ordersBadge.hideBadgeOn(.orders, in: self.tabBar)
                 return
             }
-            
-            self.ordersBadge.showBadgeOn(.orders, in: self.tabBar, withValue: badgeText)
+
+            self.ordersBadge.showBadgeOn(.orders,
+                                         in: self.tabBar,
+                                         withValue: badgeText)
         }
 
         viewModel.startObservingOrdersCount()

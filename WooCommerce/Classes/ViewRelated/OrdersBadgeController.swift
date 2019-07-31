@@ -7,23 +7,10 @@ final class OrdersBadgeController {
     ///
     func showBadgeOn(_ tab: WooTab, in tabBar: UITabBar, withValue badgeText: String) {
         hideBadgeOn(tab, in: tabBar)
-        let badge = BadgeLabel(frame: CGRect(x: Constants.xOffset,
-                                             y: Constants.yOffset,
-                                             width: Constants.width,
-                                             height: Constants.height))
-        badge.tag = badgeTag(for: tab)
-        badge.font = StyleManager.badgeFont
-        badge.backgroundColor = StyleManager.wooCommerceBrandColor
-        badge.borderColor = StyleManager.wooWhite
-        badge.borderWidth = 1
-        badge.textColor = StyleManager.wooWhite
-        badge.horizontalPadding = 2
-        badge.cornerRadius = 8
-        badge.textAlignment = .center
-        badge.text = badgeText
-        badge.isHidden = true
-        tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(badge, at: 1)
-        badge.fadeIn()
+
+        let badgeView = badge(for: tab, with: badgeText)
+        tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(badgeView, at: 1)
+        badgeView.fadeIn()
     }
 
     /// Hides the Dot in the specified WooTab
@@ -37,12 +24,6 @@ final class OrdersBadgeController {
                 }
             }
         }
-    }
-
-    /// Returns the DotView's Tag for the specified WooTab
-    ///
-    func badgeTag(for tab: WooTab) -> Int {
-        return tab.rawValue + Constants.tagOffset
     }
 }
 
@@ -58,5 +39,29 @@ private extension OrdersBadgeController {
         static let tagOffset   = 999
         static let width       = CGFloat(23)
         static let height      = CGFloat(17)
+    }
+
+    func badge(for tab: WooTab, with text: String) -> BadgeLabel {
+        let returnValue = BadgeLabel(frame: CGRect(x: Constants.xOffset,
+                                             y: Constants.yOffset,
+                                             width: Constants.width,
+                                             height: Constants.height))
+        returnValue.tag = badgeTag(for: tab)
+        returnValue.text = text
+        returnValue.font = StyleManager.badgeFont
+        returnValue.backgroundColor = StyleManager.wooCommerceBrandColor
+        returnValue.borderColor = StyleManager.wooWhite
+        returnValue.borderWidth = 1
+        returnValue.textColor = StyleManager.wooWhite
+        returnValue.horizontalPadding = 2
+        returnValue.cornerRadius = 8
+        returnValue.textAlignment = .center
+        returnValue.isHidden = true
+
+        return returnValue
+    }
+
+    func badgeTag(for tab: WooTab) -> Int {
+        return tab.rawValue + Constants.tagOffset
     }
 }

@@ -134,6 +134,22 @@ public class OrdersRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Retrieves the number of Orders available for all order statuses
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch the order count.
+    ///     - ststusKey: the order status slug
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func countOrders(for siteID: Int, statusKey: String, completion: @escaping (OrderCount?, Error?) -> Void) {
+        let parameters = [ParameterKeys.statusKey: statusKey]
+
+        let mapper = OrderCountMapper(siteID: siteID)
+
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: Constants.totalsPath, parameters: parameters)
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -149,6 +165,7 @@ public extension OrdersRemote {
     private enum Constants {
         static let ordersPath: String       = "orders"
         static let notesPath: String        = "notes"
+        static let totalsPath: String       = "reports/orders/totals"
     }
 
     private enum ParameterKeys {

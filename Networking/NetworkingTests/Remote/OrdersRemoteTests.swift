@@ -4,7 +4,7 @@ import XCTest
 
 /// OrdersRemoteTests:
 ///
-class OrdersRemoteTests: XCTestCase {
+final class OrdersRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
@@ -228,6 +228,51 @@ class OrdersRemoteTests: XCTestCase {
             XCTAssertNotNil(orderNote)
             expectation.fulfill()
         }
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - Count Orders Tests
+
+    /// Verifies that countOrders properly parses response.
+    ///
+    func testCountOrdersProperlyReturnsParsedOrderCount() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Count Orders")
+
+        network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "orders-count")
+
+        remote.countOrders(for: sampleSiteID,
+                           statusKey: "processing") { orderCount, error in
+                            XCTAssertNil(error)
+                            XCTAssertNotNil(orderCount)
+
+                            // Take the opportunity to test the custom subscript works
+                            let numberOfProcessingOrders = orderCount!["processing"]?.total
+
+                            XCTAssertEqual(numberOfProcessingOrders, 1)
+
+                            expectation.fulfill()
+
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that countOrders properly relays Networking Layer errors.
+    ///
+    func testCountOrdersProperlyRelaysNetwokingErrors() {
+        let remote = OrdersRemote(network: network)
+        let expectation = self.expectation(description: "Count Orders")
+
+        remote.countOrders(for: sampleSiteID,
+                           statusKey: "processing") { orderCount, error in
+                            XCTAssertNil(orderCount)
+                            XCTAssertNotNil(error)
+                            expectation.fulfill()
+
+        }
+
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }

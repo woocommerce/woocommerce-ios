@@ -9,7 +9,7 @@ extension OrderCount {
     }
 
     @NSManaged public var siteID: Int64
-    @NSManaged public var items: NSSet?
+    @NSManaged public var items: Set<OrderCountItem>?
 
 }
 
@@ -23,9 +23,9 @@ extension OrderCount {
     @NSManaged public func removeFromItems(_ value: OrderCountItem)
 
     @objc(addItems:)
-    @NSManaged public func addToItems(_ values: NSSet)
+    @NSManaged public func addToItems(_ values: Set<OrderCountItem>)
 
     @objc(removeItems:)
-    @NSManaged public func removeFromItems(_ values: NSSet)
+    @NSManaged public func removeFromItems(_ values: Set<OrderCountItem>)
 
 }

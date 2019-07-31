@@ -18,6 +18,7 @@ At the time of writing this document, these are the subclasses of `Remote`:
 * `Notificationsremote`.  API to load notes, hashes, and update read status and last seen
 * `OrdersRemote`. Load all orders, an individual order, notes associated to an order, update an order status, and search orders
 * `OrderStatsRemote`. Loads stats associated to an order
+* `OrderStatsRemoteV4`. Loads stats associated to an order, provided by the V4 API.
 * `ProductsRemote`Loads all Products and a single Product
 * `ReportRemote`. Loads an order totals report and all known order statuses
 * `ShipmentsRemote` All things Shipment Tracking, from tracking providers to actual tracking associated to an order

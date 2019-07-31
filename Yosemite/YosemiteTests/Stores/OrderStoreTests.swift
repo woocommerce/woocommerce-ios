@@ -639,7 +639,7 @@ class OrderStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderCount.self), 1)
             // And assert it is returned
             XCTAssertNotNil(orderCount)
-            XCTAssertEqual(orderCount!["processing"]?.total, 1)
+            XCTAssertEqual(orderCount!["processing"]?.total, 6)
 
             expectation.fulfill()
         }

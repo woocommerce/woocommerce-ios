@@ -15,10 +15,23 @@ struct OrderCountMapper: Mapper {
     ///
     func map(response: Data) throws -> OrderCount {
         let decoder = JSONDecoder()
-        decoder.userInfo = [
-            .siteID: siteID
-        ]
+        let orderCountItems = try decoder.decode(OrderCountEnvelop.self,
+                                                 from: response)
 
-        return try decoder.decode(OrderCount.self, from: response)
+        return OrderCount(siteID: siteID,
+                          items: orderCountItems.orderCountItems)
+    }
+}
+
+
+/// OrderCountEnvelop Disposable Entity:
+/// The endpoint to count orders returns all of its data within the `data` key. This entity
+/// allows us to do parse all the things with JSONDecoder.
+///
+private struct OrderCountEnvelop: Decodable {
+    let orderCountItems: [OrderCountItem]
+
+    private enum CodingKeys: String, CodingKey {
+        case orderCountItems = "data"
     }
 }

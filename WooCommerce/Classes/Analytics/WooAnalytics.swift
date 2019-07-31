@@ -6,9 +6,14 @@ public class WooAnalytics {
 
     // MARK: - Properties
 
-    /// Shared Instance
+    /// Shared Instance. In the test bundle, it'll get injected a mock provider
     ///
-    static let shared = WooAnalytics(analyticsProvider: TracksProvider())
+    static let shared: WooAnalytics = {
+        let isRunningTests = NSClassFromString("XCTestCase") != nil
+        // Inject a mock tracker in unit tests
+        let provider: AnalyticsProvider = isRunningTests ? MockupAnalyticsProvider() : TracksProvider()
+        return WooAnalytics(analyticsProvider: provider)
+    }()
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///

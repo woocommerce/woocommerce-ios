@@ -1,1 +1,1 @@
-Nada demais aqui! Apenas algumas melhorias e correções de bugs. Você não vai notar nada além de um aplicativo funcionando perfeitamente.
+This version of the app does a better job adjust large font sizes for little phone screens — if you use iOS’s dynamic type settings, you won’t see any more comically large text.

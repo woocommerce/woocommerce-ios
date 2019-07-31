@@ -1,1 +1,2 @@
-This version of the app does a better job adjust large font sizes for little phone screens — if you use iOS’s dynamic type settings, you won’t see any more comically large text.
+- In Order Details > Shipment Tracking, a new action is added to the "more" action menu for copying tracking number.
+- Improved how stats work when your site doesn't have the Jetpack site stats module or you don't have permission to view stats. Now the UI is hidden instead of a generic, unhelpful error message.

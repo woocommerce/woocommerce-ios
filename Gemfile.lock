@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/wordpress-mobile/release-toolkit
-  revision: 074bac6f11ae07a293d73eed71eede716480ef6e
-  tag: 0.2.0
+  revision: b07b78c3d5a5ea47fd48f7ae54e866f6985795e7
+  tag: 0.2.3
   specs:
-    fastlane-plugin-wpmreleasetoolkit (0.2.0)
+    fastlane-plugin-wpmreleasetoolkit (0.2.3)
       diffy
       git
       nokogiri
@@ -185,7 +185,7 @@ GEM
     retriable (3.1.2)
     rouge (2.0.7)
     ruby-macho (1.4.0)
-    rubyzip (1.2.3)
+    rubyzip (1.2.2)
     sawyer (0.8.2)
       addressable (>= 2.3.5)
       faraday (> 0.8, < 2.0)

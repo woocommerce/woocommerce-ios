@@ -174,3 +174,12 @@ private extension DashboardViewController {
         })
     }
 }
+
+// MARK: - Constants
+//
+private extension DashboardViewController {
+
+    struct Segues {
+        static let settingsSegue        = "ShowSettingsViewController"
+    }
+}

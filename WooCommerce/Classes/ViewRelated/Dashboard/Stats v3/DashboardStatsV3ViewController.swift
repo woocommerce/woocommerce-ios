@@ -130,21 +130,21 @@ extension DashboardStatsV3ViewController: DashboardUI {
                 DDLogError("⛔️ Error loading dashboard: \(error)")
                 self?.handleSyncError(error: error)
             } else {
-                self?.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
+                self?.showSiteVisitors(true)
             }
         }
     }
 }
 
 private extension DashboardStatsV3ViewController {
-    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
-        storeStatsViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+    func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
+        storeStatsViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitors)
     }
 
     func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
         switch error {
         case .statsModuleDisabled, .noPermission:
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
+            showSiteVisitors(false)
         default:
             displaySyncingErrorNotice()
         }

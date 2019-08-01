@@ -21,7 +21,7 @@ final class BadgeLabel: UILabel {
         setupView()
     }
 
-    fileprivate func setupView() {
+    private func setupView() {
         textAlignment = .center
         layer.masksToBounds = true
 

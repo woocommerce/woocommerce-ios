@@ -59,7 +59,7 @@ extension StringStyles {
 
     /// Styles: Notifications List / Subject Block
     ///
-    static let subject: StringStyles = {
+    static var subject: StringStyles {
         let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
         let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold]
         let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
@@ -67,15 +67,15 @@ extension StringStyles {
         let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: StyleManager.wooGreyMid]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, italics: italics, match: nil, noticon: noticon)
-    }()
+    }
 
 
     /// Styles: Notifications List / Snippet Block
     ///
-    static let snippet: StringStyles = {
+    static var snippet: StringStyles {
         let regular: Style = [.paragraphStyle: NSParagraphStyle.truncatingTailFootnote, .font: UIFont.footnote, .foregroundColor: StyleManager.defaultTextColor]
         return StringStyles(regular: regular)
-    }()
+    }
 
 
     /// Styles: Notification Defailts / Header Block

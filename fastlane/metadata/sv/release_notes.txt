@@ -1,1 +1,1 @@
-Inga stora grejer! Bara lite förbättringar och buggfixar – du kommer inte märka mer än en välfungerande app.
+This version of the app does a better job adjust large font sizes for little phone screens — if you use iOS’s dynamic type settings, you won’t see any more comically large text.

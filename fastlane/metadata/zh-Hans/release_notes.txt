@@ -1,1 +1,1 @@
-此处没有大的改动！只是做了一些改进并修复了几个问题，您会拥有一个运行流畅的应用程序，除此之外，别无其他。
+This version of the app does a better job adjust large font sizes for little phone screens — if you use iOS’s dynamic type settings, you won’t see any more comically large text.

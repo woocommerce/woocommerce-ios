@@ -40,16 +40,6 @@ class NotificationsViewController: UIViewController {
                                               sortedBy: [descriptor])
     }()
 
-    private func filterPredicate() -> NSPredicate  {
-        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
-
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
-                                                                   sitePredicate,
-                                                                   notDeletedPredicate])
-    }
-
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {
@@ -375,8 +365,20 @@ private extension NotificationsViewController {
     }
 
     func refreshResultsPredicate() {
-        resultsController.predicate = self.filterPredicate()
+        resultsController.predicate = filterPredicate()
     }
+
+    func filterPredicate() -> NSPredicate {
+        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
+        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
+                                                                   sitePredicate,
+                                                                   notDeletedPredicate])
+    }
+
+
 }
 
 

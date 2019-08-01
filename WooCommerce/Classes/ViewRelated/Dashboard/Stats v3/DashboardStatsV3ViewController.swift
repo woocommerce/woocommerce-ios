@@ -25,6 +25,7 @@ class DashboardStatsV3ViewController: UIViewController {
     private var newOrdersContainerView: UIView = {
         return UIView(frame: .zero)
     }()
+    
     private var newOrdersHeightConstraint: NSLayoutConstraint?
 
     // MARK: child view controllers

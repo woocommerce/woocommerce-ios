@@ -20,7 +20,7 @@ extension DashboardUI {
     }
 }
 
-class DashboardUIFactory: NSObject {
+final class DashboardUIFactory {
     static func dashboardUI() -> DashboardUI {
         return DashboardStatsV3ViewController(nibName: nil, bundle: nil)
     }

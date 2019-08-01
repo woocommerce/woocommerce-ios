@@ -3,11 +3,15 @@ import WordPressUI
 import Yosemite
 
 class DashboardStatsV3ViewController: UIViewController {
+    var onPullToRefresh: () -> Void = {}
+
     // MARK: subviews
     //
     // TODO: make refresh control work.
     var refreshControl: UIRefreshControl = {
-        return UIRefreshControl(frame: .zero)
+        let refreshControl = UIRefreshControl(frame: .zero)
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
     }()
 
     private var scrollView: UIScrollView = {
@@ -25,7 +29,7 @@ class DashboardStatsV3ViewController: UIViewController {
     private var newOrdersContainerView: UIView = {
         return UIView(frame: .zero)
     }()
-    
+
     private var newOrdersHeightConstraint: NSLayoutConstraint?
 
     // MARK: child view controllers
@@ -72,6 +76,15 @@ class DashboardStatsV3ViewController: UIViewController {
         if let containerVC = container as? NewOrdersViewController {
             newOrdersHeightConstraint?.constant = containerVC.preferredContentSize.height
         }
+    }
+}
+
+// MARK: Actions
+//
+private extension DashboardStatsV3ViewController {
+    @objc func pullToRefresh() {
+        applyHideAnimation(for: newOrdersContainerView)
+        onPullToRefresh()
     }
 }
 

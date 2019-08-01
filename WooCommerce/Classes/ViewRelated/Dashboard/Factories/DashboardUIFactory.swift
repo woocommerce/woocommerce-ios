@@ -1,8 +1,18 @@
 import UIKit
 
 protocol DashboardUI: UIViewController {
+    /// For the user to refresh the Dashboard
     var refreshControl: UIRefreshControl { get }
+
+    /// Called when the user pulls to refresh
+    var onPullToRefresh: () -> Void { get set }
+
+    /// Called when the default account was updated
     func defaultAccountDidUpdate()
+
+    /// Reloads data in Dashboard
+    ///
+    /// - Parameter completion: called when Dashboard data reload finishes
     func reloadData(completion: @escaping () -> Void)
 }
 

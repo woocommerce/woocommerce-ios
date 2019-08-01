@@ -15,7 +15,7 @@ final class MainTabViewModel {
     /// Callback to be executed when this view model receives new data
     /// passing the string to be presented in the badge as a parameter
     ///
-    var onReload: ((String?) -> Void)?
+    var onBadgeReload: ((String?) -> Void)?
 
     /// Bootstrap the data pipeline for the orders badge
     /// Fetches the initial badge count and observes notifications requesting a refresh
@@ -55,13 +55,13 @@ private extension MainTabViewModel {
         guard let orderCount = orderCount,
             let processingCount = orderCount[OrderStatusEnum.processing.rawValue]?.total,
             processingCount > 0 else {
-            onReload?(nil)
+            onBadgeReload?(nil)
             return
         }
 
         let returnValue = readableCount(processingCount)
 
-        onReload?(returnValue)
+        onBadgeReload?(returnValue)
     }
 
     private func readableCount(_ count: Int) -> String {

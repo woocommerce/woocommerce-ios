@@ -1,5 +1,4 @@
 import UIKit
-import Gridicons
 import Yosemite
 import WordPressUI
 

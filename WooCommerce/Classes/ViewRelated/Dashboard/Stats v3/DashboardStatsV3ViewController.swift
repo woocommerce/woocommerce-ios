@@ -2,14 +2,6 @@ import UIKit
 import WordPressUI
 import Yosemite
 
-// TODO: move this helper to its own file.
-extension UIStoryboard {
-    func instantiateViewController<T: NSObject>(ofClass classType: T.Type) -> T? {
-        let identifier = classType.classNameWithoutNamespaces
-        return instantiateViewController(withIdentifier: identifier) as? T
-    }
-}
-
 class DashboardStatsV3ViewController: UIViewController {
     // MARK: subviews
     //

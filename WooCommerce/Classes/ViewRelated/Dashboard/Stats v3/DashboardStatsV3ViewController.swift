@@ -3,6 +3,8 @@ import WordPressUI
 import Yosemite
 
 class DashboardStatsV3ViewController: UIViewController {
+    var displaySyncingErrorNotice: () -> Void = {}
+
     var onPullToRefresh: () -> Void = {}
 
     // MARK: subviews
@@ -95,6 +97,8 @@ extension DashboardStatsV3ViewController: DashboardUI {
     }
 
     func reloadData(completion: @escaping () -> Void) {
+        refreshControl.beginRefreshing()
+
         let group = DispatchGroup()
 
         var reloadError: Error? = nil

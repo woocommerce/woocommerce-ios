@@ -107,6 +107,9 @@ private extension DashboardViewController {
         dashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
         }
+        dashboardUI.displaySyncingErrorNotice = { [weak self] in
+            self?.displaySyncingErrorNotice()
+        }
     }
 }
 
@@ -160,6 +163,17 @@ private extension DashboardViewController {
     func pullToRefresh() {
         WooAnalytics.shared.track(.dashboardPulledToRefresh)
         reloadData()
+    }
+
+    func displaySyncingErrorNotice() {
+        let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
+        let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
+        let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
+        let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
+            self?.reloadData()
+        }
+
+        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
 }
 

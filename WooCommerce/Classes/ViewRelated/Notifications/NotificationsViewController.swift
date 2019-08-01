@@ -34,13 +34,21 @@ class NotificationsViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
-        let predicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
-
         return ResultsController<StorageNote>(storageManager: storageManager,
                                               sectionNameKeyPath: "normalizedAgeAsString",
-                                              matching: predicate,
+                                              matching: self.filterPredicate(),
                                               sortedBy: [descriptor])
     }()
+
+    private func filterPredicate() -> NSPredicate  {
+        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
+        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
+                                                                   sitePredicate,
+                                                                   notDeletedPredicate])
+    }
 
     /// Pull To Refresh Support.
     ///
@@ -132,6 +140,7 @@ class NotificationsViewController: UIViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
         refreshTitle()
+        refreshResultsPredicate()
         configureNavigationItem()
         configureNavigationBarButtons()
         configureTableView()
@@ -145,6 +154,7 @@ class NotificationsViewController: UIViewController {
         super.viewWillAppear(animated)
 
         resetApplicationBadge()
+        transitionToResultsUpdatedState()
         synchronizeNotifications() {
             // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
             // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
@@ -215,6 +225,7 @@ private extension NotificationsViewController {
     }
 
     func refreshTitle() {
+        transitionToResultsUpdatedState()
         navigationItem.title = NSLocalizedString(
             "Reviews",
             comment: "Title that appears on top of the main Reviews screen (plural form of the word Review)."
@@ -321,6 +332,7 @@ private extension NotificationsViewController {
                 WooAnalytics.shared.track(.notificationListLoaded)
             }
 
+            self.refreshResultsPredicate()
             self.transitionToResultsUpdatedState()
             onCompletion?()
         }
@@ -355,7 +367,15 @@ private extension NotificationsViewController {
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
     func reloadResultsController() {
+        refreshResultsPredicate()
+
+        tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
+        transitionToSyncingState()
+    }
+
+    func refreshResultsPredicate() {
+        resultsController.predicate = self.filterPredicate()
     }
 }
 
@@ -637,14 +657,7 @@ private extension NotificationsViewController {
     /// Note: Just because this func runs does not guarantee `didEnter()` or `didLeave()` will run as well.
     ///
     func willEnter(state: State) {
-        switch state {
-        case .emptyUnfiltered:
-            updateNavBarButtonsState(filterEnabled: false)
-        case .results:
-            updateNavBarButtonsState(filterEnabled: true)
-        case .syncing:
-            updateNavBarButtonsState(filterEnabled: false)
-        }
+        updateNavBarButtonsState()
     }
 
     /// Runs whenever the FSM enters a State.
@@ -652,7 +665,9 @@ private extension NotificationsViewController {
     func didEnter(state: State) {
         switch state {
         case .emptyUnfiltered:
-            displayEmptyUnfilteredOverlay()
+            if isEmpty == true {
+                displayEmptyUnfilteredOverlay()
+            }
         case .results:
             break
         case .syncing:
@@ -701,7 +716,7 @@ private extension NotificationsViewController {
     ///
     /// - Parameter filterEnabled: If true, the filter navbar buttons is enabled; if false, it's disabled
     ///
-    func updateNavBarButtonsState(filterEnabled: Bool) {
+    func updateNavBarButtonsState() {
         updateMarkAllReadButtonState()
     }
 

@@ -168,7 +168,7 @@ private extension NotificationsViewController {
     ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
-        tabBarItem.image = .bellImage
+        tabBarItem.image = .commentImage
     }
 
     /// Setup: Navigation

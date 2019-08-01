@@ -10,9 +10,7 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    private var dashboardUI: DashboardUI = {
-        return DashboardUIFactory.dashboardUI()
-    }()
+    private var dashboardUI: DashboardUI!
 
     // MARK: View Lifecycle
 
@@ -30,20 +28,7 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
-
-        let contentViewController = dashboardUI
-        add(contentViewController)
-        let contentView = contentViewController.view!
-        NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            ])
-
-        contentViewController.onPullToRefresh = { [weak self] in
-            self?.pullToRefresh()
-        }
+        configureDashboardUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -108,8 +93,22 @@ private extension DashboardViewController {
 
         navigationItem.backBarButtonItem = backButton
     }
-}
 
+    func configureDashboardUI() {
+        dashboardUI = DashboardUIFactory.dashboardUI()
+        add(dashboardUI)
+        let contentView = dashboardUI.view!
+        NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            ])
+        dashboardUI.onPullToRefresh = { [weak self] in
+            self?.pullToRefresh()
+        }
+    }
+}
 
 // MARK: - Notifications
 //

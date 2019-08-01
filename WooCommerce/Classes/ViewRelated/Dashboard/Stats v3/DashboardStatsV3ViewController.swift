@@ -9,7 +9,6 @@ class DashboardStatsV3ViewController: UIViewController {
 
     // MARK: subviews
     //
-    // TODO: make refresh control work.
     var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl(frame: .zero)
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
@@ -23,10 +22,6 @@ class DashboardStatsV3ViewController: UIViewController {
     private var stackView: UIStackView = {
         return UIStackView(arrangedSubviews: [])
     }()
-
-    private var storeStatsView: UIView {
-        return storeStatsViewController.view
-    }
 
     private var newOrdersContainerView: UIView = {
         return UIView(frame: .zero)
@@ -222,6 +217,7 @@ private extension DashboardStatsV3ViewController {
 
     func configureChildViewControllerContainerViews() {
         // Store stats.
+        let storeStatsView = storeStatsViewController.view!
         NSLayoutConstraint.activate([
             storeStatsView.heightAnchor.constraint(equalToConstant: 380),
             ])

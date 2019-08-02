@@ -49,12 +49,12 @@ private extension OrdersBadgeController {
         returnValue.tag = badgeTag(for: tab)
         returnValue.text = text
         returnValue.font = StyleManager.badgeFont
-        returnValue.backgroundColor = StyleManager.wooCommerceBrandColor
         returnValue.borderColor = StyleManager.wooWhite
         returnValue.borderWidth = 1
         returnValue.textColor = StyleManager.wooWhite
         returnValue.horizontalPadding = 0
         returnValue.cornerRadius = 8
+        returnValue.layer.masksToBounds = true
         returnValue.textAlignment = .center
         returnValue.isHidden = true
 

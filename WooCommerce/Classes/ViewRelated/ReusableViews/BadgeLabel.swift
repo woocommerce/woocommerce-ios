@@ -31,6 +31,13 @@ final class BadgeLabel: UILabel {
     // MARK: Padding
 
     override func drawText(in rect: CGRect) {
+        let path = UIBezierPath(ovalIn: CGRect(x: rect.origin.x + borderWidth,
+                                               y: rect.origin.y + borderWidth,
+                                               width: rect.size.width - borderWidth * 2,
+                                               height: rect.size.height - borderWidth * 2))
+        StyleManager.wooCommerceBrandColor.setFill()
+        path.fill()
+
         let insets = UIEdgeInsets.init(top: 0, left: horizontalPadding, bottom: 0, right: horizontalPadding)
         super.drawText(in: rect.inset(by: insets))
     }

@@ -11,5 +11,5 @@ public enum StatsActionV4: Action {
 
     /// Synchronizes `OrderStats` for the provided siteID, StatGranularity, and date.
     ///
-    case retrieveStats(siteID: Int, granularity: StatsGranularityV4, latestDateToInclude: Date, quantity: Int, onCompletion: (Error?) -> Void)
+    case retrieveStats(siteID: Int, granularity: StatsGranularityV4, earliestDateToInclude: Date, latestDateToInclude: Date, quantity: Int, onCompletion: (Error?) -> Void)
 }

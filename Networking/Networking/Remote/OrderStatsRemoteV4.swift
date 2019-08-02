@@ -17,10 +17,12 @@ public final class OrderStatsRemoteV4: Remote {
     ///
     public func loadOrderStats(for siteID: Int,
                                unit: StatsGranularityV4,
+                               earliestDateToInclude: String,
                                latestDateToInclude: String,
                                quantity: Int,
                                completion: @escaping (OrderStatsV4?, Error?) -> Void) {
         let parameters = [ParameterKeys.interval: unit.rawValue,
+                          ParameterKeys.after: earliestDateToInclude,
                           ParameterKeys.before: latestDateToInclude,
                           ParameterKeys.quantity: String(quantity)]
 
@@ -40,6 +42,7 @@ private extension OrderStatsRemoteV4 {
 
     enum ParameterKeys {
         static let interval: String = "interval"
+        static let after: String    = "after"
         static let before: String   = "before"
         static let quantity: String = "per_page"
         static let fields: String   = "_fields"

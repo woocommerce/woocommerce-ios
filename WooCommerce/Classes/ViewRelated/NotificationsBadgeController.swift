@@ -54,7 +54,7 @@ final class NotificationsBadgeController {
 private extension NotificationsBadgeController {
 
     enum DotConstants {
-        static let diameter    = CGFloat(15)
+        static let diameter    = CGFloat(9)
         static let borderWidth = CGFloat(1)
         static let xOffset     = CGFloat(16)
         static let yOffset     = CGFloat(0)

@@ -1,5 +1,4 @@
 import UIKit
-import Gridicons
 import Yosemite
 import WordPressUI
 
@@ -16,9 +15,9 @@ enum WooTab: Int {
     ///
     case orders = 1
 
-    /// Notifications Tab
+    /// Reviews Tab
     ///
-    case notifications = 2
+    case reviews = 2
 }
 
 
@@ -140,7 +139,7 @@ private extension MainTabBarController {
             WooAnalytics.shared.track(.dashboardSelected)
         case .orders:
             WooAnalytics.shared.track(.ordersSelected)
-        case .notifications:
+        case .reviews:
             WooAnalytics.shared.track(.notificationsSelected)
         }
     }
@@ -153,7 +152,7 @@ private extension MainTabBarController {
             WooAnalytics.shared.track(.dashboardReselected)
         case .orders:
             WooAnalytics.shared.track(.ordersReselected)
-        case .notifications:
+        case .reviews:
             WooAnalytics.shared.track(.notificationsReselected)
         }
     }
@@ -176,10 +175,10 @@ extension MainTabBarController {
         navigateTo(.orders)
     }
 
-    /// Switches to the Notifications tab and pops to the root view controller
+    /// Switches to the Reviews tab and pops to the root view controller
     ///
-    static func switchToNotificationsTab() {
-        navigateTo(.notifications)
+    static func switchToReviewsTab() {
+        navigateTo(.reviews)
     }
 
     /// Switches the TabBarController to the specified Tab
@@ -224,7 +223,7 @@ extension MainTabBarController {
     /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.
     ///
     static func presentNotificationDetails(for noteID: Int) {
-        switchToNotificationsTab()
+        switchToReviewsTab()
 
         guard let notificationsViewController: NotificationsViewController = childViewController() else {
             return

@@ -6,18 +6,18 @@ final class NotificationsBadgeController {
     ///
     func badgeCountWasUpdated(newValue: Int, in tabBar: UITabBar) {
         guard newValue > 0 else {
-            hideDotOn(.notifications, in: tabBar)
+            hideDotOn(.reviews, in: tabBar)
             return
         }
 
-        showDotOn(.notifications, in: tabBar)
+        showDotOn(.reviews, in: tabBar)
     }
 
     /// Shows the dot in the specified WooTab
     ///
     func showDotOn(_ tab: WooTab, in tabBar: UITabBar) {
         hideDotOn(tab, in: tabBar)
-        let dot = GreenDotView(frame: CGRect(x: DotConstants.xOffset,
+        let dot = PurpleDotView(frame: CGRect(x: DotConstants.xOffset,
                                              y: DotConstants.yOffset,
                                              width: DotConstants.diameter,
                                              height: DotConstants.diameter),
@@ -54,18 +54,18 @@ final class NotificationsBadgeController {
 private extension NotificationsBadgeController {
 
     enum DotConstants {
-        static let diameter    = CGFloat(10)
+        static let diameter    = CGFloat(15)
         static let borderWidth = CGFloat(1)
-        static let xOffset     = CGFloat(2)
+        static let xOffset     = CGFloat(16)
         static let yOffset     = CGFloat(0)
         static let tagOffset   = 999
     }
 }
 
 
-// MARK: - GreenDot UIView
+// MARK: - PurpleDot UIView
 //
-private class GreenDotView: UIView {
+private class PurpleDotView: UIView {
 
     private var borderWidth = CGFloat(1) // Border line width defaults to 1
 
@@ -93,7 +93,7 @@ private class GreenDotView: UIView {
                                                y: rect.origin.y + borderWidth,
                                                width: rect.size.width - borderWidth * 2,
                                                height: rect.size.height - borderWidth * 2))
-        StyleManager.wooAccent.setFill()
+        StyleManager.wooCommerceBrandColor.setFill()
         path.fill()
 
         path.lineWidth = borderWidth

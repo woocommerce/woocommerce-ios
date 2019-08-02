@@ -264,10 +264,10 @@ private extension MainTabBarController {
     ///
     func showDotOn(_ tab: WooTab) {
         hideDotOn(tab)
-        let dot = GreenDotView(frame: CGRect(x: DotConstants.xOffset,
-                                             y: DotConstants.yOffset,
-                                             width: DotConstants.diameter,
-                                             height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
+        let dot = PurpleDotView(frame: CGRect(x: DotConstants.xOffset,
+                                              y: DotConstants.yOffset,
+                                              width: DotConstants.diameter,
+                                              height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: tab)
         dot.isHidden = true
         tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
@@ -311,7 +311,7 @@ private extension MainTabBarController {
 
 // MARK: - GreenDot UIView
 //
-private class GreenDotView: UIView {
+private class PurpleDotView: UIView {
 
     private var borderWidth = CGFloat(1) // Border line width defaults to 1
 
@@ -343,7 +343,7 @@ private class GreenDotView: UIView {
         path.fill()
 
         path.lineWidth = borderWidth
-        StyleManager.wooWhite.setStroke()
+        StyleManager.wooCommerceBrandColor.setStroke()
         path.stroke()
     }
 }

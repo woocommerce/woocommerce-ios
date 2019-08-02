@@ -85,21 +85,6 @@ final class JetpackRequestTests: XCTestCase {
         XCTAssertEqual(output.httpMethod?.uppercased(), "GET")
         XCTAssertTrue((output.url?.absoluteString.contains("%26_method%3Ddelete"))!)
     }
-
-    /// Verifies that a GET JetpackRequest for WC API 4 will escape the forward slashes in `path` parameter.
-    ///
-    func testWooApiVersion4GetRequestEscapingForwardSlashes() {
-        let path = "/wc/v4"
-        let escapedPath = "%2Fwc%2Fv4"
-
-        let wooApiV4request = JetpackRequest(wooApiVersion: .mark4, method: .get, siteID: sampleSiteID, path: path)
-        let generatedWooApiV4URL = try! wooApiV4request.asURLRequest().url!
-        XCTAssertTrue(generatedWooApiV4URL.absoluteString.contains(escapedPath))
-
-        let wooApiV3request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: sampleSiteID, path: path)
-        let generatedWooApiV3URL = try! wooApiV3request.asURLRequest().url!
-        XCTAssertTrue(generatedWooApiV3URL.absoluteString.contains(path))
-    }
 }
 
 

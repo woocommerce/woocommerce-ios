@@ -58,37 +58,10 @@ struct JetpackRequest: URLRequestConvertible {
         let dotcomEndpoint = DotcomRequest(wordpressApiVersion: JetpackRequest.wordpressApiVersion, method: dotcomMethod, path: dotcomPath)
         let dotcomRequest = try dotcomEndpoint.asURLRequest()
 
-        let parameters = dotcomParams
-        let request = try dotcomEncoder.encode(dotcomRequest, with: parameters)
-
-        // As a (hopefully temporary) workaround to WooCommerc API 4 GET requests expecting `path` to escape forward slashes (`/`),
-        // manually escapes the forward slashes in `path` param after default encoding.
-        if wooApiVersion == .mark4 && method == .get {
-            guard let url = request.url?.absoluteString else {
-                throw DotcomError.requestFailed
-            }
-            var customEscapedUrl = url
-            let pattern = #"path=([^$&]+)"#
-            let regex = try NSRegularExpression(pattern: pattern, options: [])
-            let nsrange = NSRange(url.startIndex..<url.endIndex,
-                                  in: url)
-            if let match = regex.firstMatch(in: url,
-                                            options: [],
-                                            range: nsrange) {
-                let nsrange = match.range(at: 1)
-                if nsrange.location != NSNotFound,
-                    let range = Range(nsrange, in: url) {
-                    let path = String(url[range])
-                    let customEscapedPath = path.replacingOccurrences(of: "/", with: "%2F")
-                    customEscapedUrl = customEscapedUrl.replacingCharacters(in: range, with: customEscapedPath)
-                }
-            }
-            return try URLRequest(url: customEscapedUrl, method: .get)
-        } else {
-            return try dotcomEncoder.encode(dotcomRequest, with: parameters)
-        }
+        return try dotcomEncoder.encode(dotcomRequest, with: dotcomParams)
     }
 }
+
 
 // MARK: - Dotcom Request: Internal
 //

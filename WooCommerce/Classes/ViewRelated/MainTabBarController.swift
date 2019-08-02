@@ -302,7 +302,7 @@ private extension MainTabBarController {
     enum DotConstants {
         static let diameter    = CGFloat(10)
         static let borderWidth = CGFloat(1)
-        static let xOffset     = CGFloat(2)
+        static let xOffset     = CGFloat(16)
         static let yOffset     = CGFloat(0)
         static let tagOffset   = 999
     }
@@ -339,11 +339,11 @@ private class PurpleDotView: UIView {
                                                y: rect.origin.y + borderWidth,
                                                width: rect.size.width - borderWidth*2,
                                                height: rect.size.height - borderWidth*2))
-        StyleManager.wooAccent.setFill()
+        StyleManager.wooCommerceBrandColor.setFill()
         path.fill()
 
         path.lineWidth = borderWidth
-        StyleManager.wooCommerceBrandColor.setStroke()
+        StyleManager.wooWhite.setStroke()
         path.stroke()
     }
 }

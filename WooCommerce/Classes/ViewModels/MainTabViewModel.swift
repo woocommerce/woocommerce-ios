@@ -30,7 +30,10 @@ final class MainTabViewModel {
 
 private extension MainTabViewModel {
     enum Constants {
-        static let ninePlus = "9+"
+        static let ninePlus = NSLocalizedString(
+            "9+",
+            comment: "Content of the badge presented over the Orders icon when there are more than 9 orders processing"
+        )
     }
 
     @objc func requestBadgeCount() {

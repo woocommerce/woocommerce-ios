@@ -250,7 +250,7 @@ final class OrdersRemoteTests: XCTestCase {
                             // Take the opportunity to test the custom subscript works
                             let numberOfProcessingOrders = orderCount!["processing"]?.total
 
-                            XCTAssertEqual(numberOfProcessingOrders, 1)
+                            XCTAssertEqual(numberOfProcessingOrders, 6)
 
                             expectation.fulfill()
 

@@ -228,6 +228,7 @@ extension OrderDetailsViewController {
         }
 
         group.notify(queue: .main) { [weak self] in
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
         }
     }

@@ -351,6 +351,10 @@
 		D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B833C2230DC9D002168F3 /* StringWooTests.swift */; };
 		D85B833F2230F268002168F3 /* SummaryTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B833E2230F268002168F3 /* SummaryTableViewCellTests.swift */; };
 		D8736B5122EB69E300A14A29 /* OrderDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */; };
+		D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */; };
+		D8736B5722EF53A100A14A29 /* OrdersBadgeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5622EF53A100A14A29 /* OrdersBadgeController.swift */; };
+		D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */; };
+		D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */; };
 		D89E0C31226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89E0C30226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift */; };
 		D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */; };
 		D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB131D225DC25F002BB5D1 /* MockOrders.swift */; };
@@ -756,6 +760,10 @@
 		D85B833C2230DC9D002168F3 /* StringWooTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = StringWooTests.swift; path = WooCommerceTests/Extensions/StringWooTests.swift; sourceTree = SOURCE_ROOT; };
 		D85B833E2230F268002168F3 /* SummaryTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SummaryTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/SummaryTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OrderDetailsViewModelTests.swift; path = WooCommerceTests/ViewRelated/OrderDetailsViewModelTests.swift; sourceTree = SOURCE_ROOT; };
+		D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsBadgeController.swift; sourceTree = "<group>"; };
+		D8736B5622EF53A100A14A29 /* OrdersBadgeController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersBadgeController.swift; sourceTree = "<group>"; };
+		D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabViewModel.swift; sourceTree = "<group>"; };
+		D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BadgeLabel.swift; sourceTree = "<group>"; };
 		D89E0C30226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = EditableOrderTrackingTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/EditableOrderTrackingTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AddManualCustomTrackingViewModelTests.swift; path = WooCommerceTests/Model/AddManualCustomTrackingViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D8AB131D225DC25F002BB5D1 /* MockOrders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockOrders.swift; sourceTree = "<group>"; };
@@ -1093,6 +1101,8 @@
 				74EC34A3225FE1F3004BBC2E /* Products */,
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
 				CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */,
+				D8736B5222EF4F5900A14A29 /* NotificationsBadgeController.swift */,
+				D8736B5622EF53A100A14A29 /* OrdersBadgeController.swift */,
 			);
 			path = ViewRelated;
 			sourceTree = "<group>";
@@ -1484,6 +1494,7 @@
 				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
 				CE22709A228F362600C0626C /* ProductDetailsViewModel.swift */,
 				D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */,
+				D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -1522,6 +1533,7 @@
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
 			isa = PBXGroup;
 			children = (
+				D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */,
 				CE21B3D520FE669A00A259D5 /* BasicTableViewCell.swift */,
 				CE21B3D620FE669A00A259D5 /* BasicTableViewCell.xib */,
 				B5FD111521D3F13700560344 /* BordersView.swift */,
@@ -2012,6 +2024,7 @@
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				CE0F17D222A8308900964A63 /* FancyAlertController+PurchaseNote.swift in Sources */,
 				B59D1EEA2190AE96009D1978 /* StorageNote+Woo.swift in Sources */,
+				D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */,
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
@@ -2061,6 +2074,7 @@
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
 				748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */,
 				024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */,
+				D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */,
 				CE4DA5C621DD755E00074607 /* CurrencyFormatter.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
 				CE1AFE622200B1BD00432745 /* ApplicationLogDetailViewController.swift in Sources */,
@@ -2078,6 +2092,7 @@
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
+				D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */,
 				B5F8B7E02194759100DAB7E2 /* NotificationDetailsViewController.swift in Sources */,
 				CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */,
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,
@@ -2114,6 +2129,7 @@
 				933A27372222354600C2143A /* Logging.swift in Sources */,
 				B5D1AFB820BC510200DB0E8C /* UIImage+Woo.swift in Sources */,
 				B5980A6121AC878900EBF596 /* UIDevice+Woo.swift in Sources */,
+				D8736B5722EF53A100A14A29 /* OrdersBadgeController.swift in Sources */,
 				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
 				D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */,

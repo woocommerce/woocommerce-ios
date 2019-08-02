@@ -34,10 +34,10 @@ private extension OrdersBadgeController {
     enum Constants {
         static let diameter    = CGFloat(10)
         static let borderWidth = CGFloat(1)
-        static let xOffset     = CGFloat(8)
-        static let yOffset     = CGFloat(-8)
+        static let xOffset     = CGFloat(10)
+        static let yOffset     = CGFloat(-6)
         static let tagOffset   = 999
-        static let width       = CGFloat(23)
+        static let width       = CGFloat(17)
         static let height      = CGFloat(17)
     }
 
@@ -53,7 +53,7 @@ private extension OrdersBadgeController {
         returnValue.borderColor = StyleManager.wooWhite
         returnValue.borderWidth = 1
         returnValue.textColor = StyleManager.wooWhite
-        returnValue.horizontalPadding = 2
+        returnValue.horizontalPadding = 0
         returnValue.cornerRadius = 8
         returnValue.textAlignment = .center
         returnValue.isHidden = true

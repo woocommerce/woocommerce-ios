@@ -71,7 +71,11 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
         let remote = OrderStatsRemoteV4(network: network)
         let expectation = self.expectation(description: "Load order stats contains errors")
 
-        remote.loadOrderStats(for: sampleSiteID, unit: .daily, earliestDateToInclude: "1955-11-05", latestDateToInclude: "1955-11-05", quantity: 31) { (orderStats, error) in
+        remote.loadOrderStats(for: sampleSiteID,
+                              unit: .daily,
+                              earliestDateToInclude: "1955-11-05",
+                              latestDateToInclude: "1955-11-05",
+                              quantity: 31) { (orderStats, error) in
             XCTAssertNil(orderStats)
             XCTAssertNotNil(error)
             expectation.fulfill()

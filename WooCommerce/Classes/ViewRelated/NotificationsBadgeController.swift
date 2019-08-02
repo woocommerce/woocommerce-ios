@@ -90,8 +90,8 @@ private class GreenDotView: UIView {
     override func draw(_ rect: CGRect) {
         let path = UIBezierPath(ovalIn: CGRect(x: rect.origin.x + borderWidth,
                                                y: rect.origin.y + borderWidth,
-                                               width: rect.size.width - borderWidth*2,
-                                               height: rect.size.height - borderWidth*2))
+                                               width: rect.size.width - borderWidth * 2,
+                                               height: rect.size.height - borderWidth * 2))
         StyleManager.wooAccent.setFill()
         path.fill()
 

@@ -20,7 +20,8 @@ final class NotificationsBadgeController {
         let dot = GreenDotView(frame: CGRect(x: DotConstants.xOffset,
                                              y: DotConstants.yOffset,
                                              width: DotConstants.diameter,
-                                             height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
+                                             height: DotConstants.diameter),
+                               borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: tab)
         dot.isHidden = true
         tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)

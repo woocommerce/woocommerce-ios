@@ -48,8 +48,11 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "order-stats-v4-year")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 0)
 
-        let action = StatsActionV4.retrieveStats(siteID: sampleSiteID, granularity: .yearly,
-                                                    latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
+        let action = StatsActionV4.retrieveStats(siteID: sampleSiteID,
+                                                 granularity: .yearly,
+                                                 earliestDateToInclude: date(with: "2018-06-23T17:06:55"),
+                                                 latestDateToInclude: date(with: "2018-06-23T17:06:55"),
+                                                 quantity: 2) { (error) in
                                                         XCTAssertNil(error)
                                                         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 1)
                                                         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatsV4Interval.self), 1)
@@ -70,8 +73,11 @@ final class StatsStoreV4Tests: XCTestCase {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "generic_error")
-        let action = StatsActionV4.retrieveStats(siteID: sampleSiteID, granularity: .yearly,
-                                                    latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
+        let action = StatsActionV4.retrieveStats(siteID: sampleSiteID,
+                                                 granularity: .yearly,
+                                                 earliestDateToInclude: date(with: "2018-06-23T17:06:55"),
+                                                 latestDateToInclude: date(with: "2018-06-23T17:06:55"),
+                                                 quantity: 2) { (error) in
                                                         XCTAssertNotNil(error)
                                                         expectation.fulfill()
         }
@@ -87,7 +93,10 @@ final class StatsStoreV4Tests: XCTestCase {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let action = StatsActionV4.retrieveStats(siteID: sampleSiteID, granularity: .yearly,
-                                                    latestDateToInclude: date(with: "2018-06-23T17:06:55"), quantity: 2) { (error) in
+                                                 earliestDateToInclude: date(with: "2018-06-23T17:06:55"),
+
+                                                 latestDateToInclude: date(with: "2018-06-23T17:06:55"),
+                                                 quantity: 2) { (error) in
                                                         XCTAssertNotNil(error)
                                                         expectation.fulfill()
         }

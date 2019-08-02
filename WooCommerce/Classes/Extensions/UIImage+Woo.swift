@@ -71,6 +71,12 @@ extension UIImage {
         return Gridicon.iconOfType(.cog)
     }
 
+    /// Comment Icon
+    ///
+    static var commentImage: UIImage {
+        return Gridicon.iconOfType(.comment)
+    }
+
     /// Delete Icon
     ///
     static var deleteImage: UIImage {

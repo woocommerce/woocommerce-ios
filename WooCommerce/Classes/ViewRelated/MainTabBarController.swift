@@ -1,5 +1,4 @@
 import UIKit
-import Gridicons
 import Yosemite
 import WordPressUI
 
@@ -16,9 +15,9 @@ enum WooTab: Int {
     ///
     case orders = 1
 
-    /// Notifications Tab
+    /// Reviews Tab
     ///
-    case notifications = 2
+    case reviews = 2
 }
 
 
@@ -127,7 +126,7 @@ private extension MainTabBarController {
             WooAnalytics.shared.track(.dashboardSelected)
         case .orders:
             WooAnalytics.shared.track(.ordersSelected)
-        case .notifications:
+        case .reviews:
             WooAnalytics.shared.track(.notificationsSelected)
         }
     }
@@ -140,7 +139,7 @@ private extension MainTabBarController {
             WooAnalytics.shared.track(.dashboardReselected)
         case .orders:
             WooAnalytics.shared.track(.ordersReselected)
-        case .notifications:
+        case .reviews:
             WooAnalytics.shared.track(.notificationsReselected)
         }
     }
@@ -163,10 +162,10 @@ extension MainTabBarController {
         navigateTo(.orders)
     }
 
-    /// Switches to the Notifications tab and pops to the root view controller
+    /// Switches to the Reviews tab and pops to the root view controller
     ///
-    static func switchToNotificationsTab() {
-        navigateTo(.notifications)
+    static func switchToReviewsTab() {
+        navigateTo(.reviews)
     }
 
     /// Switches the TabBarController to the specified Tab
@@ -211,7 +210,7 @@ extension MainTabBarController {
     /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.
     ///
     static func presentNotificationDetails(for noteID: Int) {
-        switchToNotificationsTab()
+        switchToReviewsTab()
 
         guard let notificationsViewController: NotificationsViewController = childViewController() else {
             return
@@ -254,21 +253,21 @@ private extension MainTabBarController {
     ///
     func badgeCountWasUpdated(newValue: Int) {
         guard newValue > 0 else {
-            hideDotOn(.notifications)
+            hideDotOn(.reviews)
             return
         }
 
-        showDotOn(.notifications)
+        showDotOn(.reviews)
     }
 
     /// Shows the dot in the specified WooTab
     ///
     func showDotOn(_ tab: WooTab) {
         hideDotOn(tab)
-        let dot = GreenDotView(frame: CGRect(x: DotConstants.xOffset,
-                                             y: DotConstants.yOffset,
-                                             width: DotConstants.diameter,
-                                             height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
+        let dot = PurpleDotView(frame: CGRect(x: DotConstants.xOffset,
+                                              y: DotConstants.yOffset,
+                                              width: DotConstants.diameter,
+                                              height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: tab)
         dot.isHidden = true
         tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
@@ -303,7 +302,7 @@ private extension MainTabBarController {
     enum DotConstants {
         static let diameter    = CGFloat(10)
         static let borderWidth = CGFloat(1)
-        static let xOffset     = CGFloat(2)
+        static let xOffset     = CGFloat(16)
         static let yOffset     = CGFloat(0)
         static let tagOffset   = 999
     }
@@ -312,7 +311,7 @@ private extension MainTabBarController {
 
 // MARK: - GreenDot UIView
 //
-private class GreenDotView: UIView {
+private class PurpleDotView: UIView {
 
     private var borderWidth = CGFloat(1) // Border line width defaults to 1
 
@@ -340,7 +339,7 @@ private class GreenDotView: UIView {
                                                y: rect.origin.y + borderWidth,
                                                width: rect.size.width - borderWidth*2,
                                                height: rect.size.height - borderWidth*2))
-        StyleManager.wooAccent.setFill()
+        StyleManager.wooCommerceBrandColor.setFill()
         path.fill()
 
         path.lineWidth = borderWidth

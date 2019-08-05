@@ -4,7 +4,7 @@ import Charts
 import XLPagerTabStrip
 
 
-class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
+class PeriodDataViewController: UIViewController {
 
     // MARK: - Public Properties
 
@@ -318,7 +318,7 @@ private extension PeriodDataViewController {
 
 // MARK: - IndicatorInfoProvider Conformance (Tab Bar)
 //
-extension PeriodDataViewController {
+extension PeriodDataViewController: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: granularity.pluralizedString)
     }

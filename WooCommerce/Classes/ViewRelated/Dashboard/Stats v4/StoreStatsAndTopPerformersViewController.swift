@@ -223,7 +223,7 @@ private extension StoreStatsAndTopPerformersViewController {
         }
 
         let action = StatsActionV4.retrieveStats(siteID: siteID,
-                                                 granularity: timeRange.intervalGranularity,
+                                                 timeRange: timeRange,
                                                  earliestDateToInclude: timeRange.earliestDate(latestDate: latestDateToInclude),
                                                  latestDateToInclude: latestDateToInclude,
                                                  quantity: timeRange.intervalQuantity,

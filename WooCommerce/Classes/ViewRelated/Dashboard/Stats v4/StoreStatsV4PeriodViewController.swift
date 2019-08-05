@@ -7,12 +7,6 @@ class StoreStatsV4PeriodViewController: UIViewController {
     // MARK: - Public Properties
 
     public let granularity: StatsGranularityV4
-    public var orderStatsIntervals: [OrderStatsV4Interval] {
-        return orderStatsResultsController.fetchedObjects
-    }
-    public var siteStats: SiteVisitStats? {
-        return siteStatsResultsController.fetchedObjects.first
-    }
 
     var shouldShowSiteVisitStats: Bool = true {
         didSet {
@@ -22,6 +16,15 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Private Properties
     private let timeRange: StatsTimeRangeV4
+    private var orderStatsIntervals: [OrderStatsV4Interval] {
+        return orderStats?.intervals ?? []
+    }
+    private var orderStats: OrderStatsV4? {
+        return orderStatsResultsController.fetchedObjects.first
+    }
+    private var siteStats: SiteVisitStats? {
+        return siteStatsResultsController.fetchedObjects.first
+    }
 
     @IBOutlet private weak var visitorsStackView: UIStackView!
     @IBOutlet private weak var visitorsTitle: UILabel!
@@ -51,14 +54,12 @@ class StoreStatsV4PeriodViewController: UIViewController {
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
-
     /// OrderStats ResultsController: Loads order stats from the Storage Layer
     ///
-    private lazy var orderStatsResultsController: ResultsController<StorageOrderStatsV4Interval> = {
+    private lazy var orderStatsResultsController: ResultsController<StorageOrderStatsV4> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "stats.granularity ==[c] %@", granularity.rawValue)
-        let descriptor = NSSortDescriptor(keyPath: \StorageOrderStatsV4Interval.dateEnd, ascending: false)
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        let predicate = NSPredicate(format: "timeRange ==[c] %@", timeRange.rawValue)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
 
     /// Placeholder: Mockup Charts View
@@ -69,16 +70,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
     // MARK: - Computed Properties
 
     private var currencySymbol: String {
-        // TODO: how to handle currency
-//        guard let rawCode = orderStats?.currencyCode else {
-            return String()
-//        }
-
-//        guard let code = CurrencySettings.CurrencyCode(rawValue: rawCode) else {
-//            return String()
-//        }
-//
-//        return CurrencySettings.shared.symbol(from: code)
+        let code = CurrencySettings.shared.currencyCode
+        return CurrencySettings.shared.symbol(from: code)
     }
 
     private var summaryDateUpdated: String {
@@ -159,7 +152,7 @@ extension StoreStatsV4PeriodViewController {
     /// Indicates if the receiver has Remote Stats, or not.
     ///
     var shouldDisplayGhostContent: Bool {
-        return orderStatsIntervals == nil
+        return orderStatsIntervals.isEmpty
     }
 
     /// Displays the Placeholder Period Graph + Starts the Animation.
@@ -432,7 +425,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func updateOrderDataIfNeeded() {
-        if orderStatsIntervals != nil {
+        if !orderStatsIntervals.isEmpty {
             lastUpdatedDate = Date()
         } else {
             lastUpdatedDate = nil
@@ -479,10 +472,10 @@ private extension StoreStatsV4PeriodViewController {
 
         var totalOrdersText = Constants.placeholderText
         var totalRevenueText = Constants.placeholderText
-        // TODO-jc: fix this
-        if let item = orderStatsIntervals.first {
-            totalOrdersText = Double(item.subtotals.totalOrders).humanReadableString()
-            totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(item.subtotals.grossRevenue)"), with: "") ?? String()
+        let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+        if let orderStats = orderStats {
+            totalOrdersText = Double(orderStats.totals.totalOrders).humanReadableString()
+            totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.totals.grossRevenue)"), with: currencyCode) ?? String()
         }
         ordersData.text = totalOrdersText
         revenueData.text = totalRevenueText
@@ -529,11 +522,11 @@ private extension StoreStatsV4PeriodViewController {
         var barCount = 0
         var barColors: [UIColor] = []
         var dataEntries: [BarChartDataEntry] = []
-        // TODO-jc: currencyCode
+        let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
         orderStatsIntervals.forEach { (item) in
-            let entry = BarChartDataEntry(x: Double(barCount), y: Double(item.subtotals.grossRevenue as NSNumber))
+            let entry = BarChartDataEntry(x: Double(barCount), y: (item.subtotals.grossRevenue as NSDecimalNumber).doubleValue)
             let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String("\(item.subtotals.grossRevenue)"),
-                                                                                with: "currency",
+                                                                                with: currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
             barColors.append(StyleManager.wooGreyMid)
@@ -541,7 +534,7 @@ private extension StoreStatsV4PeriodViewController {
             barCount += 1
         }
 
-        let dataSet =  BarChartDataSet(entries: dataEntries, label: "Data")
+        let dataSet = BarChartDataSet(entries: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
         dataSet.highlightColor = StyleManager.wooCommerceBrandColor

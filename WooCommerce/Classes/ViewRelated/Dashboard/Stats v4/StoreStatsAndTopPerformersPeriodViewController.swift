@@ -17,7 +17,7 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: child view controllers
     private lazy var storeStatsPeriodViewController: StoreStatsV4PeriodViewController = {
-        return StoreStatsV4PeriodViewController(granularity: granularity)
+        return StoreStatsV4PeriodViewController(timeRange: self.timeRange)
     }()
 
     // MARK: internal properties
@@ -67,7 +67,7 @@ extension StoreStatsAndTopPerformersPeriodViewController {
 //
 extension StoreStatsAndTopPerformersPeriodViewController: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: granularity.tabTitle)
+        return IndicatorInfo(title: timeRange.tabTitle)
     }
 }
 

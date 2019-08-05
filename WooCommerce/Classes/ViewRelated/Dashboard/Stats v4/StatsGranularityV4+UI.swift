@@ -1,21 +1,6 @@
 import Yosemite
 
 extension StatsGranularityV4 {
-    var tabTitle: String {
-        switch self {
-        case .hourly:
-            return NSLocalizedString("Today", comment: "Tab selector title that shows the statistics of today")
-        case .daily:
-            return NSLocalizedString("This Week", comment: "Tab selector title that shows the statistics of this week")
-        case .weekly:
-            return NSLocalizedString("This Month", comment: "Tab selector title that shows the statistics of this month")
-        case .monthly:
-            return NSLocalizedString("This Year", comment: "Tab selector title that shows the statistics of this year")
-        default:
-            fatalError("This case is not supported: \(self.rawValue)")
-        }
-    }
-
 //    private func numberOfSeconds(numberOfIntervals: Int) -> TimeInterval {
 //        switch self {
 //        case .hourly:
@@ -64,6 +49,19 @@ extension StatsTimeRangeV4 {
             return 31
         case .thisYear:
             return 12
+        }
+    }
+
+    var tabTitle: String {
+        switch self {
+        case .today:
+            return NSLocalizedString("Today", comment: "Tab selector title that shows the statistics of today")
+        case .thisWeek:
+            return NSLocalizedString("This Week", comment: "Tab selector title that shows the statistics of this week")
+        case .thisMonth:
+            return NSLocalizedString("This Month", comment: "Tab selector title that shows the statistics of this month")
+        case .thisYear:
+            return NSLocalizedString("This Year", comment: "Tab selector title that shows the statistics of this year")
         }
     }
 

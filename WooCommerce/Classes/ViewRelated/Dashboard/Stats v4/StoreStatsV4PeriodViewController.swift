@@ -21,6 +21,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     }
 
     // MARK: - Private Properties
+    private let timeRange: StatsTimeRangeV4
 
     @IBOutlet private weak var visitorsStackView: UIStackView!
     @IBOutlet private weak var visitorsTitle: UILabel!
@@ -106,8 +107,9 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(granularity: StatsGranularityV4) {
-        self.granularity = granularity
+    init(timeRange: StatsTimeRangeV4) {
+        self.timeRange = timeRange
+        self.granularity = timeRange.intervalGranularity
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
@@ -256,7 +258,7 @@ private extension StoreStatsV4PeriodViewController {
         chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(
             NSLocalizedString("Store revenue chart %@",
                               comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."),
-            granularity.tabTitle
+            timeRange.tabTitle
         )
     }
 

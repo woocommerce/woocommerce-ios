@@ -16,12 +16,7 @@ class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewContro
         return periodVCs[currentIndex]
     }
 
-
     // MARK: - View Lifecycle
-
-//    required init?(coder aDecoder: NSCoder) {
-//        super.init(coder: aDecoder)
-//    }
 
     override func viewDidLoad() {
         configurePeriodViewControllers()
@@ -217,7 +212,6 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 }
-
 
 // MARK: - Sync'ing Helpers
 //

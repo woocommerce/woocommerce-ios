@@ -21,12 +21,15 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     }()
 
     // MARK: internal properties
-
+    private var childViewContrllers: [UIViewController] {
+        return [storeStatsPeriodViewController]
+    }
 
     init(timeRange: StatsTimeRangeV4) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
         super.init(nibName: nil, bundle: nil)
+        configureChildViewControllers()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -72,14 +75,19 @@ extension StoreStatsAndTopPerformersPeriodViewController: IndicatorInfoProvider 
 }
 
 private extension StoreStatsAndTopPerformersPeriodViewController {
+    func configureChildViewControllers() {
+        childViewContrllers.forEach { childViewController in
+            addChild(childViewController)
+            childViewController.view.translatesAutoresizingMaskIntoConstraints = false
+        }
+    }
+
     func configureSubviews() {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(stackView)
         view.pinSubviewToSafeArea(stackView)
 
-        let childViewContrllers = [storeStatsPeriodViewController]
         childViewContrllers.forEach { childViewController in
-            addChild(childViewController)
             childViewController.view.translatesAutoresizingMaskIntoConstraints = false
         }
 

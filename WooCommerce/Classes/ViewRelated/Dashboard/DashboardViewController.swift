@@ -10,19 +10,7 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    @IBOutlet private weak var scrollView: UIScrollView!
-    @IBOutlet private weak var newOrdersContainerView: UIView!
-    @IBOutlet weak var newOrdersHeightConstraint: NSLayoutConstraint!
-
-    private var storeStatsViewController: StoreStatsViewController!
-    private var newOrdersViewController: NewOrdersViewController!
-    private var topPerformersViewController: TopPerformersViewController!
-
-    private lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
-        return refreshControl
-    }()
+    private var dashboardUI: DashboardUI!
 
     // MARK: View Lifecycle
 
@@ -40,6 +28,7 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
+        configureDashboardUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -47,26 +36,6 @@ class DashboardViewController: UIViewController {
         // Reset title to prevent it from being empty right after login
         configureTitle()
         reloadData()
-    }
-
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? StoreStatsViewController, segue.identifier == Segues.storeStatsSegue {
-            storeStatsViewController = vc
-        }
-        if let vc = segue.destination as? NewOrdersViewController, segue.identifier == Segues.newOrdersSegue {
-            newOrdersViewController = vc
-            newOrdersViewController.delegate = self
-        }
-        if let vc = segue.destination as? TopPerformersViewController, segue.identifier == Segues.topPerformersSegue {
-            topPerformersViewController = vc
-        }
-    }
-
-    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
-        super.preferredContentSizeDidChange(forChildContentContainer: container)
-        if let containerVC = container as? NewOrdersViewController {
-            newOrdersHeightConstraint?.constant = containerVC.preferredContentSize.height
-        }
     }
 }
 
@@ -77,8 +46,6 @@ private extension DashboardViewController {
 
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
-        scrollView.refreshControl = refreshControl
-        newOrdersContainerView.isHidden = true // Hide the new orders vc by default
     }
 
     func configureNavigation() {
@@ -126,8 +93,25 @@ private extension DashboardViewController {
 
         navigationItem.backBarButtonItem = backButton
     }
-}
 
+    func configureDashboardUI() {
+        dashboardUI = DashboardUIFactory.dashboardUI()
+        add(dashboardUI)
+        let contentView = dashboardUI.view!
+        NSLayoutConstraint.activate([
+            contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            contentView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            ])
+        dashboardUI.onPullToRefresh = { [weak self] in
+            self?.pullToRefresh()
+        }
+        dashboardUI.displaySyncingErrorNotice = { [weak self] in
+            self?.displaySyncingErrorNotice()
+        }
+    }
+}
 
 // MARK: - Notifications
 //
@@ -149,14 +133,12 @@ extension DashboardViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        guard storeStatsViewController != nil, StoresManager.shared.isAuthenticated == false else {
+        guard isViewLoaded, StoresManager.shared.isAuthenticated == false else {
             return
         }
 
         resetTitle()
-
-        storeStatsViewController.clearAllFields()
-        applyHideAnimation(for: newOrdersContainerView)
+        dashboardUI.defaultAccountDidUpdate()
     }
 }
 
@@ -178,136 +160,33 @@ private extension DashboardViewController {
         performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
     }
 
-    @objc func pullToRefresh() {
+    func pullToRefresh() {
         WooAnalytics.shared.track(.dashboardPulledToRefresh)
-        applyHideAnimation(for: newOrdersContainerView)
         reloadData()
     }
-}
 
-
-// MARK: - NewOrdersDelegate Conformance
-//
-extension DashboardViewController: NewOrdersDelegate {
-    func didUpdateNewOrdersData(hasNewOrders: Bool) {
-        if hasNewOrders {
-            applyUnhideAnimation(for: newOrdersContainerView)
-            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "true"])
-        } else {
-            applyHideAnimation(for: newOrdersContainerView)
-            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "false"])
-        }
-    }
-}
-
-
-// MARK: - Private Helpers
-//
-private extension DashboardViewController {
-
-    func reloadData() {
-        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        let group = DispatchGroup()
-
-        var reloadError: Error? = nil
-
-        group.enter()
-        storeStatsViewController.syncAllStats() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.enter()
-        newOrdersViewController.syncNewOrders() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.enter()
-        topPerformersViewController.syncTopPerformers() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.notify(queue: .main) { [weak self] in
-            self?.refreshControl.endRefreshing()
-            self?.configureTitle()
-
-            if let error = reloadError {
-                DDLogError("⛔️ Error loading dashboard: \(error)")
-                self?.handleSyncError(error: error)
-            } else {
-                self?.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
-            }
-        }
-    }
-
-    func applyUnhideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.showAnimationDuration,
-                       delay: 0,
-                       usingSpringWithDamping: Constants.showSpringDamping,
-                       initialSpringVelocity: Constants.showSpringVelocity,
-                       options: .curveEaseOut,
-                       animations: {
-                        view.isHidden = false
-                        view.alpha = UIKitConstants.alphaFull
-        }) { _ in
-            view.isHidden = false
-            view.alpha = UIKitConstants.alphaFull
-        }
-    }
-
-    func applyHideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
-            view.isHidden = true
-            view.alpha = UIKitConstants.alphaZero
-        }, completion: { _ in
-            view.isHidden = true
-            view.alpha = UIKitConstants.alphaZero
-        })
-    }
-
-    private func handleSyncError(error: Error) {
-        switch error {
-        case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
-            handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
-        default:
-            displaySyncingErrorNotice()
-        }
-    }
-
-    private func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
-        switch error {
-        case .statsModuleDisabled, .noPermission:
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
-        default:
-            displaySyncingErrorNotice()
-        }
-    }
-
-    private func displaySyncingErrorNotice() {
+    func displaySyncingErrorNotice() {
         let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
         let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.refreshControl.beginRefreshing()
             self?.reloadData()
         }
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
     }
-
-    private func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
-        storeStatsViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
-    }
 }
 
+// MARK: - Private Helpers
+//
+private extension DashboardViewController {
+    func reloadData() {
+        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
+        dashboardUI.reloadData(completion: { [weak self] in
+            self?.configureTitle()
+        })
+    }
+}
 
 // MARK: - Constants
 //
@@ -315,15 +194,5 @@ private extension DashboardViewController {
 
     struct Segues {
         static let settingsSegue        = "ShowSettingsViewController"
-        static let storeStatsSegue      = "StoreStatsEmbedSegue"
-        static let newOrdersSegue       = "NewOrdersEmbedSegue"
-        static let topPerformersSegue   = "TopPerformersEmbedSegue"
-    }
-
-    struct Constants {
-        static let hideAnimationDuration: TimeInterval  = 0.25
-        static let showAnimationDuration: TimeInterval  = 0.50
-        static let showSpringDamping: CGFloat           = 0.7
-        static let showSpringVelocity: CGFloat          = 0.0
     }
 }

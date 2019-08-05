@@ -9,7 +9,7 @@ public final class StatsStoreV4: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: StatsAction.self)
+        dispatcher.register(processor: self, for: StatsActionV4.self)
     }
 
     /// Receives and executes Actions.
@@ -23,12 +23,13 @@ public final class StatsStoreV4: Store {
         switch action {
         case .resetStoredStats(let onCompletion):
             resetStoredStats(onCompletion: onCompletion)
-        case .retrieveStats(let siteID, let granularity, let latestDateToInclude, let quantity, let onCompletion):
+        case .retrieveStats(let siteID, let granularity, let earliestDateToInclude, let latestDateToInclude, let quantity, let onCompletion):
             retrieveStats(siteID: siteID,
-                               granularity: granularity,
-                               latestDateToInclude: latestDateToInclude,
-                               quantity: quantity,
-                               onCompletion: onCompletion)
+                          granularity: granularity,
+                          earliestDateToInclude: earliestDateToInclude,
+                          latestDateToInclude: latestDateToInclude,
+                          quantity: quantity,
+                          onCompletion: onCompletion)
         }
     }
 }
@@ -52,11 +53,21 @@ public extension StatsStoreV4 {
 
     /// Retrieves the order stats associated with the provided Site ID (if any!).
     ///
-    func retrieveStats(siteID: Int, granularity: StatsGranularityV4, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
-        let date = String(describing: latestDateToInclude.timeIntervalSinceReferenceDate)
+    func retrieveStats(siteID: Int,
+                       granularity: StatsGranularityV4,
+                       earliestDateToInclude: Date,
+                       latestDateToInclude: Date,
+                       quantity: Int,
+                       onCompletion: @escaping (Error?) -> Void) {
+        let earliestDate = DateFormatter.Defaults.iso8601.string(from: earliestDateToInclude)
+        let latestDate = DateFormatter.Defaults.iso8601.string(from: latestDateToInclude)
         let remote = OrderStatsRemoteV4(network: network)
 
-        remote.loadOrderStats(for: siteID, unit: granularity, latestDateToInclude: date, quantity: quantity) { [weak self] (orderStatsV4, error) in
+        remote.loadOrderStats(for: siteID,
+                              unit: granularity,
+                              earliestDateToInclude: earliestDate,
+                              latestDateToInclude: latestDate,
+                              quantity: quantity) { [weak self] (orderStatsV4, error) in
             guard let orderStatsV4 = orderStatsV4 else {
                 onCompletion(error)
                 return

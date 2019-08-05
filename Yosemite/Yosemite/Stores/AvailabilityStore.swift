@@ -35,6 +35,7 @@ private extension AvailabilityStore {
         let remote = OrderStatsRemoteV4(network: network)
         remote.loadOrderStats(for: siteID,
                               unit: .yearly,
+                              earliestDateToInclude: date,
                               latestDateToInclude: date,
                               quantity: 1) { (_, error) in
                                 if let error = error as? DotcomError, error == .noRestRoute {

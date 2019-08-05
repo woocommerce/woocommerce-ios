@@ -39,3 +39,16 @@ extension UIView {
         return nil
     }
 }
+
+/// UIView Auto Layout Helpers
+///
+extension UIView {
+    func pinSubviewToSafeArea(_ subview: UIView, insets: UIEdgeInsets = .zero) {
+        NSLayoutConstraint.activate([
+            subview.leadingAnchor.constraint(equalTo: safeAreaLayoutGuide.leadingAnchor),
+            subview.trailingAnchor.constraint(equalTo: safeAreaLayoutGuide.trailingAnchor),
+            subview.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
+            subview.bottomAnchor.constraint(equalTo: safeAreaLayoutGuide.bottomAnchor),
+            ])
+    }
+}

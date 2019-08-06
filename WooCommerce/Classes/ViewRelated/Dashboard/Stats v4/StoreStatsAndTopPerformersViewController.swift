@@ -89,6 +89,16 @@ extension StoreStatsAndTopPerformersViewController {
         }
     }
 
+    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
+        for periodVC in periodVCs {
+            periodVC.shouldShowSiteVisitStats = shouldShowSiteVisitStats
+        }
+    }
+}
+
+// MARK: - Syncing Data
+//
+private extension StoreStatsAndTopPerformersViewController {
     func syncAllStats(onCompletion: ((Error?) -> Void)? = nil) {
         let group = DispatchGroup()
 
@@ -97,9 +107,9 @@ extension StoreStatsAndTopPerformersViewController {
         ensureGhostContentIsDisplayed()
 
         periodVCs.forEach { (vc) in
-            group.enter()
-
             let latestDateToInclude = Date()
+
+            group.enter()
             syncStats(for: vc.timeRange, latestDateToInclude: latestDateToInclude) { [weak self] error in
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
@@ -116,14 +126,7 @@ extension StoreStatsAndTopPerformersViewController {
             onCompletion?(syncError)
         }
     }
-
-    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
-        for periodVC in periodVCs {
-            periodVC.shouldShowSiteVisitStats = shouldShowSiteVisitStats
-        }
-    }
 }
-
 
 // MARK: - Placeholders
 //
@@ -228,7 +231,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                  quantity: timeRange.intervalQuantity,
                                                  onCompletion: { error in
                                                     if let error = error {
-                                                        DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats: \(error)")
+                                                        DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
                                                     }
                                                     onCompletion?(error)
         })

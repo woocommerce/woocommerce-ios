@@ -49,7 +49,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
     ///
     private lazy var siteStatsResultsController: ResultsController<StorageSiteVisitStats> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
+        // TODO-jc: DI date and update FRC on today date change
+        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@", timeRange.siteVisitStatsUnitGranularity.rawValue, DateFormatter.Stats.statsDayFormatter.string(from: Date()))
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()

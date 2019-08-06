@@ -546,21 +546,22 @@ private extension StoreStatsV4PeriodViewController {
     func formattedAxisPeriodString(for item: OrderStatsV4Interval) -> String {
         var dateString = ""
         // TODO-jc: fix date
+        let dateFormatter = DateFormatter.Stats.dateTimeFormatter
         switch granularity {
         case .hourly:
-            if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.dateEnd) {
+            if let periodDate = dateFormatter.date(from: item.dateStart) {
                 dateString = DateFormatter.Charts.chartAxisDayFormatter.string(from: periodDate)
             }
         case .daily:
-            if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.dateEnd) {
+            if let periodDate = dateFormatter.date(from: item.dateStart) {
                 dateString = DateFormatter.Charts.chartAxisWeekFormatter.string(from: periodDate)
             }
         case .weekly:
-            if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.dateEnd) {
+            if let periodDate = dateFormatter.date(from: item.dateStart) {
                 dateString = DateFormatter.Charts.chartAxisMonthFormatter.string(from: periodDate)
             }
         case .monthly:
-            if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.dateEnd) {
+            if let periodDate = dateFormatter.date(from: item.dateStart) {
                 dateString = DateFormatter.Charts.chartAxisYearFormatter.string(from: periodDate)
             }
         default:

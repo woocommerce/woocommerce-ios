@@ -35,6 +35,14 @@ public final class StatsStoreV4: Store {
                           latestDateToInclude: latestDateToInclude,
                           quantity: quantity,
                           onCompletion: onCompletion)
+        case .retrieveSiteVisitStats(let siteID,
+                                     let timeRange,
+                                     let latestDateToInclude,
+                                     let onCompletion):
+            retrieveSiteVisitStats(siteID: siteID,
+                                   timeRange: timeRange,
+                                   latestDateToInclude: latestDateToInclude,
+                                   onCompletion: onCompletion)
         }
     }
 }
@@ -80,6 +88,30 @@ public extension StatsStoreV4 {
 
             self?.upsertStoredOrderStats(readOnlyStats: orderStatsV4, timeRange: timeRange)
             onCompletion(nil)
+        }
+    }
+
+    /// Retrieves the site visit stats associated with the provided Site ID (if any!).
+    ///
+    func retrieveSiteVisitStats(siteID: Int,
+                                timeRange: StatsTimeRangeV4,
+                                latestDateToInclude: Date,
+                                onCompletion: @escaping (Error?) -> Void) {
+
+        let remote = SiteVisitStatsRemote(network: network)
+
+        remote.loadSiteVisitorStats(for: siteID,
+                                    unit: timeRange.siteVisitStatsUnitGranularity,
+                                    latestDateToInclude: latestDateToInclude,
+                                    quantity: 1) { [weak self] (siteVisitStats, error) in
+                                        guard let siteVisitStats = siteVisitStats else {
+                                            onCompletion(error.flatMap({ SiteVisitStatsStoreError(error: $0) }))
+                                            return
+                                        }
+
+
+                                        self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
+                                        onCompletion(nil)
         }
     }
 }
@@ -139,6 +171,43 @@ extension StatsStoreV4 {
                 storageStats.removeFromIntervals(storageInterval)
                 storage.deleteObject(storageInterval)
             }
+        })
+    }
+}
+
+// MARK: Site visit stats
+//
+extension StatsStoreV4 {
+    /// Updates (OR Inserts) the specified ReadOnly SiteVisitStats Entity into the Storage Layer.
+    ///
+    func upsertStoredSiteVisitStats(readOnlyStats: Networking.SiteVisitStats) {
+        assert(Thread.isMainThread)
+
+        let storage = storageManager.viewStorage
+        let storageSiteVisitStats = storage.loadSiteVisitStats(
+            granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+        storageSiteVisitStats.update(with: readOnlyStats)
+        handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
+        storage.saveIfNeeded()
+    }
+
+    /// Updates the provided StorageSiteVisitStats items using the provided read-only SiteVisitStats items
+    ///
+    private func handleSiteVisitStatsItems(_ readOnlyStats: Networking.SiteVisitStats,
+                                           _ storageSiteVisitStats: Storage.SiteVisitStats,
+                                           _ storage: StorageType) {
+
+        // Since we are treating the items in core data like a dumb cache, start by nuking all of the existing stored SiteVisitStatsItems
+        storageSiteVisitStats.items?.forEach {
+            storageSiteVisitStats.removeFromItems($0)
+            storage.deleteObject($0)
+        }
+
+        // Insert the items from the read-only stats
+        readOnlyStats.items?.forEach({ readOnlyItem in
+            let newStorageItem = storage.insertNewObject(ofType: Storage.SiteVisitStatsItem.self)
+            newStorageItem.update(with: readOnlyItem)
+            storageSiteVisitStats.addToItems(newStorageItem)
         })
     }
 }

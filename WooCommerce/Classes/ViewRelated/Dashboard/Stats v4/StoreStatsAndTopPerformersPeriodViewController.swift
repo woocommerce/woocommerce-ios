@@ -7,6 +7,12 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     let timeRange: StatsTimeRangeV4
     let granularity: StatsGranularityV4
 
+    var shouldShowSiteVisitStats: Bool = true {
+        didSet {
+            storeStatsPeriodViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+        }
+    }
+
     // MARK: subviews
     //
     private lazy var stackView: UIStackView = {

@@ -118,10 +118,9 @@ extension StoreStatsAndTopPerformersViewController {
     }
 
     func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
-        // TODO: check how to handle this case
-//        for periodVC in periodVCs {
-//            periodVC.shouldShowSiteVisitStats = shouldShowSiteVisitStats
-//        }
+        for periodVC in periodVCs {
+            periodVC.shouldShowSiteVisitStats = shouldShowSiteVisitStats
+        }
     }
 }
 

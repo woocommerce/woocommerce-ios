@@ -302,7 +302,7 @@ private extension StoreStatsV4PeriodViewController {
 
 // MARK: - UI Updates
 //
-private extension StoreStatsV4PeriodViewController {
+extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
         visitorsStackView?.isHidden = !shouldShowSiteVisitStats
     }

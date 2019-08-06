@@ -39,7 +39,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     // MARK: - StatsActionV4.retrieveStats
 
-    /// Verifies that `StatsAction.retrieveStats` effectively persists any retrieved OrderStatsV4.
+    /// Verifies that `StatsActionV4.retrieveStats` effectively persists any retrieved OrderStatsV4.
     ///
     func testRetrieveStatsEffectivelyPersistsRetrievedStats() {
         let expectation = self.expectation(description: "Persist order stats")
@@ -66,7 +66,7 @@ final class StatsStoreV4Tests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `StatsAction.retrieveStats` returns an error whenever there is an error response from the backend.
+    /// Verifies that `StatsActionV4.retrieveStats` returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveOrderReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve order stats error response")
@@ -86,7 +86,7 @@ final class StatsStoreV4Tests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `StatsAction.retrieveStats` returns an error whenever there is no backend response.
+    /// Verifies that `StatsActionV4.retrieveStats` returns an error whenever there is no backend response.
     ///
     func testRetrieveStatsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve site visit stats empty response")
@@ -103,6 +103,130 @@ final class StatsStoreV4Tests: XCTestCase {
 
         statsStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - StatsActionV4.retrieveSiteVisitStats
+
+
+    /// Verifies that `StatsActionV4.retrieveSiteVisitStats` effectively persists any retrieved SiteVisitStats.
+    ///
+    func testRetrieveSiteVisitStatsEffectivelyPersistsRetrievedStats() {
+        let expectation = self.expectation(description: "Persist site visit stats")
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 0)
+
+        let action = StatsActionV4
+            .retrieveSiteVisitStats(siteID: sampleSiteID,
+                                    timeRange: .thisWeek,
+                                    latestDateToInclude: date(with: "2018-08-06T17:06:55")) { (error) in
+                                        XCTAssertNil(error)
+                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
+                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
+                                        let readOnlySiteVisitStats = self.viewStorage.firstObject(ofType: Storage.SiteVisitStats.self)?.toReadOnly()
+                                        XCTAssertEqual(readOnlySiteVisitStats, self.sampleSiteVisitStats())
+
+                                        expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveSiteVisitStats` effectively persists any updated SiteVisitStatsItems.
+    ///
+    func testRetrieveSiteVisitStatsEffectivelyPersistsUpdatedItems() {
+        let expectation = self.expectation(description: "Persist updated site visit stats items")
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 0)
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStats())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-alt")
+        let action = StatsActionV4
+            .retrieveSiteVisitStats(siteID: sampleSiteID,
+                                    timeRange: .thisYear,
+                                    latestDateToInclude: date(with: "2018-08-06T17:06:55")) { (error) in
+                                        XCTAssertNil(error)
+                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
+                                        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
+                                        let readOnlySiteVisitStats = self.viewStorage.firstObject(ofType: Storage.SiteVisitStats.self)?.toReadOnly()
+                                        XCTAssertEqual(readOnlySiteVisitStats, self.sampleSiteVisitStatsMutated())
+
+                                        expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveSiteVisitStats` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveSiteVisitStatsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve site visit stats error response")
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "generic_error")
+        let action = StatsActionV4.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                          timeRange: .thisYear,
+                                                          latestDateToInclude: date(with: "2018-08-06T17:06:55")) { (error) in
+                                                            XCTAssertNotNil(error)
+                                                            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `StatsActionV4.retrieveSiteVisitStats` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveSiteVisitStatsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve site visit stats empty response")
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = StatsActionV4.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                          timeRange: .thisYear,
+                                                          latestDateToInclude: date(with: "2018-08-06T17:06:55")) { (error) in
+                                                            XCTAssertNotNil(error)
+                                                            expectation.fulfill()
+        }
+
+        statsStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `upsertStoredSiteVisitStats` effectively inserts a new SiteVisitStats, with the specified payload.
+    ///
+    func testUpsertStoredSiteVisitStatsEffectivelyPersistsNewSiteVisitStats() {
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteSiteVisitStats = sampleSiteVisitStats()
+
+        XCTAssertNil(viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue))
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: remoteSiteVisitStats)
+
+        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue)
+        XCTAssertEqual(storageSiteVisitStats?.toReadOnly(), remoteSiteVisitStats)
+    }
+
+    /// Verifies that `upsertStoredSiteVisitStats` does not produce duplicate entries.
+    ///
+    func testUpdateStoredSiteVisitStatsEffectivelyUpdatesPreexistantSiteVisitStats() {
+        let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertNil(viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue))
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStats())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
+        statsStore.upsertStoredSiteVisitStats(readOnlyStats: sampleSiteVisitStatsMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStats.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteVisitStatsItem.self), 2)
+
+        let expectedSiteVisitStats = sampleSiteVisitStatsMutated()
+        let storageSiteVisitStats = viewStorage.loadSiteVisitStats(granularity: StatGranularity.year.rawValue)
+        XCTAssertEqual(storageSiteVisitStats?.toReadOnly(), expectedSiteVisitStats)
     }
 }
 
@@ -181,5 +305,37 @@ private extension StatsStoreV4Tests {
                                   shipping: 0,
                                   netRevenue: 0,
                                   totalProducts: 0)
+    }
+
+    // MARK: - Site Visit Stats Sample
+
+    func sampleSiteVisitStats() -> Networking.SiteVisitStats {
+        return SiteVisitStats(date: "2015-08-06",
+                              granularity: .year,
+                              items: [sampleSiteVisitStatsItem1(), sampleSiteVisitStatsItem2()])
+    }
+
+
+    func sampleSiteVisitStatsItem1() -> Networking.SiteVisitStatsItem {
+        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1135)
+    }
+
+    func sampleSiteVisitStatsItem2() -> Networking.SiteVisitStatsItem {
+        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1629)
+    }
+
+    func sampleSiteVisitStatsMutated() -> Networking.SiteVisitStats {
+        return SiteVisitStats(date: "2015-08-06",
+                              granularity: .year,
+                              items: [sampleSiteVisitStatsItem1Mutated(), sampleSiteVisitStatsItem2Mutated()])
+    }
+
+
+    func sampleSiteVisitStatsItem1Mutated() -> Networking.SiteVisitStatsItem {
+        return SiteVisitStatsItem(period: "2014-01-01", visitors: 1140)
+    }
+
+    func sampleSiteVisitStatsItem2Mutated() -> Networking.SiteVisitStatsItem {
+        return SiteVisitStatsItem(period: "2015-01-01", visitors: 1634)
     }
 }

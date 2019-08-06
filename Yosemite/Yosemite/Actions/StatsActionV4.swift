@@ -9,10 +9,10 @@ public enum StatsActionV4: Action {
     ///
     case resetStoredStats(onCompletion: () -> Void)
 
-    /// Synchronizes `OrderStats` for the provided siteID, StatGranularity, and date.
+    /// Synchronizes `OrderStats` for the provided siteID, time range, and date.
     ///
     case retrieveStats(siteID: Int,
-        granularity: StatsGranularityV4,
+        timeRange: StatsTimeRangeV4,
         earliestDateToInclude: Date,
         latestDateToInclude: Date,
         quantity: Int,

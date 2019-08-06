@@ -98,15 +98,15 @@ public extension StorageType {
 
     /// Retrieves the Stored OrderStats for V4 API.
     ///
-    func loadOrderStatsV4(siteID: String, granularity: String) -> OrderStatsV4? {
-        let predicate = NSPredicate(format: "siteID = %ld AND granularity ==[c] %@", siteID, granularity)
+    func loadOrderStatsV4(siteID: Int, timeRange: String) -> OrderStatsV4? {
+        let predicate = NSPredicate(format: "siteID = %ld AND timeRange ==[c] %@", siteID, timeRange)
         return firstObject(ofType: OrderStatsV4.self, matching: predicate)
     }
 
     /// Retrieves the Stored OrderStatsV4interval.
     ///
-    func loadOrderStatsInterval(interval: String) -> OrderStatsV4Interval? {
-        let predicate = NSPredicate(format: "interval ==[c] %@", interval)
+    func loadOrderStatsInterval(interval: String, orderStats: OrderStatsV4) -> OrderStatsV4Interval? {
+        let predicate = NSPredicate(format: "interval ==[c] %@ AND stats = %@", interval, orderStats)
         return firstObject(ofType: OrderStatsV4Interval.self, matching: predicate)
     }
 

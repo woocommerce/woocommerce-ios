@@ -10,6 +10,12 @@ class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewContro
 
     private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
 
+    // MARK: - Subviews
+
+    private lazy var buttonBarBottomBorder: UIView = {
+        return createBorderView()
+    }()
+
     // MARK: - Calculated Properties
 
     private var visibleChildViewController: StoreStatsAndTopPerformersPeriodViewController {
@@ -181,13 +187,28 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - User Interface Configuration
 //
 private extension StoreStatsAndTopPerformersViewController {
+    func createBorderView() -> UIView {
+        let view = UIView(frame: .zero)
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = StyleManager.wooGreyBorder
+        NSLayoutConstraint.activate([
+            view.heightAnchor.constraint(equalToConstant: 1)
+            ])
+        return view
+    }
+
+    func configureButtonBarBottomBorder() {
+        view.addSubview(buttonBarBottomBorder)
+        NSLayoutConstraint.activate([
+            buttonBarBottomBorder.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
+            buttonBarBottomBorder.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            buttonBarBottomBorder.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+            ])
+    }
 
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
-        // TODO: add borders
-//        topBorder.backgroundColor = StyleManager.wooGreyBorder
-//        middleBorder.backgroundColor = StyleManager.wooGreyBorder
-//        bottomBorder.backgroundColor = StyleManager.wooGreyBorder
+        configureButtonBarBottomBorder()
     }
 
     func configurePeriodViewControllers() {
@@ -274,19 +295,6 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - Private Helpers
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func quantity(for granularity: StatGranularity) -> Int {
-        switch granularity {
-        case .day:
-            return Constants.quantityDefaultForDay
-        case .week:
-            return Constants.quantityDefaultForWeek
-        case .month:
-            return Constants.quantityDefaultForMonth
-        case .year:
-            return Constants.quantityDefaultForYear
-        }
-    }
-
     func trackStatsLoaded(for granularity: StatsGranularityV4) {
         guard StoresManager.shared.isAuthenticated else {
             return
@@ -300,13 +308,6 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - Constants!
 //
 private extension StoreStatsAndTopPerformersViewController {
-    enum Constants {
-        static let quantityDefaultForDay = 30
-        static let quantityDefaultForWeek = 13
-        static let quantityDefaultForMonth = 12
-        static let quantityDefaultForYear = 5
-    }
-
     enum TabStrip {
         static let buttonLeftRightMargin: CGFloat   = 14.0
         static let selectedBarHeight: CGFloat       = 3.0

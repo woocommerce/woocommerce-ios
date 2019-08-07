@@ -13,6 +13,13 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         }
     }
 
+    /// Updated when reloading data.
+    var currentDate: Date {
+        didSet {
+            storeStatsPeriodViewController.currentDate = currentDate
+        }
+    }
+
     // MARK: subviews
     //
     private lazy var stackView: UIStackView = {
@@ -23,7 +30,7 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: child view controllers
     private lazy var storeStatsPeriodViewController: StoreStatsV4PeriodViewController = {
-        return StoreStatsV4PeriodViewController(timeRange: self.timeRange)
+        return StoreStatsV4PeriodViewController(timeRange: timeRange, currentDate: currentDate)
     }()
 
     // MARK: internal properties
@@ -31,9 +38,10 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return [storeStatsPeriodViewController]
     }
 
-    init(timeRange: StatsTimeRangeV4) {
+    init(timeRange: StatsTimeRangeV4, currentDate: Date) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
+        self.currentDate = currentDate
         super.init(nibName: nil, bundle: nil)
         configureChildViewControllers()
     }

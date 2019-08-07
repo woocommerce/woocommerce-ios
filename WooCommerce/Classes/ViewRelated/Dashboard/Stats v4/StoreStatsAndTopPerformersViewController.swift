@@ -108,6 +108,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
         periodVCs.forEach { (vc) in
             let latestDateToInclude = Date()
+            vc.currentDate = latestDateToInclude
 
             group.enter()
             syncStats(for: vc.timeRange, latestDateToInclude: latestDateToInclude) { [weak self] error in
@@ -189,10 +190,11 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func configurePeriodViewControllers() {
-        let dayVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .today)
-        let weekVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisWeek)
-        let monthVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisMonth)
-        let yearVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisYear)
+        let currentDate = Date()
+        let dayVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .today, currentDate: currentDate)
+        let weekVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisWeek, currentDate: currentDate)
+        let monthVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisMonth, currentDate: currentDate)
+        let yearVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisYear, currentDate: currentDate)
 
         periodVCs.append(dayVC)
         periodVCs.append(weekVC)

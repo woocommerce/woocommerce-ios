@@ -14,6 +14,15 @@ class StoreStatsV4PeriodViewController: UIViewController {
         }
     }
 
+    var currentDate: Date {
+        didSet {
+            if currentDate != oldValue {
+                siteStatsResultsController = updateSiteVisitStatsResultsController(currentDate: currentDate)
+                configureSiteStatsResultsController()
+            }
+        }
+    }
+
     // MARK: - Private Properties
     private let timeRange: StatsTimeRangeV4
     private var orderStatsIntervals: [OrderStatsV4Interval] {
@@ -50,11 +59,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
     ///
     private lazy var siteStatsResultsController: ResultsController<StorageSiteVisitStats> = {
-        let storageManager = AppDelegate.shared.storageManager
-        // TODO-jc: DI date and update FRC on today date change
-        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@", timeRange.siteVisitStatsUnitGranularity.rawValue, DateFormatter.Stats.statsDayFormatter.string(from: Date()))
-        let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
-        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return updateSiteVisitStatsResultsController(currentDate: currentDate)
     }()
 
     /// OrderStats ResultsController: Loads order stats from the Storage Layer
@@ -103,9 +108,10 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(timeRange: StatsTimeRangeV4) {
+    init(timeRange: StatsTimeRangeV4, currentDate: Date) {
         self.timeRange = timeRange
         self.granularity = timeRange.intervalGranularity
+        self.currentDate = currentDate
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
         // Make sure the ResultsControllers are ready to observe changes to the data even before the view loads
@@ -195,14 +201,7 @@ extension StoreStatsV4PeriodViewController {
 private extension StoreStatsV4PeriodViewController {
 
     func configureResultsControllers() {
-        // Site Visitor Stats
-        siteStatsResultsController.onDidChangeContent = { [weak self] in
-            self?.updateSiteVisitDataIfNeeded()
-        }
-        siteStatsResultsController.onDidResetContent = { [weak self] in
-            self?.updateSiteVisitDataIfNeeded()
-        }
-        try? siteStatsResultsController.performFetch()
+        configureSiteStatsResultsController()
 
         // Order Stats
         orderStatsResultsController.onDidChangeContent = { [weak self] in
@@ -212,6 +211,16 @@ private extension StoreStatsV4PeriodViewController {
             self?.updateOrderDataIfNeeded()
         }
         try? orderStatsResultsController.performFetch()
+    }
+
+    func configureSiteStatsResultsController() {
+        siteStatsResultsController.onDidChangeContent = { [weak self] in
+            self?.updateSiteVisitDataIfNeeded()
+        }
+        siteStatsResultsController.onDidResetContent = { [weak self] in
+            self?.updateSiteVisitDataIfNeeded()
+        }
+        try? siteStatsResultsController.performFetch()
     }
 
     func configureView() {
@@ -300,6 +309,16 @@ private extension StoreStatsV4PeriodViewController {
         yAxis.axisMinimum = Constants.chartYAxisMinimum
         yAxis.valueFormatter = self
         yAxis.setLabelCount(3, force: true)
+    }
+}
+
+// MARK: - Internal Updates
+private extension StoreStatsV4PeriodViewController {
+    func updateSiteVisitStatsResultsController(currentDate: Date) -> ResultsController<StorageSiteVisitStats> {
+        let storageManager = AppDelegate.shared.storageManager
+        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@", timeRange.siteVisitStatsUnitGranularity.rawValue, DateFormatter.Stats.statsDayFormatter.string(from: currentDate))
+        let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
+        return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 }
 

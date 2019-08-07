@@ -17,7 +17,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     var currentDate: Date {
         didSet {
             if currentDate != oldValue {
-                siteStatsResultsController = updateSiteVisitStatsResultsController(currentDate: currentDate)
+                siteStatsResultsController = updateSiteVisitStatsResultsController(currentDate: timeRange.latestDate(currentDate: currentDate))
                 configureSiteStatsResultsController()
             }
         }

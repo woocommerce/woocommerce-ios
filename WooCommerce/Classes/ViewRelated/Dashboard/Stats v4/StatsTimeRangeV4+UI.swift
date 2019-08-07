@@ -27,22 +27,30 @@ extension StatsTimeRangeV4 {
         }
     }
 
-    func earliestDate(latestDate: Date) -> Date {
-        let numberOfSeconds: TimeInterval
-        let numberOfIntervals = intervalQuantity
-        switch intervalGranularity {
-        case .hourly:
-            numberOfSeconds = 3600 * Double(numberOfIntervals)
-        case .daily:
-            numberOfSeconds = 86400 * Double(numberOfIntervals)
-        case .weekly:
-            numberOfSeconds = 86400 * 7 * Double(numberOfIntervals)
-        case .monthly:
-            numberOfSeconds = 86400 * 7 * 30 * Double(numberOfIntervals)
-        default:
-            fatalError("This case is not supported: \(intervalGranularity.rawValue)")
+    func latestDate(currentDate: Date) -> Date {
+        switch self {
+        case .today:
+            return currentDate.endOfDay
+        case .thisWeek:
+            return currentDate.endOfWeek
+        case .thisMonth:
+            return currentDate.endOfMonth
+        case .thisYear:
+            return currentDate.endOfYear
         }
-        return latestDate.addingTimeInterval(-numberOfSeconds)
+    }
+
+    func earliestDate(latestDate: Date) -> Date {
+        switch self {
+        case .today:
+            return latestDate.startOfDay
+        case .thisWeek:
+            return latestDate.startOfWeek
+        case .thisMonth:
+            return latestDate.startOfMonth
+        case .thisYear:
+            return latestDate.startOfYear
+        }
     }
 
     var chartDateFormatter: DateFormatter {

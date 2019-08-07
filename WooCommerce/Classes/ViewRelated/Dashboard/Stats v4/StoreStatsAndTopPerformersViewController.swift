@@ -107,8 +107,9 @@ private extension StoreStatsAndTopPerformersViewController {
         ensureGhostContentIsDisplayed()
 
         periodVCs.forEach { (vc) in
-            let latestDateToInclude = Date()
-            vc.currentDate = latestDateToInclude
+            let currentDate = Date()
+            vc.currentDate = currentDate
+            let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate)
 
             group.enter()
             syncStats(for: vc.timeRange, latestDateToInclude: latestDateToInclude) { [weak self] error in

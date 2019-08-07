@@ -293,6 +293,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                                 DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                                                                 onCompletion?(error)
                                                             }
+                                                            onCompletion?(error)
         }
 
         StoresManager.shared.dispatch(action)

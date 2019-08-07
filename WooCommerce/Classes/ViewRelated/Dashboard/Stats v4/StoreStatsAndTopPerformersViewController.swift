@@ -239,7 +239,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                  timeRange: timeRange,
                                                  earliestDateToInclude: timeRange.earliestDate(latestDate: latestDateToInclude),
                                                  latestDateToInclude: latestDateToInclude,
-                                                 quantity: timeRange.intervalQuantity,
+                                                 quantity: timeRange.maxNumberOfIntervals,
                                                  onCompletion: { error in
                                                     if let error = error {
                                                         DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")

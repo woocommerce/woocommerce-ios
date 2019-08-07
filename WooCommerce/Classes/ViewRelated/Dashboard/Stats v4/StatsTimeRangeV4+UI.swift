@@ -1,8 +1,7 @@
 import Yosemite
 
 extension StatsTimeRangeV4 {
-    // TODO-jc: more calculation later
-    var intervalQuantity: Int {
+    var maxNumberOfIntervals: Int {
         switch self {
         case .today:
             return 24

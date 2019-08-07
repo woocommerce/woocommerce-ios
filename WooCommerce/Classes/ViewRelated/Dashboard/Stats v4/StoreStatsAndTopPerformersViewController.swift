@@ -4,11 +4,6 @@ import Yosemite
 
 class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
 
-    /// Set by owning view controller.
-    var refreshControl: UIRefreshControl?
-
-    // MARK: - DashboardUI
-
     var displaySyncingErrorNotice: () -> Void = {}
 
     var onPullToRefresh: () -> Void = {}
@@ -111,8 +106,6 @@ extension StoreStatsAndTopPerformersViewController {
 //
 private extension StoreStatsAndTopPerformersViewController {
     func syncAllStats(onCompletion: ((Error?) -> Void)? = nil) {
-        refreshControl?.beginRefreshing()
-
         let group = DispatchGroup()
 
         var syncError: Error? = nil

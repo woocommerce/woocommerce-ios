@@ -17,7 +17,9 @@ class StoreStatsV4PeriodViewController: UIViewController {
     // MARK: - Private Properties
     private let timeRange: StatsTimeRangeV4
     private var orderStatsIntervals: [OrderStatsV4Interval] {
-        return orderStats?.intervals ?? []
+        return orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
+            return lhs.dateStart < rhs.dateStart
+        }) ?? []
     }
     private var orderStats: OrderStatsV4? {
         return orderStatsResultsController.fetchedObjects.first
@@ -545,56 +547,21 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func formattedAxisPeriodString(for item: OrderStatsV4Interval) -> String {
-        var dateString = ""
-        // TODO-jc: fix date
         let dateFormatter = DateFormatter.Stats.dateTimeFormatter
-        switch granularity {
-        case .hourly:
-            if let periodDate = dateFormatter.date(from: item.dateStart) {
-                dateString = DateFormatter.Charts.chartAxisDayFormatter.string(from: periodDate)
-            }
-        case .daily:
-            if let periodDate = dateFormatter.date(from: item.dateStart) {
-                dateString = DateFormatter.Charts.chartAxisWeekFormatter.string(from: periodDate)
-            }
-        case .weekly:
-            if let periodDate = dateFormatter.date(from: item.dateStart) {
-                dateString = DateFormatter.Charts.chartAxisMonthFormatter.string(from: periodDate)
-            }
-        case .monthly:
-            if let periodDate = dateFormatter.date(from: item.dateStart) {
-                dateString = DateFormatter.Charts.chartAxisYearFormatter.string(from: periodDate)
-            }
-        default:
-            fatalError("This case is not supported: \(granularity.rawValue)")
+        guard let periodDate = dateFormatter.date(from: item.dateStart) else {
+            return ""
         }
-        return dateString
+        let chartDateFormatter = timeRange.chartDateFormatter
+        return chartDateFormatter.string(from: periodDate)
     }
 
     func formattedChartMarkerPeriodString(for item: OrderStatsV4Interval) -> String {
-        var dateString = ""
-        // TODO-jc: fix date
-        switch granularity {
-        case .hourly:
-            if let periodDate = DateFormatter.Stats.statsDayFormatter.date(from: item.dateEnd) {
-                dateString = DateFormatter.Charts.chartMarkerDayFormatter.string(from: periodDate)
-            }
-        case .daily:
-            if let periodDate = DateFormatter.Stats.statsWeekFormatter.date(from: item.dateEnd) {
-                dateString = DateFormatter.Charts.chartMarkerWeekFormatter.string(from: periodDate)
-            }
-        case .weekly:
-            if let periodDate = DateFormatter.Stats.statsMonthFormatter.date(from: item.dateEnd) {
-                dateString = DateFormatter.Charts.chartMarkerMonthFormatter.string(from: periodDate)
-            }
-        case .monthly:
-            if let periodDate = DateFormatter.Stats.statsYearFormatter.date(from: item.dateEnd) {
-                dateString = DateFormatter.Charts.chartMarkerYearFormatter.string(from: periodDate)
-            }
-        default:
-            fatalError("This case is not supported: \(granularity.rawValue)")
+        let dateFormatter = DateFormatter.Stats.dateTimeFormatter
+        guard let periodDate = dateFormatter.date(from: item.dateStart) else {
+            return ""
         }
-        return dateString
+        let chartDateFormatter = timeRange.chartDateFormatter
+        return chartDateFormatter.string(from: periodDate)
     }
 }
 

@@ -29,7 +29,7 @@
 		028BAC4022F2EFA5008BB4AF /* StoreStatsAndTopPerformersPeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC3F22F2EFA5008BB4AF /* StoreStatsAndTopPerformersPeriodViewController.swift */; };
 		028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC4122F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift */; };
 		028BAC4522F3AE5C008BB4AF /* StoreStatsV4PeriodViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 028BAC4422F3AE5C008BB4AF /* StoreStatsV4PeriodViewController.xib */; };
-		028BAC4722F3B550008BB4AF /* StatsGranularityV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC4622F3B550008BB4AF /* StatsGranularityV4+UI.swift */; };
+		028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */; };
 		029D444922F13F8A00DEFA8A /* DashboardUIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029D444822F13F8A00DEFA8A /* DashboardUIFactory.swift */; };
 		029D444E22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029D444D22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift */; };
 		02B296A722FA6DB500FD7A4C /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B296A622FA6DB500FD7A4C /* Date+StartAndEnd.swift */; };
@@ -417,7 +417,7 @@
 		028BAC3F22F2EFA5008BB4AF /* StoreStatsAndTopPerformersPeriodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewController.swift; sourceTree = "<group>"; };
 		028BAC4122F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4PeriodViewController.swift; sourceTree = "<group>"; };
 		028BAC4422F3AE5C008BB4AF /* StoreStatsV4PeriodViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = StoreStatsV4PeriodViewController.xib; sourceTree = "<group>"; };
-		028BAC4622F3B550008BB4AF /* StatsGranularityV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsGranularityV4+UI.swift"; sourceTree = "<group>"; };
+		028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "StatsTimeRangeV4+UI.swift"; sourceTree = "<group>"; };
 		029D444822F13F8A00DEFA8A /* DashboardUIFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardUIFactory.swift; sourceTree = "<group>"; };
 		029D444D22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatsV3ViewController.swift; sourceTree = "<group>"; };
 		02B296A622FA6DB500FD7A4C /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
@@ -832,7 +832,7 @@
 				028BAC3F22F2EFA5008BB4AF /* StoreStatsAndTopPerformersPeriodViewController.swift */,
 				028BAC4122F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift */,
 				028BAC4422F3AE5C008BB4AF /* StoreStatsV4PeriodViewController.xib */,
-				028BAC4622F3B550008BB4AF /* StatsGranularityV4+UI.swift */,
+				028BAC4622F3B550008BB4AF /* StatsTimeRangeV4+UI.swift */,
 			);
 			path = "Stats v4";
 			sourceTree = "<group>";
@@ -2095,7 +2095,7 @@
 				B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */,
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
-				028BAC4722F3B550008BB4AF /* StatsGranularityV4+UI.swift in Sources */,
+				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				B58B4AB22108F01700076FDD /* NoticeView.swift in Sources */,
 				B59D1EE321907C7B009D1978 /* NSAttributedString+Helpers.swift in Sources */,

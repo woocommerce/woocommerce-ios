@@ -45,4 +45,19 @@ extension StatsTimeRangeV4 {
         }
         return latestDate.addingTimeInterval(-numberOfSeconds)
     }
+
+    var chartDateFormatter: DateFormatter {
+        switch intervalGranularity {
+        case .hourly:
+            return DateFormatter.Charts.chartAxisHourFormatter
+        case .daily:
+            return DateFormatter.Charts.chartAxisDayFormatter
+        case .weekly:
+            return DateFormatter.Charts.chartAxisDayFormatter
+        case .monthly:
+            return DateFormatter.Charts.chartAxisMonthFormatter
+        default:
+            fatalError("This case is not supported: \(intervalGranularity.rawValue)")
+        }
+    }
 }

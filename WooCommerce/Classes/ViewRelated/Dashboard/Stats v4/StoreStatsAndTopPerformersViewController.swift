@@ -119,6 +119,15 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
                 group.leave()
             }
+
+            group.enter()
+            syncSiteVisitStats(for: vc.timeRange, latestDateToInclude: latestDateToInclude) { error in
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
+                    syncError = error
+                }
+                group.leave()
+            }
         }
 
         group.notify(queue: .main) { [weak self] in
@@ -235,6 +244,24 @@ private extension StoreStatsAndTopPerformersViewController {
                                                     }
                                                     onCompletion?(error)
         })
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncSiteVisitStats(for timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            onCompletion?(nil)
+            return
+        }
+
+        let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
+                                                          timeRange: timeRange,
+                                                          latestDateToInclude: latestDateToInclude) { error in
+                                                            if let error = error {
+                                                                DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
+                                                                onCompletion?(error)
+                                                            }
+        }
 
         StoresManager.shared.dispatch(action)
     }

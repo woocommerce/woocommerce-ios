@@ -37,9 +37,13 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return StoreStatsV4PeriodViewController(timeRange: timeRange, currentDate: currentDate)
     }()
 
+    private lazy var topPerformersPeriodViewController: TopPerformerDataViewController = {
+        return TopPerformerDataViewController(granularity: timeRange.topEarnerStatsGranularity)
+    }()
+
     // MARK: internal properties
     private var childViewContrllers: [UIViewController] {
-        return [storeStatsPeriodViewController]
+        return [storeStatsPeriodViewController, topPerformersPeriodViewController]
     }
 
     init(timeRange: StatsTimeRangeV4, currentDate: Date) {
@@ -120,6 +124,13 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         stackView.addArrangedSubview(storeStatsPeriodView)
         NSLayoutConstraint.activate([
             storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 380),
+            ])
+
+        let topPerformersPeriodView = topPerformersPeriodViewController.view!
+        stackView.addArrangedSubview(topPerformersPeriodView)
+        NSLayoutConstraint.activate([
+            topPerformersPeriodView.heightAnchor.constraint(equalToConstant: 359.5),
+            topPerformersPeriodView.heightAnchor.constraint(greaterThanOrEqualToConstant: 359.5)
             ])
 
         childViewContrllers.forEach { childViewController in

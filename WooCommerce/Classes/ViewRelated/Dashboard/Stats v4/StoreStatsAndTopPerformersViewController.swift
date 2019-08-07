@@ -119,13 +119,26 @@ private extension StoreStatsAndTopPerformersViewController {
 
         ensureGhostContentIsDisplayed()
 
+        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+            group.leave()
+            return
+        }
+
+        defer {
+            group.notify(queue: .main) { [weak self] in
+                self?.removeGhostContent()
+                self?.refreshControl?.endRefreshing()
+                onCompletion?(syncError)
+            }
+        }
+
         periodVCs.forEach { (vc) in
             let currentDate = Date()
             vc.currentDate = currentDate
             let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate)
 
             group.enter()
-            syncStats(for: vc.timeRange, latestDateToInclude: latestDateToInclude) { [weak self] error in
+            syncStats(for: siteID, timeRange: vc.timeRange, latestDateToInclude: latestDateToInclude) { [weak self] error in
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing order stats: \(error)")
                     syncError = error
@@ -136,19 +149,22 @@ private extension StoreStatsAndTopPerformersViewController {
             }
 
             group.enter()
-            syncSiteVisitStats(for: vc.timeRange, latestDateToInclude: latestDateToInclude) { error in
+            syncSiteVisitStats(for: siteID, timeRange: vc.timeRange, latestDateToInclude: latestDateToInclude) { error in
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                     syncError = error
                 }
                 group.leave()
             }
-        }
 
-        group.notify(queue: .main) { [weak self] in
-            self?.removeGhostContent()
-            self?.refreshControl?.endRefreshing()
-            onCompletion?(syncError)
+            group.enter()
+            syncTopEarnersStats(for: siteID, timeRange: vc.timeRange, latestDateToInclude: latestDateToInclude) { error in
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
+                    syncError = error
+                }
+                group.leave()
+            }
         }
     }
 }
@@ -259,12 +275,7 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - Sync'ing Helpers
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func syncStats(for timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
-            return
-        }
-
+    func syncStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
         let action = StatsActionV4.retrieveStats(siteID: siteID,
                                                  timeRange: timeRange,
                                                  earliestDateToInclude: timeRange.earliestDate(latestDate: latestDateToInclude),
@@ -280,18 +291,31 @@ private extension StoreStatsAndTopPerformersViewController {
         StoresManager.shared.dispatch(action)
     }
 
-    func syncSiteVisitStats(for timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
-            return
-        }
-
+    func syncSiteVisitStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
         let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
                                                           timeRange: timeRange,
                                                           latestDateToInclude: latestDateToInclude) { error in
                                                             if let error = error {
                                                                 DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                                                                 onCompletion?(error)
+                                                            }
+                                                            onCompletion?(error)
+        }
+
+        StoresManager.shared.dispatch(action)
+    }
+
+    func syncTopEarnersStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
+        let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
+                                                          timeRange: timeRange,
+                                                          latestDateToInclude: Date()) { error in
+                                                            if let error = error {
+                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
+                                                            } else {
+                                                                WooAnalytics.shared.track(.dashboardTopPerformersLoaded,
+                                                                                          withProperties: [
+                                                                                            "granularity": timeRange.topEarnerStatsGranularity.rawValue
+                                                                    ])
                                                             }
                                                             onCompletion?(error)
         }

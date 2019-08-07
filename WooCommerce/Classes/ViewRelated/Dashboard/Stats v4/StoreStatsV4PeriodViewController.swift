@@ -316,7 +316,7 @@ private extension StoreStatsV4PeriodViewController {
 private extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStatsResultsController(currentDate: Date) -> ResultsController<StorageSiteVisitStats> {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@", timeRange.siteVisitStatsUnitGranularity.rawValue, DateFormatter.Stats.statsDayFormatter.string(from: currentDate))
+        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@", timeRange.siteVisitStatsGranularity.rawValue, DateFormatter.Stats.statsDayFormatter.string(from: currentDate))
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }

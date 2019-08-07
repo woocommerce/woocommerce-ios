@@ -4,6 +4,11 @@ import Yosemite
 
 class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
 
+    /// Set by owning view controller.
+    var refreshControl: UIRefreshControl?
+
+    // MARK: - DashboardUI
+
     var displaySyncingErrorNotice: () -> Void = {}
 
     var onPullToRefresh: () -> Void = {}
@@ -106,6 +111,8 @@ extension StoreStatsAndTopPerformersViewController {
 //
 private extension StoreStatsAndTopPerformersViewController {
     func syncAllStats(onCompletion: ((Error?) -> Void)? = nil) {
+        refreshControl?.beginRefreshing()
+
         let group = DispatchGroup()
 
         var syncError: Error? = nil
@@ -140,6 +147,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
         group.notify(queue: .main) { [weak self] in
             self?.removeGhostContent()
+            self?.refreshControl?.endRefreshing()
             onCompletion?(syncError)
         }
     }

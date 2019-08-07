@@ -22,6 +22,10 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: subviews
     //
+    private var scrollView: UIScrollView = {
+        return UIScrollView(frame: .zero)
+    }()
+
     private lazy var stackView: UIStackView = {
         let stackView = UIStackView(arrangedSubviews: [])
         stackView.axis = .vertical
@@ -97,9 +101,16 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
     }
 
     func configureSubviews() {
+        view.addSubview(scrollView)
+        view.pinSubviewToSafeArea(scrollView)
+
+        scrollView.addSubview(stackView)
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(stackView)
-        view.pinSubviewToSafeArea(stackView)
+        scrollView.pinSubviewToAllEdges(stackView)
+        NSLayoutConstraint.activate([
+            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+            ])
 
         childViewContrllers.forEach { childViewController in
             childViewController.view.translatesAutoresizingMaskIntoConstraints = false

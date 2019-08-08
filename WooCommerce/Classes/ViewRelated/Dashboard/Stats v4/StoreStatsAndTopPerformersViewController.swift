@@ -76,7 +76,7 @@ class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewContro
 
 extension StoreStatsAndTopPerformersViewController: DashboardUI {
     func defaultAccountDidUpdate() {
-
+        clearAllFields()
     }
 
     func reloadData(completion: @escaping () -> Void) {
@@ -113,7 +113,6 @@ private extension StoreStatsAndTopPerformersViewController {
         ensureGhostContentIsDisplayed()
 
         guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            group.leave()
             return
         }
 
@@ -123,6 +122,12 @@ private extension StoreStatsAndTopPerformersViewController {
             group.notify(queue: .main) { [weak self] in
                 self?.removeGhostContent()
                 self?.showSpinner(shouldShowSpinner: false)
+                if let error = syncError {
+                    DDLogError("⛔️ Error loading dashboard: \(error)")
+                    self?.handleSyncError(error: error)
+                } else {
+                    self?.showSiteVisitors(true)
+                }
                 onCompletion?(syncError)
             }
         }
@@ -308,7 +313,6 @@ private extension StoreStatsAndTopPerformersViewController {
                                                           latestDateToInclude: latestDateToInclude) { error in
                                                             if let error = error {
                                                                 DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                                                                onCompletion?(error)
                                                             }
                                                             onCompletion?(error)
         }
@@ -335,6 +339,31 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 }
 
+private extension StoreStatsAndTopPerformersViewController {
+    func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
+        periodVCs.forEach { vc in
+            vc.shouldShowSiteVisitStats = shouldShowSiteVisitors
+        }
+    }
+
+    func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
+        switch error {
+        case .statsModuleDisabled, .noPermission:
+            showSiteVisitors(false)
+        default:
+            displaySyncingErrorNotice()
+        }
+    }
+
+    private func handleSyncError(error: Error) {
+        switch error {
+        case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
+            handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
+        default:
+            displaySyncingErrorNotice()
+        }
+    }
+}
 
 // MARK: - Private Helpers
 //

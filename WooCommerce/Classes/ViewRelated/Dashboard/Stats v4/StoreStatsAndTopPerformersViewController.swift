@@ -117,10 +117,12 @@ private extension StoreStatsAndTopPerformersViewController {
             return
         }
 
+        showSpinner(shouldShowSpinner: true)
+
         defer {
             group.notify(queue: .main) { [weak self] in
                 self?.removeGhostContent()
-                self?.refreshControl?.endRefreshing()
+                self?.showSpinner(shouldShowSpinner: false)
                 onCompletion?(syncError)
             }
         }
@@ -157,6 +159,16 @@ private extension StoreStatsAndTopPerformersViewController {
                     syncError = error
                 }
                 group.leave()
+            }
+        }
+    }
+
+    func showSpinner(shouldShowSpinner: Bool) {
+        periodVCs.forEach { (vc) in
+            if shouldShowSpinner {
+                vc.refreshControl.beginRefreshing()
+            } else {
+                vc.refreshControl.endRefreshing()
             }
         }
     }
@@ -239,6 +251,12 @@ private extension StoreStatsAndTopPerformersViewController {
         periodVCs.append(weekVC)
         periodVCs.append(monthVC)
         periodVCs.append(yearVC)
+
+        periodVCs.forEach { (vc) in
+            vc.onPullToRefresh = { [weak self] in
+                self?.onPullToRefresh()
+            }
+        }
     }
 
     func configureTabStrip() {
@@ -329,7 +347,6 @@ private extension StoreStatsAndTopPerformersViewController {
         WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
     }
 }
-
 
 // MARK: - Constants!
 //

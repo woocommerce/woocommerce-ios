@@ -13,6 +13,8 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         }
     }
 
+    var onPullToRefresh: () -> Void = {}
+
     /// Updated when reloading data.
     var currentDate: Date {
         didSet {
@@ -22,6 +24,12 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
     // MARK: subviews
     //
+    var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl(frame: .zero)
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+
     private var scrollView: UIScrollView = {
         return UIScrollView(frame: .zero)
     }()
@@ -108,6 +116,8 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         view.addSubview(scrollView)
         view.pinSubviewToSafeArea(scrollView)
 
+        scrollView.refreshControl = refreshControl
+
         scrollView.addSubview(stackView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -136,5 +146,13 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         childViewContrllers.forEach { childViewController in
             childViewController.didMove(toParent: self)
         }
+    }
+}
+
+// MARK: Actions
+//
+private extension StoreStatsAndTopPerformersPeriodViewController {
+    @objc func pullToRefresh() {
+        onPullToRefresh()
     }
 }

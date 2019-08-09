@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-26 08:54:49+0000 */
+/* Translation-Revision-Date: 2019-08-07 00:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -148,7 +148,7 @@
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "משלים את ההרשמה";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
+/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "יצירת הודעת אימייל חדשה ללקוח המשלם.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
@@ -177,6 +177,9 @@
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "העתק";
+
+/* Copy tracking number button title */
+"Copy Tracking Number" = "להעתקת מספר המעקב";
 
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "לא ניתן היה לבדוק רכישות באתר.";
@@ -261,11 +264,17 @@
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "לפריט Dotcom חסר אסימון";
 
+/* WordPress.com error thrown when the user has no permission to view site stats. */
+"Dotcom No Stats Permission" = "הרשאה להשבתת הנתונים הסטטיסטיים של Dotcom";
+
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "הבקשה של Dotcom נכשלה";
 
 /* WordPress.com Error thrown when the response body is empty */
 "Dotcom Response Empty" = "התגובה של Dotcom ריקה";
+
+/* WordPress.com error thrown when the Jetpack site stats module is disabled. */
+"Dotcom Stats Module Disabled" = "מודול הנתונים הסטטיסטיים של Dotcom הושבת";
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "האסימון Dotcom לא תקף";
@@ -491,8 +500,8 @@
 /* Title of a button. */
 "Lost your password?" = "שחזור סיסמה";
 
-/* Tagline after the heart icon, displayed to the user */
-"Made with love by Automattic" = "נוצר באהבה על ידי Automattic";
+/* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
+"Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "נוצר באהבה על ידי Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">אנחנו מחפשים עובדים!<\/a>";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "ניהול הזמנות, מעקב אחר מכירות ואחר פעילות החנות באמצעות התראות בזמן אמת.";
@@ -646,7 +655,7 @@
    Order number title */
 "Order #(viewModel.order.number)" = "הזמנה ‎#‎(viewModel.order.number)‎";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store. */
+/* Displayed whenever an Order gets deleted. It reads: Order {order number} has been deleted from your store. */
 "Order %@ has been deleted from your store" = "ההזמנה %@ נמחקה מהחנות שלך";
 
 /* Order notes section title */
@@ -683,6 +692,9 @@
 
 /* Payment section title */
 "Payment" = "תשלום";
+
+/* Payment of <currency symbol><payment total> received via (payment method title) */
+"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "תשלום של (subject.totalValue) התקבל דרך (order.paymentMethodTitle)";
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "תשלום של (totalvalue) התקבל דרך (order.paymentMethodTitle)";
@@ -753,7 +765,7 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "המוצר %ld הוסר מהחנות שלך";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "הצגת האפשרות להתקשרות או לשליחת הודעה אל הלקוח המשלם.";
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
@@ -1160,6 +1172,9 @@
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "אין אפשרות לעדכן את מצב ההזמנה #(orderID)";
+
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
+"Unable to delete tracking for order #(order.orderID)" = "אין אפשרות למחוק את המעקב אחר ההזמנה #(order.orderID)";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
 "Unable to delete tracking for order #(orderID)" = "אין אפשרות למחוק את המעקב אחר ההזמנה #(orderID)";

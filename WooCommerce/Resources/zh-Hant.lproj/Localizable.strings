@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-27 11:54:03+0000 */
+/* Translation-Revision-Date: 2019-08-07 04:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -148,7 +148,7 @@
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "正在完成註冊程序";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
+/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "撰寫新的電子郵件訊息給帳單客戶。";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
@@ -177,6 +177,9 @@
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "複製";
+
+/* Copy tracking number button title */
+"Copy Tracking Number" = "複製追蹤號碼";
 
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "無法確認網站購買項目。";
@@ -261,11 +264,17 @@
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom 缺少 Token";
 
+/* WordPress.com error thrown when the user has no permission to view site stats. */
+"Dotcom No Stats Permission" = "Dotcom 沒有統計資料權限";
+
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "Dotcom 要求失敗";
 
 /* WordPress.com Error thrown when the response body is empty */
 "Dotcom Response Empty" = "Dotcom 回應為空白";
+
+/* WordPress.com error thrown when the Jetpack site stats module is disabled. */
+"Dotcom Stats Module Disabled" = "Dotcom 統計資料模組已停用";
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "Dotcom Token 無效";
@@ -491,8 +500,8 @@
 /* Title of a button. */
 "Lost your password?" = "忘記密碼？";
 
-/* Tagline after the heart icon, displayed to the user */
-"Made with love by Automattic" = "由 Automattic 成員深情打造";
+/* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
+"Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "由 Automattic 用心製作。<a href=\"https:\/\/automattic.com\/work-with-us\/\">我們在招募人才！<\/a>";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "透過即時警示管理訂單、追蹤銷售狀況，並監控商店活動。";
@@ -646,7 +655,7 @@
    Order number title */
 "Order #(viewModel.order.number)" = "訂單編號 (viewModel.order.number)";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store. */
+/* Displayed whenever an Order gets deleted. It reads: Order {order number} has been deleted from your store. */
 "Order %@ has been deleted from your store" = "已從你的商店刪除訂單　%@";
 
 /* Order notes section title */
@@ -683,6 +692,9 @@
 
 /* Payment section title */
 "Payment" = "付款";
+
+/* Payment of <currency symbol><payment total> received via (payment method title) */
+"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "已透過 (order.paymentMethodTitle) 收到 (subject.totalValue) 付款";
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "已透過 (order.paymentMethodTitle) 收到 (totalValue) 付款";
@@ -753,7 +765,7 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "已從你的商店移除產品 %ld";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "提示致電或傳簡訊給帳單客戶的選項。";
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
@@ -1160,6 +1172,9 @@
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "無法變更訂單 #(orderID) 的狀態";
+
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
+"Unable to delete tracking for order #(order.orderID)" = "無法刪除訂單 #(order.orderID) 的追蹤";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
 "Unable to delete tracking for order #(orderID)" = "無法刪除訂單 #(orderID) 的追蹤";

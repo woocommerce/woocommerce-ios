@@ -1,0 +1,3 @@
+Copy tracking numbers! It is now easier to keep a watchful eye on your shipment without opening the app. In Order Details > Shipment Tracking > More, there is a new action to copy your tracking number to use wherever you want.
+
+Goodbye stats error message! If your site does not have the Jetpack site stats module, or you don’t have permission to view stats, you simply won’t see the stats page. You don’t need to see an annoying error message, so we have taken it away.

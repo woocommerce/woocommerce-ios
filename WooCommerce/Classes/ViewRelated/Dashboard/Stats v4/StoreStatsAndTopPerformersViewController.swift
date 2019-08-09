@@ -86,22 +86,6 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
     }
 }
 
-// MARK: - Public Interface
-//
-extension StoreStatsAndTopPerformersViewController {
-    func clearAllFields() {
-        periodVCs.forEach { (vc) in
-            vc.clearAllFields()
-        }
-    }
-
-    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
-        for periodVC in periodVCs {
-            periodVC.shouldShowSiteVisitStats = shouldShowSiteVisitStats
-        }
-    }
-}
-
 // MARK: - Syncing Data
 //
 private extension StoreStatsAndTopPerformersViewController {
@@ -340,6 +324,12 @@ private extension StoreStatsAndTopPerformersViewController {
 }
 
 private extension StoreStatsAndTopPerformersViewController {
+    func clearAllFields() {
+        periodVCs.forEach { (vc) in
+            vc.clearAllFields()
+        }
+    }
+
     func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
         periodVCs.forEach { vc in
             vc.shouldShowSiteVisitStats = shouldShowSiteVisitors

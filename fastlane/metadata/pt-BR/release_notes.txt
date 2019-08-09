@@ -1,1 +1,3 @@
-This version of the app does a better job adjust large font sizes for little phone screens — if you use iOS’s dynamic type settings, you won’t see any more comically large text.
+Copie os números de rastreamento! Agora é mais fácil manter-se atento ao envio sem precisar abrir o aplicativo. Em Detalhes do pedido> Rastreamento do envio> Mais, há uma nova ação para copiar o número de rastreamento e usá-lo onde você quiser.
+
+Diga adeus às mensagens de erro de estatísticas! Se o seu site não tiver o módulo de estatísticas do site Jetpack ou se você não tiver permissão para visualizar as estatísticas, a página de estatísticas simplesmente não aparecerá. Não havia necessidade de mostrar uma mensagem de erro irritante, então a removemos.

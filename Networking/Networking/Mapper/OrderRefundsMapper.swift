@@ -3,7 +3,7 @@ import Foundation
 
 /// Mapper: OrderRefund
 ///
-struct OrderRefundMapper: Mapper {
+struct OrderRefundsMapper: Mapper {
 
     /// Site Identifier associated to the order refund that will be parsed.
     ///
@@ -14,27 +14,27 @@ struct OrderRefundMapper: Mapper {
 
     /// (Attempts) to convert a dictionary into [OrderRefund].
     ///
-    func map(response: Data) throws -> OrderRefund {
+    func map(response: Data) throws -> [OrderRefund] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
             .siteID: siteID
         ]
 
-        return try decoder.decode(OrderRefundEnvelope.self, from: response).orderRefund
+        return try decoder.decode(OrderRefundsEnvelope.self, from: response).orderRefunds
     }
 }
 
 
-/// OrdersRefundEnvelope Disposable Entity
+/// OrdersRefundsEnvelope Disposable Entity
 ///
 /// `Load Order` endpoint returns the requested order document in the `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///
-private struct OrderRefundEnvelope: Decodable {
-    let orderRefund: OrderRefund
+private struct OrderRefundsEnvelope: Decodable {
+    let orderRefunds: [OrderRefund]
 
     private enum CodingKeys: String, CodingKey {
-        case orderRefund = "data"
+        case orderRefunds = "data"
     }
 }

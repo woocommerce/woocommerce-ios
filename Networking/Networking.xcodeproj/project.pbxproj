@@ -16,7 +16,7 @@
 		45AE5805230192AE001901E3 /* OrderRefundCondensedMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE5804230192AE001901E3 /* OrderRefundCondensedMapper.swift */; };
 		45AE580723019518001901E3 /* RefundsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE580623019518001901E3 /* RefundsRemote.swift */; };
 		45AE58092301A9AF001901E3 /* OrderRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58082301A9AF001901E3 /* OrderRefund.swift */; };
-		45AE580B2301B0D1001901E3 /* OrderRefundMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE580A2301B0D1001901E3 /* OrderRefundMapper.swift */; };
+		45AE580B2301B0D1001901E3 /* OrderRefundsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE580A2301B0D1001901E3 /* OrderRefundsMapper.swift */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
 		74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */; };
@@ -268,7 +268,7 @@
 		45AE5804230192AE001901E3 /* OrderRefundCondensedMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensedMapper.swift; sourceTree = "<group>"; };
 		45AE580623019518001901E3 /* RefundsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundsRemote.swift; sourceTree = "<group>"; };
 		45AE58082301A9AF001901E3 /* OrderRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefund.swift; sourceTree = "<group>"; };
-		45AE580A2301B0D1001901E3 /* OrderRefundMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundMapper.swift; sourceTree = "<group>"; };
+		45AE580A2301B0D1001901E3 /* OrderRefundsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsMapper.swift; sourceTree = "<group>"; };
 		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemoteTests.swift; sourceTree = "<group>"; };
@@ -873,7 +873,7 @@
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
 				748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */,
 				45AE5804230192AE001901E3 /* OrderRefundCondensedMapper.swift */,
-				45AE580A2301B0D1001901E3 /* OrderRefundMapper.swift */,
+				45AE580A2301B0D1001901E3 /* OrderRefundsMapper.swift */,
 				74749B96224134FF005C4CF2 /* ProductMapper.swift */,
 				CE0A0F18223987DF0075ED8D /* ProductListMapper.swift */,
 				7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */,
@@ -1288,7 +1288,7 @@
 				CE50346021B5799F007573C6 /* SitePlan.swift in Sources */,
 				B59325CC217E2B4C000B0E8E /* NoteListMapper.swift in Sources */,
 				B505F6CD20BEE37E00BB1B69 /* AccountMapper.swift in Sources */,
-				45AE580B2301B0D1001901E3 /* OrderRefundMapper.swift in Sources */,
+				45AE580B2301B0D1001901E3 /* OrderRefundsMapper.swift in Sources */,
 				D8736B5E22F0849700A14A29 /* OrderCountItem.swift in Sources */,
 				B554FA8F2180BC7000C54DFF /* NoteHashListMapper.swift in Sources */,
 				B556FD69211CE2EC00B5DAE7 /* NetworkError.swift in Sources */,

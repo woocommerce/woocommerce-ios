@@ -1,14 +1,14 @@
 import Foundation
 
 
-/// Represents a Order's refund Entity.
+/// Represents a Order's refund condensed Entity.
 ///
-public struct OrderRefund: Decodable {
+public struct OrderRefundCondensed: Decodable {
     public let refundID: Int
     public let reason: String
     public let total: String
     
-    /// OrderRefund struct initializer.
+    /// OrderRefundCondensed struct initializer.
     ///
     public init(refundID: Int,
                 reason: String,
@@ -19,7 +19,7 @@ public struct OrderRefund: Decodable {
     }
     
     
-    /// The public initializer for OrderRefund.
+    /// The public initializer for OrderRefundCondensed.
     ///
     public init(from decoder: Decoder) throws {
         
@@ -36,9 +36,9 @@ public struct OrderRefund: Decodable {
 }
 
 
-/// Defines all of the OrderRefund CodingKeys
+/// Defines all of the OrderRefundCondensed CodingKeys
 ///
-private extension OrderRefund {
+private extension OrderRefundCondensed {
     
     enum CodingKeys: String, CodingKey {
         case refundID           = "id"
@@ -50,14 +50,14 @@ private extension OrderRefund {
 
 // MARK: - Comparable Conformance
 //
-extension OrderRefund: Comparable {
-    public static func == (lhs: OrderRefund, rhs: OrderRefund) -> Bool {
+extension OrderRefundCondensed: Comparable {
+    public static func == (lhs: OrderRefundCondensed, rhs: OrderRefundCondensed) -> Bool {
         return lhs.refundID == rhs.refundID &&
             lhs.reason == rhs.reason &&
             lhs.total == rhs.total
     }
     
-    public static func < (lhs: OrderRefund, rhs: OrderRefund) -> Bool {
+    public static func < (lhs: OrderRefundCondensed, rhs: OrderRefundCondensed) -> Bool {
         return lhs.refundID < rhs.refundID
     }
 }

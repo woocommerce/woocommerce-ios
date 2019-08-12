@@ -88,7 +88,7 @@ private extension OrderRefund {
 //
 extension OrderRefund: Comparable {
     public static func == (lhs: OrderRefund, rhs: OrderRefund) -> Bool {
-        return lhs.siteID = rhs.siteID &&
+        return lhs.siteID == rhs.siteID &&
             lhs.refundID == rhs.refundID &&
             lhs.dateCreated == rhs.dateCreated &&
             lhs.amount == rhs.amount &&

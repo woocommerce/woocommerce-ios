@@ -63,7 +63,7 @@ PODS:
   - WordPressShared (1.8.2):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-  - WordPressUI (1.3.4)
+  - WordPressUI (1.3.5-beta.1)
   - wpxmlrpc (0.8.4)
   - XLPagerTabStrip (9.0.0)
   - ZendeskSDK (2.3.1):
@@ -86,7 +86,7 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.2)
   - WordPressAuthenticator (~> 1.5.2)
   - WordPressShared (~> 1.8.2)
-  - WordPressUI (~> 1.3.3)
+  - WordPressUI (from `https://github.com/wordpress-mobile/WordPressUI-iOS.git`, branch `autolayout-helpers`)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSDK (~> 2.3.1)
 
@@ -113,10 +113,19 @@ SPEC REPOS:
     - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
-    - WordPressUI
     - wpxmlrpc
     - XLPagerTabStrip
     - ZendeskSDK
+
+EXTERNAL SOURCES:
+  WordPressUI:
+    :branch: autolayout-helpers
+    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
+
+CHECKOUT OPTIONS:
+  WordPressUI:
+    :commit: 95dfd6d4c6c7d1040aa91f6a79cf74b64d08e813
+    :git: https://github.com/wordpress-mobile/WordPressUI-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
@@ -140,11 +149,11 @@ SPEC CHECKSUMS:
   WordPressAuthenticator: e8617f67da0cb013ffaade1f4410f8cfbbe30d97
   WordPressKit: 09a28afc17dc63d35b6bd76c69fa94a7049183eb
   WordPressShared: 34f7a1386d28d7e4650c1a225c554ee024401ca3
-  WordPressUI: 065de4c33212b9ca3ae458d43c73f2ce2738d3d4
+  WordPressUI: 1e3f611cd80e62ad59cd1ce8db262379423a8587
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: cbd49d65efb2f2cdbdcaac84e618896ae87b861e
 
-PODFILE CHECKSUM: 68039874714c03ea340c668f7060a581a55cfc62
+PODFILE CHECKSUM: 5accc8cbc24ce909d748b94ed0ff58427577964a
 
-COCOAPODS: 1.6.2
+COCOAPODS: 1.6.1

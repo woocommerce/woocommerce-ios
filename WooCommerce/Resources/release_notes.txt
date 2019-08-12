@@ -1,3 +1,3 @@
-- bugfix: on certain devices, pulling down to refresh on Order Details screen used to result in weird UI with misplaced labels. Should be fixed in this release.
-- Enhancement: Display a badge in the bottom tab, overlapping the Orders icon, to indicate the number of orders processing.
-- Enhancement: The Notifications tab has been replaced by Reviews 
+- The tab formerly known as Notifications is now Reviews. As notifications are now shown under Orders, the Notifications tab was in need of a new identity. We have cunningly renamed it ‘Reviews,’ as it now just shows reviews.
+- We have fixed a bug where pulling down to refresh on the Order Details screen resulted in weird UI with misplaced labels.
+- A badge is now displayed in the bottom tab, overlapping the Orders icon, to indicate the number of orders processing.

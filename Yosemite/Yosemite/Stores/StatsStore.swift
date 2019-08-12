@@ -112,7 +112,7 @@ private extension StatsStore {
                                     latestDateToInclude: latestDateToInclude,
                                     quantity: quantity) { [weak self] (siteVisitStats, error) in
             guard let siteVisitStats = siteVisitStats else {
-                onCompletion(error)
+                onCompletion(error.flatMap({ SiteVisitStatsStoreError(error: $0) }))
                 return
             }
 
@@ -281,5 +281,32 @@ extension StatsStore {
         /// Default limit value for TopEarnerStats
         ///
         static let defaultTopEarnerStatsLimit: Int = 3
+    }
+}
+
+/// An error that occurs while fetching site visit stats.
+///
+/// - noPermission: the user has no permission to view site stats.
+/// - statsModuleDisabled: Jetpack site stats module is disabled for the site.
+/// - unknown: other error cases.
+///
+public enum SiteVisitStatsStoreError: Error {
+    case statsModuleDisabled
+    case noPermission
+    case unknown
+
+    init(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            self = .unknown
+            return
+        }
+        switch dotcomError {
+        case .noStatsPermission:
+            self = .noPermission
+        case .statsModuleDisabled:
+            self = .statsModuleDisabled
+        default:
+            self = .unknown
+        }
     }
 }

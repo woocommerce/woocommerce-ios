@@ -36,13 +36,14 @@ That set of actions is declared in an implementation of the `Action` protocol. W
 
 At the moment, we provide the following subclasses of `Store`:
 * `AccountStore`. Registers `AccountAction` with the `Dispatcher`.  It implements the business logic necessary to manage an account (load an account, load a site, synchronise account information…)
+* `AppSettingsStore`. Registers and responds to actions declared in `AppSettingsAction`. It implements the logic to save and retrieve application settings.
 * `CommentStore`.  Registers and responds to actions declared in `CommentAction` It implements the business logic pertaining comments.
 * `NotificationStore`. Registers  and responds to`NotificationAction` 
 * `OrderStore`. Registers `OrderAction` with the `Dispatcher` and responds to the actions declared in it.
 * `OrderNoteStore`. Business logic pertaining order notes. Registers and responds to operation declared in `OrderNoteAction`
 * `OrderStatusStore`. Business logic related to order payment statuses, implementing operations declared in `OrderStatusAction`
 * `SettingStore` registers and responds to operations declared in `SettingAction`
-* `ShipmentStore` implements support for the operations declared in `SettingAction`
+* `ShipmentStore` implements support for the operations declared in `ShipmentAction`
 * Finally, `StatStore`implements the logic to present statistics, supporting operations declared in `StatsAction`
 
 ## Operations with domain level concerns. Action

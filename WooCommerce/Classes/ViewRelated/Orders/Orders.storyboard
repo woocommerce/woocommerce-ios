@@ -61,7 +61,6 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                 <inset key="separatorInset" minX="16" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 <connections>
-                                    <outlet property="dataSource" destination="IgL-pI-DQK" id="epc-hT-caY"/>
                                     <outlet property="delegate" destination="IgL-pI-DQK" id="z2y-Op-rg4"/>
                                 </connections>
                             </tableView>

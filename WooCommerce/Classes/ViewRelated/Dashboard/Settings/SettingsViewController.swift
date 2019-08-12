@@ -112,12 +112,11 @@ private extension SettingsViewController {
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.iconImage = .heartOutlineImage
-        footerView.iconColor = StyleManager.wooGreyMid
-        footerView.footnoteText = NSLocalizedString(
-            "Made with love by Automattic",
-            comment: "Tagline after the heart icon, displayed to the user"
-        )
-        footerView.footnoteColor = StyleManager.wooGreyMid
+        footerView.footnote.attributedText = hiringAttributedText
+        footerView.iconColor = StyleManager.wooCommerceBrandColor
+        footerView.footnote.textAlignment = .center
+        footerView.footnote.delegate = self
+
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }
@@ -317,6 +316,24 @@ private extension SettingsViewController {
         StoresManager.shared.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
     }
+
+    func weAreHiringWasPressed(url: URL) {
+        WooAnalytics.shared.track(.settingsWereHiringTapped)
+
+        WebviewHelper.launch(url, with: self)
+    }
+}
+
+
+// MARK: - UITextViewDeletgate Conformance
+//
+extension SettingsViewController: UITextViewDelegate {
+
+    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
+                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+        weAreHiringWasPressed(url: URL)
+        return false
+    }
 }
 
 
@@ -456,4 +473,30 @@ private struct Segues {
     static let helpSupportSegue = "ShowHelpAndSupportViewController"
     static let aboutSegue       = "ShowAboutViewController"
     static let licensesSegue    = "ShowLicensesViewController"
+}
+
+
+// MARK: - Footer
+//
+private extension SettingsViewController {
+
+    /// Returns the Settings Footer Attributed Text
+    /// (which contains a link to the "Work with us" URL)
+    ///
+    var hiringAttributedText: NSAttributedString {
+        let hiringText = NSLocalizedString("Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
+                                           comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
+        )
+        let hiringAttributes: [NSAttributedString.Key: Any] = [
+            .font: StyleManager.footerLabelFont,
+            .foregroundColor: StyleManager.wooGreyMid
+        ]
+
+        let hiringAttrText = NSMutableAttributedString()
+        hiringAttrText.append(hiringText.htmlToAttributedString)
+        let range = NSRange(location: 0, length: hiringAttrText.length)
+        hiringAttrText.addAttributes(hiringAttributes, range: range)
+
+        return hiringAttrText
+    }
 }

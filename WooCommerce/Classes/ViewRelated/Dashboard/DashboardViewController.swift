@@ -241,7 +241,9 @@ private extension DashboardViewController {
 
             if let error = reloadError {
                 DDLogError("⛔️ Error loading dashboard: \(error)")
-                self?.displaySyncingErrorNotice()
+                self?.handleSyncError(error: error)
+            } else {
+                self?.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
             }
         }
     }
@@ -271,6 +273,24 @@ private extension DashboardViewController {
         })
     }
 
+    private func handleSyncError(error: Error) {
+        switch error {
+        case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
+            handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
+        default:
+            displaySyncingErrorNotice()
+        }
+    }
+
+    private func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
+        switch error {
+        case .statsModuleDisabled, .noPermission:
+            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
+        default:
+            displaySyncingErrorNotice()
+        }
+    }
+
     private func displaySyncingErrorNotice() {
         let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
         let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
@@ -281,6 +301,10 @@ private extension DashboardViewController {
         }
 
         AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+    }
+
+    private func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
+        storeStatsViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
     }
 }
 

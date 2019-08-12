@@ -47,7 +47,7 @@ public extension RefundsRemote {
     }
 
     private enum Path {
-        static let orderRefunds = "orders/%@/refunds"
+        static let orderRefunds = "orders/%d/refunds"
     }
 
     private enum ParameterKey {

@@ -4,13 +4,13 @@ import Foundation
 /// Mapper: OrderRefundCondensed
 ///
 class OrderRefundCondensedMapper: Mapper {
-    
+
     /// (Attempts) to convert a dictionary into a single OrderRefund
     ///
     func map(response: Data) throws -> OrderRefundCondensed {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
-        
+
         return try decoder.decode(OrderRefundEnvelope.self, from: response).orderRefundCondensed
     }
 }
@@ -22,9 +22,8 @@ class OrderRefundCondensedMapper: Mapper {
 ///
 private struct OrderRefundEnvelope: Decodable {
     let orderRefundCondensed: OrderRefundCondensed
-    
+
     private enum CodingKeys: String, CodingKey {
         case orderRefundCondensed = "data"
     }
 }
-

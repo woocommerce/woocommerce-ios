@@ -38,7 +38,7 @@ A protocol the abstracts the actual URL requests.
 At the moment, we provide three implementations of `URLRequestConvertible`:
 * `DotcomRequest` models requests to WordPress.com
 * `JetpackRequest` represents a Jetpack-Tunneled WordPress.com 
-* `AuthencitatedRequest` Wraps up a URLRequestConvertible Instance, and injects credentials (username and token) when required
+* `AuthenticatedRequest` Wraps up a URLRequestConvertible Instance, and injects credentials (username and token) when required
 
 ## Mapper
 A protocol that abstracts the different parsers.

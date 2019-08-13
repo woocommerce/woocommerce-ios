@@ -25,8 +25,8 @@ class OrderRefundsMapperTests: XCTestCase {
 
         XCTAssertEqual(firstOrderRefunds.amount, "10.00")
         XCTAssertEqual(firstOrderRefunds.reason, "Product No Longer Needed")
-        XCTAssertEqual(firstOrderRefunds.refunded_by, 1)
-        XCTAssertEqual(firstOrderRefunds.refunded_payment, false)
+        XCTAssertEqual(firstOrderRefunds.refundedBy, 1)
+        XCTAssertEqual(firstOrderRefunds.refundedPayment, false)
     }
 
     /// Verifies that all of the Order Refunds Items are parsed correctly.

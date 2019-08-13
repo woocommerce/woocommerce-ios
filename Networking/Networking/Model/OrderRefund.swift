@@ -9,12 +9,12 @@ public struct OrderRefund: Decodable {
     public let dateCreated: Date
     public let amount: String
     public let reason: String
-    public let refunded_by: Int
+    public let refundedBy: Int
     public let items: [OrderItem]
 
-    /// If the refunded_payment field in this response is true, then we can assume that the refund was processed using automatic refund. If false, refund is processed manually.
+    /// If the refundedPayment field in this response is true, then we can assume that the refund was processed using automatic refund. If false, refund is processed manually.
     ///
-    public let refunded_payment: Bool
+    public let refundedPayment: Bool
 
 
     /// OrderRefund struct initializer.
@@ -24,18 +24,18 @@ public struct OrderRefund: Decodable {
                 dateCreated: Date,
                 amount: String,
                 reason: String,
-                refunded_by: Int,
+                refundedBy: Int,
                 items: [OrderItem],
-                refunded_payment: Bool
+                refundedPayment: Bool
         ) {
         self.siteID = siteID
         self.refundID = refundID
         self.dateCreated = dateCreated
         self.amount = amount
         self.reason = reason
-        self.refunded_by = refunded_by
+        self.refundedBy = refundedBy
         self.items = items
-        self.refunded_payment = refunded_payment
+        self.refundedPayment = refundedPayment
     }
 
 
@@ -52,18 +52,18 @@ public struct OrderRefund: Decodable {
         let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
-        let refunded_by = try container.decode(Int.self, forKey: .refunded_by)
+        let refundedBy = try container.decode(Int.self, forKey: .refundedBy)
         let items = try container.decode([OrderItem].self, forKey: .items)
-        let refunded_payment = try container.decode(Bool.self, forKey: .refunded_payment)
+        let refundedPayment = try container.decode(Bool.self, forKey: .refundedPayment)
 
         self.init(siteID: siteID,
                   refundID: refundID,
                   dateCreated: dateCreated,
                   amount: amount,
                   reason: reason,
-                  refunded_by: refunded_by,
+                  refundedBy: refundedBy,
                   items: items,
-                  refunded_payment: refunded_payment)
+                  refundedPayment: refundedPayment)
     }
 }
 
@@ -77,9 +77,9 @@ private extension OrderRefund {
         case dateCreated        = "date_created_gmt"
         case amount             = "amount"
         case reason             = "reason"
-        case refunded_by        = "refunded_by"
+        case refundedBy        = "refunded_by"
         case items              = "line_items"
-        case refunded_payment   = "refunded_payment"
+        case refundedPayment   = "refunded_payment"
     }
 }
 
@@ -93,10 +93,10 @@ extension OrderRefund: Comparable {
             lhs.dateCreated == rhs.dateCreated &&
             lhs.amount == rhs.amount &&
             lhs.reason == rhs.reason &&
-            lhs.refunded_by == rhs.refunded_by &&
+            lhs.refundedBy == rhs.refundedBy &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted() &&
-            lhs.refunded_payment == rhs.refunded_payment
+            lhs.refundedPayment == rhs.refundedPayment
     }
 
     public static func < (lhs: OrderRefund, rhs: OrderRefund) -> Bool {

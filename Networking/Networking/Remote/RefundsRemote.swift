@@ -3,7 +3,7 @@ import Alamofire
 
 /// Refunds: Remote Endpoints
 ///
-public class RefundsRemote: Remote {
+public final class RefundsRemote: Remote {
 
     /// Retrieves a specific list of `OrderRefunds`s by `orderID`.
     ///

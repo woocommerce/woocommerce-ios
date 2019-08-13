@@ -45,6 +45,13 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let userAgent: String
 
+    /// Flag indicating which Log In flow to display.
+    /// In the new flow, when Log In is selected, a button view is displayed with options.
+    /// In the old flow, when Log In is selected, the email login view is displayed with alternative options.
+    ///
+    let showNewLoginFlow: Bool
+
+
     /// Designated Initializer
     ///
     public init (wpcomClientId: String,
@@ -56,7 +63,8 @@ public struct WordPressAuthenticatorConfiguration {
                  googleLoginClientId: String,
                  googleLoginServerClientId: String,
                  googleLoginScheme: String,
-                 userAgent: String) {
+                 userAgent: String,
+                 showNewLoginFlow: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -68,5 +76,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginServerClientId = googleLoginServerClientId
         self.googleLoginScheme = googleLoginScheme
         self.userAgent = userAgent
+        self.showNewLoginFlow = showNewLoginFlow
     }
 }

@@ -28,7 +28,7 @@ public final class RefundsRemote: Remote {
             ParameterKey.perPage: String(pageSize),
             ParameterKey.contextKey: context
         ]
-        let path = String(format: Path.orderRefunds, orderID)
+        let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = OrderRefundsMapper(siteID: siteID)
 
@@ -47,7 +47,8 @@ public extension RefundsRemote {
     }
 
     private enum Path {
-        static let orderRefunds = "orders/%d/refunds"
+        static let orders = "orders"
+        static let refunds = "refunds"
     }
 
     private enum ParameterKey {

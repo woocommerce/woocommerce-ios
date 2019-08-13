@@ -3,7 +3,7 @@ import XCTest
 
 /// RefundsRemoteTests:
 ///
-class RefundsRemoteTests: XCTestCase {
+final class RefundsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///

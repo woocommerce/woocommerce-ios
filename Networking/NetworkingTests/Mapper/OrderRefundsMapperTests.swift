@@ -4,7 +4,7 @@ import XCTest
 
 /// OrderRefundsMapper Unit Tests
 ///
-class OrderRefundsMapperTests: XCTestCase {
+final class OrderRefundsMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///

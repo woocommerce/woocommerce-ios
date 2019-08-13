@@ -17,6 +17,7 @@
 		45AE580B2301B0D1001901E3 /* OrderRefundsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE580A2301B0D1001901E3 /* OrderRefundsMapper.swift */; };
 		45AE580D2301C4FE001901E3 /* RefundsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE580C2301C4FE001901E3 /* RefundsRemoteTests.swift */; };
 		45AE580F2301CB92001901E3 /* order-refunds-list.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AE580E2301CB92001901E3 /* order-refunds-list.json */; };
+		45AE58112302BD9D001901E3 /* OrderRefundsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58102302BD9D001901E3 /* OrderRefundsMapperTests.swift */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
 		74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */; };
@@ -269,6 +270,7 @@
 		45AE580A2301B0D1001901E3 /* OrderRefundsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsMapper.swift; sourceTree = "<group>"; };
 		45AE580C2301C4FE001901E3 /* RefundsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundsRemoteTests.swift; sourceTree = "<group>"; };
 		45AE580E2301CB92001901E3 /* order-refunds-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-refunds-list.json"; sourceTree = "<group>"; };
+		45AE58102302BD9D001901E3 /* OrderRefundsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsMapperTests.swift; sourceTree = "<group>"; };
 		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemoteTests.swift; sourceTree = "<group>"; };
@@ -951,6 +953,7 @@
 				74C8F06D20EEC1E700B6EDC9 /* OrderNotesMapperTests.swift */,
 				743FDB9F210FB3E500AC737F /* OrderStatsMapperTests.swift */,
 				D8FBFF1D22D51F39006E3336 /* OrderStatsMapperV4Tests.swift */,
+				45AE58102302BD9D001901E3 /* OrderRefundsMapperTests.swift */,
 				74CF0A8B22414D7800DB993F /* ProductMapperTests.swift */,
 				CE0A0F1C22398D520075ED8D /* ProductListMapperTests.swift */,
 				7412A8ED21B6E335005D182A /* ReportOrderMapperTests.swift */,
@@ -1385,6 +1388,7 @@
 				B5C151C0217EE3FB00C7BDC1 /* NoteListMapperTests.swift in Sources */,
 				B567AF3120A0FB8F00AB6C62 /* JetpackRequestTests.swift in Sources */,
 				7412A8F221B6E47A005D182A /* ReportRemoteTests.swift in Sources */,
+				45AE58112302BD9D001901E3 /* OrderRefundsMapperTests.swift in Sources */,
 				45AE580D2301C4FE001901E3 /* RefundsRemoteTests.swift in Sources */,
 				7412A8EE21B6E335005D182A /* ReportOrderMapperTests.swift in Sources */,
 				74CF0A8C22414D7800DB993F /* ProductMapperTests.swift in Sources */,

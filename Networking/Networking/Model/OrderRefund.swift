@@ -100,8 +100,7 @@ extension OrderRefund: Comparable {
     }
 
     public static func < (lhs: OrderRefund, rhs: OrderRefund) -> Bool {
-        return lhs.refundID < rhs.refundID ||
-            (lhs.refundID == rhs.refundID && lhs.dateCreated < rhs.dateCreated)
+        return lhs.refundID == rhs.refundID && lhs.dateCreated < rhs.dateCreated
     }
 }
 

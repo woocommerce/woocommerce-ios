@@ -12,8 +12,6 @@
 		02BA23C922EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json in Resources */ = {isa = PBXBuildFile; fileRef = 02BA23C722EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json */; };
 		02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */ = {isa = PBXBuildFile; fileRef = 02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
-		45AE580323019181001901E3 /* OrderRefundCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE580223019181001901E3 /* OrderRefundCondensed.swift */; };
-		45AE5805230192AE001901E3 /* OrderRefundCondensedMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE5804230192AE001901E3 /* OrderRefundCondensedMapper.swift */; };
 		45AE580723019518001901E3 /* RefundsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE580623019518001901E3 /* RefundsRemote.swift */; };
 		45AE58092301A9AF001901E3 /* OrderRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58082301A9AF001901E3 /* OrderRefund.swift */; };
 		45AE580B2301B0D1001901E3 /* OrderRefundsMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE580A2301B0D1001901E3 /* OrderRefundsMapper.swift */; };
@@ -266,8 +264,6 @@
 		022902D322E2436400059692 /* no_stats_permission_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = no_stats_permission_error.json; sourceTree = "<group>"; };
 		02BA23C722EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-wcadmin-deactivated.json"; sourceTree = "<group>"; };
 		02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-wcadmin-activated.json"; sourceTree = "<group>"; };
-		45AE580223019181001901E3 /* OrderRefundCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensed.swift; sourceTree = "<group>"; };
-		45AE5804230192AE001901E3 /* OrderRefundCondensedMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensedMapper.swift; sourceTree = "<group>"; };
 		45AE580623019518001901E3 /* RefundsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundsRemote.swift; sourceTree = "<group>"; };
 		45AE58082301A9AF001901E3 /* OrderRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefund.swift; sourceTree = "<group>"; };
 		45AE580A2301B0D1001901E3 /* OrderRefundsMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsMapper.swift; sourceTree = "<group>"; };
@@ -768,7 +764,6 @@
 				74C8F06320EEB44800B6EDC9 /* OrderNote.swift */,
 				CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */,
 				B5BB1D1120A255EC00112D92 /* OrderStatusEnum.swift */,
-				45AE580223019181001901E3 /* OrderRefundCondensed.swift */,
 				45AE58082301A9AF001901E3 /* OrderRefund.swift */,
 				743E84EB22171F4600FAC9D7 /* ShipmentTracking.swift */,
 				D823D90C2237784A00C90817 /* ShipmentTrackingProvider.swift */,
@@ -878,7 +873,6 @@
 				74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */,
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
 				748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */,
-				45AE5804230192AE001901E3 /* OrderRefundCondensedMapper.swift */,
 				45AE580A2301B0D1001901E3 /* OrderRefundsMapper.swift */,
 				74749B96224134FF005C4CF2 /* ProductMapper.swift */,
 				CE0A0F18223987DF0075ED8D /* ProductListMapper.swift */,
@@ -1284,7 +1278,6 @@
 				743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
 				D8736B6022F0887900A14A29 /* OrderCountMapper.swift in Sources */,
-				45AE5805230192AE001901E3 /* OrderRefundCondensedMapper.swift in Sources */,
 				7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */,
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,
 				93D8BBFB226BBC5100AD2EB3 /* AccountSettings.swift in Sources */,
@@ -1329,7 +1322,6 @@
 				93D8BBFD226BBEE800AD2EB3 /* AccountSettingsMapper.swift in Sources */,
 				74D522B62113607F00042831 /* StatGranularity.swift in Sources */,
 				B518662220A097C200037A38 /* Network.swift in Sources */,
-				45AE580323019181001901E3 /* OrderRefundCondensed.swift in Sources */,
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,

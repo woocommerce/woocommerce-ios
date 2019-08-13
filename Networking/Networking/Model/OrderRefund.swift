@@ -12,7 +12,8 @@ public struct OrderRefund: Decodable {
     public let refundedBy: Int
     public let items: [OrderItem]
 
-    /// If the refundedPayment field in this response is true, then we can assume that the refund was processed using automatic refund. If false, refund is processed manually.
+    /// If the refundedPayment field in this response is true, then we can assume that the refund was processed using automatic refund.
+    /// If false, refund is processed manually.
     ///
     public let refundedPayment: Bool
 

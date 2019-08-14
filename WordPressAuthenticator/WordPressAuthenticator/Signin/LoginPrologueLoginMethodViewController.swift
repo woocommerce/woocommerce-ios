@@ -38,7 +38,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         let wordpressTitle = NSLocalizedString("Continue with WordPress.com", comment: "Button title. Tapping begins our normal log in process.")
         let googleTitle = NSLocalizedString("Continue with Google", comment: "Button title. Tapping begins log in using Google.")
         
-        buttonViewController.setupTopButton(title: wordpressTitle, isPrimary: false, accessibilityIdentifier: "Log in with WordPress Button") { [weak self] in
+        buttonViewController.setupTopButton(title: wordpressTitle, isPrimary: false, accessibilityIdentifier: "Log in with Email Button") { [weak self] in
             self?.dismiss(animated: true)
             self?.emailTapped?()
         }

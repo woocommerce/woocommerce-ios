@@ -49,7 +49,7 @@ final class StatsStoreV4Tests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderStatsV4.self), 0)
 
         let action = StatsActionV4.retrieveStats(siteID: sampleSiteID,
-                                                 granularity: .yearly,
+                                                 timeRange: .thisYear,
                                                  earliestDateToInclude: date(with: "2018-06-23T17:06:55"),
                                                  latestDateToInclude: date(with: "2018-06-23T17:06:55"),
                                                  quantity: 2) { (error) in
@@ -74,7 +74,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "generic_error")
         let action = StatsActionV4.retrieveStats(siteID: sampleSiteID,
-                                                 granularity: .yearly,
+                                                 timeRange: .thisYear,
                                                  earliestDateToInclude: date(with: "2018-06-23T17:06:55"),
                                                  latestDateToInclude: date(with: "2018-06-23T17:06:55"),
                                                  quantity: 2) { (error) in
@@ -92,7 +92,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve site visit stats empty response")
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = StatsActionV4.retrieveStats(siteID: sampleSiteID, granularity: .yearly,
+        let action = StatsActionV4.retrieveStats(siteID: sampleSiteID, timeRange: .thisYear,
                                                  earliestDateToInclude: date(with: "2018-06-23T17:06:55"),
 
                                                  latestDateToInclude: date(with: "2018-06-23T17:06:55"),
@@ -121,29 +121,31 @@ private extension StatsStoreV4Tests {
 
     func sampleStats() -> Networking.OrderStatsV4 {
         return OrderStatsV4(siteID: sampleSiteID,
-                            granularity: .yearly,
+                            granularity: .monthly,
                             totals: sampleTotals(),
                             intervals: sampleIntervals())
     }
 
+
+    /// Matches `totals` field in `order-stats-v4-year` response.
     func sampleTotals() -> Networking.OrderStatsV4Totals {
-        return OrderStatsV4Totals(totalOrders: 0,
-                                  totalItemsSold: 0,
-                                  grossRevenue: 0,
+        return OrderStatsV4Totals(totalOrders: 3,
+                                  totalItemsSold: 5,
+                                  grossRevenue: 800,
                                   couponDiscount: 0,
                                   totalCoupons: 0,
                                   refunds: 0,
                                   taxes: 0,
                                   shipping: 0,
-                                  netRevenue: 0,
+                                  netRevenue: 800,
                                   totalProducts: 0)
     }
 
     func sampleIntervals() -> [Networking.OrderStatsV4Interval] {
-        return [sampleIntervalYear()]
+        return [sampleIntervalMonthly()]
     }
 
-    func sampleIntervalYear() -> Networking.OrderStatsV4Interval {
+    func sampleIntervalMonthly() -> Networking.OrderStatsV4Interval {
         return OrderStatsV4Interval(interval: "2019",
                                     dateStart: "2019-07-09 00:00:00",
                                     dateEnd: "2019-07-09 23:59:59",

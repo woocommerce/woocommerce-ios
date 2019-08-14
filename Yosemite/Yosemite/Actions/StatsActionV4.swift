@@ -17,4 +17,11 @@ public enum StatsActionV4: Action {
         latestDateToInclude: Date,
         quantity: Int,
         onCompletion: (Error?) -> Void)
+
+    /// Synchronizes `SiteVisitStats` for the provided siteID, time range, and date.
+    ///
+    case retrieveSiteVisitStats(siteID: Int,
+        timeRange: StatsTimeRangeV4,
+        latestDateToInclude: Date,
+        onCompletion: (Error?) -> Void)
 }

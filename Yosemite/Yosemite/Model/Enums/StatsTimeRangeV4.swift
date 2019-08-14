@@ -13,6 +13,7 @@ public enum StatsTimeRangeV4: String {
 }
 
 extension StatsTimeRangeV4 {
+    /// Represents the period unit of the store stats using Stats v4 API given a time range.
     public var intervalGranularity: StatsGranularityV4 {
         switch self {
         case .today:
@@ -23,6 +24,20 @@ extension StatsTimeRangeV4 {
             return .daily
         case .thisYear:
             return .monthly
+        }
+    }
+
+    /// Represents the period unit of the site visit stats given a time range.
+    public var siteVisitStatsUnitGranularity: StatGranularity {
+        switch self {
+        case .today:
+            return .day
+        case .thisWeek:
+            return .week
+        case .thisMonth:
+            return .month
+        case .thisYear:
+            return .year
         }
     }
 }

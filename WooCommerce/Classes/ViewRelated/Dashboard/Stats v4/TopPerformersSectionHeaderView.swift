@@ -1,6 +1,7 @@
 import UIKit
 
 /// Section header view shown above the top performers data view.
+///
 class TopPerformersSectionHeaderView: UIView {
     private lazy var label: UILabel = {
         return UILabel(frame: .zero)

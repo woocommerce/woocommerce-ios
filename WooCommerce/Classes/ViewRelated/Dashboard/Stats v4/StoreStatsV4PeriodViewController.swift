@@ -2,6 +2,8 @@ import Charts
 import UIKit
 import Yosemite
 
+/// Shows the store stats with v4 API for a time range.
+///
 class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Public Properties
@@ -17,7 +19,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
     var currentDate: Date {
         didSet {
             if currentDate != oldValue {
-                siteStatsResultsController = updateSiteVisitStatsResultsController(currentDate: timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone))
+                let currentDateForSiteVisitStats = timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
+                siteStatsResultsController = updateSiteVisitStatsResultsController(currentDate: currentDateForSiteVisitStats)
                 configureSiteStatsResultsController()
             }
         }
@@ -317,7 +320,9 @@ private extension StoreStatsV4PeriodViewController {
 private extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStatsResultsController(currentDate: Date) -> ResultsController<StorageSiteVisitStats> {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@", timeRange.siteVisitStatsGranularity.rawValue, DateFormatter.Stats.statsDayFormatter.string(from: currentDate))
+        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@",
+                                    timeRange.siteVisitStatsGranularity.rawValue,
+                                    DateFormatter.Stats.statsDayFormatter.string(from: currentDate))
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
@@ -384,11 +389,12 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
 private extension StoreStatsV4PeriodViewController {
 
     func updateChartAccessibilityValues() {
+        let format = NSLocalizedString(
+            "Minimum value %@, maximum value %@",
+            comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."
+        )
         yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Minimum value %@, maximum value %@",
-                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."
-            ),
+            format,
             yAxisMinimum,
             yAxisMaximum
         )
@@ -419,11 +425,12 @@ private extension StoreStatsV4PeriodViewController {
             }
 
             let entrySummaryString = (entry.accessibilityValue ?? String(entry.y))
+            let format = NSLocalizedString(
+                "Bar number %i, %@, ",
+                comment: "VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}."
+            )
             chartSummaryString += String.localizedStringWithFormat(
-                NSLocalizedString(
-                    "Bar number %i, %@, ",
-                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."
-                ),
+                format,
                 i+1,
                 entrySummaryString
             )

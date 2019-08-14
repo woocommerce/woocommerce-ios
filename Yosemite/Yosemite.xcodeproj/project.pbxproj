@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0225512122FC2F3000D98613 /* OrderStatsV4Interval+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */; };
+		0225512522FC312400D98613 /* OrderStatsV4Interval+DateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */; };
 		0232372922F7DA6E00715FAB /* StatsTimeRangeV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */; };
 		028BCE2422DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BCE2322DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift */; };
 		02BA23C222EEEABC009539E7 /* AvailabilityStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA23C122EEEABC009539E7 /* AvailabilityStore.swift */; };
@@ -139,6 +141,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+Date.swift"; sourceTree = "<group>"; };
+		0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+DateTests.swift"; sourceTree = "<group>"; };
 		0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeV4.swift; sourceTree = "<group>"; };
 		028BCE2322DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsStoreErrorTests.swift; sourceTree = "<group>"; };
 		02BA23C122EEEABC009539E7 /* AvailabilityStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AvailabilityStore.swift; sourceTree = "<group>"; };
@@ -290,6 +294,30 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0225511F22FC2ED000D98613 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		0225512222FC310200D98613 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0225512322FC310E00D98613 /* Extensions */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		0225512322FC310E00D98613 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
 		0232372722F7DA5500715FAB /* Enums */ = {
 			isa = PBXGroup;
 			children = (
@@ -369,6 +397,7 @@
 		B53D89E720E6C7DC00F90866 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				0225511F22FC2ED000D98613 /* Extensions */,
 				0232372722F7DA5500715FAB /* Enums */,
 				B52E0036211A44FE00700FDE /* ReadOnly */,
 				B52E0035211A44F800700FDE /* Storage */,
@@ -491,6 +520,7 @@
 				B5BC736C20D1AB3500B5B6FA /* Settings */,
 				B5C9DE1D2087FF20006B910A /* Mockups */,
 				B5C9DE192087FF20006B910A /* Base */,
+				0225512222FC310200D98613 /* Model */,
 				B5BC736620D1AA8F00B5B6FA /* Stores */,
 				B5F2AE9320EBAD5200FEDC59 /* Tools */,
 				B5C9DE052087FEC0006B910A /* Info.plist */,
@@ -817,6 +847,7 @@
 				749375042249691D007D85D1 /* Product+ReadOnlyConvertible.swift in Sources */,
 				CE43A90222A072D800A4FF29 /* ProductDownload+ReadOnlyConvertible.swift in Sources */,
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
+				0225512122FC2F3000D98613 /* OrderStatsV4Interval+Date.swift in Sources */,
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
 				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
@@ -860,6 +891,7 @@
 				74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */,
 				7492FAE1217FB87100ED2C69 /* SettingStoreTests.swift in Sources */,
+				0225512522FC312400D98613 /* OrderStatsV4Interval+DateTests.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,
 				B53A56A0211245E0000776C9 /* MockupStorage+Sample.swift in Sources */,
 				744914F7224AD2AF00546DE4 /* ProductStoreTests.swift in Sources */,

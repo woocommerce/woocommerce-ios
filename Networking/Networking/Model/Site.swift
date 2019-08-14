@@ -64,7 +64,14 @@ public struct Site: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int, name: String, description: String, url: String, plan: String, isWooCommerceActive: Bool, isWordPressStore: Bool, timezone: String) {
+    public init(siteID: Int,
+                name: String,
+                description: String,
+                url: String,
+                plan: String,
+                isWooCommerceActive: Bool,
+                isWordPressStore: Bool,
+                timezone: String) {
         self.siteID = siteID
         self.name = name
         self.description = description

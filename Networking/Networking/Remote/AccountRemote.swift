@@ -55,7 +55,8 @@ public class AccountRemote: Remote {
     public func loadSites(completion: @escaping ([Site]?, Error?) -> Void) {
         let path = "me/sites"
         let parameters = [
-            "fields": "ID,name,description,URL,options"
+            "fields": "ID,name,description,URL,options",
+            "options": "timezone,is_wpcom_store,woocommerce_is_active"
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)

@@ -33,6 +33,9 @@ public struct Site: Decodable {
     ///
     public let isWordPressStore: Bool
 
+    /// Time zone identifier of the site (TZ database name).
+    ///
+    public let timezone: String
 
     /// Decodable Conformance.
     ///
@@ -47,6 +50,7 @@ public struct Site: Decodable {
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
+        let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
 
         self.init(siteID: siteID,
                   name: name,
@@ -54,12 +58,20 @@ public struct Site: Decodable {
                   url: url,
                   plan: String(), // Not created on init. Added in supplementary API request.
                   isWooCommerceActive: isWooCommerceActive,
-                  isWordPressStore: isWordPressStore)
+                  isWordPressStore: isWordPressStore,
+                  timezone: timezone)
     }
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int, name: String, description: String, url: String, plan: String, isWooCommerceActive: Bool, isWordPressStore: Bool) {
+    public init(siteID: Int,
+                name: String,
+                description: String,
+                url: String,
+                plan: String,
+                isWooCommerceActive: Bool,
+                isWordPressStore: Bool,
+                timezone: String) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -67,6 +79,7 @@ public struct Site: Decodable {
         self.plan = plan
         self.isWordPressStore = isWordPressStore
         self.isWooCommerceActive = isWooCommerceActive
+        self.timezone = timezone
     }
 }
 
@@ -108,6 +121,7 @@ private extension Site {
     enum OptionKeys: String, CodingKey {
         case isWordPressStore = "is_wpcom_store"
         case isWooCommerceActive = "woocommerce_is_active"
+        case timezone = "timezone"
     }
 
     enum PlanKeys: String, CodingKey {

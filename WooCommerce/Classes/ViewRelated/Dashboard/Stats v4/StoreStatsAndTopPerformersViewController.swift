@@ -116,40 +116,58 @@ private extension StoreStatsAndTopPerformersViewController {
             }
         }
 
-        periodVCs.forEach { (vc) in
-            let currentDate = Date()
-            vc.currentDate = currentDate
-            let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate)
-
-            group.enter()
-            syncStats(for: siteID, timeRange: vc.timeRange, latestDateToInclude: latestDateToInclude) { [weak self] error in
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing order stats: \(error)")
-                    syncError = error
-                } else {
-                    self?.trackStatsLoaded(for: vc.granularity)
-                }
-                group.leave()
+        // Loads site for the latest site timezone.
+        let loadSiteAction = AccountAction.loadSite(siteID: siteID) { [weak self] site in
+            guard let site = site, let self = self else {
+                return
             }
+            let timezone = site.timezone
+            let siteTimezone = TimeZone(identifier: timezone) ?? TimeZone(secondsFromGMT: 0) ?? TimeZone.current
+            self.periodVCs.forEach { (vc) in
+                vc.siteTimezone = siteTimezone
 
-            group.enter()
-            syncSiteVisitStats(for: siteID, timeRange: vc.timeRange, latestDateToInclude: latestDateToInclude) { error in
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                    syncError = error
-                }
-                group.leave()
-            }
+                let currentDate = Date()
+                vc.currentDate = currentDate
+                let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
 
-            group.enter()
-            syncTopEarnersStats(for: siteID, timeRange: vc.timeRange, latestDateToInclude: latestDateToInclude) { error in
-                if let error = error {
-                    DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
-                    syncError = error
+                group.enter()
+                self.syncStats(for: siteID,
+                               siteTimezone: siteTimezone,
+                               timeRange: vc.timeRange,
+                               latestDateToInclude: latestDateToInclude) { [weak self] error in
+                    if let error = error {
+                        DDLogError("⛔️ Error synchronizing order stats: \(error)")
+                        syncError = error
+                    } else {
+                        self?.trackStatsLoaded(for: vc.granularity)
+                    }
+                    group.leave()
                 }
-                group.leave()
+
+                group.enter()
+                self.syncSiteVisitStats(for: siteID,
+                                        timeRange: vc.timeRange,
+                                        latestDateToInclude: latestDateToInclude) { error in
+                    if let error = error {
+                        DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
+                        syncError = error
+                    }
+                    group.leave()
+                }
+
+                group.enter()
+                self.syncTopEarnersStats(for: siteID,
+                                         timeRange: vc.timeRange,
+                                         latestDateToInclude: latestDateToInclude) { error in
+                    if let error = error {
+                        DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
+                        syncError = error
+                    }
+                    group.leave()
+                }
             }
         }
+        StoresManager.shared.dispatch(loadSiteAction)
     }
 
     func showSpinner(shouldShowSpinner: Bool) {
@@ -275,10 +293,15 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - Sync'ing Helpers
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func syncStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
+    func syncStats(for siteID: Int,
+                   siteTimezone: TimeZone,
+                   timeRange: StatsTimeRangeV4,
+                   latestDateToInclude: Date,
+                   onCompletion: ((Error?) -> Void)? = nil) {
+        let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
         let action = StatsActionV4.retrieveStats(siteID: siteID,
                                                  timeRange: timeRange,
-                                                 earliestDateToInclude: timeRange.earliestDate(latestDate: latestDateToInclude),
+                                                 earliestDateToInclude: earliestDateToInclude,
                                                  latestDateToInclude: latestDateToInclude,
                                                  quantity: timeRange.maxNumberOfIntervals,
                                                  onCompletion: { error in

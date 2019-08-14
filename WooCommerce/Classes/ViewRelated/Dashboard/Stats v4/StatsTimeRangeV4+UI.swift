@@ -27,44 +27,47 @@ extension StatsTimeRangeV4 {
         }
     }
 
-    func latestDate(currentDate: Date) -> Date {
+    func latestDate(currentDate: Date, siteTimezone: TimeZone) -> Date {
         switch self {
         case .today:
-            return currentDate.endOfDay
+            return currentDate.endOfDay(timezone: siteTimezone)
         case .thisWeek:
-            return currentDate.endOfWeek
+            return currentDate.endOfWeek(timezone: siteTimezone)
         case .thisMonth:
-            return currentDate.endOfMonth
+            return currentDate.endOfMonth(timezone: siteTimezone)
         case .thisYear:
-            return currentDate.endOfYear
+            return currentDate.endOfYear(timezone: siteTimezone)
         }
     }
 
-    func earliestDate(latestDate: Date) -> Date {
+    func earliestDate(latestDate: Date, siteTimezone: TimeZone) -> Date {
         switch self {
         case .today:
-            return latestDate.startOfDay
+            return latestDate.startOfDay(timezone: siteTimezone)
         case .thisWeek:
-            return latestDate.startOfWeek
+            return latestDate.startOfWeek(timezone: siteTimezone)
         case .thisMonth:
-            return latestDate.startOfMonth
+            return latestDate.startOfMonth(timezone: siteTimezone)
         case .thisYear:
-            return latestDate.startOfYear
+            return latestDate.startOfYear(timezone: siteTimezone)
         }
     }
 
-    var chartDateFormatter: DateFormatter {
+    func chartDateFormatter(siteTimezone: TimeZone) -> DateFormatter {
+        let dateFormatter: DateFormatter
         switch intervalGranularity {
         case .hourly:
-            return DateFormatter.Charts.chartAxisHourFormatter
+            dateFormatter = DateFormatter.Charts.chartAxisHourFormatter
         case .daily:
-            return DateFormatter.Charts.chartAxisDayFormatter
+            dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .weekly:
-            return DateFormatter.Charts.chartAxisDayFormatter
+            dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .monthly:
-            return DateFormatter.Charts.chartAxisMonthFormatter
+            dateFormatter = DateFormatter.Charts.chartAxisMonthFormatter
         default:
             fatalError("This case is not supported: \(intervalGranularity.rawValue)")
         }
+        dateFormatter.timeZone = siteTimezone
+        return dateFormatter
     }
 }

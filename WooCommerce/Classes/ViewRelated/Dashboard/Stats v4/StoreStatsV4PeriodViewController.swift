@@ -6,7 +6,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Public Properties
 
-    public let granularity: StatsGranularityV4
+    let granularity: StatsGranularityV4
 
     var shouldShowSiteVisitStats: Bool = true {
         didSet {
@@ -17,25 +17,26 @@ class StoreStatsV4PeriodViewController: UIViewController {
     var currentDate: Date {
         didSet {
             if currentDate != oldValue {
-                siteStatsResultsController = updateSiteVisitStatsResultsController(currentDate: timeRange.latestDate(currentDate: currentDate))
+                siteStatsResultsController = updateSiteVisitStatsResultsController(currentDate: timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone))
                 configureSiteStatsResultsController()
             }
         }
     }
 
+    /// Updated when reloading data.
+    var siteTimezone: TimeZone = .current
+
     // MARK: - Private Properties
     private let timeRange: StatsTimeRangeV4
-    private var orderStatsIntervals: [OrderStatsV4Interval] {
-        return orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
-            return lhs.dateStart < rhs.dateStart
-        }) ?? []
-    }
+    private var orderStatsIntervals: [OrderStatsV4Interval] = []
     private var orderStats: OrderStatsV4? {
         return orderStatsResultsController.fetchedObjects.first
     }
     private var siteStats: SiteVisitStats? {
         return siteStatsResultsController.fetchedObjects.first
     }
+
+    // MARK: - Subviews
 
     @IBOutlet private weak var visitorsStackView: UIStackView!
     @IBOutlet private weak var visitorsTitle: UILabel!
@@ -128,8 +129,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureView()
-        self.configureBarChart()
+        configureView()
+        configureBarChart()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -447,6 +448,9 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func updateOrderDataIfNeeded() {
+        orderStatsIntervals = orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
+            return lhs.dateStart() < rhs.dateStart()
+        }) ?? []
         if !orderStatsIntervals.isEmpty {
             lastUpdatedDate = Date()
         } else {
@@ -566,21 +570,13 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func formattedAxisPeriodString(for item: OrderStatsV4Interval) -> String {
-        let dateFormatter = DateFormatter.Stats.dateTimeFormatter
-        guard let periodDate = dateFormatter.date(from: item.dateStart) else {
-            return ""
-        }
-        let chartDateFormatter = timeRange.chartDateFormatter
-        return chartDateFormatter.string(from: periodDate)
+        let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
+        return chartDateFormatter.string(from: item.dateStart())
     }
 
     func formattedChartMarkerPeriodString(for item: OrderStatsV4Interval) -> String {
-        let dateFormatter = DateFormatter.Stats.dateTimeFormatter
-        guard let periodDate = dateFormatter.date(from: item.dateStart) else {
-            return ""
-        }
-        let chartDateFormatter = timeRange.chartDateFormatter
-        return chartDateFormatter.string(from: periodDate)
+        let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
+        return chartDateFormatter.string(from: item.dateStart())
     }
 }
 

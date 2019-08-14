@@ -22,6 +22,13 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         }
     }
 
+    /// Updated when reloading data.
+    var siteTimezone: TimeZone = .current {
+        didSet {
+            storeStatsPeriodViewController.siteTimezone = siteTimezone
+        }
+    }
+
     // MARK: subviews
     //
     var refreshControl: UIRefreshControl = {

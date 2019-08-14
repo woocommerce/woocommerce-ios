@@ -14,7 +14,7 @@ extension DateFormatter {
         ///
         public static let chartAxisHourFormatter: DateFormatter = {
             let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("hh a")
+            formatter.setLocalizedDateFormatFromTemplate("ha")
             return formatter
         }()
 

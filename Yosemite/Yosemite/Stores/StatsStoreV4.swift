@@ -108,8 +108,7 @@ public extension StatsStoreV4 {
                                             onCompletion(error.flatMap({ SiteVisitStatsStoreError(error: $0) }))
                                             return
                                         }
-
-
+                                        
                                         self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
                                         onCompletion(nil)
         }

@@ -251,7 +251,8 @@ extension StatsStoreV4 {
 
         let storage = storageManager.viewStorage
         let storageTopEarnerStats = storage.loadTopEarnerStats(date: readOnlyStats.date,
-                                                               granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
+                                                               granularity: readOnlyStats.granularity.rawValue)
+            ?? storage.insertNewObject(ofType: Storage.TopEarnerStats.self)
         storageTopEarnerStats.update(with: readOnlyStats)
         handleTopEarnerStatsItems(readOnlyStats, storageTopEarnerStats, storage)
         storage.saveIfNeeded()

@@ -345,6 +345,7 @@ private extension AccountStoreTests {
                     url: "automattic.com",
                     plan: String(),
                     isWooCommerceActive: true,
-                    isWordPressStore: false)
+                    isWordPressStore: false,
+                    timezone: "Asia/Taipei")
     }
 }

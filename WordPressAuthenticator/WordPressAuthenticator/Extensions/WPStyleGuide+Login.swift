@@ -116,15 +116,33 @@ extension WPStyleGuide {
     ///
     /// - Returns: A properly styled UIButton
     ///
-    class func selfHostedLoginButton() -> UIButton {
-        let baseString =  NSLocalizedString("Log in by entering your site address.", comment: "Label for button to log in using your site address.")
+    class func selfHostedLoginButton(alignment: UIControl.NaturalContentHorizontalAlignment = .leading) -> UIButton {
+        
+        let style = WordPressAuthenticator.shared.style
+        
+        let button: UIButton
 
-        let attrStrNormal = selfHostedButtonString(baseString, linkColor:  WordPressAuthenticator.shared.style.textButtonColor)
-        let attrStrHighlight = selfHostedButtonString(baseString, linkColor: WordPressAuthenticator.shared.style.textButtonHighlightColor)
-
-        let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
-
-        return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font)
+        if WordPressAuthenticator.shared.configuration.showNewLoginFlow {
+            let baseString =  NSLocalizedString("Or log in by _entering your site address_.", comment: "Label for button to log in using site address. Underscores _..._ denote underline.")
+            
+            let attrStrNormal = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonColor)
+            let attrStrHighlight = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonHighlightColor)
+            let font = WPStyleGuide.mediumWeightFont(forStyle: .caption2)
+            
+            button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: alignment)
+        } else {
+            let baseString = NSLocalizedString("Log in by entering your site address.", comment: "Label for button to log in using your site address.")
+            
+            let attrStrNormal = selfHostedButtonString(baseString, linkColor:  style.textButtonColor)
+            let attrStrHighlight = selfHostedButtonString(baseString, linkColor: style.textButtonHighlightColor)
+            let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
+            
+            button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font)
+        }
+        
+        button.accessibilityIdentifier = "Self Hosted Login Button"
+        
+        return button
     }
 
     /// Creates a button for wpcom signup on the email screen

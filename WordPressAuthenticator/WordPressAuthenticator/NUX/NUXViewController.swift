@@ -41,6 +41,7 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
         case showCreateSite
         case showSignupEmail
         case showUsernames
+        case showLoginMethod
     }
 
     override open func viewDidLoad() {
@@ -72,7 +73,9 @@ extension NUXViewController {
     // Required so that any FancyAlertViewControllers presented within the NUX
     // use the correct dimmed backing view.
     open func presentationController(forPresented presented: UIViewController, presenting: UIViewController?, source: UIViewController) -> UIPresentationController? {
-        if presented is FancyAlertViewController || presented is LoginPrologueSignupMethodViewController {
+        if presented is FancyAlertViewController ||
+            presented is LoginPrologueSignupMethodViewController ||
+            presented is LoginPrologueLoginMethodViewController {
             return FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
         }
 

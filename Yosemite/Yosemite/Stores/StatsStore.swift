@@ -116,7 +116,6 @@ private extension StatsStore {
                 return
             }
 
-
             self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
             onCompletion(nil)
         }

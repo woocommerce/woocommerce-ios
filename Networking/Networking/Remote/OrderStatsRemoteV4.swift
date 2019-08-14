@@ -21,10 +21,12 @@ public final class OrderStatsRemoteV4: Remote {
                                latestDateToInclude: String,
                                quantity: Int,
                                completion: @escaping (OrderStatsV4?, Error?) -> Void) {
+        // Random `num_page` param between 31-100.
+        let randomQuantity = arc4random_uniform(70) + 31
         let parameters = [ParameterKeys.interval: unit.rawValue,
                           ParameterKeys.after: earliestDateToInclude,
                           ParameterKeys.before: latestDateToInclude,
-                          ParameterKeys.quantity: String(quantity)]
+                          ParameterKeys.quantity: String(randomQuantity)]
 
         let request = JetpackRequest(wooApiVersion: .mark4, method: .get, siteID: siteID, path: Constants.orderStatsPath, parameters: parameters)
         let mapper = OrderStatsV4Mapper(siteID: siteID, granularity: unit)

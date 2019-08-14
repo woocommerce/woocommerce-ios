@@ -88,12 +88,14 @@ extension StoreStatsAndTopPerformersPeriodViewController {
 
     func displayGhostContent() {
         storeStatsPeriodViewController.displayGhostContent()
+        topPerformersPeriodViewController.displayGhostContent()
     }
 
     /// Unlocks the and removes the Placeholder Content
     ///
     func removeGhostContent() {
         storeStatsPeriodViewController.removeGhostContent()
+        topPerformersPeriodViewController.removeGhostContent()
     }
 
     /// Indicates if the receiver has Remote Stats, or not.

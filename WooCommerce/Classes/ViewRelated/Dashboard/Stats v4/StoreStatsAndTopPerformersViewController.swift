@@ -2,13 +2,16 @@ import UIKit
 import XLPagerTabStrip
 import Yosemite
 
+/// Top-level stats container view controller that consists of a button bar with 4 time ranges.
+/// Each time range tab is managed by a `StoreStatsAndTopPerformersPeriodViewController`.
+///
 class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewController {
+
+    // MARK: - DashboardUI protocol
 
     var displaySyncingErrorNotice: () -> Void = {}
 
     var onPullToRefresh: () -> Void = {}
-
-    private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
 
     // MARK: - Subviews
 
@@ -21,6 +24,10 @@ class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewContro
     private var visibleChildViewController: StoreStatsAndTopPerformersPeriodViewController {
         return periodVCs[currentIndex]
     }
+
+    // MARK: - Private Properties
+
+    private var periodVCs = [StoreStatsAndTopPerformersPeriodViewController]()
 
     // MARK: - View Lifecycle
 
@@ -188,7 +195,6 @@ private extension StoreStatsAndTopPerformersViewController {
     /// Displays the Ghost Placeholder whenever there is no visible data.
     ///
     func ensureGhostContentIsDisplayed() {
-        // TODO: rename to store stats
         guard visibleChildViewController.shouldDisplayStoreStatsGhostContent else {
             return
         }

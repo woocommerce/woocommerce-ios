@@ -2,17 +2,29 @@ import UIKit
 import XLPagerTabStrip
 import Yosemite
 
+/// Container view controller for a stats v4 time range that consists of a scrollable stack view of:
+/// - Store stats data view (managed by child view controller `StoreStatsV4PeriodViewController`)
+/// - Top performers header view (`TopPerformersSectionHeaderView`)
+/// - Top performers data view (managed by child view controller `TopPerformerDataViewController`)
+///
 class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
 
+    // MARK: Public Interface
+
+    /// Time range for this period
     let timeRange: StatsTimeRangeV4
+
+    /// Stats interval granularity
     let granularity: StatsGranularityV4
 
+    /// Whether site visit stats can be shown
     var shouldShowSiteVisitStats: Bool = true {
         didSet {
             storeStatsPeriodViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
         }
     }
 
+    /// Called when user pulls down to refresh
     var onPullToRefresh: () -> Void = {}
 
     /// Updated when reloading data.
@@ -29,8 +41,8 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         }
     }
 
-    // MARK: subviews
-    //
+    // MARK: Subviews
+
     var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl(frame: .zero)
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
@@ -47,7 +59,8 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return stackView
     }()
 
-    // MARK: child view controllers
+    // MARK: Child View Controllers
+
     private lazy var storeStatsPeriodViewController: StoreStatsV4PeriodViewController = {
         return StoreStatsV4PeriodViewController(timeRange: timeRange, currentDate: currentDate)
     }()
@@ -56,7 +69,8 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
         return TopPerformerDataViewController(granularity: timeRange.topEarnerStatsGranularity)
     }()
 
-    // MARK: internal properties
+    // MARK: Internal Properties
+
     private var childViewContrllers: [UIViewController] {
         return [storeStatsPeriodViewController, topPerformersPeriodViewController]
     }
@@ -80,7 +94,7 @@ class StoreStatsAndTopPerformersPeriodViewController: UIViewController {
     }
 }
 
-// MARK: public interface
+// MARK: Public Interface
 extension StoreStatsAndTopPerformersPeriodViewController {
     func clearAllFields() {
         storeStatsPeriodViewController.clearAllFields()

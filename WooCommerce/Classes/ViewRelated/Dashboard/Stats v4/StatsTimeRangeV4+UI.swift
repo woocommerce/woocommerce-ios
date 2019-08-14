@@ -1,6 +1,7 @@
 import Yosemite
 
 extension StatsTimeRangeV4 {
+    /// The maximum number of stats intervals a time range could have.
     var maxNumberOfIntervals: Int {
         switch self {
         case .today:
@@ -14,6 +15,7 @@ extension StatsTimeRangeV4 {
         }
     }
 
+    /// The title of a time range tab.
     var tabTitle: String {
         switch self {
         case .today:
@@ -27,6 +29,11 @@ extension StatsTimeRangeV4 {
         }
     }
 
+    /// Returns the latest date to be shown for the time range, given the current date and site time zone
+    ///
+    /// - Parameters:
+    ///   - currentDate: the date which the latest date is based on
+    ///   - siteTimezone: site time zone, which the stats data are based on
     func latestDate(currentDate: Date, siteTimezone: TimeZone) -> Date {
         switch self {
         case .today:
@@ -40,6 +47,11 @@ extension StatsTimeRangeV4 {
         }
     }
 
+    /// Returns the earliest date to be shown for the time range, given the latest date and site time zone
+    ///
+    /// - Parameters:
+    ///   - latestDate: the date which the earliest date is based on
+    ///   - siteTimezone: site time zone, which the stats data are based on
     func earliestDate(latestDate: Date, siteTimezone: TimeZone) -> Date {
         switch self {
         case .today:
@@ -53,6 +65,9 @@ extension StatsTimeRangeV4 {
         }
     }
 
+    /// Returns a date formatter for the x-axis labels of a stats chart
+    ///
+    /// - Parameter siteTimezone: site time zone, which the stats data are based on
     func chartDateFormatter(siteTimezone: TimeZone) -> DateFormatter {
         let dateFormatter: DateFormatter
         switch intervalGranularity {

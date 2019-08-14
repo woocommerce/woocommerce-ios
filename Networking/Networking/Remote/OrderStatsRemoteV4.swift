@@ -21,7 +21,8 @@ public final class OrderStatsRemoteV4: Remote {
                                latestDateToInclude: String,
                                quantity: Int,
                                completion: @escaping (OrderStatsV4?, Error?) -> Void) {
-        // Random `num_page` param between 31-100.
+        // Workaround for #1183: random number between 31-100 for `num_page` param.
+        // Replace `randomQuantity` with `quantity` in `num_page` param when API issue is fixed.
         let randomQuantity = arc4random_uniform(70) + 31
         let parameters = [ParameterKeys.interval: unit.rawValue,
                           ParameterKeys.after: earliestDateToInclude,

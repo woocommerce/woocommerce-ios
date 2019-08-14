@@ -105,10 +105,9 @@ public extension StatsStoreV4 {
                                     latestDateToInclude: latestDateToInclude,
                                     quantity: 1) { [weak self] (siteVisitStats, error) in
                                         guard let siteVisitStats = siteVisitStats else {
-                                            onCompletion(error.flatMap({ SiteVisitStatsStoreError(error: $0) }))
+                                            onCompletion(error.map({ SiteVisitStatsStoreError(error: $0) }))
                                             return
                                         }
-
 
                                         self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
                                         onCompletion(nil)

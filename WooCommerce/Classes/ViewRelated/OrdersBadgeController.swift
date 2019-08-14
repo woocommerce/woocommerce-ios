@@ -34,25 +34,36 @@ private extension OrdersBadgeController {
     enum Constants {
         static let diameter    = CGFloat(10)
         static let borderWidth = CGFloat(1)
-        static let xOffset     = CGFloat(10)
-        static let yOffset     = CGFloat(-6)
+        static let xOffset     = CGFloat(14)
+        static let yOffset     = CGFloat(1)
         static let tagOffset   = 999
-        static let width       = CGFloat(17)
-        static let height      = CGFloat(17)
+        static let width       = CGFloat(15)
+        static let extendWidth = CGFloat(23)
+        static let height      = CGFloat(15)
     }
 
     func badge(for tab: WooTab, with text: String) -> BadgeLabel {
+        var width = Constants.width
+        var horizontalPadding = CGFloat(2)
+
+        let ninePlus = NSLocalizedString("9+", comment: "A badge with the number of orders. More than nine new orders.")
+        if text == ninePlus {
+            horizontalPadding = CGFloat(4)
+            width = Constants.extendWidth
+        }
+
         let returnValue = BadgeLabel(frame: CGRect(x: Constants.xOffset,
                                              y: Constants.yOffset,
-                                             width: Constants.width,
+                                             width: width,
                                              height: Constants.height))
         returnValue.tag = badgeTag(for: tab)
         returnValue.text = text
         returnValue.font = StyleManager.badgeFont
         returnValue.borderColor = StyleManager.wooWhite
         returnValue.borderWidth = 1
+        returnValue.backgroundColor = StyleManager.wooCommerceBrandColor
         returnValue.textColor = StyleManager.wooWhite
-        returnValue.horizontalPadding = 0
+        returnValue.horizontalPadding = horizontalPadding
         returnValue.cornerRadius = 8
         returnValue.layer.masksToBounds = true
         returnValue.textAlignment = .center

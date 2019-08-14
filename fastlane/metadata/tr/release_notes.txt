@@ -1,1 +1,3 @@
-This version of the app does a better job adjust large font sizes for little phone screens — if you use iOS’s dynamic type settings, you won’t see any more comically large text.
+Takip numaralarını kopyalayın! Artık uygulamayı açmadan kargonuzu takip etmek daha kolay. Sipariş Detayları > Gönderim Takibi > Daha Fazla bölümünde, takip numaranızı istediğiniz yerde kullanmak üzere kopyalayabilmeniz için yeni bir eylem bulunur.
+
+İstatistiklerde hata mesajına elveda! Sitenizde Jetpack site istatistikleri modülü yoksa veya istatistikleri görüntüleme izniniz yoksa istatistik sayfasını görmezsiniz. Artık sinir bozucu hata mesajlarıyla karşılaşmayacaksınız.

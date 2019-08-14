@@ -148,7 +148,7 @@
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "Completando el registro";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
+/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Redacta un nuevo mensaje de correo electrónico para el cliente de la facturación.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
@@ -177,6 +177,9 @@
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copiar";
+
+/* Copy tracking number button title */
+"Copy Tracking Number" = "Copy Tracking Number";
 
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "No se han podido comprobar las compras del sitio.";
@@ -261,11 +264,17 @@
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Token Dotcom perdido";
 
+/* WordPress.com error thrown when the user has no permission to view site stats. */
+"Dotcom No Stats Permission" = "Dotcom No Stats Permission";
+
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "La solicitud de Dotcom ha fallado";
 
 /* WordPress.com Error thrown when the response body is empty */
 "Dotcom Response Empty" = "Respuesta Dotcom vacía";
+
+/* WordPress.com error thrown when the Jetpack site stats module is disabled. */
+"Dotcom Stats Module Disabled" = "Dotcom Stats Module Disabled";
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "Token Dotcom no válido";
@@ -491,8 +500,8 @@
 /* Title of a button. */
 "Lost your password?" = "¿Has perdido tu contraseña?";
 
-/* Tagline after the heart icon, displayed to the user */
-"Made with love by Automattic" = "Con mucho cariño, por la gente de Automattic";
+/* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
+"Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Gestiona pedidos, controla las ventas y supervisa la actividad de la tienda con alertas en tiempo real.";
@@ -646,7 +655,7 @@
    Order number title */
 "Order #(viewModel.order.number)" = "Pedido núm. (viewModel.order.number)";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store. */
+/* Displayed whenever an Order gets deleted. It reads: Order {order number} has been deleted from your store. */
 "Order %@ has been deleted from your store" = "El pedido %@ se ha eliminado de tu tienda";
 
 /* Order notes section title */
@@ -683,6 +692,9 @@
 
 /* Payment section title */
 "Payment" = "Pago";
+
+/* Payment of <currency symbol><payment total> received via (payment method title) */
+"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "Payment of (subject.totalValue) received via (order.paymentMethodTitle)";
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "Se ha recibido el pago de (totalValue) a través de (order.paymentMethodTitle)";
@@ -753,7 +765,7 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "El producto %ld se ha eliminado de tu tienda";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Mensajes con la opción de llamar o enviar un mensaje al cliente de la facturación.";
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
@@ -1160,6 +1172,9 @@
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "No se ha podido cambiar el estado del pedido n.º (orderID)";
+
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
+"Unable to delete tracking for order #(order.orderID)" = "Unable to delete tracking for order #(order.orderID)";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
 "Unable to delete tracking for order #(orderID)" = "No se ha podido eliminar el seguimiento del pedido n.º (orderID)";

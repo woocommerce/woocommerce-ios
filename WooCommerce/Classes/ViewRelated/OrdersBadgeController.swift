@@ -68,6 +68,7 @@ private extension OrdersBadgeController {
         returnValue.layer.masksToBounds = true
         returnValue.textAlignment = .center
         returnValue.isHidden = true
+        returnValue.adjustsFontForContentSizeCategory = false
 
         return returnValue
     }

@@ -252,12 +252,7 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
         self.order = order
         self.providerName = initialName
 
-        // if we don't have a provider name, try to load a previous one
-        guard let providerName = self.providerName,
-            !providerName.isEmpty else {
-                loadSelectedCustomShipmentProvider()
-                return
-        }
+       loadSelectedCustomShipmentProvider()
     }
 }
 

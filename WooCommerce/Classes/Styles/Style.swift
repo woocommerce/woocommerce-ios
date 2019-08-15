@@ -79,7 +79,9 @@ class DefaultStyle: Style {
     static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
-    let badgeFont                       = UIFont.font(forStyle: .caption2, weight: .regular)
+    let badgeFont                       = DefaultStyle.fontForTextStyle(.caption2,
+                                                                        weight: .regular,
+                                                                        maximumPointSize: 11.0)
     let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
                                                                         weight: .semibold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)

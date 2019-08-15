@@ -26,8 +26,7 @@ final class BadgeLabel: UILabel {
     private func setupView() {
         textAlignment = .center
         layer.masksToBounds = true
-
-        cornerRadius = 2.0
+        clipsToBounds = true
     }
 
     // MARK: Padding

@@ -213,23 +213,27 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         })
     }
 
-
     func presentNextControllerIfPossible(siteInfo: WordPressComSiteInfo?) {
         WordPressAuthenticator.shared.delegate?.shouldPresentUsernamePasswordController(for: siteInfo, onCompletion: { (error, isSelfHosted) in
             guard let originalError = error else {
+                
                 if isSelfHosted {
                     self.showSelfHostedUsernamePassword()
+                    return
+                }
+                
+                if WordPressAuthenticator.shared.configuration.showLoginOptionsFromSiteAddress {
+                    self.showLoginMethods()
                 } else {
                     self.showWPUsernamePassword()
                 }
-
+                
                 return
             }
-
+            
             self.displayError(message: originalError.localizedDescription)
         })
     }
-
 
     @objc func originalErrorOrError(error: NSError) -> NSError {
         guard let err = error.userInfo[XMLRPCOriginalErrorKey] as? NSError else {
@@ -237,7 +241,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         }
         return err
     }
-
+    
     /// Here we will continue with the self-hosted flow.
     ///
     @objc func showSelfHostedUsernamePassword() {
@@ -247,12 +251,37 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
     /// Break away from the self-hosted flow.
     /// Display a username / password login screen for WP.com sites.
+    ///
     @objc func showWPUsernamePassword() {
         configureViewLoading(false)
         performSegue(withIdentifier: .showWPUsernamePassword, sender: self)
     }
 
+    /// Break away from the self-hosted flow.
+    /// Display login options for WP.com sites.
+    ///
+    @objc func showLoginMethods() {
+        configureViewLoading(false)
+        performSegue(withIdentifier: .showLoginMethod, sender: self)
+    }
 
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        super.prepare(for: segue, sender: sender)
+        
+        if let vc = segue.destination as? LoginPrologueLoginMethodViewController {
+            vc.transitioningDelegate = self
+            
+            vc.emailTapped = { [weak self] in
+                self?.showWPUsernamePassword()
+            }
+            vc.googleTapped = { [weak self] in
+                self?.performSegue(withIdentifier: .showGoogle, sender: self)
+            }
+            
+            vc.modalPresentationStyle = .custom
+        }
+    }
+    
     /// Whether the form can be submitted.
     ///
     @objc func canSubmit() -> Bool {

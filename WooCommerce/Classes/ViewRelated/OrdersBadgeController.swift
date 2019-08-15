@@ -60,12 +60,10 @@ private extension OrdersBadgeController {
         returnValue.font = StyleManager.badgeFont
         returnValue.borderColor = StyleManager.wooWhite
         returnValue.borderWidth = 1
-        returnValue.backgroundColor = StyleManager.wooCommerceBrandColor
         returnValue.textColor = StyleManager.wooWhite
         returnValue.horizontalPadding = horizontalPadding
         returnValue.cornerRadius = 8
-        returnValue.layer.masksToBounds = true
-        returnValue.textAlignment = .center
+        returnValue.fillColor = StyleManager.wooCommerceBrandColor
         returnValue.isHidden = true
         returnValue.adjustsFontForContentSizeCategory = false
 

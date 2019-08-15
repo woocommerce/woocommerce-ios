@@ -32,7 +32,6 @@ final class OrdersBadgeController {
 private extension OrdersBadgeController {
 
     enum Constants {
-        static let diameter    = CGFloat(10)
         static let borderWidth = CGFloat(1)
         static let xOffset     = CGFloat(14)
         static let yOffset     = CGFloat(1)

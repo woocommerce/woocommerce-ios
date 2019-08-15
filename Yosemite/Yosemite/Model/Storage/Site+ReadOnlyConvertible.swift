@@ -16,6 +16,7 @@ extension Storage.Site: ReadOnlyConvertible {
 //        plan = site.plan // We're not assigning the plan here because it's not sent on the intial API request.
         isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)
         isWordPressStore = NSNumber(booleanLiteral: site.isWordPressStore)
+        timezone = site.timezone
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -27,6 +28,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     url: url ?? "",
                     plan: plan ?? "",
                     isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,
-                    isWordPressStore: isWordPressStore?.boolValue ?? false)
+                    isWordPressStore: isWordPressStore?.boolValue ?? false,
+                    timezone: timezone ?? "")
     }
 }

@@ -28,7 +28,21 @@ extension StatsTimeRangeV4 {
     }
 
     /// Represents the period unit of the site visit stats given a time range.
-    public var siteVisitStatsUnitGranularity: StatGranularity {
+    public var siteVisitStatsGranularity: StatGranularity {
+        switch self {
+        case .today:
+            return .day
+        case .thisWeek:
+            return .week
+        case .thisMonth:
+            return .month
+        case .thisYear:
+            return .year
+        }
+    }
+
+    /// Represents the period unit of the top earners stats given a time range.
+    public var topEarnerStatsGranularity: StatGranularity {
         switch self {
         case .today:
             return .day

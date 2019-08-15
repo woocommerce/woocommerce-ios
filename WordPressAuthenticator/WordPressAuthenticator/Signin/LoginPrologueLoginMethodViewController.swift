@@ -51,8 +51,8 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
             self?.dismiss(animated: true)
             self?.googleTapped?()
         }
-        
-        if !LoginFields().restrictToWPCom {
+
+        if !LoginFields().restrictToWPCom && selfHostedTapped != nil {
             let selfHostedLoginButton = WPStyleGuide.selfHostedLoginButton(alignment: .center)
             buttonViewController.stackView?.addArrangedSubview(selfHostedLoginButton)
             selfHostedLoginButton.addTarget(self, action: #selector(handleSelfHostedButtonTapped), for: .touchUpInside)

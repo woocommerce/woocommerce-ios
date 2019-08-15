@@ -73,6 +73,12 @@ final class MainTabBarController: UITabBarController {
         startListeningToOrdersBadge()
     }
 
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        // Triggers a badge refresh. The badge needs redrawn anytime the screen orientation changes.
+        NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+    }
+
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         guard let currentlySelectedTab = WooTab(rawValue: selectedIndex),
             let userSelectedIndex = tabBar.items?.firstIndex(of: item),
@@ -270,6 +276,7 @@ private extension MainTabBarController {
 }
 
 private extension MainTabBarController {
+
     func startListeningToOrdersBadge() {
         viewModel.onBadgeReload = { [weak self] countReadableString in
             guard let self = self else {

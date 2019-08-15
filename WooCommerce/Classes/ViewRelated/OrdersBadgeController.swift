@@ -33,6 +33,7 @@ private extension OrdersBadgeController {
 
     enum Constants {
         static let borderWidth = CGFloat(1)
+        static let landscapeX  = CGFloat(0)
         static let xOffset     = CGFloat(14)
         static let yOffset     = CGFloat(1)
         static let tagOffset   = 999
@@ -44,6 +45,7 @@ private extension OrdersBadgeController {
     func badge(for tab: WooTab, with text: String) -> BadgeLabel {
         var width = Constants.width
         var horizontalPadding = CGFloat(2)
+        var xOffset = Constants.xOffset
 
         let ninePlus = NSLocalizedString("9+", comment: "A badge with the number of orders. More than nine new orders.")
         if text == ninePlus {
@@ -51,10 +53,15 @@ private extension OrdersBadgeController {
             width = Constants.extendWidth
         }
 
-        let returnValue = BadgeLabel(frame: CGRect(x: Constants.xOffset,
+        if UIApplication.shared.statusBarOrientation.isLandscape {
+            xOffset = Constants.landscapeX
+        }
+
+        let returnValue = BadgeLabel(frame: CGRect(x: xOffset,
                                              y: Constants.yOffset,
                                              width: width,
                                              height: Constants.height))
+
         returnValue.tag = badgeTag(for: tab)
         returnValue.text = text
         returnValue.font = StyleManager.badgeFont

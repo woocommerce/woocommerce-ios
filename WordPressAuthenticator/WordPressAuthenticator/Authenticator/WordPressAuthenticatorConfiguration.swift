@@ -51,6 +51,11 @@ public struct WordPressAuthenticatorConfiguration {
     ///
     let showNewLoginFlow: Bool
 
+    /// Flag indicating if the login options button view should be displayed in the site address flow.
+    /// If enabled, the options button view will be displayed after the site address has been entered
+    /// and verified.
+    ///
+    let showLoginOptionsFromSiteAddress: Bool
 
     /// Designated Initializer
     ///
@@ -64,7 +69,8 @@ public struct WordPressAuthenticatorConfiguration {
                  googleLoginServerClientId: String,
                  googleLoginScheme: String,
                  userAgent: String,
-                 showNewLoginFlow: Bool = false) {
+                 showNewLoginFlow: Bool = false,
+                 showLoginOptionsFromSiteAddress: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -77,5 +83,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginScheme = googleLoginScheme
         self.userAgent = userAgent
         self.showNewLoginFlow = showNewLoginFlow
+        self.showLoginOptionsFromSiteAddress = showLoginOptionsFromSiteAddress
     }
 }

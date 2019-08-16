@@ -54,6 +54,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
     @IBOutlet private weak var chartAccessibilityView: UIView!
+    @IBOutlet private weak var noRevenueView: UIView!
+    @IBOutlet private weak var noRevenueLabel: UILabel!
 
     private var lastUpdatedDate: Date?
     private var yAxisMinimum: String = Constants.chartYAxisMinimum.humanReadableString()
@@ -133,6 +135,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
         super.viewDidLoad()
         configureView()
         configureBarChart()
+        configureNoRevenueView()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -270,6 +273,13 @@ private extension StoreStatsV4PeriodViewController {
         )
     }
 
+    func configureNoRevenueView() {
+        noRevenueView.isHidden = true
+        noRevenueLabel.text = NSLocalizedString("No revenue this period", comment: "Text displayed when no order data are available for the selected time range.")
+        noRevenueLabel.font = StyleManager.subheadlineFont
+        noRevenueLabel.textColor = StyleManager.defaultTextColor
+    }
+
     func configureBarChart() {
         barChartView.chartDescription?.enabled = false
         barChartView.dragEnabled = false
@@ -324,6 +334,21 @@ private extension StoreStatsV4PeriodViewController {
                                     DateFormatter.Stats.statsDayFormatter.string(from: currentDate))
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }
+
+    func updateUI(hasRevenue: Bool) {
+        noRevenueView.isHidden = hasRevenue
+        updateBarChartAxisUI(hasRevenue: hasRevenue)
+    }
+
+    func updateBarChartAxisUI(hasRevenue: Bool) {
+        let labelTextColor = hasRevenue ? StyleManager.wooSecondary: StyleManager.wooGreyMid
+
+        let xAxis = barChartView.xAxis
+        xAxis.labelTextColor = labelTextColor
+
+        let yAxis = barChartView.leftAxis
+        yAxis.labelTextColor = labelTextColor
     }
 }
 

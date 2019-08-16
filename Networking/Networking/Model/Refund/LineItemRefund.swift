@@ -12,7 +12,7 @@ public struct LineItemRefund {
     ///
     public let quantity: Int
     
-    /// Total refunded amount for this item
+    /// Item price without tax
     ///
     public let refundTotal: String?
     

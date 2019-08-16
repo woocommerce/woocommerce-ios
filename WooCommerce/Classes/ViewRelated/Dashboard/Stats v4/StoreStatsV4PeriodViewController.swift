@@ -561,6 +561,13 @@ private extension StoreStatsV4PeriodViewController {
             barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
         }
         updateChartAccessibilityValues()
+
+        updateUI(hasRevenue: hasRevenue())
+    }
+
+    func hasRevenue() -> Bool {
+        let totalRevenue = orderStatsIntervals.map({ $0.revenueValue }).reduce(0, +)
+        return totalRevenue > 0
     }
 
     func reloadLastUpdatedField() {
@@ -581,8 +588,8 @@ private extension StoreStatsV4PeriodViewController {
         var dataEntries: [BarChartDataEntry] = []
         let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
         orderStatsIntervals.forEach { (item) in
-            let entry = BarChartDataEntry(x: Double(barCount), y: (item.subtotals.grossRevenue as NSDecimalNumber).doubleValue)
-            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String("\(item.subtotals.grossRevenue)"),
+            let entry = BarChartDataEntry(x: Double(barCount), y: (item.revenueValue as NSDecimalNumber).doubleValue)
+            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String("\(item.revenueValue)"),
                                                                                 with: currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"

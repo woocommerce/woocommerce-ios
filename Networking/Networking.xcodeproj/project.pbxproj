@@ -18,6 +18,9 @@
 		45AE580D2301C4FE001901E3 /* RefundsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE580C2301C4FE001901E3 /* RefundsRemoteTests.swift */; };
 		45AE580F2301CB92001901E3 /* order-refunds-list.json in Resources */ = {isa = PBXBuildFile; fileRef = 45AE580E2301CB92001901E3 /* order-refunds-list.json */; };
 		45AE58112302BD9D001901E3 /* OrderRefundsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58102302BD9D001901E3 /* OrderRefundsMapperTests.swift */; };
+		45AE58132306AC48001901E3 /* LineItemRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58122306AC48001901E3 /* LineItemRefund.swift */; };
+		45AE58162306ADDA001901E3 /* TaxRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58152306ADDA001901E3 /* TaxRefund.swift */; };
+		45AE58182306B37B001901E3 /* Refund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58172306B37B001901E3 /* Refund.swift */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
 		74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */; };
@@ -271,6 +274,9 @@
 		45AE580C2301C4FE001901E3 /* RefundsRemoteTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundsRemoteTests.swift; sourceTree = "<group>"; };
 		45AE580E2301CB92001901E3 /* order-refunds-list.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "order-refunds-list.json"; sourceTree = "<group>"; };
 		45AE58102302BD9D001901E3 /* OrderRefundsMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundsMapperTests.swift; sourceTree = "<group>"; };
+		45AE58122306AC48001901E3 /* LineItemRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineItemRefund.swift; sourceTree = "<group>"; };
+		45AE58152306ADDA001901E3 /* TaxRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRefund.swift; sourceTree = "<group>"; };
+		45AE58172306B37B001901E3 /* Refund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refund.swift; sourceTree = "<group>"; };
 		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemoteTests.swift; sourceTree = "<group>"; };
@@ -541,6 +547,16 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		45AE58142306ADA8001901E3 /* Refund */ = {
+			isa = PBXGroup;
+			children = (
+				45AE58172306B37B001901E3 /* Refund.swift */,
+				45AE58122306AC48001901E3 /* LineItemRefund.swift */,
+				45AE58152306ADDA001901E3 /* TaxRefund.swift */,
+			);
+			path = Refund;
+			sourceTree = "<group>";
+		};
 		74A1D26921189AC100931DFA /* Stats */ = {
 			isa = PBXGroup;
 			children = (
@@ -767,6 +783,7 @@
 				CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */,
 				B5BB1D1120A255EC00112D92 /* OrderStatusEnum.swift */,
 				45AE58082301A9AF001901E3 /* OrderRefund.swift */,
+				45AE58142306ADA8001901E3 /* Refund */,
 				743E84EB22171F4600FAC9D7 /* ShipmentTracking.swift */,
 				D823D90C2237784A00C90817 /* ShipmentTrackingProvider.swift */,
 				D823D90F22377B4F00C90817 /* ShipmentTrackingProviderGroup.swift */,
@@ -1247,6 +1264,7 @@
 			files = (
 				74ABA1CF213F1D1600FFAD30 /* TopEarnerStatsItem.swift in Sources */,
 				7452387421124B7700A973CD /* AnyDecodable.swift in Sources */,
+				45AE58132306AC48001901E3 /* LineItemRefund.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B50A583921AD861700617455 /* APNSDevice.swift in Sources */,
 				7426CA0D21AF27B9004E9FFC /* SiteAPIRemote.swift in Sources */,
@@ -1276,6 +1294,7 @@
 				B557DA0220975500005962F4 /* JetpackRequest.swift in Sources */,
 				74046E1F217A6B70007DD7BF /* SiteSettingsMapper.swift in Sources */,
 				CE12FBD9221F3A6F00C59248 /* OrderStatus.swift in Sources */,
+				45AE58182306B37B001901E3 /* Refund.swift in Sources */,
 				7426CA1121AF30BD004E9FFC /* SiteAPIMapper.swift in Sources */,
 				D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */,
 				743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */,
@@ -1353,6 +1372,7 @@
 				B557DA0F20975E07005962F4 /* DotcomRequest.swift in Sources */,
 				740211E321939C84002248DA /* CommentResultMapper.swift in Sources */,
 				CE6BFEEA2236E191005C79FB /* ProductType.swift in Sources */,
+				45AE58162306ADDA001901E3 /* TaxRefund.swift in Sources */,
 				B557DA0B20975D7E005962F4 /* WooAPIVersion.swift in Sources */,
 				CE6BFEE82236D133005C79FB /* ProductDimensions.swift in Sources */,
 				B505F6D120BEE39600BB1B69 /* AccountRemote.swift in Sources */,

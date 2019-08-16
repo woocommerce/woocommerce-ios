@@ -12,7 +12,7 @@ public struct Refund {
     ///
     public let reason: String?
     
-    /// Line items
+    /// Optional Line items to be refunded
     ///
     public let items: [LineItemRefund]?
     

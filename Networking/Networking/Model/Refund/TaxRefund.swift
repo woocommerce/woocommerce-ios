@@ -17,3 +17,16 @@ public struct TaxRefund {
         self.amount = amount
     }
 }
+
+// MARK: - Comparable Conformance
+//
+extension TaxRefund: Comparable {
+    public static func == (lhs: TaxRefund, rhs: TaxRefund) -> Bool {
+        return lhs.taxIDLineItem == rhs.taxIDLineItem &&
+            lhs.amount == rhs.amount
+    }
+    
+    public static func < (lhs: TaxRefund, rhs: TaxRefund) -> Bool {
+        return lhs.amount == rhs.amount
+    }
+}

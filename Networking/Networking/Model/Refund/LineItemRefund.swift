@@ -41,3 +41,19 @@ public struct LineItemRefund {
         return dict
     }
 }
+
+// MARK: - Comparable Conformance
+//
+extension LineItemRefund: Comparable {
+    public static func == (lhs: LineItemRefund, rhs: LineItemRefund) -> Bool {
+        return lhs.quantity == rhs.quantity &&
+            lhs.refundTotal == rhs.refundTotal &&
+            NSDictionary(dictionary: lhs.toDictionary()).isEqual(to: rhs.toDictionary()) &&
+        (lhs.refundTax != nil && rhs.refundTax != nil) ? lhs.refundTax!.count == rhs.refundTax!.count &&
+        lhs.refundTax!.sorted() == rhs.refundTax!.sorted() : true
+    }
+    
+    public static func < (lhs: LineItemRefund, rhs: LineItemRefund) -> Bool {
+        return lhs.quantity == rhs.quantity
+    }
+}

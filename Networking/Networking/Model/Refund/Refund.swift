@@ -35,3 +35,19 @@ public struct Refund {
         return dict
     }
 }
+
+// MARK: - Comparable Conformance
+//
+extension Refund: Comparable {
+    public static func == (lhs: Refund, rhs: Refund) -> Bool {
+        return lhs.amount == rhs.amount &&
+            lhs.reason == rhs.reason &&
+            NSDictionary(dictionary: lhs.toDictionary()).isEqual(to: rhs.toDictionary()) &&
+            (lhs.items != nil && rhs.items != nil) ? lhs.items!.count == rhs.items!.count &&
+                lhs.items!.sorted() == rhs.items!.sorted() : true
+    }
+    
+    public static func < (lhs: Refund, rhs: Refund) -> Bool {
+        return lhs.amount == rhs.amount
+    }
+}

@@ -29,7 +29,7 @@ public struct LineItemRefund {
     }
     
     public func toDictionary() -> [String: Any] {
-        var dict: [String: Any] = ["quantity": quantity]
+        var dict: [String: Any] = ["qty": quantity]
         
         if refundTotal != nil{
             dict["refund_total"] = refundTotal

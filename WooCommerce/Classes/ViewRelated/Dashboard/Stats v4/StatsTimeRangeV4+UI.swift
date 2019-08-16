@@ -19,13 +19,13 @@ extension StatsTimeRangeV4 {
     var tabTitle: String {
         switch self {
         case .today:
-            return NSLocalizedString("Today", comment: "Tab selector title that shows the statistics of today")
+            return NSLocalizedString("Today", comment: "Tab selector title that shows the statistics for today")
         case .thisWeek:
-            return NSLocalizedString("This Week", comment: "Tab selector title that shows the statistics of this week")
+            return NSLocalizedString("This Week", comment: "Tab selector title that shows the statistics for this week")
         case .thisMonth:
-            return NSLocalizedString("This Month", comment: "Tab selector title that shows the statistics of this month")
+            return NSLocalizedString("This Month", comment: "Tab selector title that shows the statistics for this month")
         case .thisYear:
-            return NSLocalizedString("This Year", comment: "Tab selector title that shows the statistics of this year")
+            return NSLocalizedString("This Year", comment: "Tab selector title that shows the statistics for this year")
         }
     }
 

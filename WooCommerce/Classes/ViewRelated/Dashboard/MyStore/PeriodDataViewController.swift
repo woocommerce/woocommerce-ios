@@ -82,11 +82,10 @@ class PeriodDataViewController: UIViewController {
     }
 
     private var summaryDateUpdated: String {
-        if let lastUpdatedDate = lastUpdatedDate {
-            return lastUpdatedDate.relativelyFormattedUpdateString
-        } else {
+        guard let lastUpdatedDate = lastUpdatedDate else {
             return ""
         }
+        return lastUpdatedDate.relativelyFormattedUpdateString
     }
 
     private var xAxisMinimum: String {

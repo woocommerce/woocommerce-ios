@@ -21,6 +21,7 @@
 		45AE58132306AC48001901E3 /* LineItemRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58122306AC48001901E3 /* LineItemRefund.swift */; };
 		45AE58162306ADDA001901E3 /* TaxRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58152306ADDA001901E3 /* TaxRefund.swift */; };
 		45AE58182306B37B001901E3 /* Refund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58172306B37B001901E3 /* Refund.swift */; };
+		45AE58212306F442001901E3 /* RefundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58202306F442001901E3 /* RefundTests.swift */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
 		74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */; };
@@ -277,6 +278,7 @@
 		45AE58122306AC48001901E3 /* LineItemRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LineItemRefund.swift; sourceTree = "<group>"; };
 		45AE58152306ADDA001901E3 /* TaxRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRefund.swift; sourceTree = "<group>"; };
 		45AE58172306B37B001901E3 /* Refund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refund.swift; sourceTree = "<group>"; };
+		45AE58202306F442001901E3 /* RefundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundTests.swift; sourceTree = "<group>"; };
 		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemoteTests.swift; sourceTree = "<group>"; };
@@ -557,6 +559,14 @@
 			path = Refund;
 			sourceTree = "<group>";
 		};
+		45AE581F2306F415001901E3 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				45AE58202306F442001901E3 /* RefundTests.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		74A1D26921189AC100931DFA /* Stats */ = {
 			isa = PBXGroup;
 			children = (
@@ -705,6 +715,7 @@
 				B518663220A0A2E800037A38 /* Settings */,
 				B5C6FCC620A32E3100A4F8E4 /* Extensions */,
 				B5C6FCCB20A34B5E00A4F8E4 /* Mapper */,
+				45AE581F2306F415001901E3 /* Models */,
 				B57B1E6521C9166F0046E764 /* Network */,
 				B518662820A09C5D00037A38 /* Remote */,
 				B519A3E82097A91800E2603A /* Requests */,
@@ -1420,6 +1431,7 @@
 				74C8F06E20EEC1E800B6EDC9 /* OrderNotesMapperTests.swift in Sources */,
 				74ABA1D5213F26B300FFAD30 /* TopEarnerStatsMapperTests.swift in Sources */,
 				74AB5B5121AF426D00859C12 /* SiteAPIRemoteTests.swift in Sources */,
+				45AE58212306F442001901E3 /* RefundTests.swift in Sources */,
 				B567AF2F20A0FB8F00AB6C62 /* AuthenticatedRequestTests.swift in Sources */,
 				B5C6FCCD20A34B8300A4F8E4 /* OrderListMapperTests.swift in Sources */,
 				B518663520A0A2E800037A38 /* Constants.swift in Sources */,

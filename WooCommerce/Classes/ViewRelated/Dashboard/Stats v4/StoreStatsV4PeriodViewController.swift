@@ -76,7 +76,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     /// Placeholder: Mockup Charts View
     ///
-    private lazy var placehoderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
+    private lazy var placeholderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
 
 
     // MARK: - Computed Properties
@@ -174,7 +174,7 @@ extension StoreStatsV4PeriodViewController {
     ///
     func displayGhostContent() {
         ensurePlaceholderIsVisible()
-        placehoderChartsView.startGhostAnimation()
+        placeholderChartsView.startGhostAnimation()
     }
 
     /// Removes the Placeholder Content.
@@ -182,20 +182,20 @@ extension StoreStatsV4PeriodViewController {
     /// placeholder animations from that spot!
     ///
     func removeGhostContent() {
-        placehoderChartsView.stopGhostAnimation()
-        placehoderChartsView.removeFromSuperview()
+        placeholderChartsView.stopGhostAnimation()
+        placeholderChartsView.removeFromSuperview()
     }
 
     /// Ensures the Placeholder Charts UI is onscreen.
     ///
     private func ensurePlaceholderIsVisible() {
-        guard placehoderChartsView.superview == nil else {
+        guard placeholderChartsView.superview == nil else {
             return
         }
 
-        placehoderChartsView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(placehoderChartsView)
-        view.pinSubviewToAllEdges(placehoderChartsView)
+        placeholderChartsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(placeholderChartsView)
+        view.pinSubviewToAllEdges(placeholderChartsView)
     }
 
 }

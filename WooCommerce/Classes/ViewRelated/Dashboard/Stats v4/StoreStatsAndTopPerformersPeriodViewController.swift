@@ -185,10 +185,16 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         // Top performers.
         let topPerformersPeriodView = topPerformersPeriodViewController.view!
         stackView.addArrangedSubview(topPerformersPeriodView)
+        stackView.addArrangedSubview(createBorderView())
+
+        // Empty padding view at the bottom.
+        let emptyView = UIView(frame: .zero)
+        emptyView.translatesAutoresizingMaskIntoConstraints = false
+        emptyView.backgroundColor = .clear
         NSLayoutConstraint.activate([
-            topPerformersPeriodView.heightAnchor.constraint(equalToConstant: 359.5),
-            topPerformersPeriodView.heightAnchor.constraint(greaterThanOrEqualToConstant: 359.5)
+            emptyView.heightAnchor.constraint(equalToConstant: 44),
             ])
+        stackView.addArrangedSubview(emptyView)
 
         childViewContrllers.forEach { childViewController in
             childViewController.didMove(toParent: self)

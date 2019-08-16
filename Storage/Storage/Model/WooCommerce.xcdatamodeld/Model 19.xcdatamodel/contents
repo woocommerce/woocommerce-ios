@@ -323,6 +323,7 @@
         <attribute name="plan" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="tagline" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="timezone" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="url" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="SiteSetting" representedClassName="SiteSetting" syncable="YES">
@@ -387,7 +388,7 @@
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
-        <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="150"/>
+        <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="165"/>
         <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="135"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>

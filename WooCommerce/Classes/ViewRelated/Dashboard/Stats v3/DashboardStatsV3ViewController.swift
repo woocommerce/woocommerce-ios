@@ -9,7 +9,7 @@ class DashboardStatsV3ViewController: UIViewController {
 
     // MARK: subviews
     //
-    var refreshControl: UIRefreshControl = {
+    private var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl(frame: .zero)
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         return refreshControl

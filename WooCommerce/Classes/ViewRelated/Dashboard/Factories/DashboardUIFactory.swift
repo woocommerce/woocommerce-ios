@@ -20,6 +20,10 @@ protocol DashboardUI: UIViewController {
 
 final class DashboardUIFactory {
     static func dashboardUI() -> DashboardUI {
-        return DashboardStatsV3ViewController(nibName: nil, bundle: nil)
+        if FeatureFlag.stats.enabled {
+            return StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
+        } else {
+            return DashboardStatsV3ViewController(nibName: nil, bundle: nil)
+        }
     }
 }

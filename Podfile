@@ -31,7 +31,7 @@ target 'WooCommerce' do
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
   pod 'WordPressShared', '~> 1.8.2'
   
-  pod 'WordPressUI', '~> 1.3.3'
+  pod 'WordPressUI', '~> 1.3.5-beta'
 
 
   # External Libraries

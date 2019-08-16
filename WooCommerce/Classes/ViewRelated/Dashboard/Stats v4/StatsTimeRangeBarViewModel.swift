@@ -9,7 +9,8 @@ private extension StatsTimeRangeV4 {
         case .thisWeek:
             let startDateString = dateFormatter.string(from: startDate)
             let endDateString = dateFormatter.string(from: endDate)
-            return String.localizedStringWithFormat(NSLocalizedString("%1$@-%2$@", comment: "Displays a date range for a stats interval"), startDateString, endDateString)
+            let format = NSLocalizedString("%1$@-%2$@", comment: "Displays a date range for a stats interval")
+            return String.localizedStringWithFormat(format, startDateString, endDateString)
         }
     }
 

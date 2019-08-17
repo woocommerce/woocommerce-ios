@@ -124,7 +124,7 @@ extension WPStyleGuide {
     class func appleLoginButton() -> UIControl {
         #if XCODE11
         if #available(iOS 13.0, *) {
-            let appleButton = ASAuthorizationAppleIDButton()
+            let appleButton = ASAuthorizationAppleIDButton(authorizationButtonType: .continue, authorizationButtonStyle: .black)
             appleButton.translatesAutoresizingMaskIntoConstraints = false
             appleButton.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.buttonMinHeight).isActive = true
             return appleButton

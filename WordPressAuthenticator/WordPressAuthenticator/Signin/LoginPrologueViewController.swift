@@ -66,7 +66,10 @@ class LoginPrologueViewController: LoginViewController {
             vc.selfHostedTapped = { [weak self] in
                 self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showSelfHostedLogin.rawValue, sender: self)
             }
-            
+            vc.appleTapped = { [weak self] in
+                self?.appleTapped()
+            }
+
             vc.modalPresentationStyle = .custom
         }
     }
@@ -110,4 +113,9 @@ class LoginPrologueViewController: LoginViewController {
         WordPressAuthenticator.track(.signupButtonTapped)
         performSegue(withIdentifier: NUXViewController.SegueIdentifier.showSignupMethod.rawValue, sender: self)
     }
+
+    private func appleTapped() {
+        print("Login Prologue: Apple tapped.")
+    }
+
 }

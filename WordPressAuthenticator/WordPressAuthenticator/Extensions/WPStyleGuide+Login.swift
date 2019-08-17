@@ -1,6 +1,7 @@
 import WordPressShared
 import WordPressUI
 import Gridicons
+import AuthenticationServices
 
 final class SubheadlineButton: UIButton {
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -16,7 +17,10 @@ final class SubheadlineButton: UIButton {
 extension WPStyleGuide {
 
     private struct Constants {
-        static let buttonMinHeight: CGFloat = 40.0
+        // This matches the button height in NUXButtonView.storyboard
+        static let buttonMinHeight: CGFloat = 50.0
+
+        static let textButtonMinHeight: CGFloat = 40.0
         static let googleIconOffset: CGFloat = -1.0
         static let domainsIconPaddingToRemove: CGFloat = 2.0
         static let domainsIconSize = CGSize(width: 18, height: 18)
@@ -112,6 +116,24 @@ extension WPStyleGuide {
         return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font)
     }
 
+    /// Creates a button for Apple Sign-in
+    ///
+    /// - Returns: A properly styled UIControl
+    ///
+    
+    class func appleLoginButton() -> UIControl {
+        #if XCODE11
+        if #available(iOS 13.0, *) {
+            let appleButton = ASAuthorizationAppleIDButton()
+            appleButton.translatesAutoresizingMaskIntoConstraints = false
+            appleButton.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.buttonMinHeight).isActive = true
+            return appleButton
+        }
+        #endif
+        
+        return UIControl()
+    }
+    
     /// Creates a button for Self-hosted Login
     ///
     /// - Returns: A properly styled UIButton
@@ -189,7 +211,7 @@ extension WPStyleGuide {
         // for the titleLabel's height.
         button.titleLabel?.topAnchor.constraint(equalTo: button.topAnchor, constant: Constants.verticalLabelSpacing).isActive = true
         button.titleLabel?.bottomAnchor.constraint(equalTo: button.bottomAnchor, constant: -Constants.verticalLabelSpacing).isActive = true
-        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.buttonMinHeight).isActive = true
+        button.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.textButtonMinHeight).isActive = true
 
 
         button.setAttributedTitle(normalString, for: .normal)

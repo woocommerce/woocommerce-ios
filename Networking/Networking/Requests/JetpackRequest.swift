@@ -137,7 +137,7 @@ private extension JetpackRequest {
         guard jetpackEncodesParametersInQuery == false else {
             return nil
         }
-        
+
         let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [])
         guard jsonData != nil else {return nil}
         return String(data: jsonData!, encoding: .utf8)

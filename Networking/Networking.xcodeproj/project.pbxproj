@@ -22,6 +22,7 @@
 		45AE58162306ADDA001901E3 /* TaxRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58152306ADDA001901E3 /* TaxRefund.swift */; };
 		45AE58182306B37B001901E3 /* Refund.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58172306B37B001901E3 /* Refund.swift */; };
 		45AE58212306F442001901E3 /* RefundTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58202306F442001901E3 /* RefundTests.swift */; };
+		45AE58232309D40F001901E3 /* OrderRefundMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE58222309D40F001901E3 /* OrderRefundMapper.swift */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
 		74002D6C2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */; };
@@ -279,6 +280,7 @@
 		45AE58152306ADDA001901E3 /* TaxRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxRefund.swift; sourceTree = "<group>"; };
 		45AE58172306B37B001901E3 /* Refund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refund.swift; sourceTree = "<group>"; };
 		45AE58202306F442001901E3 /* RefundTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundTests.swift; sourceTree = "<group>"; };
+		45AE58222309D40F001901E3 /* OrderRefundMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundMapper.swift; sourceTree = "<group>"; };
 		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemoteTests.swift; sourceTree = "<group>"; };
@@ -903,6 +905,7 @@
 				74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */,
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
 				748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */,
+				45AE58222309D40F001901E3 /* OrderRefundMapper.swift */,
 				45AE580A2301B0D1001901E3 /* OrderRefundsMapper.swift */,
 				74749B96224134FF005C4CF2 /* ProductMapper.swift */,
 				CE0A0F18223987DF0075ED8D /* ProductListMapper.swift */,
@@ -1278,6 +1281,7 @@
 				45AE58132306AC48001901E3 /* LineItemRefund.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B50A583921AD861700617455 /* APNSDevice.swift in Sources */,
+				45AE58232309D40F001901E3 /* OrderRefundMapper.swift in Sources */,
 				7426CA0D21AF27B9004E9FFC /* SiteAPIRemote.swift in Sources */,
 				B59325D4217E4206000B0E8E /* NoteBlock.swift in Sources */,
 				B557DA1A20979D66005962F4 /* Settings.swift in Sources */,

@@ -115,8 +115,8 @@ private extension JetpackRequestTests {
             return String()
         }
 
-        let parametersAsData = try! JSONEncoder().encode(request.parameters)
-        let parametersAsString = String(data: parametersAsData, encoding: .utf8)!
+        let parametersAsData = try? JSONSerialization.data(withJSONObject: request.parameters, options: [])
+        let parametersAsString = String(data: parametersAsData!, encoding: .utf8)!
         let parametersAsPercentEncoded = parametersAsString.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
         let ampersandAsPercentEncoded = "&".addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
         let methodAsPercentEncoded = String("method=" + request.method.rawValue.lowercased())
@@ -130,9 +130,9 @@ private extension JetpackRequestTests {
 
     /// Concatenates the specified collection of Parameters for the URLRequest's httpBody.
     ///
-    func concatenate(_ parameters: [String: String]) -> String {
+    func concatenate(_ parameters: [String: Any]) -> String {
         return parameters.reduce("") { (output, parameter) in
-            return output + "&" + parameter.key + "=" + parameter.value
+            return output + "&" + parameter.key + "=" + String(describing: parameter.value)
         }
     }
 }

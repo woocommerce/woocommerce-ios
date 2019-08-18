@@ -231,7 +231,7 @@ private extension StorePickerViewController {
 
     func refreshResults() {
         try? resultsController.performFetch()
-        WooAnalytics.shared.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
+        ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
         state = StorePickerState(sites: resultsController.fetchedObjects)
     }
 

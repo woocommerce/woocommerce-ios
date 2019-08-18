@@ -250,7 +250,7 @@ private extension SettingsViewController {
 private extension SettingsViewController {
 
     func logoutWasPressed() {
-        WooAnalytics.shared.track(.settingsLogoutTapped)
+        ServiceLocator.analytics.track(.settingsLogoutTapped)
         let messageUnformatted = NSLocalizedString(
             "Are you sure you want to log out of the account %@?",
             comment: "Alert message to confirm a user meant to log out."
@@ -260,12 +260,12 @@ private extension SettingsViewController {
 
         let cancelText = NSLocalizedString("Back", comment: "Alert button title - dismisses alert, which cancels the log out attempt")
         alertController.addActionWithTitle(cancelText, style: .cancel) { _ in
-            WooAnalytics.shared.track(.settingsLogoutConfirmation, withProperties: ["result": "negative"])
+            ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "negative"])
         }
 
         let logoutText = NSLocalizedString("Log Out", comment: "Alert button title - confirms and logs out the user")
         alertController.addDefaultActionWithTitle(logoutText) { _ in
-            WooAnalytics.shared.track(.settingsLogoutConfirmation, withProperties: ["result": "positive"])
+            ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "positive"])
             self.logOutUser()
         }
 
@@ -273,7 +273,7 @@ private extension SettingsViewController {
     }
 
     func switchStoreWasPressed() {
-        WooAnalytics.shared.track(.settingsSelectedStoreTapped)
+        ServiceLocator.analytics.track(.settingsSelectedStoreTapped)
         if let navigationController = navigationController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
@@ -281,22 +281,22 @@ private extension SettingsViewController {
     }
 
     func supportWasPressed() {
-        WooAnalytics.shared.track(.settingsContactSupportTapped)
+        ServiceLocator.analytics.track(.settingsContactSupportTapped)
         performSegue(withIdentifier: Segues.helpSupportSegue, sender: nil)
     }
 
     func privacyWasPressed() {
-        WooAnalytics.shared.track(.settingsPrivacySettingsTapped)
+        ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
         performSegue(withIdentifier: Segues.privacySegue, sender: nil)
     }
 
     func aboutWasPressed() {
-        WooAnalytics.shared.track(.settingsAboutLinkTapped)
+        ServiceLocator.analytics.track(.settingsAboutLinkTapped)
         performSegue(withIdentifier: Segues.aboutSegue, sender: nil)
     }
 
     func licensesWasPressed() {
-        WooAnalytics.shared.track(.settingsLicensesLinkTapped)
+        ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
         performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
     }
 
@@ -318,7 +318,7 @@ private extension SettingsViewController {
     }
 
     func weAreHiringWasPressed(url: URL) {
-        WooAnalytics.shared.track(.settingsWereHiringTapped)
+        ServiceLocator.analytics.track(.settingsWereHiringTapped)
 
         WebviewHelper.launch(url, with: self)
     }

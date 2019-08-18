@@ -87,7 +87,7 @@ private extension ShipmentProvidersViewController {
                                                                                     if let error = error {
                                                                                         self?.presentNotice(error)
                                                                                     }
-                                                                                    WooAnalytics.shared.track(.orderTrackingProvidersLoaded)
+                                                                                    ServiceLocator.analytics.track(.orderTrackingProvidersLoaded)
                                                                                     self?.footerSpinnerView.stopAnimating()
         }
 
@@ -335,7 +335,7 @@ private extension ShipmentProvidersViewController {
     }
 
     func addCustomProvider() {
-        WooAnalytics.shared.track(.orderShipmentTrackingCustomProviderSelected)
+        ServiceLocator.analytics.track(.orderShipmentTrackingCustomProviderSelected)
 
         let initialCustomProviderName = searchController.searchBar.text
         let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order,

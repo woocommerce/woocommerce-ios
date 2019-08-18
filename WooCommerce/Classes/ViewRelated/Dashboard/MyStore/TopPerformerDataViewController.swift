@@ -103,7 +103,7 @@ extension TopPerformerDataViewController {
             if let error = error {
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
             } else {
-                WooAnalytics.shared.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self.granularity.rawValue])
+                ServiceLocator.analytics.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self.granularity.rawValue])
             }
             onCompletion?(error)
         }
@@ -249,7 +249,7 @@ private extension TopPerformerDataViewController {
             isInitialLoad = false
             return
         }
-        WooAnalytics.shared.track(.dashboardTopPerformersDate, withProperties: ["range": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardTopPerformersDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }
 

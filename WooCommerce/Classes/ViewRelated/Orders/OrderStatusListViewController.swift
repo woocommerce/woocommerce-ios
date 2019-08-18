@@ -171,14 +171,14 @@ private extension OrderStatusListViewController {
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
         StoresManager.shared.dispatch(done)
-        WooAnalytics.shared.track(.orderStatusChange,
+        ServiceLocator.analytics.track(.orderStatusChange,
                                   withProperties: ["id": orderID,
                                                    "from": undoStatus,
                                                    "to": newStatus])
 
         displayOrderUpdatedNotice {
             StoresManager.shared.dispatch(undo)
-            WooAnalytics.shared.track(.orderStatusChange,
+            ServiceLocator.analytics.track(.orderStatusChange,
                                       withProperties: ["id": orderID,
                                                        "from": newStatus,
                                                        "to": undoStatus])
@@ -191,11 +191,11 @@ private extension OrderStatusListViewController {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-                WooAnalytics.shared.track(.orderStatusChangeSuccess)
+                ServiceLocator.analytics.track(.orderStatusChangeSuccess)
                 return
             }
 
-            WooAnalytics.shared.track(.orderStatusChangeFailed, withError: error)
+            ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
             DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
 
             self.displayErrorNotice(orderID: orderID)

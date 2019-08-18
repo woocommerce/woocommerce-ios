@@ -51,7 +51,7 @@ public extension TracksProvider {
     /// When a user opts-out, wipe data
     ///
     func clearUsers() {
-        guard WooAnalytics.shared.userHasOptedIn else {
+        guard ServiceLocator.analytics.userHasOptedIn else {
             // To be safe, nil out the anonymousUserID guid so a fresh one is regenerated
             UserDefaults.standard[.defaultAnonymousID] = nil
             UserDefaults.standard[.analyticsUsername] = nil

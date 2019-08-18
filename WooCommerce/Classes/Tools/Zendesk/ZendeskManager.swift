@@ -110,7 +110,7 @@ class ZendeskManager: NSObject {
         safariViewController.modalPresentationStyle = .pageSheet
         controller.present(safariViewController, animated: true, completion: nil)
 
-        WooAnalytics.shared.track(.supportHelpCenterViewed)
+        ServiceLocator.analytics.track(.supportHelpCenterViewed)
     }
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
@@ -122,7 +122,7 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            WooAnalytics.shared.track(.supportNewRequestViewed)
+            ServiceLocator.analytics.track(.supportNewRequestViewed)
 
             let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
@@ -139,7 +139,7 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            WooAnalytics.shared.track(.supportTicketListViewed)
+            ServiceLocator.analytics.track(.supportTicketListViewed)
 
             let requestConfig = self.createRequest(supportSourceTag: sourceTag)
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
@@ -159,7 +159,7 @@ class ZendeskManager: NSObject {
     /// Displays an alert allowing the user to change their Support email address.
     ///
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {
-        WooAnalytics.shared.track(.supportIdentityFormViewed)
+        ServiceLocator.analytics.track(.supportIdentityFormViewed)
         presentInController = controller
 
         // If the user hasn't already set a username, go ahead and ask for that too.
@@ -759,25 +759,25 @@ private extension ZendeskManager {
     @objc func zendeskNotification(_ notification: Notification) {
         switch notification.name.rawValue {
         case ZDKAPI_RequestSubmissionSuccess:
-            WooAnalytics.shared.track(.supportNewRequestCreated)
+            ServiceLocator.analytics.track(.supportNewRequestCreated)
         case ZDKAPI_RequestSubmissionError:
-            WooAnalytics.shared.track(.supportNewRequestFailed)
+            ServiceLocator.analytics.track(.supportNewRequestFailed)
         case ZDKAPI_UploadAttachmentSuccess:
-            WooAnalytics.shared.track(.supportNewRequestFileAttached)
+            ServiceLocator.analytics.track(.supportNewRequestFileAttached)
         case ZDKAPI_UploadAttachmentError:
-            WooAnalytics.shared.track(.supportNewRequestFileAttachmentFailed)
+            ServiceLocator.analytics.track(.supportNewRequestFileAttachmentFailed)
         case ZDKAPI_CommentSubmissionSuccess:
-            WooAnalytics.shared.track(.supportTicketUserReplied)
+            ServiceLocator.analytics.track(.supportTicketUserReplied)
         case ZDKAPI_CommentSubmissionError:
-            WooAnalytics.shared.track(.supportTicketUserReplyFailed)
+            ServiceLocator.analytics.track(.supportTicketUserReplyFailed)
         case ZDKAPI_RequestsError:
-            WooAnalytics.shared.track(.supportTicketListViewFailed)
+            ServiceLocator.analytics.track(.supportTicketListViewFailed)
         case ZDKAPI_CommentListSuccess:
-            WooAnalytics.shared.track(.supportTicketUserViewed)
+            ServiceLocator.analytics.track(.supportTicketUserViewed)
         case ZDKAPI_CommentListError:
-            WooAnalytics.shared.track(.supportTicketViewFailed)
+            ServiceLocator.analytics.track(.supportTicketViewFailed)
         case ZD_HC_SearchSuccess:
-            WooAnalytics.shared.track(.supportHelpCenterUserSearched)
+            ServiceLocator.analytics.track(.supportHelpCenterUserSearched)
         default:
             break
         }

@@ -328,7 +328,7 @@ extension OrdersViewController {
             return
         }
 
-        WooAnalytics.shared.track(.ordersListSearchTapped)
+        ServiceLocator.analytics.track(.ordersListSearchTapped)
         let searchViewController = OrderSearchViewController(storeID: storeID)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
@@ -336,7 +336,7 @@ extension OrdersViewController {
     }
 
     @IBAction func displayFiltersAlert() {
-        WooAnalytics.shared.track(.ordersListFilterTapped)
+        ServiceLocator.analytics.track(.ordersListFilterTapped)
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
 
@@ -359,7 +359,7 @@ extension OrdersViewController {
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        WooAnalytics.shared.track(.ordersListPulledToRefresh)
+        ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         syncOrderStatus()
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
@@ -373,9 +373,9 @@ extension OrdersViewController {
 private extension OrdersViewController {
 
     func didChangeFilter(newFilter: OrderStatus?) {
-        WooAnalytics.shared.track(.filterOrdersOptionSelected,
+        ServiceLocator.analytics.track(.filterOrdersOptionSelected,
                                   withProperties: ["status": newFilter?.slug ?? String()])
-        WooAnalytics.shared.track(.ordersListFilterOrSearch,
+        ServiceLocator.analytics.track(.ordersListFilterOrSearch,
                                   withProperties: ["filter": newFilter?.slug ?? String(),
                                                    "search": ""])
         // Display the Filter in the Title
@@ -450,7 +450,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
             } else {
-                WooAnalytics.shared.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
+                ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
             }
 
             self.transitionToResultsUpdatedState()
@@ -566,7 +566,7 @@ private extension OrdersViewController {
                 return
             }
 
-            WooAnalytics.shared.track(.orderShareStoreButtonTapped)
+            ServiceLocator.analytics.track(.orderShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 
@@ -602,7 +602,7 @@ private extension OrdersViewController {
     func displayRatingPrompt() {
         defer {
             if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                WooAnalytics.shared.track(wooEvent)
+                ServiceLocator.analytics.track(wooEvent)
             }
         }
 
@@ -719,7 +719,7 @@ extension OrdersViewController {
             return
         }
 
-        WooAnalytics.shared.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
+        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
                                                                "status": viewModel.order.statusKey])
         singleOrderViewController.viewModel = viewModel
     }

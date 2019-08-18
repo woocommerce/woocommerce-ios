@@ -261,7 +261,7 @@ private extension HelpAndSupportViewController {
             self.warnDeveloperIfNeeded()
 
             // Tracking when the dialog's "OK" button is pressed, not necessarily if the value changed.
-            WooAnalytics.shared.track(.supportIdentitySet)
+            ServiceLocator.analytics.track(.supportIdentitySet)
             self.tableView.reloadData()
         }
     }

@@ -286,7 +286,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     }
 
     private func appleTapped() {
-        print("Login Site Address: Apple tapped.")
+        AppleAuthenticator.sharedInstance.showFrom(viewController: self)
     }
 
     /// Whether the form can be submitted.

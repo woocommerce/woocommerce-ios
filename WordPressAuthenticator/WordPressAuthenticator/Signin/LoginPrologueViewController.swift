@@ -115,7 +115,7 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func appleTapped() {
-        print("Login Prologue: Apple tapped.")
+        AppleAuthenticator.sharedInstance.showFrom(viewController: self)
     }
 
 }

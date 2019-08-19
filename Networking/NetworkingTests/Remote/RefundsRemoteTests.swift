@@ -63,9 +63,9 @@ final class RefundsRemoteTests: XCTestCase {
     func testPartialRefundForSingleProductIncludingTax() {
         let remote = RefundsRemote(network: network)
         let expectation = self.expectation(description: "Full refund for single product including tax")
-        
+
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds", filename: "create-order-refund-response")
-        
+
         let itemRefund = LineItemRefund(itemID: "123", quantity: 1, refundTotal: "8.00", refundTax: [TaxRefund(taxIDLineItem: "789", amount: "2.00")])
         let refund = Refund(amount: "10.00", reason: "Product No Longer Needed", items: [itemRefund])
         remote.createRefund(for: sampleSiteID, by: sampleOrderID, refund: refund) { (orderRefund, error) in
@@ -73,10 +73,10 @@ final class RefundsRemoteTests: XCTestCase {
             XCTAssertNotNil(orderRefund)
             expectation.fulfill()
         }
-        
+
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-    
+
     ///Verifies that createRefund properly parses the `create-manual-order-refund-response` sample response.
     ///
     func testManualRefundForSingleProductIncludingTax() {
@@ -84,7 +84,7 @@ final class RefundsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Partial refund for single product including tax")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds", filename: "create-manual-order-refund-response")
-        
+
         let itemRefund = LineItemRefund(itemID: "123", quantity: 1, refundTotal: "8.00", refundTax: [TaxRefund(taxIDLineItem: "789", amount: "2.00")])
         let refund = Refund(amount: "10.00", reason: "Product No Longer Needed", apiRefund: false, items: [itemRefund])
         remote.createRefund(for: sampleSiteID, by: sampleOrderID, refund: refund) { (orderRefund, error) in
@@ -95,13 +95,13 @@ final class RefundsRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-    
+
     /// Verifies that createRefund properly relays Networking Layer errors.
     ///
     func testPartialRefundForSingleProductIncludingTaxRelaysNetwokingErrors() {
         let remote = RefundsRemote(network: network)
         let expectation = self.expectation(description: "Partial refund for single product including tax")
-        
+
         let itemRefund = LineItemRefund(itemID: "123", quantity: 1, refundTotal: "8.00", refundTax: [TaxRefund(taxIDLineItem: "789", amount: "2.00")])
         let refund = Refund(amount: "10.00", reason: "Product No Longer Needed", items: [itemRefund])
         remote.createRefund(for: sampleSiteID, by: sampleOrderID, refund: refund) { (orderRefund, error) in
@@ -109,7 +109,7 @@ final class RefundsRemoteTests: XCTestCase {
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
-        
+
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }

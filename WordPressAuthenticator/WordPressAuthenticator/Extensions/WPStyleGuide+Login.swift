@@ -149,7 +149,7 @@ extension WPStyleGuide {
             
             let attrStrNormal = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonColor)
             let attrStrHighlight = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonHighlightColor)
-            let font = WPStyleGuide.mediumWeightFont(forStyle: .caption2)
+            let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
             
             button = textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: alignment)
         } else {

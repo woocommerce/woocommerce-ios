@@ -328,7 +328,6 @@
 		D8149F542251CFE60006A245 /* EditableOrderTrackingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D8149F522251CFE50006A245 /* EditableOrderTrackingTableViewCell.xib */; };
 		D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8149F552251EE300006A245 /* UITextField+Helpers.swift */; };
 		D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */; };
-		D8174F0B22EB62B60024E762 /* MockupAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */; };
 		D817585E22BB5E8700289CFE /* OrderEmailComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */; };
 		D817586022BB614A00289CFE /* OrderMessageComposer.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817585F22BB614A00289CFE /* OrderMessageComposer.swift */; };
 		D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D817586122BB64C300289CFE /* OrderDetailsNotices.swift */; };
@@ -365,6 +364,7 @@
 		D8736B5722EF53A100A14A29 /* OrdersBadgeController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5622EF53A100A14A29 /* OrdersBadgeController.swift */; };
 		D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B5922F07D7100A14A29 /* MainTabViewModel.swift */; };
 		D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8736B7422F1FE1600A14A29 /* BadgeLabel.swift */; };
+		D88D5A3B230B5D63007B6E01 /* MockupAnalyticsProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */; };
 		D89E0C31226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D89E0C30226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift */; };
 		D8A8C4F32268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */; };
 		D8AB131E225DC25F002BB5D1 /* MockOrders.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8AB131D225DC25F002BB5D1 /* MockOrders.swift */; };
@@ -910,6 +910,7 @@
 		746791642108D853007CF1DC /* Mockups */ = {
 			isa = PBXGroup;
 			children = (
+				746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */,
 				B555531021B57E6F00449E71 /* MockupApplicationAdapter.swift */,
 				B53A569C21123EEB000776C9 /* MockupStorage.swift */,
 				B53A56A12112470C000776C9 /* MockupStorage+Sample.swift */,
@@ -924,7 +925,6 @@
 		747AA0872107CE270047A89B /* Analytics */ = {
 			isa = PBXGroup;
 			children = (
-				746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */,
 				CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */,
 				74213449210A323C00C13890 /* WooAnalyticsStat.swift */,
 				747AA0882107CEC60047A89B /* AnalyticsProvider.swift */,
@@ -2099,7 +2099,6 @@
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
-				D8174F0B22EB62B60024E762 /* MockupAnalyticsProvider.swift in Sources */,
 				D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
@@ -2351,6 +2350,7 @@
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
 				D8C11A6222E24C4A00D4A88D /* PaymentTableViewCellTests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
+				D88D5A3B230B5D63007B6E01 /* MockupAnalyticsProvider.swift in Sources */,
 				B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */,
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,

@@ -209,7 +209,7 @@
                                                 <accessibilityTraits key="traits" notEnabled="YES"/>
                                             </accessibility>
                                         </view>
-                                        <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="fg2-ey-bVn" userLabel="Empty data view">
+                                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="fg2-ey-bVn" userLabel="Empty data view">
                                             <rect key="frame" x="152.5" y="235.5" width="42" height="38.5"/>
                                             <subviews>
                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="5uh-zy-gDZ">

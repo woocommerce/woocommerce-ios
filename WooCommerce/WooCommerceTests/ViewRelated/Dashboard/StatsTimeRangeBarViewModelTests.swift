@@ -14,7 +14,7 @@ class StatsTimeRangeBarViewModelTests: XCTestCase {
                                                    timeRange: .today,
                                                    timezone: timezone)
         let formatter = DateFormatter()
-        formatter.setLocalizedDateFormatFromTemplate("MMM d")
+        formatter.setLocalizedDateFormatFromTemplate("EEEE, MMM d")
         formatter.timeZone = timezone
         let expectedText = formatter.string(from: startDate)
         XCTAssertEqual(viewModel.timeRangeText, expectedText)

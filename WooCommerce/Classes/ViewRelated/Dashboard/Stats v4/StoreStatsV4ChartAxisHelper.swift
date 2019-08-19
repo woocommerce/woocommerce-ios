@@ -29,7 +29,8 @@ class StoreStatsV4ChartAxisHelper {
 
         var dateLabelText = [String]()
 
-        let calendar = Calendar.current
+        var calendar = Calendar.current
+        calendar.timeZone = siteTimezone
         var latestMonth: Int? = nil
         let dayOfMonthDateFormatter = DateFormatter.Charts.chartAxisDayOfMonthFormatter
         for date in dates {

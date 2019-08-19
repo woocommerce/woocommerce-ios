@@ -138,8 +138,6 @@ private extension JetpackRequest {
             return nil
         }
 
-        let jsonData = try? JSONSerialization.data(withJSONObject: parameters, options: [])
-        guard jsonData != nil else {return nil}
-        return String(data: jsonData!, encoding: .utf8)
+        return parameters.toJSONEncoded()
     }
 }

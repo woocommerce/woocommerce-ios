@@ -33,6 +33,7 @@ class StoreStatsV4ChartAxisHelper {
         calendar.timeZone = siteTimezone
         var latestMonth: Int? = nil
         let dayOfMonthDateFormatter = DateFormatter.Charts.chartAxisDayOfMonthFormatter
+        dayOfMonthDateFormatter.timeZone = siteTimezone
         for date in dates {
             let month = calendar.component(.month, from: date)
             if month != latestMonth {

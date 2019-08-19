@@ -29,7 +29,7 @@ private extension StatsTimeRangeBarView {
         label.setContentCompressionResistancePriority(.required, for: .vertical)
         pinSubviewToAllEdges(label, insets: Constants.labelInsets)
 
-        label.font = StyleManager.subheadlineBoldFont
+        label.font = StyleManager.headlineSemiBold
         label.textColor = StyleManager.defaultTextColor
     }
 }

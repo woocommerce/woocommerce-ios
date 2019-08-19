@@ -5,11 +5,7 @@ import Yosemite
 
 // MARK: - StoresManager
 //
-class StoresManager: Stores {
-
-//    /// Shared Instance
-//    ///
-//    static var shared = StoresManager(sessionManager: .standard)
+final class StoresManager: Stores {
 
     private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
 

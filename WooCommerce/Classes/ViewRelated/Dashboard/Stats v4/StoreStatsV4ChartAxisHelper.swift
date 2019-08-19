@@ -8,7 +8,7 @@ class StoreStatsV4ChartAxisHelper {
         case .thisYear:
             labelCount = 4
         case .today:
-            labelCount = 6
+            labelCount = 5
         case .thisMonth:
             labelCount = 6
         case .thisWeek:

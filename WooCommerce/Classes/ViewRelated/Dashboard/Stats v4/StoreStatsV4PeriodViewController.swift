@@ -31,7 +31,16 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Private Properties
     private let timeRange: StatsTimeRangeV4
-    private var orderStatsIntervals: [OrderStatsV4Interval] = []
+    private var orderStatsIntervals: [OrderStatsV4Interval] = [] {
+        didSet {
+            let helper = StoreStatsV4ChartAxisHelper()
+            orderStatsIntervalLabels = helper.generateLabelText(for: orderStatsIntervals,
+                                                                timeRange: timeRange,
+                                                                siteTimezone: siteTimezone)
+        }
+    }
+    private var orderStatsIntervalLabels: [String] = []
+
     private var orderStats: OrderStatsV4? {
         return orderStatsResultsController.fetchedObjects.first
     }
@@ -341,6 +350,12 @@ private extension StoreStatsV4PeriodViewController {
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 
+    func updateChartXAxisLabelCount(xAxis: XAxis, timeRange: StatsTimeRangeV4) {
+        let helper = StoreStatsV4ChartAxisHelper()
+        let labelCount = helper.labelCount(timeRange: timeRange)
+        xAxis.setLabelCount(labelCount, force: false)
+    }
+
     func updateUI(hasRevenue: Bool) {
         noRevenueView.isHidden = hasRevenue
         updateBarChartAxisUI(hasRevenue: hasRevenue)
@@ -396,8 +411,7 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
         }
 
         if axis is XAxis {
-            let item = orderStatsIntervals[Int(value)]
-            return formattedAxisPeriodString(for: item)
+            return orderStatsIntervalLabels[Int(value)]
         } else {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis
@@ -575,6 +589,7 @@ private extension StoreStatsV4PeriodViewController {
             barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
         }
         updateChartAccessibilityValues()
+        updateChartXAxisLabelCount(xAxis: barChartView.xAxis, timeRange: timeRange)
 
         updateUI(hasRevenue: hasRevenue())
     }

@@ -203,18 +203,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        StoresManager.shared.authenticate(credentials: .init(authToken: wpcom.authToken))
+        ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in
             if let account = account {
                 let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
-                StoresManager.shared
+                ServiceLocator.stores
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)
             } else {
-                StoresManager.shared.synchronizeEntities(onCompletion: onCompletion)
+                ServiceLocator.stores.synchronizeEntities(onCompletion: onCompletion)
             }
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Tracks a given Analytics Event.

@@ -103,7 +103,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
         ensureGhostContentIsDisplayed()
 
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
@@ -174,7 +174,7 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
             }
         }
-        StoresManager.shared.dispatch(loadSiteAction)
+        ServiceLocator.stores.dispatch(loadSiteAction)
     }
 
     func showSpinner(shouldShowSpinner: Bool) {
@@ -317,7 +317,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                     onCompletion?(error)
         })
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncSiteVisitStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
@@ -330,7 +330,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncTopEarnersStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
@@ -348,7 +348,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -388,7 +388,7 @@ private extension StoreStatsAndTopPerformersViewController {
 //
 private extension StoreStatsAndTopPerformersViewController {
     func trackStatsLoaded(for granularity: StatsGranularityV4) {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 

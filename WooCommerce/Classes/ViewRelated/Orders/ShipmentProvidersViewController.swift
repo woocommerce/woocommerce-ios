@@ -76,7 +76,7 @@ private extension ShipmentProvidersViewController {
     ///
     func fetchGroups() {
         footerSpinnerView.startAnimating()
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
@@ -91,7 +91,7 @@ private extension ShipmentProvidersViewController {
                                                                                     self?.footerSpinnerView.stopAnimating()
         }
 
-        StoresManager.shared.dispatch(loadGroupsAction)
+        ServiceLocator.stores.dispatch(loadGroupsAction)
     }
 }
 

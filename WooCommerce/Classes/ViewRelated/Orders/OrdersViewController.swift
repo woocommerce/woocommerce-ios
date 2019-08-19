@@ -199,12 +199,12 @@ private extension OrdersViewController {
         // this will also fire upon logging out, when the account
         // is set to nil. So let's protect against multi-threaded
         // access attempts if the account is indeed nil.
-        guard StoresManager.shared.isAuthenticated,
-            StoresManager.shared.needsDefaultStore == false else {
+        guard ServiceLocator.stores.isAuthenticated,
+            ServiceLocator.stores.needsDefaultStore == false else {
                 return
         }
 
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }
 
     /// Setup: Navigation Item
@@ -324,7 +324,7 @@ extension OrdersViewController {
 extension OrdersViewController {
 
     @IBAction func displaySearchOrders() {
-        guard let storeID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let storeID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
@@ -401,7 +401,7 @@ private extension OrdersViewController {
         }
 
         let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Reset the current status filter if needed (e.g. when changing stores and the currently
@@ -431,7 +431,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(false)
             return
         }
@@ -457,11 +457,11 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             onCompletion?(error == nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncOrderStatus(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -477,7 +477,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -559,7 +559,7 @@ private extension OrdersViewController {
             guard let `self` = self else {
                 return
             }
-            guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                 return
             }
             guard let url = URL(string: site.url) else {

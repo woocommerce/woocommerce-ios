@@ -309,7 +309,7 @@ extension ShippingProvidersViewModel {
 private enum ResultsControllerConstants {
     static let predicateForAllProviders =
         NSPredicate(format: "siteID == %lld",
-                    StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+                    ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     static let groupNameKeyPath =
         #keyPath(StorageShipmentTrackingProvider.group.name)
     static let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)

@@ -292,7 +292,7 @@ extension OrderDetailsViewModel {
             onCompletion?(order, nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
@@ -311,7 +311,7 @@ extension OrderDetailsViewModel {
                                                                         onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
@@ -329,7 +329,7 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
@@ -344,7 +344,7 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
@@ -377,7 +377,7 @@ extension OrderDetailsViewModel {
 
         }
 
-        StoresManager.shared.dispatch(deleteTrackingAction)
+        ServiceLocator.stores.dispatch(deleteTrackingAction)
     }
 }
 

@@ -21,7 +21,7 @@ struct PushNotificationsConfiguration {
 
     /// Reference to the StoresManager that should receive any Yosemite Actions.
     ///
-    var storesManager: StoresManager {
+    var storesManager: Stores {
         return storesManagerClosure()
     }
 
@@ -47,7 +47,7 @@ struct PushNotificationsConfiguration {
 
     /// StoresManager Closure: Returns a reference to StoresManager
     ///
-    private let storesManagerClosure: () -> StoresManager
+    private let storesManagerClosure: () -> Stores
 
     /// SupportManagerAdapter Closure: Returns a reference to the SupportManagerAdapter
     ///
@@ -64,7 +64,7 @@ struct PushNotificationsConfiguration {
     ///
     init(application: @autoclosure @escaping () -> ApplicationAdapter,
          defaults: @autoclosure @escaping () -> UserDefaults,
-         storesManager: @autoclosure @escaping () -> StoresManager,
+         storesManager: @autoclosure @escaping () -> Stores,
          supportManager: @autoclosure @escaping () -> SupportManagerAdapter,
          userNotificationsCenter: @autoclosure @escaping () -> UserNotificationsCenterAdapter) {
 
@@ -86,7 +86,7 @@ extension PushNotificationsConfiguration {
     static var `default`: PushNotificationsConfiguration {
         return PushNotificationsConfiguration(application: UIApplication.shared,
                                               defaults: .standard,
-                                              storesManager: .shared,
+                                              storesManager: ServiceLocator.stores,
                                               supportManager: ZendeskManager.shared,
                                               userNotificationsCenter: UNUserNotificationCenter.current())
     }

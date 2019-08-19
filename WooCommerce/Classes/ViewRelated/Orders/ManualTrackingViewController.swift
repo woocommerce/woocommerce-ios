@@ -497,7 +497,7 @@ private extension ManualTrackingViewController {
                                                             self?.dismiss()
         }
 
-        StoresManager.shared.dispatch(addTrackingAction)
+        ServiceLocator.stores.dispatch(addTrackingAction)
     }
 
     func addCustomTracking() {
@@ -544,7 +544,7 @@ private extension ManualTrackingViewController {
                                                         self?.dismiss()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
 
     }
 

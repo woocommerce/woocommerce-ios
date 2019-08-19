@@ -5,11 +5,11 @@ import Yosemite
 
 // MARK: - StoresManager
 //
-class StoresManager {
+class StoresManager: Stores {
 
-    /// Shared Instance
-    ///
-    static var shared = StoresManager(sessionManager: .standard)
+//    /// Shared Instance
+//    ///
+//    static var shared = StoresManager(sessionManager: .standard)
 
     private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
 
@@ -90,7 +90,7 @@ class StoresManager {
     /// Switches the internal state to Authenticated.
     ///
     @discardableResult
-    func authenticate(credentials: Credentials) -> StoresManager {
+    func authenticate(credentials: Credentials) -> Stores {
         state = AuthenticatedState(credentials: credentials)
         sessionManager.defaultCredentials = credentials
 
@@ -100,7 +100,7 @@ class StoresManager {
     /// Synchronizes all of the Session's Entities.
     ///
     @discardableResult
-    func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> StoresManager {
+    func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> Stores {
         let group = DispatchGroup()
 
         group.enter()
@@ -142,7 +142,7 @@ class StoresManager {
     /// Switches the state to a Deauthenticated one.
     ///
     @discardableResult
-    func deauthenticate() -> StoresManager {
+    func deauthenticate() -> Stores {
         state = DeauthenticatedState()
 
         sessionManager.reset()

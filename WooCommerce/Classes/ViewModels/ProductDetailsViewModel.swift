@@ -69,7 +69,7 @@ final class ProductDetailsViewModel {
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
         let storageManager = AppDelegate.shared.storageManager
 
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.product.rawValue)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
 
@@ -745,7 +745,7 @@ extension ProductDetailsViewModel {
             onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

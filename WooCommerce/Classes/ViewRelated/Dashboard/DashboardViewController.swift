@@ -58,7 +58,7 @@ private extension DashboardViewController {
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
-        title = StoresManager.shared.sessionManager.defaultSite?.name ?? myStore
+        title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? myStore
         tabBarItem.title = myStore
     }
 
@@ -133,7 +133,7 @@ extension DashboardViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        guard isViewLoaded, StoresManager.shared.isAuthenticated == false else {
+        guard isViewLoaded, ServiceLocator.stores.isAuthenticated == false else {
             return
         }
 

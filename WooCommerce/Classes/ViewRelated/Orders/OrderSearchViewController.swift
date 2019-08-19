@@ -41,7 +41,7 @@ class OrderSearchViewController: UIViewController {
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -296,7 +296,7 @@ private extension OrderSearchViewController {
         }
 
         transitionToSyncingState()
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
         ServiceLocator.analytics.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
     }
 }

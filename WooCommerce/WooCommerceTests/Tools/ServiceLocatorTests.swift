@@ -12,4 +12,14 @@ final class ServiceLocatorTests: XCTestCase {
 
         XCTAssertTrue(analytics is WooAnalytics)
     }
+
+    func testServiceLocatorProvidesStores() {
+        XCTAssertNotNil(ServiceLocator.stores)
+    }
+
+    func testAnalyticsDefaultsToStoresManager() {
+        let stores = ServiceLocator.stores
+
+        XCTAssertTrue(stores is StoresManager)
+    }
 }

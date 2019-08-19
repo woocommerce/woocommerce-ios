@@ -10,7 +10,7 @@ final class OrderStatusListViewController: UIViewController {
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -170,14 +170,14 @@ private extension OrderStatusListViewController {
         let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: newStatus)
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
-        StoresManager.shared.dispatch(done)
+        ServiceLocator.stores.dispatch(done)
         ServiceLocator.analytics.track(.orderStatusChange,
                                   withProperties: ["id": orderID,
                                                    "from": undoStatus,
                                                    "to": newStatus])
 
         displayOrderUpdatedNotice {
-            StoresManager.shared.dispatch(undo)
+            ServiceLocator.stores.dispatch(undo)
             ServiceLocator.analytics.track(.orderStatusChange,
                                       withProperties: ["id": orderID,
                                                        "from": newStatus,

@@ -6,7 +6,7 @@ final class SiteCountry {
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
         let storageManager = AppDelegate.shared.storageManager
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let settingCountryPredicate = NSPredicate(format: "settingID ==[c] %@", Constants.countryKey)
 
         let compoundPredicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingCountryPredicate])

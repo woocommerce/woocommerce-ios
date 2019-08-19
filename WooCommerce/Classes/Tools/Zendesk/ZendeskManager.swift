@@ -189,7 +189,7 @@ class ZendeskManager: NSObject {
     ///
     func getTags(supportSourceTag: String?) -> [String] {
         var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
-        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return tags
         }
 
@@ -387,10 +387,10 @@ private extension ZendeskManager {
     }
 
     func getUserInformationIfAvailable() {
-        userEmail = StoresManager.shared.sessionManager.defaultAccount?.email
-        userName = StoresManager.shared.sessionManager.defaultAccount?.username
+        userEmail = ServiceLocator.stores.sessionManager.defaultAccount?.email
+        userName = ServiceLocator.stores.sessionManager.defaultAccount?.username
 
-        if let displayName = StoresManager.shared.sessionManager.defaultAccount?.displayName,
+        if let displayName = ServiceLocator.stores.sessionManager.defaultAccount?.displayName,
             !displayName.isEmpty {
             userName = displayName
         }
@@ -554,7 +554,7 @@ private extension ZendeskManager {
     }
 
     func getCurrentSiteDescription() -> String {
-        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return String()
         }
 

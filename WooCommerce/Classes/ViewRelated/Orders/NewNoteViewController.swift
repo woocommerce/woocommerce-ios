@@ -72,7 +72,7 @@ class NewNoteViewController: UIViewController {
             self?.dismiss(animated: true, completion: nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

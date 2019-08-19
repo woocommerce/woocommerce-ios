@@ -69,7 +69,7 @@ class PrivacySettingsViewController: UIViewController {
 private extension PrivacySettingsViewController {
 
     func loadAccountSettings(completion: (()-> Void)? = nil) {
-        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
             return
         }
 
@@ -87,7 +87,7 @@ private extension PrivacySettingsViewController {
             completion?()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -260,7 +260,7 @@ private extension PrivacySettingsViewController {
     func collectInfoWasUpdated(newValue: Bool) {
         let userOptedOut = !newValue
 
-        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
             return
         }
 
@@ -274,7 +274,7 @@ private extension PrivacySettingsViewController {
                 return
             }
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
 
         // This event will only report if the user has turned tracking back on
         ServiceLocator.analytics.track(.settingsCollectInfoToggled)

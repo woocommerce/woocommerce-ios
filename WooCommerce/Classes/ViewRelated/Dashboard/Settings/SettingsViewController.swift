@@ -21,13 +21,13 @@ class SettingsViewController: UIViewController {
     /// Main Account's displayName
     ///
     private var accountName: String {
-        return StoresManager.shared.sessionManager.defaultAccount?.displayName ?? String()
+        return ServiceLocator.stores.sessionManager.defaultAccount?.displayName ?? String()
     }
 
     /// Main Site's URL
     ///
     private var siteUrl: String {
-        let urlAsString = StoresManager.shared.sessionManager.defaultSite?.url as NSString?
+        let urlAsString = ServiceLocator.stores.sessionManager.defaultSite?.url as NSString?
         return urlAsString?.hostname() ?? String()
     }
 
@@ -313,7 +313,7 @@ private extension SettingsViewController {
     }
 
     func logOutUser() {
-        StoresManager.shared.deauthenticate()
+        ServiceLocator.stores.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
     }
 

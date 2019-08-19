@@ -160,7 +160,7 @@ private extension NotificationDetailsViewController {
             onCompletion()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -395,7 +395,7 @@ private extension NotificationDetailsViewController {
                 ServiceLocator.analytics.track(.notificationReviewActionSuccess)
                 NotificationDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
                     ServiceLocator.analytics.track(.notificationReviewActionUndo)
-                    StoresManager.shared.dispatch(undo)
+                    ServiceLocator.stores.dispatch(undo)
                 })
                 return
             }
@@ -407,7 +407,7 @@ private extension NotificationDetailsViewController {
             return
         }
 
-        StoresManager.shared.dispatch(done)
+        ServiceLocator.stores.dispatch(done)
         navigationController?.popViewController(animated: true)
     }
 

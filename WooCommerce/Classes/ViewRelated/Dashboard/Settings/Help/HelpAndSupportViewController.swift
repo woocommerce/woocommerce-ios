@@ -23,7 +23,7 @@ class HelpAndSupportViewController: UIViewController {
         }
 
         // If no preferred ZD email exists, try the account email
-        if let mainEmail = StoresManager.shared.sessionManager.defaultAccount?.email {
+        if let mainEmail = ServiceLocator.stores.sessionManager.defaultAccount?.email {
             return mainEmail
         }
 

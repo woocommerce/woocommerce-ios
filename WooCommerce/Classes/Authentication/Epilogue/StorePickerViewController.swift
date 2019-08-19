@@ -196,7 +196,7 @@ private extension StorePickerViewController {
     }
 
     func setupAccountHeader() {
-        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
             return
         }
 
@@ -262,7 +262,7 @@ extension StorePickerViewController {
     /// Runs whenever the application is about to terminate.
     ///
     @objc func applicationTerminating() {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 
@@ -270,7 +270,7 @@ extension StorePickerViewController {
         // was never selected so force the user to go through the auth flow again.
         //
         // For more deets, see: https://github.com/woocommerce/woocommerce-ios/issues/466
-        StoresManager.shared.deauthenticate()
+        ServiceLocator.stores.deauthenticate()
     }
 }
 
@@ -290,14 +290,14 @@ private extension StorePickerViewController {
         }
 
         // If a site address was passed in credentials, select it
-        if let siteAddress = StoresManager.shared.sessionManager.defaultCredentials?.siteAddress,
+        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
             let site = sites.filter({ $0.url == siteAddress }).first {
             currentlySelectedSite = site
             return
         }
 
         // If there is a defaultSite already set, select it
-        if let site = StoresManager.shared.sessionManager.defaultSite {
+        if let site = ServiceLocator.stores.sessionManager.defaultSite {
             currentlySelectedSite = site
             return
         }
@@ -362,11 +362,11 @@ private extension StorePickerViewController {
     /// Re-initializes the Login Flow, forcing a logout. This may be required if the WordPress.com Account has no Stores available.
     ///
     func restartAuthentication() {
-        guard StoresManager.shared.needsDefaultStore, let navigationController = navigationController else {
+        guard ServiceLocator.stores.needsDefaultStore, let navigationController = navigationController else {
             return
         }
 
-        StoresManager.shared.deauthenticate()
+        ServiceLocator.stores.deauthenticate()
 
         let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
         navigationController.setViewControllers([loginViewController], animated: true)

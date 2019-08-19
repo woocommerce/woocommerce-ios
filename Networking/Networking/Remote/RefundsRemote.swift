@@ -8,7 +8,7 @@ public final class RefundsRemote: Remote {
     /// Retrieves a specific list of `OrderRefunds`s by `orderID`.
     ///
     /// - Parameters:
-    ///     - siteID: Site for which we'll fetch remote orders.
+    ///     - siteID: Site for which we'll fetch remote order refunds.
     ///     - orderID: Unique identifier for the resource "order" which you are searching
     ///                 for.
     ///     - context: view or edit. Scope under which the request is made;
@@ -31,6 +31,25 @@ public final class RefundsRemote: Remote {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = OrderRefundsMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Create a refund by `orderID`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll emit a refund.
+    ///     - orderID: Unique identifier for the resource "order" for which you are emitting a refund.
+    ///     - refund: The Refund model used to create the custom entity for the request.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func createRefund(for siteID: Int,
+                                 by orderID: Int,
+                                 refund: Refund,
+                                 completion: @escaping (OrderRefund?, Error?) -> Void) {
+        let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: refund.toDictionary())
+        let mapper = OrderRefundMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

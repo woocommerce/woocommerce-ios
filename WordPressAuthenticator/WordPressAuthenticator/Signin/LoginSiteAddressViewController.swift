@@ -277,11 +277,18 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             vc.googleTapped = { [weak self] in
                 self?.performSegue(withIdentifier: .showGoogle, sender: self)
             }
+            vc.appleTapped = { [weak self] in
+                self?.appleTapped()
+            }
             
             vc.modalPresentationStyle = .custom
         }
     }
-    
+
+    private func appleTapped() {
+        print("Login Site Address: Apple tapped.")
+    }
+
     /// Whether the form can be submitted.
     ///
     @objc func canSubmit() -> Bool {
@@ -321,7 +328,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             validateForm()
         }
     }
-
 
     @IBAction func handleSubmitButtonTapped(_ sender: UIButton) {
         validateForm()

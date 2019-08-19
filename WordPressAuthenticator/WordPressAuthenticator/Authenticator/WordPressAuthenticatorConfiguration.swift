@@ -56,6 +56,10 @@ public struct WordPressAuthenticatorConfiguration {
     /// and verified.
     ///
     let showLoginOptionsFromSiteAddress: Bool
+    
+    /// Flag indicating if the Sign In With Apple option should be displayed.
+    ///
+    let enableSignInWithApple: Bool
 
     /// Designated Initializer
     ///
@@ -70,7 +74,8 @@ public struct WordPressAuthenticatorConfiguration {
                  googleLoginScheme: String,
                  userAgent: String,
                  showNewLoginFlow: Bool = false,
-                 showLoginOptionsFromSiteAddress: Bool = false) {
+                 showLoginOptionsFromSiteAddress: Bool = false,
+                 enableSignInWithApple: Bool = false) {
 
         self.wpcomClientId = wpcomClientId
         self.wpcomSecret = wpcomSecret
@@ -84,5 +89,6 @@ public struct WordPressAuthenticatorConfiguration {
         self.userAgent = userAgent
         self.showNewLoginFlow = showNewLoginFlow
         self.showLoginOptionsFromSiteAddress = showLoginOptionsFromSiteAddress
+        self.enableSignInWithApple = enableSignInWithApple
     }
 }

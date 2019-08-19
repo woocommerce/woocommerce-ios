@@ -1,6 +1,7 @@
 2.6
 -----
 - bugfix: 9+ orders in the orders badge text is now easier to read
+- bugfix: prevents a potential edge case where the login screen could be dismissed in a future version of iOS.
 
 2.5
 -----

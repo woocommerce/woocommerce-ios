@@ -34,7 +34,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
     private var orderStatsIntervals: [OrderStatsV4Interval] = [] {
         didSet {
             let helper = StoreStatsV4ChartAxisHelper()
-            orderStatsIntervalLabels = helper.generateLabelText(for: orderStatsIntervals,
+            let intervalDates = orderStatsIntervals.map({ $0.dateStart() })
+            orderStatsIntervalLabels = helper.generateLabelText(for: intervalDates,
                                                                 timeRange: timeRange,
                                                                 siteTimezone: siteTimezone)
         }

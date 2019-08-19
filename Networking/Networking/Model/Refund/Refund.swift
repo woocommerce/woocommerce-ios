@@ -28,14 +28,14 @@ public struct Refund {
     }
 
     public func toDictionary() -> [String: Any] {
-        var dict: [String: Any] = ["amount": amount, "api_refund": apiRefund]
+        var dict: [String: Any] = [ParameterKey.amount: amount, ParameterKey.apiRefund: apiRefund]
 
         if reason != nil {
-            dict["reason"] = reason
+            dict[ParameterKey.reason] = reason
         }
 
         if items != nil {
-            dict["line_items"] = Dictionary(uniqueKeysWithValues: items!.map { ($0.itemID, $0.toDictionary()) })
+            dict[ParameterKey.line_items] = Dictionary(uniqueKeysWithValues: items!.map { ($0.itemID, $0.toDictionary()) })
         }
         return dict
     }
@@ -54,5 +54,16 @@ extension Refund: Comparable {
 
     public static func < (lhs: Refund, rhs: Refund) -> Bool {
         return lhs.amount == rhs.amount
+    }
+}
+
+// MARK: - Constants
+//
+public extension Refund {
+    private enum ParameterKey {
+        static let amount: String       = "amount"
+        static let apiRefund: String    = "api_refund"
+        static let reason: String = "reason"
+        static let line_items: String = "line_items"
     }
 }

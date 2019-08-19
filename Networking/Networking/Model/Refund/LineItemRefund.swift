@@ -29,14 +29,14 @@ public struct LineItemRefund {
     }
 
     public func toDictionary() -> [String: Any] {
-        var dict: [String: Any] = ["qty": quantity]
+        var dict: [String: Any] = [ParameterKey.quantity: quantity]
 
         if refundTotal != nil {
-            dict["refund_total"] = refundTotal
+            dict[ParameterKey.refundTotal] = refundTotal
         }
 
         if refundTax != nil {
-            dict["refund_tax"] = Dictionary(uniqueKeysWithValues: refundTax!.map { ($0.taxIDLineItem, $0.amount) })
+            dict[ParameterKey.refundTax] = Dictionary(uniqueKeysWithValues: refundTax!.map { ($0.taxIDLineItem, $0.amount) })
         }
         return dict
     }
@@ -54,5 +54,15 @@ extension LineItemRefund: Comparable {
 
     public static func < (lhs: LineItemRefund, rhs: LineItemRefund) -> Bool {
         return lhs.quantity == rhs.quantity
+    }
+}
+
+// MARK: - Constants
+//
+public extension LineItemRefund {
+    private enum ParameterKey {
+        static let quantity: String       = "qty"
+        static let refundTotal: String    = "refund_total"
+        static let refundTax: String = "refund_tax"
     }
 }

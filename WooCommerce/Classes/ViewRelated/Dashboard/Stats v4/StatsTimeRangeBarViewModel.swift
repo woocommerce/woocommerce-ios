@@ -18,7 +18,9 @@ private extension StatsTimeRangeV4 {
         let dateFormatter: DateFormatter
         switch self {
         case .today:
-            dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
+            let formatter = DateFormatter()
+            formatter.setLocalizedDateFormatFromTemplate("EEEE, MMM d")
+            dateFormatter = formatter
         case .thisWeek:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .thisMonth:

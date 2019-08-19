@@ -39,6 +39,12 @@ class TopPerformersViewController: ButtonBarPagerTabStripViewController {
         ensureGhostContentIsAnimated()
     }
 
+    /// Note: Overrides this function to always trigger `updateContent()` to ensure the child view controller fills the container width.
+    /// This is probably only an issue when not using `ButtonBarPagerTabStripViewController` with Storyboard.
+    override func updateIfNeeded() {
+        updateContent()
+    }
+
     // MARK: - RTL support
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {

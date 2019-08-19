@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-06-26 09:54:03+0000 */
+/* Translation-Revision-Date: 2019-08-08 00:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -148,7 +148,7 @@
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "Registreringen klar";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
+/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "Skapar ett nytt e-postmeddelande till faktureringskunden.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
@@ -177,6 +177,9 @@
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopiera";
+
+/* Copy tracking number button title */
+"Copy Tracking Number" = "Kopiera spårningsnummer";
 
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "Kunde in te kontrollera webbplatsens inköp.";
@@ -261,11 +264,17 @@
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom-token saknas";
 
+/* WordPress.com error thrown when the user has no permission to view site stats. */
+"Dotcom No Stats Permission" = "Dotcom ingen statistikbehörighet";
+
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "Dotcom-förfrågan misslyckades";
 
 /* WordPress.com Error thrown when the response body is empty */
 "Dotcom Response Empty" = "Dotcom-svar tomt";
+
+/* WordPress.com error thrown when the Jetpack site stats module is disabled. */
+"Dotcom Stats Module Disabled" = "Dotcom statistikmodulen inaktiverad";
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "Dotcom-token ogiltig";
@@ -491,8 +500,8 @@
 /* Title of a button. */
 "Lost your password?" = "Glömt ditt lösenord?";
 
-/* Tagline after the heart icon, displayed to the user */
-"Made with love by Automattic" = "Skapad med kärlek av Automattic";
+/* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
+"Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Skapad med kärlek av Automattic <a href=\"https:\/\/automattic.com\/work-with-us\/\">Vi letar efter medarbetare!<\/a>";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Hantera ordrar, spåra försäljning och övervaka butiksaktivitet med varningar i realtid.";
@@ -646,7 +655,7 @@
    Order number title */
 "Order #(viewModel.order.number)" = "Order med nummer (viewModel.order.number)";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store. */
+/* Displayed whenever an Order gets deleted. It reads: Order {order number} has been deleted from your store. */
 "Order %@ has been deleted from your store" = "Order %@ har tagits bort från din butik";
 
 /* Order notes section title */
@@ -683,6 +692,9 @@
 
 /* Payment section title */
 "Payment" = "Betalning";
+
+/* Payment of <currency symbol><payment total> received via (payment method title) */
+"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "Betalning på (subject.totalValue) mottagen via (order.paymentMethodTitle)";
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "Betalning på (totalValue) mottagen via (order.paymentMethodTitle)";
@@ -753,7 +765,7 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "Produkt %ld har tagits bort från din butik";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Anvisningar med alternativet att ringa eller skicka meddelande till faktureringskunden.";
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
@@ -1160,6 +1172,9 @@
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "Det gick inte att ändra status på ordernummer (orderID)";
+
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
+"Unable to delete tracking for order #(order.orderID)" = "Det går inte att radera spårning för beställning nr. (order.orderID)";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
 "Unable to delete tracking for order #(orderID)" = "Det går inte att radera spårning för ordernumret (orderID)";

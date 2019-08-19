@@ -127,7 +127,7 @@ private extension OrderDetailsViewController {
 
     private func configureViewModel() {
         viewModel.onUIReloadRequired = { [weak self] in
-            self?.reloadTableViewSectionsAndData()
+            self?.reloadTableViewDataIfPossible()
         }
 
         viewModel.configureResultsControllers { [weak self] in
@@ -228,6 +228,7 @@ extension OrderDetailsViewController {
         }
 
         group.notify(queue: .main) { [weak self] in
+            NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
         }
     }

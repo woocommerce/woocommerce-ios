@@ -10,6 +10,7 @@ extension OrderStatsV4 {
 
     @NSManaged public var siteID: Int
     @NSManaged public var granularity: String
+    @NSManaged public var timeRange: String
     @NSManaged public var totals: OrderStatsV4Totals?
     @NSManaged public var intervals: Set<OrderStatsV4Interval>?
 

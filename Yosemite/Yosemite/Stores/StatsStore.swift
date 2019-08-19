@@ -112,10 +112,9 @@ private extension StatsStore {
                                     latestDateToInclude: latestDateToInclude,
                                     quantity: quantity) { [weak self] (siteVisitStats, error) in
             guard let siteVisitStats = siteVisitStats else {
-                onCompletion(error.flatMap({ SiteVisitStatsStoreError(error: $0) }))
+                onCompletion(error.map({ SiteVisitStatsStoreError(error: $0) }))
                 return
             }
-
 
             self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
             onCompletion(nil)
@@ -285,23 +284,15 @@ extension StatsStore {
 }
 
 /// An error that occurs while fetching site visit stats.
-/// API documentation of possible errors:
-/// https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/
 ///
+/// - noPermission: the user has no permission to view site stats.
 /// - statsModuleDisabled: Jetpack site stats module is disabled for the site.
 /// - unknown: other error cases.
 ///
 public enum SiteVisitStatsStoreError: Error {
     case statsModuleDisabled
+    case noPermission
     case unknown
-
-    private enum ErrorIdentifiers {
-        static let invalidBlog: String = "invalid_blog"
-    }
-
-    private enum ErrorMessages {
-        static let statsModuleDisabled: String = "This blog does not have the Stats module enabled"
-    }
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {
@@ -309,12 +300,10 @@ public enum SiteVisitStatsStoreError: Error {
             return
         }
         switch dotcomError {
-        case .unknown(let code, let message):
-            if code == ErrorIdentifiers.invalidBlog && message == ErrorMessages.statsModuleDisabled {
-                self = .statsModuleDisabled
-            } else {
-                self = .unknown
-            }
+        case .noStatsPermission:
+            self = .noPermission
+        case .statsModuleDisabled:
+            self = .statsModuleDisabled
         default:
             self = .unknown
         }

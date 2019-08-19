@@ -1,5 +1,4 @@
 import UIKit
-import Gridicons
 import Yosemite
 import WordPressUI
 
@@ -16,20 +15,20 @@ enum WooTab: Int {
     ///
     case orders = 1
 
-    /// Notifications Tab
+    /// Reviews Tab
     ///
-    case notifications = 2
+    case reviews = 2
 }
 
 
 // MARK: - MainTabBarController
 //
-class MainTabBarController: UITabBarController {
+final class MainTabBarController: UITabBarController {
 
     /// For picking up the child view controller's status bar styling
     /// - returns: nil to let the tab bar control styling or `children.first` for VC control.
     ///
-    open override var childForStatusBarStyle: UIViewController? {
+    public override var childForStatusBarStyle: UIViewController? {
         return nil
     }
 
@@ -42,6 +41,18 @@ class MainTabBarController: UITabBarController {
     /// KVO Token
     ///
     private var observationToken: NSKeyValueObservation?
+
+    /// Notifications badge
+    ///
+    private let notificationsBadge = NotificationsBadgeController()
+
+    /// Orders badge
+    ///
+    private let ordersBadge = OrdersBadgeController()
+
+    /// ViewModel
+    ///
+    private let viewModel = MainTabViewModel()
 
 
     // MARK: - Overridden Methods
@@ -59,6 +70,7 @@ class MainTabBarController: UITabBarController {
         /// loaded the childViewControllers, and the tabBar isn't fully initialized.
         ///
         startListeningToBadgeUpdatesIfNeeded()
+        startListeningToOrdersBadge()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
@@ -127,7 +139,7 @@ private extension MainTabBarController {
             WooAnalytics.shared.track(.dashboardSelected)
         case .orders:
             WooAnalytics.shared.track(.ordersSelected)
-        case .notifications:
+        case .reviews:
             WooAnalytics.shared.track(.notificationsSelected)
         }
     }
@@ -140,7 +152,7 @@ private extension MainTabBarController {
             WooAnalytics.shared.track(.dashboardReselected)
         case .orders:
             WooAnalytics.shared.track(.ordersReselected)
-        case .notifications:
+        case .reviews:
             WooAnalytics.shared.track(.notificationsReselected)
         }
     }
@@ -163,10 +175,10 @@ extension MainTabBarController {
         navigateTo(.orders)
     }
 
-    /// Switches to the Notifications tab and pops to the root view controller
+    /// Switches to the Reviews tab and pops to the root view controller
     ///
-    static func switchToNotificationsTab() {
-        navigateTo(.notifications)
+    static func switchToReviewsTab() {
+        navigateTo(.reviews)
     }
 
     /// Switches the TabBarController to the specified Tab
@@ -211,7 +223,7 @@ extension MainTabBarController {
     /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.
     ///
     static func presentNotificationDetails(for noteID: Int) {
-        switchToNotificationsTab()
+        switchToReviewsTab()
 
         guard let notificationsViewController: NotificationsViewController = childViewController() else {
             return
@@ -253,98 +265,27 @@ private extension MainTabBarController {
     /// Displays or Hides the Dot, depending on the new Badge Value
     ///
     func badgeCountWasUpdated(newValue: Int) {
-        guard newValue > 0 else {
-            hideDotOn(.notifications)
-            return
-        }
-
-        showDotOn(.notifications)
-    }
-
-    /// Shows the dot in the specified WooTab
-    ///
-    func showDotOn(_ tab: WooTab) {
-        hideDotOn(tab)
-        let dot = GreenDotView(frame: CGRect(x: DotConstants.xOffset,
-                                             y: DotConstants.yOffset,
-                                             width: DotConstants.diameter,
-                                             height: DotConstants.diameter), borderWidth: DotConstants.borderWidth)
-        dot.tag = dotTag(for: tab)
-        dot.isHidden = true
-        tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
-        dot.fadeIn()
-    }
-
-    /// Hides the Dot in the specified WooTab
-    ///
-    func hideDotOn(_ tab: WooTab) {
-        let tag = dotTag(for: tab)
-        if let subviews = tabBar.subviews[tab.rawValue].subviews.first?.subviews {
-            for subview in subviews where subview.tag == tag {
-                subview.fadeOut() { _ in
-                    subview.removeFromSuperview()
-                }
-            }
-        }
-    }
-
-    /// Returns the DotView's Tag for the specified WooTab
-    ///
-    func dotTag(for tab: WooTab) -> Int {
-        return tab.rawValue + DotConstants.tagOffset
+        notificationsBadge.badgeCountWasUpdated(newValue: newValue, in: tabBar)
     }
 }
 
-
-// MARK: - Constants!
-//
 private extension MainTabBarController {
+    func startListeningToOrdersBadge() {
+        viewModel.onBadgeReload = { [weak self] countReadableString in
+            guard let self = self else {
+                return
+            }
 
-    enum DotConstants {
-        static let diameter    = CGFloat(10)
-        static let borderWidth = CGFloat(1)
-        static let xOffset     = CGFloat(2)
-        static let yOffset     = CGFloat(0)
-        static let tagOffset   = 999
-    }
-}
+            guard let badgeText = countReadableString else {
+                self.ordersBadge.hideBadgeOn(.orders, in: self.tabBar)
+                return
+            }
 
+            self.ordersBadge.showBadgeOn(.orders,
+                                         in: self.tabBar,
+                                         withValue: badgeText)
+        }
 
-// MARK: - GreenDot UIView
-//
-private class GreenDotView: UIView {
-
-    private var borderWidth = CGFloat(1) // Border line width defaults to 1
-
-    /// Designated Initializer
-    ///
-    init(frame: CGRect, borderWidth: CGFloat) {
-        super.init(frame: frame)
-        self.borderWidth = borderWidth
-        setupSubviews()
-    }
-
-    /// Required Initializer
-    ///
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupSubviews()
-    }
-
-    private func setupSubviews() {
-        backgroundColor = .clear
-    }
-
-    override func draw(_ rect: CGRect) {
-        let path = UIBezierPath(ovalIn: CGRect(x: rect.origin.x + borderWidth,
-                                               y: rect.origin.y + borderWidth,
-                                               width: rect.size.width - borderWidth*2,
-                                               height: rect.size.height - borderWidth*2))
-        StyleManager.wooAccent.setFill()
-        path.fill()
-
-        path.lineWidth = borderWidth
-        StyleManager.wooWhite.setStroke()
-        path.stroke()
+        viewModel.startObservingOrdersCount()
     }
 }

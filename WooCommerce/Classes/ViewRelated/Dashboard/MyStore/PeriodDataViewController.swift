@@ -4,7 +4,7 @@ import Charts
 import XLPagerTabStrip
 
 
-class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
+class PeriodDataViewController: UIViewController {
 
     // MARK: - Public Properties
 
@@ -64,7 +64,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     /// Placeholder: Mockup Charts View
     ///
-    private lazy var placehoderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
+    private lazy var placeholderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
 
 
     // MARK: - Computed Properties
@@ -82,11 +82,10 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     }
 
     private var summaryDateUpdated: String {
-        if let lastUpdatedDate = lastUpdatedDate {
-            return lastUpdatedDate.relativelyFormattedUpdateString
-        } else {
+        guard let lastUpdatedDate = lastUpdatedDate else {
             return ""
         }
+        return lastUpdatedDate.relativelyFormattedUpdateString
     }
 
     private var xAxisMinimum: String {
@@ -169,7 +168,7 @@ extension PeriodDataViewController {
     ///
     func displayGhostContent() {
         ensurePlaceholderIsVisible()
-        placehoderChartsView.startGhostAnimation()
+        placeholderChartsView.startGhostAnimation()
     }
 
     /// Removes the Placeholder Content.
@@ -177,20 +176,20 @@ extension PeriodDataViewController {
     /// placeholder animations from that spot!
     ///
     func removeGhostContent() {
-        placehoderChartsView.stopGhostAnimation()
-        placehoderChartsView.removeFromSuperview()
+        placeholderChartsView.stopGhostAnimation()
+        placeholderChartsView.removeFromSuperview()
     }
 
     /// Ensures the Placeholder Charts UI is onscreen.
     ///
     private func ensurePlaceholderIsVisible() {
-        guard placehoderChartsView.superview == nil else {
+        guard placeholderChartsView.superview == nil else {
             return
         }
 
-        placehoderChartsView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(placehoderChartsView)
-        view.pinSubviewToAllEdges(placehoderChartsView)
+        placeholderChartsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(placeholderChartsView)
+        view.pinSubviewToAllEdges(placeholderChartsView)
     }
 
 }
@@ -318,7 +317,7 @@ private extension PeriodDataViewController {
 
 // MARK: - IndicatorInfoProvider Conformance (Tab Bar)
 //
-extension PeriodDataViewController {
+extension PeriodDataViewController: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: granularity.pluralizedString)
     }

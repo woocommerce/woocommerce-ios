@@ -1,1 +1,3 @@
-Burada çok önemli bir şey yok! Sadece bazı iyileştirmeler ve hata düzeltmeleri. Sorunsuz çalışan bir uygulamadan başka hiçbir şey görmeyeceksiniz.
+Takip numaralarını kopyalayın! Artık uygulamayı açmadan kargonuzu takip etmek daha kolay. Sipariş Detayları > Gönderim Takibi > Daha Fazla bölümünde, takip numaranızı istediğiniz yerde kullanmak üzere kopyalayabilmeniz için yeni bir eylem bulunur.
+
+İstatistiklerde hata mesajına elveda! Sitenizde Jetpack site istatistikleri modülü yoksa veya istatistikleri görüntüleme izniniz yoksa istatistik sayfasını görmezsiniz. Artık sinir bozucu hata mesajlarıyla karşılaşmayacaksınız.

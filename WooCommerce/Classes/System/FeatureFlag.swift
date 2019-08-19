@@ -6,10 +6,16 @@ enum FeatureFlag: Int {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
+    /// Store stats
+    ///
+    case stats
+
     /// Returns a boolean indicating if the feature is enabled
     ///
     var enabled: Bool {
         switch self {
+        case .stats:
+            return BuildConfiguration.current == .localDeveloper
         default:
             return true
         }

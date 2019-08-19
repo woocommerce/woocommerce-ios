@@ -36,6 +36,7 @@ class AuthenticatedState: StoresManagerState {
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),

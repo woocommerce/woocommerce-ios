@@ -10,11 +10,13 @@ protocol Style {
     static var maxFontSize: CGFloat { get }
     var actionButtonTitleFont: UIFont { get }
     var alternativeLoginsTitleFont: UIFont { get }
+    var badgeFont: UIFont { get }
     var chartLabelFont: UIFont { get }
     var headlineSemiBold: UIFont { get }
     var subheadlineFont: UIFont { get }
     var subheadlineBoldFont: UIFont { get }
     var thinCaptionFont: UIFont { get }
+    var footerLabelFont: UIFont { get }
 
     /// Colors
     ///
@@ -77,6 +79,9 @@ class DefaultStyle: Style {
     static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
+    let badgeFont                       = DefaultStyle.fontForTextStyle(.caption2,
+                                                                        weight: .regular,
+                                                                        maximumPointSize: 11.0)
     let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
                                                                         weight: .semibold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
@@ -88,10 +93,13 @@ class DefaultStyle: Style {
     let thinCaptionFont                 = DefaultStyle.fontForTextStyle(.caption1,
                                                                         weight: .thin,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
+    let footerLabelFont                 = DefaultStyle.fontForTextStyle(.footnote,
+                                                                        weight: .regular,
+                                                                        maximumPointSize: DefaultStyle.maxFontSize)
 
     /// Colors!
     ///
-    let buttonPrimaryColor              = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0)
+    let buttonPrimaryColor              = HandbookColors.wooPrimary
     let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryTitleColor         = HandbookColors.wooWhite
     let buttonSecondaryColor            = HandbookColors.wooWhite
@@ -225,6 +233,10 @@ class StyleManager {
         return active.alternativeLoginsTitleFont
     }
 
+    static var badgeFont: UIFont {
+        return active.badgeFont
+    }
+
     static var chartLabelFont: UIFont {
         return active.chartLabelFont
     }
@@ -243,6 +255,10 @@ class StyleManager {
 
     static var thinCaptionFont: UIFont {
         return active.thinCaptionFont
+    }
+
+    static var footerLabelFont: UIFont {
+        return active.footerLabelFont
     }
 
     // MARK: - Colors

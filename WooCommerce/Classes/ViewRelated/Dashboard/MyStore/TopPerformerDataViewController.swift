@@ -5,7 +5,7 @@ import XLPagerTabStrip
 import WordPressUI
 
 
-class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
+class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties
 
@@ -178,7 +178,7 @@ private extension TopPerformerDataViewController {
 
 // MARK: - IndicatorInfoProvider Conformance (Tab Bar)
 //
-extension TopPerformerDataViewController {
+extension TopPerformerDataViewController: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: tabDescription)
     }

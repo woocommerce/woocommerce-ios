@@ -24,15 +24,6 @@ class NotificationsViewController: UIViewController {
                                action: #selector(markAllAsRead))
     }()
 
-    /// Filter nav bar button
-    ///
-    private lazy var rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: .filterImage,
-                               style: .plain,
-                               target: self,
-                               action: #selector(displayFiltersAlert))
-    }()
-
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -43,24 +34,11 @@ class NotificationsViewController: UIViewController {
         let storageManager = AppDelegate.shared.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
-        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
+        return ResultsController<StorageNote>(storageManager: storageManager,
+                                              sectionNameKeyPath: "normalizedAgeAsString",
+                                              matching: self.filterPredicate(),
+                                              sortedBy: [descriptor])
     }()
-
-    /// OrderStatus that must be matched by retrieved orders.
-    ///
-    private var currentTypeFilter: NoteTypeFilter = .all {
-        didSet {
-            guard isViewLoaded else {
-                return
-            }
-
-            guard oldValue != currentTypeFilter else {
-                return
-            }
-
-            didChangeFilter(newFilter: currentTypeFilter)
-        }
-    }
 
     /// Pull To Refresh Support.
     ///
@@ -166,6 +144,7 @@ class NotificationsViewController: UIViewController {
         super.viewWillAppear(animated)
 
         resetApplicationBadge()
+        transitionToResultsUpdatedState()
         synchronizeNotifications() {
             // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
             // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
@@ -188,8 +167,8 @@ private extension NotificationsViewController {
     /// Setup: TabBar
     ///
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Notifications", comment: "Title of the Notifications tab — plural form of Notification")
-        tabBarItem.image = .bellImage
+        tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
+        tabBarItem.image = .commentImage
     }
 
     /// Setup: Navigation
@@ -208,14 +187,6 @@ private extension NotificationsViewController {
         leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read",
                                                             comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
         navigationItem.leftBarButtonItem = leftBarButton
-
-        rightBarButton.tintColor = .white
-        rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityLabel = NSLocalizedString("Filter notifications", comment: "Accessibility label for the Filter notifications button.")
-        rightBarButton.accessibilityHint = NSLocalizedString("Filters the notifications list by notification type.",
-                                                             comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list."
-        )
-        navigationItem.rightBarButtonItem = rightBarButton
     }
 
     /// Setup: TableView
@@ -244,22 +215,11 @@ private extension NotificationsViewController {
     }
 
     func refreshTitle() {
-        guard currentTypeFilter != .all else {
-            navigationItem.title = NSLocalizedString(
-                "Notifications",
-                comment: "Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification)."
-            )
-            return
-        }
-
-        let title = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Notifications: %@",
-                comment: "Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter}"
-            ),
-            currentTypeFilter.description.capitalized
+        transitionToResultsUpdatedState()
+        navigationItem.title = NSLocalizedString(
+            "Reviews",
+            comment: "Title that appears on top of the main Reviews screen (plural form of the word Review)."
         )
-        navigationItem.title = title
     }
 }
 
@@ -283,46 +243,6 @@ private extension NotificationsViewController {
         }
 
         markAsRead(notes: unreadNotes)
-    }
-
-    @IBAction func displayFiltersAlert() {
-        WooAnalytics.shared.track(.notificationsListFilterTapped)
-
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
-
-        actionSheet.addCancelActionWithTitle(NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"))
-        for noteType in NoteTypeFilter.knownTypes {
-            actionSheet.addDefaultActionWithTitle(noteType.description) { [weak self] _ in
-                self?.currentTypeFilter = noteType
-            }
-        }
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
-        popoverController?.sourceView = self.view
-
-        present(actionSheet, animated: true)
-    }
-}
-
-
-// MARK: - Filters
-//
-private extension NotificationsViewController {
-
-    func didChangeFilter(newFilter: NoteTypeFilter?) {
-                WooAnalytics.shared.track(.filterNotificationsOptionSelected,
-                                          withProperties: ["status": newFilter?.rawValue ?? String()])
-                WooAnalytics.shared.track(.notificationListFilter,
-                                          withProperties: ["range": newFilter?.rawValue ?? String()])
-
-        // Display the Filter in the Title
-        refreshTitle()
-
-        // Filter right away the cached orders
-        refreshResultsPredicate()
-        transitionToResultsUpdatedState()
     }
 }
 
@@ -402,6 +322,7 @@ private extension NotificationsViewController {
                 WooAnalytics.shared.track(.notificationListLoaded)
             }
 
+            self.refreshResultsPredicate()
             self.transitionToResultsUpdatedState()
             onCompletion?()
         }
@@ -437,27 +358,27 @@ private extension NotificationsViewController {
     ///
     func reloadResultsController() {
         refreshResultsPredicate()
+
+        tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
+        transitionToSyncingState()
     }
 
     func refreshResultsPredicate() {
+        resultsController.predicate = filterPredicate()
+    }
+
+    func filterPredicate() -> NSPredicate {
         let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
         let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        var typePredicate: NSPredicate
+        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
 
-        switch currentTypeFilter {
-        case .all:
-            typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
-        case .orders:
-            typePredicate = NSPredicate(format: "type == %@", Note.Kind.storeOrder.rawValue)
-        case .reviews:
-            typePredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
-        }
-
-        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate, notDeletedPredicate])
-        tableView.setContentOffset(.zero, animated: false)
-        tableView.reloadData()
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
+                                                                   sitePredicate,
+                                                                   notDeletedPredicate])
     }
+
+
 }
 
 
@@ -658,27 +579,12 @@ private extension NotificationsViewController {
         resultsController.startForwardingEvents(to: self.tableView)
     }
 
-
-    /// Displays the Empty State (with filters applied!) Overlay.
-    ///
-    func displayEmptyFilteredOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Notifications List (Empty State + Filters)")
-        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: removes the current filters from the notifications list")
-        overlayView.onAction = { [weak self] in
-            self?.currentTypeFilter = .all
-        }
-
-        overlayView.attach(to: view)
-    }
-
     /// Displays the Empty State Overlay.
     ///
     func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("No Notifications Yet!", comment: "Empty Notifications List Message")
+        overlayView.messageText = NSLocalizedString("No Reviews Yet!", comment: "Empty Reviews List Message")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
             guard let `self` = self else {
@@ -753,16 +659,7 @@ private extension NotificationsViewController {
     /// Note: Just because this func runs does not guarantee `didEnter()` or `didLeave()` will run as well.
     ///
     func willEnter(state: State) {
-        switch state {
-        case .emptyUnfiltered:
-            updateNavBarButtonsState(filterEnabled: false)
-        case .emptyFiltered:
-            updateNavBarButtonsState(filterEnabled: true)
-        case .results:
-            updateNavBarButtonsState(filterEnabled: true)
-        case .syncing:
-            updateNavBarButtonsState(filterEnabled: false)
-        }
+        updateNavBarButtonsState()
     }
 
     /// Runs whenever the FSM enters a State.
@@ -770,9 +667,9 @@ private extension NotificationsViewController {
     func didEnter(state: State) {
         switch state {
         case .emptyUnfiltered:
-            displayEmptyUnfilteredOverlay()
-        case .emptyFiltered:
-            displayEmptyFilteredOverlay()
+            if isEmpty == true {
+                displayEmptyUnfilteredOverlay()
+            }
         case .results:
             break
         case .syncing:
@@ -784,8 +681,6 @@ private extension NotificationsViewController {
     ///
     func didLeave(state: State) {
         switch state {
-        case .emptyFiltered:
-            removeAllOverlays()
         case .emptyUnfiltered:
             removeAllOverlays()
         case .results:
@@ -810,11 +705,6 @@ private extension NotificationsViewController {
             return
         }
 
-        if currentTypeFilter != .all {
-            state = .emptyFiltered
-            return
-        }
-
         state = .emptyUnfiltered
     }
 }
@@ -828,8 +718,7 @@ private extension NotificationsViewController {
     ///
     /// - Parameter filterEnabled: If true, the filter navbar buttons is enabled; if false, it's disabled
     ///
-    func updateNavBarButtonsState(filterEnabled: Bool) {
-        rightBarButton.isEnabled = filterEnabled
+    func updateNavBarButtonsState() {
         updateMarkAllReadButtonState()
     }
 
@@ -894,7 +783,6 @@ private extension NotificationsViewController {
 
     enum State {
         case emptyUnfiltered
-        case emptyFiltered
         case results
         case syncing
     }

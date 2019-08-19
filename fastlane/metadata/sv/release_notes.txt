@@ -1,1 +1,3 @@
-Inga stora grejer! Bara lite förbättringar och buggfixar – du kommer inte märka mer än en välfungerande app.
+Kopiera spårningsnummer! Det är nu enklare att hålla koll på din leverans utan att öppna appen. I Beställningsinformation > Leveransspårning > Mer finns det en ny åtgärd för att kopiera ditt spårningsnummer att använda närhelst du vill.
+
+Hejdå statistikfelmeddelandet! Om din webbplats inte har Jetpack-modulen webbplatsstatistik eller om du inte har behörighet att visa statistik så kommer du inte se statistiksidan. Du behöver inte se ett irriterande felmeddelande så vi har tagit bort det.

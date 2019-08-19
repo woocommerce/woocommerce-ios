@@ -112,6 +112,12 @@ private extension StorePickerCoordinator {
         StoresManager.shared.dispatch(statsAction)
 
         group.enter()
+        let statsV4Action = StatsActionV4.resetStoredStats {
+            group.leave()
+        }
+        StoresManager.shared.dispatch(statsV4Action)
+
+        group.enter()
         let orderAction = OrderAction.resetStoredOrders {
             group.leave()
         }

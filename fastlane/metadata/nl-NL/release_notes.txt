@@ -1,1 +1,3 @@
-Hier geen grote veranderingen! Gewoon wat verbeteringen en bugfixes — je zult er niets van merken, behalve dat de app soepel draait.
+Volgnummer kopiëren! Het is nu gemakkelijker om een oogje te houden op je verzending zonder de app te openen. In de Bestellingsdetails > Verzending bijhouden > Meer, is er een nieuwe actie om je volgnummer te kopiëren zodat je die overal kunt gebruiken.
+
+Vaarwel foutmeldingen over statistieken! Als je site niet de Jetpack-module sitestatistieken heeft, of je geen toestemming hebt om statistieken weer te geven, kun je de statistiekenpagina niet zien. Je hoeft geen vervelende foutmelding te zien, daarom hebben we die weggehaald.

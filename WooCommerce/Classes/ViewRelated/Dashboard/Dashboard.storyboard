@@ -13,13 +13,13 @@
         <!--Store Stats View Controller-->
         <scene sceneID="gpf-E1-UPO">
             <objects>
-                <viewController id="zaY-no-5X6" customClass="StoreStatsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="StoreStatsViewController" id="zaY-no-5X6" customClass="StoreStatsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="EgO-Cw-kVD">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="Y7g-5h-02N">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PBm-IO-eju">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
@@ -50,10 +50,10 @@
                                         </constraints>
                                     </view>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZC-Gc-okA">
-                                        <rect key="frame" x="0.0" y="50" width="375" height="329"/>
+                                        <rect key="frame" x="0.0" y="50" width="375" height="596"/>
                                     </scrollView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kbr-bQ-njj">
-                                        <rect key="frame" x="0.0" y="379" width="375" height="1"/>
+                                        <rect key="frame" x="0.0" y="646" width="375" height="1"/>
                                         <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="Co8-ct-oPM"/>
@@ -90,67 +90,7 @@
                     <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="1120"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5Cz-cT-K5z">
-                                <rect key="frame" x="0.0" y="64" width="375" height="1007"/>
-                                <subviews>
-                                    <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="c2q-ri-kSZ">
-                                        <rect key="frame" x="0.0" y="18" width="375" height="991"/>
-                                        <subviews>
-                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="bgR-ww-mDR">
-                                                <rect key="frame" x="0.0" y="0.0" width="375" height="380"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="380" id="5lW-FM-zPi"/>
-                                                </constraints>
-                                                <connections>
-                                                    <segue destination="zaY-no-5X6" kind="embed" identifier="StoreStatsEmbedSegue" id="DIr-Go-f5K"/>
-                                                </connections>
-                                            </containerView>
-                                            <view opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C0r-mX-o7t">
-                                                <rect key="frame" x="0.0" y="380" width="375" height="18"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" constant="18" id="nnZ-bG-12v"/>
-                                                </constraints>
-                                            </view>
-                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="NG7-v2-HCV">
-                                                <rect key="frame" x="0.0" y="398" width="375" height="128"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="80" id="NdA-x6-usn"/>
-                                                    <constraint firstAttribute="height" priority="250" constant="80" id="zqf-iK-TiH"/>
-                                                </constraints>
-                                                <connections>
-                                                    <segue destination="lX1-IT-Jsn" kind="embed" identifier="NewOrdersEmbedSegue" id="eBk-2G-rWy"/>
-                                                </connections>
-                                            </containerView>
-                                            <containerView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5mn-wP-ueH">
-                                                <rect key="frame" x="0.0" y="526" width="375" height="465"/>
-                                                <constraints>
-                                                    <constraint firstAttribute="height" priority="900" constant="465" id="GhH-0R-SZx"/>
-                                                    <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="465" id="SIr-zN-m3B"/>
-                                                </constraints>
-                                                <connections>
-                                                    <segue destination="Djg-dC-a51" kind="embed" identifier="TopPerformersEmbedSegue" id="1gd-ia-ZTz"/>
-                                                </connections>
-                                            </containerView>
-                                        </subviews>
-                                    </stackView>
-                                </subviews>
-                                <constraints>
-                                    <constraint firstItem="c2q-ri-kSZ" firstAttribute="top" secondItem="5Cz-cT-K5z" secondAttribute="top" constant="18" id="BJN-aj-8ex"/>
-                                    <constraint firstItem="c2q-ri-kSZ" firstAttribute="width" secondItem="5Cz-cT-K5z" secondAttribute="width" id="PFr-H6-n9X"/>
-                                    <constraint firstItem="c2q-ri-kSZ" firstAttribute="leading" secondItem="5Cz-cT-K5z" secondAttribute="leading" id="Pjf-fU-Vrm"/>
-                                    <constraint firstAttribute="bottom" secondItem="c2q-ri-kSZ" secondAttribute="bottom" id="d8k-AC-mFj"/>
-                                    <constraint firstAttribute="trailing" secondItem="c2q-ri-kSZ" secondAttribute="trailing" id="jvW-Ck-iWJ"/>
-                                </constraints>
-                            </scrollView>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
-                        <constraints>
-                            <constraint firstItem="5Cz-cT-K5z" firstAttribute="trailing" secondItem="YDa-tX-s4d" secondAttribute="trailing" id="4u5-zG-2jR"/>
-                            <constraint firstItem="5Cz-cT-K5z" firstAttribute="bottom" secondItem="YDa-tX-s4d" secondAttribute="bottom" id="YLe-6O-2hS"/>
-                            <constraint firstItem="5Cz-cT-K5z" firstAttribute="top" secondItem="YDa-tX-s4d" secondAttribute="top" id="knX-PX-w35"/>
-                            <constraint firstItem="5Cz-cT-K5z" firstAttribute="leading" secondItem="YDa-tX-s4d" secondAttribute="leading" id="sD0-4h-t8r"/>
-                        </constraints>
                         <viewLayoutGuide key="safeArea" id="YDa-tX-s4d"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Item" id="EUU-oD-ztb"/>
@@ -158,9 +98,6 @@
                     <simulatedTabBarMetrics key="simulatedBottomBarMetrics"/>
                     <size key="freeformSize" width="375" height="1120"/>
                     <connections>
-                        <outlet property="newOrdersContainerView" destination="NG7-v2-HCV" id="iHE-T1-Sum"/>
-                        <outlet property="newOrdersHeightConstraint" destination="zqf-iK-TiH" id="g32-8U-nYh"/>
-                        <outlet property="scrollView" destination="5Cz-cT-K5z" id="AiQ-Nv-JRm"/>
                         <segue destination="5Fc-gh-JKM" kind="show" identifier="ShowSettingsViewController" id="5OG-7I-yID"/>
                     </connections>
                 </viewController>
@@ -365,20 +302,20 @@
         <!--New Orders View Controller-->
         <scene sceneID="v0S-ON-fMC">
             <objects>
-                <viewController id="lX1-IT-Jsn" customClass="NewOrdersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="NewOrdersViewController" id="lX1-IT-Jsn" customClass="NewOrdersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="8sG-kb-Kk9">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="128"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8jA-re-uJx">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="1"/>
                                 <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="Vcs-aF-t4s"/>
                                 </constraints>
                             </view>
                             <stackView opaque="NO" contentMode="scaleToFill" alignment="top" translatesAutoresizingMaskIntoConstraints="NO" id="VYR-yM-cEa">
-                                <rect key="frame" x="0.0" y="1" width="375" height="110"/>
+                                <rect key="frame" x="0.0" y="21" width="375" height="629"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="fillProportionally" spacing="14" translatesAutoresizingMaskIntoConstraints="NO" id="LcR-e9-aXE">
                                         <rect key="frame" x="0.0" y="0.0" width="355" height="77"/>
@@ -398,7 +335,7 @@
                                         </subviews>
                                     </stackView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="1000" translatesAutoresizingMaskIntoConstraints="NO" id="r52-GN-xeA">
-                                        <rect key="frame" x="355" y="0.0" width="20" height="110"/>
+                                        <rect key="frame" x="355" y="0.0" width="20" height="629"/>
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="20" id="IWb-N8-kSs"/>
@@ -410,14 +347,14 @@
                                 </constraints>
                             </stackView>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="p4s-ZW-Vui">
-                                <rect key="frame" x="0.0" y="127" width="377" height="1"/>
+                                <rect key="frame" x="0.0" y="666" width="377" height="1"/>
                                 <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="1" id="rQ2-Uz-ZHT"/>
                                 </constraints>
                             </view>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="s9n-KV-6jV">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="128"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <connections>
                                     <action selector="buttonTouchDown:" destination="lX1-IT-Jsn" eventType="touchDown" id="rIo-QZ-BRU"/>
                                     <action selector="buttonTouchDragOutside:" destination="lX1-IT-Jsn" eventType="touchDragOutside" id="iJa-hU-1Ko"/>
@@ -461,13 +398,13 @@
         <!--Top Performers View Controller-->
         <scene sceneID="cVB-Jf-xe7">
             <objects>
-                <viewController id="Djg-dC-a51" customClass="TopPerformersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="TopPerformersViewController" id="Djg-dC-a51" customClass="TopPerformersViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="1eR-hd-IG4">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="465"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="jSh-li-XP9">
-                                <rect key="frame" x="0.0" y="0.0" width="375" height="465"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="647"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="0FA-ly-Gnf">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="55.5"/>
@@ -515,7 +452,7 @@
                                         </constraints>
                                     </view>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r3q-NT-5cw">
-                                        <rect key="frame" x="0.0" y="105.5" width="375" height="359.5"/>
+                                        <rect key="frame" x="0.0" y="105.5" width="375" height="541.5"/>
                                     </scrollView>
                                 </subviews>
                             </stackView>

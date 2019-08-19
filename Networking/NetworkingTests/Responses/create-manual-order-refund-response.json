@@ -1,0 +1,33 @@
+{
+    "data" : {
+        "amount" : "10.00",
+        "reason" : "Product No Longer Needed",
+        "_links" : {
+            "collection" : [
+                {
+                    "href" : "https:\/\/wootesting.altervista.org\/wp-json\/wc\/v3\/orders\/215\/refunds"
+                }
+            ],
+            "up" : [
+                {
+                    "href" : "https:\/\/wootesting.altervista.org\/wp-json\/wc\/v3\/orders\/215"
+                }
+            ],
+            "self" : [
+                {
+                    "href" : "https:\/\/wootesting.altervista.org\/wp-json\/wc\/v3\/orders\/215\/refunds\/220"
+                }
+            ]
+        },
+        "id" : 220,
+        "line_items" : [
+            
+        ],
+        "date_created" : "2019-08-19T11:01:57",
+        "meta_data" : [
+            
+        ],
+        "date_created_gmt" : "2019-08-19T09:01:57",
+        "refunded_by" : 1
+    }
+}

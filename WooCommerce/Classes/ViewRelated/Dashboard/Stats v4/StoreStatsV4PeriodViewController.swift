@@ -311,7 +311,6 @@ private extension StoreStatsV4PeriodViewController {
 
         let xAxis = barChartView.xAxis
         xAxis.labelPosition = .bottom
-        xAxis.setLabelCount(2, force: true)
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = StyleManager.wooSecondary
         xAxis.axisLineColor = StyleManager.wooGreyBorder
@@ -322,6 +321,7 @@ private extension StoreStatsV4PeriodViewController {
         xAxis.granularity = Constants.chartXAxisGranularity
         xAxis.granularityEnabled = true
         xAxis.valueFormatter = self
+        updateChartXAxisLabelCount(xAxis: xAxis, timeRange: timeRange)
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
@@ -589,7 +589,6 @@ private extension StoreStatsV4PeriodViewController {
             barChartView.animate(yAxisDuration: Constants.chartAnimationDuration)
         }
         updateChartAccessibilityValues()
-        updateChartXAxisLabelCount(xAxis: barChartView.xAxis, timeRange: timeRange)
 
         updateUI(hasRevenue: hasRevenue())
     }

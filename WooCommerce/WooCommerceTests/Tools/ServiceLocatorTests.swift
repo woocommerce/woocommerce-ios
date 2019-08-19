@@ -17,7 +17,7 @@ final class ServiceLocatorTests: XCTestCase {
         XCTAssertNotNil(ServiceLocator.stores)
     }
 
-    func testAnalyticsDefaultsToStoresManager() {
+    func testStoresDefaultsToStoresManager() {
         let stores = ServiceLocator.stores
 
         XCTAssertTrue(stores is StoresManager)

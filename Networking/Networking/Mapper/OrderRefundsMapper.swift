@@ -28,7 +28,7 @@ struct OrderRefundsMapper: Mapper {
 
 /// OrdersRefundsEnvelope Disposable Entity
 ///
-/// `Load Order Refunds` endpoint returns the requested order document in the `data` key. This entity
+/// `Load Order Refunds` endpoint returns the requested order refund document in the `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///
 private struct OrderRefundsEnvelope: Decodable {

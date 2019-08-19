@@ -48,7 +48,6 @@ extension Refund: Comparable {
         return lhs.amount == rhs.amount &&
             lhs.reason == rhs.reason &&
             lhs.apiRefund == rhs.apiRefund &&
-            NSDictionary(dictionary: lhs.toDictionary()).isEqual(to: rhs.toDictionary()) &&
             (lhs.items != nil && rhs.items != nil) ? lhs.items!.count == rhs.items!.count &&
                 lhs.items!.sorted() == rhs.items!.sorted() : true
     }

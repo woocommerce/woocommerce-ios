@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 
-public class WooAnalytics {
+public class WooAnalytics: Analytics {
 
     // MARK: - Properties
 

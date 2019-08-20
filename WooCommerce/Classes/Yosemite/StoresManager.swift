@@ -5,7 +5,7 @@ import Yosemite
 
 // MARK: - StoresManager
 //
-final class StoresManager: Stores {
+class StoresManager: Stores {
 
     private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
 

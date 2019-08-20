@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
 
-/// Abstreacts the Stores coordination
+/// Abstracts the Stores coordination
 ///
 protocol Stores {
 

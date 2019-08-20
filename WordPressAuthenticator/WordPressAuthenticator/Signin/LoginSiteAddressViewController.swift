@@ -286,7 +286,9 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     }
 
     private func appleTapped() {
+        #if XCODE11
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
+        #endif
     }
 
     /// Whether the form can be submitted.

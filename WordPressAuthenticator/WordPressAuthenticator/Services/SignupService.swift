@@ -4,7 +4,6 @@ import WordPressShared
 import WordPressKit
 
 
-
 /// SignupService: Responsible for creating a new WPCom user and blog.
 ///
 class SignupService {
@@ -39,6 +38,42 @@ class SignupService {
             failure(error ?? SignupError.unknown)
         })
     }
+    
+    /// Create a new WPcom account using Apple ID
+    ///
+    /// - Parameters:
+    ///   - token:      Token provided by Apple.
+    ///   - email:      Email provided by Apple.
+    ///   - userName:   Formatted fullname provided by Apple.
+    ///   - success:    Block called when account is created successfully.
+    ///   - failure:    Block called when account creation fails.
+    ///
+    func createWPComUserWithApple(token: String,
+                                  email: String,
+                                  userName: String?,
+                                  success: @escaping (_ newAccount: Bool, _ username: String, _ wpcomToken: String) -> Void,
+                                  failure: @escaping (_ error: Error) -> Void) {
+        let remote = WordPressComServiceRemote(wordPressComRestApi: anonymousAPI)
+        
+        remote.createWPComAccount(withApple: token,
+                                  andEmail: email,
+                                  andUserName: userName,
+                                  andClientID: configuration.wpcomClientId,
+                                  andClientSecret: configuration.wpcomSecret,
+                                  success: { response in
+                                    guard let username = response?[ResponseKeys.username] as? String,
+                                        let bearer_token = response?[ResponseKeys.bearerToken] as? String else {
+                                            failure(SignupError.unknown)
+                                            return
+                                    }
+                                    
+                                    let createdAccount = (response?[ResponseKeys.createdAccount] as? Int ?? 0) == 1
+                                    success(createdAccount, username, bearer_token)
+        }, failure: { error in
+            failure(error ?? SignupError.unknown)
+        })
+    }
+    
 }
 
 

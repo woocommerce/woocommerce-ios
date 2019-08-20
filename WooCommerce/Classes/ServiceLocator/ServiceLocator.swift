@@ -14,7 +14,7 @@ final class ServiceLocator {
     }
 
     /// Provides the access point to the stores.
-    /// - Returns: An iumplementation of the Stores protocol. It defaults to StoresManager
+    /// - Returns: An implementation of the Stores protocol. It defaults to StoresManager
     static var stores: Stores {
         return _stores
     }
@@ -34,6 +34,10 @@ extension ServiceLocator {
     }
 
     static func setStores(_ mock: Stores) {
+        guard isRunningTests() else {
+            return
+        }
+
         _stores = mock
     }
 }

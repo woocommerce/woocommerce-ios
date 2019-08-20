@@ -698,8 +698,8 @@ private extension OrderDetailsDataSource {
     enum Titles {
         static let productDetails = NSLocalizedString("Details",
                                                       comment: "The row label to tap for a detailed product list")
-        static let fulfillTitle = NSLocalizedString("Fulfill order",
-                                                    comment: "Fulfill order button title")
+        static let fulfillTitle = NSLocalizedString("Begin Fulfillment",
+                                                    comment: "Begin fulfill order button title")
         static let addNoteText = NSLocalizedString("Add a note",
                                                    comment: "Button text for adding a new order note")
     }

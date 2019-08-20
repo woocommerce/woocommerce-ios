@@ -1,7 +1,7 @@
 import Yosemite
 
 /// A helper for the labels for store stats v4 charts UI.
-class StoreStatsV4ChartAxisHelper {
+final class StoreStatsV4ChartAxisHelper {
     func labelCount(timeRange: StatsTimeRangeV4) -> Int {
         let labelCount: Int
         switch timeRange {
@@ -27,23 +27,22 @@ class StoreStatsV4ChartAxisHelper {
             return dates.map({ chartDateFormatter.string(from: $0) })
         }
 
-        var dateLabelText = [String]()
-
         var calendar = Calendar.current
         calendar.timeZone = siteTimezone
         var latestMonth: Int? = nil
         let dayOfMonthDateFormatter = DateFormatter.Charts.chartAxisDayOfMonthFormatter
         dayOfMonthDateFormatter.timeZone = siteTimezone
-        for date in dates {
+
+        let dateLabelText = dates.reduce([]) { (dateLabelText, date) -> [String] in
             let month = calendar.component(.month, from: date)
             if month != latestMonth {
                 let labelText = chartDateFormatter.string(from: date)
-                dateLabelText.append(labelText)
                 latestMonth = month
+                return dateLabelText + [labelText]
             } else {
                 // If the month is the same as the last, the label text just shows the day of month without month.
                 let labelText = dayOfMonthDateFormatter.string(from: date)
-                dateLabelText.append(labelText)
+                return dateLabelText + [labelText]
             }
         }
         return dateLabelText

@@ -83,13 +83,13 @@ final class PaymentTableViewCellTests: XCTestCase {
 
 private extension PaymentTableViewCellTests {
     enum Titles {
-        static let subtotalLabel = NSLocalizedString("Subtotal",
-                                                     comment: "Subtotal label for payment view")
+        static let subtotalLabel = NSLocalizedString("Product Total",
+                                                     comment: "Product Total label for payment view")
         static let shippingLabel = NSLocalizedString("Shipping",
                                                      comment: "Shipping label for payment view")
         static let taxesLabel = NSLocalizedString("Taxes",
                                                   comment: "Taxes label for payment view")
-        static let totalLabel = NSLocalizedString("Total",
-                                                  comment: "Total label for payment view")
+        static let totalLabel = NSLocalizedString("Order Total",
+                                                  comment: "Order Total label for payment view")
     }
 }

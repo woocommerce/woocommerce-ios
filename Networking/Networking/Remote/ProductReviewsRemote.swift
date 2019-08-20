@@ -34,6 +34,21 @@ public final class ProductReviewsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Retrieves a specific `ProductReview`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the ProductReview.
+    ///     - reviewID: Identifier of the ProductReview.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadProductReview(for siteID: Int, reviewID: Int, completion: @escaping (ProductReview?, Error?) -> Void) {
+        let path = "\(Path.reviews)/\(reviewID)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = ProductReviewMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 

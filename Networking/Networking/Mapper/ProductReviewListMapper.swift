@@ -18,7 +18,7 @@ struct ProductReviewListMapper: Mapper {
             .siteID: siteID
         ]
 
-        return try decoder.decode(ProductReviewListEnvelope.self, from: response).products
+        return try decoder.decode(ProductReviewListEnvelope.self, from: response).productReviews
     }
 }
 
@@ -28,9 +28,9 @@ struct ProductReviewListMapper: Mapper {
 /// This entity allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductReviewListEnvelope: Decodable {
-    let products: [ProductReview]
+    let productReviews: [ProductReview]
 
     private enum CodingKeys: String, CodingKey {
-        case products = "data"
+        case productReviews = "data"
     }
 }

@@ -8,7 +8,7 @@ final class ServiceLocator {
     private static var _stores: Stores = StoresManager(sessionManager: .standard)
 
     /// Provides the access point to the analytics.
-    /// - Returns: An iumplementation of the Analytics protocol. It defaults to WooAnalytics
+    /// - Returns: An implementation of the Analytics protocol. It defaults to WooAnalytics
     static var analytics: Analytics {
         return _analytics
     }
@@ -26,10 +26,21 @@ final class ServiceLocator {
 /// The setters declared in this extension are meant to be used only from the test bundle
 extension ServiceLocator {
     static func setAnalytics(_ mock: Analytics) {
+        guard isRunningTests() else {
+            return
+        }
+
         _analytics = mock
     }
 
     static func setStores(_ mock: Stores) {
         _stores = mock
+    }
+}
+
+
+private extension ServiceLocator {
+    static func isRunningTests() -> Bool {
+        return NSClassFromString("XCTestCase") != nil
     }
 }

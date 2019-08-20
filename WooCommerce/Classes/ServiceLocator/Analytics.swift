@@ -7,7 +7,7 @@ protocol Analytics {
     ///
     func initialize()
 
-    /// Track a spcific event without any associated properties
+    /// Track a specific event without any associated properties
     ///
     /// - Parameter stat: the event name
     ///
@@ -37,6 +37,8 @@ protocol Analytics {
     /// Sets the boolean flag to signal that the user has opted out of analytics
     /// It will trigger a call to `refreshUserData` before starting tracking again.
     ///
+    /// - Parameters:
+    ///   - optedOut: Boolean flag. If true, we stop tracking.
     func setUserHasOptedOut(_ optedOut: Bool)
 
     /// Check user opt-in for analytics

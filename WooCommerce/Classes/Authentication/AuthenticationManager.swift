@@ -56,6 +56,7 @@ class AuthenticationManager {
     func displayAuthentication(from presenter: UIViewController) {
         let prologueViewController = LoginPrologueViewController()
         let navigationController = LoginNavigationController(rootViewController: prologueViewController)
+        navigationController.modalPresentationStyle = .fullScreen
 
         presenter.present(navigationController, animated: true, completion: nil)
     }

@@ -66,7 +66,7 @@ final class ProductReviewsRemoteTests: XCTestCase {
     ///
     func testLoadProductReviewProperlyReturnsParsedProductReviews() {
         let remote = ProductReviewsRemote(network: network)
-        let expectation = self.expectation(description: "Load Single Product Reviews")
+        let expectation = self.expectation(description: "Load Single Product Review")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/\(sampleReviewID)", filename: "reviews-single")
 
@@ -89,6 +89,48 @@ final class ProductReviewsRemoteTests: XCTestCase {
             XCTAssertNil(review)
             XCTAssertNotNil(error)
             expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - Update single product review tests
+
+    /// Verifies that updateProductReview properly parses the `reviews-single` sample response.
+    ///
+    func testUpdateProductReviewProperlyReturnsParsedProductReviews() {
+        let remote = ProductReviewsRemote(network: network)
+        let expectation = self.expectation(description: "Update Product Review status")
+
+        let newStatusKey = "hold"
+
+        network.simulateResponse(requestUrlSuffix: "products/reviews/\(sampleReviewID)", filename: "reviews-single")
+        remote.updateProductReviewStatus(for: sampleSiteID,
+                                         reviewID: sampleReviewID,
+                                         statusKey: newStatusKey) { review, error in
+                                            XCTAssertNil(error)
+                                            XCTAssertNotNil(review)
+                                            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that updateProductReview properly relays Networking Layer errors.
+    ///
+    func testUpdateProductReviewProperlyRelaysNetwokingErrors() {
+        let remote = ProductReviewsRemote(network: network)
+        let expectation = self.expectation(description: "Update a single Product Review returns error")
+
+        let newStatusKey = "hold"
+
+        remote.updateProductReviewStatus(for: sampleSiteID,
+                                         reviewID: sampleReviewID,
+                                         statusKey: newStatusKey) { review, error in
+                                            XCTAssertNil(review)
+                                            XCTAssertNotNil(error)
+                                            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)

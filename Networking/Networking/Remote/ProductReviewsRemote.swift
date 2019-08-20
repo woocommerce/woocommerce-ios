@@ -49,6 +49,23 @@ public final class ProductReviewsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Updates the status of a specific `ProductReview`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the ProductReview.
+    ///     - reviewID: Identifier of the ProductReview.
+    ///     - statusKey: The new status
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductReviewStatus(for siteID: Int, reviewID: Int, statusKey: String, completion: @escaping (ProductReview?, Error?) -> Void) {
+        let path = "\(Path.reviews)/\(reviewID)"
+        let parameters = [ParameterKey.status: statusKey]
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductReviewMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -70,5 +87,6 @@ public extension ProductReviewsRemote {
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
         static let include: String    = "include"
+        static let status: String     = "status"
     }
 }

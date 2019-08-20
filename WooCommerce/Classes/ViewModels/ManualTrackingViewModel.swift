@@ -165,7 +165,7 @@ private extension AddTrackingViewModel {
             DDLogError("⛔️ Save selected Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func loadSelectedShipmentProvider() {
@@ -181,7 +181,7 @@ private extension AddTrackingViewModel {
             DDLogError("⛔️ Read selected Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -278,7 +278,7 @@ private extension AddCustomTrackingViewModel {
             DDLogError("⛔️ Save selected Custom Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func loadSelectedCustomShipmentProvider() {
@@ -294,6 +294,6 @@ private extension AddCustomTrackingViewModel {
             DDLogError("⛔️ Read selected Custom Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }

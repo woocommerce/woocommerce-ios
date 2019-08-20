@@ -102,7 +102,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        guard let defaultStoreID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
@@ -228,7 +228,7 @@ private extension AppDelegate {
     /// Sets up the WordPress Authenticator.
     ///
     func setupAnalytics() {
-        WooAnalytics.shared.initialize()
+        ServiceLocator.analytics.initialize()
     }
 
     /// Sets up the WordPress Authenticator.
@@ -266,7 +266,7 @@ private extension AppDelegate {
     /// Push Notifications: Authorization + Registration!
     ///
     func setupPushNotificationsManagerIfPossible() {
-        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
+        guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore == false else {
             return
         }
 
@@ -303,10 +303,10 @@ private extension AppDelegate {
         let versionOfLastRun = UserDefaults.standard[.versionOfLastRun] as? String
         if versionOfLastRun == nil {
             // First run after a fresh install
-            WooAnalytics.shared.track(.applicationInstalled)
+            ServiceLocator.analytics.track(.applicationInstalled)
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
-            WooAnalytics.shared.track(.applicationInstalled, withProperties: ["previous_version": versionOfLastRun ?? String()])
+            ServiceLocator.analytics.track(.applicationInstalled, withProperties: ["previous_version": versionOfLastRun ?? String()])
         }
 
         UserDefaults.standard[.versionOfLastRun] = currentVersion
@@ -321,7 +321,7 @@ extension AppDelegate {
     /// Whenever there is no default WordPress.com Account, let's display the Authentication UI.
     ///
     func displayAuthenticatorIfNeeded() {
-        guard StoresManager.shared.isAuthenticated == false else {
+        guard ServiceLocator.stores.isAuthenticated == false else {
             return
         }
 
@@ -341,7 +341,7 @@ extension AppDelegate {
     /// Whenever the app is authenticated but there is no Default StoreID: Let's display the Store Picker.
     ///
     func displayStorePickerIfNeeded() {
-        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore else {
+        guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore else {
             return
         }
         guard let tabBar = AppDelegate.shared.tabBarController,
@@ -358,11 +358,11 @@ extension AppDelegate {
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.
     ///
     func synchronizeEntitiesIfPossible() {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 
-        StoresManager.shared.synchronizeEntities()
+        ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
     }
 
     /// Runs whenever the Authentication Flow is completed successfully.

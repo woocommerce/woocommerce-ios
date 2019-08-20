@@ -204,18 +204,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        StoresManager.shared.authenticate(credentials: .init(authToken: wpcom.authToken))
+        ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in
             if let account = account {
                 let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
-                StoresManager.shared
+                ServiceLocator.stores
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)
             } else {
-                StoresManager.shared.synchronizeEntities(onCompletion: onCompletion)
+                ServiceLocator.stores.synchronizeEntities(onCompletion: onCompletion)
             }
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Tracks a given Analytics Event.
@@ -225,7 +225,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        WooAnalytics.shared.track(wooEvent)
+        ServiceLocator.analytics.track(wooEvent)
     }
 
     /// Tracks a given Analytics Event, with the specified properties.
@@ -235,7 +235,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        WooAnalytics.shared.track(wooEvent, withProperties: properties)
+        ServiceLocator.analytics.track(wooEvent, withProperties: properties)
     }
 
     /// Tracks a given Analytics Event, with the specified error.
@@ -245,6 +245,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        WooAnalytics.shared.track(wooEvent, withError: error)
+        ServiceLocator.analytics.track(wooEvent, withError: error)
     }
 }

@@ -142,7 +142,7 @@ private extension NotificationDetailsViewController {
     /// Refresh Control's Callback.
     ///
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        WooAnalytics.shared.track(.notificationsListPulledToRefresh)
+        ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
 
         synchronizeNotification(noteId: note.noteId) {
             sender.endRefreshing()
@@ -160,7 +160,7 @@ private extension NotificationDetailsViewController {
             onCompletion()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -343,26 +343,26 @@ private extension NotificationDetailsViewController {
             let siteID = commentBlock.meta.identifier(forKey: .site) {
 
             commentCell.onSpam = { [weak self] in
-                WooAnalytics.shared.track(.notificationReviewSpamTapped)
-                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.spam.rawValue])
+                ServiceLocator.analytics.track(.notificationReviewSpamTapped)
+                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.spam.rawValue])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .spam, undoStatus: .unspam)
             }
 
             commentCell.onTrash = { [weak self] in
-                WooAnalytics.shared.track(.notificationReviewTrashTapped)
-                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.trash.rawValue])
+                ServiceLocator.analytics.track(.notificationReviewTrashTapped)
+                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.trash.rawValue])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .trash, undoStatus: .untrash)
             }
 
             commentCell.onApprove = { [weak self] in
-                WooAnalytics.shared.track(.notificationReviewApprovedTapped)
-                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.approved.rawValue])
+                ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
+                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.approved.rawValue])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .approved, undoStatus: .unapproved)
             }
 
             commentCell.onUnapprove = { [weak self] in
-                WooAnalytics.shared.track(.notificationReviewApprovedTapped)
-                WooAnalytics.shared.track(.notificationReviewAction, withProperties: ["type": CommentStatus.unapproved.rawValue])
+                ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
+                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.unapproved.rawValue])
                 self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .unapproved, undoStatus: .approved)
             }
         }
@@ -379,12 +379,12 @@ private extension NotificationDetailsViewController {
     func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
         guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { (error) in
             guard let error = error else {
-                WooAnalytics.shared.track(.notificationReviewActionSuccess)
+                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
                 return
             }
 
             DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
+            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
             NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
         }) else {
             return
@@ -392,22 +392,22 @@ private extension NotificationDetailsViewController {
 
         guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { (error) in
             guard let error = error else {
-                WooAnalytics.shared.track(.notificationReviewActionSuccess)
+                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
                 NotificationDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
-                    WooAnalytics.shared.track(.notificationReviewActionUndo)
-                    StoresManager.shared.dispatch(undo)
+                    ServiceLocator.analytics.track(.notificationReviewActionUndo)
+                    ServiceLocator.stores.dispatch(undo)
                 })
                 return
             }
 
             DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            WooAnalytics.shared.track(.notificationReviewActionFailed, withError: error)
+            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
             NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
         }) else {
             return
         }
 
-        StoresManager.shared.dispatch(done)
+        ServiceLocator.stores.dispatch(done)
         navigationController?.popViewController(animated: true)
     }
 

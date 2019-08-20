@@ -9,6 +9,8 @@ final class OrderDetailsViewModelTests: XCTestCase {
     override func setUp() {
         order = MockOrders().sampleOrder()
         viewModel = OrderDetailsViewModel(order: order)
+        let analytics = WooAnalytics(analyticsProvider: MockupAnalyticsProvider())
+        ServiceLocator.setAnalytics(analytics)
         super.setUp()
     }
 
@@ -29,7 +31,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         viewModel.deleteTracking(mockShipmentTracking) { _ in }
 
-        let analytics = WooAnalytics.shared.analyticsProvider as! MockupAnalyticsProvider
+        let analytics = ServiceLocator.analytics.analyticsProvider as! MockupAnalyticsProvider
         let receivedEvents = analytics.receivedEvents
 
         XCTAssert(receivedEvents.contains(WooAnalyticsStat.orderTrackingDelete.rawValue))

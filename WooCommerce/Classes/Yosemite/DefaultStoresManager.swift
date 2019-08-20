@@ -3,13 +3,9 @@ import Yosemite
 
 
 
-// MARK: - StoresManager
+// MARK: - DefaultStoresManager
 //
-class StoresManager {
-
-    /// Shared Instance
-    ///
-    static var shared = StoresManager(sessionManager: .standard)
+class DefaultStoresManager: StoresManager {
 
     private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
 
@@ -133,7 +129,7 @@ class StoresManager {
     /// Prepares for changing the selected store and remains Authenticated.
     ///
     func removeDefaultStore() {
-        WooAnalytics.shared.refreshUserData()
+        ServiceLocator.analytics.refreshUserData()
         ZendeskManager.shared.reset()
         AppDelegate.shared.pushNotesManager.unregisterForRemoteNotifications()
         AppDelegate.shared.pushNotesManager.resetBadgeCount()
@@ -146,7 +142,7 @@ class StoresManager {
         state = DeauthenticatedState()
 
         sessionManager.reset()
-        WooAnalytics.shared.refreshUserData()
+        ServiceLocator.analytics.refreshUserData()
         ZendeskManager.shared.reset()
         AppDelegate.shared.storageManager.reset()
 
@@ -168,7 +164,7 @@ class StoresManager {
 
 // MARK: - Private Methods
 //
-private extension StoresManager {
+private extension DefaultStoresManager {
 
     /// Loads the Default Account into the current Session, if possible.
     ///
@@ -200,7 +196,7 @@ private extension StoresManager {
         let action = AccountAction.synchronizeAccount { [weak self] (account, error) in
             if let `self` = self, let account = account, self.isAuthenticated {
                 self.sessionManager.defaultAccount = account
-                WooAnalytics.shared.refreshUserData()
+                ServiceLocator.analytics.refreshUserData()
             }
 
             onCompletion(error)
@@ -222,7 +218,7 @@ private extension StoresManager {
                 let accountSettings = accountSettings,
                 self.isAuthenticated {
                 // Save the user's preference
-                WooAnalytics.shared.setUserHasOptedOut(accountSettings.tracksOptOut)
+                ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
             }
 
             onCompletion(error)

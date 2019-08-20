@@ -87,7 +87,7 @@ class TopPerformerDataViewController: UIViewController {
 extension TopPerformerDataViewController {
 
     func syncTopPerformers(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -108,7 +108,7 @@ extension TopPerformerDataViewController {
             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Renders Placeholder Content.

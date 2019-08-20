@@ -276,7 +276,7 @@ private extension NotificationsViewController {
             }
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Marks a specific Notification as read.
@@ -291,7 +291,7 @@ private extension NotificationsViewController {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
             }
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Marks the specified collection of Notifications as Read.
@@ -309,7 +309,7 @@ private extension NotificationsViewController {
             self?.updateMarkAllReadButtonState()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
@@ -328,7 +328,7 @@ private extension NotificationsViewController {
         }
 
         transitionToSyncingState()
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -370,7 +370,7 @@ private extension NotificationsViewController {
 
     func filterPredicate() -> NSPredicate {
         let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
 
         return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
@@ -590,7 +590,7 @@ private extension NotificationsViewController {
             guard let `self` = self else {
                 return
             }
-            guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                 return
             }
             guard let url = URL(string: site.url) else {

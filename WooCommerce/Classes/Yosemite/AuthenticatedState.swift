@@ -104,6 +104,6 @@ private extension AuthenticatedState {
 private extension AuthenticatedState {
     func resetServices() {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
-        StoresManager.shared.dispatch(resetStoredProviders)
+        ServiceLocator.stores.dispatch(resetStoredProviders)
     }
 }

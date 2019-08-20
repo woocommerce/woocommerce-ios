@@ -5,11 +5,18 @@ import Foundation
 ///
 final class ServiceLocator {
     private static var _analytics: Analytics = WooAnalytics(analyticsProvider: TracksProvider())
+    private static var _stores: StoresManager = DefaultStoresManager(sessionManager: .standard)
 
     /// Provides the access point to the analytics.
     /// - Returns: An implementation of the Analytics protocol. It defaults to WooAnalytics
     static var analytics: Analytics {
         return _analytics
+    }
+
+    /// Provides the access point to the stores.
+    /// - Returns: An implementation of the Stores protocol. It defaults to StoresManager
+    static var stores: StoresManager {
+        return _stores
     }
 }
 
@@ -24,6 +31,14 @@ extension ServiceLocator {
         }
 
         _analytics = mock
+    }
+
+    static func setStores(_ mock: StoresManager) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _stores = mock
     }
 }
 

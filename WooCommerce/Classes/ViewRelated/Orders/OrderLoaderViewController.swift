@@ -95,7 +95,7 @@ private extension OrderLoaderViewController {
         }
 
         state = .loading
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

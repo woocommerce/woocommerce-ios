@@ -189,7 +189,7 @@ private extension FulfillViewController {
         ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": order.orderID,
                                                                        "from": order.statusKey,
                                                                        "to": OrderStatusEnum.completed.rawValue])
-        StoresManager.shared.dispatch(done)
+        ServiceLocator.stores.dispatch(done)
 
         displayOrderCompleteNotice {
             ServiceLocator.analytics.track(.orderMarkedCompleteUndoButtonTapped)
@@ -197,7 +197,7 @@ private extension FulfillViewController {
             ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": orderID,
                                                                            "from": doneStatus,
                                                                            "to": undoStatus])
-            StoresManager.shared.dispatch(undo)
+            ServiceLocator.stores.dispatch(undo)
         }
 
         AppRatingManager.shared.incrementSignificantEvent()
@@ -510,7 +510,7 @@ private extension FulfillViewController {
                                                                     self?.syncTrackingsHiddingAddButtonIfNecessary()
         }
 
-        StoresManager.shared.dispatch(deleteTrackingAction)
+        ServiceLocator.stores.dispatch(deleteTrackingAction)
     }
 
     /// Displays the `Unable to delete tracking` Notice.
@@ -553,7 +553,7 @@ private extension FulfillViewController {
                                                                         onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func configureTrackingResultsController() {

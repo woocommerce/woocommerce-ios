@@ -3,13 +3,9 @@ import Yosemite
 
 
 
-// MARK: - StoresManager
+// MARK: - DefaultStoresManager
 //
-class StoresManager {
-
-    /// Shared Instance
-    ///
-    static var shared = StoresManager(sessionManager: .standard)
+class DefaultStoresManager: StoresManager {
 
     private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
 
@@ -168,7 +164,7 @@ class StoresManager {
 
 // MARK: - Private Methods
 //
-private extension StoresManager {
+private extension DefaultStoresManager {
 
     /// Loads the Default Account into the current Session, if possible.
     ///

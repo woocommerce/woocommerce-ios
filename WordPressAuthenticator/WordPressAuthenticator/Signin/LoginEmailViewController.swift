@@ -424,6 +424,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
             socialErrorVC.delegate = self
             socialErrorVC.loginFields = loginFields
+            socialErrorVC.modalPresentationStyle = .fullScreen
             present(socialErrorNav, animated: true) {}
         } else {
             errorToPresent = error

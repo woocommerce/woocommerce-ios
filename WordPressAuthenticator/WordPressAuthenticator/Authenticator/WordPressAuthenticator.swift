@@ -139,6 +139,7 @@ import WordPressUI
                 childController.loginFields.restrictToWPCom = restrictToWPCom
                 childController.showCancel = showCancel
             }
+            controller.modalPresentationStyle = .fullScreen
             presenter.present(controller, animated: animated, completion: nil)
         }
     }
@@ -165,6 +166,7 @@ import WordPressUI
         }
 
         let navController = LoginNavigationController(rootViewController: controller)
+        navController.modalPresentationStyle = .fullScreen
         presenter.present(navController, animated: true, completion: nil)
     }
 
@@ -176,7 +178,7 @@ import WordPressUI
 
         let controller = signinForWPOrg()
         let navController = LoginNavigationController(rootViewController: controller)
-
+        navController.modalPresentationStyle = .fullScreen
         presenter.present(navController, animated: true, completion: nil)
     }
 
@@ -274,6 +276,7 @@ import WordPressUI
         }
 
         let navController = LoginNavigationController(rootViewController: controller)
+        navController.modalPresentationStyle = .fullScreen
 
         // The way the magic link flow works some view controller might
         // still be presented when the app is resumed by tapping on the auth link.

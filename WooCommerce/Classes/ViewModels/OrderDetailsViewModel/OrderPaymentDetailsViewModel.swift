@@ -51,17 +51,33 @@ final class OrderPaymentDetailsViewModel {
         return currencyFormatter.formatAmount(order.total, with: order.currency) ?? String()
     }
 
+    var paymentTotal: String {
+        if order.datePaid == nil {
+            return currencyFormatter.formatAmount("0.00", with: order.currency) ?? String()
+        }
+
+        return totalValue
+    }
+
     /// Payment Summary
-    /// - returns: A full sentence summary of how much was paid and using what method.
+    /// - returns: A full sentence summary of when was paid and using what method.
     ///
     var paymentSummary: String? {
         if order.paymentMethodTitle.isEmpty {
             return nil
         }
 
+        if order.datePaid == nil {
+            return NSLocalizedString(
+                "Awaiting payment via \(order.paymentMethodTitle)",
+                comment: "Awaiting payment via (payment method title)"
+            )
+        }
+
+        let datePaid = order.datePaid!.toString(dateStyle: .medium, timeStyle: .none)
         return NSLocalizedString(
-            "Payment of \(totalValue) received via \(order.paymentMethodTitle)",
-            comment: "Payment of <currency symbol><payment total> received via (payment method title)"
+            "\(datePaid) via \(order.paymentMethodTitle)",
+            comment: "Payment on <date> received via (payment method title)"
         )
     }
 

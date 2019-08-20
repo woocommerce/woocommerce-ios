@@ -251,6 +251,9 @@ private extension StoreStatsAndTopPerformersViewController {
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         configureButtonBarBottomBorder()
+
+        // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
+        containerView.contentInsetAdjustmentBehavior = .never
     }
 
     func configurePeriodViewControllers() {

@@ -44,4 +44,20 @@ final class ProductReviewsRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that loadAllProductReviews properly relays Networking Layer errors.
+    ///
+    func testLoadAllProductReviewsProperlyRelaysNetwokingErrors() {
+        let remote = ProductReviewsRemote(network: network)
+        let expectation = self.expectation(description: "Load All Product Reviews returns error")
+
+        remote.loadAllProductReviews(for: sampleSiteID) { reviews, error in
+            XCTAssertNil(reviews)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
 }

@@ -608,6 +608,7 @@
 				74AE244C2113704C00CA8C54 /* OrderStatsRemoteTests.swift */,
 				D8FBFF1B22D51C34006E3336 /* OrderStatsRemoteV4Tests.swift */,
 				74749B9422413119005C4CF2 /* ProductsRemoteTests.swift */,
+				D88D5A4C230BD010007B6E01 /* ProductReviewsRemoteTests.swift */,
 				7412A8F121B6E47A005D182A /* ReportRemoteTests.swift */,
 				743E84F9221742E300FAC9D7 /* ShipmentsRemoteTests.swift */,
 				74AB5B5021AF426D00859C12 /* SiteAPIRemoteTests.swift */,
@@ -942,7 +943,6 @@
 		B5C6FCCB20A34B5E00A4F8E4 /* Mapper */ = {
 			isa = PBXGroup;
 			children = (
-				D88D5A4C230BD010007B6E01 /* ProductReviewsRemoteTests.swift */,
 				D8FBFF0E22D3B25E006E3336 /* WooAPIVersionTests.swift */,
 				B505F6D220BEE3A500BB1B69 /* AccountMapperTests.swift */,
 				9387A6EF226E3F15001B53D7 /* AccountSettingsMapperTests.swift */,

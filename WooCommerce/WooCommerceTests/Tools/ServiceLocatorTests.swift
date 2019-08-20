@@ -20,6 +20,6 @@ final class ServiceLocatorTests: XCTestCase {
     func testStoresDefaultsToStoresManager() {
         let stores = ServiceLocator.stores
 
-        XCTAssertTrue(stores is StoresManager)
+        XCTAssertTrue(stores is DefaultStoresManager)
     }
 }

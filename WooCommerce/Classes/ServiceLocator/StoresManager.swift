@@ -3,7 +3,7 @@ import Yosemite
 
 /// Abstracts the Stores coordination
 ///
-protocol Stores {
+protocol StoresManager {
 
     /// Forwards the Action to the current State.
     ///
@@ -20,17 +20,17 @@ protocol Stores {
     /// Switches the internal state to Authenticated.
     ///
     @discardableResult
-    func authenticate(credentials: Credentials) -> Stores
+    func authenticate(credentials: Credentials) -> StoresManager
 
     /// Switches the state to a Deauthenticated one.
     ///
     @discardableResult
-    func deauthenticate() -> Stores
+    func deauthenticate() -> StoresManager
 
     /// Synchronizes all of the Session's Entities.
     ///
     @discardableResult
-    func synchronizeEntities(onCompletion: (() -> Void)?) -> Stores
+    func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager
 
     /// Updates the Default Store as specified.
     ///

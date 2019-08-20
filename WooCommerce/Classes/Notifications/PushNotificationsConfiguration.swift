@@ -21,7 +21,7 @@ struct PushNotificationsConfiguration {
 
     /// Reference to the StoresManager that should receive any Yosemite Actions.
     ///
-    var storesManager: Stores {
+    var storesManager: StoresManager {
         return storesManagerClosure()
     }
 
@@ -47,7 +47,7 @@ struct PushNotificationsConfiguration {
 
     /// StoresManager Closure: Returns a reference to StoresManager
     ///
-    private let storesManagerClosure: () -> Stores
+    private let storesManagerClosure: () -> StoresManager
 
     /// SupportManagerAdapter Closure: Returns a reference to the SupportManagerAdapter
     ///
@@ -64,7 +64,7 @@ struct PushNotificationsConfiguration {
     ///
     init(application: @autoclosure @escaping () -> ApplicationAdapter,
          defaults: @autoclosure @escaping () -> UserDefaults,
-         storesManager: @autoclosure @escaping () -> Stores,
+         storesManager: @autoclosure @escaping () -> StoresManager,
          supportManager: @autoclosure @escaping () -> SupportManagerAdapter,
          userNotificationsCenter: @autoclosure @escaping () -> UserNotificationsCenterAdapter) {
 

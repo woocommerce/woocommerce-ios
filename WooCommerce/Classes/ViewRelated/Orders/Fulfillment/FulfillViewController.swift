@@ -185,16 +185,16 @@ private extension FulfillViewController {
         let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: doneStatus)
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
-        WooAnalytics.shared.track(.orderFulfillmentCompleteButtonTapped)
-        WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": order.orderID,
+        ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
+        ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": order.orderID,
                                                                        "from": order.statusKey,
                                                                        "to": OrderStatusEnum.completed.rawValue])
         StoresManager.shared.dispatch(done)
 
         displayOrderCompleteNotice {
-            WooAnalytics.shared.track(.orderMarkedCompleteUndoButtonTapped)
-            WooAnalytics.shared.track(.orderStatusChangeUndo, withProperties: ["id": orderID])
-            WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": orderID,
+            ServiceLocator.analytics.track(.orderMarkedCompleteUndoButtonTapped)
+            ServiceLocator.analytics.track(.orderStatusChangeUndo, withProperties: ["id": orderID])
+            ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": orderID,
                                                                            "from": doneStatus,
                                                                            "to": undoStatus])
             StoresManager.shared.dispatch(undo)
@@ -210,11 +210,11 @@ private extension FulfillViewController {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-                WooAnalytics.shared.track(.orderStatusChangeSuccess)
+                ServiceLocator.analytics.track(.orderStatusChangeSuccess)
                 return
             }
 
-            WooAnalytics.shared.track(.orderStatusChangeFailed, withError: error)
+            ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
             DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
 
             self.displayErrorNotice(orderID: orderID)
@@ -432,7 +432,7 @@ extension FulfillViewController: UITableViewDelegate {
         switch sections[indexPath.section].rows[indexPath.row] {
 
         case .trackingAdd:
-            WooAnalytics.shared.track(.orderFulfillmentAddTrackingButtonTapped)
+            ServiceLocator.analytics.track(.orderFulfillmentAddTrackingButtonTapped)
 
             let viewModel = AddTrackingViewModel(order: order)
             let addTracking = ManualTrackingViewController(viewModel: viewModel)
@@ -466,7 +466,7 @@ private extension FulfillViewController {
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
         actionSheet.addCancelActionWithTitle(DeleteAction.cancel)
         actionSheet.addDestructiveActionWithTitle(DeleteAction.delete) { [weak self] _ in
-            WooAnalytics.shared.track(.orderFulfillmentDeleteTrackingButtonTapped)
+            ServiceLocator.analytics.track(.orderFulfillmentDeleteTrackingButtonTapped)
             self?.deleteTracking(shipmentTracking)
         }
 
@@ -489,7 +489,7 @@ private extension FulfillViewController {
         let statusKey = order.statusKey
         let providerName = tracking.trackingProvider ?? ""
 
-        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+        ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
                                                                          "status": statusKey,
                                                                          "carrier": providerName,
                                                                          "source": "order_fulfill"])
@@ -500,13 +500,13 @@ private extension FulfillViewController {
                                                                     if let error = error {
                                                                         DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                        ServiceLocator.analytics.track(.orderTrackingDeleteFailed,
                                                                                                   withError: error)
                                                                         self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
                                                                         return
                                                                     }
 
-                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
+                                                                    ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
                                                                     self?.syncTrackingsHiddingAddButtonIfNecessary()
         }
 
@@ -548,7 +548,7 @@ private extension FulfillViewController {
                                                                             return
                                                                         }
 
-                                                                        WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+                                                                        ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
 
                                                                         onCompletion?(nil)
         }

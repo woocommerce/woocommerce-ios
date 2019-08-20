@@ -173,7 +173,7 @@ extension OrderDetailsViewModel {
         switch dataSource.sections[indexPath.section].rows[indexPath.row] {
 
         case .addOrderNote:
-            WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
+            ServiceLocator.analytics.track(.orderDetailAddNoteButtonTapped)
 
             let newNoteViewController = NewNoteViewController()
             newNoteViewController.viewModel = self
@@ -181,7 +181,7 @@ extension OrderDetailsViewModel {
             let navController = WooNavigationController(rootViewController: newNoteViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .trackingAdd:
-            WooAnalytics.shared.track(.orderDetailAddTrackingButtonTapped)
+            ServiceLocator.analytics.track(.orderDetailAddTrackingButtonTapped)
 
             let addTrackingViewModel = AddTrackingViewModel(order: order)
             let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
@@ -195,10 +195,10 @@ extension OrderDetailsViewModel {
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .details:
-            WooAnalytics.shared.track(.orderDetailProductDetailTapped)
+            ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         case .billingEmail:
-            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
+            ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
             displayEmailComposerIfPossible(from: viewController)
         case .billingPhone:
             displayContactCustomerAlert(from: viewController)
@@ -236,12 +236,12 @@ private extension OrderDetailsViewModel {
                 return
             }
 
-            WooAnalytics.shared.track(.orderDetailCustomerPhoneOptionTapped)
+            ServiceLocator.analytics.track(.orderDetailCustomerPhoneOptionTapped)
             self.callCustomerIfPossible(at: phoneURL)
         }
 
         actionSheet.addDefaultActionWithTitle(ContactAction.message) { [weak self] _ in
-            WooAnalytics.shared.track(.orderDetailCustomerSMSOptionTapped)
+            ServiceLocator.analytics.track(.orderDetailCustomerSMSOptionTapped)
             self?.displayMessageComposerIfPossible(from: from)
         }
 
@@ -251,7 +251,7 @@ private extension OrderDetailsViewModel {
 
         from.present(actionSheet, animated: true)
 
-        WooAnalytics.shared.track(.orderDetailCustomerPhoneMenuTapped)
+        ServiceLocator.analytics.track(.orderDetailCustomerPhoneMenuTapped)
     }
 
     /// Attempts to perform a phone call at the specified URL
@@ -262,7 +262,7 @@ private extension OrderDetailsViewModel {
         }
 
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
-        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": order.orderID,
+        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
                                                                         "status": order.statusKey,
                                                                         "type": "call"])
 
@@ -306,7 +306,7 @@ extension OrderDetailsViewModel {
                                                                             return
                                                                         }
 
-                                                                        WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+                                                                        ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
 
                                                                         onCompletion?(nil)
         }
@@ -325,7 +325,7 @@ extension OrderDetailsViewModel {
             }
 
             self?.orderNotes = orderNotes
-            WooAnalytics.shared.track(.orderNotesLoaded, withProperties: ["id": self?.order.orderID ?? 0])
+            ServiceLocator.analytics.track(.orderNotesLoaded, withProperties: ["id": self?.order.orderID ?? 0])
             onCompletion?(nil)
         }
 
@@ -355,7 +355,7 @@ extension OrderDetailsViewModel {
         let statusKey = order.statusKey
         let providerName = tracking.trackingProvider ?? ""
 
-        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+        ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
                                                                          "status": statusKey,
                                                                          "carrier": providerName,
                                                                          "source": "order_detail"])
@@ -366,13 +366,13 @@ extension OrderDetailsViewModel {
                                                                     if let error = error {
                                                                         DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
 
-                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                        ServiceLocator.analytics.track(.orderTrackingDeleteFailed,
                                                                                                   withError: error)
                                                                         onCompletion(error)
                                                                         return
                                                                     }
 
-                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
+                                                                    ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
                                                                     onCompletion(nil)
 
         }

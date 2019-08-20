@@ -229,14 +229,14 @@ private extension NotificationsViewController {
 private extension NotificationsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        WooAnalytics.shared.track(.notificationsListPulledToRefresh)
+        ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
         synchronizeNotifications {
             sender.endRefreshing()
         }
     }
 
     @IBAction func markAllAsRead() {
-        WooAnalytics.shared.track(.notificationsListReadAllTapped)
+        ServiceLocator.analytics.track(.notificationsListReadAllTapped)
         if unreadNotes.isEmpty {
             DDLogVerbose("# Every single notification is already marked as Read!")
             return
@@ -319,7 +319,7 @@ private extension NotificationsViewController {
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
             } else {
-                WooAnalytics.shared.track(.notificationListLoaded)
+                ServiceLocator.analytics.track(.notificationListLoaded)
             }
 
             self.refreshResultsPredicate()
@@ -338,7 +338,7 @@ private extension NotificationsViewController {
     func displayRatingPrompt() {
         defer {
             if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                WooAnalytics.shared.track(wooEvent)
+                ServiceLocator.analytics.track(wooEvent)
             }
         }
 
@@ -475,7 +475,7 @@ extension NotificationsViewController {
             presentNotificationDetails(for: note)
         }
 
-        WooAnalytics.shared.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
+        ServiceLocator.analytics.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
                                                                          "already_read": note.read ])
 
         markAsReadIfNeeded(note: note)
@@ -597,7 +597,7 @@ private extension NotificationsViewController {
                 return
             }
 
-            WooAnalytics.shared.track(.notificationShareStoreButtonTapped)
+            ServiceLocator.analytics.track(.notificationShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 

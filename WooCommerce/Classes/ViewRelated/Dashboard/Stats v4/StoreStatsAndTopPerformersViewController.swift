@@ -340,7 +340,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                             if let error = error {
                                                                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
                                                             } else {
-                                                                WooAnalytics.shared.track(.dashboardTopPerformersLoaded,
+                                                                ServiceLocator.analytics.track(.dashboardTopPerformersLoaded,
                                                                                           withProperties: [
                                                                                             "granularity": timeRange.topEarnerStatsGranularity.rawValue
                                                                     ])
@@ -392,7 +392,7 @@ private extension StoreStatsAndTopPerformersViewController {
             return
         }
 
-        WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
     }
 }
 

@@ -190,10 +190,10 @@ extension DashboardStatsV3ViewController: NewOrdersDelegate {
     func didUpdateNewOrdersData(hasNewOrders: Bool) {
         if hasNewOrders {
             applyUnhideAnimation(for: newOrdersContainerView)
-            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "true"])
+            ServiceLocator.analytics.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "true"])
         } else {
             applyHideAnimation(for: newOrdersContainerView)
-            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "false"])
+            ServiceLocator.analytics.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "false"])
         }
     }
 }

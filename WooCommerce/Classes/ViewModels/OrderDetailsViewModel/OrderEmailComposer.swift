@@ -10,7 +10,7 @@ final class OrderEmailComposer: NSObject, MFMailComposeViewControllerDelegate {
         }
 
         displayEmailComposer(for: email, from: from)
-        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": order.orderID,
+        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
                                                                         "status": order.statusKey,
                                                                         "type": "email"])
     }

@@ -280,7 +280,7 @@ private extension StoreStatsViewController {
             return
         }
 
-        WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
     }
 }
 

@@ -117,7 +117,7 @@ private extension NewOrdersViewController {
             return
         }
 
-       WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
+       ServiceLocator.analytics.track(.dashboardNewOrdersButtonTapped)
        MainTabBarController.presentOrders(statusFilter: pendingStatus)
     }
 

@@ -225,7 +225,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        WooAnalytics.shared.track(wooEvent)
+        ServiceLocator.analytics.track(wooEvent)
     }
 
     /// Tracks a given Analytics Event, with the specified properties.
@@ -235,7 +235,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        WooAnalytics.shared.track(wooEvent, withProperties: properties)
+        ServiceLocator.analytics.track(wooEvent, withProperties: properties)
     }
 
     /// Tracks a given Analytics Event, with the specified error.
@@ -245,6 +245,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        WooAnalytics.shared.track(wooEvent, withError: error)
+        ServiceLocator.analytics.track(wooEvent, withError: error)
     }
 }

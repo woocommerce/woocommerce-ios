@@ -156,12 +156,12 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        WooAnalytics.shared.track(.settingsTapped)
+        ServiceLocator.analytics.track(.settingsTapped)
         performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
     }
 
     func pullToRefresh() {
-        WooAnalytics.shared.track(.dashboardPulledToRefresh)
+        ServiceLocator.analytics.track(.dashboardPulledToRefresh)
         reloadData()
     }
 

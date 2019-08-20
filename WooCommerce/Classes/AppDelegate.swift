@@ -228,7 +228,7 @@ private extension AppDelegate {
     /// Sets up the WordPress Authenticator.
     ///
     func setupAnalytics() {
-        WooAnalytics.shared.initialize()
+        ServiceLocator.analytics.initialize()
     }
 
     /// Sets up the WordPress Authenticator.
@@ -303,10 +303,10 @@ private extension AppDelegate {
         let versionOfLastRun = UserDefaults.standard[.versionOfLastRun] as? String
         if versionOfLastRun == nil {
             // First run after a fresh install
-            WooAnalytics.shared.track(.applicationInstalled)
+            ServiceLocator.analytics.track(.applicationInstalled)
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
-            WooAnalytics.shared.track(.applicationInstalled, withProperties: ["previous_version": versionOfLastRun ?? String()])
+            ServiceLocator.analytics.track(.applicationInstalled, withProperties: ["previous_version": versionOfLastRun ?? String()])
         }
 
         UserDefaults.standard[.versionOfLastRun] = currentVersion

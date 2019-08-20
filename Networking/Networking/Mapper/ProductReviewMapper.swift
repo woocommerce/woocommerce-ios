@@ -29,7 +29,7 @@ struct ProductReviewMapper: Mapper {
 /// ProductReviewEnvelope Disposable Entity
 ///
 /// `Load Product Review` endpoint returns the requested product document in the `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
+/// allows us to parse all the things with JSONDecoder.
 ///
 private struct ProductReviewEnvelope: Decodable {
     let productReview: ProductReview

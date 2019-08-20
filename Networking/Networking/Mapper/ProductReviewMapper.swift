@@ -38,4 +38,3 @@ private struct ProductReviewEnvelope: Decodable {
         case productReview = "data"
     }
 }
-

@@ -53,6 +53,12 @@ final class ServiceLocator {
     static var pushNotesManager: PushNotesManager {
         return _pushNotesManager
     }
+
+    /// Provides the access point to the AuthenticationManager.
+    /// - Returns: An implementation of the AuthenticationManager protocol. It defaults to DefaultAuthenticationManager
+    static var authenticationManager: Authentication {
+        return _authenticationManager
+    }
 }
 
 

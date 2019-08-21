@@ -6,7 +6,7 @@ import Yosemite
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
-class AuthenticationManager {
+class AuthenticationManager: Authentication {
 
     /// Store Picker Coordinator
     ///

@@ -204,7 +204,7 @@ private extension StorePickerViewController {
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
         accountHeaderView.isHelpButtonEnabled = configuration == .login
-        accountHeaderView.onHelpRequested = { AppDelegate.shared.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
+        accountHeaderView.onHelpRequested = { ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
     }
 
     func setupNavigation() {
@@ -368,7 +368,7 @@ private extension StorePickerViewController {
 
         ServiceLocator.stores.deauthenticate()
 
-        let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
+        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
         navigationController.setViewControllers([loginViewController], animated: true)
     }
 

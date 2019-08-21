@@ -23,10 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     var window: UIWindow?
 
-    /// WordPressAuthenticator Wrapper
-    ///
-    let authenticationManager = AuthenticationManager()
-
     /// CoreData Stack
     ///
     let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
@@ -90,7 +86,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError()
         }
 
-        return authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+        return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
@@ -226,7 +222,7 @@ private extension AppDelegate {
     /// Sets up the WordPress Authenticator.
     ///
     func setupAuthenticationManager() {
-        authenticationManager.initialize()
+        ServiceLocator.authenticationManager.initialize()
     }
 
     /// Sets up CocoaLumberjack logging.
@@ -328,7 +324,7 @@ extension AppDelegate {
             fatalError()
         }
 
-        authenticationManager.displayAuthentication(from: rootViewController)
+        ServiceLocator.authenticationManager.displayAuthentication(from: rootViewController)
     }
 
     /// Whenever the app is authenticated but there is no Default StoreID: Let's display the Store Picker.

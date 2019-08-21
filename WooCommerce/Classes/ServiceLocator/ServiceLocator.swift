@@ -26,9 +26,8 @@ final class ServiceLocator {
     private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName)
 
     /// Cocoalumberjack DDLog
-    /// The type definition is needed because DDFilelogger doesn't have a nullability specifier (but is still a non-optional).
     ///
-    private static var _fileLogger: DDFileLogger = DDFileLogger()
+    private static var _fileLogger: Logs = DDFileLogger()
 
     /// Provides the access point to the analytics.
     /// - Returns: An implementation of the Analytics protocol. It defaults to WooAnalytics
@@ -66,6 +65,12 @@ final class ServiceLocator {
     /// of the CoreDataManager should be subclasses
     static var storageManager: CoreDataManager {
         return _storageManager
+    }
+
+    /// Provides the access point to the FileLogger.
+    /// - Returns: An implementation of the Logs protocol. It defaults to DDFileLogger
+    static var fileLogger: Logs {
+        return _fileLogger
     }
 }
 
@@ -120,6 +125,14 @@ extension ServiceLocator {
         }
 
         _storageManager = mock
+    }
+
+    static func setFileLogger(_ mock: Logs) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _fileLogger = mock
     }
 }
 

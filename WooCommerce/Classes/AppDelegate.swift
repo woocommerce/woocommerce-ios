@@ -23,11 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     var window: UIWindow?
 
-    /// Cocoalumberjack DDLog
-    /// The type definition is needed because DDFilelogger doesn't have a nullability specifier (but is still a non-optional).
-    ///
-    let fileLogger: DDFileLogger = DDFileLogger()
-
     /// Tab Bar Controller
     ///
     var tabBarController: MainTabBarController? {
@@ -224,11 +219,15 @@ private extension AppDelegate {
     /// Sets up CocoaLumberjack logging.
     ///
     func setupCocoaLumberjack() {
+        var fileLogger = ServiceLocator.fileLogger
         fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
 
+        guard let logger = fileLogger as? DDFileLogger else {
+            return
+        }
         DDLog.add(DDOSLogger.sharedInstance)
-        DDLog.add(fileLogger)
+        DDLog.add(logger)
     }
 
     /// Sets up the current Log Leve.

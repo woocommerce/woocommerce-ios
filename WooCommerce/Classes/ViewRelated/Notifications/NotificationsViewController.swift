@@ -254,7 +254,7 @@ private extension NotificationsViewController {
     /// Nukes the BadgeCount
     ///
     func resetApplicationBadge() {
-        AppDelegate.shared.pushNotesManager.resetBadgeCount()
+        ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
     /// Update the last seen time for notifications

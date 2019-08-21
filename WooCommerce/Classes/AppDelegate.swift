@@ -27,10 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let authenticationManager = AuthenticationManager()
 
-    /// Push Notifications Manager
-    ///
-    let pushNotesManager = PushNotificationsManager()
-
     /// CoreData Stack
     ///
     let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
@@ -102,17 +98,17 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             return
         }
 
-        pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
+        ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        pushNotesManager.registrationDidFail(with: error)
+        ServiceLocator.pushNotesManager.registrationDidFail(with: error)
     }
 
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
+        ServiceLocator.pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {

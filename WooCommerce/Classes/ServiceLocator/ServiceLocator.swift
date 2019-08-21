@@ -37,13 +37,21 @@ final class ServiceLocator {
     }
 
     /// Provides the access point to the stores.
-    /// - Returns: An implementation of the Stores protocol. It defaults to StoresManager
+    /// - Returns: An implementation of the StoresManager protocol. It defaults to DefaultStoresManager
     static var stores: StoresManager {
         return _stores
     }
 
+    /// Provides the access point to the NoticePresenter.
+    /// - Returns: An implementation of the NoticePresenter protocol. It defaults to DefaultNoticePresenter
     static var noticePresenter: Notices {
         return _noticePresenter
+    }
+
+    /// Provides the access point to the PushNotesManager.
+    /// - Returns: An implementation of the PushNotesManager protocol. It defaults to PushNotificationsManager
+    static var pushNotesManager: PushNotesManager {
+        return _pushNotesManager
     }
 }
 

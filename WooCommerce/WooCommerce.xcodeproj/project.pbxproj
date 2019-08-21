@@ -381,6 +381,7 @@
 		D8C11A6222E24C4A00D4A88D /* PaymentTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A6122E24C4A00D4A88D /* PaymentTableViewCellTests.swift */; };
 		D8C251D2230CA90200F49782 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251D1230CA90200F49782 /* StoresManager.swift */; };
 		D8C251D9230D256F00F49782 /* Notices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251D8230D256F00F49782 /* Notices.swift */; };
+		D8C251DB230D288A00F49782 /* PushNotesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251DA230D288A00F49782 /* PushNotesManager.swift */; };
 		D8C62471227AE0030011A7D6 /* SiteCountry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C62470227AE0030011A7D6 /* SiteCountry.swift */; };
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
 		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
@@ -811,6 +812,7 @@
 		D8C11A6122E24C4A00D4A88D /* PaymentTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PaymentTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/PaymentTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D8C251D1230CA90200F49782 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		D8C251D8230D256F00F49782 /* Notices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notices.swift; sourceTree = "<group>"; };
+		D8C251DA230D288A00F49782 /* PushNotesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotesManager.swift; sourceTree = "<group>"; };
 		D8C62470227AE0030011A7D6 /* SiteCountry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCountry.swift; sourceTree = "<group>"; };
 		D8D15F82230A17A000D48B3F /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		D8D15F84230A18AB00D48B3F /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
@@ -1740,6 +1742,7 @@
 				D8D15F82230A17A000D48B3F /* ServiceLocator.swift */,
 				D8D15F84230A18AB00D48B3F /* Analytics.swift */,
 				D8C251D8230D256F00F49782 /* Notices.swift */,
+				D8C251DA230D288A00F49782 /* PushNotesManager.swift */,
 			);
 			path = ServiceLocator;
 			sourceTree = "<group>";
@@ -2231,6 +2234,7 @@
 				02820F3422C257B700DE0D37 /* UITableView+FooterHelpers.swift in Sources */,
 				B557DA1520979904005962F4 /* CustomerNoteTableViewCell.swift in Sources */,
 				CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */,
+				D8C251DB230D288A00F49782 /* PushNotesManager.swift in Sources */,
 				748D34E12148291E00E21A2F /* TopPerformerDataViewController.swift in Sources */,
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,

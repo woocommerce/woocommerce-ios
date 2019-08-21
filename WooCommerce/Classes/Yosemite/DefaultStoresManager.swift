@@ -131,8 +131,8 @@ class DefaultStoresManager: StoresManager {
     func removeDefaultStore() {
         ServiceLocator.analytics.refreshUserData()
         ZendeskManager.shared.reset()
-        AppDelegate.shared.pushNotesManager.unregisterForRemoteNotifications()
-        AppDelegate.shared.pushNotesManager.resetBadgeCount()
+        ServiceLocator.pushNotesManager.unregisterForRemoteNotifications()
+        ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
     /// Switches the state to a Deauthenticated one.

@@ -22,26 +22,12 @@ final class PaymentTableViewCell: UITableViewCell {
     @IBOutlet private weak var totalLabel: UILabel!
     @IBOutlet private weak var totalValue: UILabel!
 
-    @IBOutlet private var footerView: UIView?
-    @IBOutlet private weak var separatorLine: UIView?
-    @IBOutlet private weak var footerLabel: UILabel?
+    @IBOutlet private var footerView: UIView!
+    @IBOutlet private weak var separatorLine: UIView!
+    @IBOutlet weak var paidByCustomerLabel: UILabel!
+    @IBOutlet weak var totalPaidByCustomerLabel: UILabel!
+    @IBOutlet private weak var footerLabel: UILabel!
     @IBOutlet private weak var totalBottomConstraint: NSLayoutConstraint?
-
-    private var footerText: String? {
-        get {
-            return footerLabel?.text
-        }
-        set {
-            guard newValue != nil, newValue?.isEmpty == false else {
-                separatorLine?.removeFromSuperview()
-                footerLabel?.removeFromSuperview()
-                footerView?.removeFromSuperview()
-                totalBottomConstraint?.constant = 0
-                return
-            }
-            footerLabel?.text = newValue
-        }
-    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -56,9 +42,10 @@ final class PaymentTableViewCell: UITableViewCell {
         totalLabel.applyHeadlineStyle()
         totalValue.applyHeadlineStyle()
 
-        footerLabel?.text = nil
-        footerLabel?.applyFootnoteStyle()
         separatorLine?.backgroundColor = StyleManager.cellSeparatorColor
+        paidByCustomerLabel?.applyHeadlineStyle()
+        totalPaidByCustomerLabel?.applyHeadlineStyle()
+        footerLabel?.applySubheadlineStyle()
     }
 
     func configure(with viewModel: OrderPaymentDetailsViewModel) {
@@ -79,7 +66,9 @@ final class PaymentTableViewCell: UITableViewCell {
         totalLabel.text = Titles.totalLabel
         totalValue.text = viewModel.totalValue
 
-        footerText = viewModel.paymentSummary
+        paidByCustomerLabel?.text = Titles.paidByCustomer
+        totalPaidByCustomerLabel?.text = viewModel.paymentTotal
+        footerLabel.text = viewModel.paymentSummary
 
         accessibilityElements = [subtotalLabel as Any,
                                  subtotalValue as Any,
@@ -90,25 +79,27 @@ final class PaymentTableViewCell: UITableViewCell {
                                  taxesLabel as Any,
                                  taxesValue as Any,
                                  totalLabel as Any,
-                                 totalValue as Any]
-
-        if let footerText = footerText {
-            accessibilityElements?.append(footerText)
-        }
+                                 totalValue as Any,
+                                 paidByCustomerLabel as Any,
+                                 totalPaidByCustomerLabel as Any,
+                                 footerLabel as Any
+                                ]
     }
 }
 
 
 private extension PaymentTableViewCell {
     enum Titles {
-        static let subtotalLabel = NSLocalizedString("Subtotal",
-                                                     comment: "Subtotal label for payment view")
+        static let subtotalLabel = NSLocalizedString("Product Total",
+                                                     comment: "Product Total label for payment view")
         static let shippingLabel = NSLocalizedString("Shipping",
                                                      comment: "Shipping label for payment view")
         static let taxesLabel = NSLocalizedString("Taxes",
                                                   comment: "Taxes label for payment view")
-        static let totalLabel = NSLocalizedString("Total",
-                                                  comment: "Total label for payment view")
+        static let totalLabel = NSLocalizedString("Order Total",
+                                                  comment: "Order Total label for payment view")
+        static let paidByCustomer = NSLocalizedString("Paid by customer",
+                                                      comment: "Paid by customer label for payment view")
     }
 }
 
@@ -155,7 +146,15 @@ extension PaymentTableViewCell {
         return totalValue
     }
 
-    func getFooterText() -> String? {
-        return footerText
+    func getPaidByCustomerLabel() -> UILabel {
+        return paidByCustomerLabel
+    }
+
+    func getTotalPaidByCustomerLabel() -> UILabel {
+        return totalPaidByCustomerLabel
+    }
+
+    func getFooterLabel() -> UILabel {
+        return footerLabel
     }
 }

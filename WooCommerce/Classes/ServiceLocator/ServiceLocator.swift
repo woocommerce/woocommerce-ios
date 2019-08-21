@@ -1,4 +1,6 @@
 import Foundation
+import CocoaLumberjack
+import Storage
 
 
 /// Provides global depedencies.
@@ -6,6 +8,27 @@ import Foundation
 final class ServiceLocator {
     private static var _analytics: Analytics = WooAnalytics(analyticsProvider: TracksProvider())
     private static var _stores: StoresManager = DefaultStoresManager(sessionManager: .standard)
+
+    /// WordPressAuthenticator Wrapper
+    ///
+    private static var _authenticationManager = AuthenticationManager()
+
+    /// In-App Notifications Presenter
+    ///
+    private static var _noticePresenter = NoticePresenter()
+
+    /// Push Notifications Manager
+    ///
+    private static var _pushNotesManager = PushNotificationsManager()
+
+    /// CoreData Stack
+    ///
+    private static var _storageManager = CoreDataManager(name: WooConstants.databaseStackName)
+
+    /// Cocoalumberjack DDLog
+    /// The type definition is needed because DDFilelogger doesn't have a nullability specifier (but is still a non-optional).
+    ///
+    private static var _fileLogger: DDFileLogger = DDFileLogger()
 
     /// Provides the access point to the analytics.
     /// - Returns: An implementation of the Analytics protocol. It defaults to WooAnalytics

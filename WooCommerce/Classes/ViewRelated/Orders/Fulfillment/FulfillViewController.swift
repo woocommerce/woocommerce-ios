@@ -35,7 +35,7 @@ final class FulfillViewController: UIViewController {
     /// ResultsController fetching ShipemntTracking data
     ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
                                     self.order.siteID,
                                     self.order.orderID)

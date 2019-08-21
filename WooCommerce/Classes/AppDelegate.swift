@@ -23,10 +23,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     var window: UIWindow?
 
-    /// CoreData Stack
-    ///
-    let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
-
     /// Cocoalumberjack DDLog
     /// The type definition is needed because DDFilelogger doesn't have a nullability specifier (but is still a non-optional).
     ///

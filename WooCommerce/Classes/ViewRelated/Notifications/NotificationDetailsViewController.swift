@@ -16,7 +16,7 @@ class NotificationDetailsViewController: UIViewController {
     /// EntityListener: Update / Deletion Notifications.
     ///
     private lazy var entityListener: EntityListener<Note> = {
-        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: note)
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: note)
     }()
 
     /// Pull To Refresh Support.

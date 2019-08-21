@@ -11,15 +11,15 @@ final class ServiceLocator {
 
     /// WordPressAuthenticator Wrapper
     ///
-    private static var _authenticationManager = AuthenticationManager()
+    private static var _authenticationManager: Authentication = AuthenticationManager()
 
     /// In-App Notifications Presenter
     ///
-    private static var _noticePresenter = NoticePresenter()
+    private static var _noticePresenter: Notices = NoticePresenter()
 
     /// Push Notifications Manager
     ///
-    private static var _pushNotesManager = PushNotificationsManager()
+    private static var _pushNotesManager: PushNotesManager = PushNotificationsManager()
 
     /// CoreData Stack
     ///
@@ -59,6 +59,14 @@ final class ServiceLocator {
     static var authenticationManager: Authentication {
         return _authenticationManager
     }
+
+    /// Provides the access point to the StorageManager.
+    /// - Returns: An instance of CoreDataManager. Notice how we break the pattern we
+    /// use in all other properties provided by the ServiceLocator. Mocked implementations
+    /// of the CoreDataManager should be subclasses
+    static var storageManager: CoreDataManager {
+        return _storageManager
+    }
 }
 
 
@@ -80,6 +88,38 @@ extension ServiceLocator {
         }
 
         _stores = mock
+    }
+
+    static func setNoticePresenter(_ mock: Notices) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _noticePresenter = mock
+    }
+
+    static func setPushNotesManager(_ mock: PushNotesManager) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _pushNotesManager = mock
+    }
+
+    static func setAuthenticationManager(_ mock: Authentication) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _authenticationManager = mock
+    }
+
+    static func setStorageManager(_ mock: CoreDataManager) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _storageManager = mock
     }
 }
 

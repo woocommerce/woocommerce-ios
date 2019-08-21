@@ -25,7 +25,7 @@ class AuthenticatedState: StoresManagerState {
     /// Designated Initializer
     ///
     init(credentials: Credentials) {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
         services = [

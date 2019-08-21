@@ -44,20 +44,20 @@ class SignupService {
     /// - Parameters:
     ///   - token:      Token provided by Apple.
     ///   - email:      Email provided by Apple.
-    ///   - userName:   Formatted fullname provided by Apple.
+    ///   - fullName:   Formatted full name provided by Apple.
     ///   - success:    Block called when account is created successfully.
     ///   - failure:    Block called when account creation fails.
     ///
     func createWPComUserWithApple(token: String,
                                   email: String,
-                                  userName: String?,
+                                  fullName: String?,
                                   success: @escaping (_ newAccount: Bool, _ username: String, _ wpcomToken: String) -> Void,
                                   failure: @escaping (_ error: Error) -> Void) {
         let remote = WordPressComServiceRemote(wordPressComRestApi: anonymousAPI)
         
         remote.createWPComAccount(withApple: token,
                                   andEmail: email,
-                                  andUserName: userName,
+                                  andFullName: fullName,
                                   andClientID: configuration.wpcomClientId,
                                   andClientSecret: configuration.wpcomSecret,
                                   success: { response in

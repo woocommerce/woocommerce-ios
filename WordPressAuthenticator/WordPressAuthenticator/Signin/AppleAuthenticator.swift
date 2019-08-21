@@ -50,7 +50,7 @@ private extension AppleAuthenticator {
         let service = SignupService()
         service.createWPComUserWithApple(token: identityToken.base64EncodedString(),
                                          email: email,
-                                         userName: userName(from: appleCredentials.fullName),
+                                         fullName: fullName(from: appleCredentials.fullName),
                                          success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
                                             NSLog("Apple Authenticator: createWPComUserWithApple success. accountCreated: ", accountCreated)
             }, failure: { [weak self] error in
@@ -60,7 +60,7 @@ private extension AppleAuthenticator {
 
     // MARK: - Helpers
     
-    func userName(from components: PersonNameComponents?) -> String {
+    func fullName(from components: PersonNameComponents?) -> String {
         guard let name = components else {
             return ""
         }

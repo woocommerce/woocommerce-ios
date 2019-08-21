@@ -290,7 +290,7 @@
         <attribute name="src" attributeType="String" syncable="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="images" inverseEntity="Product" syncable="YES"/>
     </entity>
-    <entity name="ProductReview" representedClassName="ProductReview" syncable="YES" codeGenerationType="class">
+    <entity name="ProductReview" representedClassName="ProductReview" syncable="YES">
         <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="rating" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -396,6 +396,7 @@
         <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="105"/>
         <element name="ProductDownload" positionX="-684" positionY="45" width="128" height="105"/>
         <element name="ProductImage" positionX="-859.9296875" positionY="471.46484375" width="128" height="148"/>
+        <element name="ProductReview" positionX="-693" positionY="36" width="128" height="195"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="103"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
@@ -406,6 +407,5 @@
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="ProductReview" positionX="-693" positionY="36" width="128" height="195"/>
     </elements>
 </model>

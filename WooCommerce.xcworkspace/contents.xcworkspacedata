@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:/Users/ctarda/Development/woocommerce-ios/Storage/Storage/Model/ProductReview+CoreDataClass.swift">
+   </FileRef>
+   <FileRef
+      location = "group:/Users/ctarda/Development/woocommerce-ios/Storage/Storage/Model/ProductReview+CoreDataProperties.swift">
+   </FileRef>
+   <FileRef
       location = "group:WooCommerce/WooCommerce.xcodeproj">
    </FileRef>
    <FileRef

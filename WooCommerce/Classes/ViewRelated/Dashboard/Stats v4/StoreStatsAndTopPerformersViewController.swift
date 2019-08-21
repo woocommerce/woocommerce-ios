@@ -45,12 +45,6 @@ class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewContro
         ensureGhostContentIsAnimated()
     }
 
-    /// Note: Overrides this function to always trigger `updateContent()` to ensure the child view controller fills the container width.
-    /// This is probably only an issue when not using `ButtonBarPagerTabStripViewController` with Storyboard.
-    override func updateIfNeeded() {
-        updateContent()
-    }
-
     // MARK: - RTL support
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -103,7 +97,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
         ensureGhostContentIsDisplayed()
 
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
@@ -174,7 +168,7 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
             }
         }
-        StoresManager.shared.dispatch(loadSiteAction)
+        ServiceLocator.stores.dispatch(loadSiteAction)
     }
 
     func showSpinner(shouldShowSpinner: Bool) {
@@ -251,6 +245,9 @@ private extension StoreStatsAndTopPerformersViewController {
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         configureButtonBarBottomBorder()
+
+        // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
+        containerView.contentInsetAdjustmentBehavior = .never
     }
 
     func configurePeriodViewControllers() {
@@ -317,7 +314,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                     onCompletion?(error)
         })
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncSiteVisitStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
@@ -330,7 +327,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncTopEarnersStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
@@ -340,7 +337,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                             if let error = error {
                                                                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
                                                             } else {
-                                                                WooAnalytics.shared.track(.dashboardTopPerformersLoaded,
+                                                                ServiceLocator.analytics.track(.dashboardTopPerformersLoaded,
                                                                                           withProperties: [
                                                                                             "granularity": timeRange.topEarnerStatsGranularity.rawValue
                                                                     ])
@@ -348,7 +345,7 @@ private extension StoreStatsAndTopPerformersViewController {
                                                             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -388,11 +385,11 @@ private extension StoreStatsAndTopPerformersViewController {
 //
 private extension StoreStatsAndTopPerformersViewController {
     func trackStatsLoaded(for granularity: StatsGranularityV4) {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 
-        WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
     }
 }
 

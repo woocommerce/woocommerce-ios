@@ -136,11 +136,11 @@ private extension MainTabBarController {
     func trackTabSelected(newTab: WooTab) {
         switch newTab {
         case .myStore:
-            WooAnalytics.shared.track(.dashboardSelected)
+            ServiceLocator.analytics.track(.dashboardSelected)
         case .orders:
-            WooAnalytics.shared.track(.ordersSelected)
+            ServiceLocator.analytics.track(.ordersSelected)
         case .reviews:
-            WooAnalytics.shared.track(.notificationsSelected)
+            ServiceLocator.analytics.track(.notificationsSelected)
         }
     }
 
@@ -149,11 +149,11 @@ private extension MainTabBarController {
     func trackTabReselected(tab: WooTab) {
         switch tab {
         case .myStore:
-            WooAnalytics.shared.track(.dashboardReselected)
+            ServiceLocator.analytics.track(.dashboardReselected)
         case .orders:
-            WooAnalytics.shared.track(.ordersReselected)
+            ServiceLocator.analytics.track(.ordersReselected)
         case .reviews:
-            WooAnalytics.shared.track(.notificationsReselected)
+            ServiceLocator.analytics.track(.notificationsReselected)
         }
     }
 }

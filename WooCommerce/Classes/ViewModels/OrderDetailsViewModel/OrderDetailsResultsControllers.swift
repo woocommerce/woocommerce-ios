@@ -21,7 +21,7 @@ final class OrderDetailsResultsControllers {
     ///
     private lazy var productResultsController: ResultsController<StorageProduct> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -31,7 +31,7 @@ final class OrderDetailsResultsControllers {
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])

@@ -463,7 +463,7 @@ private extension PeriodDataViewController {
             isInitialLoad = false
             return
         }
-        WooAnalytics.shared.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }
 

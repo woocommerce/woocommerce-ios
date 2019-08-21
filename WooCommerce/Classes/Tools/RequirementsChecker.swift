@@ -43,10 +43,10 @@ class RequirementsChecker {
     ///       the WC version alert will *not* be displayed.
     ///
     static func checkMinimumWooVersionForDefaultStore() {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID, siteID != 0 else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID, siteID != 0 else {
             DDLogWarn("⚠️ Cannot check WC version on default store — default siteID is nil or 0.")
             return
         }
@@ -70,7 +70,7 @@ class RequirementsChecker {
     ///
     static func checkMinimumWooVersion(for siteID: Int, onCompletion: ((_ result: RequirementCheckResult, _ error: Error?) -> Void)? = nil) {
         let action = retrieveSiteAPIAction(siteID: siteID, onCompletion: onCompletion)
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

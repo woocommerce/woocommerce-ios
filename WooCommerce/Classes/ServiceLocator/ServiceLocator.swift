@@ -6,7 +6,15 @@ import Storage
 /// Provides global depedencies.
 ///
 final class ServiceLocator {
+
+    // MARK: - Private properties
+
+    /// WooAnalytics Wrapper
+    ///
     private static var _analytics: Analytics = WooAnalytics(analyticsProvider: TracksProvider())
+
+    /// StoresManager
+    ///
     private static var _stores: StoresManager = DefaultStoresManager(sessionManager: .standard)
 
     /// WordPressAuthenticator Wrapper
@@ -28,6 +36,9 @@ final class ServiceLocator {
     /// Cocoalumberjack DDLog
     ///
     private static var _fileLogger: Logs = DDFileLogger()
+
+
+    // MARK: - Getters
 
     /// Provides the access point to the analytics.
     /// - Returns: An implementation of the Analytics protocol. It defaults to WooAnalytics

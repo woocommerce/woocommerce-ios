@@ -74,7 +74,7 @@ final class OrderPaymentDetailsViewModel {
             )
         }
 
-        let datePaid = order.datePaid!.toString(dateStyle: .medium, timeStyle: .none)
+        let datePaid = order.datePaid?.toString(dateStyle: .medium, timeStyle: .none) ?? String()
         return NSLocalizedString(
             "\(datePaid) via \(order.paymentMethodTitle)",
             comment: "Payment on <date> received via (payment method title)"

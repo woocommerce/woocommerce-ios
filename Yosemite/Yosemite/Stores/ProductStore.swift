@@ -76,7 +76,7 @@ private extension ProductStore {
     /// Synchronizes the Products found in a specified Order.
     ///
     func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
-        let itemIDs = order.items.map { $0.itemID }
+        let itemIDs = order.items.map { $0.productID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
         let storage = storageManager.viewStorage

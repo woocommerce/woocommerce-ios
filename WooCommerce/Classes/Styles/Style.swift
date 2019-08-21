@@ -89,7 +89,7 @@ class DefaultStyle: Style {
     let subheadlineBoldFont             = DefaultStyle.fontForTextStyle(.subheadline,
                                                                         weight: .bold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
-    let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
+    let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .regular)
     let thinCaptionFont                 = DefaultStyle.fontForTextStyle(.caption1,
                                                                         weight: .thin,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)

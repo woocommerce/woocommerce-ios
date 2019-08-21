@@ -262,4 +262,19 @@ public extension StorageType {
         let predicate = NSPredicate(format: "product.siteID = %ld AND product.productID = %ld AND tagID = %ld", siteID, productID, tagID)
         return firstObject(ofType: ProductTag.self, matching: predicate)
     }
+
+    /// Retrieves all of the stored ProductReviews for the provided siteID. Sorted by dateCreated, descending
+    ///
+    func loadProductReviews(siteID: Int) -> [ProductReview]? {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \ProductReview.dateCreated, ascending: false)
+        return allObjects(ofType: ProductReview.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves a stored ProductReview for the provided siteID and reviewID.
+    ///
+    func loadProduct(siteID: Int, reviewID: Int) -> ProductReview? {
+        let predicate = NSPredicate(format: "siteID = %ld AND reviewID = %ld", siteID, reviewID)
+        return firstObject(ofType: ProductReview.self, matching: predicate)
+    }
 }

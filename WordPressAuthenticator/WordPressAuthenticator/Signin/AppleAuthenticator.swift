@@ -1,6 +1,8 @@
 import Foundation
 import AuthenticationServices
 
+#if XCODE11
+
 class AppleAuthenticator: NSObject {
 
     // MARK: - Properties
@@ -21,7 +23,6 @@ class AppleAuthenticator: NSObject {
 private extension AppleAuthenticator {
 
     func requestAuthorization() {
-        #if XCODE11
         if #available(iOS 13.0, *) {
             let provider = ASAuthorizationAppleIDProvider()
             let request = provider.createRequest()
@@ -34,26 +35,54 @@ private extension AppleAuthenticator {
             controller.performRequests()
             
         }
-        #endif
+    }
+
+    /// Creates a WordPress.com account with the Apple ID
+    ///
+    @available(iOS 13.0, *)
+    func createWordPressComUser(appleCredentials: ASAuthorizationAppleIDCredential) {
+        guard let identityToken = appleCredentials.identityToken,
+            let email = appleCredentials.email else {
+                DDLogError("Apple Authenticator: invalid Apple credentials.")
+                return
+        }
+        
+        let service = SignupService()
+        service.createWPComUserWithApple(token: identityToken.base64EncodedString(),
+                                         email: email,
+                                         fullName: fullName(from: appleCredentials.fullName),
+                                         success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
+                                            NSLog("Apple Authenticator: createWPComUserWithApple success. accountCreated: ", accountCreated)
+            }, failure: { [weak self] error in
+                DDLogError("Apple Authenticator: createWPComUserWithApple failure. error: \(error)")
+        })
+    }
+
+    // MARK: - Helpers
+    
+    func fullName(from components: PersonNameComponents?) -> String {
+        guard let name = components else {
+            return ""
+        }
+        return PersonNameComponentsFormatter().string(from: name)
     }
 
 }
 
-#if XCODE11
 @available(iOS 13.0, *)
 extension AppleAuthenticator: ASAuthorizationControllerDelegate {
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let credentials as ASAuthorizationAppleIDCredential:
-            NSLog("Apple Authenticator credentials: \(String(describing: credentials.email)), \(String(describing: credentials.fullName))")
+            createWordPressComUser(appleCredentials: credentials)
         default:
             break
         }
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        NSLog("Apple Authenticator didCompleteWithError: \(error)")
+        DDLogError("Apple Authenticator: didCompleteWithError: \(error)")
     }
 
 }
@@ -64,4 +93,5 @@ extension AppleAuthenticator: ASAuthorizationControllerPresentationContextProvid
         return showFromViewController?.view.window ?? UIWindow()
     }
 }
+
 #endif

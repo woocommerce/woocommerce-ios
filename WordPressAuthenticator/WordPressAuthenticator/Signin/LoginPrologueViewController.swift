@@ -115,7 +115,9 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func appleTapped() {
+        #if XCODE11
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
+        #endif
     }
 
 }

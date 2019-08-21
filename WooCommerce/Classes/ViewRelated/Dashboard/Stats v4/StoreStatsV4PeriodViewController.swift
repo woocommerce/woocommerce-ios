@@ -31,7 +31,17 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Private Properties
     private let timeRange: StatsTimeRangeV4
-    private var orderStatsIntervals: [OrderStatsV4Interval] = []
+    private var orderStatsIntervals: [OrderStatsV4Interval] = [] {
+        didSet {
+            let helper = StoreStatsV4ChartAxisHelper()
+            let intervalDates = orderStatsIntervals.map({ $0.dateStart() })
+            orderStatsIntervalLabels = helper.generateLabelText(for: intervalDates,
+                                                                timeRange: timeRange,
+                                                                siteTimezone: siteTimezone)
+        }
+    }
+    private var orderStatsIntervalLabels: [String] = []
+
     private var orderStats: OrderStatsV4? {
         return orderStatsResultsController.fetchedObjects.first
     }
@@ -302,7 +312,6 @@ private extension StoreStatsV4PeriodViewController {
 
         let xAxis = barChartView.xAxis
         xAxis.labelPosition = .bottom
-        xAxis.setLabelCount(2, force: true)
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = StyleManager.wooSecondary
         xAxis.axisLineColor = StyleManager.wooGreyBorder
@@ -313,6 +322,7 @@ private extension StoreStatsV4PeriodViewController {
         xAxis.granularity = Constants.chartXAxisGranularity
         xAxis.granularityEnabled = true
         xAxis.valueFormatter = self
+        updateChartXAxisLabelCount(xAxis: xAxis, timeRange: timeRange)
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
@@ -339,6 +349,12 @@ private extension StoreStatsV4PeriodViewController {
                                     DateFormatter.Stats.statsDayFormatter.string(from: currentDate))
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }
+
+    func updateChartXAxisLabelCount(xAxis: XAxis, timeRange: StatsTimeRangeV4) {
+        let helper = StoreStatsV4ChartAxisHelper()
+        let labelCount = helper.labelCount(timeRange: timeRange)
+        xAxis.setLabelCount(labelCount, force: false)
     }
 
     func updateUI(hasRevenue: Bool) {
@@ -396,8 +412,7 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
         }
 
         if axis is XAxis {
-            let item = orderStatsIntervals[Int(value)]
-            return formattedAxisPeriodString(for: item)
+            return orderStatsIntervalLabels[Int(value)]
         } else {
             if value == 0.0 {
                 // Do not show the "0" label on the Y axis

@@ -26,6 +26,14 @@ extension DateFormatter {
             return formatter
         }()
 
+        /// Date formatter used for creating the day of month displayed on a chart axis for **day** granularity.
+        ///
+        public static let chartAxisDayOfMonthFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.setLocalizedDateFormatFromTemplate("d")
+            return formatter
+        }()
+
         /// Date formatter used for creating the date displayed on a chart axis for **week** granularity.
         ///
         public static let chartAxisWeekFormatter: DateFormatter = {

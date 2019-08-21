@@ -45,12 +45,6 @@ class StoreStatsAndTopPerformersViewController: ButtonBarPagerTabStripViewContro
         ensureGhostContentIsAnimated()
     }
 
-    /// Note: Overrides this function to always trigger `updateContent()` to ensure the child view controller fills the container width.
-    /// This is probably only an issue when not using `ButtonBarPagerTabStripViewController` with Storyboard.
-    override func updateIfNeeded() {
-        updateContent()
-    }
-
     // MARK: - RTL support
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -251,6 +245,9 @@ private extension StoreStatsAndTopPerformersViewController {
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         configureButtonBarBottomBorder()
+
+        // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
+        containerView.contentInsetAdjustmentBehavior = .never
     }
 
     func configurePeriodViewControllers() {

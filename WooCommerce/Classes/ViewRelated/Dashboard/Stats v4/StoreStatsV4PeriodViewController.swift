@@ -56,6 +56,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var chartAccessibilityView: UIView!
     @IBOutlet private weak var noRevenueView: UIView!
     @IBOutlet private weak var noRevenueLabel: UILabel!
+    @IBOutlet private weak var timeRangeBarView: StatsTimeRangeBarView!
+    @IBOutlet private weak var timeRangeBarBottomBorderView: UIView!
 
     private var lastUpdatedDate: Date?
     private var yAxisMinimum: String = Constants.chartYAxisMinimum.humanReadableString()
@@ -232,6 +234,9 @@ private extension StoreStatsV4PeriodViewController {
     func configureView() {
         view.backgroundColor = StyleManager.wooWhite
         borderView.backgroundColor = StyleManager.wooGreyBorder
+
+        // Time range bar bottom border view
+        timeRangeBarBottomBorderView.backgroundColor = StyleManager.wooGreyBorder
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
@@ -482,6 +487,15 @@ private extension StoreStatsV4PeriodViewController {
         orderStatsIntervals = orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
             return lhs.dateStart() < rhs.dateStart()
         }) ?? []
+        if let startDate = orderStatsIntervals.first?.dateStart(),
+            let endDate = orderStatsIntervals.last?.dateStart() {
+            let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                                   endDate: endDate,
+                                                                   timeRange: timeRange,
+                                                                   timezone: siteTimezone)
+            timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
+        }
+
         if !orderStatsIntervals.isEmpty {
             lastUpdatedDate = Date()
         } else {

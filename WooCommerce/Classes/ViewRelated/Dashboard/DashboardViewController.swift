@@ -12,6 +12,12 @@ class DashboardViewController: UIViewController {
 
     private var dashboardUI: DashboardUI!
 
+    // MARK: Subviews
+
+    private lazy var containerView: UIView = {
+        return UIView(frame: .zero)
+    }()
+
     // MARK: View Lifecycle
 
     deinit {
@@ -36,6 +42,11 @@ class DashboardViewController: UIViewController {
         // Reset title to prevent it from being empty right after login
         configureTitle()
         reloadData()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        dashboardUI.view.frame = containerView.bounds
     }
 }
 
@@ -95,15 +106,19 @@ private extension DashboardViewController {
     }
 
     func configureDashboardUI() {
+        // A container view is added to respond to safe area insets from the view controller.
+        // This is needed when the child view controller's view has to use a frame-based layout
+        // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
+        view.addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(containerView)
+
         dashboardUI = DashboardUIFactory.dashboardUI()
-        add(dashboardUI)
         let contentView = dashboardUI.view!
-        NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            ])
+        addChild(dashboardUI)
+        containerView.addSubview(contentView)
+        dashboardUI.didMove(toParent: self)
+
         dashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
         }

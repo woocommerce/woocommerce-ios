@@ -8,7 +8,7 @@ extension ProductReview {
         return NSFetchRequest<ProductReview>(entityName: "ProductReview")
     }
 
-    @NSManaged public var dateCreated: NSDate?
+    @NSManaged public var dateCreated: Date?
     @NSManaged public var productID: Int64
     @NSManaged public var rating: Int64
     @NSManaged public var review: String?

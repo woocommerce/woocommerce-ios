@@ -41,6 +41,10 @@ final class ServiceLocator {
     static var stores: StoresManager {
         return _stores
     }
+
+    static var noticePresenter: Notices {
+        return _noticePresenter
+    }
 }
 
 

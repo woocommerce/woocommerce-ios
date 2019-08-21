@@ -109,7 +109,7 @@ class StorePickerViewController: UIViewController {
         return AccountHeaderView.instantiateFromNib()
     }()
 
-    /// Site Picker's dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    /// Site Picker's dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
     private lazy var noticePresenter: NoticePresenter = {
         let noticePresenter = NoticePresenter()

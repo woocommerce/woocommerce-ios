@@ -228,7 +228,7 @@ private extension FulfillViewController {
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the `Unable to Fulfill Order` Notice.
@@ -243,7 +243,7 @@ private extension FulfillViewController {
             self?.fulfillWasPressed()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the product detail screen for the provided ProductID
@@ -528,7 +528,7 @@ private extension FulfillViewController {
                                 self?.deleteTracking(tracking)
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
 }

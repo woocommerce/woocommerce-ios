@@ -27,10 +27,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     ///
     let authenticationManager = AuthenticationManager()
 
-    /// In-App Notifications Presenter
-    ///
-    let noticePresenter = NoticePresenter()
-
     /// Push Notifications Manager
     ///
     let pushNotesManager = PushNotificationsManager()
@@ -260,6 +256,7 @@ private extension AppDelegate {
     /// Setup: Notice Presenter
     ///
     func setupNoticePresenter() {
+        var noticePresenter = ServiceLocator.noticePresenter
         noticePresenter.presentingViewController = window?.rootViewController
     }
 

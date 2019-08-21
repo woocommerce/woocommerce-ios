@@ -380,6 +380,7 @@
 		D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */; };
 		D8C11A6222E24C4A00D4A88D /* PaymentTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A6122E24C4A00D4A88D /* PaymentTableViewCellTests.swift */; };
 		D8C251D2230CA90200F49782 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251D1230CA90200F49782 /* StoresManager.swift */; };
+		D8C251D9230D256F00F49782 /* Notices.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251D8230D256F00F49782 /* Notices.swift */; };
 		D8C62471227AE0030011A7D6 /* SiteCountry.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C62470227AE0030011A7D6 /* SiteCountry.swift */; };
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
 		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
@@ -809,6 +810,7 @@
 		D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OrderPaymentDetailsViewModelTests.swift; path = WooCommerceTests/ViewRelated/OrderPaymentDetailsViewModelTests.swift; sourceTree = SOURCE_ROOT; };
 		D8C11A6122E24C4A00D4A88D /* PaymentTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PaymentTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/PaymentTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D8C251D1230CA90200F49782 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
+		D8C251D8230D256F00F49782 /* Notices.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notices.swift; sourceTree = "<group>"; };
 		D8C62470227AE0030011A7D6 /* SiteCountry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SiteCountry.swift; sourceTree = "<group>"; };
 		D8D15F82230A17A000D48B3F /* ServiceLocator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ServiceLocator.swift; sourceTree = "<group>"; };
 		D8D15F84230A18AB00D48B3F /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
@@ -1737,6 +1739,7 @@
 				D8C251D1230CA90200F49782 /* StoresManager.swift */,
 				D8D15F82230A17A000D48B3F /* ServiceLocator.swift */,
 				D8D15F84230A18AB00D48B3F /* Analytics.swift */,
+				D8C251D8230D256F00F49782 /* Notices.swift */,
 			);
 			path = ServiceLocator;
 			sourceTree = "<group>";
@@ -2132,6 +2135,7 @@
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
 				D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */,
+				D8C251D9230D256F00F49782 /* Notices.swift in Sources */,
 				74460D4022289B7600D7316A /* Coordinator.swift in Sources */,
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				D8C251D2230CA90200F49782 /* StoresManager.swift in Sources */,

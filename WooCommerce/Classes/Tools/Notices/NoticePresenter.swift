@@ -6,7 +6,7 @@ import WordPressUI
 
 /// NoticePresenter: Coordinates Notice rendering, in both, FG and BG execution modes.
 ///
-class NoticePresenter {
+class NoticePresenter: Notices {
 
     /// UIKit Feedback Gen!
     ///

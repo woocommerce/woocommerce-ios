@@ -545,7 +545,7 @@ private extension OrdersViewController {
             self?.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the Empty State Overlay.

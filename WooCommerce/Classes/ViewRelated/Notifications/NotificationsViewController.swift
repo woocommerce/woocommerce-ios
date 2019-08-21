@@ -737,7 +737,7 @@ private extension NotificationsViewController {
         markAsReadCount += 1
         let message = NSLocalizedString("All notifications marked as read", comment: "Mark all notifications as read notice")
         let notice = Notice(title: message, feedbackType: .success)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

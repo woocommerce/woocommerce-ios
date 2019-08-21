@@ -16,7 +16,7 @@ class NewNoteViewController: UIViewController {
 
     private var noteText: String = ""
 
-    /// Dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
     private lazy var noticePresenter: NoticePresenter = {
         let noticePresenter = NoticePresenter()

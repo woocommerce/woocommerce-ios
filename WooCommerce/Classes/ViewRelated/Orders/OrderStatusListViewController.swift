@@ -253,7 +253,7 @@ extension OrderStatusListViewController {
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the `Unable to Change Status of Order` Notice.
@@ -268,6 +268,6 @@ extension OrderStatusListViewController {
             self?.applyButtonTapped()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

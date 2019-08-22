@@ -2,7 +2,7 @@ import Foundation
 import WordPressUI
 
 /// Abstracts the In-App Notifications Presenter
-protocol Notices {
+protocol NoticePresenter {
 
     /// Enqueues the specified Notice for display.
     ///

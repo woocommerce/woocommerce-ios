@@ -23,7 +23,7 @@ final class ServiceLocator {
 
     /// In-App Notifications Presenter
     ///
-    private static var _noticePresenter: Notices = NoticePresenter()
+    private static var _noticePresenter: NoticePresenter = DefaultNoticePresenter()
 
     /// Push Notifications Manager
     ///
@@ -54,7 +54,7 @@ final class ServiceLocator {
 
     /// Provides the access point to the NoticePresenter.
     /// - Returns: An implementation of the NoticePresenter protocol. It defaults to DefaultNoticePresenter
-    static var noticePresenter: Notices {
+    static var noticePresenter: NoticePresenter {
         return _noticePresenter
     }
 
@@ -106,7 +106,7 @@ extension ServiceLocator {
         _stores = mock
     }
 
-    static func setNoticePresenter(_ mock: Notices) {
+    static func setNoticePresenter(_ mock: NoticePresenter) {
         guard isRunningTests() else {
             return
         }

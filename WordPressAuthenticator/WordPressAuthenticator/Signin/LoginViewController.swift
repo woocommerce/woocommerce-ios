@@ -286,7 +286,7 @@ extension LoginViewController {
         service.connect(wpcomAuthToken: wpcomAuthToken,
                         serviceName: serviceName,
                         serviceToken: serviceToken,
-                        appleConnectParameters: appleConnectParameters,
+                        connectParameters: appleConnectParameters,
                         success: {
                             WordPressAuthenticator.track(.loginSocialConnectSuccess)
                             WordPressAuthenticator.track(.loginSocialSuccess)

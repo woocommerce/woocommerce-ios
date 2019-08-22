@@ -28,6 +28,8 @@
 		029D444922F13F8A00DEFA8A /* DashboardUIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029D444822F13F8A00DEFA8A /* DashboardUIFactory.swift */; };
 		029D444E22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029D444D22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift */; };
 		02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA23BF22EE9DAF009539E7 /* AsyncDictionaryTests.swift */; };
+		45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */; };
+		45AE582D230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */; };
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */; };
 		740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */; };
@@ -410,6 +412,8 @@
 		029D444D22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatsV3ViewController.swift; sourceTree = "<group>"; };
 		02BA23BF22EE9DAF009539E7 /* AsyncDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDictionaryTests.swift; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
+		45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteHeaderTableViewCell.swift; sourceTree = "<group>"; };
+		45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderNoteHeaderTableViewCell.xib; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
 		740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageTableViewCell.swift; sourceTree = "<group>"; };
@@ -1617,6 +1621,8 @@
 				CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */,
 				B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */,
 				B557DA1420979904005962F4 /* CustomerNoteTableViewCell.xib */,
+				45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */,
+				45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */,
 				CE1EC8EF20B8A408009762BF /* OrderNoteTableViewCell.swift */,
 				CE1EC8EE20B8A408009762BF /* OrderNoteTableViewCell.xib */,
 				CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */,
@@ -1810,6 +1816,7 @@
 				B5A8F8AF20B88DCC00D211DE /* LoginPrologueViewController.xib in Resources */,
 				74E0F441211C9AE600A79CCE /* PeriodDataViewController.xib in Resources */,
 				B5F571B021BF149D0010D1B8 /* o.caf in Resources */,
+				45AE582D230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib in Resources */,
 				B5D1AFC820BC7B9600DB0E8C /* StorePickerViewController.xib in Resources */,
 				CE1D5A56228A0AD200DF3715 /* TwoColumnTableViewCell.xib in Resources */,
 				B57C744320F54F1C00EEFC87 /* AccountHeaderView.xib in Resources */,
@@ -2049,6 +2056,7 @@
 				D8736B5322EF4F5900A14A29 /* NotificationsBadgeController.swift in Sources */,
 				CE263DE6206ACD220015A693 /* NotificationsViewController.swift in Sources */,
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
+				45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
 				D8174F0B22EB62B60024E762 /* MockupAnalyticsProvider.swift in Sources */,

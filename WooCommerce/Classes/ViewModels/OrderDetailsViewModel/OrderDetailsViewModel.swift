@@ -131,6 +131,7 @@ extension OrderDetailsViewModel {
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
             WooBasicTableViewCell.self,
+            OrderNoteHeaderTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
             ProductDetailsTableViewCell.self,

@@ -73,7 +73,17 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
-    var orderNotes: [OrderNote] = []
+    /// Notes of an Order
+    ///
+    var orderNotes: [OrderNote] = [] {
+        didSet {
+            orderNotesSections = computeOrderNotesSections()
+        }
+    }
+
+    /// Computed Notes of an Order with note sections
+    ///
+    private var orderNotesSections: [NoteSection] = []
 
     private lazy var resultsControllers: OrderDetailsResultsControllers = {
         return OrderDetailsResultsControllers(order: self.order)
@@ -186,6 +196,8 @@ private extension OrderDetailsDataSource {
             configureCustomerNote(cell: cell)
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
+        case let cell as OrderNoteHeaderTableViewCell:
+            configureOrderNoteHeader(cell: cell, at: indexPath)
         case let cell as OrderNoteTableViewCell:
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as PaymentTableViewCell:
@@ -283,6 +295,14 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
+        guard let noteHeader = noteHeader(at: indexPath) else {
+            return
+        }
+
+        cell.dateCreated = noteHeader.toString(dateStyle: .medium, timeStyle: .none)
+    }
+
     func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
         guard let note = note(at: indexPath) else {
             return
@@ -290,7 +310,8 @@ private extension OrderDetailsDataSource {
 
         cell.isSystemAuthor = note.isSystemAuthor
         cell.isCustomerNote = note.isCustomerNote
-        cell.dateCreated = note.dateCreated.toString(dateStyle: .long, timeStyle: .short)
+        cell.author = note.author
+        cell.dateCreated = note.dateCreated.toString(dateStyle: .none, timeStyle: .short)
         cell.contents = orderNoteAsyncDictionary.value(forKey: note.noteID)
     }
 
@@ -486,7 +507,7 @@ extension OrderDetailsDataSource {
         }()
 
         let notes: Section = {
-            let rows = [.addOrderNote] + Array(repeating: Row.orderNote, count: orderNotes.count)
+            let rows = [.addOrderNote] + orderNotesSections.map {$0.row}
             return Section(title: Title.notes, rows: rows)
         }()
 
@@ -545,6 +566,18 @@ extension OrderDetailsDataSource {
         }
     }
 
+    struct NoteSection {
+        let row: Row
+        let date: Date
+        let orderNote: OrderNote
+
+        init(row: Row, date: Date, orderNote: OrderNote) {
+            self.row = row
+            self.date = date
+            self.orderNote = orderNote
+        }
+    }
+
     enum Row {
         case summary
         case fulfillButton
@@ -558,6 +591,7 @@ extension OrderDetailsDataSource {
         case billingPhone
         case billingEmail
         case addOrderNote
+        case orderNoteHeader
         case orderNote
         case payment
 
@@ -587,6 +621,8 @@ extension OrderDetailsDataSource {
                 return WooBasicTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LeftImageTableViewCell.reuseIdentifier
+            case .orderNoteHeader:
+                return OrderNoteHeaderTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
             case .payment:
@@ -606,14 +642,24 @@ extension OrderDetailsDataSource {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    func note(at indexPath: IndexPath) -> OrderNote? {
+    func noteHeader(at indexPath: IndexPath) -> Date? {
         // We need to subtract 1 here because the first order note row is the "Add Order" cell
-        let noteIndex = indexPath.row - 1
-        guard orderNotes.indices.contains(noteIndex) else {
+        let noteHeaderIndex = indexPath.row - 1
+        guard orderNotesSections.indices.contains(noteHeaderIndex) else {
             return nil
         }
 
-        return orderNotes[noteIndex]
+        return orderNotesSections[noteHeaderIndex].date
+    }
+
+    func note(at indexPath: IndexPath) -> OrderNote? {
+        // We need to subtract 1 here because the first order note row is the "Add Order" cell
+        let noteIndex = indexPath.row - 1
+        guard orderNotesSections.indices.contains(noteIndex) else {
+            return nil
+        }
+
+        return orderNotesSections[noteIndex].orderNote
     }
 
     func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
@@ -689,6 +735,26 @@ extension OrderDetailsDataSource {
         }
 
         return false
+    }
+
+    func computeOrderNotesSections() -> [NoteSection] {
+        var sections: [NoteSection] = []
+
+        for order in orderNotes {
+            if sections.contains(where: { (section) -> Bool in
+                return Calendar.current.isDate(section.date, inSameDayAs: order.dateCreated) && section.row == .orderNoteHeader
+            }) {
+                let orderToAppend = NoteSection(row: .orderNote, date: order.dateCreated, orderNote: order)
+                sections.append(orderToAppend)
+            }
+            else {
+                let sectionToAppend = NoteSection(row: .orderNoteHeader, date: order.dateCreated, orderNote: order)
+                let orderToAppend = NoteSection(row: .orderNote, date: order.dateCreated, orderNote: order)
+                sections.append(contentsOf: [sectionToAppend, orderToAppend])
+            }
+        }
+
+        return sections
     }
 }
 

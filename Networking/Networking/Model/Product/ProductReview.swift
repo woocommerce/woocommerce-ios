@@ -98,6 +98,17 @@ private extension ProductReview {
 }
 
 
+// MARK: - Equatable Conformance
+//
+extension ProductReview: Equatable {
+    public static func == (lhs: ProductReview, rhs: ProductReview) -> Bool {
+        return lhs.siteID == rhs.siteID &&
+            lhs.reviewID == rhs.reviewID &&
+            lhs.productID == rhs.productID
+    }
+}
+
+
 // MARK: - Decoding Errors
 //
 enum ProductReviewDecodingError: Error {

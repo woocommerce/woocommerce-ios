@@ -388,7 +388,17 @@ extension StoreStatsV4PeriodViewController {
 // MARK: - ChartViewDelegate Conformance (Charts)
 //
 extension StoreStatsV4PeriodViewController: ChartViewDelegate {
+    func chartViewDidEndPanning(_ chartView: ChartViewBase) {
+        updateUI(selectedBarIndex: nil)
+    }
+
+    func chartValueNothingSelected(_ chartView: ChartViewBase) {
+        updateUI(selectedBarIndex: nil)
+    }
+
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        let selectedIndex = Int(entry.x)
+        updateUI(selectedBarIndex: selectedIndex)
         guard entry.y != 0.0 else {
             // Do not display the marker if the Y-value is zero
             clearChartMarkers()
@@ -406,6 +416,94 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
     }
 }
 
+private extension StoreStatsV4PeriodViewController {
+    /// Updates all stats and time range bar text based on the selected bar index.
+    ///
+    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
+    func updateUI(selectedBarIndex selectedIndex: Int?) {
+        updateSiteVisitStats(selectedIndex: selectedIndex)
+        updateOrderStats(selectedIndex: selectedIndex)
+        updateTimeRangeBar(selectedIndex: selectedIndex)
+    }
+
+    /// Updates order stats based on the selected bar index.
+    ///
+    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
+    func updateOrderStats(selectedIndex: Int?) {
+        guard let selectedIndex = selectedIndex else {
+            reloadOrderFields()
+            return
+        }
+        guard ordersData != nil, revenueData != nil else {
+            return
+        }
+        var totalOrdersText = Constants.placeholderText
+        var totalRevenueText = Constants.placeholderText
+        let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+        if selectedIndex < orderStatsIntervals.count {
+            let orderStats = orderStatsIntervals[selectedIndex]
+            totalOrdersText = Double(orderStats.subtotals.totalOrders).humanReadableString()
+            totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.subtotals.grossRevenue)"), with: currencyCode) ?? String()
+        }
+        ordersData.text = totalOrdersText
+        revenueData.text = totalRevenueText
+    }
+
+    /// Updates stats based on the selected bar index.
+    ///
+    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
+    func updateSiteVisitStats(selectedIndex: Int?) {
+        guard shouldShowSiteVisitStats else {
+            return
+        }
+        guard let selectedIndex = selectedIndex else {
+            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+            reloadSiteFields()
+            return
+        }
+        // Hides site visit stats for "today".
+        guard timeRange != .today else {
+            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
+            return
+        }
+        updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
+        guard visitorsData != nil else {
+            return
+        }
+
+        var visitorsText = Constants.placeholderText
+        if selectedIndex < siteStatsItems.count {
+            let siteStatsItem = siteStatsItems[selectedIndex]
+            visitorsText = Double(siteStatsItem.visitors).humanReadableString()
+        }
+        visitorsData.text = visitorsText
+    }
+
+    /// Updates date bar based on the selected bar index.
+    ///
+    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
+    func updateTimeRangeBar(selectedIndex: Int?) {
+        guard let startDate = orderStatsIntervals.first?.dateStart(),
+            let endDate = orderStatsIntervals.last?.dateStart() else {
+                return
+        }
+        guard let selectedIndex = selectedIndex else {
+            let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                                   endDate: endDate,
+                                                                   timeRange: timeRange,
+                                                                   timezone: siteTimezone)
+            timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
+            return
+        }
+        let date = orderStatsIntervals[selectedIndex].dateStart()
+        let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                               endDate: endDate,
+                                                               selectedDate: date,
+                                                               timeRange: timeRange,
+                                                               timezone: siteTimezone)
+        timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
+    }
+}
 
 // MARK: - IAxisValueFormatter Conformance (Charts)
 //

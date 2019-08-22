@@ -263,11 +263,17 @@ extension LoginViewController {
             return
         }
         
+        let appleConnectParameters:[String:AnyObject]? = {
+            if let appleUser = loginFields.meta.appleUser {
+                return AccountServiceRemoteREST.appleSignInParameters(email: appleUser.email, fullName: appleUser.fullName)
+            }
+            return nil
+        }()
+        
         linkSocialService(serviceName: serviceName,
                           serviceToken: serviceToken,
                           wpcomAuthToken: wpcomAuthToken,
-                          appleEmail: loginFields.meta.appleUser?.email,
-                          appleFullName: loginFields.meta.appleUser?.fullName)
+                          appleConnectParameters: appleConnectParameters)
     }
 
     /// Links the current WordPress Account to a Social Service.
@@ -275,8 +281,7 @@ extension LoginViewController {
     func linkSocialService(serviceName: SocialServiceName,
                            serviceToken: String,
                            wpcomAuthToken: String,
-                           appleEmail: String? = nil,
-                           appleFullName: String? = nil) {
+                           appleConnectParameters: [String:AnyObject]? = nil) {
         guard serviceName == .google || serviceName == .apple else {
             DDLogError("Error: Unsupported Social Service")
             return
@@ -286,11 +291,10 @@ extension LoginViewController {
         service.connect(wpcomAuthToken: wpcomAuthToken,
                         serviceName: serviceName,
                         serviceToken: serviceToken,
-                        appleEmail: appleEmail,
-                        appleFullName: appleFullName,
+                        appleConnectParameters: appleConnectParameters,
                         success: {
-            WordPressAuthenticator.track(.loginSocialConnectSuccess)
-            WordPressAuthenticator.track(.loginSocialSuccess)
+                            WordPressAuthenticator.track(.loginSocialConnectSuccess)
+                            WordPressAuthenticator.track(.loginSocialSuccess)
         }, failure: { error in
             DDLogError("Social Link Error: \(error)")
             WordPressAuthenticator.track(.loginSocialConnectFailure, error: error)

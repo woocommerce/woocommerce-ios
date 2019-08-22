@@ -24,8 +24,7 @@ class WordPressComAccountService {
     func connect(wpcomAuthToken: String,
                  serviceName: SocialServiceName,
                  serviceToken: String,
-                 appleEmail: String? = nil,
-                 appleFullName: String? = nil,
+                 appleConnectParameters: [String:AnyObject]? = nil,
                  success: @escaping () -> Void,
                  failure: @escaping (Error) -> Void) {
         let loggedAPI  = WordPressComRestApi(oAuthToken: wpcomAuthToken,
@@ -35,8 +34,7 @@ class WordPressComAccountService {
 
         remote.connectToSocialService(serviceName,
                                       serviceIDToken: serviceToken,
-                                      appleEmail: appleEmail,
-                                      appleFullName: appleFullName,
+                                      appleConnectParameters: appleConnectParameters,
                                       oAuthClientID: configuration.wpcomClientId,
                                       oAuthClientSecret: configuration.wpcomSecret,
                                       success: success,

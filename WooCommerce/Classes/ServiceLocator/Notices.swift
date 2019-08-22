@@ -3,7 +3,7 @@ import WordPressUI
 
 /// Abstracts the In-App Notifications Presenter
 protocol Notices {
-    
+
     /// Enqueues the specified Notice for display.
     ///
     func enqueue(notice: Notice)

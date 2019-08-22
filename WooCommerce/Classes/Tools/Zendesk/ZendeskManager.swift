@@ -1,6 +1,7 @@
 import Foundation
 import ZendeskSDK
 import ZendeskCoreSDK
+import CommonUISDK // Zendesk UI SDK
 import WordPressShared
 import CoreTelephony
 import SafariServices
@@ -84,9 +85,11 @@ class ZendeskManager: NSObject {
             return
         }
 
-        Zendesk.initialize(appId: ApiCredentials.zendeskAppId, clientId: ApiCredentials.zendeskClientId, zendeskUrl: ApiCredentials.zendeskUrl)
-        Support.initialize(withZendesk: Zendesk.instance)
-        Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
+        Zendesk.initialize(appId: ApiCredentials.zendeskAppId,
+                           clientId: ApiCredentials.zendeskClientId,
+                           zendeskUrl: ApiCredentials.zendeskUrl)
+        SupportUI.initialize(withZendesk: Zendesk.instance)
+        CommonTheme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
 
         haveUserIdentity = getUserProfile()
         zendeskEnabled = true

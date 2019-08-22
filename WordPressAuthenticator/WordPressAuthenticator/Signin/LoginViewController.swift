@@ -282,11 +282,6 @@ extension LoginViewController {
                            serviceToken: String,
                            wpcomAuthToken: String,
                            appleConnectParameters: [String:AnyObject]? = nil) {
-        guard serviceName == .google || serviceName == .apple else {
-            DDLogError("Error: Unsupported Social Service")
-            return
-        }
-
         let service = WordPressComAccountService()
         service.connect(wpcomAuthToken: wpcomAuthToken,
                         serviceName: serviceName,

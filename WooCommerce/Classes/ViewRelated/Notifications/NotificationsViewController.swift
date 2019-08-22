@@ -31,7 +31,7 @@ class NotificationsViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Notes in sync.
     ///
     private lazy var resultsController: ResultsController<StorageNote> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
         return ResultsController<StorageNote>(storageManager: storageManager,
@@ -254,7 +254,7 @@ private extension NotificationsViewController {
     /// Nukes the BadgeCount
     ///
     func resetApplicationBadge() {
-        AppDelegate.shared.pushNotesManager.resetBadgeCount()
+        ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
     /// Update the last seen time for notifications
@@ -737,7 +737,7 @@ private extension NotificationsViewController {
         markAsReadCount += 1
         let message = NSLocalizedString("All notifications marked as read", comment: "Mark all notifications as read notice")
         let notice = Notice(title: message, feedbackType: .success)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

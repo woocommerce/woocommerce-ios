@@ -83,7 +83,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     /// OrderStats ResultsController: Loads order stats from the Storage Layer
     ///
     private lazy var orderStatsResultsController: ResultsController<StorageOrderStatsV4> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "timeRange ==[c] %@", timeRange.rawValue)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
@@ -343,7 +343,7 @@ private extension StoreStatsV4PeriodViewController {
 // MARK: - Internal Updates
 private extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStatsResultsController(currentDate: Date) -> ResultsController<StorageSiteVisitStats> {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@",
                                     timeRange.siteVisitStatsGranularity.rawValue,
                                     DateFormatter.Stats.statsDayFormatter.string(from: currentDate))

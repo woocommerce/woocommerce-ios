@@ -9,7 +9,7 @@ final class OrderStatusListViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
@@ -253,7 +253,7 @@ extension OrderStatusListViewController {
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the `Unable to Change Status of Order` Notice.
@@ -268,6 +268,6 @@ extension OrderStatusListViewController {
             self?.applyButtonTapped()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

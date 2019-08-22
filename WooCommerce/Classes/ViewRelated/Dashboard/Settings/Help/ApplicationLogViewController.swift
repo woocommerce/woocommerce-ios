@@ -16,7 +16,7 @@ class ApplicationLogViewController: UIViewController {
 
     /// Access the shared DDFileLogger
     ///
-    let fileLogger = AppDelegate.shared.fileLogger
+    let fileLogger = ServiceLocator.fileLogger
 
     /// List of log files
     ///

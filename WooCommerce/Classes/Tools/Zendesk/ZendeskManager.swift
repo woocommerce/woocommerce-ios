@@ -547,7 +547,7 @@ private extension ZendeskManager {
 
     func getLogFile() -> String {
 
-        guard let logFileInformation = AppDelegate.shared.fileLogger.logFileManager.sortedLogFileInfos.first,
+        guard let logFileInformation = ServiceLocator.fileLogger.logFileManager.sortedLogFileInfos.first,
             let logData = try? Data(contentsOf: URL(fileURLWithPath: logFileInformation.filePath)),
             let logText = String(data: logData, encoding: .utf8) else {
                 return ""

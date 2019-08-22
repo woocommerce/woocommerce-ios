@@ -109,10 +109,10 @@ class StorePickerViewController: UIViewController {
         return AccountHeaderView.instantiateFromNib()
     }()
 
-    /// Site Picker's dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    /// Site Picker's dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
-    private lazy var noticePresenter: NoticePresenter = {
-        let noticePresenter = NoticePresenter()
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         return noticePresenter
     }()
@@ -120,7 +120,7 @@ class StorePickerViewController: UIViewController {
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
     private let resultsController: ResultsController<StorageSite> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "isWooCommerceActive == YES")
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
@@ -204,7 +204,7 @@ private extension StorePickerViewController {
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
         accountHeaderView.isHelpButtonEnabled = configuration == .login
-        accountHeaderView.onHelpRequested = { AppDelegate.shared.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
+        accountHeaderView.onHelpRequested = { ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
     }
 
     func setupNavigation() {
@@ -368,7 +368,7 @@ private extension StorePickerViewController {
 
         ServiceLocator.stores.deauthenticate()
 
-        let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
+        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
         navigationController.setViewControllers([loginViewController], animated: true)
     }
 

@@ -20,7 +20,7 @@ class TopPerformerDataViewController: UIViewController {
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
     private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let formattedDateString = StatsStore.buildDateString(from: Date(), with: granularity)
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@", granularity.rawValue, formattedDateString)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)

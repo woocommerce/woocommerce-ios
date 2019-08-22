@@ -5,7 +5,7 @@ final class SiteCountry {
     /// ResultsController. Fetches the store country from SiteSetting
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let settingCountryPredicate = NSPredicate(format: "settingID ==[c] %@", Constants.countryKey)
 

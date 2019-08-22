@@ -116,4 +116,6 @@ public class LoginFieldsMeta: NSObject {
     @objc public var socialServiceIDToken: String?
 
     var googleUser: GIDGoogleUser?
+
+    var appleUser: AppleUser?
 }

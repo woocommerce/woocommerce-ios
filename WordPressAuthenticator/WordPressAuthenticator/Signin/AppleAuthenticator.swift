@@ -1,5 +1,6 @@
 import Foundation
 import AuthenticationServices
+import WordPressKit
 
 #if XCODE11
 
@@ -10,10 +11,19 @@ class AppleAuthenticator: NSObject {
     static var sharedInstance: AppleAuthenticator = AppleAuthenticator()
     private override init() {}
     private var showFromViewController: UIViewController?
+    private let loginFields = LoginFields()
 
+    private var authenticationDelegate: WordPressAuthenticatorDelegate {
+        guard let delegate = WordPressAuthenticator.shared.delegate else {
+            fatalError()
+        }
+        return delegate
+    }
+    
     // MARK: - Start Authentication
 
     func showFrom(viewController: UIViewController) {
+        loginFields.meta.socialService = SocialServiceName.apple
         showFromViewController = viewController
         requestAuthorization()
     }
@@ -47,17 +57,54 @@ private extension AppleAuthenticator {
                 return
         }
         
+        let token = identityToken.base64EncodedString()
+        let name = fullName(from: appleCredentials.fullName)
+
+        updateLoginFields(email: email, fullName: name, token: token)
+        
         let service = SignupService()
-        service.createWPComUserWithApple(token: identityToken.base64EncodedString(),
-                                         email: email,
-                                         fullName: fullName(from: appleCredentials.fullName),
+        service.createWPComUserWithApple(token: token, email: email, fullName: name,
                                          success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
-                                            NSLog("Apple Authenticator: createWPComUserWithApple success. accountCreated: ", accountCreated)
+
+                                            let wpcom = WordPressComCredentials(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: self?.loginFields.siteAddress ?? "")
+                                            let credentials = AuthenticatorCredentials(wpcom: wpcom)
+                                            
+                                            // New Account
+                                            if accountCreated {
+                                                self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
+                                                self?.signupSuccessful(with: credentials)
+                                                return
+                                            }
+                                            // TODO: handle Existing Account.
+                                            
             }, failure: { [weak self] error in
-                DDLogError("Apple Authenticator: createWPComUserWithApple failure. error: \(error)")
+                self?.signupFailed(with: error)
         })
     }
 
+    func signupSuccessful(with credentials: AuthenticatorCredentials) {
+        WordPressAuthenticator.track(.createdAccount, properties: ["source": "apple"])
+        WordPressAuthenticator.track(.signupSocialSuccess)
+        showSignupEpilogue(for: credentials)
+    }
+    
+    func showSignupEpilogue(for credentials: AuthenticatorCredentials) {
+        guard let navigationController = showFromViewController?.navigationController else {
+            fatalError()
+        }
+
+        let service = loginFields.meta.appleUser.flatMap {
+            return SocialService.apple(user: $0)
+        }
+
+        authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
+    }
+    
+    func signupFailed(with error: Error) {
+        WPAnalytics.track(.signupSocialFailure)
+        DDLogError("Apple Authenticator: signup failed. error: \(error)")
+    }
+    
     // MARK: - Helpers
     
     func fullName(from components: PersonNameComponents?) -> String {
@@ -65,6 +112,13 @@ private extension AppleAuthenticator {
             return ""
         }
         return PersonNameComponentsFormatter().string(from: name)
+    }
+    
+    func updateLoginFields(email: String, fullName: String, token: String) {
+        loginFields.emailAddress = email
+        loginFields.username = email
+        loginFields.meta.socialServiceIDToken = token
+        loginFields.meta.appleUser = AppleUser(email: email, fullName: fullName)
     }
 
 }

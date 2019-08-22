@@ -43,7 +43,7 @@ target 'WooCommerce' do
   pod 'CocoaLumberjack/Swift', '~> 3.5'
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.3.0'
-  pod 'ZendeskSDK', '~> 3.0'
+  pod 'ZendeskSDK', '3.0.1'
 
   # Unit Tests
   # ==========

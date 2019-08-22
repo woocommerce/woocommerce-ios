@@ -44,7 +44,7 @@ target 'WooCommerce' do
   pod 'CocoaLumberjack/Swift', '~> 3.5'
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.2'
-  #pod 'ZendeskSDK', '~> 2.3.1'
+  pod 'ZendeskSDK', :git => 'https://github.com/zendesk/zendesk_sdk_ios.git', :branch => '3.0.1-swift5.1-beta5'
 
   # Unit Tests
   # ==========

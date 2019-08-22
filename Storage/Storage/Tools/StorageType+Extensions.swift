@@ -82,6 +82,13 @@ public extension StorageType {
         return firstObject(ofType: SiteVisitStats.self, matching: predicate)
     }
 
+    /// Retrieves the Stored SiteVisitStats for stats v4.
+    ///
+    func loadSiteVisitStats(granularity: String, date: String) -> SiteVisitStats? {
+        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date = %@", granularity, date)
+        return firstObject(ofType: SiteVisitStats.self, matching: predicate)
+    }
+
     /// Retrieves the Stored OrderStats.
     ///
     func loadOrderStats(granularity: String) -> OrderStats? {

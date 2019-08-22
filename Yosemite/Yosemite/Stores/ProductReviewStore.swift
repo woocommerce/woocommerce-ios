@@ -57,7 +57,7 @@ private extension ProductReviewStore {
     func synchronizeProductReviews(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductReviewsRemote(network: network)
 
-        remote.loadAllProductReviews(for: siteID) { [weak self] (productReviews, error) in
+        remote.loadAllProductReviews(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (productReviews, error) in
             guard let productReviews = productReviews else {
                 onCompletion(error)
                 return

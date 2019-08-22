@@ -116,6 +116,37 @@ final class ProductReviewStoreTests: XCTestCase {
         productReviewStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that ProductReviewAction.synchronizeProductReviews returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveProductReviewsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve product reviews error response")
+        let productReviewStore = ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "generic_error")
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productReviewStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that ProductReviewAction.synchronizeProductReviews returns an error whenever there is no backend response.
+    ///
+    func testRetrieveProductReviewsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve product reviews empty response")
+        let productReviewStore = ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        productReviewStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

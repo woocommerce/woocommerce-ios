@@ -290,7 +290,8 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureNoRevenueView() {
         noRevenueView.isHidden = true
-        noRevenueLabel.text = NSLocalizedString("No revenue this period", comment: "Text displayed when no order data are available for the selected time range.")
+        noRevenueLabel.text = NSLocalizedString("No revenue this period",
+                                                comment: "Text displayed when no order data are available for the selected time range.")
         noRevenueLabel.font = StyleManager.subheadlineFont
         noRevenueLabel.textColor = StyleManager.defaultTextColor
     }

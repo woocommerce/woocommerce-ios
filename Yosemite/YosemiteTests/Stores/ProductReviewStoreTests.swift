@@ -36,7 +36,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Testing ProductID
     ///
-    private let sampleProductID = 282
+    private let sampleProductID = 32
 
     /// Testing Page Number
     ///
@@ -88,5 +88,51 @@ final class ProductReviewStoreTests: XCTestCase {
 
         productReviewStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductReviewAction.synchronizeProductReviews` effectively persists all of the fields
+    /// correctly across all of the related `ProductReview` entities
+    ///
+    func testRetrieveProductReviewsEffectivelyPersistsProductReviewFields() {
+        let expectation = self.expectation(description: "Persist product review list")
+        let productReviewStore = ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteProductReview = sampleProductReview()
+
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 0)
+
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNil(error)
+
+            let storedProductReview = self.viewStorage.loadProductReview(siteID: self.sampleSiteID, reviewID: self.sampleReviewID)
+            let readOnlyStoredProductReview = storedProductReview?.toReadOnly()
+            XCTAssertNotNil(storedProductReview)
+            XCTAssertNotNil(readOnlyStoredProductReview)
+            XCTAssertEqual(readOnlyStoredProductReview, remoteProductReview)
+
+            expectation.fulfill()
+        }
+
+        productReviewStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+}
+
+
+// MARK: - Private Helpers
+//
+private extension ProductReviewStoreTests {
+
+    func sampleProductReview() -> Networking.ProductReview {
+        return Networking.ProductReview(siteID: sampleSiteID,
+                                        reviewID: sampleReviewID,
+                                        productID: sampleProductID,
+                                        dateCreated: Date(),
+                                        statusKey: "hold",
+                                        reviewer: "someone",
+                                        reviewerEmail: "somewhere@theinternet.com",
+                                        review: "Meh",
+                                        rating: 1,
+                                        verified: true)
     }
 }

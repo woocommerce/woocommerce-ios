@@ -156,7 +156,7 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Verifies that `ProductReviewAction.retrieveProductReview` returns the expected `ProductReview`.
     ///
-    func testRetrieveSingleProductreviewReturnsExpectedFields() {
+    func testRetrieveSingleProductReviewReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve single product review")
         let remoteProductReview = sampleProductReview()
 
@@ -166,6 +166,36 @@ final class ProductReviewStoreTests: XCTestCase {
             XCTAssertNotNil(productReview)
             XCTAssertEqual(productReview, remoteProductReview)
 
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveSingleProductReviewReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve single product review error response")
+
+        network.simulateResponse(requestUrlSuffix: "products/reviews/173", filename: "generic_error")
+        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (product, error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductReviewAction.retrieveProductReview` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveSingleProductReviewReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve single product review empty response")
+
+        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (product, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(product)
             expectation.fulfill()
         }
 

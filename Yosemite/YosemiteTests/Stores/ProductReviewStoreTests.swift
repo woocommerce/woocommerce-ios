@@ -202,6 +202,40 @@ final class ProductReviewStoreTests: XCTestCase {
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+
+    // MARK: - ProductReviewAction.resetStoredProductReviews
+
+    /// Verifies that `ProductReviewAction.resetStoredProductReviews` deletes the Products from Storage
+    ///
+    func testResetStoredProductReviewsEffectivelyNukesTheProductsCache() {
+        let expectation = self.expectation(description: "Stored Product reviews Reset")
+        let action = ProductReviewAction.resetStoredProductReviews() {
+            self.store.upsertStoredProductReviews(readOnlyProductReviews: [self.sampleProductReview()], in: self.viewStorage)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 1)
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - ProductReviewStore.upsertStoredProductReview
+
+    /// Verifies that `ProductReviewStore.upsertStoredProductReview` does not produce duplicate entries.
+    ///
+    func testUpdateStoredProductReviewEffectivelyUpdatesPreexistantProductReview() {
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 0)
+
+        store.upsertStoredProductReviews(readOnlyProductReviews: [sampleProductReview()], in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 1)
+
+        store.upsertStoredProductReviews(readOnlyProductReviews: [sampleProductReviewMutated()], in: viewStorage)
+        let storageProductReview1 = viewStorage.loadProductReview(siteID: sampleSiteID, reviewID: sampleReviewID)
+        XCTAssertEqual(storageProductReview1?.toReadOnly(), sampleProductReviewMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 1)
+    }
 }
 
 
@@ -216,6 +250,19 @@ private extension ProductReviewStoreTests {
                                         dateCreated: Date(),
                                         statusKey: "hold",
                                         reviewer: "someone",
+                                        reviewerEmail: "somewhere@theinternet.com",
+                                        review: "Meh",
+                                        rating: 1,
+                                        verified: true)
+    }
+
+    func sampleProductReviewMutated() -> Networking.ProductReview {
+        return Networking.ProductReview(siteID: sampleSiteID,
+                                        reviewID: sampleReviewID,
+                                        productID: sampleProductID,
+                                        dateCreated: Date(),
+                                        statusKey: "hold",
+                                        reviewer: "someone else mutated",
                                         reviewerEmail: "somewhere@theinternet.com",
                                         review: "Meh",
                                         rating: 1,

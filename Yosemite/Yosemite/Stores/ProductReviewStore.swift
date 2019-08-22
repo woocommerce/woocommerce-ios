@@ -120,7 +120,10 @@ private extension ProductReviewStore {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }
+}
 
+
+extension ProductReviewStore {
     /// Updates (OR Inserts) the specified ReadOnly ProductReview Entities into the Storage Layer.
     ///
     /// - Parameters:
@@ -129,11 +132,10 @@ private extension ProductReviewStore {
     ///
     func upsertStoredProductReviews(readOnlyProductReviews: [Networking.ProductReview], in storage: StorageType) {
         for readOnlyProductReview in readOnlyProductReviews {
-            let storageProductReview = storage.loadProductReview(siteID: readOnlyProductReview.siteID, reviewID: readOnlyProductReview.productID) ??
+            let storageProductReview = storage.loadProductReview(siteID: readOnlyProductReview.siteID, reviewID: readOnlyProductReview.reviewID) ??
                 storage.insertNewObject(ofType: Storage.ProductReview.self)
 
             storageProductReview.update(with: readOnlyProductReview)
         }
     }
 }
-

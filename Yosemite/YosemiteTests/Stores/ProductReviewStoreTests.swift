@@ -20,6 +20,10 @@ final class ProductReviewStoreTests: XCTestCase {
     ///
     private var network: MockupNetwork!
 
+    /// Store
+    ///
+    private var store: ProductReviewStore!
+
     /// Convenience Property: Returns the StorageType associated with the main thread.
     ///
     private var viewStorage: StorageType {
@@ -53,9 +57,13 @@ final class ProductReviewStoreTests: XCTestCase {
         dispatcher = Dispatcher()
         storageManager = MockupStorageManager()
         network = MockupNetwork()
+        store = ProductReviewStore(dispatcher: dispatcher,
+                                   storageManager: storageManager,
+                                   network: network)
     }
 
     override func tearDown() {
+        store = nil
         dispatcher = nil
         storageManager = nil
         network = nil
@@ -70,9 +78,6 @@ final class ProductReviewStoreTests: XCTestCase {
     ///
     func testRetrieveProductReviewsEffectivelyPersistsRetrievedProductReviews() {
         let expectation = self.expectation(description: "Retrieve product review list")
-        let productReviewStore = ProductReviewStore(dispatcher: dispatcher,
-                                                    storageManager: storageManager,
-                                                    network: network)
 
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 0)
@@ -86,7 +91,7 @@ final class ProductReviewStoreTests: XCTestCase {
                                                                     expectation.fulfill()
         }
 
-        productReviewStore.onAction(action)
+        store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
@@ -95,7 +100,7 @@ final class ProductReviewStoreTests: XCTestCase {
     ///
     func testRetrieveProductReviewsEffectivelyPersistsProductReviewFields() {
         let expectation = self.expectation(description: "Persist product review list")
-        let productReviewStore = ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
         let remoteProductReview = sampleProductReview()
 
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
@@ -113,7 +118,7 @@ final class ProductReviewStoreTests: XCTestCase {
             expectation.fulfill()
         }
 
-        productReviewStore.onAction(action)
+        store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
@@ -121,7 +126,6 @@ final class ProductReviewStoreTests: XCTestCase {
     ///
     func testRetrieveProductReviewsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve product reviews error response")
-        let productReviewStore = ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "generic_error")
         let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
@@ -129,7 +133,7 @@ final class ProductReviewStoreTests: XCTestCase {
             expectation.fulfill()
         }
 
-        productReviewStore.onAction(action)
+        store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
@@ -137,14 +141,35 @@ final class ProductReviewStoreTests: XCTestCase {
     ///
     func testRetrieveProductReviewsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve product reviews empty response")
-        let productReviewStore = ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let action = ProductReviewAction.synchronizeProductReviews(siteID: sampleSiteID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
 
-        productReviewStore.onAction(action)
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
+    // MARK: - ProductReviewAction.retrieveProductReview
+
+    /// Verifies that `ProductReviewAction.retrieveProductReview` returns the expected `ProductReview`.
+    ///
+    func testRetrieveSingleProductreviewReturnsExpectedFields() {
+        let expectation = self.expectation(description: "Retrieve single product review")
+        let remoteProductReview = sampleProductReview()
+
+        network.simulateResponse(requestUrlSuffix: "products/reviews/173", filename: "reviews-single")
+        let action = ProductReviewAction.retrieveProductReview(siteID: sampleSiteID, reviewID: sampleReviewID) { (productReview, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(productReview)
+            XCTAssertEqual(productReview, remoteProductReview)
+
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }

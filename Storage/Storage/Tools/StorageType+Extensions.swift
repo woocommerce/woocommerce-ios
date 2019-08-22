@@ -273,7 +273,7 @@ public extension StorageType {
 
     /// Retrieves a stored ProductReview for the provided siteID and reviewID.
     ///
-    func loadProduct(siteID: Int, reviewID: Int) -> ProductReview? {
+    func loadProductReview(siteID: Int, reviewID: Int) -> ProductReview? {
         let predicate = NSPredicate(format: "siteID = %ld AND reviewID = %ld", siteID, reviewID)
         return firstObject(ofType: ProductReview.self, matching: predicate)
     }

@@ -298,7 +298,7 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureBarChart() {
         barChartView.chartDescription?.enabled = false
-        barChartView.dragEnabled = false
+        barChartView.dragEnabled = true
         barChartView.setScaleEnabled(false)
         barChartView.pinchZoomEnabled = false
         barChartView.rightAxis.enabled = false

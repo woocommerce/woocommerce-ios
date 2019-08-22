@@ -262,20 +262,33 @@ extension LoginViewController {
         guard let serviceName = loginFields.meta.socialService, let serviceToken = loginFields.meta.socialServiceIDToken else {
             return
         }
-
-        linkSocialService(serviceName: serviceName, serviceToken: serviceToken, wpcomAuthToken: wpcomAuthToken)
+        
+        linkSocialService(serviceName: serviceName,
+                          serviceToken: serviceToken,
+                          wpcomAuthToken: wpcomAuthToken,
+                          appleEmail: loginFields.meta.appleUser?.email,
+                          appleFullName: loginFields.meta.appleUser?.fullName)
     }
 
     /// Links the current WordPress Account to a Social Service.
     ///
-    func linkSocialService(serviceName: SocialServiceName, serviceToken: String, wpcomAuthToken: String) {
-        guard serviceName == .google else {
+    func linkSocialService(serviceName: SocialServiceName,
+                           serviceToken: String,
+                           wpcomAuthToken: String,
+                           appleEmail: String? = nil,
+                           appleFullName: String? = nil) {
+        guard serviceName == .google || serviceName == .apple else {
             DDLogError("Error: Unsupported Social Service")
             return
         }
 
         let service = WordPressComAccountService()
-        service.connect(wpcomAuthToken: wpcomAuthToken, serviceName: serviceName, serviceToken: serviceToken, success: {
+        service.connect(wpcomAuthToken: wpcomAuthToken,
+                        serviceName: serviceName,
+                        serviceToken: serviceToken,
+                        appleEmail: appleEmail,
+                        appleFullName: appleFullName,
+                        success: {
             WordPressAuthenticator.track(.loginSocialConnectSuccess)
             WordPressAuthenticator.track(.loginSocialSuccess)
         }, failure: { error in

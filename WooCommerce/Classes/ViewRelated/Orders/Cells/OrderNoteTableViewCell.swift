@@ -80,13 +80,16 @@ private extension OrderNoteTableViewCell {
         let dateOfCreation = dateCreated ?? ""
         if isCustomerNote {
             iconButton.backgroundColor = StyleManager.statusPrimaryBoldColor
-            statusLabel.text = NSLocalizedString("\(dateOfCreation) - \(theAuthor) (To Customer)", comment: "Labels an order note to let user know it's visible to the customer")
+            let localizationComment = "Labels an order note to let user know it's visible to the customer. Reads like 05:30 PM - username (To Customer)"
+            statusLabel.text = NSLocalizedString("\(dateOfCreation) - \(theAuthor) (To Customer)", comment: localizationComment)
         } else if isSystemAuthor {
             iconButton.backgroundColor = StyleManager.wooCommerceBrandColor
-            statusLabel.text = NSLocalizedString("\(dateOfCreation) - \(theAuthor) (System)", comment: "Labels an order note to let user know it's a system status message")
+            let localizationComment = "Labels an order note to let user know it's a system status message. Reads like 05:30 PM - username (System)"
+            statusLabel.text = NSLocalizedString("\(dateOfCreation) - \(theAuthor) (System)", comment: localizationComment)
         } else {
             iconButton.backgroundColor = StyleManager.wooGreyMid
-            statusLabel.text = NSLocalizedString("\(dateOfCreation) - \(theAuthor) (Private)", comment: "Labels an order note to let the user know it's private and not seen by the customer")
+            let localizationComment = "Labels an order note to let the user know it's not visible to the customer. Reads like 05:30 PM - username (Private)"
+            statusLabel.text = NSLocalizedString("\(dateOfCreation) - \(theAuthor) (Private)", comment: localizationComment)
         }
     }
 

@@ -14,7 +14,7 @@ public final class ProductReviewStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: ProductAction.self)
+        dispatcher.register(processor: self, for: ProductReviewAction.self)
     }
 
     /// Receives and executes Actions.

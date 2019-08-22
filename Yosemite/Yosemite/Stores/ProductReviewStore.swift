@@ -132,7 +132,7 @@ private extension ProductReviewStore {
             let storageProductReview = storage.loadProductReview(siteID: readOnlyProductReview.siteID, reviewID: readOnlyProductReview.productID) ??
                 storage.insertNewObject(ofType: Storage.ProductReview.self)
 
-            //storageProduct.update(with: readOnlyProductReview)
+            storageProductReview.update(with: readOnlyProductReview)
         }
     }
 }

@@ -25,16 +25,16 @@ public struct ProductReview: Decodable {
 
     /// ProductReview struct initializer.
     ///
-    init(siteID: Int,
-         reviewID: Int,
-         productID: Int,
-         dateCreated: Date,
-         statusKey: String,
-         reviewer: String,
-         reviewerEmail: String,
-         review: String,
-         rating: Int,
-         verified: Bool) {
+    public init(siteID: Int,
+                reviewID: Int,
+                productID: Int,
+                dateCreated: Date,
+                statusKey: String,
+                reviewer: String,
+                reviewerEmail: String,
+                review: String,
+                rating: Int,
+                verified: Bool) {
         self.siteID = siteID
         self.reviewID = reviewID
         self.productID = productID

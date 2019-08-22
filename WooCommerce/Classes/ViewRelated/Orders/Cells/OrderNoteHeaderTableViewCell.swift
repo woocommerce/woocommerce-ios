@@ -3,7 +3,7 @@ import UIKit
 
 // MARK: - OrderNoteHeaderTableViewCell
 //
-class OrderNoteHeaderTableViewCell: UITableViewCell {
+final class OrderNoteHeaderTableViewCell: UITableViewCell {
 
     @IBOutlet weak var dateLabel: UILabel!
 

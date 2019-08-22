@@ -48,6 +48,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     private var siteStats: SiteVisitStats? {
         return siteStatsResultsController.fetchedObjects.first
     }
+    private var siteStatsItems: [SiteVisitStatsItem] = []
 
     // MARK: - Subviews
 
@@ -497,6 +498,9 @@ private extension StoreStatsV4PeriodViewController {
         } else {
             lastUpdatedDate = nil
         }
+        siteStatsItems = siteStats?.items?.sorted(by: { (lhs, rhs) -> Bool in
+            return lhs.period < rhs.period
+        }) ?? []
         reloadSiteFields()
         reloadLastUpdatedField()
     }

@@ -1,9 +1,7 @@
 import Foundation
-#if !XCODE11
 import ZendeskSDK
 import ZendeskCoreSDK
 import CommonUISDK// Zendesk UI SDK
-#endif
 import WordPressShared
 import CoreTelephony
 import SafariServices
@@ -15,7 +13,7 @@ extension NSNotification.Name {
     static let ZDPNCleared = NSNotification.Name(rawValue: "ZDPNCleared")
 }
 
-#if !XCODE11
+
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
@@ -887,46 +885,45 @@ extension ZendeskManager: UITextFieldDelegate {
     }
 }
 
-#else
-/// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
-/// as well as displaying views for the Help Center, new tickets, and ticket list.
-///
-class ZendeskManager: NSObject {
-    static let shared = ZendeskManager()
-    typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
-
-    private (set) var zendeskEnabled = false {
-        didSet {
-            DDLogInfo("Zendesk Enabled: \(zendeskEnabled)")
-        }
-    }
-
-    func initialize() {}
-    func reset() {}
-    func userSupportEmail() -> String? {
-        return nil
-    }
-
-    func showHelpCenter(from controller: UIViewController) {
-        let safariViewController = SFSafariViewController(url: WooConstants.helpCenterURL)
-        safariViewController.modalPresentationStyle = .pageSheet
-        controller.present(safariViewController, animated: true, completion: nil)
-
-        ServiceLocator.analytics.track(.supportHelpCenterViewed)
-    }
-
-    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {}
-    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {}
-
-    func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {}
-}
-
-// MARK: - ZendeskManager: SupportManagerAdapter Conformance
+//#else
+///// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
+///// as well as displaying views for the Help Center, new tickets, and ticket list.
+/////
+//class ZendeskManager: NSObject {
+//    static let shared = ZendeskManager()
+//    typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
 //
-extension ZendeskManager: SupportManagerAdapter {
-    func deviceTokenWasReceived(deviceToken: String) {}
-    func unregisterForRemoteNotifications() {}
-    func displaySupportRequest(using userInfo: [AnyHashable: Any]) {}
-    func pushNotificationReceived() {}
-}
-#endif
+//    private (set) var zendeskEnabled = false {
+//        didSet {
+//            DDLogInfo("Zendesk Enabled: \(zendeskEnabled)")
+//        }
+//    }
+//
+//    func initialize() {}
+//    func reset() {}
+//    func userSupportEmail() -> String? {
+//        return nil
+//    }
+//
+//    func showHelpCenter(from controller: UIViewController) {
+//        let safariViewController = SFSafariViewController(url: WooConstants.helpCenterURL)
+//        safariViewController.modalPresentationStyle = .pageSheet
+//        controller.present(safariViewController, animated: true, completion: nil)
+//
+//        ServiceLocator.analytics.track(.supportHelpCenterViewed)
+//    }
+//
+//    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {}
+//    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {}
+//
+//    func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {}
+//}
+//
+//// MARK: - ZendeskManager: SupportManagerAdapter Conformance
+////
+//extension ZendeskManager: SupportManagerAdapter {
+//    func deviceTokenWasReceived(deviceToken: String) {}
+//    func unregisterForRemoteNotifications() {}
+//    func displaySupportRequest(using userInfo: [AnyHashable: Any]) {}
+//    func pushNotificationReceived() {}
+//}

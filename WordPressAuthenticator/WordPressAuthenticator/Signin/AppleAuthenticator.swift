@@ -52,12 +52,12 @@ private extension AppleAuthenticator {
     @available(iOS 13.0, *)
     func createWordPressComUser(appleCredentials: ASAuthorizationAppleIDCredential) {
         guard let identityToken = appleCredentials.identityToken,
+            let token = String(data: identityToken, encoding: .utf8),
             let email = appleCredentials.email else {
                 DDLogError("Apple Authenticator: invalid Apple credentials.")
                 return
         }
         
-        let token = identityToken.base64EncodedString()
         let name = fullName(from: appleCredentials.fullName)
 
         updateLoginFields(email: email, fullName: name, token: token)

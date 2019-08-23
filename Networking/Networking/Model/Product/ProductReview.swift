@@ -25,16 +25,16 @@ public struct ProductReview: Decodable {
 
     /// ProductReview struct initializer.
     ///
-    init(siteID: Int,
-         reviewID: Int,
-         productID: Int,
-         dateCreated: Date,
-         statusKey: String,
-         reviewer: String,
-         reviewerEmail: String,
-         review: String,
-         rating: Int,
-         verified: Bool) {
+    public init(siteID: Int,
+                reviewID: Int,
+                productID: Int,
+                dateCreated: Date,
+                statusKey: String,
+                reviewer: String,
+                reviewerEmail: String,
+                review: String,
+                rating: Int,
+                verified: Bool) {
         self.siteID = siteID
         self.reviewID = reviewID
         self.productID = productID
@@ -94,6 +94,17 @@ private extension ProductReview {
         case review         = "review"
         case rating         = "rating"
         case verified       = "verified"
+    }
+}
+
+
+// MARK: - Equatable Conformance
+//
+extension ProductReview: Equatable {
+    public static func == (lhs: ProductReview, rhs: ProductReview) -> Bool {
+        return lhs.siteID == rhs.siteID &&
+            lhs.reviewID == rhs.reviewID &&
+            lhs.productID == rhs.productID
     }
 }
 

@@ -25,7 +25,7 @@ class AuthenticatedState: StoresManagerState {
     /// Designated Initializer
     ///
     init(credentials: Credentials) {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
         services = [
@@ -59,7 +59,7 @@ class AuthenticatedState: StoresManagerState {
     /// Executed before the current state is deactivated.
     ///
     func willLeave() {
-        let pushNotesManager = AppDelegate.shared.pushNotesManager
+        let pushNotesManager = ServiceLocator.pushNotesManager
 
         pushNotesManager.unregisterForRemoteNotifications()
         pushNotesManager.resetBadgeCount()

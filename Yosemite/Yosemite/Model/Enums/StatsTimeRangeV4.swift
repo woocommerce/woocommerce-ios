@@ -30,14 +30,10 @@ extension StatsTimeRangeV4 {
     /// Represents the period unit of the site visit stats given a time range.
     public var siteVisitStatsGranularity: StatGranularity {
         switch self {
-        case .today:
+        case .today, .thisWeek, .thisMonth:
             return .day
-        case .thisWeek:
-            return .week
-        case .thisMonth:
-            return .month
         case .thisYear:
-            return .year
+            return .month
         }
     }
 
@@ -52,6 +48,24 @@ extension StatsTimeRangeV4 {
             return .month
         case .thisYear:
             return .year
+        }
+    }
+
+    /// The number of intervals for site visit stats to fetch given a time range.
+    /// The interval unit is in `siteVisitStatsGranularity`.
+    func siteVisitStatsQuantity(date: Date, siteTimezone: TimeZone) -> Int {
+        switch self {
+        case .today:
+            return 1
+        case .thisWeek:
+            return 7
+        case .thisMonth:
+            var calendar = Calendar.current
+            calendar.timeZone = siteTimezone
+            let daysThisMonth = calendar.range(of: .day, in: .month, for: date)
+            return daysThisMonth?.count ?? 0
+        case .thisYear:
+            return 12
         }
     }
 }

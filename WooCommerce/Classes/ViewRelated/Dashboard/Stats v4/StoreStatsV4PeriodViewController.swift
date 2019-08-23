@@ -83,7 +83,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     /// OrderStats ResultsController: Loads order stats from the Storage Layer
     ///
     private lazy var orderStatsResultsController: ResultsController<StorageOrderStatsV4> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "timeRange ==[c] %@", timeRange.rawValue)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [])
     }()
@@ -290,7 +290,8 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureNoRevenueView() {
         noRevenueView.isHidden = true
-        noRevenueLabel.text = NSLocalizedString("No revenue this period", comment: "Text displayed when no order data are available for the selected time range.")
+        noRevenueLabel.text = NSLocalizedString("No revenue this period",
+                                                comment: "Text displayed when no order data are available for the selected time range.")
         noRevenueLabel.font = StyleManager.subheadlineFont
         noRevenueLabel.textColor = StyleManager.defaultTextColor
     }
@@ -343,10 +344,12 @@ private extension StoreStatsV4PeriodViewController {
 // MARK: - Internal Updates
 private extension StoreStatsV4PeriodViewController {
     func updateSiteVisitStatsResultsController(currentDate: Date) -> ResultsController<StorageSiteVisitStats> {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
+        let dateFormatter = DateFormatter.Stats.statsDayFormatter
+        dateFormatter.timeZone = siteTimezone
         let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@",
                                     timeRange.siteVisitStatsGranularity.rawValue,
-                                    DateFormatter.Stats.statsDayFormatter.string(from: currentDate))
+                                    dateFormatter.string(from: currentDate))
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }

@@ -145,7 +145,7 @@ extension LoginPrologueViewController {
     ///
     @IBAction func loginWasPressed() {
         ServiceLocator.analytics.track(.loginPrologueContinueTapped)
-        let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
+        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
 
         navigationController?.pushViewController(loginViewController, animated: true)
         navigationController?.setNavigationBarHidden(false, animated: true)

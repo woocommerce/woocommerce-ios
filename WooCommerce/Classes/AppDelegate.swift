@@ -257,8 +257,9 @@ private extension AppDelegate {
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
         #else
+            let pushNotesManager = ServiceLocator.pushNotesManager
             pushNotesManager.registerForRemoteNotifications()
-            pushNotesManager.ensureAuthorizationIsRequested()
+            pushNotesManager.ensureAuthorizationIsRequested(onCompletion: nil)
         #endif
     }
 

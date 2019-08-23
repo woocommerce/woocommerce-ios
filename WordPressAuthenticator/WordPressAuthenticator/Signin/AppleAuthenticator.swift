@@ -4,6 +4,10 @@ import WordPressKit
 
 #if XCODE11
 
+@objc protocol AppleAuthenticatorDelegate {
+    func showWPComLogin(loginFields: LoginFields)
+}
+
 class AppleAuthenticator: NSObject {
 
     // MARK: - Properties
@@ -12,6 +16,7 @@ class AppleAuthenticator: NSObject {
     private override init() {}
     private var showFromViewController: UIViewController?
     private let loginFields = LoginFields()
+    weak var delegate: AppleAuthenticatorDelegate?
 
     private var authenticationDelegate: WordPressAuthenticatorDelegate {
         guard let delegate = WordPressAuthenticator.shared.delegate else {

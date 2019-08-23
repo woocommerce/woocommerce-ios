@@ -4,6 +4,10 @@ import WordPressKit
 
 #if XCODE11
 
+@objc protocol AppleAuthenticatorDelegate {
+    func showWPComLogin(loginFields: LoginFields)
+}
+
 class AppleAuthenticator: NSObject {
 
     // MARK: - Properties
@@ -12,6 +16,7 @@ class AppleAuthenticator: NSObject {
     private override init() {}
     private var showFromViewController: UIViewController?
     private let loginFields = LoginFields()
+    weak var delegate: AppleAuthenticatorDelegate?
 
     private var authenticationDelegate: WordPressAuthenticatorDelegate {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
@@ -68,14 +73,16 @@ private extension AppleAuthenticator {
 
                                             let wpcom = WordPressComCredentials(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: self?.loginFields.siteAddress ?? "")
                                             let credentials = AuthenticatorCredentials(wpcom: wpcom)
-                                            
-                                            // New Account
+
+                                            // New WP Account
                                             if accountCreated {
                                                 self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
                                                 self?.signupSuccessful(with: credentials)
                                                 return
                                             }
-                                            // TODO: handle Existing Account.
+
+                                            // Existing WP Account
+                                            self?.logInInstead()
                                             
             }, failure: { [weak self] error in
                 self?.signupFailed(with: error)
@@ -103,6 +110,12 @@ private extension AppleAuthenticator {
     func signupFailed(with error: Error) {
         WPAnalytics.track(.signupSocialFailure)
         DDLogError("Apple Authenticator: signup failed. error: \(error)")
+    }
+    
+    func logInInstead() {
+        WordPressAuthenticator.track(.signupSocialToLogin)
+        WordPressAuthenticator.track(.loginSocialSuccess)
+        delegate?.showWPComLogin(loginFields: loginFields)
     }
     
     // MARK: - Helpers

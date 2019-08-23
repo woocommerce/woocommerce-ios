@@ -287,6 +287,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
     private func appleTapped() {
         #if XCODE11
+        AppleAuthenticator.sharedInstance.delegate = self
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
         #endif
     }
@@ -366,3 +367,12 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         keyboardWillHide(notification)
     }
 }
+
+#if XCODE11
+extension LoginSiteAddressViewController: AppleAuthenticatorDelegate {
+    func showWPComLogin(loginFields: LoginFields) {
+        self.loginFields = loginFields
+        performSegue(withIdentifier: .showWPComLogin, sender: self)
+    }
+}
+#endif

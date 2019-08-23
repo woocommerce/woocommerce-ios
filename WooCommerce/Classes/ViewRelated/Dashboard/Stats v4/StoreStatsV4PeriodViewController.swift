@@ -159,7 +159,6 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        clearChartMarkers()
         barChartView?.clear()
     }
 }
@@ -399,20 +398,6 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
     func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
         let selectedIndex = Int(entry.x)
         updateUI(selectedBarIndex: selectedIndex)
-        guard entry.y != 0.0 else {
-            // Do not display the marker if the Y-value is zero
-            clearChartMarkers()
-            return
-        }
-
-        let marker = ChartMarker(chartView: chartView,
-                                 color: StyleManager.wooSecondary,
-                                 font: StyleManager.chartLabelFont,
-                                 textColor: StyleManager.wooWhite,
-                                 insets: Constants.chartMarkerInsets)
-        marker.minimumSize = Constants.chartMarkerMinimumSize
-        marker.arrowSize = Constants.chartMarkerArrowSize
-        chartView.marker = marker
     }
 }
 
@@ -706,10 +691,6 @@ private extension StoreStatsV4PeriodViewController {
 
     func reloadLastUpdatedField() {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
-    }
-
-    func clearChartMarkers() {
-        barChartView.highlightValue(nil, callDelegate: false)
     }
 
     func generateBarDataSet() -> BarChartData? {

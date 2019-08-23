@@ -147,6 +147,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
                 group.enter()
                 self.syncSiteVisitStats(for: siteID,
+                                        siteTimezone: siteTimezone,
                                         timeRange: vc.timeRange,
                                         latestDateToInclude: latestDateToInclude) { error in
                     if let error = error {
@@ -317,8 +318,13 @@ private extension StoreStatsAndTopPerformersViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncSiteVisitStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
+    func syncSiteVisitStats(for siteID: Int,
+                            siteTimezone: TimeZone,
+                            timeRange: StatsTimeRangeV4,
+                            latestDateToInclude: Date,
+                            onCompletion: ((Error?) -> Void)? = nil) {
         let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
+                                                          siteTimezone: siteTimezone,
                                                           timeRange: timeRange,
                                                           latestDateToInclude: latestDateToInclude) { error in
                                                             if let error = error {

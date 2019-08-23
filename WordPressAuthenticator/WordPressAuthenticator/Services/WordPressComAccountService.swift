@@ -21,7 +21,12 @@ class WordPressComAccountService {
 
     /// Connects a WordPress.com account with the specified Social Service.
     ///
-    func connect(wpcomAuthToken: String, serviceName: SocialServiceName, serviceToken: String, success: @escaping () -> Void, failure: @escaping (Error) -> Void) {
+    func connect(wpcomAuthToken: String,
+                 serviceName: SocialServiceName,
+                 serviceToken: String,
+                 connectParameters: [String:AnyObject]? = nil,
+                 success: @escaping () -> Void,
+                 failure: @escaping (Error) -> Void) {
         let loggedAPI  = WordPressComRestApi(oAuthToken: wpcomAuthToken,
                                              userAgent: configuration.userAgent,
                                              baseUrlString: configuration.wpcomAPIBaseURL)
@@ -29,6 +34,7 @@ class WordPressComAccountService {
 
         remote.connectToSocialService(serviceName,
                                       serviceIDToken: serviceToken,
+                                      connectParameters: connectParameters,
                                       oAuthClientID: configuration.wpcomClientId,
                                       oAuthClientSecret: configuration.wpcomSecret,
                                       success: success,

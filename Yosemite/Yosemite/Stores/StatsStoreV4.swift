@@ -36,10 +36,12 @@ public final class StatsStoreV4: Store {
                           quantity: quantity,
                           onCompletion: onCompletion)
         case .retrieveSiteVisitStats(let siteID,
+                                     let siteTimezone,
                                      let timeRange,
                                      let latestDateToInclude,
                                      let onCompletion):
             retrieveSiteVisitStats(siteID: siteID,
+                                   siteTimezone: siteTimezone,
                                    timeRange: timeRange,
                                    latestDateToInclude: latestDateToInclude,
                                    onCompletion: onCompletion)
@@ -102,16 +104,19 @@ public extension StatsStoreV4 {
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).
     ///
     func retrieveSiteVisitStats(siteID: Int,
+                                siteTimezone: TimeZone,
                                 timeRange: StatsTimeRangeV4,
                                 latestDateToInclude: Date,
                                 onCompletion: @escaping (Error?) -> Void) {
 
-        let remote = SiteVisitStatsRemote(network: network)
+        let quantity = timeRange.siteVisitStatsQuantity(date: latestDateToInclude, siteTimezone: siteTimezone)
 
+        let remote = SiteVisitStatsRemote(network: network)
         remote.loadSiteVisitorStats(for: siteID,
+                                    siteTimezone: siteTimezone,
                                     unit: timeRange.siteVisitStatsGranularity,
                                     latestDateToInclude: latestDateToInclude,
-                                    quantity: 1) { [weak self] (siteVisitStats, error) in
+                                    quantity: quantity) { [weak self] (siteVisitStats, error) in
                                         guard let siteVisitStats = siteVisitStats else {
                                             onCompletion(error.map({ SiteVisitStatsStoreError(error: $0) }))
                                             return
@@ -216,7 +221,7 @@ extension StatsStoreV4 {
 
         let storage = storageManager.viewStorage
         let storageSiteVisitStats = storage.loadSiteVisitStats(
-            granularity: readOnlyStats.granularity.rawValue) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
+            granularity: readOnlyStats.granularity.rawValue, date: readOnlyStats.date) ?? storage.insertNewObject(ofType: Storage.SiteVisitStats.self)
         storageSiteVisitStats.update(with: readOnlyStats)
         handleSiteVisitStatsItems(readOnlyStats, storageSiteVisitStats, storage)
         storage.saveIfNeeded()

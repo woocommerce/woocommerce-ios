@@ -119,6 +119,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
         let action = StatsActionV4
             .retrieveSiteVisitStats(siteID: sampleSiteID,
+                                    siteTimezone: .current,
                                     timeRange: .thisWeek,
                                     latestDateToInclude: date(with: "2018-08-06T17:06:55")) { (error) in
                                         XCTAssertNil(error)
@@ -148,6 +149,7 @@ final class StatsStoreV4Tests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "site-visits-alt")
         let action = StatsActionV4
             .retrieveSiteVisitStats(siteID: sampleSiteID,
+                                    siteTimezone: .current,
                                     timeRange: .thisYear,
                                     latestDateToInclude: date(with: "2018-08-06T17:06:55")) { (error) in
                                         XCTAssertNil(error)
@@ -171,6 +173,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/stats/visits/", filename: "generic_error")
         let action = StatsActionV4.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                          siteTimezone: .current,
                                                           timeRange: .thisYear,
                                                           latestDateToInclude: date(with: "2018-08-06T17:06:55")) { (error) in
                                                             XCTAssertNotNil(error)
@@ -188,6 +191,7 @@ final class StatsStoreV4Tests: XCTestCase {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let action = StatsActionV4.retrieveSiteVisitStats(siteID: sampleSiteID,
+                                                          siteTimezone: .current,
                                                           timeRange: .thisYear,
                                                           latestDateToInclude: date(with: "2018-08-06T17:06:55")) { (error) in
                                                             XCTAssertNotNil(error)

@@ -12,6 +12,12 @@ class DashboardViewController: UIViewController {
 
     private var dashboardUI: DashboardUI!
 
+    // MARK: Subviews
+
+    private lazy var containerView: UIView = {
+        return UIView(frame: .zero)
+    }()
+
     // MARK: View Lifecycle
 
     deinit {
@@ -37,6 +43,11 @@ class DashboardViewController: UIViewController {
         configureTitle()
         reloadData()
     }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        dashboardUI.view.frame = containerView.bounds
+    }
 }
 
 
@@ -58,7 +69,7 @@ private extension DashboardViewController {
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
-        title = StoresManager.shared.sessionManager.defaultSite?.name ?? myStore
+        title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? myStore
         tabBarItem.title = myStore
     }
 
@@ -95,15 +106,19 @@ private extension DashboardViewController {
     }
 
     func configureDashboardUI() {
+        // A container view is added to respond to safe area insets from the view controller.
+        // This is needed when the child view controller's view has to use a frame-based layout
+        // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
+        view.addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(containerView)
+
         dashboardUI = DashboardUIFactory.dashboardUI()
-        add(dashboardUI)
         let contentView = dashboardUI.view!
-        NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            ])
+        addChild(dashboardUI)
+        containerView.addSubview(contentView)
+        dashboardUI.didMove(toParent: self)
+
         dashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
         }
@@ -133,7 +148,7 @@ extension DashboardViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        guard isViewLoaded, StoresManager.shared.isAuthenticated == false else {
+        guard isViewLoaded, ServiceLocator.stores.isAuthenticated == false else {
             return
         }
 
@@ -156,12 +171,12 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        WooAnalytics.shared.track(.settingsTapped)
+        ServiceLocator.analytics.track(.settingsTapped)
         performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
     }
 
     func pullToRefresh() {
-        WooAnalytics.shared.track(.dashboardPulledToRefresh)
+        ServiceLocator.analytics.track(.dashboardPulledToRefresh)
         reloadData()
     }
 
@@ -173,7 +188,7 @@ private extension DashboardViewController {
             self?.reloadData()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

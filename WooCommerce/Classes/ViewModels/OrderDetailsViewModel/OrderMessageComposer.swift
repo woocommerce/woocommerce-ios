@@ -12,7 +12,7 @@ final class OrderMessageComposer: NSObject, MFMessageComposeViewControllerDelega
         }
 
         displayMessageComposer(for: phoneNumber, from: from)
-        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": order.orderID,
+        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
                                                                         "status": order.statusKey,
                                                                         "type": "sms"])
     }

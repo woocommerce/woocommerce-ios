@@ -62,7 +62,7 @@ class NewOrdersViewController: UIViewController {
 extension NewOrdersViewController {
 
     func syncNewOrders(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -76,7 +76,7 @@ extension NewOrdersViewController {
             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -117,7 +117,7 @@ private extension NewOrdersViewController {
             return
         }
 
-       WooAnalytics.shared.track(.dashboardNewOrdersButtonTapped)
+       ServiceLocator.analytics.track(.dashboardNewOrdersButtonTapped)
        MainTabBarController.presentOrders(statusFilter: pendingStatus)
     }
 

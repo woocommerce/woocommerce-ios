@@ -118,7 +118,7 @@ private extension ProductLoaderViewController {
         }
 
         state = .loading
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     @objc func dismissButtonTapped() {

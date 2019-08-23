@@ -32,6 +32,7 @@ public typealias OrderStatsV4Interval = Networking.OrderStatsV4Interval
 public typealias OrderStatsV4Totals = Networking.OrderStatsV4Totals
 public typealias OrderStatus = Networking.OrderStatus
 public typealias Product = Networking.Product
+public typealias ProductReview = Networking.ProductReview
 public typealias ProductStatus = Networking.ProductStatus
 public typealias ProductStockStatus = Networking.ProductStockStatus
 public typealias ProductType = Networking.ProductType

@@ -82,6 +82,13 @@ public extension StorageType {
         return firstObject(ofType: SiteVisitStats.self, matching: predicate)
     }
 
+    /// Retrieves the Stored SiteVisitStats for stats v4.
+    ///
+    func loadSiteVisitStats(granularity: String, date: String) -> SiteVisitStats? {
+        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date = %@", granularity, date)
+        return firstObject(ofType: SiteVisitStats.self, matching: predicate)
+    }
+
     /// Retrieves the Stored OrderStats.
     ///
     func loadOrderStats(granularity: String) -> OrderStats? {
@@ -261,5 +268,20 @@ public extension StorageType {
     func loadProductTag(siteID: Int, productID: Int, tagID: Int) -> ProductTag? {
         let predicate = NSPredicate(format: "product.siteID = %ld AND product.productID = %ld AND tagID = %ld", siteID, productID, tagID)
         return firstObject(ofType: ProductTag.self, matching: predicate)
+    }
+
+    /// Retrieves all of the stored ProductReviews for the provided siteID. Sorted by dateCreated, descending
+    ///
+    func loadProductReviews(siteID: Int) -> [ProductReview]? {
+        let predicate = NSPredicate(format: "siteID = %ld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \ProductReview.dateCreated, ascending: false)
+        return allObjects(ofType: ProductReview.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves a stored ProductReview for the provided siteID and reviewID.
+    ///
+    func loadProductReview(siteID: Int, reviewID: Int) -> ProductReview? {
+        let predicate = NSPredicate(format: "siteID = %ld AND reviewID = %ld", siteID, reviewID)
+        return firstObject(ofType: ProductReview.self, matching: predicate)
     }
 }

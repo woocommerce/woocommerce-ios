@@ -2,6 +2,7 @@ import Foundation
 #if !XCODE11
 import ZendeskSDK
 import ZendeskCoreSDK
+import CommonUISDK// Zendesk UI SDK
 #endif
 import WordPressShared
 import CoreTelephony
@@ -87,9 +88,11 @@ class ZendeskManager: NSObject {
             return
         }
 
-        Zendesk.initialize(appId: ApiCredentials.zendeskAppId, clientId: ApiCredentials.zendeskClientId, zendeskUrl: ApiCredentials.zendeskUrl)
-        Support.initialize(withZendesk: Zendesk.instance)
-        Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
+        Zendesk.initialize(appId: ApiCredentials.zendeskAppId,
+                           clientId: ApiCredentials.zendeskClientId,
+                           zendeskUrl: ApiCredentials.zendeskUrl)
+        SupportUI.initialize(withZendesk: Zendesk.instance)
+        CommonTheme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
 
         haveUserIdentity = getUserProfile()
         zendeskEnabled = true
@@ -113,7 +116,7 @@ class ZendeskManager: NSObject {
         safariViewController.modalPresentationStyle = .pageSheet
         controller.present(safariViewController, animated: true, completion: nil)
 
-        WooAnalytics.shared.track(.supportHelpCenterViewed)
+        ServiceLocator.analytics.track(.supportHelpCenterViewed)
     }
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
@@ -125,7 +128,7 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            WooAnalytics.shared.track(.supportNewRequestViewed)
+            ServiceLocator.analytics.track(.supportNewRequestViewed)
 
             let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
@@ -142,7 +145,7 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            WooAnalytics.shared.track(.supportTicketListViewed)
+            ServiceLocator.analytics.track(.supportTicketListViewed)
 
             let requestConfig = self.createRequest(supportSourceTag: sourceTag)
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
@@ -162,7 +165,7 @@ class ZendeskManager: NSObject {
     /// Displays an alert allowing the user to change their Support email address.
     ///
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {
-        WooAnalytics.shared.track(.supportIdentityFormViewed)
+        ServiceLocator.analytics.track(.supportIdentityFormViewed)
         presentInController = controller
 
         // If the user hasn't already set a username, go ahead and ask for that too.
@@ -192,7 +195,7 @@ class ZendeskManager: NSObject {
     ///
     func getTags(supportSourceTag: String?) -> [String] {
         var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
-        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return tags
         }
 
@@ -389,10 +392,10 @@ private extension ZendeskManager {
     }
 
     func getUserInformationIfAvailable() {
-        userEmail = StoresManager.shared.sessionManager.defaultAccount?.email
-        userName = StoresManager.shared.sessionManager.defaultAccount?.username
+        userEmail = ServiceLocator.stores.sessionManager.defaultAccount?.email
+        userName = ServiceLocator.stores.sessionManager.defaultAccount?.username
 
-        if let displayName = StoresManager.shared.sessionManager.defaultAccount?.displayName,
+        if let displayName = ServiceLocator.stores.sessionManager.defaultAccount?.displayName,
             !displayName.isEmpty {
             userName = displayName
         }
@@ -546,7 +549,7 @@ private extension ZendeskManager {
 
     func getLogFile() -> String {
 
-        guard let logFileInformation = AppDelegate.shared.fileLogger.logFileManager.sortedLogFileInfos.first,
+        guard let logFileInformation = ServiceLocator.fileLogger.logFileManager.sortedLogFileInfos.first,
             let logData = try? Data(contentsOf: URL(fileURLWithPath: logFileInformation.filePath)),
             let logText = String(data: logData, encoding: .utf8) else {
                 return ""
@@ -556,7 +559,7 @@ private extension ZendeskManager {
     }
 
     func getCurrentSiteDescription() -> String {
-        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return String()
         }
 
@@ -761,25 +764,25 @@ private extension ZendeskManager {
     @objc func zendeskNotification(_ notification: Notification) {
         switch notification.name.rawValue {
         case ZDKAPI_RequestSubmissionSuccess:
-            WooAnalytics.shared.track(.supportNewRequestCreated)
+            ServiceLocator.analytics.track(.supportNewRequestCreated)
         case ZDKAPI_RequestSubmissionError:
-            WooAnalytics.shared.track(.supportNewRequestFailed)
+            ServiceLocator.analytics.track(.supportNewRequestFailed)
         case ZDKAPI_UploadAttachmentSuccess:
-            WooAnalytics.shared.track(.supportNewRequestFileAttached)
+            ServiceLocator.analytics.track(.supportNewRequestFileAttached)
         case ZDKAPI_UploadAttachmentError:
-            WooAnalytics.shared.track(.supportNewRequestFileAttachmentFailed)
+            ServiceLocator.analytics.track(.supportNewRequestFileAttachmentFailed)
         case ZDKAPI_CommentSubmissionSuccess:
-            WooAnalytics.shared.track(.supportTicketUserReplied)
+            ServiceLocator.analytics.track(.supportTicketUserReplied)
         case ZDKAPI_CommentSubmissionError:
-            WooAnalytics.shared.track(.supportTicketUserReplyFailed)
+            ServiceLocator.analytics.track(.supportTicketUserReplyFailed)
         case ZDKAPI_RequestsError:
-            WooAnalytics.shared.track(.supportTicketListViewFailed)
+            ServiceLocator.analytics.track(.supportTicketListViewFailed)
         case ZDKAPI_CommentListSuccess:
-            WooAnalytics.shared.track(.supportTicketUserViewed)
+            ServiceLocator.analytics.track(.supportTicketUserViewed)
         case ZDKAPI_CommentListError:
-            WooAnalytics.shared.track(.supportTicketViewFailed)
+            ServiceLocator.analytics.track(.supportTicketViewFailed)
         case ZD_HC_SearchSuccess:
-            WooAnalytics.shared.track(.supportHelpCenterUserSearched)
+            ServiceLocator.analytics.track(.supportHelpCenterUserSearched)
         default:
             break
         }
@@ -909,7 +912,7 @@ class ZendeskManager: NSObject {
         safariViewController.modalPresentationStyle = .pageSheet
         controller.present(safariViewController, animated: true, completion: nil)
 
-        WooAnalytics.shared.track(.supportHelpCenterViewed)
+        ServiceLocator.analytics.track(.supportHelpCenterViewed)
     }
 
     func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {}

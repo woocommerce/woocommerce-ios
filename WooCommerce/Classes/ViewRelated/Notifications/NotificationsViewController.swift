@@ -31,7 +31,7 @@ class NotificationsViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Notes in sync.
     ///
     private lazy var resultsController: ResultsController<StorageNote> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
         return ResultsController<StorageNote>(storageManager: storageManager,
@@ -229,14 +229,14 @@ private extension NotificationsViewController {
 private extension NotificationsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        WooAnalytics.shared.track(.notificationsListPulledToRefresh)
+        ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
         synchronizeNotifications {
             sender.endRefreshing()
         }
     }
 
     @IBAction func markAllAsRead() {
-        WooAnalytics.shared.track(.notificationsListReadAllTapped)
+        ServiceLocator.analytics.track(.notificationsListReadAllTapped)
         if unreadNotes.isEmpty {
             DDLogVerbose("# Every single notification is already marked as Read!")
             return
@@ -254,7 +254,7 @@ private extension NotificationsViewController {
     /// Nukes the BadgeCount
     ///
     func resetApplicationBadge() {
-        AppDelegate.shared.pushNotesManager.resetBadgeCount()
+        ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
     /// Update the last seen time for notifications
@@ -276,7 +276,7 @@ private extension NotificationsViewController {
             }
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Marks a specific Notification as read.
@@ -291,7 +291,7 @@ private extension NotificationsViewController {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
             }
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Marks the specified collection of Notifications as Read.
@@ -309,7 +309,7 @@ private extension NotificationsViewController {
             self?.updateMarkAllReadButtonState()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
@@ -319,7 +319,7 @@ private extension NotificationsViewController {
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
             } else {
-                WooAnalytics.shared.track(.notificationListLoaded)
+                ServiceLocator.analytics.track(.notificationListLoaded)
             }
 
             self.refreshResultsPredicate()
@@ -328,7 +328,7 @@ private extension NotificationsViewController {
         }
 
         transitionToSyncingState()
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -338,7 +338,7 @@ private extension NotificationsViewController {
     func displayRatingPrompt() {
         defer {
             if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                WooAnalytics.shared.track(wooEvent)
+                ServiceLocator.analytics.track(wooEvent)
             }
         }
 
@@ -370,7 +370,7 @@ private extension NotificationsViewController {
 
     func filterPredicate() -> NSPredicate {
         let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
 
         return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
@@ -475,7 +475,7 @@ extension NotificationsViewController {
             presentNotificationDetails(for: note)
         }
 
-        WooAnalytics.shared.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
+        ServiceLocator.analytics.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
                                                                          "already_read": note.read ])
 
         markAsReadIfNeeded(note: note)
@@ -590,14 +590,14 @@ private extension NotificationsViewController {
             guard let `self` = self else {
                 return
             }
-            guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                 return
             }
             guard let url = URL(string: site.url) else {
                 return
             }
 
-            WooAnalytics.shared.track(.notificationShareStoreButtonTapped)
+            ServiceLocator.analytics.track(.notificationShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 
@@ -737,7 +737,7 @@ private extension NotificationsViewController {
         markAsReadCount += 1
         let message = NSLocalizedString("All notifications marked as read", comment: "Mark all notifications as read notice")
         let notice = Notice(title: message, feedbackType: .success)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

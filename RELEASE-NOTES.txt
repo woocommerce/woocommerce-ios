@@ -1,6 +1,9 @@
 2.6
 -----
 - bugfix: 9+ orders in the orders badge text is now easier to read
+- bugfix: Keep those sign-in bugs coming! We tracked down and fixed a `Log in with Jetpack` issue, where users with a Byte Order Mark in their `wp-config.php` file were returning error responses during API requests. These users would see their store listed in the sign-in screen, but were unable to tap the Continue button.
+- bugfix: prevents a potential edge case where the login screen could be dismissed in a future version of iOS.
+- bugfix: While tuning up the behind-the-scenes for Order Detail screens, we accidentally lost the ability to automatically download any missing product images. Product image downloads restored!
 
 2.5
 -----

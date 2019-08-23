@@ -36,6 +36,8 @@ public class NotificationStore: Store {
                            applicationVersion: applicationVersion,
                            defaultStoreID: defaultStoreID,
                            onCompletion: onCompletion)
+        case .loadNote(let noteID, let onCompletion):
+            loadNote(noteID: noteID, onCompletion: onCompletion)
         case .synchronizeNotifications(let onCompletion):
             synchronizeNotifications(onCompletion: onCompletion)
         case .synchronizeNotification(let noteId, let onCompletion):
@@ -74,6 +76,11 @@ private extension NotificationStore {
                               completion: onCompletion)
     }
 
+    /// Loads the Note given a note ID.
+    func loadNote(noteID: Int, onCompletion: @escaping (Note?) -> Void) {
+        let note = storageManager.viewStorage.loadNotification(noteID: Int64(noteID))
+        onCompletion(note?.toReadOnly())
+    }
 
     /// Unregisters a Dotcom Device from the Push Notifications Delivery Subsystem.
     ///

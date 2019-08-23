@@ -6,7 +6,7 @@ import WordPressUI
 
 /// NoticePresenter: Coordinates Notice rendering, in both, FG and BG execution modes.
 ///
-class NoticePresenter {
+class DefaultNoticePresenter: NoticePresenter {
 
     /// UIKit Feedback Gen!
     ///
@@ -36,7 +36,7 @@ class NoticePresenter {
 
 // MARK: - Private Methods
 //
-private extension NoticePresenter {
+private extension DefaultNoticePresenter {
 
     func presentNextNoticeIfPossible() {
         guard noticeOnScreen == nil, let next = notices.popFirst() else {

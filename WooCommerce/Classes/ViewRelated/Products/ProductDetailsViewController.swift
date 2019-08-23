@@ -180,7 +180,7 @@ private extension ProductDetailsViewController {
         ), viewModel.productID)
 
         let notice = Notice(title: message, feedbackType: .error)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays a notice indicating that an error occurred while sync'ing.
@@ -196,7 +196,7 @@ private extension ProductDetailsViewController {
             self?.pullToRefresh()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

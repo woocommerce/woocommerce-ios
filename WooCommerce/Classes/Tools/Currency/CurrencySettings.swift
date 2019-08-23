@@ -101,7 +101,7 @@ public class CurrencySettings {
     /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
         return ResultsController<StorageSiteSetting>(storageManager: storageManager, sortedBy: [descriptor])
     }()

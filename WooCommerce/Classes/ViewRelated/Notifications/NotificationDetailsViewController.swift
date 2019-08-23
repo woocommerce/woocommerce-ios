@@ -16,7 +16,7 @@ class NotificationDetailsViewController: UIViewController {
     /// EntityListener: Update / Deletion Notifications.
     ///
     private lazy var entityListener: EntityListener<Note> = {
-        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: note)
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: note)
     }()
 
     /// Pull To Refresh Support.
@@ -175,7 +175,7 @@ private extension NotificationDetailsViewController {
         let title = NSLocalizedString("The notification has been removed", comment: "Displayed whenever a Notification that was onscreen got deleted.")
         let notice = Notice(title: title, feedbackType: .error)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the Error Notice.
@@ -190,7 +190,7 @@ private extension NotificationDetailsViewController {
         )
         let notice = Notice(title: message, feedbackType: .error)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the `Comment moderated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
@@ -210,7 +210,7 @@ private extension NotificationDetailsViewController {
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

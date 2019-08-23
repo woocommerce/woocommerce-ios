@@ -60,14 +60,14 @@ final class ProductDetailsViewModel {
     /// EntityListener: Update / Deletion Notifications.
     ///
     private lazy var entityListener: EntityListener<Product> = {
-        return EntityListener(storageManager: AppDelegate.shared.storageManager,
+        return EntityListener(storageManager: ServiceLocator.storageManager,
                               readOnlyEntity: product)
     }()
 
     /// ResultsController for `WC > Settings > Products > General` from the site.
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
 
         let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.product.rawValue)

@@ -188,7 +188,7 @@ private extension DashboardViewController {
             self?.reloadData()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

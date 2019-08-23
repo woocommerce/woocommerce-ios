@@ -8,7 +8,7 @@ final class OrderDetailsResultsControllers {
 
     // Shipment Tracking ResultsController.
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
                                     self.order.siteID,
                                     self.order.orderID)
@@ -20,7 +20,7 @@ final class OrderDetailsResultsControllers {
     /// Product ResultsController.
     ///
     private lazy var productResultsController: ResultsController<StorageProduct> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
@@ -30,7 +30,7 @@ final class OrderDetailsResultsControllers {
     /// Status Results Controller.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 

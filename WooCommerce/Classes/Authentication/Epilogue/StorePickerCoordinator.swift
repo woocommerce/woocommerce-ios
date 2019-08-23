@@ -93,7 +93,7 @@ private extension StorePickerCoordinator {
                 + "Reads like: Switched to {store name}. You will only receive notifications from this store.")
         let notice = Notice(title: message, feedbackType: .success)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {

@@ -33,7 +33,7 @@ final class OrderDetailsViewController: UIViewController {
     /// EntityListener: Update / Deletion Notifications.
     ///
     private lazy var entityListener: EntityListener<Order> = {
-        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: viewModel.order)
     }()
 
     /// Order to be rendered!

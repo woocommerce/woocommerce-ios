@@ -46,7 +46,7 @@ class PeriodDataViewController: UIViewController {
     /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
     ///
     private lazy var siteStatsResultsController: ResultsController<StorageSiteVisitStats> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -56,7 +56,7 @@ class PeriodDataViewController: UIViewController {
     /// OrderStats ResultsController: Loads order stats from the Storage Layer
     ///
     private lazy var orderStatsResultsController: ResultsController<StorageOrderStats> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
         let descriptor = NSSortDescriptor(keyPath: \StorageOrderStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])

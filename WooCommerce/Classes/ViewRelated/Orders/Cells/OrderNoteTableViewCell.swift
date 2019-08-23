@@ -80,16 +80,22 @@ private extension OrderNoteTableViewCell {
         let dateOfCreation = dateCreated ?? ""
         if isCustomerNote {
             iconButton.backgroundColor = StyleManager.statusPrimaryBoldColor
-            let localizationComment = "Labels an order note to let user know it's visible to the customer. Reads like 05:30 PM - username (To Customer)"
-            statusLabel.text = NSLocalizedString("\(dateOfCreation) - \(theAuthor) (To Customer)", comment: localizationComment)
+            let template =
+                NSLocalizedString("%@ - %@ (To Customer)",
+                                  comment: "Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer)")
+            statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else if isSystemAuthor {
             iconButton.backgroundColor = StyleManager.wooCommerceBrandColor
-            let localizationComment = "Labels an order note to let user know it's a system status message. Reads like 05:30 PM - username (System)"
-            statusLabel.text = NSLocalizedString("\(dateOfCreation) - \(theAuthor) (System)", comment: localizationComment)
+            let template =
+                NSLocalizedString("%@ - %@ (System)",
+                                  comment: "Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System)")
+            statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else {
             iconButton.backgroundColor = StyleManager.wooGreyMid
-            let localizationComment = "Labels an order note to let the user know it's not visible to the customer. Reads like 05:30 PM - username (Private)"
-            statusLabel.text = NSLocalizedString("\(dateOfCreation) - \(theAuthor) (Private)", comment: localizationComment)
+            let template =
+                NSLocalizedString("%@ - %@ (Private)",
+                                  comment: "Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private)")
+            statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         }
     }
 

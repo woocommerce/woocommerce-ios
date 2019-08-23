@@ -7,9 +7,19 @@ protocol PushNotesManager {
     ///
     func resetBadgeCount()
 
+    /// Registers the Application for Remote Notifgications.
+    ///
+    func registerForRemoteNotifications()
+
     /// Unregisters the Application from WordPress.com Push Notifications Service.
     ///
     func unregisterForRemoteNotifications()
+
+    /// Requests Authorization to receive Push Notifications, *only* when the current Status is not determined.
+    ///
+    /// - Parameter onCompletion: Closure to be executed on completion. Receives a Boolean indicating if we've got Push Permission.
+    ///
+    func ensureAuthorizationIsRequested(onCompletion: ((Bool) -> Void)?)
 
     /// Handles Push Notifications Registration Errors. This method unregisters the current device from the WordPress.com
     /// Push Service.

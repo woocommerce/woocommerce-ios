@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2019-08-06 00:54:04+0000 */
+/* Translation-Revision-Date: 2019-08-20 00:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
 
 /* No comment provided by engineer. */
 "(no title)" = "(sem título)";
+
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "É necessário um endereço de e-mail válido para enviar um link de autenticação. Retorne para a tela anterior e forneça um endereço de e-mail válido.";
@@ -346,14 +349,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Solicitação de funcionalidade";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Filtrar notificações";
-
 /* Filter the orders list. */
 "Filter orders" = "Filtrar pedidos";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Filtra a lista de notificações por tipo de notificação.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtra a lista de pedidos conforme o status de pagamento.";
@@ -574,11 +571,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "Próximo";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "Nenhuma notificação ainda!";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "Nenhum pedido encontrado";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "Ainda não há avaliações!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Nenhuma atividade no período";
@@ -590,8 +587,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Não há dados disponíveis";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Nenhum resultado referente aos critérios selecionados";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +599,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Nota para o cliente";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Notificações: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Número de arquivos:";
@@ -805,8 +794,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Preço normal:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Remover filtros";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +820,7 @@
 "Review, prepare, and ship these pending orders" = "Revise, prepare e envie esses pedidos pendentes";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Avaliações";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */

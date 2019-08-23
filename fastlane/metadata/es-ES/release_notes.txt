@@ -1,0 +1,3 @@
+- Las notificaciones se muestran en "Pedidos", por lo que la pestaña "Notificaciones" necesitaba otra identidad. Como en realidad solo muestra reseñas, la hemos rebautizado con el nombre de "Reseñas", que tiene más lógica.
+- Había un error en la pantalla Información del pedido por el que se mostraba una interfaz de usuario extraña con etiquetas mal colocadas cuando los usuarios actualizaban la información, y ahora ya está solucionado.
+- Ahora hay una insignia en la pestaña inferior, que se superpone al icono "Pedidos", para que puedas ver rápidamente el número de pedidos que tienes en proceso.

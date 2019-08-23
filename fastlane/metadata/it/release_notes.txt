@@ -1,3 +1,3 @@
-Copia numeri di tracciabilità! Ora è più facile tenere d'occhio la spedizione senza aprire l'app. In Dettagli dell'ordine > Tracciabilità della spedizione > Altro, è disponibile una nuova funzione per copiare il numero di tracciabilità da usare quando desideri.
-
-Addio messaggio di errore sulle statistiche! Se il tuo sito non dispone del modulo statistiche di Jetpack o se non sei autorizzato a visualizzare le statistiche, la pagina delle statistiche semplicemente non verrà visualizzata. Non riceverai nessun fastidioso messaggio di errore perché è stato eliminato.
+- Le notifiche vengono visualizzate sotto "Ordini", perciò la scheda "Notifiche" aveva bisogno di una nuova identità. Poiché visualizza solo le recensioni, la abbiamo ovviamente rinominata in "Recensioni".
+- C'era un bug nella schermata Dettagli dell'ordine che creava un'interfaccia utente strana con etichette fuori posto quando si tentava di aggiornare le informazioni. Adesso non vi è alcun bug.
+- Ora c'è un badge nella scheda in basso, sovrapposto all'icona "Ordini", che consente di vedere rapidamente il numero degli ordini in corso.

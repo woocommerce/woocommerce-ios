@@ -1,3 +1,3 @@
-Takip numaralarını kopyalayın! Artık uygulamayı açmadan kargonuzu takip etmek daha kolay. Sipariş Detayları > Gönderim Takibi > Daha Fazla bölümünde, takip numaranızı istediğiniz yerde kullanmak üzere kopyalayabilmeniz için yeni bir eylem bulunur.
-
-İstatistiklerde hata mesajına elveda! Sitenizde Jetpack site istatistikleri modülü yoksa veya istatistikleri görüntüleme izniniz yoksa istatistik sayfasını görmezsiniz. Artık sinir bozucu hata mesajlarıyla karşılaşmayacaksınız.
+- Bildirimler "Siparişler" bölümünde gösterildiğinden "Bildirimler" sekmesi için yeni bir kimlik gerekiyordu. Aslında yalnızca yorumları görüntülediğinden, buna uygun şekilde “Yorumlar” adını verdik.
+- Sipariş Ayrıntıları ekranında, bilgileri yenilemeye çalıştığınızda etiketlerin yanlış yerleştirildiği normal dışı bir kullanıcı arayüzü oluşturan hata düzeltildi.
+- Artık alt sekmede “Siparişler” simgesinin üzerine binen bir rozet bulunmaktadır, bu sayede verdiğiniz siparişlerin sayısını hızlı bir şekilde görebilirsiniz.

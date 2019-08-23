@@ -5,7 +5,7 @@ private extension StatsTimeRangeV4 {
         let selectedDateString = timeRangeSelectedDateFormatter(timezone: timezone).string(from: selectedDate)
         switch self {
         case .today, .thisYear:
-            let dateBreadcrumbFormat = NSLocalizedString("%1$@ > %2$@", comment: "Displays a time range followed by a specific date/time")
+            let dateBreadcrumbFormat = NSLocalizedString("%1$@ › %2$@", comment: "Displays a time range followed by a specific date/time")
             let timeRangeString = timeRangeText(startDate: startDate, endDate: endDate, timezone: timezone)
             return String.localizedStringWithFormat(dateBreadcrumbFormat, timeRangeString, selectedDateString)
         case .thisWeek, .thisMonth:

@@ -476,7 +476,7 @@ extension NotificationsViewController {
         }
 
         ServiceLocator.analytics.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
-                                                                         "already_read": note.read ])
+                                                                              "already_read": note.read ])
 
         markAsReadIfNeeded(note: note)
     }

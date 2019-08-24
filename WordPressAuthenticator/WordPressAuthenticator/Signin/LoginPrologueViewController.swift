@@ -46,10 +46,10 @@ class LoginPrologueViewController: LoginViewController {
         else if let vc = segue.destination as? LoginPrologueSignupMethodViewController {
             vc.transitioningDelegate = self
             vc.emailTapped = { [weak self] in
-                self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showSigninV2.rawValue, sender: self)
+                self?.performSegue(withIdentifier: .showSigninV2, sender: self)
             }
             vc.googleTapped = { [weak self] in
-                self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showGoogle.rawValue, sender: self)
+                self?.performSegue(withIdentifier: .showGoogle, sender: self)
             }
             vc.modalPresentationStyle = .custom
         }
@@ -58,13 +58,13 @@ class LoginPrologueViewController: LoginViewController {
             vc.transitioningDelegate = self
             
             vc.emailTapped = { [weak self] in
-                self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showEmailLogin.rawValue, sender: self)
+                self?.performSegue(withIdentifier: .showEmailLogin, sender: self)
             }
             vc.googleTapped = { [weak self] in
-                self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showGoogle.rawValue, sender: self)
+                self?.performSegue(withIdentifier: .showGoogle, sender: self)
             }
             vc.selfHostedTapped = { [weak self] in
-                self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showSelfHostedLogin.rawValue, sender: self)
+                self?.performSegue(withIdentifier: .showSelfHostedLogin, sender: self)
             }
             vc.appleTapped = { [weak self] in
                 self?.appleTapped()
@@ -101,9 +101,9 @@ class LoginPrologueViewController: LoginViewController {
 
     private func loginTapped() {
         if WordPressAuthenticator.shared.configuration.showNewLoginFlow {
-            performSegue(withIdentifier: NUXViewController.SegueIdentifier.showLoginMethod.rawValue, sender: self)
+            performSegue(withIdentifier: .showLoginMethod, sender: self)
         } else {
-            performSegue(withIdentifier: NUXViewController.SegueIdentifier.showEmailLogin.rawValue, sender: self)
+            performSegue(withIdentifier: .showEmailLogin, sender: self)
         }
     }
 
@@ -111,13 +111,23 @@ class LoginPrologueViewController: LoginViewController {
         // This stat is part of a funnel that provides critical information.  Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         WordPressAuthenticator.track(.signupButtonTapped)
-        performSegue(withIdentifier: NUXViewController.SegueIdentifier.showSignupMethod.rawValue, sender: self)
+        performSegue(withIdentifier: .showSignupMethod, sender: self)
     }
 
     private func appleTapped() {
         #if XCODE11
+        AppleAuthenticator.sharedInstance.delegate = self
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
         #endif
     }
 
 }
+
+#if XCODE11
+extension LoginPrologueViewController: AppleAuthenticatorDelegate {
+    func showWPComLogin(loginFields: LoginFields) {
+        self.loginFields = loginFields
+         performSegue(withIdentifier: .showWPComLogin, sender: self)
+    }
+}
+#endif

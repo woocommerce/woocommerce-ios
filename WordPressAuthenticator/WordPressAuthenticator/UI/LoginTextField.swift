@@ -3,6 +3,12 @@ import WordPressShared
 
 open class LoginTextField: WPWalkthroughTextField {
 
+    open override func awakeFromNib() {
+        super.awakeFromNib()
+
+        backgroundColor = WordPressAuthenticator.shared.style.textFieldBackgroundColor
+    }
+
     override open func draw(_ rect: CGRect) {
         if showTopLineSeparator {
             guard let context = UIGraphicsGetCurrentContext() else {

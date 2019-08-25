@@ -95,6 +95,10 @@ NSInteger const LeftImageSpacing = 8;
                                      };
         self.attributedPlaceholder = [[NSAttributedString alloc] initWithString:self.placeholder attributes:attributes];
     }
+
+    if (@available(iOS 13.0, *)) {
+        self.leadingViewInsets = UIEdgeInsetsMake(0, 0, 0, LeftImageSpacing);
+    }
 }
 
 - (void)awakeFromNib {

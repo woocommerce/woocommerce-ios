@@ -36,10 +36,10 @@ class AuthenticationManager: Authentication {
                                                 disabledBorderColor: StyleManager.buttonDisabledHighlightedColor,
                                                 primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
                                                 secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
-                                                disabledTitleColor: StyleManager.buttonDisabledTitleColor,
-                                                subheadlineColor: StyleManager.wooCommerceBrandColor,
-                                                viewControllerBackgroundColor: StyleManager.wooGreyLight,
-                                                navBarImage: StyleManager.navBarImage)
+                                                disabledTitleColor: StyleManager.buttonDisabledTitleColor, textButtonColor: StyleManager.defaultTextColor, textButtonHighlightColor: StyleManager.buttonPrimaryHighlightedColor, instructionColor: StyleManager.wooCommerceBrandColor,
+                                                subheadlineColor: StyleManager.wooCommerceBrandColor, placeholderColor: StyleManager.wooGreyMid,
+                                                viewControllerBackgroundColor: StyleManager.wooGreyLight, textFieldBackgroundColor: StyleManager.wooWhite,
+                                                navBarImage: StyleManager.navBarImage, navBarBadgeColor: StyleManager.wooCommerceBrandColor)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                      jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,

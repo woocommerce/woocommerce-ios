@@ -48,6 +48,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
     private var siteStats: SiteVisitStats? {
         return siteStatsResultsController.fetchedObjects.first
     }
+    private var siteStatsItems: [SiteVisitStatsItem] = []
 
     // MARK: - Subviews
 
@@ -158,7 +159,6 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     override func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
-        clearChartMarkers()
         barChartView?.clear()
     }
 }
@@ -298,7 +298,7 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureBarChart() {
         barChartView.chartDescription?.enabled = false
-        barChartView.dragEnabled = false
+        barChartView.dragEnabled = true
         barChartView.setScaleEnabled(false)
         barChartView.pinchZoomEnabled = false
         barChartView.rightAxis.enabled = false
@@ -387,24 +387,108 @@ extension StoreStatsV4PeriodViewController {
 // MARK: - ChartViewDelegate Conformance (Charts)
 //
 extension StoreStatsV4PeriodViewController: ChartViewDelegate {
-    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
-        guard entry.y != 0.0 else {
-            // Do not display the marker if the Y-value is zero
-            clearChartMarkers()
-            return
-        }
+    func chartViewDidEndPanning(_ chartView: ChartViewBase) {
+        updateUI(selectedBarIndex: nil)
+    }
 
-        let marker = ChartMarker(chartView: chartView,
-                                 color: StyleManager.wooSecondary,
-                                 font: StyleManager.chartLabelFont,
-                                 textColor: StyleManager.wooWhite,
-                                 insets: Constants.chartMarkerInsets)
-        marker.minimumSize = Constants.chartMarkerMinimumSize
-        marker.arrowSize = Constants.chartMarkerArrowSize
-        chartView.marker = marker
+    func chartValueNothingSelected(_ chartView: ChartViewBase) {
+        updateUI(selectedBarIndex: nil)
+    }
+
+    func chartValueSelected(_ chartView: ChartViewBase, entry: ChartDataEntry, highlight: Highlight) {
+        let selectedIndex = Int(entry.x)
+        updateUI(selectedBarIndex: selectedIndex)
     }
 }
 
+private extension StoreStatsV4PeriodViewController {
+    /// Updates all stats and time range bar text based on the selected bar index.
+    ///
+    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
+    func updateUI(selectedBarIndex selectedIndex: Int?) {
+        updateSiteVisitStats(selectedIndex: selectedIndex)
+        updateOrderStats(selectedIndex: selectedIndex)
+        updateTimeRangeBar(selectedIndex: selectedIndex)
+    }
+
+    /// Updates order stats based on the selected bar index.
+    ///
+    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
+    func updateOrderStats(selectedIndex: Int?) {
+        guard let selectedIndex = selectedIndex else {
+            reloadOrderFields()
+            return
+        }
+        guard ordersData != nil, revenueData != nil else {
+            return
+        }
+        var totalOrdersText = Constants.placeholderText
+        var totalRevenueText = Constants.placeholderText
+        let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+        if selectedIndex < orderStatsIntervals.count {
+            let orderStats = orderStatsIntervals[selectedIndex]
+            totalOrdersText = Double(orderStats.subtotals.totalOrders).humanReadableString()
+            totalRevenueText = CurrencyFormatter().formatHumanReadableAmount(String("\(orderStats.subtotals.grossRevenue)"), with: currencyCode) ?? String()
+        }
+        ordersData.text = totalOrdersText
+        revenueData.text = totalRevenueText
+    }
+
+    /// Updates stats based on the selected bar index.
+    ///
+    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
+    func updateSiteVisitStats(selectedIndex: Int?) {
+        guard shouldShowSiteVisitStats else {
+            return
+        }
+        guard let selectedIndex = selectedIndex else {
+            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+            reloadSiteFields()
+            return
+        }
+        // Hides site visit stats for "today".
+        guard timeRange != .today else {
+            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
+            return
+        }
+        updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
+        guard visitorsData != nil else {
+            return
+        }
+
+        var visitorsText = Constants.placeholderText
+        if selectedIndex < siteStatsItems.count {
+            let siteStatsItem = siteStatsItems[selectedIndex]
+            visitorsText = Double(siteStatsItem.visitors).humanReadableString()
+        }
+        visitorsData.text = visitorsText
+    }
+
+    /// Updates date bar based on the selected bar index.
+    ///
+    /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
+    func updateTimeRangeBar(selectedIndex: Int?) {
+        guard let startDate = orderStatsIntervals.first?.dateStart(),
+            let endDate = orderStatsIntervals.last?.dateStart() else {
+                return
+        }
+        guard let selectedIndex = selectedIndex else {
+            let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                                   endDate: endDate,
+                                                                   timeRange: timeRange,
+                                                                   timezone: siteTimezone)
+            timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
+            return
+        }
+        let date = orderStatsIntervals[selectedIndex].dateStart()
+        let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
+                                                               endDate: endDate,
+                                                               selectedDate: date,
+                                                               timeRange: timeRange,
+                                                               timezone: siteTimezone)
+        timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
+    }
+}
 
 // MARK: - IAxisValueFormatter Conformance (Charts)
 //
@@ -497,6 +581,9 @@ private extension StoreStatsV4PeriodViewController {
         } else {
             lastUpdatedDate = nil
         }
+        siteStatsItems = siteStats?.items?.sorted(by: { (lhs, rhs) -> Bool in
+            return lhs.period < rhs.period
+        }) ?? []
         reloadSiteFields()
         reloadLastUpdatedField()
     }
@@ -604,10 +691,6 @@ private extension StoreStatsV4PeriodViewController {
 
     func reloadLastUpdatedField() {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
-    }
-
-    func clearChartMarkers() {
-        barChartView.highlightValue(nil, callDelegate: false)
     }
 
     func generateBarDataSet() -> BarChartData? {

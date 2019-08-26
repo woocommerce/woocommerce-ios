@@ -1607,6 +1607,8 @@
 				45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */,
 				CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */,
 				CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */,
+				B557DA1320979904005962F4 /* CustomerNoteTableViewCell.swift */,
+				B557DA1420979904005962F4 /* CustomerNoteTableViewCell.xib */,
 				45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */,
 				45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */,
 				CE1EC8EF20B8A408009762BF /* OrderNoteTableViewCell.swift */,

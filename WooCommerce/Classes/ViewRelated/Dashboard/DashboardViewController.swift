@@ -10,7 +10,7 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    private var dashboardUI: DashboardUI!
+    private var dashboardUI: DashboardUI?
 
     // MARK: Subviews
 
@@ -46,7 +46,7 @@ class DashboardViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        dashboardUI.view.frame = containerView.bounds
+        dashboardUI?.view.frame = containerView.bounds
     }
 }
 
@@ -113,7 +113,32 @@ private extension DashboardViewController {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(containerView)
 
-        dashboardUI = DashboardUIFactory.dashboardUI()
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("Cannot find site ID when showing Dashboard UI")
+            return
+        }
+
+        DashboardUIFactory.dashboardUI(siteID: siteID,
+                                       onInitialUI: { [weak self] initialDashboardUI in
+                                        self?.updateDashboardUI(dashboardUI: initialDashboardUI)
+            },
+                                       onUpdate: { [weak self] dashboardUI in
+                                        self?.updateDashboardUI(dashboardUI: dashboardUI)
+        })
+    }
+}
+
+// MARK: - Updates
+//
+private extension DashboardViewController {
+    func updateDashboardUI(dashboardUI: DashboardUI) {
+        // Tears down the previous child view controller.
+        if let previousDashboardUI = self.dashboardUI {
+            remove(previousDashboardUI)
+        }
+
+        self.dashboardUI = dashboardUI
+
         let contentView = dashboardUI.view!
         addChild(dashboardUI)
         containerView.addSubview(contentView)
@@ -125,6 +150,8 @@ private extension DashboardViewController {
         dashboardUI.displaySyncingErrorNotice = { [weak self] in
             self?.displaySyncingErrorNotice()
         }
+
+        reloadData()
     }
 }
 
@@ -153,7 +180,7 @@ extension DashboardViewController {
         }
 
         resetTitle()
-        dashboardUI.defaultAccountDidUpdate()
+        dashboardUI?.defaultAccountDidUpdate()
     }
 }
 
@@ -197,7 +224,7 @@ private extension DashboardViewController {
 private extension DashboardViewController {
     func reloadData() {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        dashboardUI.reloadData(completion: { [weak self] in
+        dashboardUI?.reloadData(completion: { [weak self] in
             self?.configureTitle()
         })
     }

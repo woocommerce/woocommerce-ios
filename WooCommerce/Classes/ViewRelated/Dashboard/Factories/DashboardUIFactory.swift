@@ -1,4 +1,10 @@
 import UIKit
+import Yosemite
+
+private enum StatsVersion: String {
+    case v3 = "v3"
+    case v4 = "v4"
+}
 
 /// Contains all UI content to show on Dashboard
 ///
@@ -19,11 +25,33 @@ protocol DashboardUI: UIViewController {
 }
 
 final class DashboardUIFactory {
-    static func dashboardUI() -> DashboardUI {
+    static func dashboardUI(siteID: Int,
+                            onInitialUI: (DashboardUI) -> Void,
+                            onUpdate: @escaping (DashboardUI) -> Void) {
         if FeatureFlag.stats.enabled {
-            return StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
+            let lastStatsVersion = StatsVersion.v3
+
+            let action = AvailabilityAction.checkStatsV4Availability(siteID: siteID) { isStatsV4Available in
+                let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
+                if statsVersion != lastStatsVersion {
+                    onUpdate(dashboardUI(statsVersion: statsVersion))
+                }
+            }
+            ServiceLocator.stores.dispatch(action)
+
+            let initialUI = dashboardUI(statsVersion: lastStatsVersion)
+            onInitialUI(initialUI)
         } else {
+            onInitialUI(DashboardStatsV3ViewController(nibName: nil, bundle: nil))
+        }
+    }
+
+    private static func dashboardUI(statsVersion: StatsVersion) -> DashboardUI {
+        switch statsVersion {
+        case .v3:
             return DashboardStatsV3ViewController(nibName: nil, bundle: nil)
+        case .v4:
+            return StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
         }
     }
 }

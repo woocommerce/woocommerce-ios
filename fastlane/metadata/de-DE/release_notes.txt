@@ -1,3 +1,3 @@
-Kopiere Sendungsverfolgungsnummern! Es ist jetzt noch einfacher, deine Bestellung zu verfolgen, ohne dafür die App öffnen zu müssen. Unter Auftragsdetails > Sendungsverfolgung > Mehr gibt es eine neue Aktion zum Kopieren deiner Sendungsverfolgungsnummer.
-
-Keine Fehlermeldungen mehr bei Statistiken! Wenn deine Website nicht über das Jetpack-Modul für Website-Statistiken verfügt oder du keine Berechtigung zum Anzeigen von Statistiken hast, siehst du die Statistikseite ganz einfach nicht. Du erhältst keine nervigen Fehlermeldungen mehr.
+- Da Benachrichtigungen jetzt unter „Aufträge“ angezeigt werden, brauchte der Tab „Benachrichtigungen“ eine neue Bezeichnung. Wir haben ihn schlauerweise „Rezensionen“ genannt, da dort jetzt eben nur diese angezeigt werden.
+- Auf dem Bilschirm mit den Bestelldetails ist ein Fehler aufgetreten, der eine Benutzeroberfläche mit falsch platzierten Labels erstellt hat, wenn du versucht hast, die Informationen zu aktualisieren. Dieser Fehler wurde jetzt behoben.
+- Es gibt jetzt einen Badge auf dem untersten Tab, der mit dem Symbol „Aufträge“ überlappt, sodass du schnell die Anzahl deiner Bestellungen in Bearbeitung sehen kannst.

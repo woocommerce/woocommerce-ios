@@ -83,7 +83,7 @@ The full listing:
             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.storesManager.dispatch(action)
     }
 ```
 

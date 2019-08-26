@@ -1,3 +1,3 @@
-Salin nomor pelacakan! Kini lebih mudah memantau pengiriman Anda tanpa membuka aplikasi. Di Detail Pesanan > Pelacakan Pengiriman > Lainnya, terdapat tindakan baru untuk menyalin nomor pelacakan Anda untuk digunakan kapan pun dibutuhkan.
-
-Selamat tinggal pesan error statistik! Jika situs Anda tidak memiliki modul statistik situs Jetpack, atau Anda tidak memiliki izin untuk melihat statistik, Anda tidak akan melihat halaman statistik. Anda tidak perlu melihat pesan error yang mengganggu, jadi kami menyingkirkannya.
+- Pemberitahuan ditampilkan di bawah “Pesanan”, sehingga tab “Pemberitahuan” memerlukan identitas baru. Karena di dalamnya sebenarnya hanya menampilkan ulasan, kami telah mengganti namanya menjadi “Ulasan”.
+- Sebelumnya ada bug di layar Detail Pesanan yang menghasilkan UI aneh dengan label tidak pada tempatnya saat Anda mencoba menyegarkan informasi, dan sekarang sudah tidak ada lagi bug.
+- Sekarang ada lencana di tab bawah, menindih ikon “Pesanan”, sehingga Anda dapat dengan cepat melihat nomor pesanan yang sedang diproses.

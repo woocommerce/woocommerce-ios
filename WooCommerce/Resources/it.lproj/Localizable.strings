@@ -6,6 +6,9 @@
 /* No comment provided by engineer. */
 "(no title)" = "(senza titolo)";
 
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Per inviare tramite e-mail un link di autenticazione, è necessario un indirizzo e-mail valido. Torna alla schermata precedente e fornisci un indirizzo e-mail valido.";
 
@@ -346,14 +349,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Richiesta di funzionalità";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Filtra le notifiche";
-
 /* Filter the orders list. */
 "Filter orders" = "Filtra ordini";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Filtra le notifiche per tipo.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtra l'elenco degli ordini per stato di pagamento.";
@@ -574,11 +571,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "Successivo";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "Non hai ancora notifiche!";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "Nessun ordine trovato";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "No Reviews Yet!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Nessuna attività per questo periodo";
@@ -590,8 +587,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Nessun dato disponibile";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Nessun risultato per i criteri selezionati";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +599,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Nota per il cliente";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Notifiche: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Numero di file:";
@@ -805,8 +794,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Prezzo standard:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Rimuovi filtri";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +820,7 @@
 "Review, prepare, and ship these pending orders" = "Rivedi, prepara e invia questi ordini in attesa";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Recensioni";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */

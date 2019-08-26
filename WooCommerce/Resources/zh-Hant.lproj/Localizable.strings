@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2019-08-07 04:54:03+0000 */
+/* Translation-Revision-Date: 2019-08-21 00:54:32+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
 
 /* No comment provided by engineer. */
 "(no title)" = "（沒有標題）";
+
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "需要有效的電子郵件地址才能傳送驗證連結。請返回上一個畫面，並提供有效的電子郵件地址。";
@@ -346,14 +349,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "功能要求";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "篩選通知";
-
 /* Filter the orders list. */
 "Filter orders" = "篩選訂單";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "依通知類型篩選通知。";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "依付款狀態篩選訂單清單";
@@ -574,11 +571,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "下一步";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "尚未有任何通知！";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "找不到訂單";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "目前沒有評論！";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "此期間沒有任何活動";
@@ -590,8 +587,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "目前沒有資料";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "找不到與指定條件相符的結果";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +599,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "給顧客的備註";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "通知";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "通知：%@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "檔案數量：";
@@ -805,8 +794,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "原價：";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "移除篩選條件";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +820,7 @@
 "Review, prepare, and ship these pending orders" = "檢視、準備和運送這些待處理訂單";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "評論";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */

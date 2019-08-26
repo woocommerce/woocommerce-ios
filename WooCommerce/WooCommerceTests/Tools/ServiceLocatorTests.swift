@@ -31,7 +31,7 @@ final class ServiceLocatorTests: XCTestCase {
     func testNoticesDefaultsToNoticePresenter() {
         let notices = ServiceLocator.noticePresenter
 
-        XCTAssertTrue(notices is NoticePresenter)
+        XCTAssertTrue((notices as Any) is NoticePresenter)
     }
 
     func testServiceLocatorProvidesPushNotificationsManager() {

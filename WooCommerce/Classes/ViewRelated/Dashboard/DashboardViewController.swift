@@ -11,6 +11,7 @@ class DashboardViewController: UIViewController {
     // MARK: Properties
 
     private var dashboardUI: DashboardUI?
+    private var lastStatsVersion: StatsVersion?
 
     // MARK: Subviews
 
@@ -118,12 +119,12 @@ private extension DashboardViewController {
             return
         }
 
-        DashboardUIFactory.dashboardUI(siteID: siteID,
-                                       onInitialUI: { [weak self] initialDashboardUI in
-                                        self?.updateDashboardUI(dashboardUI: initialDashboardUI)
+        DashboardUIFactory.dashboardUIStatsVersion(siteID: siteID,
+                                                   onInitialUI: { [weak self] statsVersion in
+                                                    self?.updateDashboardUI(statsVersion: statsVersion)
             },
-                                       onUpdate: { [weak self] dashboardUI in
-                                        self?.updateDashboardUI(dashboardUI: dashboardUI)
+                                                   onUpdate: { [weak self] statsVersion in
+                                                    self?.onDashboardUIUpdate(statsVersion: statsVersion)
         })
     }
 }
@@ -131,12 +132,37 @@ private extension DashboardViewController {
 // MARK: - Updates
 //
 private extension DashboardViewController {
-    func updateDashboardUI(dashboardUI: DashboardUI) {
+    func onDashboardUIUpdate(statsVersion: StatsVersion) {
+        let lastStatsVersion = self.lastStatsVersion
+        self.lastStatsVersion = statsVersion
+        if lastStatsVersion == .v3 && statsVersion == .v4 {
+            onDashboardUIStatsUpgrade(statsVersion: statsVersion)
+        } else if lastStatsVersion == .v4 && statsVersion == .v3 {
+            onDashboardUIStatsDowngrade(statsVersion: statsVersion)
+        } else {
+            updateDashboardUI(statsVersion: statsVersion)
+        }
+    }
+
+    /// Stats v3 --> v4: shows top banner to announce stats v4 feature.
+    func onDashboardUIStatsUpgrade(statsVersion: StatsVersion) {
+        // TODO-1232: handle v3 --> v4 upgrading
+        updateDashboardUI(statsVersion: statsVersion)
+    }
+
+    /// Stats v4 --> v3: reverts dashboard UI to v3 and shows top banner with explanations.
+    func onDashboardUIStatsDowngrade(statsVersion: StatsVersion) {
+        // TODO-1232: handle v4 --> v3 downgrading
+        updateDashboardUI(statsVersion: statsVersion)
+    }
+
+    func updateDashboardUI(statsVersion: StatsVersion) {
         // Tears down the previous child view controller.
-        if let previousDashboardUI = self.dashboardUI {
+        if let previousDashboardUI = dashboardUI {
             remove(previousDashboardUI)
         }
 
+        let dashboardUI = DashboardUIFactory.createDashboardUIForDisplay(statsVersion: statsVersion)
         self.dashboardUI = dashboardUI
 
         let contentView = dashboardUI.view!

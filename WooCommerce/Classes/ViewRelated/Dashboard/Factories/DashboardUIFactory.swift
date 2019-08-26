@@ -1,7 +1,7 @@
 import UIKit
 import Yosemite
 
-private enum StatsVersion: String {
+enum StatsVersion: String {
     case v3 = "v3"
     case v4 = "v4"
 }
@@ -25,33 +25,43 @@ protocol DashboardUI: UIViewController {
 }
 
 final class DashboardUIFactory {
-    static func dashboardUI(siteID: Int,
-                            onInitialUI: (DashboardUI) -> Void,
-                            onUpdate: @escaping (DashboardUI) -> Void) {
+    static func dashboardUIStatsVersion(siteID: Int,
+                                        onInitialUI: (_ statsVersion: StatsVersion) -> Void,
+                                        onUpdate: @escaping (_ statsVersion: StatsVersion) -> Void) {
         if FeatureFlag.stats.enabled {
-            let lastStatsVersion = StatsVersion.v3
+            let userDefaults = UserDefaults.standard
+            let lastStatsVersionString: String? = userDefaults.object(forKey: .statsVersionLastSeen)
+            let lastStatsVersion: StatsVersion = lastStatsVersionString.flatMap({ StatsVersion(rawValue: $0) })
+                ?? StatsVersion.v3
 
             let action = AvailabilityAction.checkStatsV4Availability(siteID: siteID) { isStatsV4Available in
                 let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
+                UserDefaults.standard.set(statsVersion.rawValue, forKey: .statsVersionEligible)
                 if statsVersion != lastStatsVersion {
-                    onUpdate(dashboardUI(statsVersion: statsVersion))
+                    onUpdate(statsVersion)
                 }
             }
             ServiceLocator.stores.dispatch(action)
 
-            let initialUI = dashboardUI(statsVersion: lastStatsVersion)
-            onInitialUI(initialUI)
+            onInitialUI(lastStatsVersion)
         } else {
-            onInitialUI(DashboardStatsV3ViewController(nibName: nil, bundle: nil))
+            onInitialUI(.v3)
         }
     }
 
-    private static func dashboardUI(statsVersion: StatsVersion) -> DashboardUI {
+    static func createDashboardUIForDisplay(statsVersion: StatsVersion) -> DashboardUI {
+        saveLastSeenStatsVersion(statsVersion)
         switch statsVersion {
         case .v3:
             return DashboardStatsV3ViewController(nibName: nil, bundle: nil)
         case .v4:
             return StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
         }
+    }
+
+    /// Sets the last seen stats version to user defaults.
+    /// Called when the dashboard UI of a stats version is shown to the user.
+    private static func saveLastSeenStatsVersion(_ statsVersion: StatsVersion) {
+        UserDefaults.standard.set(statsVersion.rawValue, forKey: .statsVersionLastSeen)
     }
 }

@@ -452,7 +452,8 @@ extension OrderDetailsDataSource {
     }
 
     private enum Footer {
-        static let showBilling = NSLocalizedString("View Billing Information", comment: "Button on bottom of Customer's information to show the billing details")
+        static let showBilling = NSLocalizedString("View Billing Information",
+                                                   comment: "Button on bottom of Customer's information to show the billing details")
     }
 
     struct Section {

@@ -35,14 +35,13 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
-        configureDashboardUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
-        reloadData()
+        reloadDashboardUIStatsVersion()
     }
 
     override func viewDidLayoutSubviews() {
@@ -106,7 +105,7 @@ private extension DashboardViewController {
         navigationItem.backBarButtonItem = backButton
     }
 
-    func configureDashboardUI() {
+    func reloadDashboardUIStatsVersion() {
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
@@ -230,7 +229,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        reloadData()
+        reloadDashboardUIStatsVersion()
     }
 
     func displaySyncingErrorNotice() {

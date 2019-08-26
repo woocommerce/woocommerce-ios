@@ -25,18 +25,19 @@ protocol DashboardUI: UIViewController {
 }
 
 final class DashboardUIFactory {
-    static func dashboardUIStatsVersion(siteID: Int,
+    static func dashboardUIStatsVersion(isFeatureFlagOn: Bool,
+                                        siteID: Int,
                                         onInitialUI: (_ statsVersion: StatsVersion) -> Void,
                                         onUpdate: @escaping (_ statsVersion: StatsVersion) -> Void) {
-        if FeatureFlag.stats.enabled {
+        if isFeatureFlagOn {
             let userDefaults = UserDefaults.standard
-            let lastStatsVersionString: String? = userDefaults.object(forKey: .statsVersionLastSeen)
+            let lastStatsVersionString: String? = userDefaults[.statsVersionLastSeen]
             let lastStatsVersion: StatsVersion = lastStatsVersionString.flatMap({ StatsVersion(rawValue: $0) })
                 ?? StatsVersion.v3
 
             let action = AvailabilityAction.checkStatsV4Availability(siteID: siteID) { isStatsV4Available in
                 let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
-                UserDefaults.standard.set(statsVersion.rawValue, forKey: .statsVersionEligible)
+                UserDefaults.standard[.statsVersionEligible] = statsVersion.rawValue
                 if statsVersion != lastStatsVersion {
                     onUpdate(statsVersion)
                 }
@@ -49,7 +50,7 @@ final class DashboardUIFactory {
         }
     }
 
-    static func createDashboardUIForDisplay(statsVersion: StatsVersion) -> DashboardUI {
+    static func createDashboardUIAndSetUserPreference(statsVersion: StatsVersion) -> DashboardUI {
         saveLastSeenStatsVersion(statsVersion)
         switch statsVersion {
         case .v3:
@@ -59,9 +60,16 @@ final class DashboardUIFactory {
         }
     }
 
+    static func resetDashboardUIPreferences() {
+        UserDefaults.standard[.statsVersionLastSeen] = nil
+        UserDefaults.standard[.statsVersionEligible] = nil
+    }
+}
+
+private extension DashboardUIFactory {
     /// Sets the last seen stats version to user defaults.
     /// Called when the dashboard UI of a stats version is shown to the user.
-    private static func saveLastSeenStatsVersion(_ statsVersion: StatsVersion) {
-        UserDefaults.standard.set(statsVersion.rawValue, forKey: .statsVersionLastSeen)
+    static func saveLastSeenStatsVersion(_ statsVersion: StatsVersion) {
+        UserDefaults.standard[.statsVersionLastSeen] = statsVersion.rawValue
     }
 }

@@ -115,11 +115,11 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(containerView)
 
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            assertionFailure("Cannot find site ID when showing Dashboard UI")
             return
         }
 
-        DashboardUIFactory.dashboardUIStatsVersion(siteID: siteID,
+        DashboardUIFactory.dashboardUIStatsVersion(isFeatureFlagOn: FeatureFlag.stats.enabled,
+                                                   siteID: siteID,
                                                    onInitialUI: { [weak self] statsVersion in
                                                     self?.updateDashboardUI(statsVersion: statsVersion)
             },
@@ -162,7 +162,7 @@ private extension DashboardViewController {
             remove(previousDashboardUI)
         }
 
-        let dashboardUI = DashboardUIFactory.createDashboardUIForDisplay(statsVersion: statsVersion)
+        let dashboardUI = DashboardUIFactory.createDashboardUIAndSetUserPreference(statsVersion: statsVersion)
         self.dashboardUI = dashboardUI
 
         let contentView = dashboardUI.view!

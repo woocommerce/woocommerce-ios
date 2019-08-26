@@ -50,6 +50,14 @@ extension DateFormatter {
             return formatter
         }()
 
+        /// Date formatter used for displaying the full month on a chart axis.
+        ///
+        public static let chartAxisFullMonthFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.setLocalizedDateFormatFromTemplate("MMMM")
+            return formatter
+        }()
+
         /// Date formatter used for creating the date displayed on a chart axis for **year** granularity.
         ///
         public static let chartAxisYearFormatter: DateFormatter = {

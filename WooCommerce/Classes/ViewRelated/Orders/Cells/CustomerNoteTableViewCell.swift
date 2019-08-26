@@ -1,26 +1,24 @@
+//
+//  CustomerNoteTableViewCell.swift
+//  WooCommerce
+//
+//  Created by Paolo Musolino on 26/08/2019.
+//  Copyright © 2019 Automattic. All rights reserved.
+//
+
 import UIKit
-import Gridicons
 
 class CustomerNoteTableViewCell: UITableViewCell {
-    @IBOutlet private weak var noteLabel: UILabel! {
-        didSet {
-            noteLabel.applyBodyStyle()
-        }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        // Initialization code
     }
 
-    @IBOutlet private weak var iconImageView: UIImageView! {
-        didSet {
-            iconImageView.image = .quoteImage
-            iconImageView.tintColor = .black
-        }
-    }
+    override func setSelected(_ selected: Bool, animated: Bool) {
+        super.setSelected(selected, animated: animated)
 
-    public var quote: String? {
-        get {
-            return noteLabel.text
-        }
-        set {
-            noteLabel.text = newValue
-        }
+        // Configure the view for the selected state
     }
+    
 }

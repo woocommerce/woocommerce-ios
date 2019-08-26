@@ -51,7 +51,7 @@ class SignupService {
     func createWPComUserWithApple(token: String,
                                   email: String,
                                   fullName: String?,
-                                  success: @escaping (_ newAccount: Bool, _ username: String, _ wpcomToken: String) -> Void,
+                                  success: @escaping (_ newAccount: Bool, _ existingNonSocialAccount: Bool, _ username: String, _ wpcomToken: String) -> Void,
                                   failure: @escaping (_ error: Error) -> Void) {
         let remote = WordPressComServiceRemote(wordPressComRestApi: anonymousAPI)
         
@@ -68,7 +68,8 @@ class SignupService {
                                     }
                                     
                                     let createdAccount = (response?[ResponseKeys.createdAccount] as? Int ?? 0) == 1
-                                    success(createdAccount, username, bearer_token)
+                                    let existingNonSocialAccount = (response?[ResponseKeys.existingNonSocialUser] as? Int ?? 0) == 1
+                                    success(createdAccount, existingNonSocialAccount, username, bearer_token)
         }, failure: { error in
             failure(error ?? SignupError.unknown)
         })
@@ -95,6 +96,7 @@ private extension SignupService {
         static let bearerToken = "bearer_token"
         static let username = "username"
         static let createdAccount = "created_account"
+        static let existingNonSocialUser = "user_exists"
     }
 }
 

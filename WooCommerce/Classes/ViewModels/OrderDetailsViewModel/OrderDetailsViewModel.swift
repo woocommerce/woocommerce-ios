@@ -47,15 +47,6 @@ final class OrderDetailsViewModel {
         }
     }
 
-    var displaysBillingDetails: Bool {
-        set {
-            dataSource.displaysBillingDetails = newValue
-        }
-        get {
-            return dataSource.displaysBillingDetails
-        }
-    }
-
     /// The datasource that will be used to render the Order Details screen
     ///
     private(set) lazy var dataSource: OrderDetailsDataSource = {
@@ -149,8 +140,7 @@ extension OrderDetailsViewModel {
     ///
     func registerTableViewHeaderFooters(_ tableView: UITableView) {
         let headersAndFooters = [
-            TwoColumnSectionHeaderView.self,
-            ShowHideSectionFooter.self
+            TwoColumnSectionHeaderView.self
         ]
 
         for kind in headersAndFooters {
@@ -198,11 +188,6 @@ extension OrderDetailsViewModel {
         case .details:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
-        case .billingEmail:
-            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
-            displayEmailComposerIfPossible(from: viewController)
-        case .billingPhone:
-            displayContactCustomerAlert(from: viewController)
         default:
             break
         }

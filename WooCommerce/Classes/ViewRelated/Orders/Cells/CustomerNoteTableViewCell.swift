@@ -1,24 +1,37 @@
-//
-//  CustomerNoteTableViewCell.swift
-//  WooCommerce
-//
-//  Created by Paolo Musolino on 26/08/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
-
 import UIKit
 
-class CustomerNoteTableViewCell: UITableViewCell {
+final class CustomerNoteTableViewCell: UITableViewCell {
+
+    @IBOutlet private weak var headlineLabel: UILabel?
+    @IBOutlet private weak var bodyLabel: UILabel?
+
+    /// Headline label text
+    ///
+    var headline: String? {
+        get {
+            return headlineLabel?.text
+        }
+        set {
+            headlineLabel?.text = newValue
+        }
+    }
+
+    /// Body label text
+    ///
+    var body: String? {
+        get {
+            return bodyLabel?.text
+        }
+        set {
+            bodyLabel?.text = newValue
+        }
+    }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+
+        headlineLabel?.applyHeadlineStyle()
+        bodyLabel?.applyBodyStyle()
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
-    }
-    
 }

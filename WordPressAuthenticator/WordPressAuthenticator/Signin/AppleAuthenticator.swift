@@ -1,6 +1,7 @@
 import Foundation
 import AuthenticationServices
 import WordPressKit
+import SVProgressHUD
 
 #if XCODE11
 
@@ -57,19 +58,27 @@ private extension AppleAuthenticator {
     @available(iOS 13.0, *)
     func createWordPressComUser(appleCredentials: ASAuthorizationAppleIDCredential) {
         guard let identityToken = appleCredentials.identityToken,
-            let token = String(data: identityToken, encoding: .utf8),
-            let email = appleCredentials.email else {
+            let token = String(data: identityToken, encoding: .utf8) else {
                 DDLogError("Apple Authenticator: invalid Apple credentials.")
                 return
         }
         
+        SVProgressHUD.show(withStatus: NSLocalizedString("Continuing with Apple", comment: "Shown while logging in with Apple and the app waits for the site creation process to complete."))
+        
+        let email = appleCredentials.email ?? ""
         let name = fullName(from: appleCredentials.fullName)
 
         updateLoginFields(email: email, fullName: name, token: token)
         
         let service = SignupService()
         service.createWPComUserWithApple(token: token, email: email, fullName: name,
-                                         success: { [weak self] accountCreated, wpcomUsername, wpcomToken in
+                                         success: { [weak self] accountCreated, existingNonSocialAccount, wpcomUsername, wpcomToken in
+                                            SVProgressHUD.dismiss()
+
+                                            guard !existingNonSocialAccount else {
+                                                self?.logInInstead()
+                                                return
+                                            }
 
                                             let wpcom = WordPressComCredentials(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: self?.loginFields.siteAddress ?? "")
                                             let credentials = AuthenticatorCredentials(wpcom: wpcom)
@@ -79,12 +88,15 @@ private extension AppleAuthenticator {
                                                 self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
                                                 self?.signupSuccessful(with: credentials)
                                                 return
+                                            } else {
+                                                self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
+                                                self?.signinSuccessful(with: credentials)
+                                                return
                                             }
-
-                                            // Existing WP Account
-                                            self?.logInInstead()
                                             
             }, failure: { [weak self] error in
+                SVProgressHUD.dismiss()
+                
                 self?.signupFailed(with: error)
         })
     }
@@ -93,6 +105,11 @@ private extension AppleAuthenticator {
         WordPressAuthenticator.track(.createdAccount, properties: ["source": "apple"])
         WordPressAuthenticator.track(.signupSocialSuccess)
         showSignupEpilogue(for: credentials)
+    }
+    
+    func signinSuccessful(with credentials: AuthenticatorCredentials) {
+        // TODO: Tracks events for login
+        showSigninEpilogue(for: credentials)
     }
     
     func showSignupEpilogue(for credentials: AuthenticatorCredentials) {
@@ -105,6 +122,14 @@ private extension AppleAuthenticator {
         }
 
         authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
+    }
+    
+    func showSigninEpilogue(for credentials: AuthenticatorCredentials) {
+        guard let navigationController = showFromViewController?.navigationController else {
+            fatalError()
+        }
+
+        authenticationDelegate.presentLoginEpilogue(in: navigationController, for: credentials) {}
     }
     
     func signupFailed(with error: Error) {

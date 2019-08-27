@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2019-08-08 00:54:04+0000 */
+/* Translation-Revision-Date: 2019-08-21 00:54:32+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
 
 /* No comment provided by engineer. */
 "(no title)" = "(tanpa judul)";
+
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Alamat email valid diperlukan untuk mengirimkan tautan autentikasi. Kembali ke layar sebelumnya dan berikan alamat email yang valid.";
@@ -346,14 +349,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Permintaan Fitur";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Saring pemberitahuan";
-
 /* Filter the orders list. */
 "Filter orders" = "Saring pesanan";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Menyaring daftar pemberitahuan menurut jenis pemberitahuan.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Menyaring daftar pesanan menurut status pembayaran.";
@@ -574,11 +571,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "Selanjutnya";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "Belum Ada Pemberitahuan!";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "Tidak Ada Pesanan yang ditemukan";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "Belum Ada Ulasan!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Tidak ada aktivitas dalam periode ini";
@@ -590,8 +587,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Tidak ada data yang tersedia";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Tidak ada hasil untuk kriteria yang dipilih";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +599,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Catatan untuk pelanggan";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Pemberitahuan: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Jumlah file:";
@@ -805,8 +794,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Harga normal:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Hapus Penyaring";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +820,7 @@
 "Review, prepare, and ship these pending orders" = "Tinjau, siapkan, dan kirimkan pesanan yang tertunda ini";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Ulasan";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */

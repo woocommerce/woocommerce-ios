@@ -1,3 +1,3 @@
-Volgnummer kopiëren! Het is nu gemakkelijker om een oogje te houden op je verzending zonder de app te openen. In de Bestellingsdetails > Verzending bijhouden > Meer, is er een nieuwe actie om je volgnummer te kopiëren zodat je die overal kunt gebruiken.
-
-Vaarwel foutmeldingen over statistieken! Als je site niet de Jetpack-module sitestatistieken heeft, of je geen toestemming hebt om statistieken weer te geven, kun je de statistiekenpagina niet zien. Je hoeft geen vervelende foutmelding te zien, daarom hebben we die weggehaald.
+- Meldingen worden onder 'Bestellingen' weergegeven, dus had het tabblad 'Meldingen' een nieuwe identiteit nodig. Aangezien hier alleen beoordelingen worden weergegeven, hebben we het 'Beoordelingen' genoemd.
+- Er bevond zich een bug in het scherm Bestelgegevens die tot een vreemde UI met verkeerde labels leidde als je de informatie probeerde te vernieuwen. Die bug is nu verholpen.
+- In het onderste tabblad wordt nu een badge weergegeven die het pictogram 'Bestellingen' overlapt, zodat je snel het aantal te verwerken bestellingen kunt bekijken.

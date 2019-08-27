@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2019-08-09 00:54:03+0000 */
+/* Translation-Revision-Date: 2019-08-22 00:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
 
 /* No comment provided by engineer. */
 "(no title)" = "(제목 없음)";
+
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "인증 링크를 메일로 발송하려면 유효한 이메일 주소가 필요합니다. 이전 화면으로 돌아가서 유효한 이메일 주소를 입력하세요.";
@@ -346,14 +349,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "기능 요청";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "알림 필터링";
-
 /* Filter the orders list. */
 "Filter orders" = "주문에 필터 적용";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "알림 목록을 알림 유형별로 필터링합니다.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "결제 상태별로 주문 목록에 필터를 적용합니다.";
@@ -574,11 +571,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "다음";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "아직 알림이 없습니다!";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "주문을 찾을 수 없습니다.";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "아직 리뷰가 없습니다!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "이 기간에 활동이 없음";
@@ -590,8 +587,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "사용 가능한 데이터 없음";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "선택한 기준에 맞는 결과가 없음";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +599,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "고객에게 남길 메모";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "알림: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "파일 수:";
@@ -805,8 +794,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "정상 가격:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "필터 제거";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +820,7 @@
 "Review, prepare, and ship these pending orders" = "대기 중인 주문 검토, 준비 및 배송";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "검토";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */

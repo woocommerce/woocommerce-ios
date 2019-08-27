@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2019-08-07 00:54:03+0000 */
+/* Translation-Revision-Date: 2019-08-21 00:54:31+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
 
 /* No comment provided by engineer. */
 "(no title)" = "(без заголовка)";
+
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Чтобы отправить ссылку для аутентификации, необходим действительный адрес эл. почты. Вернитесь на предыдущий экран и укажите действительный адрес эл. почты.";
@@ -346,14 +349,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Запрос функции";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Фильтровать уведомления";
-
 /* Filter the orders list. */
 "Filter orders" = "Фильтровать заказы";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Фильтрование уведомлений по типу.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Отфильтровать список заказов по статусу оплаты.";
@@ -574,11 +571,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "Далее";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "Пока нет уведомлений";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "Заказы не найдены";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "Нет обзоров!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Активность за этот период отсутствует";
@@ -590,8 +587,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Данные недоступны";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Нет результатов по выбранным критериям";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +599,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Примечание для клиента";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Уведомления";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Уведомления: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Количество файлов:";
@@ -805,8 +794,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Обычная цена:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Удалить фильтры";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +820,7 @@
 "Review, prepare, and ship these pending orders" = "Просмотреть, подготовить и отправить эти ожидающие заказы";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Обзоры";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */

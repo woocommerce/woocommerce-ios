@@ -2,17 +2,18 @@ import UIKit
 
 final class CustomerNoteTableViewCell: UITableViewCell {
 
-    @IBOutlet private weak var headlineLabel: UILabel?
-    @IBOutlet private weak var bodyLabel: UILabel?
+    @IBOutlet private weak var headlineLabel: UILabel!
+
+    @IBOutlet private weak var bodyLabel: UILabel!
 
     /// Headline label text
     ///
     var headline: String? {
         get {
-            return headlineLabel?.text
+            return headlineLabel.text
         }
         set {
-            headlineLabel?.text = newValue
+            headlineLabel.text = newValue
         }
     }
 
@@ -20,18 +21,29 @@ final class CustomerNoteTableViewCell: UITableViewCell {
     ///
     var body: String? {
         get {
-            return bodyLabel?.text
+            return bodyLabel.text
         }
         set {
-            bodyLabel?.text = newValue
+            bodyLabel.text = newValue
         }
     }
 
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        headlineLabel?.applyHeadlineStyle()
-        bodyLabel?.applyBodyStyle()
+        headlineLabel.applyHeadlineStyle()
+        bodyLabel.applyBodyStyle()
     }
 
+}
+
+/// MARK: - Testability
+extension CustomerNoteTableViewCell {
+    func getHeadlineLabel() -> UILabel {
+        return headlineLabel
+    }
+
+    func getBodyLabel() -> UILabel {
+        return bodyLabel
+    }
 }

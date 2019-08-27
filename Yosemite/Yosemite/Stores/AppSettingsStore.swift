@@ -149,7 +149,7 @@ private extension AppSettingsStore {
 
     func loadTrackingProvider(siteID: Int,
                               onCompletion: (ShipmentTrackingProvider?, ShipmentTrackingProviderGroup?, Error?) -> Void) {
-        guard let allSavedProviders = readPList(from: selectedProvidersURL) as [PreselectedProvider]? else {
+        guard let allSavedProviders = read(from: selectedProvidersURL) as [PreselectedProvider]? else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
             onCompletion(nil, nil, error)
             return
@@ -175,7 +175,7 @@ private extension AppSettingsStore {
 
     func loadCustomTrackingProvider(siteID: Int,
                               onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
-        guard let allSavedProviders = readPList(from: customSelectedProvidersURL) as [PreselectedProvider]? else {
+        guard let allSavedProviders = read(from: customSelectedProvidersURL) as [PreselectedProvider]? else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
             onCompletion(nil, error)
             return
@@ -220,7 +220,7 @@ private extension AppSettingsStore {
             dataToSave.append(newPreselectedProvider)
         }
 
-        writePList(dataToSave, to: toFileURL, onCompletion: onCompletion)
+        write(dataToSave, to: toFileURL, onCompletion: onCompletion)
     }
 
     func insertNewProvider(siteID: Int,
@@ -232,7 +232,7 @@ private extension AppSettingsStore {
                                                       providerName: providerName,
                                                       providerURL: providerURL)
 
-        writePList([preselectedProvider], to: toFileURL, onCompletion: onCompletion)
+        write([preselectedProvider], to: toFileURL, onCompletion: onCompletion)
     }
 
     func resetStoredProviders(onCompletion: ((Error?) -> Void)? = nil) {
@@ -260,7 +260,7 @@ private extension AppSettingsStore {
     }
 
     func loadStatsVersionLastShown(siteID: Int, onCompletion: (StatsVersion?) -> Void) {
-        guard let existingData: StatsVersionBySite = readPList(from: statsVersionLastShownURL),
+        guard let existingData: StatsVersionBySite = read(from: statsVersionLastShownURL),
             let statsVersion = existingData.statsVersionBySite[siteID] else {
             onCompletion(nil)
             return
@@ -269,16 +269,16 @@ private extension AppSettingsStore {
     }
 
     func set(statsVersion: StatsVersion, for siteID: Int, to fileURL: URL, onCompletion: (Error?) -> Void) {
-        guard let existingData: StatsVersionBySite = readPList(from: fileURL) else {
+        guard let existingData: StatsVersionBySite = read(from: fileURL) else {
             let statsVersionBySite: StatsVersionBySite = StatsVersionBySite(statsVersionBySite: [siteID: statsVersion])
-            writePList(statsVersionBySite, to: fileURL, onCompletion: onCompletion)
+            write(statsVersionBySite, to: fileURL, onCompletion: onCompletion)
             onCompletion(nil)
             return
         }
 
         var statsVersionBySite = existingData.statsVersionBySite
         statsVersionBySite[siteID] = statsVersion
-        writePList(StatsVersionBySite(statsVersionBySite: statsVersionBySite), to: fileURL, onCompletion: onCompletion)
+        write(StatsVersionBySite(statsVersionBySite: statsVersionBySite), to: fileURL, onCompletion: onCompletion)
     }
 
     func resetStatsVersionStates() {
@@ -294,7 +294,7 @@ private extension AppSettingsStore {
 // MARK: - PList decoding/encoding from and to file storage
 //
 private extension AppSettingsStore {
-    func readPList<T: Decodable>(from url: URL) -> T? {
+    func read<T: Decodable>(from url: URL) -> T? {
         do {
             let data = try fileStorage.data(for: url)
             let decoder = PropertyListDecoder()
@@ -304,7 +304,7 @@ private extension AppSettingsStore {
         }
     }
 
-    func writePList<T: Encodable>(_ data: T, to fileURL: URL, onCompletion: (Error?) -> Void) {
+    func write<T: Encodable>(_ data: T, to fileURL: URL, onCompletion: (Error?) -> Void) {
         let encoder = PropertyListEncoder()
         encoder.outputFormat = .xml
         do {

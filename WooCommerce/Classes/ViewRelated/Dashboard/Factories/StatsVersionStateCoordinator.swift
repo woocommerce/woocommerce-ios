@@ -38,9 +38,9 @@ final class StatsVersionStateCoordinator {
     private let stores: StoresManager
     private let onStateChange: (_ state: StatsVersionState) -> Void
 
-    private var state: StatsVersionState = .initial(statsVersion: .v3) {
+    private var state: StatsVersionState? {
         didSet {
-            if state != oldValue {
+            if let state = state, state != oldValue {
                 onStateChange(state)
             }
         }
@@ -78,19 +78,23 @@ final class StatsVersionStateCoordinator {
 
     /// Called when eligible stats version is set.
     private func updateState(eligibleStatsVersion: StatsVersion) {
+        guard let state = state else {
+            self.state = .eligible(statsVersion: eligibleStatsVersion)
+            return
+        }
         switch state {
         case .initial(let initialStatsVersion):
             guard initialStatsVersion != eligibleStatsVersion else {
-                state = .eligible(statsVersion: eligibleStatsVersion)
+                self.state = .eligible(statsVersion: eligibleStatsVersion)
                 return
             }
             switch initialStatsVersion {
             case .v3:
                 // V3 to V4
-                state = .v3ShownV4Eligible
+                self.state = .v3ShownV4Eligible
             case .v4:
                 // V4 to V3
-                state = .v4RevertedToV3
+                self.state = .v4RevertedToV3
             }
         default:
             return

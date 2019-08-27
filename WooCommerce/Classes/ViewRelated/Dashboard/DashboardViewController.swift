@@ -37,6 +37,7 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
+        configureDashboardUIContainer()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -107,14 +108,16 @@ private extension DashboardViewController {
         navigationItem.backBarButtonItem = backButton
     }
 
-    func reloadDashboardUIStatsVersion() {
+    func configureDashboardUIContainer() {
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(containerView)
+    }
 
+    func reloadDashboardUIStatsVersion() {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }

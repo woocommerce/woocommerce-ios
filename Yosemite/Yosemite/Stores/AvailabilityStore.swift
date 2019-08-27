@@ -2,7 +2,7 @@ import Networking
 
 /// MARK: AvailabilityStore
 ///
-final class AvailabilityStore: Store {
+final public class AvailabilityStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {

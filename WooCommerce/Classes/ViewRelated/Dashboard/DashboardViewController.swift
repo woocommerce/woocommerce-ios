@@ -1,6 +1,7 @@
 import UIKit
 import Gridicons
 import WordPressUI
+import Storage
 import Yosemite
 
 
@@ -156,12 +157,16 @@ private extension DashboardViewController {
     }
 
     func updateDashboardUI(statsVersion: StatsVersion) {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+
         // Tears down the previous child view controller.
         if let previousDashboardUI = dashboardUI {
             remove(previousDashboardUI)
         }
 
-        let dashboardUI = DashboardUIFactory.createDashboardUIAndSetUserPreference(statsVersion: statsVersion)
+        let dashboardUI = DashboardUIFactory.createDashboardUIAndSetUserPreference(siteID: siteID, statsVersion: statsVersion)
         self.dashboardUI = dashboardUI
 
         let contentView = dashboardUI.view!

@@ -1,4 +1,5 @@
 import XCTest
+import Storage
 import Yosemite
 @testable import WooCommerce
 
@@ -10,17 +11,38 @@ private class MockupAvailabilityStoreManager: DefaultStoresManager {
     ///
     var isStatsV4Available = false
 
+    /// Set by setter `AppSettingsAction`.
+    ///
+    private var statsVersionLastShown: StatsVersion?
+
     // MARK: - Overridden Methods
 
     override func dispatch(_ action: Action) {
-        guard let availabilityAction = action as? AvailabilityAction else {
+        if let availabilityAction = action as? AvailabilityAction {
+            onAvailabilityAction(action: availabilityAction)
+        } else if let appSettingsAction = action as? AppSettingsAction {
+            onAppSettingsAction(action: appSettingsAction)
+        } else {
             super.dispatch(action)
-            return
         }
-        switch availabilityAction {
+    }
+
+    private func onAvailabilityAction(action: AvailabilityAction) {
+        switch action {
         case .checkStatsV4Availability(_,
                                        let onCompletion):
             onCompletion(isStatsV4Available)
+        }
+    }
+
+    private func onAppSettingsAction(action: AppSettingsAction) {
+        switch action {
+        case .loadStatsVersionLastShown(_, let onCompletion):
+            onCompletion(statsVersionLastShown)
+        case .setStatsVersionLastShown(_, let statsVersion):
+            statsVersionLastShown = statsVersion
+        default:
+            return
         }
     }
 }
@@ -33,11 +55,6 @@ class DashboardUIFactoryTests: XCTestCase {
     override func setUp() {
         super.setUp()
         mockStoresManager = MockupAvailabilityStoreManager(sessionManager: SessionManager.testingInstance)
-    }
-
-    override func tearDown() {
-        DashboardUIFactory.resetDashboardUIPreferences()
-        super.tearDown()
     }
 
     func testStatsVersionWhenFeatureFlagIsOff() {
@@ -78,7 +95,7 @@ class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
 
         let lastSeenStatsVersion = StatsVersion.v3
-        _ = DashboardUIFactory.createDashboardUIAndSetUserPreference(statsVersion: lastSeenStatsVersion)
+        _ = DashboardUIFactory.createDashboardUIAndSetUserPreference(siteID: mockSiteID, statsVersion: lastSeenStatsVersion)
 
         let expectationForInitialVerion = expectation(description: "Wait for the initial stats version")
         let expectationForUpdatedVerion = expectation(description: "Wait for the updated stats version")
@@ -100,7 +117,7 @@ class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager.isStatsV4Available = false
 
         let lastSeenStatsVersion = StatsVersion.v3
-        _ = DashboardUIFactory.createDashboardUIAndSetUserPreference(statsVersion: lastSeenStatsVersion)
+        _ = DashboardUIFactory.createDashboardUIAndSetUserPreference(siteID: mockSiteID, statsVersion: lastSeenStatsVersion)
 
         let expectationForInitialVerion = expectation(description: "Wait for the initial stats version")
         DashboardUIFactory.dashboardUIStatsVersion(isFeatureFlagOn: true,
@@ -120,7 +137,7 @@ class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager.isStatsV4Available = false
 
         let lastSeenStatsVersion = StatsVersion.v4
-        _ = DashboardUIFactory.createDashboardUIAndSetUserPreference(statsVersion: lastSeenStatsVersion)
+        _ = DashboardUIFactory.createDashboardUIAndSetUserPreference(siteID: mockSiteID, statsVersion: lastSeenStatsVersion)
 
         let expectationForInitialVerion = expectation(description: "Wait for the initial stats version")
         let expectationForUpdatedVerion = expectation(description: "Wait for the updated stats version")
@@ -142,7 +159,7 @@ class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager.isStatsV4Available = true
 
         let lastSeenStatsVersion = StatsVersion.v4
-        _ = DashboardUIFactory.createDashboardUIAndSetUserPreference(statsVersion: lastSeenStatsVersion)
+        _ = DashboardUIFactory.createDashboardUIAndSetUserPreference(siteID: mockSiteID, statsVersion: lastSeenStatsVersion)
 
         let expectationForInitialVerion = expectation(description: "Wait for the initial stats version")
         DashboardUIFactory.dashboardUIStatsVersion(isFeatureFlagOn: true,

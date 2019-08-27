@@ -145,7 +145,6 @@ class DefaultStoresManager: StoresManager {
         ServiceLocator.analytics.refreshUserData()
         ZendeskManager.shared.reset()
         ServiceLocator.storageManager.reset()
-        DashboardUIFactory.resetDashboardUIPreferences()
 
         NotificationCenter.default.post(name: .logOutEventReceived, object: nil)
 

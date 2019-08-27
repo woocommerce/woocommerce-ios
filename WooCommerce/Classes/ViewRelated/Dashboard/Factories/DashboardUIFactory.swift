@@ -1,10 +1,6 @@
 import UIKit
+import Storage
 import Yosemite
-
-enum StatsVersion: String {
-    case v3 = "v3"
-    case v4 = "v4"
-}
 
 /// Contains all UI content to show on Dashboard
 ///
@@ -21,55 +17,45 @@ protocol DashboardUI: UIViewController {
     /// Reloads data in Dashboard
     ///
     /// - Parameter completion: called when Dashboard data reload finishes
-    func reloadData(completion: @escaping () -> Void)
+    func reloadData(completion: @escaping () -> Void) 
 }
 
 final class DashboardUIFactory {
     static func dashboardUIStatsVersion(isFeatureFlagOn: Bool,
                                         siteID: Int,
-                                        onInitialUI: (_ statsVersion: StatsVersion) -> Void,
+                                        onInitialUI: @escaping (_ statsVersion: StatsVersion) -> Void,
                                         onUpdate: @escaping (_ statsVersion: StatsVersion) -> Void) {
         if isFeatureFlagOn {
-            let userDefaults = UserDefaults.standard
-            let lastStatsVersionString: String? = userDefaults[.statsVersionLastSeen]
-            let lastStatsVersion: StatsVersion = lastStatsVersionString.flatMap({ StatsVersion(rawValue: $0) })
-                ?? StatsVersion.v3
+            let stores = ServiceLocator.stores
 
-            let action = AvailabilityAction.checkStatsV4Availability(siteID: siteID) { isStatsV4Available in
-                let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
-                UserDefaults.standard[.statsVersionEligible] = statsVersion.rawValue
-                if statsVersion != lastStatsVersion {
-                    onUpdate(statsVersion)
+            let lastShownStatsVersionAction = AppSettingsAction.loadStatsVersionLastShown(siteID: siteID) { lastShownStatsVersion in
+                let lastStatsVersion: StatsVersion = lastShownStatsVersion ?? StatsVersion.v3
+                onInitialUI(lastStatsVersion)
+
+                let action = AvailabilityAction.checkStatsV4Availability(siteID: siteID) { isStatsV4Available in
+                    let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
+
+                    if statsVersion != lastStatsVersion {
+                        onUpdate(statsVersion)
+                    }
                 }
+                stores.dispatch(action)
             }
-            ServiceLocator.stores.dispatch(action)
-
-            onInitialUI(lastStatsVersion)
+            stores.dispatch(lastShownStatsVersionAction)
         } else {
             onInitialUI(.v3)
         }
     }
 
-    static func createDashboardUIAndSetUserPreference(statsVersion: StatsVersion) -> DashboardUI {
-        saveLastSeenStatsVersion(statsVersion)
+    static func createDashboardUIAndSetUserPreference(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
+        let action = AppSettingsAction.setStatsVersionLastShown(siteID: siteID, statsVersion: statsVersion)
+        ServiceLocator.stores.dispatch(action)
+
         switch statsVersion {
         case .v3:
             return DashboardStatsV3ViewController(nibName: nil, bundle: nil)
         case .v4:
             return StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
         }
-    }
-
-    static func resetDashboardUIPreferences() {
-        UserDefaults.standard[.statsVersionLastSeen] = nil
-        UserDefaults.standard[.statsVersionEligible] = nil
-    }
-}
-
-private extension DashboardUIFactory {
-    /// Sets the last seen stats version to user defaults.
-    /// Called when the dashboard UI of a stats version is shown to the user.
-    static func saveLastSeenStatsVersion(_ statsVersion: StatsVersion) {
-        UserDefaults.standard[.statsVersionLastSeen] = statsVersion.rawValue
     }
 }

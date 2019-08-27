@@ -1,7 +1,6 @@
 import UIKit
 import Gridicons
 import WordPressUI
-import Storage
 import Yosemite
 
 
@@ -11,8 +10,7 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    private var dashboardUI: DashboardUI?
-    private var lastStatsVersion: StatsVersion?
+    private var dashboardUI: DashboardUI!
 
     // MARK: Subviews
 
@@ -36,18 +34,19 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
+        configureDashboardUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
-        reloadDashboardUIStatsVersion()
+        reloadData()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        dashboardUI?.view.frame = containerView.bounds
+        dashboardUI.view.frame = containerView.bounds
     }
 }
 
@@ -106,7 +105,7 @@ private extension DashboardViewController {
         navigationItem.backBarButtonItem = backButton
     }
 
-    func reloadDashboardUIStatsVersion() {
+    func configureDashboardUI() {
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
@@ -114,61 +113,7 @@ private extension DashboardViewController {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(containerView)
 
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
-        DashboardUIFactory.dashboardUIStatsVersion(isFeatureFlagOn: FeatureFlag.stats.enabled,
-                                                   siteID: siteID,
-                                                   onInitialUI: { [weak self] statsVersion in
-                                                    self?.updateDashboardUI(statsVersion: statsVersion)
-            },
-                                                   onUpdate: { [weak self] statsVersion in
-                                                    self?.onDashboardUIUpdate(statsVersion: statsVersion)
-        })
-    }
-}
-
-// MARK: - Updates
-//
-private extension DashboardViewController {
-    func onDashboardUIUpdate(statsVersion: StatsVersion) {
-        let lastStatsVersion = self.lastStatsVersion
-        self.lastStatsVersion = statsVersion
-        if lastStatsVersion == .v3 && statsVersion == .v4 {
-            onDashboardUIStatsUpgrade(statsVersion: statsVersion)
-        } else if lastStatsVersion == .v4 && statsVersion == .v3 {
-            onDashboardUIStatsDowngrade(statsVersion: statsVersion)
-        } else {
-            updateDashboardUI(statsVersion: statsVersion)
-        }
-    }
-
-    /// Stats v3 --> v4: shows top banner to announce stats v4 feature.
-    func onDashboardUIStatsUpgrade(statsVersion: StatsVersion) {
-        // TODO-1232: handle v3 --> v4 upgrading
-        updateDashboardUI(statsVersion: statsVersion)
-    }
-
-    /// Stats v4 --> v3: reverts dashboard UI to v3 and shows top banner with explanations.
-    func onDashboardUIStatsDowngrade(statsVersion: StatsVersion) {
-        // TODO-1232: handle v4 --> v3 downgrading
-        updateDashboardUI(statsVersion: statsVersion)
-    }
-
-    func updateDashboardUI(statsVersion: StatsVersion) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
-        // Tears down the previous child view controller.
-        if let previousDashboardUI = dashboardUI {
-            remove(previousDashboardUI)
-        }
-
-        let dashboardUI = DashboardUIFactory.createDashboardUIAndSetUserPreference(siteID: siteID, statsVersion: statsVersion)
-        self.dashboardUI = dashboardUI
-
+        dashboardUI = DashboardUIFactory.dashboardUI()
         let contentView = dashboardUI.view!
         addChild(dashboardUI)
         containerView.addSubview(contentView)
@@ -180,8 +125,6 @@ private extension DashboardViewController {
         dashboardUI.displaySyncingErrorNotice = { [weak self] in
             self?.displaySyncingErrorNotice()
         }
-
-        reloadData()
     }
 }
 
@@ -210,7 +153,7 @@ extension DashboardViewController {
         }
 
         resetTitle()
-        dashboardUI?.defaultAccountDidUpdate()
+        dashboardUI.defaultAccountDidUpdate()
     }
 }
 
@@ -234,7 +177,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        reloadDashboardUIStatsVersion()
+        reloadData()
     }
 
     func displaySyncingErrorNotice() {
@@ -254,7 +197,7 @@ private extension DashboardViewController {
 private extension DashboardViewController {
     func reloadData() {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        dashboardUI?.reloadData(completion: { [weak self] in
+        dashboardUI.reloadData(completion: { [weak self] in
             self?.configureTitle()
         })
     }

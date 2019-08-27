@@ -17,7 +17,7 @@ protocol DashboardUI: UIViewController {
     /// Reloads data in Dashboard
     ///
     /// - Parameter completion: called when Dashboard data reload finishes
-    func reloadData(completion: @escaping () -> Void) 
+    func reloadData(completion: @escaping () -> Void)
 }
 
 final class DashboardUIFactory {

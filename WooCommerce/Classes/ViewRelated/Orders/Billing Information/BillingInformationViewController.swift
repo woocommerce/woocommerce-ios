@@ -35,9 +35,58 @@ final class BillingInformationViewController: UIViewController {
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationItem()
+        setupMainView()
+        registerTableViewCells()
+        registerTableViewHeaderFooters()
         reloadSections()
     }
     
+}
+
+// MARK: - Interface Initialization
+//
+private extension BillingInformationViewController {
+    
+    /// Setup: Navigation Item
+    ///
+    func setupNavigationItem() {
+        title = NSLocalizedString("Billing Information", comment: "Billing Information view Title")
+    }
+    
+    /// Setup: Main View
+    ///
+    func setupMainView() {
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
+        tableView.estimatedSectionFooterHeight = Constants.rowHeight
+        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.rowHeight = UITableView.automaticDimension
+    }
+    
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        let cells = [
+            CustomerInfoTableViewCell.self,
+            WooBasicTableViewCell.self
+        ]
+        
+        for cell in cells {
+            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+        }
+    }
+    
+    /// Registers all of the available TableViewHeaderFooters
+    ///
+    func registerTableViewHeaderFooters() {
+        let headersAndFooters = [ TwoColumnSectionHeaderView.self ]
+        
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
+    }
 }
 
 // MARK: - UITableViewDataSource Conformance
@@ -64,8 +113,28 @@ extension BillingInformationViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-//extension BillingInformationViewController: UITableViewDelegate {
-//
+extension BillingInformationViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let leftText = sections[section].title else {
+            return nil
+        }
+        
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
+            fatalError()
+        }
+        
+        headerView.leftText = leftText
+        headerView.rightText = sections[section].secondaryTitle
+        
+        return headerView
+    }
+    
 //    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        tableView.deselectRow(at: indexPath, animated: true)
 //        tableView.selectRow(at: <#T##IndexPath?#>, animated: <#T##Bool#>, scrollPosition: <#T##UITableView.ScrollPosition#>)
@@ -101,7 +170,7 @@ extension BillingInformationViewController: UITableViewDataSource {
 //            break
 //        }
 //    }
-//}
+}
 
 // MARK: - Cell Configuration
 //
@@ -192,7 +261,7 @@ private extension BillingInformationViewController {
     func reloadSections() {
         let billingAddress: Section = {
             let title = NSLocalizedString("Billing Address", comment: "Section header title for billing address in billing information")
-            return Section(title: title, rows: [.billingAddress])
+            return Section(title: title, secondaryTitle: nil, rows: [.billingAddress])
         }()
         
         let contactDetails: Section? = {
@@ -210,7 +279,6 @@ private extension BillingInformationViewController {
             }
             
             let title = NSLocalizedString("Contact Details", comment: "Section header title for contact details in billing information")
-            
             return Section(title: title, secondaryTitle: nil, rows: rows)
         }()
         
@@ -233,10 +301,6 @@ private struct Section {
     /// Section's Row(s)
     ///
     let rows: [Row]
-    
-    init(title: String? = nil, secondaryTitle: String? = nil, rows: [Row]) {
-        self.init(title: title, secondaryTitle: secondaryTitle, rows: rows)
-    }
 }
 
 // MARK: - Row: Represents a TableView Row
@@ -272,5 +336,15 @@ private enum Row {
         case .billingEmail:
             return WooBasicTableViewCell.self
         }
+    }
+}
+
+// MARK: - Constants
+//
+private extension BillingInformationViewController {
+    
+    enum Constants {
+        static let rowHeight = CGFloat(38)
+        static let sectionHeight = CGFloat(44)
     }
 }

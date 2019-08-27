@@ -185,6 +185,10 @@ extension OrderDetailsViewModel {
                                                                    siteID: order.siteID)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
+        case .billingDetail:
+            WooAnalytics.shared.track(.orderDetailBillingInformationTapped)
+            let billingInformationViewController = BillingInformationViewController(order: order)
+            viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .details:
             WooAnalytics.shared.track(.orderDetailProductDetailTapped)
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)

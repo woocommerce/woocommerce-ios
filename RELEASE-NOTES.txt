@@ -1,3 +1,6 @@
+2.7
+-----
+ 
 2.6
 -----
 - bugfix: 9+ orders in the orders badge text is now easier to read

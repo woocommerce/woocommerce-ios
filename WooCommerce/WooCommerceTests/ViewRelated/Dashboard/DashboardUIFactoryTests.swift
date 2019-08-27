@@ -97,7 +97,7 @@ class DashboardUIFactoryTests: XCTestCase {
         waitForExpectations(timeout: 0.1, handler: nil)
     }
 
-    /// V4 --> v4
+    /// Stats v4 --> v4
     func testWhenV4IsAvailableWhileStatsV4IsLastShown() {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)

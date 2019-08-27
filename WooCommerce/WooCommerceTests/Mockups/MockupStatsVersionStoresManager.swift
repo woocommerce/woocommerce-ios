@@ -2,7 +2,7 @@ import Storage
 import Yosemite
 @testable import WooCommerce
 
-/// MockupAvailabilityStoreManager: allows mocking for stats v4 availability.
+/// MockupAvailabilityStoreManager: allows mocking for stats v4 availability and last shown stats version.
 ///
 class MockupStatsVersionStoresManager: DefaultStoresManager {
 

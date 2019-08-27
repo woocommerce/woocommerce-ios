@@ -39,10 +39,7 @@ final class DashboardUIFactory {
             let stateCoordinator = StatsVersionStateCoordinator(siteID: siteID,
                                                                 stores: stores,
                                                                 onStateChange: { [weak self] state in
-                                                                    guard let self = self else {
-                                                                        return
-                                                                    }
-                                                                    self.onStatsVersionStateChange(state: state, onUIUpdate: onUIUpdate)
+                                                                    self?.onStatsVersionStateChange(state: state, onUIUpdate: onUIUpdate)
             })
             self.stateCoordinator = stateCoordinator
             stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
@@ -59,10 +56,8 @@ final class DashboardUIFactory {
     }
 
     private func createDashboardUIAndSetUserPreference(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
-
-
         let action = AppSettingsAction.setStatsVersionLastShown(siteID: siteID, statsVersion: statsVersion)
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
 
         let dashboardUI = createDashboardUI(statsVersion: statsVersion)
 

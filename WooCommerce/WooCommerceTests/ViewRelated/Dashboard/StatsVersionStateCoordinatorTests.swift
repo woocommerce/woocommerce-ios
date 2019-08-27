@@ -3,7 +3,7 @@ import Storage
 import Yosemite
 @testable import WooCommerce
 
-class StatsVersionStateCoordinatorTests: XCTestCase {
+final class StatsVersionStateCoordinatorTests: XCTestCase {
     private var mockStoresManager: MockupStatsVersionStoresManager!
 
     override func tearDown() {

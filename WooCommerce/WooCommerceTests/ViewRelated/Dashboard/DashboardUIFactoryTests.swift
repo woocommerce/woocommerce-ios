@@ -3,7 +3,7 @@ import Storage
 import Yosemite
 @testable import WooCommerce
 
-class DashboardUIFactoryTests: XCTestCase {
+final class DashboardUIFactoryTests: XCTestCase {
     private let mockSiteID: Int = 1134
 
     private var dashboardUIFactory: DashboardUIFactory!

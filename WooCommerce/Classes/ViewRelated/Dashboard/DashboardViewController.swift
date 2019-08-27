@@ -128,7 +128,7 @@ private extension DashboardViewController {
 
         dashboardUIFactory?.reloadDashboardUI(isFeatureFlagOn: FeatureFlag.stats.enabled,
                                               onUIUpdate: { [weak self] dashboardUI in
-                                                self?.onDashboardUIUpdate(dashboardUI: dashboardUI)
+                                                self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
         })
     }
 }
@@ -136,31 +136,33 @@ private extension DashboardViewController {
 // MARK: - Updates
 //
 private extension DashboardViewController {
-    func onDashboardUIUpdate(dashboardUI: DashboardUI) {
+    func onDashboardUIUpdate(updatedDashboardUI: DashboardUI) {
         defer {
+            // Reloads data of the updated dashboard UI at the end.
             reloadData()
         }
 
-        guard self.dashboardUI !== dashboardUI else {
+        // No need to continue replacing the dashboard UI child view controller if the updated dashboard UI is the same as the currently displayed one.
+        guard dashboardUI !== updatedDashboardUI else {
             return
         }
 
         // Tears down the previous child view controller.
-        if let previousDashboardUI = self.dashboardUI {
+        if let previousDashboardUI = dashboardUI {
             remove(previousDashboardUI)
         }
 
-        self.dashboardUI = dashboardUI
+        dashboardUI = updatedDashboardUI
 
-        let contentView = dashboardUI.view!
-        addChild(dashboardUI)
+        let contentView = updatedDashboardUI.view!
+        addChild(updatedDashboardUI)
         containerView.addSubview(contentView)
-        dashboardUI.didMove(toParent: self)
+        updatedDashboardUI.didMove(toParent: self)
 
-        dashboardUI.onPullToRefresh = { [weak self] in
+        updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
         }
-        dashboardUI.displaySyncingErrorNotice = { [weak self] in
+        updatedDashboardUI.displaySyncingErrorNotice = { [weak self] in
             self?.displaySyncingErrorNotice()
         }
     }

@@ -45,3 +45,18 @@ class CustomerInfoTableViewCell: UITableViewCell {
         }
     }
 }
+
+/// MARK: - Testability
+extension CustomerInfoTableViewCell {
+    func getTitleLabel() -> UILabel {
+        return titleLabel
+    }
+
+    func getNameLabel() -> UILabel {
+        return nameLabel
+    }
+
+    func getAddressLabel() -> UILabel {
+        return addressLabel
+    }
+}

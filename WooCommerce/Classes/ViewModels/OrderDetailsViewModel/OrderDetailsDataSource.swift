@@ -27,8 +27,6 @@ final class OrderDetailsDataSource: NSObject {
         return order.statusKey == OrderStatusEnum.processing.rawValue
     }
 
-    var displaysBillingDetails: Bool = false
-
     var trackingIsReachable: Bool = false
 
     /// Anything above 999.99 or below -999.99 should display a truncated amount
@@ -145,37 +143,6 @@ extension OrderDetailsDataSource {
 
         return headerView
     }
-
-    func heightForFooterInSection(_ section: Int) -> CGFloat {
-        let lastSectionIndex = sections.count - 1
-
-        if sections[section].footer != nil || section == lastSectionIndex {
-            return UITableView.automaticDimension
-        }
-
-        return .leastNonzeroMagnitude
-    }
-
-    func viewForFooterInSection(_ section: Int, tableView: UITableView) -> UIView? {
-        guard let footerText = sections[section].footer else {
-            return nil
-        }
-
-        let cell = tableView.dequeueReusableHeaderFooterView(withIdentifier: ShowHideSectionFooter.reuseIdentifier) as! ShowHideSectionFooter
-        let image = displaysBillingDetails ? UIImage.chevronUpImage : UIImage.chevronDownImage
-        cell.configure(text: footerText, image: image)
-        cell.didSelectFooter = { [weak self] in
-            guard let self = self else {
-                return
-            }
-
-            let sections = IndexSet(integer: section)
-            self.onCellAction?(.footer, nil)
-            tableView.reloadSections(sections, with: .fade)
-        }
-
-        return cell
-    }
 }
 
 // MARK: - Support for UITableViewDataSource
@@ -184,16 +151,12 @@ private extension OrderDetailsDataSource {
         switch cell {
         case let cell as WooBasicTableViewCell where row == .details:
             configureDetails(cell: cell)
-        case let cell as WooBasicTableViewCell where row == .billingEmail:
-            configureBillingEmail(cell: cell)
-        case let cell as WooBasicTableViewCell where row == .billingPhone:
-            configureBillingPhone(cell: cell)
-        case let cell as CustomerInfoTableViewCell where row == .billingAddress:
-            configureBillingAddress(cell: cell)
         case let cell as CustomerInfoTableViewCell where row == .shippingAddress:
             configureShippingAddress(cell: cell)
-        case let cell as CustomerNoteTableViewCell:
+        case let cell as CustomerNoteTableViewCell where row == .customerNote:
             configureCustomerNote(cell: cell)
+        case let cell as WooBasicTableViewCell where row == .billingDetail:
+            configureBillingDetail(cell: cell)
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
         case let cell as OrderNoteHeaderTableViewCell:
@@ -217,66 +180,28 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    func configureBillingAddress(cell: CustomerInfoTableViewCell) {
-        let billingAddress = order.billingAddress
-
-        cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
-        cell.name = billingAddress?.fullNameWithCompany
-        cell.address = billingAddress?.formattedPostalAddress ??
-            NSLocalizedString("No address specified.",
-                              comment: "Order details > customer info > billing details. This is where the address would normally display.")
-    }
-
-    func configureBillingEmail(cell: WooBasicTableViewCell) {
-        guard let email = order.billingAddress?.email else {
-            return
-        }
-
-        cell.bodyLabel?.text = email
-        cell.bodyLabel?.applyBodyStyle()
-        cell.accessoryImage = .mailImage
-
-        cell.isAccessibilityElement = true
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Email: %@",
-                              comment: "Accessibility label that lets the user know the billing customer's email address"),
-            email
-        )
-
-        cell.accessibilityHint = NSLocalizedString(
-            "Composes a new email message to the billing customer.",
-            comment: "Accessibility hint, informing that a row can be tapped and an email composer view will appear."
-        )
-    }
-
-    func configureBillingPhone(cell: WooBasicTableViewCell) {
-        guard let phoneNumber = order.billingAddress?.phone else {
-            return
-        }
-
-        cell.bodyLabel?.text = phoneNumber
-        cell.bodyLabel?.applyBodyStyle()
-        cell.accessoryImage = .ellipsisImage
-
-        cell.isAccessibilityElement = true
-        cell.accessibilityTraits = .button
-        cell.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Phone number: %@",
-                comment: "Accessibility label that lets the user know the data is a phone number before speaking the phone number."
-            ),
-            phoneNumber
-        )
-
-        cell.accessibilityHint = NSLocalizedString(
-            "Prompts with the option to call or message the billing customer.",
-            comment: "VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer."
-        )
-    }
-
     func configureCustomerNote(cell: CustomerNoteTableViewCell) {
-        cell.quote = customerNote
+        cell.headline = Title.customerNote
+        cell.body = "“\(customerNote)“"
+        cell.selectionStyle = .none
+    }
+
+    func configureBillingDetail(cell: WooBasicTableViewCell) {
+        cell.bodyLabel?.text = Footer.showBilling
+        cell.bodyLabel?.applyBodyStyle()
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+            "View Billing Information",
+            comment: "Accessibility label for the 'View Billing Information' button"
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Show the billing details for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
+        )
     }
 
     func configureNewNote(cell: LeftImageTableViewCell) {
@@ -285,7 +210,7 @@ private extension OrderDetailsDataSource {
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
-            "Add a note button",
+            "Add a note",
             comment: "Accessibility label for the 'Add a note' button"
         )
 
@@ -373,7 +298,7 @@ private extension OrderDetailsDataSource {
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
-            "Add a tracking button",
+            "Add a tracking",
             comment: "Accessibility label for the 'Add a tracking' button"
         )
 
@@ -430,10 +355,8 @@ extension OrderDetailsDataSource {
     /// Setup: Sections
     ///
     /// CustomerInformation Behavior:
-    ///     When: Shipping == nil && Billing == nil     >>>     Display: Shipping = "No address specified" / Remove the rest
-    ///     When: Shipping != nil && Billing == nil     >>>     Display: Shipping / Remove the rest
-    ///     When: Shipping == nil && Billing != nil     >>>     Display: Shipping = "No address specified" / Billing / Footer
-    ///     When: Shipping != nil && Billing != nil     >>>     Display: Shipping / Billing / Footer
+    /// When: Customer Note == nil          >>> Hide Customer Note
+    /// When: Shipping == nil               >>> Display: Shipping = "No address specified"
     ///
     func reloadSections() {
         let summary = Section(row: .summary)
@@ -453,33 +376,18 @@ extension OrderDetailsDataSource {
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()
 
-        let customerNotes: Section? = {
-            guard customerNote.isEmpty == false else {
-                return nil
-            }
-
-            return Section(title: Title.customerNote, row: .customerNote)
-        }()
-
         let customerInformation: Section = {
-            guard let address = order.billingAddress else {
-                return Section(title: Title.information, row: .shippingAddress)
-            }
+            var rows: [Row] = []
 
-            guard displaysBillingDetails else {
-                return Section(title: Title.information, footer: Footer.showBilling, row: .shippingAddress)
+            if customerNote.isEmpty == false {
+                rows.append(.customerNote)
             }
-
-            var rows: [Row] = [.shippingAddress, .billingAddress]
-            if address.hasPhoneNumber {
-                rows.append(.billingPhone)
+            if order.shippingAddress != nil {
+                rows.append(.shippingAddress)
             }
+            rows.append(.billingDetail)
 
-            if address.hasEmailAddress {
-                rows.append(.billingEmail)
-            }
-
-            return Section(title: Title.information, footer: Footer.hideBilling, rows: rows)
+            return Section(title: Title.information, rows: rows)
         }()
 
         let payment = Section(title: Title.payment, row: .payment)
@@ -511,7 +419,7 @@ extension OrderDetailsDataSource {
             return Section(title: Title.notes, rows: rows)
         }()
 
-        sections = [summary, products, customerNotes, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
+        sections = [summary, products, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
 
@@ -538,14 +446,14 @@ extension OrderDetailsDataSource {
         static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
-        static let information = NSLocalizedString("Customer Information", comment: "Customer info section title")
+        static let information = NSLocalizedString("Customer", comment: "Customer info section title")
         static let payment = NSLocalizedString("Payment", comment: "Payment section title")
         static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
     }
 
     private enum Footer {
-        static let hideBilling = NSLocalizedString("Hide billing", comment: "Footer text to hide the billing cell")
-        static let showBilling = NSLocalizedString("Show billing", comment: "Footer text to show the billing cell")
+        static let showBilling = NSLocalizedString("View Billing Information",
+                                                   comment: "Button on bottom of Customer's information to show the billing details")
     }
 
     struct Section {
@@ -587,9 +495,7 @@ extension OrderDetailsDataSource {
         case trackingAdd
         case customerNote
         case shippingAddress
-        case billingAddress
-        case billingPhone
-        case billingEmail
+        case billingDetail
         case addOrderNote
         case orderNoteHeader
         case orderNote
@@ -613,11 +519,7 @@ extension OrderDetailsDataSource {
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
-            case .billingAddress:
-                return CustomerInfoTableViewCell.reuseIdentifier
-            case .billingPhone:
-                return WooBasicTableViewCell.reuseIdentifier
-            case .billingEmail:
+            case .billingDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LeftImageTableViewCell.reuseIdentifier
@@ -635,7 +537,6 @@ extension OrderDetailsDataSource {
         case fulfill
         case tracking
         case summary
-        case footer
     }
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
@@ -679,8 +580,6 @@ extension OrderDetailsDataSource {
         let row = rowAtIndexPath(indexPath)
 
         switch row {
-        case .billingAddress:
-            sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
         case .shippingAddress:
             sendToPasteboard(order.shippingAddress?.fullNameWithCompanyAndAddress)
         case .tracking:
@@ -718,10 +617,6 @@ extension OrderDetailsDataSource {
     func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
         let row = rowAtIndexPath(indexPath)
         switch row {
-        case .billingAddress:
-            if let _ = order.billingAddress {
-                return true
-            }
         case .shippingAddress:
             if let _ = order.shippingAddress {
                 return true

@@ -70,8 +70,8 @@ class SignupService {
                                     let createdAccount = (response?[ResponseKeys.createdAccount] as? Int ?? 0) == 1
                                     success(createdAccount, false, username, bearer_token)
         }, failure: { error in
-            if let nsError = error as? NSError {
-                let existingNonSocialAccount = (nsError.userInfo[ErrorKeys.errorCode] as? String ?? "") == ErrorKeys.existingNonSocialUser
+            if let error = (error as NSError?) {
+                let existingNonSocialAccount = (error.userInfo[ErrorKeys.errorCode] as? String ?? "") == ErrorKeys.existingNonSocialUser
                 if existingNonSocialAccount {
                     success(false, true, "", "")
                     return

@@ -1,5 +1,5 @@
-import UIKit
 import Storage
+import UIKit
 import Yosemite
 
 /// Contains all UI content to show on Dashboard

@@ -194,7 +194,7 @@ private extension OrderDetailsDataSource {
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
-            "View Billing Information button",
+            "View Billing Information",
             comment: "Accessibility label for the 'View Billing Information' button"
         )
 
@@ -210,7 +210,7 @@ private extension OrderDetailsDataSource {
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
-            "Add a note button",
+            "Add a note",
             comment: "Accessibility label for the 'Add a note' button"
         )
 
@@ -298,7 +298,7 @@ private extension OrderDetailsDataSource {
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(
-            "Add a tracking button",
+            "Add a tracking",
             comment: "Accessibility label for the 'Add a tracking' button"
         )
 

@@ -68,9 +68,16 @@ class SignupService {
                                     }
                                     
                                     let createdAccount = (response?[ResponseKeys.createdAccount] as? Int ?? 0) == 1
-                                    let existingNonSocialAccount = (response?[ResponseKeys.existingNonSocialUser] as? Int ?? 0) == 1
-                                    success(createdAccount, existingNonSocialAccount, username, bearer_token)
+                                    success(createdAccount, false, username, bearer_token)
         }, failure: { error in
+            if let nsError = error as? NSError {
+                let existingNonSocialAccount = (nsError.userInfo[ErrorKeys.errorCode] as? String ?? "") == ErrorKeys.existingNonSocialUser
+                if existingNonSocialAccount {
+                    success(false, true, "", "")
+                    return
+                }
+            }
+
             failure(error ?? SignupError.unknown)
         })
     }
@@ -96,6 +103,10 @@ private extension SignupService {
         static let bearerToken = "bearer_token"
         static let username = "username"
         static let createdAccount = "created_account"
+    }
+
+    struct ErrorKeys {
+        static let errorCode = "WordPressComRestApiErrorCodeKey"
         static let existingNonSocialUser = "user_exists"
     }
 }

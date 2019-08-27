@@ -75,6 +75,11 @@ private extension AppleAuthenticator {
                                          success: { [weak self] accountCreated, existingNonSocialAccount, wpcomUsername, wpcomToken in
                                             SVProgressHUD.dismiss()
 
+                                            guard !existingNonSocialAccount else {
+                                                self?.logInInstead()
+                                                return
+                                            }
+
                                             let wpcom = WordPressComCredentials(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: self?.loginFields.siteAddress ?? "")
                                             let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
@@ -82,10 +87,6 @@ private extension AppleAuthenticator {
                                             if accountCreated {
                                                 self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
                                                 self?.signupSuccessful(with: credentials)
-                                                return
-                                            } else if existingNonSocialAccount {
-                                                // Existing WP Account
-                                                self?.logInInstead()
                                                 return
                                             } else {
                                                 self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)

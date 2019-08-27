@@ -11,8 +11,10 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
+    private var siteID: Int?
+
+    private var dashboardUIFactory: DashboardUIFactory?
     private var dashboardUI: DashboardUI?
-    private var lastStatsVersion: StatsVersion?
 
     // MARK: Subviews
 
@@ -117,14 +119,14 @@ private extension DashboardViewController {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
+        if siteID != self.siteID {
+            dashboardUIFactory = DashboardUIFactory(siteID: siteID, stores: ServiceLocator.stores)
+            self.siteID = siteID
+        }
 
-        DashboardUIFactory.dashboardUIStatsVersion(isFeatureFlagOn: FeatureFlag.stats.enabled,
-                                                   siteID: siteID,
-                                                   onInitialUI: { [weak self] statsVersion in
-                                                    self?.updateDashboardUI(statsVersion: statsVersion)
-            },
-                                                   onUpdate: { [weak self] statsVersion in
-                                                    self?.onDashboardUIUpdate(statsVersion: statsVersion)
+        dashboardUIFactory?.reloadDashboardUI(isFeatureFlagOn: FeatureFlag.stats.enabled,
+                                              onUIUpdate: { [weak self] dashboardUI in
+                                                self?.onDashboardUIUpdate(dashboardUI: dashboardUI)
         })
     }
 }
@@ -132,41 +134,20 @@ private extension DashboardViewController {
 // MARK: - Updates
 //
 private extension DashboardViewController {
-    func onDashboardUIUpdate(statsVersion: StatsVersion) {
-        let lastStatsVersion = self.lastStatsVersion
-        self.lastStatsVersion = statsVersion
-        if lastStatsVersion == .v3 && statsVersion == .v4 {
-            onDashboardUIStatsUpgrade(statsVersion: statsVersion)
-        } else if lastStatsVersion == .v4 && statsVersion == .v3 {
-            onDashboardUIStatsDowngrade(statsVersion: statsVersion)
-        } else {
-            updateDashboardUI(statsVersion: statsVersion)
+    func onDashboardUIUpdate(dashboardUI: DashboardUI) {
+        defer {
+            reloadData()
         }
-    }
 
-    /// Stats v3 --> v4: shows top banner to announce stats v4 feature.
-    func onDashboardUIStatsUpgrade(statsVersion: StatsVersion) {
-        // TODO-1232: handle v3 --> v4 upgrading
-        updateDashboardUI(statsVersion: statsVersion)
-    }
-
-    /// Stats v4 --> v3: reverts dashboard UI to v3 and shows top banner with explanations.
-    func onDashboardUIStatsDowngrade(statsVersion: StatsVersion) {
-        // TODO-1232: handle v4 --> v3 downgrading
-        updateDashboardUI(statsVersion: statsVersion)
-    }
-
-    func updateDashboardUI(statsVersion: StatsVersion) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+        guard self.dashboardUI !== dashboardUI else {
             return
         }
 
         // Tears down the previous child view controller.
-        if let previousDashboardUI = dashboardUI {
+        if let previousDashboardUI = self.dashboardUI {
             remove(previousDashboardUI)
         }
 
-        let dashboardUI = DashboardUIFactory.createDashboardUIAndSetUserPreference(siteID: siteID, statsVersion: statsVersion)
         self.dashboardUI = dashboardUI
 
         let contentView = dashboardUI.view!
@@ -180,8 +161,6 @@ private extension DashboardViewController {
         dashboardUI.displaySyncingErrorNotice = { [weak self] in
             self?.displaySyncingErrorNotice()
         }
-
-        reloadData()
     }
 }
 

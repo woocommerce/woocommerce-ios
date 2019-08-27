@@ -21,41 +21,78 @@ protocol DashboardUI: UIViewController {
 }
 
 final class DashboardUIFactory {
-    static func dashboardUIStatsVersion(isFeatureFlagOn: Bool,
-                                        siteID: Int,
-                                        onInitialUI: @escaping (_ statsVersion: StatsVersion) -> Void,
-                                        onUpdate: @escaping (_ statsVersion: StatsVersion) -> Void) {
+    private let siteID: Int
+    private let stores: StoresManager
+    private var stateCoordinator: StatsVersionStateCoordinator?
+
+    private var lastStatsVersion: StatsVersion?
+    private var lastDashboardUI: DashboardUI?
+
+    init(siteID: Int, stores: StoresManager) {
+        self.siteID = siteID
+        self.stores = stores
+    }
+
+    func reloadDashboardUI(isFeatureFlagOn: Bool,
+                           onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
         if isFeatureFlagOn {
-            let stores = ServiceLocator.stores
-
-            let lastShownStatsVersionAction = AppSettingsAction.loadStatsVersionLastShown(siteID: siteID) { lastShownStatsVersion in
-                let lastStatsVersion: StatsVersion = lastShownStatsVersion ?? StatsVersion.v3
-                onInitialUI(lastStatsVersion)
-
-                let action = AvailabilityAction.checkStatsV4Availability(siteID: siteID) { isStatsV4Available in
-                    let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
-
-                    if statsVersion != lastStatsVersion {
-                        onUpdate(statsVersion)
-                    }
-                }
-                stores.dispatch(action)
-            }
-            stores.dispatch(lastShownStatsVersionAction)
+            let stateCoordinator = StatsVersionStateCoordinator(siteID: siteID,
+                                                                stores: stores,
+                                                                onStateChange: { [weak self] state in
+                                                                    guard let self = self else {
+                                                                        return
+                                                                    }
+                                                                    self.onStatsVersionStateChange(state: state, onUIUpdate: onUIUpdate)
+            })
+            self.stateCoordinator = stateCoordinator
+            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
         } else {
-            onInitialUI(.v3)
+            onUIUpdate(dashboardUI(siteID: siteID, statsVersion: .v3))
         }
     }
 
-    static func createDashboardUIAndSetUserPreference(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
+    private func dashboardUI(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
+        if let lastDashboardUI = lastDashboardUI, lastStatsVersion == statsVersion {
+            return lastDashboardUI
+        }
+        return createDashboardUIAndSetUserPreference(siteID: siteID, statsVersion: statsVersion)
+    }
+
+    private func createDashboardUIAndSetUserPreference(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
+
+
         let action = AppSettingsAction.setStatsVersionLastShown(siteID: siteID, statsVersion: statsVersion)
         ServiceLocator.stores.dispatch(action)
 
+        let dashboardUI = createDashboardUI(statsVersion: statsVersion)
+
+        lastStatsVersion = statsVersion
+        lastDashboardUI = dashboardUI
+
+        return dashboardUI
+    }
+
+    private func createDashboardUI(statsVersion: StatsVersion) -> DashboardUI {
         switch statsVersion {
         case .v3:
             return DashboardStatsV3ViewController(nibName: nil, bundle: nil)
         case .v4:
             return StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
+        }
+    }
+}
+
+private extension DashboardUIFactory {
+    func onStatsVersionStateChange(state: StatsVersionState, onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
+        switch state {
+        case .initial(let statsVersion), .eligible(let statsVersion):
+            onUIUpdate(dashboardUI(siteID: siteID, statsVersion: statsVersion))
+        case .v3ShownV4Eligible:
+            // TODO-1232: handle v3 --> v4 upgrading: shows top banner to announce stats v4 feature for user to opt in.
+            onUIUpdate(dashboardUI(siteID: siteID, statsVersion: .v4))
+        case .v4RevertedToV3:
+            // TODO-1232: handle v4 --> v3 downgrading: reverts dashboard UI to v3 and shows top banner with explanations.
+            onUIUpdate(dashboardUI(siteID: siteID, statsVersion: .v3))
         }
     }
 }

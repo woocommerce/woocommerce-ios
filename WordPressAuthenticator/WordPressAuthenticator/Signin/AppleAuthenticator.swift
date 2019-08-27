@@ -58,14 +58,14 @@ private extension AppleAuthenticator {
     @available(iOS 13.0, *)
     func createWordPressComUser(appleCredentials: ASAuthorizationAppleIDCredential) {
         guard let identityToken = appleCredentials.identityToken,
-            let token = String(data: identityToken, encoding: .utf8),
-            let email = appleCredentials.email else {
+            let token = String(data: identityToken, encoding: .utf8) else {
                 DDLogError("Apple Authenticator: invalid Apple credentials.")
                 return
         }
         
         SVProgressHUD.show(withStatus: NSLocalizedString("Continuing with Apple", comment: "Shown while logging in with Apple and the app waits for the site creation process to complete."))
         
+        let email = appleCredentials.email ?? ""
         let name = fullName(from: appleCredentials.fullName)
 
         updateLoginFields(email: email, fullName: name, token: token)

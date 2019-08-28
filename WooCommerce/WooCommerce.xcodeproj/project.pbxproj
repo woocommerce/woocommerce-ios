@@ -36,6 +36,8 @@
 		45C8B25D231529410002FA77 /* CustomerInfoTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B25C231529410002FA77 /* CustomerInfoTableViewCellTests.swift */; };
 		45C8B26123155CBC0002FA77 /* BillingInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B25F23155CBC0002FA77 /* BillingInformationViewController.swift */; };
 		45C8B26223155CBC0002FA77 /* BillingInformationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B26023155CBC0002FA77 /* BillingInformationViewController.xib */; };
+		45C8B2662316AB460002FA77 /* BillingAddressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2642316AB460002FA77 /* BillingAddressTableViewCell.swift */; };
+		45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B2652316AB460002FA77 /* BillingAddressTableViewCell.xib */; };
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */; };
 		740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */; };
@@ -422,6 +424,8 @@
 		45C8B25C231529410002FA77 /* CustomerInfoTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerInfoTableViewCellTests.swift; sourceTree = "<group>"; };
 		45C8B25F23155CBC0002FA77 /* BillingInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingInformationViewController.swift; sourceTree = "<group>"; };
 		45C8B26023155CBC0002FA77 /* BillingInformationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingInformationViewController.xib; sourceTree = "<group>"; };
+		45C8B2642316AB460002FA77 /* BillingAddressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTableViewCell.swift; sourceTree = "<group>"; };
+		45C8B2652316AB460002FA77 /* BillingAddressTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingAddressTableViewCell.xib; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
 		740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageTableViewCell.swift; sourceTree = "<group>"; };
@@ -840,8 +844,18 @@
 			children = (
 				45C8B25F23155CBC0002FA77 /* BillingInformationViewController.swift */,
 				45C8B26023155CBC0002FA77 /* BillingInformationViewController.xib */,
+				45C8B2632316AB1E0002FA77 /* Cells */,
 			);
 			path = "Billing Information";
+			sourceTree = "<group>";
+		};
+		45C8B2632316AB1E0002FA77 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				45C8B2642316AB460002FA77 /* BillingAddressTableViewCell.swift */,
+				45C8B2652316AB460002FA77 /* BillingAddressTableViewCell.xib */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		74036CBE211B87FD00E462C2 /* MyStore */ = {
@@ -1875,6 +1889,7 @@
 				45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
 				CE32B11620BF8779006FBCF4 /* FulfillButtonTableViewCell.xib in Resources */,
+				45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
 				7493BB8F2149852A003071A9 /* TopPerformersHeaderView.xib in Resources */,
 				CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */,
@@ -2193,6 +2208,7 @@
 				CE37C04422984E81008DCB39 /* PickListTableViewCell.swift in Sources */,
 				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
 				B555530D21B57DC300449E71 /* UserNotificationsCenterAdapter.swift in Sources */,
+				45C8B2662316AB460002FA77 /* BillingAddressTableViewCell.swift in Sources */,
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,
 				B5BBD6DE21B1703700E3207E /* PushNotificationsManager.swift in Sources */,

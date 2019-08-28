@@ -60,7 +60,6 @@ private extension BillingInformationViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
-        tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
     }
@@ -69,7 +68,7 @@ private extension BillingInformationViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            CustomerInfoTableViewCell.self,
+            BillingAddressTableViewCell.self,
             WooBasicTableViewCell.self
         ]
         
@@ -135,6 +134,15 @@ extension BillingInformationViewController: UITableViewDelegate {
         return headerView
     }
     
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        // iOS 11 table bug. Must return a tiny value to collapse `nil` or `empty` section headers.
+        return .leastNonzeroMagnitude
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return nil
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         tableView.deselectRow(at: indexPath, animated: true)
@@ -175,7 +183,7 @@ private extension BillingInformationViewController {
     ///
     func setup(cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as CustomerInfoTableViewCell where row == .billingAddress:
+        case let cell as BillingAddressTableViewCell where row == .billingAddress:
             setupBillingAddress(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingPhone:
             setupBillingPhone(cell: cell)
@@ -188,14 +196,13 @@ private extension BillingInformationViewController {
     
     /// Setup: Billing Address Cell
     ///
-    func setupBillingAddress(cell: CustomerInfoTableViewCell) {
+    func setupBillingAddress(cell: BillingAddressTableViewCell) {
         let billingAddress = order.billingAddress
         
-        cell.title = NSLocalizedString("Billing details", comment: "Billing title for customer info cell")
         cell.name = billingAddress?.fullNameWithCompany
         cell.address = billingAddress?.formattedPostalAddress ??
             NSLocalizedString("No address specified.",
-                              comment: "Order details > customer info > billing details. This is where the address would normally display.")
+                              comment: "Order details > customer info > billing information. This is where the address would normally display.")
     }
     
     func setupBillingPhone(cell: WooBasicTableViewCell) {
@@ -325,7 +332,7 @@ private enum Row {
     var cellType: UITableViewCell.Type {
         switch self {
         case .billingAddress:
-            return CustomerInfoTableViewCell.self
+            return BillingAddressTableViewCell.self
         case .billingPhone:
             return WooBasicTableViewCell.self
         case .billingEmail:
@@ -341,5 +348,6 @@ private extension BillingInformationViewController {
     enum Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
+        static let footerHeight = CGFloat(0)
     }
 }

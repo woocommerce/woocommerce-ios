@@ -35,7 +35,6 @@ extension StatsVersionState: Equatable {
 ///
 final class StatsVersionStateCoordinator {
     private let siteID: Int
-    private let stores: StoresManager
     private let onStateChange: (_ state: StatsVersionState) -> Void
 
     private var state: StatsVersionState? {
@@ -52,10 +51,8 @@ final class StatsVersionStateCoordinator {
     ///   - siteID: the ID of a site/store where the stats version is concerned.
     ///   - onStateChange: called when stats version state changes.
     init(siteID: Int,
-         stores: StoresManager,
          onStateChange: @escaping (_ state: StatsVersionState) -> Void) {
         self.siteID = siteID
-        self.stores = stores
         self.onStateChange = onStateChange
     }
 
@@ -71,9 +68,9 @@ final class StatsVersionStateCoordinator {
                 let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
                 self?.updateState(eligibleStatsVersion: statsVersion)
             }
-            self?.stores.dispatch(action)
+            ServiceLocator.stores.dispatch(action)
         }
-        stores.dispatch(lastShownStatsVersionAction)
+        ServiceLocator.stores.dispatch(lastShownStatsVersionAction)
     }
 
     /// Called when eligible stats version is set.

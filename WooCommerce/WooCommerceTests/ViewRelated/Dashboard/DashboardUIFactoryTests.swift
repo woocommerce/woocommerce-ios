@@ -17,7 +17,8 @@ final class DashboardUIFactoryTests: XCTestCase {
 
     func testStatsVersionWhenFeatureFlagIsOff() {
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, stores: mockStoresManager)
+        ServiceLocator.setStores(mockStoresManager)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         let expectation = self.expectation(description: "Wait for the initial stats version")
 
@@ -31,8 +32,9 @@ final class DashboardUIFactoryTests: XCTestCase {
     func testWhenV4IsAvailableWhileNoStatsVersionIsSaved() {
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
+        ServiceLocator.setStores(mockStoresManager)
 
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, stores: mockStoresManager)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         var dashboardUITypes: [UIViewController.Type] = []
         let expectedDashboardUITypes: [UIViewController.Type] = [DashboardStatsV3ViewController.self, StoreStatsAndTopPerformersViewController.self]
@@ -54,8 +56,9 @@ final class DashboardUIFactoryTests: XCTestCase {
     func testWhenV4IsUnavailableWhileNoStatsVersionIsSaved() {
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
+        ServiceLocator.setStores(mockStoresManager)
 
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, stores: mockStoresManager)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         var dashboardUIArray: [DashboardUI] = []
         let expectation = self.expectation(description: "Wait for the stats v4")
@@ -78,8 +81,9 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
+        ServiceLocator.setStores(mockStoresManager)
 
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, stores: mockStoresManager)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         var dashboardUIArray: [DashboardUI] = []
         let expectation = self.expectation(description: "Wait for the stats v4")
@@ -102,8 +106,9 @@ final class DashboardUIFactoryTests: XCTestCase {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
+        ServiceLocator.setStores(mockStoresManager)
 
-        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID, stores: mockStoresManager)
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         var dashboardUIArray: [DashboardUI] = []
         let expectation = self.expectation(description: "Wait for the stats v4")

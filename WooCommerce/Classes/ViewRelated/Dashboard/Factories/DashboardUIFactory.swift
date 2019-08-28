@@ -22,22 +22,19 @@ protocol DashboardUI: UIViewController {
 
 final class DashboardUIFactory {
     private let siteID: Int
-    private let stores: StoresManager
     private weak var stateCoordinator: StatsVersionStateCoordinator?
 
     private var lastStatsVersion: StatsVersion?
     private var lastDashboardUI: DashboardUI?
 
-    init(siteID: Int, stores: StoresManager) {
+    init(siteID: Int) {
         self.siteID = siteID
-        self.stores = stores
     }
 
     func reloadDashboardUI(isFeatureFlagOn: Bool,
                            onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
         if isFeatureFlagOn {
             let stateCoordinator = StatsVersionStateCoordinator(siteID: siteID,
-                                                                stores: stores,
                                                                 onStateChange: { [weak self] state in
                                                                     self?.onStatsVersionStateChange(state: state, onUIUpdate: onUIUpdate)
             })
@@ -57,7 +54,7 @@ final class DashboardUIFactory {
 
     private func createDashboardUIAndSetUserPreference(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
         let action = AppSettingsAction.setStatsVersionLastShown(siteID: siteID, statsVersion: statsVersion)
-        stores.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
 
         let dashboardUI = createDashboardUI(statsVersion: statsVersion)
 

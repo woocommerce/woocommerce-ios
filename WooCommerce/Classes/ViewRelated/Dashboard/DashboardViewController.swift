@@ -122,7 +122,7 @@ private extension DashboardViewController {
             return
         }
         if siteID != self.siteID {
-            dashboardUIFactory = DashboardUIFactory(siteID: siteID, stores: ServiceLocator.stores)
+            dashboardUIFactory = DashboardUIFactory(siteID: siteID)
             self.siteID = siteID
         }
 

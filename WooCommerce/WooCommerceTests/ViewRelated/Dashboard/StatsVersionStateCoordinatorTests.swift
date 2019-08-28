@@ -14,13 +14,14 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
     func testWhenV4IsAvailableWhileNoStatsVersionWasShownBefore() {
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
+        ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, stores: mockStoresManager, onStateChange: { state in
+        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, onStateChange: { state in
             states.append(state)
             if states.count >= expectedStates.count {
                 XCTAssertEqual(states, expectedStates)
@@ -34,13 +35,14 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
     func testWhenV4IsUnavailableWhileNoStatsVersionWasShownBefore() {
         mockStoresManager = MockupStatsVersionStoresManager(sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
+        ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .eligible(statsVersion: .v3)]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, stores: mockStoresManager, onStateChange: { state in
+        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, onStateChange: { state in
             states.append(state)
             if states.count >= expectedStates.count {
                 XCTAssertEqual(states, expectedStates)
@@ -56,13 +58,14 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
+        ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, stores: mockStoresManager, onStateChange: { state in
+        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, onStateChange: { state in
             states.append(state)
             if states.count >= expectedStates.count {
                 XCTAssertEqual(states, expectedStates)
@@ -78,13 +81,14 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
+        ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .eligible(statsVersion: .v3)]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, stores: mockStoresManager, onStateChange: { state in
+        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, onStateChange: { state in
             states.append(state)
             if states.count >= expectedStates.count {
                 XCTAssertEqual(states, expectedStates)
@@ -100,13 +104,14 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
+        ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .v4RevertedToV3]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, stores: mockStoresManager, onStateChange: { state in
+        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, onStateChange: { state in
             states.append(state)
             if states.count >= expectedStates.count {
                 XCTAssertEqual(states, expectedStates)
@@ -122,13 +127,14 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
+        ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .eligible(statsVersion: .v4)]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, stores: mockStoresManager, onStateChange: { state in
+        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, onStateChange: { state in
             states.append(state)
             if states.count >= expectedStates.count {
                 XCTAssertEqual(states, expectedStates)
@@ -144,13 +150,14 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
+        ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible, .eligible(statsVersion: .v3)]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, stores: mockStoresManager, onStateChange: { state in
+        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, onStateChange: { state in
             states.append(state)
             if states.count >= expectedStates.count {
                 XCTAssertEqual(states, expectedStates)
@@ -170,13 +177,14 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
+        ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible, .eligible(statsVersion: .v4)]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, stores: mockStoresManager, onStateChange: { state in
+        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, onStateChange: { state in
             states.append(state)
             if states.count >= expectedStates.count {
                 XCTAssertEqual(states, expectedStates)
@@ -196,13 +204,14 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
+        ServiceLocator.setStores(mockStoresManager)
 
         let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .v4RevertedToV3, .eligible(statsVersion: .v3)]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
         var states: [StatsVersionState] = []
-        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, stores: mockStoresManager, onStateChange: { state in
+        let stateCoordinator = StatsVersionStateCoordinator(siteID: 134, onStateChange: { state in
             states.append(state)
             if states.count >= expectedStates.count {
                 XCTAssertEqual(states, expectedStates)

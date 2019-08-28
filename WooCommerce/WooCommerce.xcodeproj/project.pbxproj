@@ -38,6 +38,7 @@
 		45C8B26223155CBC0002FA77 /* BillingInformationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B26023155CBC0002FA77 /* BillingInformationViewController.xib */; };
 		45C8B2662316AB460002FA77 /* BillingAddressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2642316AB460002FA77 /* BillingAddressTableViewCell.swift */; };
 		45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B2652316AB460002FA77 /* BillingAddressTableViewCell.xib */; };
+		45C8B2692316B2440002FA77 /* BillingAddressTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2682316B2440002FA77 /* BillingAddressTableViewCellTests.swift */; };
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */; };
 		740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */; };
@@ -426,6 +427,7 @@
 		45C8B26023155CBC0002FA77 /* BillingInformationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingInformationViewController.xib; sourceTree = "<group>"; };
 		45C8B2642316AB460002FA77 /* BillingAddressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTableViewCell.swift; sourceTree = "<group>"; };
 		45C8B2652316AB460002FA77 /* BillingAddressTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingAddressTableViewCell.xib; sourceTree = "<group>"; };
+		45C8B2682316B2440002FA77 /* BillingAddressTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTableViewCellTests.swift; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
 		740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageTableViewCell.swift; sourceTree = "<group>"; };
@@ -1671,6 +1673,7 @@
 				D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */,
 				45C8B25A231521510002FA77 /* CustomerNoteTableViewCellTests.swift */,
 				45C8B25C231529410002FA77 /* CustomerInfoTableViewCellTests.swift */,
+				45C8B2682316B2440002FA77 /* BillingAddressTableViewCellTests.swift */,
 			);
 			path = ViewRelated;
 			sourceTree = "<group>";
@@ -2276,6 +2279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45C8B2692316B2440002FA77 /* BillingAddressTableViewCellTests.swift in Sources */,
 				B57C5C9F21B80E8300FF82B2 /* SampleError.swift in Sources */,
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
 				7435E59021C0162C00216F0F /* OrderNoteWooTests.swift in Sources */,

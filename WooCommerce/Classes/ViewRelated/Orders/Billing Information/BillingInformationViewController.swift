@@ -42,6 +42,11 @@ final class BillingInformationViewController: UIViewController {
         reloadSections()
     }
     
+    /// Helpers
+    ///
+    private let emailComposer = OrderEmailComposer()
+    
+    private let messageComposer = OrderMessageComposer()
 }
 
 // MARK: - Interface Initialization
@@ -88,6 +93,72 @@ private extension BillingInformationViewController {
     }
 }
 
+// MARK: - Initiate communication with a customer (i.e. via email, phone call, sms)
+//
+private extension BillingInformationViewController {
+    func displayEmailComposerIfPossible(from: UIViewController) {
+        emailComposer.displayEmailComposerIfPossible(for: order, from: from)
+    }
+    
+    /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
+    ///
+    func displayContactCustomerAlert(from: UIViewController) {
+        guard let sourceView = from.view else {
+            return
+        }
+        
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        
+        actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
+        actionSheet.addDefaultActionWithTitle(ContactAction.call) { [weak self] _ in
+            guard let self = self else {
+                return
+            }
+            
+            guard let phoneURL = self.order.billingAddress?.cleanedPhoneNumberAsActionableURL else {
+                return
+            }
+            
+            WooAnalytics.shared.track(.orderBillingInfoCustomerPhoneOptionTapped)
+            self.callCustomerIfPossible(at: phoneURL)
+        }
+        
+        actionSheet.addDefaultActionWithTitle(ContactAction.message) { [weak self] _ in
+            WooAnalytics.shared.track(.orderBillingInfoCustomerSMSOptionTapped)
+            self?.displayMessageComposerIfPossible(from: from)
+        }
+        
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = sourceView
+        popoverController?.sourceRect = sourceView.bounds
+        
+        from.present(actionSheet, animated: true)
+        
+        WooAnalytics.shared.track(.orderBillingInfoCustomerPhoneMenuTapped)
+    }
+    
+    /// Attempts to perform a phone call at the specified URL
+    ///
+    func callCustomerIfPossible(at phoneURL: URL) {
+        guard UIApplication.shared.canOpenURL(phoneURL) else {
+            return
+        }
+        
+        UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
+        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": order.orderID,
+                                                                        "status": order.statusKey,
+                                                                        "type": "call"])
+        
+    }
+    
+    /// Initiate communication with a customer via message
+    ///
+    func displayMessageComposerIfPossible(from: UIViewController) {
+        messageComposer.displayMessageComposerIfPossible(order: order, from: from)
+    }
+}
+
 // MARK: - UITableViewDataSource Conformance
 //
 extension BillingInformationViewController: UITableViewDataSource {
@@ -113,7 +184,7 @@ extension BillingInformationViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension BillingInformationViewController: UITableViewDelegate {
-
+    
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
@@ -146,33 +217,20 @@ extension BillingInformationViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        switch sections[indexPath.section].rows[indexPath.row] {
+        case .billingPhone:
+            displayContactCustomerAlert(from: self)
+            break
+            
+        case .billingEmail:
+            WooAnalytics.shared.track(.orderBillingInfoCustomerEmailTapped)
+            displayEmailComposerIfPossible(from: self)
+            break
+        default:
+            break
+        }
     }
-
-//
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        tableView.deselectRow(at: indexPath, animated: true)
-//
-//        switch sections[indexPath.section].rows[indexPath.row] {
-//
-//        case .trackingAdd:
-//            WooAnalytics.shared.track(.orderFulfillmentAddTrackingButtonTapped)
-//
-//            let viewModel = AddTrackingViewModel(order: order)
-//            let addTracking = ManualTrackingViewController(viewModel: viewModel)
-//            let navController = WooNavigationController(rootViewController: addTracking)
-//            present(navController, animated: true, completion: nil)
-//
-//        case .product(let item):
-//            let productIDToLoad = item.variationID == 0 ? item.productID : item.variationID
-//            productWasPressed(for: productIDToLoad)
-//
-//        case .tracking:
-//            break
-//
-//        default:
-//            break
-//        }
-//    }
 }
 
 // MARK: - Cell Configuration
@@ -344,6 +402,11 @@ private enum Row {
 // MARK: - Constants
 //
 private extension BillingInformationViewController {
+    enum ContactAction {
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
+        static let call = NSLocalizedString("Call", comment: "Call phone number button title")
+        static let message = NSLocalizedString("Message", comment: "Message phone number button title")
+    }
     
     enum Constants {
         static let rowHeight = CGFloat(38)

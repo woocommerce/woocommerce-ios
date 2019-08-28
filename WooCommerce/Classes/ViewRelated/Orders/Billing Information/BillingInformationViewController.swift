@@ -47,6 +47,10 @@ final class BillingInformationViewController: UIViewController {
     private let emailComposer = OrderEmailComposer()
     
     private let messageComposer = OrderMessageComposer()
+    
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
 }
 
 // MARK: - Interface Initialization
@@ -231,6 +235,21 @@ extension BillingInformationViewController: UITableViewDelegate {
             break
         }
     }
+    
+    func tableView(_ tableView: UITableView, shouldShowMenuForRowAt indexPath: IndexPath) -> Bool {
+        return checkIfCopyingIsAllowed(for: indexPath)
+    }
+    
+    func tableView(_ tableView: UITableView, canPerformAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) -> Bool {
+        return action == #selector(copy(_:))
+    }
+    
+    func tableView(_ tableView: UITableView, performAction action: Selector, forRowAt indexPath: IndexPath, withSender sender: Any?) {
+        guard action == #selector(copy(_:)) else {
+            return
+        }
+        copyText(at: indexPath)
+    }
 }
 
 // MARK: - Cell Configuration
@@ -310,9 +329,6 @@ private extension BillingInformationViewController {
             comment: "Accessibility hint, informing that a row can be tapped and an email composer view will appear."
         )
     }
-    
-    
-    
 }
 
 // MARK: - Table view sections
@@ -343,6 +359,63 @@ private extension BillingInformationViewController {
         }()
         
         sections =  [billingAddress, contactDetails].compactMap { $0 }
+    }
+}
+
+// MARK: - Pasteboard
+//
+private extension BillingInformationViewController {
+    
+    /// Sends the provided Row's text data to the pasteboard
+    ///
+    /// - Parameter indexPath: IndexPath to copy text data from
+    ///
+    func copyText(at indexPath: IndexPath) {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        
+        switch row {
+        case .billingAddress:
+            sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
+        default:
+            break // We only send text to the pasteboard from the address rows right meow
+        }
+    }
+    
+    /// Sends the provided text to the general pasteboard and triggers a success haptic. If the text param
+    /// is nil, nothing is sent to the pasteboard.
+    ///
+    /// - Parameter
+    ///   - text: string value to send to the pasteboard
+    ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
+    ///
+    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
+        guard var text = text, text.isEmpty == false else {
+            return
+        }
+        if includeTrailingNewline {
+            text += "\n"
+        }
+        UIPasteboard.general.string = text
+        hapticGenerator.notificationOccurred(.success)
+    }
+    
+    /// Checks if copying the row data at the provided indexPath is allowed
+    ///
+    /// - Parameter indexPath: index path of the row to check
+    /// - Returns: true is copying is allowed, false otherwise
+    ///
+    func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
+        let row = sections[indexPath.section].rows[indexPath.row]
+        switch row {
+        case .billingAddress:
+            if let _ = order.billingAddress {
+                return true
+            }
+        default:
+            break
+        }
+        
+        return false
     }
 }
 

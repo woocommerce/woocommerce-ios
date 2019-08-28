@@ -225,4 +225,5 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
 
         waitForExpectations(timeout: 0.1, handler: nil)
     }
+    
 }

@@ -135,16 +135,11 @@ extension BillingInformationViewController: UITableViewDelegate {
         return headerView
     }
     
-//    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        tableView.deselectRow(at: indexPath, animated: true)
-//        tableView.selectRow(at: <#T##IndexPath?#>, animated: <#T##Bool#>, scrollPosition: <#T##UITableView.ScrollPosition#>)
-//        viewModel.tableView(tableView, in: self, didSelectRowAt: indexPath)
-//    }
-//
-//    func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-//        // No trailing action on any cell
-//        return UISwipeActionsConfiguration(actions: [])
-//    }
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
 //
 //    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
 //        tableView.deselectRow(at: indexPath, animated: true)

@@ -172,6 +172,21 @@ end
 
 post_install do |installer|
 
+  ## Append SDKVersions.xcconfig contents to WordPressAuthenticator config files
+  Dir.glob("Pods/Target Support Files/WordPressAuthenticator/*.xcconfig") do |xc_config_filename|
+
+    ## Get WPAuth config file
+    xcconfig_path = "#{Dir.pwd}/#{xc_config_filename}"
+    xc_config = File.read(xcconfig_path)
+
+    ## Get WPiOS config file
+    custom_xcconfig_path = "#{Dir.pwd}/config/SDKVersions.xcconfig"
+    custom_xc_config = File.read(custom_xcconfig_path)
+
+    ## Write back to WPAuth config file, appending both configs.
+    File.open(xcconfig_path, 'w') { |file| file << xc_config << custom_xc_config }
+  end
+
   # Workaround: Drop 32 Bit Architectures
   # =====================================
   #

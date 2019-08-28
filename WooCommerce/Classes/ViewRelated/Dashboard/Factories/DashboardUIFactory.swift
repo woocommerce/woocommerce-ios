@@ -22,7 +22,7 @@ protocol DashboardUI: UIViewController {
 
 final class DashboardUIFactory {
     private let siteID: Int
-    private weak var stateCoordinator: StatsVersionStateCoordinator?
+    private var stateCoordinator: StatsVersionStateCoordinator?
 
     private var lastStatsVersion: StatsVersion?
     private var lastDashboardUI: DashboardUI?

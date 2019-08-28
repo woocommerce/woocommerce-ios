@@ -6,7 +6,7 @@ final class BillingAddressTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var nameLabel: UILabel!
     @IBOutlet private weak var addressLabel: UILabel!
-    
+
     var name: String? {
         get {
             return nameLabel.text
@@ -15,7 +15,7 @@ final class BillingAddressTableViewCell: UITableViewCell {
             nameLabel.text = newValue
         }
     }
-    
+
     var address: String? {
         get {
             return addressLabel.text
@@ -24,7 +24,7 @@ final class BillingAddressTableViewCell: UITableViewCell {
             addressLabel.text = newValue
         }
     }
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         nameLabel.applyBodyStyle()
@@ -34,11 +34,11 @@ final class BillingAddressTableViewCell: UITableViewCell {
 
 /// MARK: - Testability
 extension BillingAddressTableViewCell {
-    
+
     func getNameLabel() -> UILabel {
         return nameLabel
     }
-    
+
     func getAddressLabel() -> UILabel {
         return addressLabel
     }

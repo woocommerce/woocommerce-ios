@@ -3,8 +3,8 @@ import UIKit
 /// Ability to show and hide a banner
 ///
 protocol TopBannerPresenter {
-    var topBannerView: TopBannerView? { get }
+    var topBannerView: UIView? { get }
 
-    func showTopBanner(_ topBannerView: TopBannerView, animated: Bool)
+    func showTopBanner(_ topBannerView: UIView)
     func hideTopBanner(animated: Bool)
 }

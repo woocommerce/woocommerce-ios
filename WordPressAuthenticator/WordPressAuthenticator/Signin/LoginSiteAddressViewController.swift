@@ -27,7 +27,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     // MARK: - URL Validation
     
     private lazy var urlErrorDebouncer = Debouncer(delay: 2) { [weak self] in
-        let errorMessage = NSLocalizedString("Enter a valid URL eg. example.com.", comment: "Error message shown when a URL is invalid.")
+        let errorMessage = NSLocalizedString("Please enter a complete website address, like example.com.", comment: "Error message shown when a URL is invalid.")
         
         self?.displayError(message: errorMessage)
     }

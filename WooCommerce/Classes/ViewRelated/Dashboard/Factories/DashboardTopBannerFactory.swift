@@ -1,6 +1,8 @@
 import Gridicons
 import UIKit
 
+/// Generates top banner view that is shown when the eligible stats version is from v3 to v4 and v4 to v3.
+///
 final class DashboardTopBannerFactory {
     static func v3ToV4BannerView(actionHandler: @escaping () -> Void,
                                  dismissHandler: @escaping () -> Void) -> TopBannerView {

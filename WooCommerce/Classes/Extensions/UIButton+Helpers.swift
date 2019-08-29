@@ -54,6 +54,7 @@ extension UIButton {
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
         setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
+        setTitleColor(StyleManager.wooCommerceBrandColor.withAlphaComponent(0.5), for: .highlighted)
     }
 
     /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.

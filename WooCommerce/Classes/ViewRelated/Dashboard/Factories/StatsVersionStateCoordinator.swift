@@ -34,67 +34,93 @@ extension StatsVersionState: Equatable {
 /// Coordinates the stats version state changes from app settings and availability stores, and v3/v4 banner actions.
 ///
 final class StatsVersionStateCoordinator {
+    typealias StateChangeCallback = (_ previousState: StatsVersionState?, _ currentState: StatsVersionState) -> Void
+    /// Called when stats version UI state is set.
+    var onStateChange: StateChangeCallback?
+
     private let siteID: Int
-    private let onStateChange: (_ state: StatsVersionState) -> Void
 
     private var state: StatsVersionState? {
         didSet {
-            if let state = state, state != oldValue {
-                onStateChange(state)
+            if let state = state {
+                onStateChange?(oldValue, state)
             }
         }
     }
 
     /// Initializes `StatsVersionStateCoordinator` for a site ID.
     ///
-    /// - Notable parameters:
+    /// - Parameters:
     ///   - siteID: the ID of a site/store where the stats version is concerned.
-    ///   - onStateChange: called when stats version state changes.
-    init(siteID: Int,
-         onStateChange: @escaping (_ state: StatsVersionState) -> Void) {
+    init(siteID: Int) {
         self.siteID = siteID
-        self.onStateChange = onStateChange
     }
 
     func loadLastShownVersionAndCheckV4Eligibility() {
         let lastShownStatsVersionAction = AppSettingsAction.loadStatsVersionLastShown(siteID: siteID) { [weak self] lastShownStatsVersion in
-            let lastStatsVersion: StatsVersion = lastShownStatsVersion ?? StatsVersion.v3
-            self?.state = .initial(statsVersion: lastStatsVersion)
-
-            guard let siteID = self?.siteID else {
+            guard let self = self else {
                 return
             }
-            let action = AvailabilityAction.checkStatsV4Availability(siteID: siteID) { [weak self] isStatsV4Available in
+            let lastStatsVersion: StatsVersion = lastShownStatsVersion ?? StatsVersion.v3
+            let updatedState = self.nextState(lastShownStatsVersion: lastStatsVersion)
+            self.state = updatedState
+
+            let action = AvailabilityAction.checkStatsV4Availability(siteID: self.siteID) { [weak self] isStatsV4Available in
+                guard let self = self else {
+                    return
+                }
                 let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
-                self?.updateState(eligibleStatsVersion: statsVersion)
+                let updatedState = self.nextState(eligibleStatsVersion: statsVersion)
+                if updatedState != self.state {
+                    self.state = updatedState
+                }
             }
             ServiceLocator.stores.dispatch(action)
         }
         ServiceLocator.stores.dispatch(lastShownStatsVersionAction)
     }
 
-    /// Called when eligible stats version is set.
-    private func updateState(eligibleStatsVersion: StatsVersion) {
-        guard let state = state else {
-            self.state = .eligible(statsVersion: eligibleStatsVersion)
-            return
+    /// Calculates the next state when the eligible stats version is set.
+    private func nextState(eligibleStatsVersion: StatsVersion) -> StatsVersionState {
+        guard let currentState = state else {
+            return .eligible(statsVersion: eligibleStatsVersion)
         }
-        switch state {
+        switch currentState {
         case .initial(let initialStatsVersion):
             guard initialStatsVersion != eligibleStatsVersion else {
-                self.state = .eligible(statsVersion: eligibleStatsVersion)
-                return
+                return .eligible(statsVersion: eligibleStatsVersion)
             }
             switch initialStatsVersion {
             case .v3:
                 // V3 to V4
-                self.state = .v3ShownV4Eligible
+                return .v3ShownV4Eligible
             case .v4:
                 // V4 to V3
-                self.state = .v4RevertedToV3
+                return .v4RevertedToV3
             }
+        case .v4RevertedToV3:
+            return eligibleStatsVersion == .v4 ? .v3ShownV4Eligible: currentState
+        case .v3ShownV4Eligible:
+            return eligibleStatsVersion == .v4 ? currentState: .v4RevertedToV3
         default:
-            return
+            return .eligible(statsVersion: eligibleStatsVersion)
+        }
+    }
+
+    /// Calculates the next state when the last shown stats version is set.
+    private func nextState(lastShownStatsVersion: StatsVersion) -> StatsVersionState {
+        guard let currentState = state else {
+            return .initial(statsVersion: lastShownStatsVersion)
+        }
+        switch currentState {
+        case .v3ShownV4Eligible where lastShownStatsVersion == .v3:
+            // If v3 is currently shown and we are notified the last shown stats is v3, no update on the UI state.
+            return currentState
+        case .v4RevertedToV3 where lastShownStatsVersion == .v3:
+            // If v4 is reverted back to v3, and we are notified the last shown stats is v3, no update on the UI state.
+            return currentState
+        default:
+            return .initial(statsVersion: lastShownStatsVersion)
         }
     }
 }

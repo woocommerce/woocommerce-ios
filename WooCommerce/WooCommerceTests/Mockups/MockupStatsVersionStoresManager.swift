@@ -12,7 +12,7 @@ class MockupStatsVersionStoresManager: DefaultStoresManager {
 
     /// Set by setter `AppSettingsAction`.
     ///
-    private var statsVersionLastShown: StatsVersion?
+    var statsVersionLastShown: StatsVersion?
 
     init(initialStatsVersionLastShown: StatsVersion? = nil, sessionManager: SessionManager) {
         self.statsVersionLastShown = initialStatsVersionLastShown

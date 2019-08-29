@@ -50,7 +50,6 @@ extension UIButton {
         backgroundColor = .clear
         contentEdgeInsets = Style.defaultEdgeInsets
         tintColor = StyleManager.wooCommerceBrandColor
-        layer.borderColor = StyleManager.wooCommerceBrandColor.cgColor
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
         setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)

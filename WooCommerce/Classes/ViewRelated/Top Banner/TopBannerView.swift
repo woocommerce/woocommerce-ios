@@ -59,7 +59,7 @@ private extension TopBannerView {
         textStackView.translatesAutoresizingMaskIntoConstraints = false
         textStackView.axis = .vertical
         textStackView.spacing = 3
-        
+
         iconImageView.setContentHuggingPriority(.required, for: .horizontal)
         iconImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
         dismissButton.setContentHuggingPriority(.required, for: .horizontal)

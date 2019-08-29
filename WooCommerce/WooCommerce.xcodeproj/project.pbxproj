@@ -34,6 +34,11 @@
 		45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */; };
 		45C8B25B231521510002FA77 /* CustomerNoteTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B25A231521510002FA77 /* CustomerNoteTableViewCellTests.swift */; };
 		45C8B25D231529410002FA77 /* CustomerInfoTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B25C231529410002FA77 /* CustomerInfoTableViewCellTests.swift */; };
+		45C8B26123155CBC0002FA77 /* BillingInformationViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B25F23155CBC0002FA77 /* BillingInformationViewController.swift */; };
+		45C8B26223155CBC0002FA77 /* BillingInformationViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B26023155CBC0002FA77 /* BillingInformationViewController.xib */; };
+		45C8B2662316AB460002FA77 /* BillingAddressTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2642316AB460002FA77 /* BillingAddressTableViewCell.swift */; };
+		45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B2652316AB460002FA77 /* BillingAddressTableViewCell.xib */; };
+		45C8B2692316B2440002FA77 /* BillingAddressTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2682316B2440002FA77 /* BillingAddressTableViewCellTests.swift */; };
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */; };
 		740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */; };
@@ -418,6 +423,11 @@
 		45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerNoteTableViewCell.xib; sourceTree = "<group>"; };
 		45C8B25A231521510002FA77 /* CustomerNoteTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCellTests.swift; sourceTree = "<group>"; };
 		45C8B25C231529410002FA77 /* CustomerInfoTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerInfoTableViewCellTests.swift; sourceTree = "<group>"; };
+		45C8B25F23155CBC0002FA77 /* BillingInformationViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingInformationViewController.swift; sourceTree = "<group>"; };
+		45C8B26023155CBC0002FA77 /* BillingInformationViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingInformationViewController.xib; sourceTree = "<group>"; };
+		45C8B2642316AB460002FA77 /* BillingAddressTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTableViewCell.swift; sourceTree = "<group>"; };
+		45C8B2652316AB460002FA77 /* BillingAddressTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = BillingAddressTableViewCell.xib; sourceTree = "<group>"; };
+		45C8B2682316B2440002FA77 /* BillingAddressTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTableViewCellTests.swift; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
 		740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageTableViewCell.swift; sourceTree = "<group>"; };
@@ -829,6 +839,25 @@
 				029D444D22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift */,
 			);
 			path = "Stats v3";
+			sourceTree = "<group>";
+		};
+		45C8B25E23155C940002FA77 /* Billing Information */ = {
+			isa = PBXGroup;
+			children = (
+				45C8B25F23155CBC0002FA77 /* BillingInformationViewController.swift */,
+				45C8B26023155CBC0002FA77 /* BillingInformationViewController.xib */,
+				45C8B2632316AB1E0002FA77 /* Cells */,
+			);
+			path = "Billing Information";
+			sourceTree = "<group>";
+		};
+		45C8B2632316AB1E0002FA77 /* Cells */ = {
+			isa = PBXGroup;
+			children = (
+				45C8B2642316AB460002FA77 /* BillingAddressTableViewCell.swift */,
+				45C8B2652316AB460002FA77 /* BillingAddressTableViewCell.xib */,
+			);
+			path = Cells;
 			sourceTree = "<group>";
 		};
 		74036CBE211B87FD00E462C2 /* MyStore */ = {
@@ -1388,6 +1417,7 @@
 		CE1CCB4920570B05000EE3AC /* Orders */ = {
 			isa = PBXGroup;
 			children = (
+				45C8B25E23155C940002FA77 /* Billing Information */,
 				CE37C04022984E12008DCB39 /* Fulfillment */,
 				CEE006022077D0F80079161F /* Cells */,
 				CEE005F52076C4040079161F /* Orders.storyboard */,
@@ -1643,6 +1673,7 @@
 				D816DDBB22265DA300903E59 /* OrderTrackingTableViewCellTests.swift */,
 				45C8B25A231521510002FA77 /* CustomerNoteTableViewCellTests.swift */,
 				45C8B25C231529410002FA77 /* CustomerInfoTableViewCellTests.swift */,
+				45C8B2682316B2440002FA77 /* BillingAddressTableViewCellTests.swift */,
 			);
 			path = ViewRelated;
 			sourceTree = "<group>";
@@ -1856,10 +1887,12 @@
 				B560D6882195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib in Resources */,
 				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
 				B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */,
+				45C8B26223155CBC0002FA77 /* BillingInformationViewController.xib in Resources */,
 				740ADFE521C33688009EE5A9 /* licenses.html in Resources */,
 				45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
 				CE32B11620BF8779006FBCF4 /* FulfillButtonTableViewCell.xib in Resources */,
+				45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
 				7493BB8F2149852A003071A9 /* TopPerformersHeaderView.xib in Resources */,
 				CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */,
@@ -2178,6 +2211,7 @@
 				CE37C04422984E81008DCB39 /* PickListTableViewCell.swift in Sources */,
 				B5A56BF5219F5AB20065A902 /* NSNotificationName+Woo.swift in Sources */,
 				B555530D21B57DC300449E71 /* UserNotificationsCenterAdapter.swift in Sources */,
+				45C8B2662316AB460002FA77 /* BillingAddressTableViewCell.swift in Sources */,
 				B541B2152189EEA1008FE7C1 /* Scanner+Helpers.swift in Sources */,
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,
 				B5BBD6DE21B1703700E3207E /* PushNotificationsManager.swift in Sources */,
@@ -2229,6 +2263,7 @@
 				CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */,
 				B53B898D20D462A000EDB467 /* StoresManager.swift in Sources */,
 				B5D1AFC020BC67C200DB0E8C /* WooConstants.swift in Sources */,
+				45C8B26123155CBC0002FA77 /* BillingInformationViewController.swift in Sources */,
 				93FA787421CD7E9E00B663E5 /* CurrencySettings.swift in Sources */,
 				74EC34A5225FE21F004BBC2E /* ProductLoaderViewController.swift in Sources */,
 				B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */,
@@ -2244,6 +2279,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				45C8B2692316B2440002FA77 /* BillingAddressTableViewCellTests.swift in Sources */,
 				B57C5C9F21B80E8300FF82B2 /* SampleError.swift in Sources */,
 				B53B898920D450AF00EDB467 /* SessionManagerTests.swift in Sources */,
 				7435E59021C0162C00216F0F /* OrderNoteWooTests.swift in Sources */,

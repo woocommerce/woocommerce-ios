@@ -183,7 +183,7 @@ extension OrderDetailsViewModel {
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .billingDetail:
-            WooAnalytics.shared.track(.orderDetailBillingInformationTapped)
+            WooAnalytics.shared.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .details:

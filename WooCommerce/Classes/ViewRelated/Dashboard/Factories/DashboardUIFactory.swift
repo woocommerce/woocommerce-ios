@@ -114,7 +114,7 @@ private extension DashboardUIFactory {
             guard previousState != currentState else {
                 return
             }
-            
+
             guard let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter else {
                 assertionFailure("Dashboard UI \(updatedDashboardUI.self) should be able to present top banner")
                 return

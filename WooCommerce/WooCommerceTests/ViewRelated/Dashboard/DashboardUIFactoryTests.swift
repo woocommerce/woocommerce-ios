@@ -37,7 +37,9 @@ final class DashboardUIFactoryTests: XCTestCase {
         dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         var dashboardUITypes: [UIViewController.Type] = []
-        let expectedDashboardUITypes: [UIViewController.Type] = [DashboardStatsV3ViewController.self, StoreStatsAndTopPerformersViewController.self]
+        let expectedDashboardUITypes: [UIViewController.Type] = [DashboardStatsV3ViewController.self,
+                                                                 // After reload, UI is reverted to v3
+                                                                 DashboardStatsV3ViewController.self]
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 

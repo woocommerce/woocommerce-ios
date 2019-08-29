@@ -59,11 +59,16 @@ private extension TopBannerView {
         textStackView.translatesAutoresizingMaskIntoConstraints = false
         textStackView.axis = .vertical
         textStackView.spacing = 3
+        
+        iconImageView.setContentHuggingPriority(.required, for: .horizontal)
+        iconImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        dismissButton.setContentHuggingPriority(.required, for: .horizontal)
+        dismissButton.setContentCompressionResistancePriority(.required, for: .horizontal)
 
         let contentStackView = UIStackView(arrangedSubviews: [iconImageView, textStackView, dismissButton])
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .horizontal
-        contentStackView.spacing = 0
+        contentStackView.spacing = 10
         contentStackView.alignment = .leading
 
         let contentContainerView = UIView(frame: .zero)
@@ -71,9 +76,7 @@ private extension TopBannerView {
         contentContainerView.addSubview(contentStackView)
         contentContainerView.pinSubviewToAllEdges(contentStackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 10))
 
-        let borderView = createBorderView()
-
-        let stackView = UIStackView(arrangedSubviews: [contentContainerView, borderView, actionButton])
+        let stackView = UIStackView(arrangedSubviews: [contentContainerView, createBorderView(), actionButton, createBorderView()])
         stackView.axis = .vertical
         addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
@@ -85,25 +88,30 @@ private extension TopBannerView {
         infoLabel.applyBodyStyle()
         infoLabel.numberOfLines = 0
 
+        dismissButton.setImage(Gridicon.iconOfType(.cross, withSize: CGSize(width: 24, height: 24)), for: .normal)
         dismissButton.tintColor = StyleManager.wooGreyTextMin
+        dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
 
         actionButton.applyLinkButtonStyle()
+        actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
     }
 
-    func configureSubviews(viewModel:
-        TopBannerViewModel) {
-        titleLabel.text = viewModel.title
-        titleLabel.isHidden = viewModel.title?.isEmpty == true
-        infoLabel.text = viewModel.infoText
-        infoLabel.isHidden = viewModel.title?.isEmpty == true
+    func configureSubviews(viewModel: TopBannerViewModel) {
+        if let title = viewModel.title, !title.isEmpty {
+            titleLabel.text = title
+        } else {
+            titleLabel.removeFromSuperview()
+        }
+
+        if let infoText = viewModel.infoText, !infoText.isEmpty {
+            infoLabel.text = infoText
+        } else {
+            infoLabel.removeFromSuperview()
+        }
 
         iconImageView.image = viewModel.icon
 
-        dismissButton.setImage(Gridicon.iconOfType(.cross, withSize: CGSize(width: 24, height: 24)), for: .normal)
-        dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
-
         actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
-        actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
     }
 
     func createBorderView() -> UIView {

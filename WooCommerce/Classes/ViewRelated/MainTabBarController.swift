@@ -225,11 +225,11 @@ extension MainTabBarController {
     static func presentNotificationDetails(for noteID: Int) {
         switchToReviewsTab()
 
-        guard let notificationsViewController: NotificationsViewController = childViewController() else {
+        guard let reviewsViewController: ReviewsViewController = childViewController() else {
             return
         }
 
-        notificationsViewController.presentDetails(for: noteID)
+        reviewsViewController.presentDetails(for: noteID)
     }
 
     /// Switches to the My Store Tab, and presents the Settings .

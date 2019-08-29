@@ -7,9 +7,9 @@ import Gridicons
 import StoreKit
 
 
-// MARK: - NotificationsViewController
+// MARK: - ReviewsViewController
 //
-class NotificationsViewController: UIViewController {
+final class ReviewsViewController: UIViewController {
 
     /// Main TableView.
     ///
@@ -162,7 +162,7 @@ class NotificationsViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Setup: TabBar
     ///
@@ -226,7 +226,7 @@ private extension NotificationsViewController {
 
 // MARK: - Actions
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
@@ -249,7 +249,7 @@ private extension NotificationsViewController {
 
 // MARK: - Yosemite Wrappers
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Nukes the BadgeCount
     ///
@@ -334,7 +334,7 @@ private extension NotificationsViewController {
 
 // MARK: - App Store Review Prompt
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
     func displayRatingPrompt() {
         defer {
             if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
@@ -352,7 +352,7 @@ private extension NotificationsViewController {
 
 // MARK: - ResultsController
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
@@ -384,7 +384,7 @@ private extension NotificationsViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension NotificationsViewController: UITableViewDataSource {
+extension ReviewsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return resultsController.sections.count
@@ -413,7 +413,7 @@ extension NotificationsViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension NotificationsViewController: UITableViewDelegate {
+extension ReviewsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
@@ -448,7 +448,7 @@ extension NotificationsViewController: UITableViewDelegate {
 
 // MARK: - Public Methods
 //
-extension NotificationsViewController {
+extension ReviewsViewController {
 
     /// Presents the Details for the Notification with the specified Identifier.
     ///
@@ -485,7 +485,7 @@ extension NotificationsViewController {
 
 // MARK: - Details Rendering
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Pushes the Order Details associated to a given Note (if possible).
     ///
@@ -510,7 +510,7 @@ private extension NotificationsViewController {
 
 // MARK: - Cell Setup
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Initializes the Notifications Cell at the specified indexPath
     ///
@@ -529,7 +529,7 @@ private extension NotificationsViewController {
 
 // MARK: - Formatting
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Returns the formatted Subject (if any). For performance reasons, we'll cache the result.
     ///
@@ -561,7 +561,7 @@ private extension NotificationsViewController {
 
 // MARK: - Placeholders
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Renders Placeholder Notes: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
@@ -616,7 +616,7 @@ private extension NotificationsViewController {
 
 // MARK: - Notifications
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Setup: Notification Hooks
     ///
@@ -652,7 +652,7 @@ private extension NotificationsViewController {
 
 // MARK: - Finite State Machine Management
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Runs prior to the FSM entering a new state.
     ///
@@ -712,7 +712,7 @@ private extension NotificationsViewController {
 
 // MARK: - Private Helpers
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     /// Enables/disables the navbar buttons if needed
     ///
@@ -744,7 +744,7 @@ private extension NotificationsViewController {
 
 // MARK: - Nested Types
 //
-private extension NotificationsViewController {
+private extension ReviewsViewController {
 
     enum NoteTypeFilter: String {
         case all

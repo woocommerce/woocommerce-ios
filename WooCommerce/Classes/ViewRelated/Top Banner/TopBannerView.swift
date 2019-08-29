@@ -100,12 +100,14 @@ private extension TopBannerView {
         if let title = viewModel.title, !title.isEmpty {
             titleLabel.text = title
         } else {
+            // It is necessary to remove the subview when no text, otherwise the stack view spacing stays.
             titleLabel.removeFromSuperview()
         }
 
         if let infoText = viewModel.infoText, !infoText.isEmpty {
             infoLabel.text = infoText
         } else {
+            // It is necessary to remove the subview when no text, otherwise the stack view spacing stays.
             infoLabel.removeFromSuperview()
         }
 

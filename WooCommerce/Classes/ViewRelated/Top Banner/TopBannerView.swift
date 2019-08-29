@@ -43,6 +43,7 @@ final class TopBannerView: UIView {
         onAction = viewModel.actionHandler
         super.init(frame: .zero)
         configureSubviews()
+        configureSubviews(viewModel: viewModel)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -52,6 +53,8 @@ final class TopBannerView: UIView {
 
 private extension TopBannerView {
     func configureSubviews() {
+        backgroundColor = .white
+
         let textStackView = UIStackView(arrangedSubviews: [titleLabel, infoLabel])
         textStackView.translatesAutoresizingMaskIntoConstraints = false
         textStackView.axis = .vertical
@@ -61,15 +64,34 @@ private extension TopBannerView {
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .horizontal
         contentStackView.spacing = 0
+        contentStackView.alignment = .leading
+
+        let contentContainerView = UIView(frame: .zero)
+        contentContainerView.translatesAutoresizingMaskIntoConstraints = false
+        contentContainerView.addSubview(contentStackView)
+        contentContainerView.pinSubviewToAllEdges(contentStackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 10))
 
         let borderView = createBorderView()
 
-        let stackView = UIStackView(arrangedSubviews: [contentStackView, borderView, actionButton])
+        let stackView = UIStackView(arrangedSubviews: [contentContainerView, borderView, actionButton])
+        stackView.axis = .vertical
+        addSubview(stackView)
         stackView.translatesAutoresizingMaskIntoConstraints = false
         pinSubviewToAllEdges(stackView)
+
+        titleLabel.applyHeadlineStyle()
+        titleLabel.numberOfLines = 0
+
+        infoLabel.applyBodyStyle()
+        infoLabel.numberOfLines = 0
+
+        dismissButton.tintColor = StyleManager.wooGreyTextMin
+
+        actionButton.applyLinkButtonStyle()
     }
 
-    func configureSubviews(viewModel: TopBannerViewModel) {
+    func configureSubviews(viewModel:
+        TopBannerViewModel) {
         titleLabel.text = viewModel.title
         titleLabel.isHidden = viewModel.title?.isEmpty == true
         infoLabel.text = viewModel.infoText
@@ -82,7 +104,6 @@ private extension TopBannerView {
 
         actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
         actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
-//        actionButton.titleLabel?.font = StyleManager.fon
     }
 
     func createBorderView() -> UIView {

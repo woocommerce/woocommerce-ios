@@ -44,6 +44,18 @@ extension UIButton {
         titleLabel?.textAlignment = .natural
     }
 
+    /// Applies the Link Button Style: Clear BG / Brand Text Color
+    ///
+    func applyLinkButtonStyle() {
+        backgroundColor = .clear
+        contentEdgeInsets = Style.defaultEdgeInsets
+        tintColor = StyleManager.wooCommerceBrandColor
+        layer.borderColor = StyleManager.wooCommerceBrandColor.cgColor
+        titleLabel?.applyBodyStyle()
+        titleLabel?.textAlignment = .natural
+        setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
+    }
+
     /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.
     private func enableMultipleLines() {
         titleLabel?.lineBreakMode = .byWordWrapping

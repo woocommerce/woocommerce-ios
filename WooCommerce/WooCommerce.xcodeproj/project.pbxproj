@@ -21,14 +21,14 @@
 /* End PBXAggregateTarget section */
 
 /* Begin PBXBuildFile section */
+		020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E323163C0100776C4D /* TopBannerViewModel.swift */; };
+		020F41E623163C0100776C4D /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E423163C0100776C4D /* TopBannerView.swift */; };
 		02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */; };
 		02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */; };
 		02404EDC2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */; };
 		02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EDF2314FE5900FF1170 /* DashboardUIFactoryTests.swift */; };
 		02404EE2231501E000FF1170 /* StatsVersionStateCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE1231501E000FF1170 /* StatsVersionStateCoordinatorTests.swift */; };
 		02404EE42315151400FF1170 /* MockupStatsVersionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE32315151400FF1170 /* MockupStatsVersionStoresManager.swift */; };
-		02404EE72315274500FF1170 /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE62315274500FF1170 /* TopBannerView.swift */; };
-		02404EE9231527A200FF1170 /* TopBannerViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE8231527A200FF1170 /* TopBannerViewModel.swift */; };
 		0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */; };
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
@@ -434,14 +434,14 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		020F41E323163C0100776C4D /* TopBannerViewModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerViewModel.swift; sourceTree = "<group>"; };
+		020F41E423163C0100776C4D /* TopBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerView.swift; sourceTree = "<group>"; };
 		02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV3ToV4BannerActionHandler.swift; sourceTree = "<group>"; };
 		02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsVersionStateCoordinator.swift; sourceTree = "<group>"; };
 		02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV4ToV3BannerActionHandler.swift; sourceTree = "<group>"; };
 		02404EDF2314FE5900FF1170 /* DashboardUIFactoryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardUIFactoryTests.swift; sourceTree = "<group>"; };
 		02404EE1231501E000FF1170 /* StatsVersionStateCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionStateCoordinatorTests.swift; sourceTree = "<group>"; };
 		02404EE32315151400FF1170 /* MockupStatsVersionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupStatsVersionStoresManager.swift; sourceTree = "<group>"; };
-		02404EE62315274500FF1170 /* TopBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerView.swift; sourceTree = "<group>"; };
-		02404EE8231527A200FF1170 /* TopBannerViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerViewModel.swift; sourceTree = "<group>"; };
 		0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4ChartAxisHelper.swift; sourceTree = "<group>"; };
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
@@ -870,8 +870,8 @@
 		02404EE52315272C00FF1170 /* Top Banner */ = {
 			isa = PBXGroup;
 			children = (
-				02404EE62315274500FF1170 /* TopBannerView.swift */,
-				02404EE8231527A200FF1170 /* TopBannerViewModel.swift */,
+				020F41E423163C0100776C4D /* TopBannerView.swift */,
+				020F41E323163C0100776C4D /* TopBannerViewModel.swift */,
 			);
 			path = "Top Banner";
 			sourceTree = "<group>";
@@ -2249,6 +2249,7 @@
 				B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				B57C5C9221B80E3C00FF82B2 /* APNSDevice+Woo.swift in Sources */,
+				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
@@ -2344,6 +2345,7 @@
 				D817586022BB614A00289CFE /* OrderMessageComposer.swift in Sources */,
 				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
 				B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */,
+				020F41E623163C0100776C4D /* TopBannerView.swift in Sources */,
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
@@ -2404,7 +2406,6 @@
 				B555531321B57E8800449E71 /* MockupUserNotificationsCenterAdapter.swift in Sources */,
 				D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */,
 				D83F593D225B4B5000626E75 /* ManualTrackingViewControllerTests.swift in Sources */,
-				02404EE9231527A200FF1170 /* TopBannerViewModel.swift in Sources */,
 				CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */,
 				02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */,
 				B555531121B57E6F00449E71 /* MockupApplicationAdapter.swift in Sources */,
@@ -2425,7 +2426,6 @@
 				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,
 				02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */,
 				D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */,
-				02404EE72315274500FF1170 /* TopBannerView.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
 				024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */,

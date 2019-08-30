@@ -60,6 +60,7 @@ class NoteTableViewCell: UITableViewCell {
         super.awakeFromNib()
         noticonLabel.font = UIFont.noticon(forStyle: .body, baseSize: 25.0)
         configureStarView()
+        configureStatusLabel()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -80,13 +81,12 @@ class NoteTableViewCell: UITableViewCell {
         noticonLabel.text = viewModel.notIcon
         noticonLabel.textColor = viewModel.notIconColor
 
-        //statusLabel.isHidden = !viewModel.shouldDisplayStatus
+        statusLabel.text = nil
 
         if viewModel.shouldDisplayStatus {
             statusLabel.text = viewModel.status
             statusLabel.backgroundColor = viewModel.statusLabelBackgroundColor
         }
-        //statusLabel.backgroundColor =
 
         starRating = viewModel.rating
     }
@@ -108,6 +108,12 @@ private extension NoteTableViewCell {
         starRatingView.emptyStarImage = Star.emptyImage
         starRatingView.isHidden = (starRating == nil)
     }
+
+    func configureStatusLabel() {
+        statusLabel.applyFootnoteStyle()
+        statusLabel.layer.masksToBounds = true
+        statusLabel.layer.cornerRadius = Constants.cornerRadius
+    }
 }
 
 
@@ -119,5 +125,15 @@ private extension NoteTableViewCell {
         static let size = Double(13)
         static let filledImage = UIImage.starImage(size: Star.size, tintColor: StyleManager.defaultTextColor)
         static let emptyImage = UIImage.starImage(size: Star.size, tintColor: .clear)
+    }
+}
+
+
+// MARK: - Private
+//
+private extension NoteTableViewCell {
+
+    enum Constants {
+        static let cornerRadius = CGFloat(2.0)
     }
 }

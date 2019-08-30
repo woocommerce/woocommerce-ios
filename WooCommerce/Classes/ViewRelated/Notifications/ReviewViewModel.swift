@@ -33,7 +33,7 @@ final class ReviewViewModel {
         return review.status.description
     }()
 
-    let statusLabelBackgroundColor = StyleManager.statusDangerColor
+    let statusLabelBackgroundColor = StyleManager.statusWarningColor
 
     var shouldDisplayStatus: Bool {
         return review.status == .hold

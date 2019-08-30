@@ -34,10 +34,21 @@ final class ReviewsViewController: UIViewController {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
 
-
         return ResultsController<StorageProductReview>(storageManager: storageManager,
                                                        sectionNameKeyPath: "normalizedAgeAsString",
+                                                       matching: self.filterPredicate,
                                                        sortedBy: [descriptor])
+    }()
+
+    private lazy var filterPredicate: NSPredicate = {
+        let sitePredicate = NSPredicate(format: "siteID == %lld",
+                                        ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+
+        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
+                                          ProductReviewStatus.approved.rawValue,
+                                          ProductReviewStatus.hold.rawValue)
+
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
     }()
 
     /// Pull To Refresh Support.

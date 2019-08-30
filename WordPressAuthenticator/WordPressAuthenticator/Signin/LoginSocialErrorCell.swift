@@ -60,10 +60,11 @@ open class LoginSocialErrorCell: UITableViewCell {
         labelStack.axis = .vertical
         labelStack.spacing = Constants.labelSpacing
 
+        let style = WordPressAuthenticator.shared.style
         titleLabel.font = WPStyleGuide.fontForTextStyle(.footnote)
-        titleLabel.textColor = WPStyleGuide.greyDarken30()
+        titleLabel.textColor = style.instructionColor
         descriptionLabel.font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
-        descriptionLabel.textColor = WPStyleGuide.darkGrey()
+        descriptionLabel.textColor = style.subheadlineColor
         descriptionLabel.numberOfLines = 0
         descriptionLabel.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.descriptionMinHeight).isActive = true
 

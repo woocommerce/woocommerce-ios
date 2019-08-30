@@ -437,8 +437,7 @@ extension ReviewsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let review = resultsController.object(at: indexPath)
-        //TODO.Navigate to details
-        //presentDetails(for: note)
+        presentDetails(for: review)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -475,6 +474,13 @@ extension ReviewsViewController {
     /// Presents the Details for a given Note Instance: Either NotificationDetails, or OrderDetails, depending on the
     /// Notification's Kind.
     ///
+    func presentDetails(for review: ProductReview) {
+        print("==== presenting detils for review")        
+
+//        let detailsViewController = NotificationDetailsViewController(note: note)
+//        navigationController?.pushViewController(detailsViewController, animated: true)
+    }
+
     func presentDetails(for note: Note) {
         switch note.kind {
         case .storeOrder:

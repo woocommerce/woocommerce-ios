@@ -79,6 +79,7 @@ public typealias StorageProductImage = Storage.ProductImage
 public typealias StorageProductCategory = Storage.ProductCategory
 public typealias StorageProductDefaultAttribute = Storage.ProductDefaultAttribute
 public typealias StorageProductDownload = Storage.ProductDownload
+public typealias StorageProductReview = Storage.ProductReview
 public typealias StorageProductTag = Storage.ProductTag
 public typealias StorageShipmentTracking = Storage.ShipmentTracking
 public typealias StorageShipmentTrackingProvider = Storage.ShipmentTrackingProvider

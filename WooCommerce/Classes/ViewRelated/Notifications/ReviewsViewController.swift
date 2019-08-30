@@ -33,10 +33,10 @@ final class ReviewsViewController: UIViewController {
     private lazy var resultsController: ResultsController<StorageProductReview> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
-        //let descriptor = NSSortDescriptor(key: "dateCreated", ascending: false)
 
 
         return ResultsController<StorageProductReview>(storageManager: storageManager,
+                                                       sectionNameKeyPath: "normalizedAgeAsString",
                                                        sortedBy: [descriptor])
     }()
 

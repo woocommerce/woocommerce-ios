@@ -29,6 +29,16 @@ final class ReviewViewModel {
         return StyleManager.wooGreyMid
     }()
 
+    lazy var status: String = {
+        return review.status.description
+    }()
+
+    let statusLabelBackgroundColor = StyleManager.statusDangerColor
+
+    var shouldDisplayStatus: Bool {
+        return review.status == .hold
+    }
+
     init(review: ProductReview) {
         self.review = review
     }

@@ -39,17 +39,6 @@ class NoteTableViewCell: UITableViewCell {
         }
     }
 
-    /// Status
-    ///
-    var status: String? {
-        get {
-            return statusLabel.text
-        }
-        set {
-            statusLabel.text = newValue
-        }
-    }
-
     /// Star rating value (if nil, star rating view will be hidden)
     ///
     private var starRating: Int? {
@@ -90,6 +79,14 @@ class NoteTableViewCell: UITableViewCell {
         snippetLabel.text = viewModel.snippet
         noticonLabel.text = viewModel.notIcon
         noticonLabel.textColor = viewModel.notIconColor
+
+        //statusLabel.isHidden = !viewModel.shouldDisplayStatus
+
+        if viewModel.shouldDisplayStatus {
+            statusLabel.text = viewModel.status
+            statusLabel.backgroundColor = viewModel.statusLabelBackgroundColor
+        }
+        //statusLabel.backgroundColor =
 
         starRating = viewModel.rating
     }

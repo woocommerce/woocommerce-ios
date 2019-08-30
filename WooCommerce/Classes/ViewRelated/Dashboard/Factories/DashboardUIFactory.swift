@@ -24,8 +24,8 @@ final class DashboardUIFactory {
     private let siteID: Int
     private let stateCoordinator: StatsVersionStateCoordinator
 
-    private var lastStatsVersion: StatsVersion?
-    private var lastDashboardUI: DashboardUI?
+    private var lastStatsV3DashboardUI: (DashboardUI & TopBannerPresenter)?
+    private var lastStatsV4DashboardUI: DashboardUI?
 
     init(siteID: Int) {
         self.siteID = siteID
@@ -42,36 +42,40 @@ final class DashboardUIFactory {
             }
             stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
         } else {
-            onUIUpdate(dashboardUI(siteID: siteID, statsVersion: .v3))
+            onUIUpdate(statsV3DashboardUI())
         }
     }
 
-    private func dashboardUI(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
-        if let lastDashboardUI = lastDashboardUI, lastStatsVersion == statsVersion {
-            return lastDashboardUI
+    private func statsV3DashboardUI() -> DashboardUI & TopBannerPresenter {
+        if let lastStatsV3DashboardUI = lastStatsV3DashboardUI {
+            return lastStatsV3DashboardUI
         }
-        return createDashboardUIAndSetUserPreference(siteID: siteID, statsVersion: statsVersion)
-    }
-
-    private func createDashboardUIAndSetUserPreference(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
-        let action = AppSettingsAction.setStatsVersionLastShown(siteID: siteID, statsVersion: statsVersion)
-        ServiceLocator.stores.dispatch(action)
-
-        let dashboardUI = createDashboardUI(statsVersion: statsVersion)
-
-        lastStatsVersion = statsVersion
-        lastDashboardUI = dashboardUI
-
+        let dashboardUI = DashboardStatsV3ViewController(nibName: nil, bundle: nil)
+        lastStatsV3DashboardUI = dashboardUI
         return dashboardUI
     }
 
-    private func createDashboardUI(statsVersion: StatsVersion) -> DashboardUI {
+    private func statsV4DashboardUI() -> DashboardUI {
+        if let lastStatsV4DashboardUI = lastStatsV4DashboardUI {
+            return lastStatsV4DashboardUI
+        }
+        let dashboardUI = StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
+        lastStatsV4DashboardUI = dashboardUI
+        return dashboardUI
+    }
+
+    private func dashboardUI(statsVersion: StatsVersion) -> DashboardUI {
         switch statsVersion {
         case .v3:
-            return DashboardStatsV3ViewController(nibName: nil, bundle: nil)
+            return statsV3DashboardUI()
         case .v4:
-            return StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
+            return statsV4DashboardUI()
         }
+    }
+
+    private func saveLastShownStatsVersion(_ lastShownStatsVersion: StatsVersion) {
+        let action = AppSettingsAction.setStatsVersionLastShown(siteID: siteID, statsVersion: lastShownStatsVersion)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -81,17 +85,16 @@ private extension DashboardUIFactory {
                                    onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
         switch currentState {
         case .initial(let statsVersion), .eligible(let statsVersion):
-            let updatedDashboardUI = dashboardUI(siteID: siteID, statsVersion: statsVersion)
+            saveLastShownStatsVersion(statsVersion)
+
+            let updatedDashboardUI = dashboardUI(statsVersion: statsVersion)
             onUIUpdate(updatedDashboardUI)
 
             if let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter {
                 topBannerPresenter.hideTopBanner(animated: true)
             }
         case .v3ShownV4Eligible:
-            guard let updatedDashboardUI = dashboardUI(siteID: siteID, statsVersion: .v3) as? DashboardUI & TopBannerPresenter else {
-                assertionFailure("Dashboard UI should be able to present top banner")
-                return
-            }
+            let updatedDashboardUI = statsV3DashboardUI()
             onUIUpdate(updatedDashboardUI)
 
             guard previousState != currentState else {
@@ -106,10 +109,9 @@ private extension DashboardUIFactory {
             updatedDashboardUI.hideTopBanner(animated: false)
             updatedDashboardUI.showTopBanner(topBannerView)
         case .v4RevertedToV3:
-            guard let updatedDashboardUI = dashboardUI(siteID: siteID, statsVersion: .v3) as? DashboardUI & TopBannerPresenter else {
-                assertionFailure("Dashboard UI should be able to present top banner")
-                return
-            }
+            saveLastShownStatsVersion(.v3)
+
+            let updatedDashboardUI = statsV3DashboardUI()
             onUIUpdate(updatedDashboardUI)
 
             guard previousState != currentState else {

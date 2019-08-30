@@ -53,34 +53,13 @@ final class TopBannerView: UIView {
 
 private extension TopBannerView {
     func configureSubviews() {
-        backgroundColor = .white
+        configureBackground()
 
-        let textStackView = UIStackView(arrangedSubviews: [titleLabel, infoLabel])
-        textStackView.translatesAutoresizingMaskIntoConstraints = false
-        textStackView.axis = .vertical
-        textStackView.spacing = 3
-
-        iconImageView.setContentHuggingPriority(.required, for: .horizontal)
-        iconImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
-        dismissButton.setContentHuggingPriority(.required, for: .horizontal)
-        dismissButton.setContentCompressionResistancePriority(.required, for: .horizontal)
-
-        let contentStackView = UIStackView(arrangedSubviews: [iconImageView, textStackView, dismissButton])
-        contentStackView.translatesAutoresizingMaskIntoConstraints = false
-        contentStackView.axis = .horizontal
-        contentStackView.spacing = 10
-        contentStackView.alignment = .leading
-
-        let contentContainerView = UIView(frame: .zero)
-        contentContainerView.translatesAutoresizingMaskIntoConstraints = false
-        contentContainerView.addSubview(contentStackView)
-        contentContainerView.pinSubviewToAllEdges(contentStackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 10))
-
-        let stackView = UIStackView(arrangedSubviews: [contentContainerView, createBorderView(), actionButton, createBorderView()])
-        stackView.axis = .vertical
-        addSubview(stackView)
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-        pinSubviewToAllEdges(stackView)
+        let contentView = createContentView()
+        let contentContainerView = createContentContainerView(contentView: contentView)
+        let topLevelView = createTopLevelView(contentContainerView: contentContainerView)
+        addSubview(topLevelView)
+        pinSubviewToAllEdges(topLevelView)
 
         titleLabel.applyHeadlineStyle()
         titleLabel.numberOfLines = 0
@@ -114,6 +93,44 @@ private extension TopBannerView {
         iconImageView.image = viewModel.icon
 
         actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
+    }
+
+    func configureBackground() {
+        backgroundColor = .white
+    }
+
+    func createContentView() -> UIView {
+        let textStackView = UIStackView(arrangedSubviews: [titleLabel, infoLabel])
+        textStackView.translatesAutoresizingMaskIntoConstraints = false
+        textStackView.axis = .vertical
+        textStackView.spacing = 3
+
+        iconImageView.setContentHuggingPriority(.required, for: .horizontal)
+        iconImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
+        dismissButton.setContentHuggingPriority(.required, for: .horizontal)
+        dismissButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+
+        let contentStackView = UIStackView(arrangedSubviews: [iconImageView, textStackView, dismissButton])
+        contentStackView.translatesAutoresizingMaskIntoConstraints = false
+        contentStackView.axis = .horizontal
+        contentStackView.spacing = 10
+        contentStackView.alignment = .leading
+        return contentStackView
+    }
+
+    func createContentContainerView(contentView: UIView) -> UIView {
+        let contentContainerView = UIView(frame: .zero)
+        contentContainerView.translatesAutoresizingMaskIntoConstraints = false
+        contentContainerView.addSubview(contentView)
+        contentContainerView.pinSubviewToAllEdges(contentView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 10))
+        return contentContainerView
+    }
+
+    func createTopLevelView(contentContainerView: UIView) -> UIView {
+        let stackView = UIStackView(arrangedSubviews: [contentContainerView, createBorderView(), actionButton, createBorderView()])
+        stackView.axis = .vertical
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }
 
     func createBorderView() -> UIView {

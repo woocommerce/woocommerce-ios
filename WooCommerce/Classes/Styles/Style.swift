@@ -48,6 +48,7 @@ protocol Style {
     var statusPrimaryBoldColor: UIColor { get }
     var statusSuccessColor: UIColor { get }
     var statusSuccessBoldColor: UIColor { get }
+    var statusWarningColor: UIColor { get }
     var tableViewBackgroundColor: UIColor { get }
 
     var wooCommerceBrandColor: UIColor { get }
@@ -123,6 +124,7 @@ class DefaultStyle: Style {
     let statusPrimaryBoldColor          = HandbookColors.statusBlue
     let statusSuccessColor              = HandbookColors.statusGreenDimmed
     let statusSuccessBoldColor          = HandbookColors.statusGreen
+    let statusWarningColor              = HandbookColors.statusYellowDimmed
 
     let wooCommerceBrandColor           = HandbookColors.wooPrimary
     let wooSecondary                    = HandbookColors.wooSecondary
@@ -162,6 +164,7 @@ private extension DefaultStyle {
         static let statusBlue            = UIColor(red: 188.0/255.0, green: 222.0/255.0, blue: 238.0/255.0, alpha: 1.0)
         static let statusGreenDimmed     = UIColor(red: 239.00/255.0, green: 249.0/255.0, blue: 230.0/255.0, alpha: 1.0)
         static let statusGreen           = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)
+        static let statusYellowDimmed    = UIColor(red: 0.97, green: 0.88, blue: 0.68, alpha: 1.0)
 
         static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0) // woo purple
         static let wooSecondary          = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
@@ -349,6 +352,10 @@ class StyleManager {
 
     static var statusSuccessBoldColor: UIColor {
         return active.statusSuccessBoldColor
+    }
+
+    static var statusWarningColor: UIColor {
+        return active.statusWarningColor
     }
 
     static var goldStarColor: UIColor {

@@ -55,7 +55,7 @@ extension ProductReviewStatus: RawRepresentable {
         case .approved:
             return NSLocalizedString("Approved", comment: "Display label for the review's approved status")
         case .hold:
-            return NSLocalizedString("On hold", comment: "Display label for the review's hold status")
+            return NSLocalizedString("Pending", comment: "Display label for the review's pending status")
         case .spam:
             return NSLocalizedString("Spam", comment: "Display label for the review's spam status")
         case .unspam:

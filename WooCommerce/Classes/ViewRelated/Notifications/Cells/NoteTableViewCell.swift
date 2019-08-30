@@ -39,39 +39,6 @@ class NoteTableViewCell: UITableViewCell {
         }
     }
 
-    /// Icon Image property.
-    ///
-    var noticon: String? {
-        get {
-            return noticonLabel.text
-        }
-        set {
-            noticonLabel.text = newValue
-        }
-    }
-
-    /// Icon Color property.
-    ///
-    var noticonColor: UIColor? {
-        get {
-            return noticonLabel.textColor
-        }
-        set {
-            noticonLabel.textColor = newValue
-        }
-    }
-
-    /// Subject
-    ///
-    var subject: String? {
-        get {
-            return subjectLabel.text
-        }
-        set {
-            subjectLabel.text = newValue
-        }
-    }
-
     /// Status
     ///
     var status: String? {
@@ -83,20 +50,9 @@ class NoteTableViewCell: UITableViewCell {
         }
     }
 
-    /// Snippet
-    ///
-    var snippet: String? {
-        get {
-            return snippetLabel.text
-        }
-        set {
-            snippetLabel.text = newValue
-        }
-    }
-
     /// Star rating value (if nil, star rating view will be hidden)
     ///
-    var starRating: Int? {
+    private var starRating: Int? {
         didSet {
             guard let starRating = starRating else {
                 starRatingView.isHidden = true
@@ -130,11 +86,12 @@ class NoteTableViewCell: UITableViewCell {
     }
 
     func configure(with viewModel: ReviewViewModel) {
-        subject = viewModel.subject
-        snippet = viewModel.snippet
+        subjectLabel.text = viewModel.subject
+        snippetLabel.text = viewModel.snippet
+        noticonLabel.text = viewModel.notIcon
+        noticonLabel.textColor = viewModel.notIconColor
+
         starRating = viewModel.rating
-        noticon = viewModel.notIcon
-        noticonColor = viewModel.notIconColor
     }
 }
 

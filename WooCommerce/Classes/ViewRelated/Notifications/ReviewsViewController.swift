@@ -28,15 +28,14 @@ final class ReviewsViewController: UIViewController {
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Notes in sync.
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) ProductReview in sync.
     ///
-    private lazy var resultsController: ResultsController<StorageNote> = {
+    private lazy var resultsController: ResultsController<StorageProductReview> = {
         let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
 
-        return ResultsController<StorageNote>(storageManager: storageManager,
+        return ResultsController<StorageProductReview>(storageManager: storageManager,
                                               sectionNameKeyPath: "normalizedAgeAsString",
-                                              matching: self.filterPredicate(),
                                               sortedBy: [descriptor])
     }()
 

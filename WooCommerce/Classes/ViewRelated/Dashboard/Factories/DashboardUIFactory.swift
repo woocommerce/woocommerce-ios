@@ -88,15 +88,13 @@ private extension DashboardUIFactory {
                 topBannerPresenter.hideTopBanner(animated: true)
             }
         case .v3ShownV4Eligible:
-            let updatedDashboardUI = dashboardUI(siteID: siteID, statsVersion: .v3)
+            guard let updatedDashboardUI = dashboardUI(siteID: siteID, statsVersion: .v3) as? DashboardUI & TopBannerPresenter else {
+                assertionFailure("Dashboard UI should be able to present top banner")
+                return
+            }
             onUIUpdate(updatedDashboardUI)
 
             guard previousState != currentState else {
-                return
-            }
-
-            guard let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter else {
-                assertionFailure("Dashboard UI \(updatedDashboardUI.self) should be able to present top banner")
                 return
             }
 
@@ -105,18 +103,16 @@ private extension DashboardUIFactory {
                 }, dismissHandler: { [weak self] in
                     self?.stateCoordinator.dismissV3ToV4Banner()
             })
-            topBannerPresenter.hideTopBanner(animated: false)
-            topBannerPresenter.showTopBanner(topBannerView)
+            updatedDashboardUI.hideTopBanner(animated: false)
+            updatedDashboardUI.showTopBanner(topBannerView)
         case .v4RevertedToV3:
-            let updatedDashboardUI = dashboardUI(siteID: siteID, statsVersion: .v3)
+            guard let updatedDashboardUI = dashboardUI(siteID: siteID, statsVersion: .v3) as? DashboardUI & TopBannerPresenter else {
+                assertionFailure("Dashboard UI should be able to present top banner")
+                return
+            }
             onUIUpdate(updatedDashboardUI)
 
             guard previousState != currentState else {
-                return
-            }
-
-            guard let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter else {
-                assertionFailure("Dashboard UI \(updatedDashboardUI.self) should be able to present top banner")
                 return
             }
 
@@ -128,8 +124,8 @@ private extension DashboardUIFactory {
             }, dismissHandler: { [weak self] in
                 self?.stateCoordinator.dismissV4ToV3Banner()
             })
-            topBannerPresenter.hideTopBanner(animated: false)
-            topBannerPresenter.showTopBanner(topBannerView)
+            updatedDashboardUI.hideTopBanner(animated: false)
+            updatedDashboardUI.showTopBanner(topBannerView)
         }
     }
 }

@@ -527,10 +527,11 @@ private extension ReviewsViewController {
         let review = resultsController.object(at: indexPath)
 
         print("==== configuring cell for review ", review)
-        //cell.noticon = 
+        cell.noticon = "\u{f300}"
         cell.attributedSubject = renderSubject(review: review)
         cell.attributedSnippet = renderSnippet(review: review)
         cell.starRating = review.rating
+        cell.noticonColor = StyleManager.wooGreyMid
 //        cell.read = note.read
 //        cell.noticon = note.noticon
 //        cell.noticonColor = note.noticonTintColor

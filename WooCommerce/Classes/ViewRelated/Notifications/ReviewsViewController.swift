@@ -50,11 +50,11 @@ final class ReviewsViewController: UIViewController {
 
     /// Rendered Subjects Cache.
     ///
-    private var subjectStorage = [Int64: NSAttributedString]()
+    private var subjectStorage = [Int64: String]()
 
     /// Rendered Snippet Cache.
     ///
-    private var snippetStorage = [Int64: NSAttributedString]()
+    private var snippetStorage = [Int64: String]()
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
@@ -81,7 +81,6 @@ final class ReviewsViewController: UIViewController {
     /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
-        print("==== querying isEmpty ", resultsController.isEmpty)
         return resultsController.isEmpty
     }
 
@@ -526,18 +525,12 @@ private extension ReviewsViewController {
     func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
         let review = resultsController.object(at: indexPath)
 
-        print("==== configuring cell for review ", review)
         cell.noticon = "\u{f300}"
-        cell.attributedSubject = renderSubject(review: review)
-        cell.attributedSnippet = renderSnippet(review: review)
+        cell.subject = renderSubject(review: review)
+        cell.snippet = renderSnippet(review: review)
         cell.starRating = review.rating
         cell.noticonColor = StyleManager.wooGreyMid
 //        cell.read = note.read
-//        cell.noticon = note.noticon
-//        cell.noticonColor = note.noticonTintColor
-//        cell.attributedSubject = renderSubject(note: note)
-//        cell.attributedSnippet = renderSnippet(note: note)
-//        cell.starRating = note.starRating
     }
 }
 
@@ -548,54 +541,37 @@ private extension ReviewsViewController {
 
     /// Returns the formatted Subject (if any). For performance reasons, we'll cache the result.
     ///
-
-    func renderSubject(review: ProductReview) -> NSAttributedString? {
+    func renderSubject(review: ProductReview) -> String? {
         let reviewHash = Int64(review.reviewID.hashValue)
         if let cached = subjectStorage[reviewHash] {
             return cached
         }
 
-        let formattedSubject = formatter.format(text: review.reviewer, with: .subject, using: [])
+        let subjectUnformatted = NSLocalizedString(
+            "%@ left a review on %@",
+            comment: "Review title. Reads as {Review author} left a review on {Product}."
+        )
+
+        let formattedSubject = String(format: subjectUnformatted, review.reviewer, "a product")
         subjectStorage[reviewHash] = formattedSubject
 
         return formattedSubject
     }
 
-//    func renderSubject(note: Note) -> NSAttributedString? {
-//        if let cached = subjectStorage[note.hash] {
-//            return cached
-//        }
-//
-//        let subject = note.blockForSubject.map { formatter.format(block: $0, with: .subject) }
-//        subjectStorage[note.hash] = subject
-//
-//        return subject
-//    }
-
-    /// Returns the formatted Snippet (if any). For performance reasons, we'll cache the result.
+    /// Returns the Snippet (if any). For performance reasons, we'll cache the result.
     ///
-    func renderSnippet(review: ProductReview) -> NSAttributedString? {
+    func renderSnippet(review: ProductReview) -> String? {
         let reviewHash = Int64(review.reviewID.hashValue)
         if let cached = snippetStorage[reviewHash] {
             return cached
         }
 
-        let formattedSnippet = formatter.format(text: review.review, with: .snippet, using: [])
+        let formattedSnippet = review.review.strippedHTML
 
         snippetStorage[reviewHash] = formattedSnippet
 
         return formattedSnippet
     }
-//    func renderSnippet(note: Note) -> NSAttributedString? {
-//        if let cached = snippetStorage[note.hash] {
-//            return cached
-//        }
-//
-//        let snippet = note.blockForSnippet.map { formatter.format(block: $0, with: .snippet) }
-//        snippetStorage[note.hash] = snippet
-//
-//        return snippet
-//    }
 }
 
 
@@ -786,35 +762,6 @@ private extension ReviewsViewController {
 // MARK: - Nested Types
 //
 private extension ReviewsViewController {
-
-    enum NoteTypeFilter: String {
-        case all
-        case orders = "store_order"
-        case reviews = "store_review"
-
-        /// Returns a collection of all of the known Note Types
-        ///
-        static var knownTypes: [NoteTypeFilter] {
-            return [.all, .orders, .reviews]
-        }
-
-        var description: String {
-            switch self {
-            case .all:
-                return NSLocalizedString("All",
-                                         comment: "Name of the All filter on the Notifications screen - it means all notifications will be displayed."
-                )
-            case .orders:
-                return NSLocalizedString("Orders",
-                                         comment: "Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order."
-                )
-            case .reviews:
-                return NSLocalizedString("Reviews",
-                                         comment: "Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review."
-                )
-            }
-        }
-    }
 
     enum Settings {
         static let estimatedRowHeight             = CGFloat(88)

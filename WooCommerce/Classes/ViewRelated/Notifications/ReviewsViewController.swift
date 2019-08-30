@@ -81,6 +81,7 @@ final class ReviewsViewController: UIViewController {
     /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
+        print("==== querying isEmpty ", resultsController.isEmpty)
         return resultsController.isEmpty
     }
 
@@ -320,7 +321,7 @@ private extension ReviewsViewController {
             return
         }
 
-        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: 1, pageSize: 200) { error in
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: 1, pageSize: 25) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing reviews: \(error)")
             } else {
@@ -335,20 +336,6 @@ private extension ReviewsViewController {
 
         transitionToSyncingState()
         ServiceLocator.stores.dispatch(action)
-//        let action = NotificationAction.synchronizeNotifications { error in
-//            if let error = error {
-//                DDLogError("⛔️ Error synchronizing notifications: \(error)")
-//            } else {
-//                ServiceLocator.analytics.track(.notificationListLoaded)
-//            }
-//
-//            self.refreshResultsPredicate()
-//            self.transitionToResultsUpdatedState()
-//            onCompletion?()
-//        }
-//
-//        transitionToSyncingState()
-//        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -450,7 +437,7 @@ extension ReviewsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let note = resultsController.object(at: indexPath)
+        let review = resultsController.object(at: indexPath)
         //TODO.Navigate to details
         //presentDetails(for: note)
     }
@@ -537,8 +524,13 @@ private extension ReviewsViewController {
     /// Initializes the Notifications Cell at the specified indexPath
     ///
     func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
-        let note = resultsController.object(at: indexPath)
+        let review = resultsController.object(at: indexPath)
 
+        print("==== configuring cell for review ", review)
+        //cell.noticon = 
+        cell.attributedSubject = renderSubject(review: review)
+        cell.attributedSnippet = renderSnippet(review: review)
+        cell.starRating = review.rating
 //        cell.read = note.read
 //        cell.noticon = note.noticon
 //        cell.noticonColor = note.noticonTintColor
@@ -555,29 +547,54 @@ private extension ReviewsViewController {
 
     /// Returns the formatted Subject (if any). For performance reasons, we'll cache the result.
     ///
-    func renderSubject(note: Note) -> NSAttributedString? {
-        if let cached = subjectStorage[note.hash] {
+
+    func renderSubject(review: ProductReview) -> NSAttributedString? {
+        let reviewHash = Int64(review.reviewID.hashValue)
+        if let cached = subjectStorage[reviewHash] {
             return cached
         }
 
-        let subject = note.blockForSubject.map { formatter.format(block: $0, with: .subject) }
-        subjectStorage[note.hash] = subject
+        let formattedSubject = formatter.format(text: review.reviewer, with: .subject, using: [])
+        subjectStorage[reviewHash] = formattedSubject
 
-        return subject
+        return formattedSubject
     }
+
+//    func renderSubject(note: Note) -> NSAttributedString? {
+//        if let cached = subjectStorage[note.hash] {
+//            return cached
+//        }
+//
+//        let subject = note.blockForSubject.map { formatter.format(block: $0, with: .subject) }
+//        subjectStorage[note.hash] = subject
+//
+//        return subject
+//    }
 
     /// Returns the formatted Snippet (if any). For performance reasons, we'll cache the result.
     ///
-    func renderSnippet(note: Note) -> NSAttributedString? {
-        if let cached = snippetStorage[note.hash] {
+    func renderSnippet(review: ProductReview) -> NSAttributedString? {
+        let reviewHash = Int64(review.reviewID.hashValue)
+        if let cached = snippetStorage[reviewHash] {
             return cached
         }
 
-        let snippet = note.blockForSnippet.map { formatter.format(block: $0, with: .snippet) }
-        snippetStorage[note.hash] = snippet
+        let formattedSnippet = formatter.format(text: review.review, with: .snippet, using: [])
 
-        return snippet
+        snippetStorage[reviewHash] = formattedSnippet
+
+        return formattedSnippet
     }
+//    func renderSnippet(note: Note) -> NSAttributedString? {
+//        if let cached = snippetStorage[note.hash] {
+//            return cached
+//        }
+//
+//        let snippet = note.blockForSnippet.map { formatter.format(block: $0, with: .snippet) }
+//        snippetStorage[note.hash] = snippet
+//
+//        return snippet
+//    }
 }
 
 

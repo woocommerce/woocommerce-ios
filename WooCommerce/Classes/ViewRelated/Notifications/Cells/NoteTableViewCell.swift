@@ -57,25 +57,25 @@ class NoteTableViewCell: UITableViewCell {
         }
     }
 
-    /// Attributed Subject
+    /// Subject
     ///
-    var attributedSubject: NSAttributedString? {
+    var subject: String? {
         get {
-            return subjectLabel.attributedText
+            return subjectLabel.text
         }
         set {
-            subjectLabel.attributedText = newValue
+            subjectLabel.text = newValue
         }
     }
 
-    /// Attributed Snippet
+    /// Snippet
     ///
-    var attributedSnippet: NSAttributedString? {
+    var snippet: String? {
         get {
-            return snippetLabel.attributedText
+            return snippetLabel.text
         }
         set {
-            snippetLabel.attributedText = newValue
+            snippetLabel.text = newValue
         }
     }
 

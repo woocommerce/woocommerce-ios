@@ -10,6 +10,7 @@ import WordPressUI
 
     @objc let activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .white)
+        indicator.color = WordPressAuthenticator.shared.style.primaryTitleColor
         indicator.hidesWhenStopped = true
         return indicator
     }()

@@ -190,12 +190,15 @@ extension WPStyleGuide {
     /// - Returns: A properly styled UIButton
     ///
     class func termsButton() -> UIButton {
+        let style = WordPressAuthenticator.shared.style
+
         let baseString =  NSLocalizedString("By signing up, you agree to our _Terms of Service_.", comment: "Legal disclaimer for signup buttons, the underscores _..._ denote underline")
 
-        let labelString = baseString.underlined()
+        let attrStrNormal = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonColor)
+        let attrStrHighlight = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonHighlightColor)
+        let font = WPStyleGuide.mediumWeightFont(forStyle: .footnote)
 
-        let font = WPStyleGuide.mediumWeightFont(forStyle: .caption2)
-        return textButton(normal: labelString, highlighted: labelString, font: font, alignment: .center)
+        return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font, alignment: .center)
     }
 
     private class func textButton(normal normalString: NSAttributedString, highlighted highlightString: NSAttributedString, font: UIFont, alignment: UIControl.NaturalContentHorizontalAlignment = .leading) -> UIButton {

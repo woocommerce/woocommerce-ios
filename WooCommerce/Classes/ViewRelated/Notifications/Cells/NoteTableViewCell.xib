@@ -31,12 +31,26 @@
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="3" translatesAutoresizingMaskIntoConstraints="NO" id="fNu-km-jyX">
                         <rect key="frame" x="55" y="11" width="304" height="56.5"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Subject" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ow4-CR-HAI" userLabel="Subject Label">
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillProportionally" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="1Xg-k0-5Hx">
                                 <rect key="frame" x="0.0" y="0.0" width="304" height="20.5"/>
-                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                <nil key="textColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" text="Subject" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ow4-CR-HAI" userLabel="Subject Label">
+                                        <rect key="frame" x="0.0" y="0.0" width="230" height="20.5"/>
+                                        <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="240" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Iam-Qs-AuJ" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
+                                        <rect key="frame" x="238" y="0.0" width="66" height="20.5"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="66" id="SXQ-ch-NGe"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
+                            </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" horizontalCompressionResistancePriority="752" text="Snippet" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JQs-0C-rb6" userLabel="Snippet Label">
                                 <rect key="frame" x="0.0" y="23.5" width="304" height="16"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
@@ -78,6 +92,7 @@
                 <outlet property="sidebarView" destination="UhB-G7-KD0" id="hlK-xQ-KPR"/>
                 <outlet property="snippetLabel" destination="JQs-0C-rb6" id="Ecy-tm-Fz2"/>
                 <outlet property="starRatingView" destination="dNq-nY-Zo0" id="Bo9-lO-30X"/>
+                <outlet property="statusLabel" destination="Iam-Qs-AuJ" id="mGa-zR-6Fd"/>
                 <outlet property="subjectLabel" destination="Ow4-CR-HAI" id="AMO-Yd-fmE"/>
             </connections>
             <point key="canvasLocation" x="240.80000000000001" y="-62.068965517241381"/>

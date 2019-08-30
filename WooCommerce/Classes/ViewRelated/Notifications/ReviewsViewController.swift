@@ -48,21 +48,9 @@ final class ReviewsViewController: UIViewController {
         return refreshControl
     }()
 
-    /// Rendered Subjects Cache.
-    ///
-    private var subjectStorage = [Int64: String]()
-
-    /// Rendered Snippet Cache.
-    ///
-    private var snippetStorage = [Int64: String]()
-
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
-
-    /// String Formatter: Given a NoteBlock, this tool will return an AttributedString.
-    ///
-    private let formatter = StringFormatter()
 
     /// UI Active State
     ///
@@ -475,7 +463,7 @@ extension ReviewsViewController {
     /// Notification's Kind.
     ///
     func presentDetails(for review: ProductReview) {
-        print("==== presenting detils for review")        
+        print("==== presenting detils for review")
 
 //        let detailsViewController = NotificationDetailsViewController(note: note)
 //        navigationController?.pushViewController(detailsViewController, animated: true)
@@ -531,52 +519,8 @@ private extension ReviewsViewController {
     func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
         let review = resultsController.object(at: indexPath)
 
-        cell.noticon = "\u{f300}"
-        cell.subject = renderSubject(review: review)
-        cell.snippet = renderSnippet(review: review)
-        cell.starRating = review.rating
-        cell.noticonColor = StyleManager.wooGreyMid
-//        cell.read = note.read
-    }
-}
-
-
-// MARK: - Formatting
-//
-private extension ReviewsViewController {
-
-    /// Returns the formatted Subject (if any). For performance reasons, we'll cache the result.
-    ///
-    func renderSubject(review: ProductReview) -> String? {
-        let reviewHash = Int64(review.reviewID.hashValue)
-        if let cached = subjectStorage[reviewHash] {
-            return cached
-        }
-
-        let subjectUnformatted = NSLocalizedString(
-            "%@ left a review on %@",
-            comment: "Review title. Reads as {Review author} left a review on {Product}."
-        )
-
-        let formattedSubject = String(format: subjectUnformatted, review.reviewer, "a product")
-        subjectStorage[reviewHash] = formattedSubject
-
-        return formattedSubject
-    }
-
-    /// Returns the Snippet (if any). For performance reasons, we'll cache the result.
-    ///
-    func renderSnippet(review: ProductReview) -> String? {
-        let reviewHash = Int64(review.reviewID.hashValue)
-        if let cached = snippetStorage[reviewHash] {
-            return cached
-        }
-
-        let formattedSnippet = review.review.strippedHTML
-
-        snippetStorage[reviewHash] = formattedSnippet
-
-        return formattedSnippet
+        let viewModel = ReviewViewModel(review: review)
+        cell.configure(with: viewModel)
     }
 }
 

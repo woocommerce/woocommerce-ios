@@ -23,6 +23,10 @@ class NoteTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var snippetLabel: UILabel!
 
+    /// Label: Status
+    ///
+    @IBOutlet weak var statusLabel: PaddedLabel!
+
     /// Custom UIView: Rating star view
     ///
     @IBOutlet private var starRatingView: RatingView!
@@ -65,6 +69,17 @@ class NoteTableViewCell: UITableViewCell {
         }
         set {
             subjectLabel.text = newValue
+        }
+    }
+
+    /// Status
+    ///
+    var status: String? {
+        get {
+            return statusLabel.text
+        }
+        set {
+            statusLabel.text = newValue
         }
     }
 
@@ -112,6 +127,14 @@ class NoteTableViewCell: UITableViewCell {
         // Note: this is required, since the cell unhighlight mechanism will reset the new background color
         super.setHighlighted(highlighted, animated: animated)
         refreshColors()
+    }
+
+    func configure(with viewModel: ReviewViewModel) {
+        subject = viewModel.subject
+        snippet = viewModel.snippet
+        starRating = viewModel.rating
+        noticon = viewModel.notIcon
+        noticonColor = viewModel.notIconColor
     }
 }
 

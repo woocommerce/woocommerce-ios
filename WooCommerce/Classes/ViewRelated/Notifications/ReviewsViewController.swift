@@ -33,10 +33,11 @@ final class ReviewsViewController: UIViewController {
     private lazy var resultsController: ResultsController<StorageProductReview> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
+        //let descriptor = NSSortDescriptor(key: "dateCreated", ascending: false)
+
 
         return ResultsController<StorageProductReview>(storageManager: storageManager,
-                                              sectionNameKeyPath: "normalizedAgeAsString",
-                                              sortedBy: [descriptor])
+                                                       sortedBy: [descriptor])
     }()
 
     /// Pull To Refresh Support.
@@ -83,11 +84,11 @@ final class ReviewsViewController: UIViewController {
         return resultsController.isEmpty
     }
 
-    /// The current unread Notes.
-    ///
-    private var unreadNotes: [Note] {
-        return resultsController.fetchedObjects.filter { $0.read == false }
-    }
+//    /// The current unread Notes.
+//    ///
+//    private var unreadNotes: [Note] {
+//        return resultsController.fetchedObjects.filter { $0.read == false }
+//    }
 
     /// The last seen time for notifications
     ///
@@ -129,7 +130,7 @@ final class ReviewsViewController: UIViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
         refreshTitle()
-        refreshResultsPredicate()
+        //refreshResultsPredicate()
         configureNavigationItem()
         configureNavigationBarButtons()
         configureTableView()
@@ -144,7 +145,7 @@ final class ReviewsViewController: UIViewController {
 
         resetApplicationBadge()
         transitionToResultsUpdatedState()
-        synchronizeNotifications() {
+        synchronizeReviews() {
             // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
             // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
             // See this issue for more deets: https://github.com/woocommerce/woocommerce-ios/issues/469
@@ -229,19 +230,20 @@ private extension ReviewsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
-        synchronizeNotifications {
+        synchronizeReviews {
             sender.endRefreshing()
         }
     }
 
     @IBAction func markAllAsRead() {
-        ServiceLocator.analytics.track(.notificationsListReadAllTapped)
-        if unreadNotes.isEmpty {
-            DDLogVerbose("# Every single notification is already marked as Read!")
-            return
-        }
-
-        markAsRead(notes: unreadNotes)
+        // TODO. MArk all as read
+//        ServiceLocator.analytics.track(.notificationsListReadAllTapped)
+//        if unreadNotes.isEmpty {
+//            DDLogVerbose("# Every single notification is already marked as Read!")
+//            return
+//        }
+//
+//        markAsRead(notes: unreadNotes)
     }
 }
 
@@ -258,25 +260,25 @@ private extension ReviewsViewController {
 
     /// Update the last seen time for notifications
     ///
-    func updateLastSeenTime() {
-        guard let firstNote = resultsController.fetchedObjects.first else {
-            return
-        }
-        guard firstNote.timestamp != lastSeenTime else {
-            return
-        }
-
-        let timestamp = firstNote.timestamp
-        let action = NotificationAction.updateLastSeen(timestamp: timestamp) { [weak self] (error) in
-            if let error = error {
-                DDLogError("⛔️ Error marking notifications as seen: \(error)")
-            } else {
-                self?.lastSeenTime = timestamp
-            }
-        }
-
-        ServiceLocator.stores.dispatch(action)
-    }
+//    func updateLastSeenTime() {
+//        guard let firstNote = resultsController.fetchedObjects.first else {
+//            return
+//        }
+//        guard firstNote.timestamp != lastSeenTime else {
+//            return
+//        }
+//
+//        let timestamp = firstNote.timestamp
+//        let action = NotificationAction.updateLastSeen(timestamp: timestamp) { [weak self] (error) in
+//            if let error = error {
+//                DDLogError("⛔️ Error marking notifications as seen: \(error)")
+//            } else {
+//                self?.lastSeenTime = timestamp
+//            }
+//        }
+//
+//        ServiceLocator.stores.dispatch(action)
+//    }
 
     /// Marks a specific Notification as read.
     ///
@@ -313,21 +315,40 @@ private extension ReviewsViewController {
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    func synchronizeNotifications(onCompletion: (() -> Void)? = nil) {
-        let action = NotificationAction.synchronizeNotifications { error in
+    func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: 1, pageSize: 200) { error in
             if let error = error {
-                DDLogError("⛔️ Error synchronizing notifications: \(error)")
+                DDLogError("⛔️ Error synchronizing reviews: \(error)")
             } else {
-                ServiceLocator.analytics.track(.notificationListLoaded)
+                //TODO. What event must be sent here?
+                //ServiceLocator.analytics.track(.notificationListLoaded)
             }
 
-            self.refreshResultsPredicate()
+            //self.refreshResultsPredicate()
             self.transitionToResultsUpdatedState()
             onCompletion?()
         }
 
         transitionToSyncingState()
         ServiceLocator.stores.dispatch(action)
+//        let action = NotificationAction.synchronizeNotifications { error in
+//            if let error = error {
+//                DDLogError("⛔️ Error synchronizing notifications: \(error)")
+//            } else {
+//                ServiceLocator.analytics.track(.notificationListLoaded)
+//            }
+//
+//            self.refreshResultsPredicate()
+//            self.transitionToResultsUpdatedState()
+//            onCompletion?()
+//        }
+//
+//        transitionToSyncingState()
+//        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -356,26 +377,26 @@ private extension ReviewsViewController {
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
     func reloadResultsController() {
-        refreshResultsPredicate()
+        //refreshResultsPredicate()
 
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
         transitionToSyncingState()
     }
 
-    func refreshResultsPredicate() {
-        resultsController.predicate = filterPredicate()
-    }
-
-    func filterPredicate() -> NSPredicate {
-        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
-        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
-
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
-                                                                   sitePredicate,
-                                                                   notDeletedPredicate])
-    }
+//    func refreshResultsPredicate() {
+//        resultsController.predicate = filterPredicate()
+//    }
+//
+//    func filterPredicate() -> NSPredicate {
+//        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
+//        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+//        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+//
+//        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
+//                                                                   sitePredicate,
+//                                                                   notDeletedPredicate])
+//    }
 
 
 }
@@ -430,7 +451,8 @@ extension ReviewsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let note = resultsController.object(at: indexPath)
-        presentDetails(for: note)
+        //TODO.Navigate to details
+        //presentDetails(for: note)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -455,12 +477,13 @@ extension ReviewsViewController {
     /// already retrieved.
     ///
     func presentDetails(for noteId: Int) {
-        let notificationMaybe = resultsController.fetchedObjects.first { $0.noteId == noteId }
-        guard let notification = notificationMaybe else {
-            return
-        }
-
-        presentDetails(for: notification)
+        //TODO. Implement navigation to details
+//        let notificationMaybe = resultsController.fetchedObjects.first { $0.noteId == noteId }
+//        guard let notification = notificationMaybe else {
+//            return
+//        }
+//
+//        presentDetails(for: notification)
     }
 
     /// Presents the Details for a given Note Instance: Either NotificationDetails, or OrderDetails, depending on the
@@ -516,12 +539,12 @@ private extension ReviewsViewController {
     func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
         let note = resultsController.object(at: indexPath)
 
-        cell.read = note.read
-        cell.noticon = note.noticon
-        cell.noticonColor = note.noticonTintColor
-        cell.attributedSubject = renderSubject(note: note)
-        cell.attributedSnippet = renderSnippet(note: note)
-        cell.starRating = note.starRating
+//        cell.read = note.read
+//        cell.noticon = note.noticon
+//        cell.noticonColor = note.noticonTintColor
+//        cell.attributedSubject = renderSubject(note: note)
+//        cell.attributedSnippet = renderSnippet(note: note)
+//        cell.starRating = note.starRating
     }
 }
 
@@ -722,7 +745,8 @@ private extension ReviewsViewController {
     }
 
     func updateMarkAllReadButtonState() {
-        leftBarButton.isEnabled = !unreadNotes.isEmpty
+        // TODO. Mark as read
+//        leftBarButton.isEnabled = !unreadNotes.isEmpty
     }
 
     /// Displays the `Mark all as read` Notice if the number of times it was previously displayed is lower than the

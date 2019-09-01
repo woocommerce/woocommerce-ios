@@ -145,11 +145,7 @@ final class ReviewsViewController: UIViewController {
         resetApplicationBadge()
         transitionToResultsUpdatedState()
         synchronizeReviews() {
-            // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
-            // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
-            // See this issue for more deets: https://github.com/woocommerce/woocommerce-ios/issues/469
-            //
-            //self?.updateLastSeenTime()
+
         }
 
         if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
@@ -282,39 +278,57 @@ private extension ReviewsViewController {
     /// Marks a specific Notification as read.
     ///
     func markAsReadIfNeeded(note: Note) {
-        guard note.read == false else {
-            return
-        }
-
-        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
-            if let error = error {
-                DDLogError("⛔️ Error marking single notification as read: \(error)")
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
+//        guard note.read == false else {
+//            return
+//        }
+//
+//        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
+//            if let error = error {
+//                DDLogError("⛔️ Error marking single notification as read: \(error)")
+//            }
+//        }
+//        ServiceLocator.stores.dispatch(action)
     }
 
     /// Marks the specified collection of Notifications as Read.
     ///
     func markAsRead(notes: [Note]) {
-        let identifiers = notes.map { $0.noteId }
-        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { [weak self] error in
-            if let error = error {
-                DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
-                self?.hapticGenerator.notificationOccurred(.error)
-            } else {
-                self?.hapticGenerator.notificationOccurred(.success)
-                self?.displayMarkAllAsReadNoticeIfNeeded()
-            }
-            self?.updateMarkAllReadButtonState()
-        }
+//        let identifiers = notes.map { $0.noteId }
+//        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { [weak self] error in
+//            if let error = error {
+//                DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
+//                self?.hapticGenerator.notificationOccurred(.error)
+//            } else {
+//                self?.hapticGenerator.notificationOccurred(.success)
+//                self?.displayMarkAllAsReadNoticeIfNeeded()
+//            }
+//            self?.updateMarkAllReadButtonState()
+//        }
+//
+//        ServiceLocator.stores.dispatch(action)
+    }
 
+
+    /// Synchronizes the Reviews associated with the active store.
+    ///
+    func synchronizeReviews(onCompletion: @escaping () -> Void) {
+        ensureStoredReviewsAreReset { [weak self] in
+            self?.fetchAllReviews(onCompletion: onCompletion)
+        }
+    }
+
+    /// Nukes all of the Stored Product Reviews:
+    /// We're dropping the entire ProductReviews Cache whenever the reviews are reloaded. This is performed to avoid
+    /// "interleaved Sync'ed Objects", which results in an awful UX while scrolling down
+    ///
+    func ensureStoredReviewsAreReset(onCompletion: @escaping () -> Void) {
+        let action = ProductReviewAction.resetStoredProductReviews(onCompletion: onCompletion)
         ServiceLocator.stores.dispatch(action)
     }
 
-    /// Synchronizes the Notifications associated to the active WordPress.com account.
+    /// Synchronizes the Reviews associated with the active store.
     ///
-    func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
+    func fetchAllReviews(onCompletion: @escaping () -> Void) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
@@ -329,7 +343,7 @@ private extension ReviewsViewController {
 
             //self.refreshResultsPredicate()
             self.transitionToResultsUpdatedState()
-            onCompletion?()
+            onCompletion()
         }
 
         transitionToSyncingState()

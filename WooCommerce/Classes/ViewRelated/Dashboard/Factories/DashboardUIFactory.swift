@@ -22,69 +22,112 @@ protocol DashboardUI: UIViewController {
 
 final class DashboardUIFactory {
     private let siteID: Int
-    private var stateCoordinator: StatsVersionStateCoordinator?
+    private let stateCoordinator: StatsVersionStateCoordinator
 
-    private var lastStatsVersion: StatsVersion?
-    private var lastDashboardUI: DashboardUI?
+    private var lastStatsV3DashboardUI: (DashboardUI & TopBannerPresenter)?
+    private var lastStatsV4DashboardUI: DashboardUI?
 
     init(siteID: Int) {
         self.siteID = siteID
+        self.stateCoordinator = StatsVersionStateCoordinator(siteID: siteID)
     }
 
     func reloadDashboardUI(isFeatureFlagOn: Bool,
                            onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
         if isFeatureFlagOn {
-            let stateCoordinator = StatsVersionStateCoordinator(siteID: siteID,
-                                                                onStateChange: { [weak self] state in
-                                                                    self?.onStatsVersionStateChange(state: state, onUIUpdate: onUIUpdate)
-            })
-            self.stateCoordinator = stateCoordinator
+            stateCoordinator.onStateChange = { [weak self] (previousState, currentState) in
+                self?.onStatsVersionStateChange(previousState: previousState,
+                                                currentState: currentState,
+                                                onUIUpdate: onUIUpdate)
+            }
             stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
         } else {
-            onUIUpdate(dashboardUI(siteID: siteID, statsVersion: .v3))
+            onUIUpdate(statsV3DashboardUI())
         }
     }
 
-    private func dashboardUI(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
-        if let lastDashboardUI = lastDashboardUI, lastStatsVersion == statsVersion {
-            return lastDashboardUI
+    private func statsV3DashboardUI() -> DashboardUI & TopBannerPresenter {
+        if let lastStatsV3DashboardUI = lastStatsV3DashboardUI {
+            return lastStatsV3DashboardUI
         }
-        return createDashboardUIAndSetUserPreference(siteID: siteID, statsVersion: statsVersion)
-    }
-
-    private func createDashboardUIAndSetUserPreference(siteID: Int, statsVersion: StatsVersion) -> DashboardUI {
-        let action = AppSettingsAction.setStatsVersionLastShown(siteID: siteID, statsVersion: statsVersion)
-        ServiceLocator.stores.dispatch(action)
-
-        let dashboardUI = createDashboardUI(statsVersion: statsVersion)
-
-        lastStatsVersion = statsVersion
-        lastDashboardUI = dashboardUI
-
+        let dashboardUI = DashboardStatsV3ViewController(nibName: nil, bundle: nil)
+        lastStatsV3DashboardUI = dashboardUI
         return dashboardUI
     }
 
-    private func createDashboardUI(statsVersion: StatsVersion) -> DashboardUI {
+    private func statsV4DashboardUI() -> DashboardUI {
+        if let lastStatsV4DashboardUI = lastStatsV4DashboardUI {
+            return lastStatsV4DashboardUI
+        }
+        let dashboardUI = StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
+        lastStatsV4DashboardUI = dashboardUI
+        return dashboardUI
+    }
+
+    private func dashboardUI(statsVersion: StatsVersion) -> DashboardUI {
         switch statsVersion {
         case .v3:
-            return DashboardStatsV3ViewController(nibName: nil, bundle: nil)
+            return statsV3DashboardUI()
         case .v4:
-            return StoreStatsAndTopPerformersViewController(nibName: nil, bundle: nil)
+            return statsV4DashboardUI()
         }
+    }
+
+    private func saveLastShownStatsVersion(_ lastShownStatsVersion: StatsVersion) {
+        let action = AppSettingsAction.setStatsVersionLastShown(siteID: siteID, statsVersion: lastShownStatsVersion)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
 private extension DashboardUIFactory {
-    func onStatsVersionStateChange(state: StatsVersionState, onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
-        switch state {
+    func onStatsVersionStateChange(previousState: StatsVersionState?,
+                                   currentState: StatsVersionState,
+                                   onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
+        switch currentState {
         case .initial(let statsVersion), .eligible(let statsVersion):
-            onUIUpdate(dashboardUI(siteID: siteID, statsVersion: statsVersion))
+            saveLastShownStatsVersion(statsVersion)
+
+            let updatedDashboardUI = dashboardUI(statsVersion: statsVersion)
+            onUIUpdate(updatedDashboardUI)
+
+            if let topBannerPresenter = updatedDashboardUI as? TopBannerPresenter {
+                topBannerPresenter.hideTopBanner(animated: true)
+            }
         case .v3ShownV4Eligible:
-            // TODO-1232: handle v3 --> v4 upgrading: shows top banner to announce stats v4 feature for user to opt in.
-            onUIUpdate(dashboardUI(siteID: siteID, statsVersion: .v4))
+            let updatedDashboardUI = statsV3DashboardUI()
+            onUIUpdate(updatedDashboardUI)
+
+            guard previousState != currentState else {
+                return
+            }
+
+            let topBannerView = DashboardTopBannerFactory.v3ToV4BannerView(actionHandler: { [weak self] in
+                self?.stateCoordinator.statsV4ButtonPressed()
+                }, dismissHandler: { [weak self] in
+                    self?.stateCoordinator.dismissV3ToV4Banner()
+            })
+            updatedDashboardUI.hideTopBanner(animated: false)
+            updatedDashboardUI.showTopBanner(topBannerView)
         case .v4RevertedToV3:
-            // TODO-1232: handle v4 --> v3 downgrading: reverts dashboard UI to v3 and shows top banner with explanations.
-            onUIUpdate(dashboardUI(siteID: siteID, statsVersion: .v3))
+            saveLastShownStatsVersion(.v3)
+
+            let updatedDashboardUI = statsV3DashboardUI()
+            onUIUpdate(updatedDashboardUI)
+
+            guard previousState != currentState else {
+                return
+            }
+
+            let topBannerView = DashboardTopBannerFactory.v4ToV3BannerView(actionHandler: {
+                guard let url = URL(string: "https://wordpress.org/plugins/woocommerce-admin/") else {
+                    return
+                }
+                WebviewHelper.launch(url, with: updatedDashboardUI)
+            }, dismissHandler: { [weak self] in
+                self?.stateCoordinator.dismissV4ToV3Banner()
+            })
+            updatedDashboardUI.hideTopBanner(animated: false)
+            updatedDashboardUI.showTopBanner(topBannerView)
         }
     }
 }

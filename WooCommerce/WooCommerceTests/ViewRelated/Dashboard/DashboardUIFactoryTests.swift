@@ -37,7 +37,9 @@ final class DashboardUIFactoryTests: XCTestCase {
         dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         var dashboardUITypes: [UIViewController.Type] = []
-        let expectedDashboardUITypes: [UIViewController.Type] = [DashboardStatsV3ViewController.self, StoreStatsAndTopPerformersViewController.self]
+        let expectedDashboardUITypes: [UIViewController.Type] = [DashboardStatsV3ViewController.self,
+                                                                 // After reload, UI is reverted to v3
+                                                                 DashboardStatsV3ViewController.self]
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 
@@ -121,6 +123,49 @@ final class DashboardUIFactoryTests: XCTestCase {
                 XCTAssertTrue(dashboardUIArray[0] == dashboardUIArray[1])
                 XCTAssertTrue(dashboardUIArray[0] is StoreStatsAndTopPerformersViewController)
                 expectation.fulfill()
+            }
+        }
+        waitForExpectations(timeout: 0.1, handler: nil)
+    }
+
+    /// Stats v4 --> v3 --> v4
+    func testWhenV4IsUnavailableAndThenAvailableWhileStatsV4IsLastShown() {
+        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
+                                                            sessionManager: SessionManager.testingInstance)
+        mockStoresManager.isStatsV4Available = false
+        ServiceLocator.setStores(mockStoresManager)
+
+        dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
+
+        var dashboardUIArray: [DashboardUI] = []
+        let expectation = self.expectation(description: "Wait for the stats v4")
+        expectation.expectedFulfillmentCount = 1
+
+        dashboardUIFactory.reloadDashboardUI(isFeatureFlagOn: true) { [weak self] dashboardUI in
+            dashboardUIArray.append(dashboardUI)
+            // The first updated view controller is v4, and the second view controller is reverted back to v3.
+            if dashboardUIArray.count >= 2 {
+                XCTAssertTrue(dashboardUIArray[0] is StoreStatsAndTopPerformersViewController)
+                XCTAssertTrue(dashboardUIArray[1] is DashboardStatsV3ViewController)
+
+                guard let self = self else {
+                    XCTFail()
+                    return
+                }
+                // Stats v4 now becomes available
+                self.mockStoresManager.isStatsV4Available = true
+                dashboardUIArray = []
+
+                self.dashboardUIFactory.reloadDashboardUI(isFeatureFlagOn: true) { dashboardUI in
+                    dashboardUIArray.append(dashboardUI)
+
+                    // The first view controller is v4 -> v3 UI, and the second view controller is v3 -> v4 UI.
+                    if dashboardUIArray.count >= 2 {
+                        XCTAssertTrue(dashboardUIArray[0] is DashboardStatsV3ViewController)
+                        XCTAssertTrue(dashboardUIArray[1] is DashboardStatsV3ViewController)
+                        expectation.fulfill()
+                    }
+                }
             }
         }
         waitForExpectations(timeout: 0.1, handler: nil)

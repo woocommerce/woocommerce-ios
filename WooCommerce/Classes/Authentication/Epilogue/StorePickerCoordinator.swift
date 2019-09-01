@@ -123,6 +123,12 @@ private extension StorePickerCoordinator {
         }
         ServiceLocator.stores.dispatch(orderAction)
 
+        group.enter()
+        let productAction = ProductAction.resetStoredProducts {
+            group.leave()
+        }
+        ServiceLocator.stores.dispatch(productAction)
+
         group.notify(queue: .main) {
             onCompletion()
         }

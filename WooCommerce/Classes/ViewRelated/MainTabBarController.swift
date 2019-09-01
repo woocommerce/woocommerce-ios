@@ -229,7 +229,8 @@ extension MainTabBarController {
             return
         }
 
-        reviewsViewController.presentDetails(for: noteID)
+        //TODO. What to do when receiving a notification?
+        //reviewsViewController.presentDetails(for: noteID)
     }
 
     /// Switches to the My Store Tab, and presents the Settings .

@@ -28,28 +28,7 @@ final class ReviewsViewController: UIViewController {
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) ProductReview in sync.
-    ///
-    private lazy var resultsController: ResultsController<StorageProductReview> = {
-        let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
-
-        return ResultsController<StorageProductReview>(storageManager: storageManager,
-                                                       sectionNameKeyPath: "normalizedAgeAsString",
-                                                       matching: self.filterPredicate,
-                                                       sortedBy: [descriptor])
-    }()
-
-    private lazy var filterPredicate: NSPredicate = {
-        let sitePredicate = NSPredicate(format: "siteID == %lld",
-                                        ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-
-        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
-                                          ProductReviewStatus.approved.rawValue,
-                                          ProductReviewStatus.hold.rawValue)
-
-        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
-    }()
+    private let viewModel = ReviewsViewModel()
 
     /// Pull To Refresh Support.
     ///
@@ -80,14 +59,8 @@ final class ReviewsViewController: UIViewController {
     /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
-        return resultsController.isEmpty
+        return viewModel.isEmpty
     }
-
-//    /// The current unread Notes.
-//    ///
-//    private var unreadNotes: [Note] {
-//        return resultsController.fetchedObjects.filter { $0.read == false }
-//    }
 
     /// The last seen time for notifications
     ///
@@ -194,23 +167,20 @@ private extension ReviewsViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
+        tableView.dataSource = viewModel.dataSource
+        tableView.delegate = viewModel.delegate
     }
 
     /// Setup: ResultsController
     ///
     func configureResultsController() {
-        resultsController.startForwardingEvents(to: tableView)
-        try? resultsController.performFetch()
+        viewModel.configureResultsController(tableView: tableView)
     }
 
     /// Setup: TableViewCells
     ///
     func configureTableViewCells() {
-        let cells = [NoteTableViewCell.self]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        viewModel.configureTableViewCells(tableView: tableView)
     }
 
     func refreshTitle() {
@@ -257,28 +227,6 @@ private extension ReviewsViewController {
         ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
-    /// Update the last seen time for notifications
-    ///
-//    func updateLastSeenTime() {
-//        guard let firstNote = resultsController.fetchedObjects.first else {
-//            return
-//        }
-//        guard firstNote.timestamp != lastSeenTime else {
-//            return
-//        }
-//
-//        let timestamp = firstNote.timestamp
-//        let action = NotificationAction.updateLastSeen(timestamp: timestamp) { [weak self] (error) in
-//            if let error = error {
-//                DDLogError("⛔️ Error marking notifications as seen: \(error)")
-//            } else {
-//                self?.lastSeenTime = timestamp
-//            }
-//        }
-//
-//        ServiceLocator.stores.dispatch(action)
-//    }
-
     /// Marks a specific Notification as read.
     ///
     func markAsReadIfNeeded(note: Note) {
@@ -297,19 +245,19 @@ private extension ReviewsViewController {
     /// Marks the specified collection of Notifications as Read.
     ///
     func markAsRead(notes: [Note]) {
-        let identifiers = notes.map { $0.noteId }
-        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { [weak self] error in
-            if let error = error {
-                DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
-                self?.hapticGenerator.notificationOccurred(.error)
-            } else {
-                self?.hapticGenerator.notificationOccurred(.success)
-                self?.displayMarkAllAsReadNoticeIfNeeded()
-            }
-            self?.updateMarkAllReadButtonState()
-        }
-
-        ServiceLocator.stores.dispatch(action)
+//        let identifiers = notes.map { $0.noteId }
+//        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { [weak self] error in
+//            if let error = error {
+//                DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
+//                self?.hapticGenerator.notificationOccurred(.error)
+//            } else {
+//                self?.hapticGenerator.notificationOccurred(.success)
+//                self?.displayMarkAllAsReadNoticeIfNeeded()
+//            }
+//            self?.updateMarkAllReadButtonState()
+//        }
+//
+//        ServiceLocator.stores.dispatch(action)
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
@@ -362,136 +310,9 @@ private extension ReviewsViewController {
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
     func reloadResultsController() {
-        //refreshResultsPredicate()
-
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
         transitionToSyncingState()
-    }
-
-//    func refreshResultsPredicate() {
-//        resultsController.predicate = filterPredicate()
-//    }
-//
-//    func filterPredicate() -> NSPredicate {
-//        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
-//        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-//        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
-//
-//        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
-//                                                                   sitePredicate,
-//                                                                   notDeletedPredicate])
-//    }
-
-
-}
-
-
-// MARK: - UITableViewDataSource Conformance
-//
-extension ReviewsViewController: UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: NoteTableViewCell.reuseIdentifier) as? NoteTableViewCell else {
-            fatalError()
-        }
-
-        configure(cell, at: indexPath)
-
-        return cell
-    }
-
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let rawAge = resultsController.sections[section].name
-        return Age(rawValue: rawAge)?.description
-    }
-}
-
-
-// MARK: - UITableViewDelegate Conformance
-//
-extension ReviewsViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return estimatedRowHeights[indexPath] ?? Settings.estimatedRowHeight
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        let review = resultsController.object(at: indexPath)
-        presentDetails(for: review)
-    }
-
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-
-        // Preserve the Cell Height
-        // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
-        // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
-        // the actual value. AKA no flicker!
-        //
-        estimatedRowHeights[indexPath] = cell.frame.height
-    }
-}
-
-
-// MARK: - Public Methods
-//
-extension ReviewsViewController {
-
-    /// Presents the Details for the Notification with the specified Identifier.
-    ///
-    /// NOTE: This method will not perform any kind of RPC. It's effectively a NO-OP whenever the target note hasn't been
-    /// already retrieved.
-    ///
-    func presentDetails(for noteId: Int) {
-        //TODO. Implement navigation to details
-//        let notificationMaybe = resultsController.fetchedObjects.first { $0.noteId == noteId }
-//        guard let notification = notificationMaybe else {
-//            return
-//        }
-//
-//        presentDetails(for: notification)
-    }
-
-    /// Presents the Details for a given Note Instance: Either NotificationDetails, or OrderDetails, depending on the
-    /// Notification's Kind.
-    ///
-    func presentDetails(for review: ProductReview) {
-        print("==== presenting detils for review")
-
-//        let detailsViewController = NotificationDetailsViewController(note: note)
-//        navigationController?.pushViewController(detailsViewController, animated: true)
-    }
-
-    func presentDetails(for note: Note) {
-        switch note.kind {
-        case .storeOrder:
-            presentOrderDetails(for: note)
-        default:
-            presentNotificationDetails(for: note)
-        }
-
-        ServiceLocator.analytics.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
-                                                                         "already_read": note.read ])
-
-        markAsReadIfNeeded(note: note)
     }
 }
 
@@ -521,39 +342,20 @@ private extension ReviewsViewController {
 }
 
 
-// MARK: - Cell Setup
-//
-private extension ReviewsViewController {
-
-    /// Initializes the Notifications Cell at the specified indexPath
-    ///
-    func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
-        let review = resultsController.object(at: indexPath)
-
-        let viewModel = ReviewViewModel(review: review)
-        cell.configure(with: viewModel)
-    }
-}
-
-
 // MARK: - Placeholders
 //
 private extension ReviewsViewController {
 
-    /// Renders Placeholder Notes: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    /// Renders Placeholder Reviews.
     ///
     func displayPlaceholderNotes() {
-        let options = GhostOptions(reuseIdentifier: NoteTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
-
-        resultsController.stopForwardingEvents()
+        viewModel.displayPlaceholderNotes(tableView: tableView)
     }
 
-    /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
+    /// Removes Placeholder Reviews.
     ///
     func removePlaceholderNotes() {
-        tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: self.tableView)
+        viewModel.removePlaceholderNotes(tableView: tableView)
     }
 
     /// Displays the Empty State Overlay.

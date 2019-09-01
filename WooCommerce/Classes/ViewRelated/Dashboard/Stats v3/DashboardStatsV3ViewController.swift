@@ -7,6 +7,10 @@ class DashboardStatsV3ViewController: UIViewController {
 
     var onPullToRefresh: () -> Void = {}
 
+    /// MARK: TopBannerPresenter
+
+    private(set) var topBannerView: UIView?
+
     // MARK: subviews
     //
     private var refreshControl: UIRefreshControl = {
@@ -135,6 +139,42 @@ extension DashboardStatsV3ViewController: DashboardUI {
     }
 }
 
+extension DashboardStatsV3ViewController: TopBannerPresenter {
+    func showTopBanner(_ topBannerView: UIView) {
+        self.topBannerView = topBannerView
+
+        topBannerView.isHidden = true
+        stackView.insertArrangedSubview(topBannerView, at: 0)
+        UIView.animate(withDuration: 0.1) {
+            topBannerView.isHidden = false
+        }
+    }
+
+    func hideTopBanner(animated: Bool) {
+        guard let banner = topBannerView else {
+            return
+        }
+        guard animated else {
+            removeTopBanner(banner)
+            return
+        }
+        UIView.animate(withDuration: 0.1,
+                       animations: {
+                        banner.isHidden = true
+        }, completion: { [weak self] isCompleted in
+            guard isCompleted else {
+                return
+            }
+            self?.removeTopBanner(banner)
+        })
+    }
+
+    func removeTopBanner(_ topBanner: UIView) {
+        topBanner.removeFromSuperview()
+        topBannerView = nil
+    }
+}
+
 private extension DashboardStatsV3ViewController {
     func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
         storeStatsViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitors)
@@ -206,16 +246,19 @@ private extension DashboardStatsV3ViewController {
         scrollView.addSubview(stackView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.pinSubviewToAllEdges(stackView)
         NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 18),
-            stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
             ])
     }
 
     func configureChildViewControllerContainerViews() {
+        // Top spacer view.
+        let topSpacerView = UIView(frame: .zero)
+        NSLayoutConstraint.activate([
+            topSpacerView.heightAnchor.constraint(equalToConstant: 18),
+            ])
+
         // Store stats.
         let storeStatsView = storeStatsViewController.view!
         NSLayoutConstraint.activate([
@@ -254,6 +297,7 @@ private extension DashboardStatsV3ViewController {
         }
 
         let arrangedSubviews = [
+            topSpacerView,
             storeStatsView,
             spacerView,
             newOrdersContainerView,

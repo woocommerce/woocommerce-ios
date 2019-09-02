@@ -95,10 +95,32 @@ extension ReviewsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
-    private func synchronizeProductsReviewed(onCompletion: () -> Void) {
+    private func synchronizeProductsReviewed(onCompletion: @escaping () -> Void) {
         let reviews = data.reviewsResultsController.fetchedObjects
-        print("reviews ==== ")
-        onCompletion()
+        let reviewsProductIDs = reviews.map { return $0.productID }.uniqued()
+        print("====== review productIDs ====")
+        print(reviewsProductIDs)
+        print("////// review productIDs ====")
+
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: reviewsProductIDs) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing products: \(error)")
+            } else {
+                //TODO. What event must be sent here?
+                //ServiceLocator.analytics.track(.notificationListLoaded)
+                print("====== products ====")
+                print(self.data.productsResultsController.fetchedObjects)
+                print("////// products ====")
+            }
+
+            onCompletion()
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

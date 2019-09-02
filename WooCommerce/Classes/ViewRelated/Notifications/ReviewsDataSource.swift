@@ -14,15 +14,26 @@ final class ReviewsDataSource: NSObject {
                                                        sortedBy: [descriptor])
     }()
 
-    private lazy var filterPredicate: NSPredicate = {
-        let sitePredicate = NSPredicate(format: "siteID == %lld",
-                                        ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+    lazy var productsResultsController: ResultsController<StorageProduct> = {
+        let storageManager = ServiceLocator.storageManager
+//        let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
 
+        return ResultsController<StorageProduct>(storageManager: storageManager,
+                                                       matching: self.sitePredicate,
+                                                       sortedBy: [])
+    }()
+
+    private lazy var filterPredicate: NSPredicate = {
         let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
                                           ProductReviewStatus.approved.rawValue,
                                           ProductReviewStatus.hold.rawValue)
 
-        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [self.sitePredicate, statusPredicate])
+    }()
+
+    private lazy var sitePredicate: NSPredicate = {
+        return NSPredicate(format: "siteID == %lld",
+                          ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }()
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.

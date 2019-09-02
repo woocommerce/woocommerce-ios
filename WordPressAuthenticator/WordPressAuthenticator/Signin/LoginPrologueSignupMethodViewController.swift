@@ -12,6 +12,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
 
     open var emailTapped: (() -> Void)?
     open var googleTapped: (() -> Void)?
+    open var appleTapped: (() -> Void)?
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
@@ -68,11 +69,27 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
             self?.present(safariViewController, animated: true, completion: nil)
         }
         buttonViewController.stackView?.insertArrangedSubview(termsButton, at: 0)
+
+        if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
+            #if XCODE11
+            if #available(iOS 13.0, *) {
+                let appleButton = WPStyleGuide.appleLoginButton()
+                appleButton.addTarget(self, action: #selector(handleAppleButtonTapped), for: .touchDown)
+                buttonViewController.stackView?.insertArrangedSubview(appleButton, at: 1)
+            }
+            #endif
+        }
+
         buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
     }
 
     @IBAction func dismissTapped() {
         WordPressAuthenticator.track(.signupCancelled)
         dismiss(animated: true)
+    }
+
+    @objc func handleAppleButtonTapped() {
+        dismiss(animated: true)
+        appleTapped?()
     }
 }

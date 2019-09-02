@@ -638,7 +638,7 @@ extension LoginEmailViewController: GIDSignInUIDelegate {
 }
 
 #if XCODE11
-extension LoginPrologueViewController: AppleAuthenticatorDelegate {
+extension LoginEmailViewController: AppleAuthenticatorDelegate {
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
          performSegue(withIdentifier: .showWPComLogin, sender: self)

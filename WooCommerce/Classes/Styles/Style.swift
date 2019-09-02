@@ -34,6 +34,7 @@ protocol Style {
 
     var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
+    var highlightTextColor: UIColor { get }
 
     var goldStarColor: UIColor { get }
     var grayStarColor: UIColor { get }
@@ -113,6 +114,7 @@ class DefaultStyle: Style {
     let cellSeparatorColor              = HandbookColors.wooGreyBorder
     let defaultTextColor                = HandbookColors.wooSecondary
     let destructiveActionColor          = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
+    let highlightTextColor              = HandbookColors.murielBlue50
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
@@ -171,6 +173,7 @@ private extension DefaultStyle {
         static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0) // woo purple
         static let wooSecondary          = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
         static let wooAccent             = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
+        static let murielBlue50          = UIColor(red: 0.13, green: 0.44, blue: 0.69, alpha: 1.0)
 
         // multiple grays
         static let wooGreyLight          = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
@@ -315,6 +318,10 @@ class StyleManager {
 
     static var destructiveActionColor: UIColor {
         return active.destructiveActionColor
+    }
+
+    static var hightlightTextColor: UIColor {
+        return active.highlightTextColor
     }
 
     static var sectionBackgroundColor: UIColor {

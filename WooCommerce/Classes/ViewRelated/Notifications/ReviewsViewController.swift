@@ -259,25 +259,11 @@ private extension ReviewsViewController {
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
     func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
-        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: 1, pageSize: 25) { error in
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing reviews: \(error)")
-            } else {
-                //TODO. What event must be sent here?
-                //ServiceLocator.analytics.track(.notificationListLoaded)
-            }
-
-            //self.refreshResultsPredicate()
-            self.transitionToResultsUpdatedState()
+        transitionToSyncingState()
+        viewModel.synchronizeReviews { [weak self] in
+            self?.transitionToResultsUpdatedState()
             onCompletion?()
         }
-
-        transitionToSyncingState()
-        ServiceLocator.stores.dispatch(action)
     }
 }
 

@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import WordPressUI
+import Yosemite
 
 
 final class ReviewsViewModel {
@@ -45,6 +46,30 @@ final class ReviewsViewModel {
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
+    }
+}
+
+
+extension ReviewsViewModel {
+    /// Synchronizes the Reviews associated to the current store.
+    ///
+    func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: 1, pageSize: 25) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing reviews: \(error)")
+            } else {
+                //TODO. What event must be sent here?
+                //ServiceLocator.analytics.track(.notificationListLoaded)
+            }
+
+            onCompletion?()
+        }
+
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

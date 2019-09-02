@@ -22,7 +22,7 @@ final class ReviewViewModel {
             return NSAttributedString(string: review.review.strippedHTML)
         }
 
-        let accentColor = StyleManager.wooCommerceBrandColor
+        let accentColor = StyleManager.hightlightTextColor
         let textColor = StyleManager.defaultTextColor
 
         let pendingReviewLiteral = NSAttributedString(string: Strings.pendingReviews,

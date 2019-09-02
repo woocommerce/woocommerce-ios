@@ -4,7 +4,7 @@ import Yosemite
 
 
 final class ReviewsDataSource: NSObject {
-    lazy var resultsController: ResultsController<StorageProductReview> = {
+    lazy var reviewsResultsController: ResultsController<StorageProductReview> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
 
@@ -36,11 +36,11 @@ final class ReviewsDataSource: NSObject {
 extension ReviewsDataSource: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
+        return reviewsResultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
+        return reviewsResultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -54,7 +54,7 @@ extension ReviewsDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let rawAge = resultsController.sections[section].name
+        let rawAge = reviewsResultsController.sections[section].name
         return ReviewAge(rawValue: rawAge)?.description
     }
 }
@@ -67,7 +67,7 @@ private extension ReviewsDataSource {
     /// Initializes the Notifications Cell at the specified indexPath
     ///
     func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
-        let review = resultsController.object(at: indexPath)
+        let review = reviewsResultsController.object(at: indexPath)
 
         let viewModel = ReviewViewModel(review: review)
         cell.configure(with: viewModel)
@@ -92,7 +92,7 @@ extension ReviewsDataSource: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        let review = resultsController.object(at: indexPath)
+        let review = reviewsResultsController.object(at: indexPath)
         presentDetails(for: review)
     }
 

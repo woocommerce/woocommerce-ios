@@ -8,7 +8,7 @@ final class ReviewsViewModel {
     private let data = ReviewsDataSource()
 
     var isEmpty: Bool {
-        return data.resultsController.isEmpty
+        return data.reviewsResultsController.isEmpty
     }
 
     var dataSource: UITableViewDataSource {
@@ -23,19 +23,19 @@ final class ReviewsViewModel {
         let options = GhostOptions(reuseIdentifier: NoteTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
-        data.resultsController.stopForwardingEvents()
+        data.reviewsResultsController.stopForwardingEvents()
     }
 
     /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderReviews(tableView: UITableView) {
         tableView.removeGhostContent()
-        data.resultsController.startForwardingEvents(to: tableView)
+        data.reviewsResultsController.startForwardingEvents(to: tableView)
     }
 
     func configureResultsController(tableView: UITableView) {
-        data.resultsController.startForwardingEvents(to: tableView)
-        try? data.resultsController.performFetch()
+        data.reviewsResultsController.startForwardingEvents(to: tableView)
+        try? data.reviewsResultsController.performFetch()
     }
 
     /// Setup: TableViewCells
@@ -50,6 +50,7 @@ final class ReviewsViewModel {
 }
 
 
+// MARK: - Fetching data
 extension ReviewsViewModel {
     /// Prepares data necessary to render the reviews tab.
     ///
@@ -57,7 +58,12 @@ extension ReviewsViewModel {
         let group = DispatchGroup()
 
         group.enter()
-        synchronizeAllReviews() {
+        synchronizeAllReviews {
+            group.leave()
+        }
+
+        group.enter()
+        synchronizeProductsReviewed {
             group.leave()
         }
 
@@ -87,6 +93,12 @@ extension ReviewsViewModel {
         }
 
         ServiceLocator.stores.dispatch(action)
+    }
+
+    private func synchronizeProductsReviewed(onCompletion: () -> Void) {
+        let reviews = data.reviewsResultsController.fetchedObjects
+        print("reviews ==== ")
+        onCompletion()
     }
 }
 

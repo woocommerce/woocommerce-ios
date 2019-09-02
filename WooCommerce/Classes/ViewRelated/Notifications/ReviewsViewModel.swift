@@ -51,9 +51,15 @@ final class ReviewsViewModel {
 
 
 extension ReviewsViewModel {
-    /// Synchronizes the Reviews associated to the current store.
+    /// Prepares data necessary to render the reviews tab.
     ///
     func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
+        synchronizeAllReviews(onCompletion: onCompletion)
+    }
+
+    /// Synchronizes the Reviews associated to the current store.
+    ///
+    private func synchronizeAllReviews(onCompletion: (() -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }

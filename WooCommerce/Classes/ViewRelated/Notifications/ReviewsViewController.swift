@@ -330,8 +330,8 @@ private extension ReviewsViewController {
 
     /// Renders Placeholder Reviews.
     ///
-    func displayPlaceholderNotes() {
-        viewModel.displayPlaceholderNotes(tableView: tableView)
+    func displayPlaceholderReviews() {
+        viewModel.displayPlaceholderReviews(tableView: tableView)
     }
 
     /// Removes Placeholder Reviews.
@@ -434,7 +434,7 @@ private extension ReviewsViewController {
         case .results:
             break
         case .syncing:
-            displayPlaceholderNotes()
+            displayPlaceholderReviews()
         }
     }
 

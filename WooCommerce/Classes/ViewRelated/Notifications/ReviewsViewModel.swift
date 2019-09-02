@@ -19,7 +19,7 @@ final class ReviewsViewModel {
         return data
     }
 
-    func displayPlaceholderNotes(tableView: UITableView) {
+    func displayPlaceholderReviews(tableView: UITableView) {
         let options = GhostOptions(reuseIdentifier: NoteTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 

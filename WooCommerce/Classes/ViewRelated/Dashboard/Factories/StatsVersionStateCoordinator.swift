@@ -107,14 +107,14 @@ final class StatsVersionStateCoordinator {
             switch initialStatsVersion {
             case .v3:
                 // V3 to V4
-                let visibilityAction = AppSettingsAction.loadStatsV3ToV4BannerVisibility { shouldShowBanner in
+                let visibilityAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v3ToV4) { shouldShowBanner in
                     let nextState: StatsVersionState = shouldShowBanner ? .v3ShownV4Eligible: currentState
                     onNextState(nextState)
                 }
                 ServiceLocator.stores.dispatch(visibilityAction)
             case .v4:
                 // V4 to V3
-                let visibilityAction = AppSettingsAction.loadStatsV4ToV3BannerVisibility { shouldShowBanner in
+                let visibilityAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v4ToV3) { shouldShowBanner in
                     let nextState: StatsVersionState = shouldShowBanner ? .v4RevertedToV3: .eligible(statsVersion: eligibleStatsVersion)
                     onNextState(nextState)
                 }
@@ -152,7 +152,7 @@ final class StatsVersionStateCoordinator {
 
 extension StatsVersionStateCoordinator: StatsV3ToV4BannerActionHandler {
     func dismissV3ToV4Banner() {
-        let visibilityAction = AppSettingsAction.setStatsV3ToV4BannerVisibility(shouldShowBanner: false)
+        let visibilityAction = AppSettingsAction.setStatsVersionBannerVisibility(banner: .v3ToV4, shouldShowBanner: false)
         ServiceLocator.stores.dispatch(visibilityAction)
         state = .eligible(statsVersion: .v3)
     }
@@ -164,7 +164,7 @@ extension StatsVersionStateCoordinator: StatsV3ToV4BannerActionHandler {
 
 extension StatsVersionStateCoordinator: StatsV4ToV3BannerActionHandler {
     func dismissV4ToV3Banner() {
-        let visibilityAction = AppSettingsAction.setStatsV4ToV3BannerVisibility(shouldShowBanner: false)
+        let visibilityAction = AppSettingsAction.setStatsVersionBannerVisibility(banner: .v4ToV3, shouldShowBanner: false)
         ServiceLocator.stores.dispatch(visibilityAction)
         state = .eligible(statsVersion: .v3)
     }

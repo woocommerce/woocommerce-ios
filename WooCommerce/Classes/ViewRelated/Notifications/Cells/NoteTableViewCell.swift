@@ -23,10 +23,6 @@ class NoteTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var snippetLabel: UILabel!
 
-    /// Label: Status
-    ///
-    @IBOutlet weak var statusLabel: PaddedLabel!
-
     /// Custom UIView: Rating star view
     ///
     @IBOutlet private var starRatingView: RatingView!
@@ -58,9 +54,8 @@ class NoteTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        noticonLabel.font = UIFont.noticon(forStyle: .body, baseSize: 25.0)
+        configureNoticonLabel()
         configureStarView()
-        configureStatusLabel()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -81,13 +76,6 @@ class NoteTableViewCell: UITableViewCell {
         noticonLabel.text = viewModel.notIcon
         noticonLabel.textColor = viewModel.notIconColor
 
-        statusLabel.text = nil
-
-        if viewModel.shouldDisplayStatus {
-            statusLabel.text = viewModel.status
-            statusLabel.backgroundColor = viewModel.statusLabelBackgroundColor
-        }
-
         starRating = viewModel.rating
     }
 }
@@ -103,16 +91,14 @@ private extension NoteTableViewCell {
         sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
     }
 
+    func configureNoticonLabel() {
+        noticonLabel.font = UIFont.noticon(forStyle: .body, baseSize: 25.0)
+    }
+
     func configureStarView() {
         starRatingView.starImage = Star.filledImage
         starRatingView.emptyStarImage = Star.emptyImage
         starRatingView.isHidden = (starRating == nil)
-    }
-
-    func configureStatusLabel() {
-        statusLabel.applyFootnoteStyle()
-        statusLabel.layer.masksToBounds = true
-        statusLabel.layer.cornerRadius = Constants.cornerRadius
     }
 }
 

@@ -153,7 +153,7 @@ class DefaultStyle: Style {
 
     /// Announcement
     ///
-    let announcementDotColor            = HandbookColors.red50
+    let announcementDotColor            = HandbookColors.murielRed50
 }
 
 
@@ -186,7 +186,7 @@ private extension DefaultStyle {
         static let grayStarColor         = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
 
         // Muriel theme in https://color-studio.blog/
-        static let red50                 = UIColor(red: 0.84, green: 0.21, blue: 0.22, alpha: 1)
+        static let murielRed50                 = UIColor(red: 0.84, green: 0.21, blue: 0.22, alpha: 1)
     }
 }
 

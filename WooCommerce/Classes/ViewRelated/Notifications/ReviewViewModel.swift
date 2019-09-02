@@ -3,6 +3,7 @@ import Yosemite
 
 final class ReviewViewModel {
     private let review: ProductReview
+    private let product: Product?
 
     let notIcon: String = "\u{f300}"
 
@@ -12,7 +13,7 @@ final class ReviewViewModel {
             comment: "Review title. Reads as {Review author} left a review on {Product}."
         )
 
-        let formattedSubject = String(format: subjectUnformatted, review.reviewer, "a product")
+        let formattedSubject = String(format: subjectUnformatted, review.reviewer, product?.name ?? "")
 
         return formattedSubject
     }()
@@ -53,8 +54,9 @@ final class ReviewViewModel {
         return review.status == .hold
     }
 
-    init(review: ProductReview) {
+    init(review: ProductReview, product: Product?) {
         self.review = review
+        self.product = product
     }
 }
 

@@ -39,6 +39,15 @@ final class ReviewsDataSource: NSObject {
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
+
+    override init() {
+        super.init()
+        observeResults()
+    }
+
+    private func observeResults() {
+        try? productsResultsController.performFetch()
+    }
 }
 
 
@@ -79,14 +88,16 @@ private extension ReviewsDataSource {
     ///
     func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
         let review = reviewsResultsController.object(at: indexPath)
+        let reviewProduct = product(id: review.productID)
+
+        let viewModel = ReviewViewModel(review: review, product: reviewProduct)
+        cell.configure(with: viewModel)
+    }
+
+    private func product(id productID: Int) -> Product? {
         let products = productsResultsController.fetchedObjects
 
-        print("==== products DS ====")
-        print(products)
-        print("//// products ====")
-
-        let viewModel = ReviewViewModel(review: review)
-        cell.configure(with: viewModel)
+        return products.filter { $0.productID == productID }.first
     }
 }
 

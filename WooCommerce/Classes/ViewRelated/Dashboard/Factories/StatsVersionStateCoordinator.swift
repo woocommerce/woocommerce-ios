@@ -57,12 +57,12 @@ final class StatsVersionStateCoordinator {
     }
 
     func loadLastShownVersionAndCheckV4Eligibility() {
-        let lastShownStatsVersionAction = AppSettingsAction.loadStatsVersionLastShown(siteID: siteID) { [weak self] lastShownStatsVersion in
+        let lastShownStatsVersionAction = AppSettingsAction.loadInitialStatsVersionToShow(siteID: siteID) { [weak self] initialStatsVersion in
             guard let self = self else {
                 return
             }
-            let lastStatsVersion: StatsVersion = lastShownStatsVersion ?? StatsVersion.v3
-            let updatedState = self.nextState(lastShownStatsVersion: lastStatsVersion)
+            let lastStatsVersion: StatsVersion = initialStatsVersion ?? StatsVersion.v3
+            let updatedState = self.nextState(initialStatsVersion: lastStatsVersion)
             self.state = updatedState
 
             let action = AvailabilityAction.checkStatsV4Availability(siteID: self.siteID) { [weak self] isStatsV4Available in
@@ -70,10 +70,19 @@ final class StatsVersionStateCoordinator {
                     return
                 }
                 let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
-                let updatedState = self.nextState(eligibleStatsVersion: statsVersion)
-                if updatedState != self.state {
-                    self.state = updatedState
-                }
+
+                // Sets eligible stats version to app settings.
+                let setEligibleStatsVersionAction = AppSettingsAction.setStatsVersionEligible(siteID: self.siteID, statsVersion: statsVersion)
+                ServiceLocator.stores.dispatch(setEligibleStatsVersionAction)
+
+                self.nextState(eligibleStatsVersion: statsVersion, onNextState: { [weak self] nextState in
+                    guard let self = self else {
+                        return
+                    }
+                    if nextState != self.state {
+                        self.state = nextState
+                    }
+                })
             }
             ServiceLocator.stores.dispatch(action)
         }
@@ -81,52 +90,70 @@ final class StatsVersionStateCoordinator {
     }
 
     /// Calculates the next state when the eligible stats version is set.
-    private func nextState(eligibleStatsVersion: StatsVersion) -> StatsVersionState {
+    private func nextState(eligibleStatsVersion: StatsVersion,
+                           onNextState: @escaping (_ nextState: StatsVersionState) -> Void) {
         guard let currentState = state else {
-            return .eligible(statsVersion: eligibleStatsVersion)
+            let nextState = StatsVersionState.eligible(statsVersion: eligibleStatsVersion)
+            onNextState(nextState)
+            return
         }
         switch currentState {
         case .initial(let initialStatsVersion):
             guard initialStatsVersion != eligibleStatsVersion else {
-                return .eligible(statsVersion: eligibleStatsVersion)
+                let nextState = StatsVersionState.eligible(statsVersion: eligibleStatsVersion)
+                onNextState(nextState)
+                return
             }
             switch initialStatsVersion {
             case .v3:
                 // V3 to V4
-                return .v3ShownV4Eligible
+                let visibilityAction = AppSettingsAction.loadStatsV3ToV4BannerVisibility { shouldShowBanner in
+                    let nextState: StatsVersionState = shouldShowBanner ? .v3ShownV4Eligible: currentState
+                    onNextState(nextState)
+                }
+                ServiceLocator.stores.dispatch(visibilityAction)
             case .v4:
                 // V4 to V3
-                return .v4RevertedToV3
+                let visibilityAction = AppSettingsAction.loadStatsV4ToV3BannerVisibility { shouldShowBanner in
+                    let nextState: StatsVersionState = shouldShowBanner ? .v4RevertedToV3: .eligible(statsVersion: eligibleStatsVersion)
+                    onNextState(nextState)
+                }
+                ServiceLocator.stores.dispatch(visibilityAction)
             }
         case .v4RevertedToV3:
-            return eligibleStatsVersion == .v4 ? .v3ShownV4Eligible: currentState
+            let nextState: StatsVersionState = eligibleStatsVersion == .v4 ? .v3ShownV4Eligible: currentState
+            onNextState(nextState)
         case .v3ShownV4Eligible:
-            return eligibleStatsVersion == .v4 ? currentState: .v4RevertedToV3
+            let nextState: StatsVersionState = eligibleStatsVersion == .v4 ? currentState: .v4RevertedToV3
+            onNextState(nextState)
         default:
-            return .eligible(statsVersion: eligibleStatsVersion)
+            let nextState = StatsVersionState.eligible(statsVersion: eligibleStatsVersion)
+            onNextState(nextState)
         }
     }
 
     /// Calculates the next state when the last shown stats version is set.
-    private func nextState(lastShownStatsVersion: StatsVersion) -> StatsVersionState {
+    private func nextState(initialStatsVersion: StatsVersion) -> StatsVersionState {
         guard let currentState = state else {
-            return .initial(statsVersion: lastShownStatsVersion)
+            return .initial(statsVersion: initialStatsVersion)
         }
         switch currentState {
-        case .v3ShownV4Eligible where lastShownStatsVersion == .v3:
+        case .v3ShownV4Eligible where initialStatsVersion == .v3:
             // If v3 is currently shown and we are notified the last shown stats is v3, no update on the UI state.
             return currentState
-        case .v4RevertedToV3 where lastShownStatsVersion == .v3:
+        case .v4RevertedToV3 where initialStatsVersion == .v3:
             // If v4 is reverted back to v3, and we are notified the last shown stats is v3, no update on the UI state.
             return currentState
         default:
-            return .initial(statsVersion: lastShownStatsVersion)
+            return .initial(statsVersion: initialStatsVersion)
         }
     }
 }
 
 extension StatsVersionStateCoordinator: StatsV3ToV4BannerActionHandler {
     func dismissV3ToV4Banner() {
+        let visibilityAction = AppSettingsAction.setStatsV3ToV4BannerVisibility(shouldShowBanner: false)
+        ServiceLocator.stores.dispatch(visibilityAction)
         state = .eligible(statsVersion: .v3)
     }
 
@@ -137,6 +164,8 @@ extension StatsVersionStateCoordinator: StatsV3ToV4BannerActionHandler {
 
 extension StatsVersionStateCoordinator: StatsV4ToV3BannerActionHandler {
     func dismissV4ToV3Banner() {
+        let visibilityAction = AppSettingsAction.setStatsV4ToV3BannerVisibility(shouldShowBanner: false)
+        ServiceLocator.stores.dispatch(visibilityAction)
         state = .eligible(statsVersion: .v3)
     }
 }

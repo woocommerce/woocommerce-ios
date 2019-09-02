@@ -10,6 +10,14 @@ class MockupStatsVersionStoresManager: DefaultStoresManager {
     ///
     var isStatsV4Available = false
 
+    /// Indicates whether the v3 to v4 banner should be shown.
+    ///
+    var shouldShowV3ToV4Banner: Bool = true
+
+    /// Indicates whether the v4 to v3 banner should be shown.
+    ///
+    var shouldShowV4ToV3Banner: Bool = true
+
     /// Set by setter `AppSettingsAction`.
     ///
     var statsVersionLastShown: StatsVersion?
@@ -41,8 +49,12 @@ class MockupStatsVersionStoresManager: DefaultStoresManager {
 
     private func onAppSettingsAction(action: AppSettingsAction) {
         switch action {
-        case .loadStatsVersionLastShown(_, let onCompletion):
+        case .loadInitialStatsVersionToShow(_, let onCompletion):
             onCompletion(statsVersionLastShown)
+        case .loadStatsV3ToV4BannerVisibility(let onCompletion):
+            onCompletion(shouldShowV3ToV4Banner)
+        case .loadStatsV4ToV3BannerVisibility(let onCompletion):
+            onCompletion(shouldShowV4ToV3Banner)
         case .setStatsVersionLastShown(_, let statsVersion):
             statsVersionLastShown = statsVersion
         default:

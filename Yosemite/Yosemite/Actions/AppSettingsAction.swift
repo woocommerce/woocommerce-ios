@@ -33,15 +33,46 @@ public enum AppSettingsAction: Action {
 
     // MARK: - Stats version
 
+    /// Loads the stats version to be shown given the latest app settings associated with the `siteID`
+    ///
+    case loadInitialStatsVersionToShow(siteID: Int,
+        onCompletion: (StatsVersion?) -> Void)
+
+    /// Loads whether stats v3 to v4 banner should be shown
+    ///
+    case loadStatsV3ToV4BannerVisibility(onCompletion: (Bool) -> Void)
+
+    /// Loads whether stats v4 to v3 banner should be shown
+    ///
+    case loadStatsV4ToV3BannerVisibility(onCompletion: (Bool) -> Void)
+
+    /// Loads the eligible stats version given the latest app settings associated with the `siteID`
+    ///
+    case loadStatsVersionEligible(siteID: Int,
+        onCompletion: (StatsVersion?) -> Void)
+
     /// Sets the last shown stats version associated with the `siteID`
     ///
     case setStatsVersionLastShown(siteID: Int,
         statsVersion: StatsVersion)
-
-    /// Loads the stored last shown stats version associated with the `siteID`
+    
+    /// Sets the latest highest eligible stats version associated with the `siteID`
     ///
-    case loadStatsVersionLastShown(siteID: Int,
-        onCompletion: (StatsVersion?) -> Void)
+    case setStatsVersionEligible(siteID: Int,
+        statsVersion: StatsVersion)
+    
+    /// Sets the user preferred stats version associated with the `siteID`
+    ///
+    case setStatsVersionPreference(siteID: Int,
+        statsVersion: StatsVersion)
+    
+    /// Sets whether stats v3 to v4 banner should be shown
+    ///
+    case setStatsV3ToV4BannerVisibility(shouldShowBanner: Bool)
+    
+    /// Sets whether stats v4 to v3 banner should be shown
+    ///
+    case setStatsV4ToV3BannerVisibility(shouldShowBanner: Bool)
 
     /// Clears all the states related to stats version
     ///

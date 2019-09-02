@@ -112,6 +112,20 @@ extension UIImage {
         return Gridicon.iconOfType(.filter)
     }
 
+    /// Gift Icon (with a red dot at the top right corner)
+    ///
+    static var giftWithTopRightRedDotImage: UIImage {
+        guard let image = Gridicon.iconOfType(.gift, withSize: CGSize(width: 24, height: 24))
+            .imageWithTintColor(StyleManager.wooGreyTextMin)?
+            .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
+                                  finalSize: CGSize(width: 26, height: 26),
+                                  dotDiameter: 7,
+                                  dotColor: StyleManager.announcementDotColor) else {
+                                    fatalError()
+        }
+        return image
+    }
+
     /// Gravatar Placeholder Image
     ///
     static var gravatarPlaceholderImage: UIImage {
@@ -128,6 +142,16 @@ extension UIImage {
     ///
     static var jetpackLogoImage: UIImage {
         return UIImage(named: "icon-jetpack-gray")!
+    }
+
+    /// Info Icon
+    ///
+    static var infoImage: UIImage {
+        guard let image = Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
+            .imageWithTintColor(StyleManager.wooGreyTextMin) else {
+                fatalError()
+        }
+        return image
     }
 
     /// Invisible Image

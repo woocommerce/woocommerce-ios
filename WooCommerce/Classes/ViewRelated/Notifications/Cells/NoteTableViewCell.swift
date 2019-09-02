@@ -72,7 +72,7 @@ class NoteTableViewCell: UITableViewCell {
 
     func configure(with viewModel: ReviewViewModel) {
         subjectLabel.text = viewModel.subject
-        snippetLabel.text = viewModel.snippet
+        snippetLabel.attributedText = viewModel.snippet
         noticonLabel.text = viewModel.notIcon
         noticonLabel.textColor = viewModel.notIconColor
 

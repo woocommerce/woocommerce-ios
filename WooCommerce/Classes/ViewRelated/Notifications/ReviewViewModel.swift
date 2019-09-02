@@ -17,8 +17,26 @@ final class ReviewViewModel {
         return formattedSubject
     }()
 
-    lazy var snippet: String? = {
-        return review.review.strippedHTML
+    lazy var snippet: NSAttributedString? = {
+        guard shouldDisplayStatus else {
+            return NSAttributedString(string: review.review.strippedHTML)
+        }
+
+        let accentColor = StyleManager.wooCommerceBrandColor
+        let textColor = StyleManager.defaultTextColor
+
+        let pendingReviewLiteral = NSAttributedString(string: Strings.pendingReviews,
+                                                      attributes: [NSAttributedString.Key.foregroundColor: accentColor])
+
+        let dot = NSAttributedString(string: " ∙ ",
+                                     attributes: [NSAttributedString.Key.foregroundColor: textColor])
+        let reviewText = NSAttributedString(string: review.review.strippedHTML,
+                                            attributes: [NSAttributedString.Key.foregroundColor: textColor])
+        let returnValue = NSMutableAttributedString(attributedString: pendingReviewLiteral)
+        returnValue.append(dot)
+        returnValue.append(reviewText)
+
+        return returnValue
     }()
 
     lazy var rating: Int = {
@@ -29,17 +47,21 @@ final class ReviewViewModel {
         return StyleManager.wooGreyMid
     }()
 
-    lazy var status: String = {
-        return review.status.description
-    }()
-
     let statusLabelBackgroundColor = StyleManager.statusWarningColor
 
-    var shouldDisplayStatus: Bool {
+    private var shouldDisplayStatus: Bool {
         return review.status == .hold
     }
 
     init(review: ProductReview) {
         self.review = review
+    }
+}
+
+
+private extension ReviewViewModel {
+    enum Strings {
+        static let pendingReviews = NSLocalizedString("Pending Review",
+                                                      comment: "Indicates a review is pending approval. It would read { Pending Review · Content of the reiview}")
     }
 }

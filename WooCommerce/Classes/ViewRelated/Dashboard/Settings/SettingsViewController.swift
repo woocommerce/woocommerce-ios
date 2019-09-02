@@ -151,7 +151,7 @@ private extension SettingsViewController {
             return
         }
         let action = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { eligibleStatsVersion in
-            guard eligibleStatsVersion == .v4 else {
+            guard eligibleStatsVersion == .v4, FeatureFlag.stats.enabled else {
                 onCompletion([.privacy, .featureRequest])
                 return
             }

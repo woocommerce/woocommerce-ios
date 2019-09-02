@@ -102,14 +102,10 @@ public class AppSettingsStore: Store {
             setStatsVersionLastShownOrFromUserPreference(siteID: siteID, statsVersion: statsVersion)
         case .loadInitialStatsVersionToShow(let siteID, let onCompletion):
             loadInitialStatsVersionToShow(siteID: siteID, onCompletion: onCompletion)
-        case .loadStatsV3ToV4BannerVisibility(let onCompletion):
-            loadStatsV3ToV4BannerVisibility(onCompletion: onCompletion)
-        case .setStatsV3ToV4BannerVisibility(let shouldShowBanner):
-            setStatsVersionBannerVisibility(banner: .v3ToV4, shouldShowBanner: shouldShowBanner)
-        case .loadStatsV4ToV3BannerVisibility(let onCompletion):
-            loadStatsV4ToV3BannerVisibility(onCompletion: onCompletion)
-        case .setStatsV4ToV3BannerVisibility(let shouldShowBanner):
-            setStatsVersionBannerVisibility(banner: .v4ToV3, shouldShowBanner: shouldShowBanner)
+        case .loadStatsVersionBannerVisibility(let banner, let onCompletion):
+            loadStatsVersionBannerVisibility(banner: banner, onCompletion: onCompletion)
+        case .setStatsVersionBannerVisibility(let banner, let shouldShowBanner):
+            setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
         case .resetStatsVersionStates:
             resetStatsVersionStates()
         }
@@ -325,18 +321,10 @@ private extension AppSettingsStore {
         write(StatsVersionBySite(statsVersionBySite: statsVersionBySite), to: fileURL, onCompletion: onCompletion)
     }
 
-    func loadStatsV3ToV4BannerVisibility(onCompletion: (Bool) -> Void) {
+    func loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner,
+                                         onCompletion: (Bool) -> Void) {
         guard let existingData: StatsVersionBannerVisibility = read(from: statsVersionBannerVisibilityURL),
-            let shouldShowBanner = existingData.visibilityByBanner[.v3ToV4] else {
-                onCompletion(true)
-                return
-        }
-        onCompletion(shouldShowBanner)
-    }
-
-    func loadStatsV4ToV3BannerVisibility(onCompletion: (Bool) -> Void) {
-        guard let existingData: StatsVersionBannerVisibility = read(from: statsVersionBannerVisibilityURL),
-            let shouldShowBanner = existingData.visibilityByBanner[.v4ToV3] else {
+            let shouldShowBanner = existingData.visibilityByBanner[banner] else {
                 onCompletion(true)
                 return
         }

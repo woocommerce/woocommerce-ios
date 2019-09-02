@@ -158,21 +158,21 @@ private final class MockInMemoryStorage: FileStorage {
     ///
     var deleteIsHit: Bool = false
 
-    private var dataByFileURL: [URL: Data] = [:]
+    private var data: Data?
 
     func data(for fileURL: URL) throws -> Data {
-        guard let data = dataByFileURL[fileURL] else {
+        guard let data = data else {
             throw AppSettingsStoreErrors.deletePreselectedProvider
         }
         return data
     }
 
     func write(_ data: Data, to fileURL: URL) throws {
-        dataByFileURL[fileURL] = data
+        self.data = data
     }
 
     func deleteFile(at fileURL: URL) throws {
-        dataByFileURL = [:]
+        data = nil
         deleteIsHit = true
     }
 }

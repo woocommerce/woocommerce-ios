@@ -17,7 +17,7 @@ final class ReviewsViewController: UIViewController {
 
     /// Mark all as read nav bar button
     ///
-    private lazy var leftBarButton: UIBarButtonItem = {
+    private lazy var rightBarButton: UIBarButtonItem = {
         return UIBarButtonItem(image: .checkmarkImage,
                                style: .plain,
                                target: self,
@@ -149,12 +149,12 @@ private extension ReviewsViewController {
     /// Setup: NavigationBar Buttons
     ///
     func configureNavigationBarButtons() {
-        leftBarButton.tintColor = .white
-        leftBarButton.accessibilityTraits = .button
-        leftBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
-        leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read",
+        rightBarButton.tintColor = .white
+        rightBarButton.accessibilityTraits = .button
+        rightBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
+        rightBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read",
                                                             comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
-        navigationItem.leftBarButtonItem = leftBarButton
+        navigationItem.rightBarButtonItem = rightBarButton
     }
 
     /// Setup: TableView

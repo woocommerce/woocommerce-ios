@@ -37,6 +37,7 @@ protocol Style {
 
     var goldStarColor: UIColor { get }
     var grayStarColor: UIColor { get }
+    var yellowStarColor: UIColor { get }
 
     var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
@@ -139,6 +140,7 @@ class DefaultStyle: Style {
     ///
     let goldStarColor                   = HandbookColors.goldStarColor
     let grayStarColor                   = HandbookColors.grayStarColor
+    let yellowStarColor                 = HandbookColors.murielYellow30
 
     /// NavBar
     ///
@@ -179,6 +181,7 @@ private extension DefaultStyle {
 
         static let goldStarColor         = UIColor(red: 238.0/255.0, green: 180.0/255.0, blue: 34.0/255.0, alpha: 1.0)
         static let grayStarColor         = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
+        static let murielYellow30        = UIColor(red: 0.86, green: 0.68, blue: 0.09, alpha: 1.0)
     }
 }
 
@@ -360,6 +363,10 @@ class StyleManager {
 
     static var goldStarColor: UIColor {
         return active.goldStarColor
+    }
+
+    static var yellowStarColor: UIColor {
+        return active.yellowStarColor
     }
 
     static var tableViewBackgroundColor: UIColor {

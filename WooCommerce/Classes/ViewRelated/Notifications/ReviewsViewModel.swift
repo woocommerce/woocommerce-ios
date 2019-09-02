@@ -98,10 +98,7 @@ extension ReviewsViewModel {
     private func synchronizeProductsReviewed(onCompletion: @escaping () -> Void) {
         let reviews = data.reviewsResultsController.fetchedObjects
         let reviewsProductIDs = reviews.map { return $0.productID }.uniqued()
-        print("====== review productIDs ====")
-        print(reviewsProductIDs)
-        print("////// review productIDs ====")
-
+        
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
@@ -112,9 +109,6 @@ extension ReviewsViewModel {
             } else {
                 //TODO. What event must be sent here?
                 //ServiceLocator.analytics.track(.notificationListLoaded)
-                print("====== products ====")
-                print(self.data.productsResultsController.fetchedObjects)
-                print("////// products ====")
             }
 
             onCompletion()

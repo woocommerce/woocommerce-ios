@@ -14,13 +14,13 @@ final class ReviewsDataSource: NSObject {
                                                        sortedBy: [descriptor])
     }()
 
-    lazy var productsResultsController: ResultsController<StorageProduct> = {
+    private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let storageManager = ServiceLocator.storageManager
-//        let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProduct.productID, ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager,
-                                                       matching: self.sitePredicate,
-                                                       sortedBy: [])
+                                                       matching: sitePredicate,
+                                                       sortedBy: [descriptor])
     }()
 
     private lazy var filterPredicate: NSPredicate = {
@@ -28,7 +28,7 @@ final class ReviewsDataSource: NSObject {
                                           ProductReviewStatus.approved.rawValue,
                                           ProductReviewStatus.hold.rawValue)
 
-        return  NSCompoundPredicate(andPredicateWithSubpredicates: [self.sitePredicate, statusPredicate])
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
     }()
 
     private lazy var sitePredicate: NSPredicate = {
@@ -79,6 +79,11 @@ private extension ReviewsDataSource {
     ///
     func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
         let review = reviewsResultsController.object(at: indexPath)
+        let products = productsResultsController.fetchedObjects
+
+        print("==== products DS ====")
+        print(products)
+        print("//// products ====")
 
         let viewModel = ReviewViewModel(review: review)
         cell.configure(with: viewModel)

@@ -109,7 +109,7 @@ private extension NoteTableViewCell {
 
     enum Star {
         static let size = Double(13)
-        static let filledImage = UIImage.starImage(size: Star.size, tintColor: StyleManager.defaultTextColor)
+        static let filledImage = UIImage.starImage(size: Star.size, tintColor: StyleManager.yellowStarColor)
         static let emptyImage = UIImage.starImage(size: Star.size, tintColor: .clear)
     }
 }

@@ -96,40 +96,40 @@ class AppSettingsStoreTests_StatsVersion: XCTestCase {
     }
 
     func testStatsVersionBannerVisibilityActions() {
-        let initialV3ToV4ReadAction = AppSettingsAction.loadStatsV3ToV4BannerVisibility(onCompletion: { shouldShowBanner in
+        let initialV3ToV4ReadAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v3ToV4, onCompletion: { shouldShowBanner in
             // Before any write actions, the default should be to show the banner.
             XCTAssertTrue(shouldShowBanner)
         })
         subject.onAction(initialV3ToV4ReadAction)
 
-        let initialV4ToV3ReadAction = AppSettingsAction.loadStatsV4ToV3BannerVisibility(onCompletion: { shouldShowBanner in
+        let initialV4ToV3ReadAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v4ToV3, onCompletion: { shouldShowBanner in
             // Before any write actions, the default should be to show the banner.
             XCTAssertTrue(shouldShowBanner)
         })
         subject.onAction(initialV4ToV3ReadAction)
 
-        let v3ToV4WriteAction = AppSettingsAction.setStatsV3ToV4BannerVisibility(shouldShowBanner: false)
+        let v3ToV4WriteAction = AppSettingsAction.setStatsVersionBannerVisibility(banner: .v3ToV4, shouldShowBanner: false)
         subject.onAction(v3ToV4WriteAction)
 
-        let v3ToV4AfterHidingV3ToV4ReadAction = AppSettingsAction.loadStatsV3ToV4BannerVisibility(onCompletion: { shouldShowBanner in
+        let v3ToV4AfterHidingV3ToV4ReadAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v3ToV4, onCompletion: { shouldShowBanner in
             XCTAssertFalse(shouldShowBanner)
         })
         subject.onAction(v3ToV4AfterHidingV3ToV4ReadAction)
 
-        let v4ToV3AfterHidingV3ToV4ReadAction = AppSettingsAction.loadStatsV4ToV3BannerVisibility(onCompletion: { shouldShowBanner in
+        let v4ToV3AfterHidingV3ToV4ReadAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v4ToV3, onCompletion: { shouldShowBanner in
             XCTAssertTrue(shouldShowBanner)
         })
         subject.onAction(v4ToV3AfterHidingV3ToV4ReadAction)
 
-        let v4ToV3WriteAction = AppSettingsAction.setStatsV4ToV3BannerVisibility(shouldShowBanner: false)
+        let v4ToV3WriteAction = AppSettingsAction.setStatsVersionBannerVisibility(banner: .v4ToV3, shouldShowBanner: false)
         subject.onAction(v4ToV3WriteAction)
 
-        let v3ToV4AfterHidingV4ToV3ReadAction = AppSettingsAction.loadStatsV3ToV4BannerVisibility(onCompletion: { shouldShowBanner in
+        let v3ToV4AfterHidingV4ToV3ReadAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v3ToV4, onCompletion: { shouldShowBanner in
             XCTAssertFalse(shouldShowBanner)
         })
         subject.onAction(v3ToV4AfterHidingV4ToV3ReadAction)
 
-        let v4ToV3AfterHidingV4ToV3ReadAction = AppSettingsAction.loadStatsV4ToV3BannerVisibility(onCompletion: { shouldShowBanner in
+        let v4ToV3AfterHidingV4ToV3ReadAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v4ToV3, onCompletion: { shouldShowBanner in
             XCTAssertFalse(shouldShowBanner)
         })
         subject.onAction(v4ToV3AfterHidingV4ToV3ReadAction)

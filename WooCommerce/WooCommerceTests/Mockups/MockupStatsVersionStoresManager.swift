@@ -51,10 +51,20 @@ class MockupStatsVersionStoresManager: DefaultStoresManager {
         switch action {
         case .loadInitialStatsVersionToShow(_, let onCompletion):
             onCompletion(statsVersionLastShown)
-        case .loadStatsV3ToV4BannerVisibility(let onCompletion):
-            onCompletion(shouldShowV3ToV4Banner)
-        case .loadStatsV4ToV3BannerVisibility(let onCompletion):
-            onCompletion(shouldShowV4ToV3Banner)
+        case .loadStatsVersionBannerVisibility(let banner, let onCompletion):
+            switch banner {
+            case .v3ToV4:
+                onCompletion(shouldShowV3ToV4Banner)
+            case .v4ToV3:
+                onCompletion(shouldShowV4ToV3Banner)
+            }
+        case .setStatsVersionBannerVisibility(let banner, let shouldShowBanner):
+            switch banner {
+            case .v3ToV4:
+                shouldShowV3ToV4Banner = shouldShowBanner
+            case .v4ToV3:
+                shouldShowV4ToV3Banner = shouldShowBanner
+            }
         case .setStatsVersionLastShown(_, let statsVersion):
             statsVersionLastShown = statsVersion
         default:

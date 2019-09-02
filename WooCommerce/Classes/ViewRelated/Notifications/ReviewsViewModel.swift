@@ -54,7 +54,18 @@ extension ReviewsViewModel {
     /// Prepares data necessary to render the reviews tab.
     ///
     func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
-        synchronizeAllReviews(onCompletion: onCompletion)
+        let group = DispatchGroup()
+
+        group.enter()
+        synchronizeAllReviews() {
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            if let completionBlock = onCompletion {
+                completionBlock()
+            }
+        }
     }
 
     /// Synchronizes the Reviews associated to the current store.

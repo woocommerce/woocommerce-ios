@@ -3,9 +3,9 @@ import UIKit
 import Gridicons
 
 
-// MARK: - NoteTableViewCell
+// MARK: - ProductReviewTableViewCell
 //
-class NoteTableViewCell: UITableViewCell {
+final class ProductReviewTableViewCell: UITableViewCell {
 
     /// Sidebar
     ///
@@ -83,7 +83,7 @@ class NoteTableViewCell: UITableViewCell {
 
 // MARK: - Private
 //
-private extension NoteTableViewCell {
+private extension ProductReviewTableViewCell {
 
     /// Refreshes the Cell's Colors.
     ///
@@ -105,7 +105,7 @@ private extension NoteTableViewCell {
 
 // MARK: - Constants!
 //
-private extension NoteTableViewCell {
+private extension ProductReviewTableViewCell {
 
     enum Star {
         static let size = Double(13)
@@ -117,7 +117,7 @@ private extension NoteTableViewCell {
 
 // MARK: - Private
 //
-private extension NoteTableViewCell {
+private extension ProductReviewTableViewCell {
 
     enum Constants {
         static let cornerRadius = CGFloat(2.0)

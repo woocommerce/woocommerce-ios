@@ -64,7 +64,7 @@ extension ReviewsDataSource: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: NoteTableViewCell.reuseIdentifier) as? NoteTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductReviewTableViewCell.reuseIdentifier) as? ProductReviewTableViewCell else {
             fatalError()
         }
 
@@ -86,7 +86,7 @@ private extension ReviewsDataSource {
 
     /// Initializes the Notifications Cell at the specified indexPath
     ///
-    func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
+    func configure(_ cell: ProductReviewTableViewCell, at indexPath: IndexPath) {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewProduct = product(id: review.productID)
 

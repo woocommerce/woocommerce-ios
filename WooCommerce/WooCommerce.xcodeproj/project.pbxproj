@@ -201,8 +201,8 @@
 		B5980A6721AC91AA00EBF596 /* BundleWooTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5980A6621AC91AA00EBF596 /* BundleWooTests.swift */; };
 		B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59C09D82188CBB100AB41D6 /* Array+Notes.swift */; };
 		B59C09DC2188D70200AB41D6 /* Notifications.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B59C09DB2188D70200AB41D6 /* Notifications.storyboard */; };
-		B59D1EDF219072CC009D1978 /* NoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EDE219072CC009D1978 /* NoteTableViewCell.swift */; };
-		B59D1EE121907304009D1978 /* NoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B59D1EE021907304009D1978 /* NoteTableViewCell.xib */; };
+		B59D1EDF219072CC009D1978 /* ProductReviewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EDE219072CC009D1978 /* ProductReviewTableViewCell.swift */; };
+		B59D1EE121907304009D1978 /* ProductReviewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B59D1EE021907304009D1978 /* ProductReviewTableViewCell.xib */; };
 		B59D1EE321907C7B009D1978 /* NSAttributedString+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */; };
 		B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B59D1EE4219080B4009D1978 /* Note+Woo.swift */; };
 		B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B59D1EE6219089A3009D1978 /* Noticons.ttf */; };
@@ -651,8 +651,8 @@
 		B5980A6621AC91AA00EBF596 /* BundleWooTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BundleWooTests.swift; sourceTree = "<group>"; };
 		B59C09D82188CBB100AB41D6 /* Array+Notes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Notes.swift"; sourceTree = "<group>"; };
 		B59C09DB2188D70200AB41D6 /* Notifications.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Notifications.storyboard; sourceTree = "<group>"; };
-		B59D1EDE219072CC009D1978 /* NoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteTableViewCell.swift; sourceTree = "<group>"; };
-		B59D1EE021907304009D1978 /* NoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = NoteTableViewCell.xib; sourceTree = "<group>"; };
+		B59D1EDE219072CC009D1978 /* ProductReviewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewTableViewCell.swift; sourceTree = "<group>"; };
+		B59D1EE021907304009D1978 /* ProductReviewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductReviewTableViewCell.xib; sourceTree = "<group>"; };
 		B59D1EE221907C7B009D1978 /* NSAttributedString+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSAttributedString+Helpers.swift"; sourceTree = "<group>"; };
 		B59D1EE4219080B4009D1978 /* Note+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Note+Woo.swift"; sourceTree = "<group>"; };
 		B59D1EE6219089A3009D1978 /* Noticons.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = Noticons.ttf; sourceTree = "<group>"; };
@@ -1368,8 +1368,8 @@
 		B59D1EDD219072B8009D1978 /* Cells */ = {
 			isa = PBXGroup;
 			children = (
-				B59D1EDE219072CC009D1978 /* NoteTableViewCell.swift */,
-				B59D1EE021907304009D1978 /* NoteTableViewCell.xib */,
+				B59D1EDE219072CC009D1978 /* ProductReviewTableViewCell.swift */,
+				B59D1EE021907304009D1978 /* ProductReviewTableViewCell.xib */,
 				B560D6852195BCA90027BB7E /* NoteDetailsHeaderTableViewCell.swift */,
 				B560D6872195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib */,
 				B5F571A321BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift */,
@@ -1997,7 +1997,7 @@
 				CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */,
 				B5FD110E21D3CB8500560344 /* OrderTableViewCell.xib in Resources */,
 				D83C129F22250BF0004CA04C /* OrderTrackingTableViewCell.xib in Resources */,
-				B59D1EE121907304009D1978 /* NoteTableViewCell.xib in Resources */,
+				B59D1EE121907304009D1978 /* ProductReviewTableViewCell.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */,
 				B560D6882195BCC70027BB7E /* NoteDetailsHeaderTableViewCell.xib in Resources */,
@@ -2336,7 +2336,7 @@
 				D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */,
 				0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */,
 				028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */,
-				B59D1EDF219072CC009D1978 /* NoteTableViewCell.swift in Sources */,
+				B59D1EDF219072CC009D1978 /* ProductReviewTableViewCell.swift in Sources */,
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
 				CE32B11520BF8779006FBCF4 /* FulfillButtonTableViewCell.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,

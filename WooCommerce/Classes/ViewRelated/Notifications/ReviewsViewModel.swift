@@ -20,7 +20,7 @@ final class ReviewsViewModel {
     }
 
     func displayPlaceholderReviews(tableView: UITableView) {
-        let options = GhostOptions(reuseIdentifier: NoteTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        let options = GhostOptions(reuseIdentifier: ProductReviewTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
         data.reviewsResultsController.stopForwardingEvents()
@@ -41,7 +41,7 @@ final class ReviewsViewModel {
     /// Setup: TableViewCells
     ///
     func configureTableViewCells(tableView: UITableView) {
-        let cells = [NoteTableViewCell.self]
+        let cells = [ProductReviewTableViewCell.self]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
@@ -98,7 +98,7 @@ extension ReviewsViewModel {
     private func synchronizeProductsReviewed(onCompletion: @escaping () -> Void) {
         let reviews = data.reviewsResultsController.fetchedObjects
         let reviewsProductIDs = reviews.map { return $0.productID }.uniqued()
-        
+
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }

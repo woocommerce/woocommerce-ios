@@ -9,7 +9,10 @@ extension UIImage {
     ///   - dotDiameter: the diameter of the dot.
     ///   - dotColor: the color of the dot.
     /// - Returns: an image with the original image at the given origin and a dot at the top right of the given diameter and color.
-    func imageWithTopRightDot(imageOrigin: CGPoint, finalSize: CGSize, dotDiameter: CGFloat, dotColor: UIColor) -> UIImage? {
+    func imageWithTopRightDot(imageOrigin: CGPoint,
+                              finalSize: CGSize,
+                              dotDiameter: CGFloat = 7,
+                              dotColor: UIColor = StyleManager.announcementDotColor) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(finalSize, false, 0)
         let context = UIGraphicsGetCurrentContext()!
         context.saveGState()

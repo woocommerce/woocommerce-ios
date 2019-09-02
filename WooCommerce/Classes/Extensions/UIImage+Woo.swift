@@ -118,9 +118,7 @@ extension UIImage {
         guard let image = Gridicon.iconOfType(.gift, withSize: CGSize(width: 24, height: 24))
             .imageWithTintColor(StyleManager.wooGreyTextMin)?
             .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
-                                  finalSize: CGSize(width: 26, height: 26),
-                                  dotDiameter: 7,
-                                  dotColor: StyleManager.announcementDotColor) else {
+                                  finalSize: CGSize(width: 26, height: 26)) else {
                                     fatalError()
         }
         return image

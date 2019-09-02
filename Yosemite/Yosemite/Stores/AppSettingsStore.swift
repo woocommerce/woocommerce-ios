@@ -285,7 +285,7 @@ private extension AppSettingsStore {
                                  statsVersion: StatsVersion) {
         set(statsVersion: statsVersion, for: siteID, to: statsVersionEligibleURL, onCompletion: { error in
             if let error = error {
-                DDLogError("⛔️ Saving the last shown stats version failed: siteID \(siteID). Error: \(error)")
+                DDLogError("⛔️ Saving the eligible stats version to \(statsVersion) failed: siteID \(siteID). Error: \(error)")
             }
         })
     }

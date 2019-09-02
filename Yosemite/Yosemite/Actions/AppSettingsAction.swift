@@ -60,7 +60,7 @@ public enum AppSettingsAction: Action {
     ///
     case setStatsVersionLastShown(siteID: Int,
         statsVersion: StatsVersion)
-    
+
     /// Sets the user preferred stats version associated with the `siteID`
     ///
     case setStatsVersionPreference(siteID: Int,

@@ -55,7 +55,7 @@ extension ReviewsDataSource: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let rawAge = resultsController.sections[section].name
-        return Age(rawValue: rawAge)?.description
+        return ReviewAge(rawValue: rawAge)?.description
     }
 }
 

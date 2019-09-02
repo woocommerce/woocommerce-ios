@@ -14,7 +14,7 @@ extension StorageProductReview {
         }
 
         let toDate = Date().normalizedDate()
-        let age = Age.from(startDate: startDate, toDate: toDate)
+        let age = ReviewAge.from(startDate: startDate, toDate: toDate)
 
         return age.rawValue
     }

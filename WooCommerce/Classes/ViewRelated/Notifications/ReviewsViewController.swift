@@ -38,10 +38,6 @@ final class ReviewsViewController: UIViewController {
         return refreshControl
     }()
 
-    /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
-    ///
-    private var estimatedRowHeights = [IndexPath: CGFloat]()
-
     /// UI Active State
     ///
     private var state: State = .results {

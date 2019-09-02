@@ -28,7 +28,7 @@ final class ReviewsViewModel {
 
     /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
     ///
-    func removePlaceholderNotes(tableView: UITableView) {
+    func removePlaceholderReviews(tableView: UITableView) {
         tableView.removeGhostContent()
         data.resultsController.startForwardingEvents(to: tableView)
     }

@@ -336,8 +336,8 @@ private extension ReviewsViewController {
 
     /// Removes Placeholder Reviews.
     ///
-    func removePlaceholderNotes() {
-        viewModel.removePlaceholderNotes(tableView: tableView)
+    func removePlaceholderReviews() {
+        viewModel.removePlaceholderReviews(tableView: tableView)
     }
 
     /// Displays the Empty State Overlay.
@@ -447,7 +447,7 @@ private extension ReviewsViewController {
         case .results:
             break
         case .syncing:
-            removePlaceholderNotes()
+            removePlaceholderReviews()
         }
     }
 

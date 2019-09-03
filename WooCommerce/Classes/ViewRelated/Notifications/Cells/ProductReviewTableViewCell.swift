@@ -54,6 +54,7 @@ final class ProductReviewTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureSubjectLabel()
         configureNoticonLabel()
         configureStarView()
     }
@@ -93,6 +94,10 @@ private extension ProductReviewTableViewCell {
     ///
     func refreshColors() {
         sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
+    }
+
+    func configureSubjectLabel() {
+        subjectLabel.applyBodyStyle()
     }
 
     func configureNoticonLabel() {

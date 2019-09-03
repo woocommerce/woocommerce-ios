@@ -33,15 +33,38 @@ public enum AppSettingsAction: Action {
 
     // MARK: - Stats version
 
+    /// Loads the stats version to be shown given the latest app settings associated with the `siteID`
+    ///
+    case loadInitialStatsVersionToShow(siteID: Int,
+        onCompletion: (StatsVersion?) -> Void)
+
+    /// Loads whether a stats verion banner should be shown
+    ///
+    case loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, onCompletion: (Bool) -> Void)
+
+    /// Loads the eligible stats version given the latest app settings associated with the `siteID`
+    ///
+    case loadStatsVersionEligible(siteID: Int,
+        onCompletion: (StatsVersion?) -> Void)
+
+    /// Sets whether a stats version banner should be shown
+    ///
+    case setStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, shouldShowBanner: Bool)
+
+    /// Sets the latest highest eligible stats version associated with the `siteID`
+    ///
+    case setStatsVersionEligible(siteID: Int,
+        statsVersion: StatsVersion)
+
     /// Sets the last shown stats version associated with the `siteID`
     ///
     case setStatsVersionLastShown(siteID: Int,
         statsVersion: StatsVersion)
 
-    /// Loads the stored last shown stats version associated with the `siteID`
+    /// Sets the user preferred stats version associated with the `siteID`
     ///
-    case loadStatsVersionLastShown(siteID: Int,
-        onCompletion: (StatsVersion?) -> Void)
+    case setStatsVersionPreference(siteID: Int,
+        statsVersion: StatsVersion)
 
     /// Clears all the states related to stats version
     ///

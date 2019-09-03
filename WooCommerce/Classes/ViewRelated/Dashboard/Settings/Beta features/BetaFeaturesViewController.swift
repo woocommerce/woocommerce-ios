@@ -92,7 +92,8 @@ private extension BetaFeaturesViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         guard type(of: cell) == row.type else {
-            fatalError()
+            assertionFailure("The type of cell (\(type(of: cell)) does not match the type (\(row.type)) for row: \(row)")
+            return
         }
 
         switch cell {

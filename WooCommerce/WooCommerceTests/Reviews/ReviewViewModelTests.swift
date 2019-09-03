@@ -31,6 +31,10 @@ final class ReviewViewModelTests: XCTestCase {
         XCTAssertEqual(subject.subject, reviewWithProduct())
     }
 
+    func testNotIconIsCommentIcon() {
+        XCTAssertEqual(subject.notIcon, "\u{f300}")
+    }
+
     func testSnippetReturnsExpectation() {
         XCTAssertEqual(subject.snippet?.string, "Pending Review ∙ " + NSAttributedString(string: review.review.strippedHTML).trimNewlines().string)
     }

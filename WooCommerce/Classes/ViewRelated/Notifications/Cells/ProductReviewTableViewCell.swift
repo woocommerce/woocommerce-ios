@@ -129,3 +129,23 @@ private extension ProductReviewTableViewCell {
         static let cornerRadius = CGFloat(2.0)
     }
 }
+
+
+// MARK: - Tests
+extension ProductReviewTableViewCell {
+    func getNotIconLabel() -> UILabel {
+        return noticonLabel
+    }
+
+    func getSubjectLabel() -> UILabel {
+        return subjectLabel
+    }
+
+    func getSnippetLabel() -> UILabel {
+        return snippetLabel
+    }
+
+    func getStarRatingView() -> RatingView {
+        return starRatingView
+    }
+}

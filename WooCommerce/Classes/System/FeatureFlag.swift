@@ -21,7 +21,7 @@ enum FeatureFlag: Int {
         case .stats:
             return BuildConfiguration.current == .localDeveloper
         case .reviews:
-            return BuildConfiguration.current == .localDeveloper
+            return false
         default:
             return true
         }

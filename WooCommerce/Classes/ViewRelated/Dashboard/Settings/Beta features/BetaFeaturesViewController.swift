@@ -175,7 +175,6 @@ extension BetaFeaturesViewController: UITableViewDataSource {
 //
 private struct Constants {
     static let rowHeight = CGFloat(44)
-    static let footerHeight = 44
 }
 
 private struct Section {

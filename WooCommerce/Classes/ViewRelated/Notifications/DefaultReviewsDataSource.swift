@@ -138,14 +138,10 @@ extension DefaultReviewsDataSource: UITableViewDelegate {
 //
 private extension DefaultReviewsDataSource {
 
-    /// Presents the Details for a given Note Instance: Either NotificationDetails, or OrderDetails, depending on the
-    /// Notification's Kind.
+    /// Presents the Details for a given ProductReview
     ///
     func presentDetails(for review: ProductReview) {
-        print("==== presenting detils for review")
-
-        //        let detailsViewController = NotificationDetailsViewController(note: note)
-        //        navigationController?.pushViewController(detailsViewController, animated: true)
+        // TODO. To be implemented in #1253
     }
 }
 

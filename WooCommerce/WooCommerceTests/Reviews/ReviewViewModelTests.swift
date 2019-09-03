@@ -34,6 +34,14 @@ final class ReviewViewModelTests: XCTestCase {
     func testSnippetReturnsExpectation() {
         XCTAssertEqual(subject.snippet?.string, "Pending Review ∙ " + NSAttributedString(string: review.review.strippedHTML).trimNewlines().string)
     }
+
+    func testRatingMatchesExpectation() {
+        XCTAssertEqual(subject.rating, review.rating)
+    }
+
+    func testIconColorMatchesExpectation() {
+        XCTAssertEqual(subject.notIconColor, StyleManager.wooGreyMid)
+    }
 }
 
 

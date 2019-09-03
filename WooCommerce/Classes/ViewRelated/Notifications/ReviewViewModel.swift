@@ -48,8 +48,6 @@ final class ReviewViewModel {
         return StyleManager.wooGreyMid
     }()
 
-    let statusLabelBackgroundColor = StyleManager.statusWarningColor
-
     private var shouldDisplayStatus: Bool {
         return review.status == .hold
     }

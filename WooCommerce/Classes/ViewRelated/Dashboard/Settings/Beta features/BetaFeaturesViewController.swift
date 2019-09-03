@@ -125,6 +125,8 @@ private extension BetaFeaturesViewController {
             guard let siteID = self?.siteID else {
                 return
             }
+            ServiceLocator.analytics.track(.settingsBetaFeaturesNewStatsUIToggled)
+
             let statsVersion: StatsVersion = isSwitchOn ? .v4: .v3
             let action = AppSettingsAction.setStatsVersionPreference(siteID: siteID,
                                                                      statsVersion: statsVersion)

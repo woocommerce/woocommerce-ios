@@ -5,7 +5,7 @@ import Yosemite
 
 
 final class ReviewsViewModel {
-    private let data = DefaultReviewsDataSource()
+    private let data: ReviewsDataSource
 
     var isEmpty: Bool {
         return data.reviewsResultsController.isEmpty
@@ -17,6 +17,10 @@ final class ReviewsViewModel {
 
     var delegate: UITableViewDelegate {
         return data
+    }
+
+    init(data: ReviewsDataSource) {
+        self.data = data
     }
 
     func displayPlaceholderReviews(tableView: UITableView) {

@@ -24,7 +24,7 @@ final class ReviewsViewController: UIViewController {
                                action: #selector(markAllAsRead))
     }()
 
-    private let viewModel = ReviewsViewModel()
+    private let viewModel = ReviewsViewModel(data: DefaultReviewsDataSource())
 
     /// Pull To Refresh Support.
     ///

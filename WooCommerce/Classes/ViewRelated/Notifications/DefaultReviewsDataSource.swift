@@ -3,9 +3,7 @@ import UIKit
 import Yosemite
 
 
-
-
-final class DefaultReviewsDataSource: NSObject {
+final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     lazy var reviewsResultsController: ResultsController<StorageProductReview> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)

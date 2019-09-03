@@ -375,6 +375,7 @@
 		D85136BB231E05CF00DD0539 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136BA231E05CF00DD0539 /* NotificationsViewController.swift */; };
 		D85136BE231E064700DD0539 /* NoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136BC231E064600DD0539 /* NoteTableViewCell.swift */; };
 		D85136BF231E064700DD0539 /* NoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85136BD231E064700DD0539 /* NoteTableViewCell.xib */; };
+		D85136C1231E09C300DD0539 /* ReviewsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136C0231E09C300DD0539 /* ReviewsDataSource.swift */; };
 		D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */; };
 		D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */; };
 		D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */; };
@@ -827,6 +828,7 @@
 		D85136BA231E05CF00DD0539 /* NotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		D85136BC231E064600DD0539 /* NoteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteTableViewCell.swift; sourceTree = "<group>"; };
 		D85136BD231E064700DD0539 /* NoteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteTableViewCell.xib; sourceTree = "<group>"; };
+		D85136C0231E09C300DD0539 /* ReviewsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDataSource.swift; sourceTree = "<group>"; };
 		D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusListTableViewCell.swift; sourceTree = "<group>"; };
 		D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StatusListTableViewCell.xib; sourceTree = "<group>"; };
 		D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatusListTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/StatusListTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
@@ -1363,6 +1365,7 @@
 				B59C09DB2188D70200AB41D6 /* Notifications.storyboard */,
 				D85136BA231E05CF00DD0539 /* NotificationsViewController.swift */,
 				D8C2A28A231931D100F503E9 /* ReviewViewModel.swift */,
+				D85136C0231E09C300DD0539 /* ReviewsDataSource.swift */,
 				D8C2A290231BD0FD00F503E9 /* DefaultReviewsDataSource.swift */,
 				D8C2A28523189C6300F503E9 /* ReviewsViewController.swift */,
 				D8C2A28E231BD00500F503E9 /* ReviewsViewModel.swift */,
@@ -2264,6 +2267,7 @@
 				D8736B5A22F07D7100A14A29 /* MainTabViewModel.swift in Sources */,
 				CE4DA5C621DD755E00074607 /* CurrencyFormatter.swift in Sources */,
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
+				D85136C1231E09C300DD0539 /* ReviewsDataSource.swift in Sources */,
 				CE1AFE622200B1BD00432745 /* ApplicationLogDetailViewController.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,

@@ -66,6 +66,7 @@ private extension BetaFeaturesViewController {
 
         tableView.dataSource = self
 
+        tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor

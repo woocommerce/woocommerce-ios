@@ -75,6 +75,10 @@ final class ProductReviewTableViewCell: UITableViewCell {
         snippetLabel.attributedText = viewModel.snippet
         noticonLabel.text = viewModel.notIcon
         noticonLabel.textColor = viewModel.notIconColor
+        
+        // hardcoding read status to true.
+        // to be implemented in issue #1252
+        read = true
 
         starRating = viewModel.rating
     }

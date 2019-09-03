@@ -30,6 +30,10 @@ final class ReviewViewModelTests: XCTestCase {
     func testReviewViewModelReturnsSubjectWithProductName() {
         XCTAssertEqual(subject.subject, reviewWithProduct())
     }
+
+    func testSnippetReturnsExpectation() {
+        XCTAssertEqual(subject.snippet?.string, "Pending Review ∙ " + NSAttributedString(string: review.review.strippedHTML).trimNewlines().string)
+    }
 }
 
 

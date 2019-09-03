@@ -37,6 +37,20 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.customShipmentProvidersFileName)
     }()
 
+    /// URL to the plist file that we use to determine the visibility for stats version banner.
+    ///
+    private lazy var statsVersionBannerVisibilityURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.statsVersionBannerVisibilityFileName)
+    }()
+
+    /// URL to the plist file that we use to store the eligible stats version.
+    ///
+    private lazy var statsVersionEligibleURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.statsVersionEligibleFileName)
+    }()
+
     /// URL to the plist file that we use to store the stats version displayed on Dashboard UI.
     ///
     private lazy var statsVersionLastShownURL: URL = {
@@ -80,10 +94,18 @@ public class AppSettingsStore: Store {
                                         onCompletion: onCompletion)
         case .resetStoredProviders(let onCompletion):
             resetStoredProviders(onCompletion: onCompletion)
-        case .setStatsVersionLastShown(let siteID, let statsVersion):
-            setStatsVersionLastShown(siteID: siteID, statsVersion: statsVersion)
-        case .loadStatsVersionLastShown(let siteID, let onCompletion):
-            loadStatsVersionLastShown(siteID: siteID, onCompletion: onCompletion)
+        case .loadStatsVersionEligible(let siteID, let onCompletion):
+            loadStatsVersionEligible(siteID: siteID, onCompletion: onCompletion)
+        case .setStatsVersionEligible(let siteID, let statsVersion):
+            setStatsVersionEligible(siteID: siteID, statsVersion: statsVersion)
+        case .setStatsVersionLastShown(let siteID, let statsVersion), .setStatsVersionPreference(let siteID, let statsVersion):
+            setStatsVersionLastShownOrFromUserPreference(siteID: siteID, statsVersion: statsVersion)
+        case .loadInitialStatsVersionToShow(let siteID, let onCompletion):
+            loadInitialStatsVersionToShow(siteID: siteID, onCompletion: onCompletion)
+        case .loadStatsVersionBannerVisibility(let banner, let onCompletion):
+            loadStatsVersionBannerVisibility(banner: banner, onCompletion: onCompletion)
+        case .setStatsVersionBannerVisibility(let banner, let shouldShowBanner):
+            setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
         case .resetStatsVersionStates:
             resetStatsVersionStates()
         }
@@ -250,8 +272,8 @@ private extension AppSettingsStore {
 // MARK: - Stats version
 //
 private extension AppSettingsStore {
-    func setStatsVersionLastShown(siteID: Int,
-                                  statsVersion: StatsVersion) {
+    func setStatsVersionLastShownOrFromUserPreference(siteID: Int,
+                                                      statsVersion: StatsVersion) {
         set(statsVersion: statsVersion, for: siteID, to: statsVersionLastShownURL, onCompletion: { error in
             if let error = error {
                 DDLogError("⛔️ Saving the last shown stats version failed: siteID \(siteID). Error: \(error)")
@@ -259,11 +281,29 @@ private extension AppSettingsStore {
         })
     }
 
-    func loadStatsVersionLastShown(siteID: Int, onCompletion: (StatsVersion?) -> Void) {
+    func setStatsVersionEligible(siteID: Int,
+                                 statsVersion: StatsVersion) {
+        set(statsVersion: statsVersion, for: siteID, to: statsVersionEligibleURL, onCompletion: { error in
+            if let error = error {
+                DDLogError("⛔️ Saving the eligible stats version to \(statsVersion) failed: siteID \(siteID). Error: \(error)")
+            }
+        })
+    }
+
+    func loadInitialStatsVersionToShow(siteID: Int, onCompletion: (StatsVersion?) -> Void) {
         guard let existingData: StatsVersionBySite = read(from: statsVersionLastShownURL),
             let statsVersion = existingData.statsVersionBySite[siteID] else {
             onCompletion(nil)
             return
+        }
+        onCompletion(statsVersion)
+    }
+
+    func loadStatsVersionEligible(siteID: Int, onCompletion: (StatsVersion?) -> Void) {
+        guard let existingData: StatsVersionBySite = read(from: statsVersionEligibleURL),
+            let statsVersion = existingData.statsVersionBySite[siteID] else {
+                onCompletion(nil)
+                return
         }
         onCompletion(statsVersion)
     }
@@ -281,8 +321,34 @@ private extension AppSettingsStore {
         write(StatsVersionBySite(statsVersionBySite: statsVersionBySite), to: fileURL, onCompletion: onCompletion)
     }
 
+    func loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner,
+                                         onCompletion: (Bool) -> Void) {
+        guard let existingData: StatsVersionBannerVisibility = read(from: statsVersionBannerVisibilityURL),
+            let shouldShowBanner = existingData.visibilityByBanner[banner] else {
+                onCompletion(true)
+                return
+        }
+        onCompletion(shouldShowBanner)
+    }
+
+    func setStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner,
+                                         shouldShowBanner: Bool) {
+        let fileURL = statsVersionBannerVisibilityURL
+        guard let existingData: StatsVersionBannerVisibility = read(from: statsVersionBannerVisibilityURL) else {
+            let statsVersionBySite: StatsVersionBannerVisibility = StatsVersionBannerVisibility(visibilityByBanner: [banner: shouldShowBanner])
+            write(statsVersionBySite, to: fileURL, onCompletion: { _ in })
+            return
+        }
+
+        var visibilityByBanner = existingData.visibilityByBanner
+        visibilityByBanner[banner] = shouldShowBanner
+        write(StatsVersionBannerVisibility(visibilityByBanner: visibilityByBanner), to: fileURL, onCompletion: { _ in })
+    }
+
     func resetStatsVersionStates() {
         do {
+            try fileStorage.deleteFile(at: statsVersionBannerVisibilityURL)
+            try fileStorage.deleteFile(at: statsVersionEligibleURL)
             try fileStorage.deleteFile(at: statsVersionLastShownURL)
         } catch {
             let error = AppSettingsStoreErrors.deleteStatsVersionStates
@@ -341,5 +407,7 @@ enum AppSettingsStoreErrors: Error {
 private enum Constants {
     static let shipmentProvidersFileName = "shipment-providers.plist"
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
+    static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
+    static let statsVersionEligibleFileName = "stats-version-eligible.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
 }

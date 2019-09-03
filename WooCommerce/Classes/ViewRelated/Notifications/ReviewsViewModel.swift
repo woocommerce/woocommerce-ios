@@ -5,7 +5,7 @@ import Yosemite
 
 
 final class ReviewsViewModel {
-    private let data = ReviewsDataSource()
+    private let data = DefaultReviewsDataSource()
 
     var isEmpty: Bool {
         return data.reviewsResultsController.isEmpty

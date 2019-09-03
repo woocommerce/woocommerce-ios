@@ -3,7 +3,9 @@ import UIKit
 import Yosemite
 
 
-final class ReviewsDataSource: NSObject {
+
+
+final class DefaultReviewsDataSource: NSObject {
     lazy var reviewsResultsController: ResultsController<StorageProductReview> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
@@ -53,7 +55,7 @@ final class ReviewsDataSource: NSObject {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension ReviewsDataSource: UITableViewDataSource {
+extension DefaultReviewsDataSource: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return reviewsResultsController.sections.count
@@ -82,7 +84,7 @@ extension ReviewsDataSource: UITableViewDataSource {
 
 // MARK: - Cell Setup
 //
-private extension ReviewsDataSource {
+private extension DefaultReviewsDataSource {
 
     /// Initializes the Notifications Cell at the specified indexPath
     ///
@@ -102,7 +104,7 @@ private extension ReviewsDataSource {
 }
 
 
-extension ReviewsDataSource: UITableViewDelegate {
+extension DefaultReviewsDataSource: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
@@ -136,7 +138,7 @@ extension ReviewsDataSource: UITableViewDelegate {
 
 // MARK: - Public Methods
 //
-private extension ReviewsDataSource {
+private extension DefaultReviewsDataSource {
 
     /// Presents the Details for a given Note Instance: Either NotificationDetails, or OrderDetails, depending on the
     /// Notification's Kind.
@@ -150,7 +152,7 @@ private extension ReviewsDataSource {
 }
 
 
-private extension ReviewsDataSource {
+private extension DefaultReviewsDataSource {
     enum Settings {
         static let estimatedRowHeight = CGFloat(88)
     }

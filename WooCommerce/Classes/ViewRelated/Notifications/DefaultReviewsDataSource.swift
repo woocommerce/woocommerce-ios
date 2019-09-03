@@ -62,7 +62,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         return reviewsResultsController.isEmpty
     }
 
-    /// The reviews
+    /// Identifiers of the Products mentioned in the reviews.
+    /// Guaranteed to be uniqued (does not contain duplicates)
     ///
     var reviewsProductsIDs: [Int] {
         return reviewsResultsController
@@ -83,7 +84,9 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         try? productsResultsController.performFetch()
     }
 
-    func fetchReviews() throws {
+    /// Initializes observers for incoming reviews
+    ///
+    func observeReviews() throws {
         try? reviewsResultsController.performFetch()
     }
 

@@ -39,7 +39,7 @@ final class ReviewsViewModel {
 
     func configureResultsController(tableView: UITableView) {
         data.startForwardingEvents(to: tableView)
-        try? data.fetchReviews()
+        try? data.observeReviews()
     }
 
     /// Setup: TableViewCells
@@ -100,9 +100,8 @@ extension ReviewsViewModel {
     }
 
     private func synchronizeProductsReviewed(onCompletion: @escaping () -> Void) {
-        //let reviews = data.reviews
-        //let reviewsProductIDs = reviews.map { return $0.productID }.uniqued()
         let reviewsProductIDs = data.reviewsProductsIDs
+
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }

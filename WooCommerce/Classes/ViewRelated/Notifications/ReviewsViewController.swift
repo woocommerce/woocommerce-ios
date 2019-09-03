@@ -125,6 +125,10 @@ final class ReviewsViewController: UIViewController {
             displayRatingPrompt()
         }
     }
+
+    func presentDetails(for noteId: Int) {
+        // TO BE IMPLEMENTED
+    }
 }
 
 
@@ -202,13 +206,6 @@ private extension ReviewsViewController {
 
     @IBAction func markAllAsRead() {
         // TODO. MArk all as read
-//        ServiceLocator.analytics.track(.notificationsListReadAllTapped)
-//        if unreadNotes.isEmpty {
-//            DDLogVerbose("# Every single notification is already marked as Read!")
-//            return
-//        }
-//
-//        markAsRead(notes: unreadNotes)
     }
 }
 
@@ -236,24 +233,6 @@ private extension ReviewsViewController {
             }
         }
         ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Marks the specified collection of Notifications as Read.
-    ///
-    func markAsRead(notes: [Note]) {
-//        let identifiers = notes.map { $0.noteId }
-//        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { [weak self] error in
-//            if let error = error {
-//                DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
-//                self?.hapticGenerator.notificationOccurred(.error)
-//            } else {
-//                self?.hapticGenerator.notificationOccurred(.success)
-//                self?.displayMarkAllAsReadNoticeIfNeeded()
-//            }
-//            self?.updateMarkAllReadButtonState()
-//        }
-//
-//        ServiceLocator.stores.dispatch(action)
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.

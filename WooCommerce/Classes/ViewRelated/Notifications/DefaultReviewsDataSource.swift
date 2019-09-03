@@ -8,9 +8,11 @@ import Yosemite
 ///
 final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
+    // MARK: - Private properties
+
     /// Product Reviews
     ///
-    lazy var reviewsResultsController: ResultsController<StorageProductReview> = {
+    private lazy var reviewsResultsController: ResultsController<StorageProductReview> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
 
@@ -52,6 +54,24 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
 
+    // MARK: - Private properties
+
+    /// Boolean indicating if there are reviews
+    ///
+    var isEmpty: Bool {
+        return reviewsResultsController.isEmpty
+    }
+
+    /// The reviews
+    ///
+    var reviewsProductsIDs: [Int] {
+        return reviewsResultsController
+            .fetchedObjects
+            .map { return $0.productID }
+            .uniqued()
+    }
+
+
     override init() {
         super.init()
         observeResults()
@@ -61,6 +81,18 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     ///
     private func observeResults() {
         try? productsResultsController.performFetch()
+    }
+
+    func fetchReviews() throws {
+        try? reviewsResultsController.performFetch()
+    }
+
+    func stopForwardingEvents() {
+        reviewsResultsController.stopForwardingEvents()
+    }
+
+    func startForwardingEvents(to tableView: UITableView) {
+        reviewsResultsController.startForwardingEvents(to: tableView)
     }
 }
 

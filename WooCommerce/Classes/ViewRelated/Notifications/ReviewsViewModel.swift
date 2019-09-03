@@ -8,7 +8,7 @@ final class ReviewsViewModel {
     private let data: ReviewsDataSource
 
     var isEmpty: Bool {
-        return data.reviewsResultsController.isEmpty
+        return data.isEmpty
     }
 
     var dataSource: UITableViewDataSource {
@@ -27,19 +27,19 @@ final class ReviewsViewModel {
         let options = GhostOptions(reuseIdentifier: ProductReviewTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
-        data.reviewsResultsController.stopForwardingEvents()
+        data.stopForwardingEvents()
     }
 
     /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderReviews(tableView: UITableView) {
         tableView.removeGhostContent()
-        data.reviewsResultsController.startForwardingEvents(to: tableView)
+        data.startForwardingEvents(to: tableView)
     }
 
     func configureResultsController(tableView: UITableView) {
-        data.reviewsResultsController.startForwardingEvents(to: tableView)
-        try? data.reviewsResultsController.performFetch()
+        data.startForwardingEvents(to: tableView)
+        try? data.fetchReviews()
     }
 
     /// Setup: TableViewCells
@@ -100,9 +100,9 @@ extension ReviewsViewModel {
     }
 
     private func synchronizeProductsReviewed(onCompletion: @escaping () -> Void) {
-        let reviews = data.reviewsResultsController.fetchedObjects
-        let reviewsProductIDs = reviews.map { return $0.productID }.uniqued()
-
+        //let reviews = data.reviews
+        //let reviewsProductIDs = reviews.map { return $0.productID }.uniqued()
+        let reviewsProductIDs = data.reviewsProductsIDs
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }

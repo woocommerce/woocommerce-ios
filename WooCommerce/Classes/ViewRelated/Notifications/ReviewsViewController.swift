@@ -24,10 +24,6 @@ final class ReviewsViewController: UIViewController {
                                action: #selector(markAllAsRead))
     }()
 
-    /// Haptic Feedback!
-    ///
-    private let hapticGenerator = UINotificationFeedbackGenerator()
-
     private let viewModel = ReviewsViewModel()
 
     /// Pull To Refresh Support.

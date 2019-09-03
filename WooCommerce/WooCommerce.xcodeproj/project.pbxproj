@@ -1005,6 +1005,7 @@
 		746791642108D853007CF1DC /* Mockups */ = {
 			isa = PBXGroup;
 			children = (
+				D85136CC231E15B700DD0539 /* MockReviews.swift */,
 				746791652108D87B007CF1DC /* MockupAnalyticsProvider.swift */,
 				B555531021B57E6F00449E71 /* MockupApplicationAdapter.swift */,
 				B53A569C21123EEB000776C9 /* MockupStorage.swift */,
@@ -1812,7 +1813,6 @@
 		D85136C7231E128500DD0539 /* Reviews */ = {
 			isa = PBXGroup;
 			children = (
-				D85136CC231E15B700DD0539 /* MockReviews.swift */,
 				D85136C8231E12B600DD0539 /* ReviewViewModelTests.swift */,
 			);
 			path = Reviews;

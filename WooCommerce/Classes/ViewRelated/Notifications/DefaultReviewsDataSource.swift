@@ -3,7 +3,13 @@ import UIKit
 import Yosemite
 
 
+/// Default implementation of the ReviewsDataSource, dequeeues and
+/// populates cells to render the Product Review list
+///
 final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
+
+    /// Product Reviews
+    ///
     lazy var reviewsResultsController: ResultsController<StorageProductReview> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
@@ -14,6 +20,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
                                                        sortedBy: [descriptor])
     }()
 
+    /// Products
+    ///
     private lazy var productsResultsController: ResultsController<StorageProduct> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProduct.productID, ascending: true)
@@ -23,6 +31,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
                                                        sortedBy: [descriptor])
     }()
 
+    /// Predicate to filter only Product Reviews that are either approved or on hold
+    ///
     private lazy var filterPredicate: NSPredicate = {
         let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
                                           ProductReviewStatus.approved.rawValue,
@@ -31,6 +41,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
     }()
 
+    /// Predicate to entities that belong to the current store
+    ///
     private lazy var sitePredicate: NSPredicate = {
         return NSPredicate(format: "siteID == %lld",
                           ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
@@ -45,6 +57,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         observeResults()
     }
 
+    /// Initialise obervers
+    ///
     private func observeResults() {
         try? productsResultsController.performFetch()
     }

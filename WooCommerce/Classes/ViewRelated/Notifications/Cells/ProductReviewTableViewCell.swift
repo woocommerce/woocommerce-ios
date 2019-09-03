@@ -71,6 +71,9 @@ final class ProductReviewTableViewCell: UITableViewCell {
         refreshColors()
     }
 
+
+    // MARK: - Public API
+
     func configure(with viewModel: ReviewViewModel) {
         subjectLabel.text = viewModel.subject
         snippetLabel.attributedText = viewModel.snippet
@@ -121,12 +124,6 @@ private extension ProductReviewTableViewCell {
         static let filledImage = UIImage.starImage(size: Star.size, tintColor: StyleManager.yellowStarColor)
         static let emptyImage = UIImage.starImage(size: Star.size, tintColor: .clear)
     }
-}
-
-
-// MARK: - Private
-//
-private extension ProductReviewTableViewCell {
 
     enum Constants {
         static let cornerRadius = CGFloat(2.0)

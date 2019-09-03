@@ -20,7 +20,7 @@ final class ReviewViewModel {
 
     lazy var snippet: NSAttributedString? = {
         guard shouldDisplayStatus else {
-            return NSAttributedString(string: review.review.strippedHTML)
+            return NSAttributedString(string: review.review.strippedHTML).trimNewlines()
         }
 
         let accentColor = StyleManager.hightlightTextColor
@@ -37,7 +37,7 @@ final class ReviewViewModel {
         returnValue.append(dot)
         returnValue.append(reviewText)
 
-        return returnValue
+        return returnValue.trimNewlines()
     }()
 
     lazy var rating: Int = {

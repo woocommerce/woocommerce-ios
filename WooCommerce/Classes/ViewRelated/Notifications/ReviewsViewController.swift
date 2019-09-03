@@ -98,7 +98,6 @@ final class ReviewsViewController: UIViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
         refreshTitle()
-        //refreshResultsPredicate()
         configureNavigationItem()
         configureNavigationBarButtons()
         configureTableView()
@@ -113,13 +112,7 @@ final class ReviewsViewController: UIViewController {
 
         resetApplicationBadge()
         transitionToResultsUpdatedState()
-        synchronizeReviews() {
-            // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
-            // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
-            // See this issue for more deets: https://github.com/woocommerce/woocommerce-ios/issues/469
-            //
-            //self?.updateLastSeenTime()
-        }
+        synchronizeReviews()
 
         if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
             displayRatingPrompt()
@@ -274,31 +267,6 @@ private extension ReviewsViewController {
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
         transitionToSyncingState()
-    }
-}
-
-
-// MARK: - Details Rendering
-//
-private extension ReviewsViewController {
-
-    /// Pushes the Order Details associated to a given Note (if possible).
-    ///
-    func presentOrderDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
-            DDLogError("## Notification with [\(note.noteId)] lacks its OrderID!")
-            return
-        }
-
-        let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: siteID)
-        navigationController?.pushViewController(loaderViewController, animated: true)
-    }
-
-    /// Pushes the Notification Details associated to a given Note.
-    ///
-    func presentNotificationDetails(for note: Note) {
-        let detailsViewController = NotificationDetailsViewController(note: note)
-        navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }
 

@@ -133,11 +133,22 @@ private extension SettingsViewController {
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
-        rowsForImproveTheAppSection { [weak self] improveTheAppRows in
-            self?.sections = [
+        if FeatureFlag.stats.enabled {
+            rowsForImproveTheAppSection { [weak self] improveTheAppRows in
+                self?.sections = [
+                    Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+                    Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+                    Section(title: improveTheAppTitle, rows: improveTheAppRows, footerHeight: UITableView.automaticDimension),
+                    Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+                    Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
+                    Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+                ]
+            }
+        } else {
+            sections = [
                 Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
                 Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-                Section(title: improveTheAppTitle, rows: improveTheAppRows, footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
                 Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
                 Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
                 Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
@@ -151,7 +162,7 @@ private extension SettingsViewController {
             return
         }
         let action = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { eligibleStatsVersion in
-            guard eligibleStatsVersion == .v4, FeatureFlag.stats.enabled else {
+            guard eligibleStatsVersion == .v4 else {
                 onCompletion([.privacy, .featureRequest])
                 return
             }

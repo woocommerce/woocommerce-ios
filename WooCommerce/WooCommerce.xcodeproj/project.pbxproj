@@ -377,7 +377,7 @@
 		D85136BF231E064700DD0539 /* NoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85136BD231E064700DD0539 /* NoteTableViewCell.xib */; };
 		D85136C1231E09C300DD0539 /* ReviewsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136C0231E09C300DD0539 /* ReviewsDataSource.swift */; };
 		D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136C8231E12B600DD0539 /* ReviewViewModelTests.swift */; };
-		D85136CB231E12F400DD0539 /* MockReviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136CA231E12F400DD0539 /* MockReviews.swift */; };
+		D85136CD231E15B800DD0539 /* MockReviews.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136CC231E15B700DD0539 /* MockReviews.swift */; };
 		D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */; };
 		D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */; };
 		D85B8336222FCDA1002168F3 /* StatusListTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */; };
@@ -832,7 +832,7 @@
 		D85136BD231E064700DD0539 /* NoteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteTableViewCell.xib; sourceTree = "<group>"; };
 		D85136C0231E09C300DD0539 /* ReviewsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDataSource.swift; sourceTree = "<group>"; };
 		D85136C8231E12B600DD0539 /* ReviewViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ReviewViewModelTests.swift; path = WooCommerceTests/Reviews/ReviewViewModelTests.swift; sourceTree = SOURCE_ROOT; };
-		D85136CA231E12F400DD0539 /* MockReviews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockReviews.swift; sourceTree = "<group>"; };
+		D85136CC231E15B700DD0539 /* MockReviews.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MockReviews.swift; sourceTree = "<group>"; };
 		D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusListTableViewCell.swift; sourceTree = "<group>"; };
 		D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = StatusListTableViewCell.xib; sourceTree = "<group>"; };
 		D85B8335222FCDA1002168F3 /* StatusListTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StatusListTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/StatusListTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
@@ -1812,8 +1812,8 @@
 		D85136C7231E128500DD0539 /* Reviews */ = {
 			isa = PBXGroup;
 			children = (
+				D85136CC231E15B700DD0539 /* MockReviews.swift */,
 				D85136C8231E12B600DD0539 /* ReviewViewModelTests.swift */,
-				D85136CA231E12F400DD0539 /* MockReviews.swift */,
 			);
 			path = Reviews;
 			sourceTree = "<group>";
@@ -2475,7 +2475,7 @@
 				B5980A6521AC905C00EBF596 /* UIDeviceWooTests.swift in Sources */,
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,
-				D85136CB231E12F400DD0539 /* MockReviews.swift in Sources */,
+				D85136CD231E15B800DD0539 /* MockReviews.swift in Sources */,
 				02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */,
 				D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,

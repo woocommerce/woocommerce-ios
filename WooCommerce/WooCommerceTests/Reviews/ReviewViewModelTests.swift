@@ -1,26 +1,38 @@
 import XCTest
 @testable import WooCommerce
+@testable import Yosemite
 
 final class ReviewViewModelTests: XCTestCase {
+    private let mocks = MockReviews()
+    private var subject: ReviewViewModel!
+    private var review: ProductReview!
 
     override func setUp() {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        super.setUp()
+        review = mocks.review()
+        subject = ReviewViewModel(review: review, product: nil)
     }
 
     override func tearDown() {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        subject = nil
+        review = nil
+        super.tearDown()
     }
 
-    func testExample() {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    func testReviewViewModelReturnsSubject() {
+        XCTAssertEqual(subject.subject, subjectWithoutProduct())
+    }
+}
+
+
+private extension ReviewViewModelTests {
+    private func subjectWithoutProduct() -> String {
+        return String(format: Strings.subjectFormat, mocks.reviewer, "")
     }
 
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
+    enum Strings {
+        static let subjectFormat = NSLocalizedString(
+            "%@ left a review on %@",
+            comment: "Review title. Reads as {Review author} left a review on {Product}.")
     }
-
 }

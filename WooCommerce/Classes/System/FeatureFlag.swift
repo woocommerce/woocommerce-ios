@@ -6,6 +6,10 @@ enum FeatureFlag: Int {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
+    /// Product list
+    ///
+    case productList
+
     /// Store stats
     ///
     case stats
@@ -14,6 +18,8 @@ enum FeatureFlag: Int {
     ///
     var enabled: Bool {
         switch self {
+        case .productList:
+            return BuildConfiguration.current == .localDeveloper
         case .stats:
             return BuildConfiguration.current == .localDeveloper
         default:

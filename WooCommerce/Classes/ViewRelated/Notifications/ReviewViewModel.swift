@@ -9,7 +9,7 @@ final class ReviewViewModel {
 
     lazy var subject: String? = {
         let subjectUnformatted = NSLocalizedString(
-            "%@ left a review on %@",
+            "%1$@ left a review on %2$@",
             comment: "Review title. Reads as {Review author} left a review on {Product}."
         )
 

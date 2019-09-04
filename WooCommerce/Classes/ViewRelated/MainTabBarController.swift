@@ -60,6 +60,10 @@ final class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
+
+        if FeatureFlag.productList.enabled {
+            configureProductsTab()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -113,6 +117,26 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
         }
 
         return FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
+    }
+}
+
+// MARK: - Products tab
+//
+private extension MainTabBarController {
+    func configureProductsTab() {
+        var tabViewControllers = viewControllers
+
+        // TODO-1262: replace the products tab with a view controller that shows the product list
+        let productsViewController = UIViewController(nibName: nil, bundle: nil)
+        productsViewController.view.backgroundColor = .white
+
+        let navController = WooNavigationController(rootViewController: productsViewController)
+        navController.tabBarItem = UITabBarItem(title: NSLocalizedString("Products",
+                                                                         comment: "Title of the Products tab — plural form of Product"),
+                                                image: UIImage.productImage,
+                                                tag: 0)
+        tabViewControllers?.insert(navController, at: 2)
+        viewControllers = tabViewControllers
     }
 }
 

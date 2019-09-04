@@ -181,7 +181,6 @@ private extension DefaultStyle {
         static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0) // woo purple
         static let wooSecondary          = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
         static let wooAccent             = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
-        static let murielBlue50          = UIColor(red: 0.13, green: 0.44, blue: 0.69, alpha: 1.0)
 
         // multiple grays
         static let wooGreyLight          = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
@@ -196,6 +195,7 @@ private extension DefaultStyle {
         // Muriel theme in https://color-studio.blog/
         static let murielRed50                 = UIColor(red: 0.84, green: 0.21, blue: 0.22, alpha: 1)
         static let murielYellow30        = UIColor(red: 0.86, green: 0.68, blue: 0.09, alpha: 1.0)
+        static let murielBlue50          = UIColor(red: 0.13, green: 0.44, blue: 0.69, alpha: 1.0)
     }
 }
 

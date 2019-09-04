@@ -67,6 +67,10 @@ protocol Style {
     ///
     var statusBarDark: UIStatusBarStyle { get }
     var statusBarLight: UIStatusBarStyle { get }
+
+    /// Announcement
+    ///
+    var announcementDotColor: UIColor { get }
 }
 
 
@@ -146,6 +150,10 @@ class DefaultStyle: Style {
     ///
     let statusBarDark                   = UIStatusBarStyle.default
     let statusBarLight                  = UIStatusBarStyle.lightContent
+
+    /// Announcement
+    ///
+    let announcementDotColor            = HandbookColors.murielRed50
 }
 
 
@@ -176,6 +184,9 @@ private extension DefaultStyle {
 
         static let goldStarColor         = UIColor(red: 238.0/255.0, green: 180.0/255.0, blue: 34.0/255.0, alpha: 1.0)
         static let grayStarColor         = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
+
+        // Muriel theme in https://color-studio.blog/
+        static let murielRed50                 = UIColor(red: 0.84, green: 0.21, blue: 0.22, alpha: 1)
     }
 }
 
@@ -409,5 +420,11 @@ class StyleManager {
 
     static var statusBarLight: UIStatusBarStyle {
         return active.statusBarLight
+    }
+
+    // MARK: - Announcement
+
+    static var announcementDotColor: UIColor {
+        return active.announcementDotColor
     }
 }

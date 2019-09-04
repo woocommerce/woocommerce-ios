@@ -440,7 +440,7 @@ private extension ReviewsViewController {
         }
 
         markAsReadCount += 1
-        let message = NSLocalizedString("All notifications marked as read", comment: "Mark all notifications as read notice")
+        let message = NSLocalizedString("All reviews marked as read", comment: "Mark all reviews as read notice")
         let notice = Notice(title: message, feedbackType: .success)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }

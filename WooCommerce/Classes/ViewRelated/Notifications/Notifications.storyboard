@@ -13,7 +13,7 @@
         <!--Notifications-->
         <scene sceneID="47z-8R-JgL">
             <objects>
-                <viewController id="twY-WG-a6J" userLabel="Notifications" customClass="ReviewsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController id="twY-WG-a6J" userLabel="Notifications" customClass="NotificationsViewController" customModule="WooCommerce" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" contentMode="scaleToFill" id="FHu-UQ-IDk">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>

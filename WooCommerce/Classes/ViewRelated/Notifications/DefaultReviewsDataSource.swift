@@ -3,7 +3,7 @@ import UIKit
 import Yosemite
 
 
-/// Default implementation of the ReviewsDataSource, dequeeues and
+/// Default implementation of the ReviewsDataSource, dequeues and
 /// populates cells to render the Product Review list
 ///
 final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {

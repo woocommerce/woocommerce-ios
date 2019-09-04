@@ -37,12 +37,12 @@ final class ReviewViewModel {
         let textColor = StyleManager.wooGreyTextMin
 
         let pendingReviewLiteral = NSAttributedString(string: Strings.pendingReviews,
-                                                      attributes: [NSAttributedString.Key.foregroundColor: accentColor])
+                                                      attributes: [.foregroundColor: accentColor])
 
         let dot = NSAttributedString(string: " ∙ ",
-                                     attributes: [NSAttributedString.Key.foregroundColor: textColor])
+                                     attributes: [.foregroundColor: textColor])
         let reviewText = NSAttributedString(string: review.review.strippedHTML,
-                                            attributes: [NSAttributedString.Key.foregroundColor: textColor])
+                                            attributes: [.foregroundColor: textColor])
         let returnValue = NSMutableAttributedString(attributedString: pendingReviewLiteral)
         returnValue.append(dot)
         returnValue.append(reviewText)

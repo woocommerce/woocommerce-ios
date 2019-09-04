@@ -133,7 +133,7 @@ private extension SettingsViewController {
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
-        if FeatureFlag.stats.enabled {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stats) {
             rowsForImproveTheAppSection { [weak self] improveTheAppRows in
                 self?.sections = [
                     Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),

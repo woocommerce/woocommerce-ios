@@ -5,8 +5,8 @@ import Foundation
 ///
 enum ReviewAge: String {
     case last24Hours = "0"
-    case last7Days   = "2"
-    case theRest     = "4"
+    case last7Days   = "1"
+    case theRest     = "2"
 
     var description: String {
         switch self {

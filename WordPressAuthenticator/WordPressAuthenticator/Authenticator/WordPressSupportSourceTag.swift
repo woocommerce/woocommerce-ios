@@ -27,6 +27,9 @@ extension WordPressSupportSourceTag {
     public static var loginEmail: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "loginEmail", origin: "origin:login-email")
     }
+    public static var loginApple: WordPressSupportSourceTag {
+        return WordPressSupportSourceTag(name: "loginApple", origin: "origin:login-apple")
+    }
     public static var login2FA: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "login2FA", origin: "origin:login-2fa")
     }
@@ -57,4 +60,8 @@ extension WordPressSupportSourceTag {
     public static var wpComSignupMagicLink: WordPressSupportSourceTag {
         return WordPressSupportSourceTag(name: "wpComSignupMagicLink", origin: "origin:signup-magic-link")
     }
+    public static var wpComSignupApple: WordPressSupportSourceTag {
+        return WordPressSupportSourceTag(name: "wpComSignupApple", origin: "origin:signup-apple")
+    }
+
 }

@@ -105,6 +105,7 @@ private extension ProductReviewTableViewCell {
     }
 
     func configureSnippetLabel() {
+        snippetLabel.applySecondaryFootnoteStyle()
         snippetLabel.numberOfLines = 2
     }
 

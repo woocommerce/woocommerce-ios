@@ -84,20 +84,16 @@ private extension AppleAuthenticator {
                                             let wpcom = WordPressComCredentials(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: self?.loginFields.siteAddress ?? "")
                                             let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
-                                            // New WP Account
+                                            self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
+
                                             if accountCreated {
-                                                self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
                                                 self?.signupSuccessful(with: credentials)
-                                                return
                                             } else {
-                                                self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
-                                                self?.signinSuccessful(with: credentials)
-                                                return
+                                                self?.loginSuccessful(with: credentials)
                                             }
-                                            
+
             }, failure: { [weak self] error in
                 SVProgressHUD.dismiss()
-                
                 self?.signupFailed(with: error)
         })
     }
@@ -108,7 +104,7 @@ private extension AppleAuthenticator {
         showSignupEpilogue(for: credentials)
     }
     
-    func signinSuccessful(with credentials: AuthenticatorCredentials) {
+    func loginSuccessful(with credentials: AuthenticatorCredentials) {
         // TODO: Tracks events for login
         showSigninEpilogue(for: credentials)
     }
@@ -134,8 +130,9 @@ private extension AppleAuthenticator {
     }
     
     func signupFailed(with error: Error) {
+        DDLogError("Apple Authenticator: Signup failed. error: \(error.localizedDescription)")
         WPAnalytics.track(.signupSocialFailure)
-        DDLogError("Apple Authenticator: signup failed. error: \(error)")
+        delegate?.authFailedWithError(message: error.localizedDescription)
     }
     
     func logInInstead() {

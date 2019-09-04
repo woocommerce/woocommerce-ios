@@ -291,7 +291,7 @@ private extension ReviewsViewController {
         overlayView.messageText = NSLocalizedString("No Reviews Yet!", comment: "Empty Reviews List Message")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
             guard let site = ServiceLocator.stores.sessionManager.defaultSite else {

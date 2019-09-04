@@ -29,6 +29,19 @@ final class MockReviews {
                              rating: rating,
                              verified: verified)
     }
+
+    func anonyousReview() -> Networking.ProductReview {
+        return ProductReview(siteID: siteID,
+                             reviewID: reviewID,
+                             productID: productID,
+                             dateCreated: dateCreated,
+                             statusKey: statusKey,
+                             reviewer: "",
+                             reviewerEmail: reviewerEmail,
+                             review: reviewText,
+                             rating: rating,
+                             verified: verified)
+    }
 }
 
 

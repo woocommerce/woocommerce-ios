@@ -31,6 +31,14 @@ final class ReviewViewModelTests: XCTestCase {
         XCTAssertEqual(subject.subject, reviewWithProduct())
     }
 
+    func testReviewViewModelReturnsSubjectWithAnonymousForUnknownReviewerName() {
+        let viewModel = ReviewViewModel(review: mocks.anonyousReview(), product: product)
+
+        let reviewSubject = viewModel.subject
+
+        XCTAssertTrue(reviewSubject!.contains("Anonymous"))
+    }
+
     func testNotIconIsCommentIcon() {
         XCTAssertEqual(subject.notIcon, "\u{f300}")
     }

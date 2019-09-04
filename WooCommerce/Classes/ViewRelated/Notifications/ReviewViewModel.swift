@@ -13,9 +13,19 @@ final class ReviewViewModel {
             comment: "Review title. Reads as {Review author} left a review on {Product}."
         )
 
-        let formattedSubject = String(format: subjectUnformatted, review.reviewer, product?.name ?? "")
+        let formattedSubject = String(format: subjectUnformatted, self.reviewerName, product?.name ?? "")
 
         return formattedSubject
+    }()
+
+    private lazy var reviewerName: String = {
+        let reviewerName = review.reviewer
+
+        if reviewerName.isEmpty {
+            return Strings.anonymous
+        }
+
+        return reviewerName
     }()
 
     lazy var snippet: NSAttributedString? = {
@@ -62,6 +72,8 @@ final class ReviewViewModel {
 private extension ReviewViewModel {
     enum Strings {
         static let pendingReviews = NSLocalizedString("Pending Review",
-                                                      comment: "Indicates a review is pending approval. It reads { Pending Review · Content of the reiview}")
+                                                      comment: "Indicates a review is pending approval. It reads { Pending Review · Content of the review}")
+        static let anonymous = NSLocalizedString("Anonymous",
+                                                      comment: "Indicates the reviewer does not have a name. It reads { Anonymous left a review}")
     }
 }

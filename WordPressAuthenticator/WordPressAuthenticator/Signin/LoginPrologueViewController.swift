@@ -128,9 +128,15 @@ class LoginPrologueViewController: LoginViewController {
 
 #if XCODE11
 extension LoginPrologueViewController: AppleAuthenticatorDelegate {
+
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
          performSegue(withIdentifier: .showWPComLogin, sender: self)
     }
+
+    func authFailedWithError(message: String) {
+        displayErrorAlert(message, sourceTag: .loginApple)
+    }
+    
 }
 #endif

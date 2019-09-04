@@ -7,6 +7,7 @@ import SVProgressHUD
 
 @objc protocol AppleAuthenticatorDelegate {
     func showWPComLogin(loginFields: LoginFields)
+    func authFailedWithError(message: String)
 }
 
 class AppleAuthenticator: NSObject {
@@ -174,7 +175,16 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
     }
 
     func authorizationController(controller: ASAuthorizationController, didCompleteWithError error: Error) {
-        DDLogError("Apple Authenticator: didCompleteWithError: \(error)")
+
+        // Don't show error if user cancelled authentication.
+        if let authorizationError = error as? ASAuthorizationError,
+        authorizationError.code == .canceled {
+            return
+        }
+        
+        DDLogError("Apple Authenticator: didCompleteWithError: \(error.localizedDescription)")
+        let message = NSLocalizedString("Apple authentication failed.", comment: "Message shown when Apple authentication fails.")
+        delegate?.authFailedWithError(message: message)
     }
 
 }

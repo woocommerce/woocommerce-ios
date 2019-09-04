@@ -4,9 +4,13 @@
 /* Language: ko_KR */
 
 /* No comment provided by engineer. */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(제목 없음)";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
 "9+" = "9+";
 
 /* An error message. */
@@ -93,7 +97,8 @@
 /* Approve a comment */
 "Approve" = "승인하기";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "승인";
 
 /* Approves a comment. Spoken Hint. */
@@ -625,6 +630,9 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "이월 주문";
 
+/* Display label for the review's hold status */
+"On hold" = "보류됨";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "기기 설정 열기";
 
@@ -959,7 +967,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "죄송합니다. 해당 사이트 주소는 사용할 수 없습니다.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "스팸";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
@@ -1134,7 +1143,8 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "추적 번호 %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "휴지통";
 
 /* Connect when the SSL certificate is invalid */
@@ -1211,6 +1221,12 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "알려지지 않은 에러";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Unspam";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Untrash";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "최대 7일 상당의 로그가 저장됩니다.";

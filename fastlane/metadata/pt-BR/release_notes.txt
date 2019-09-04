@@ -1,3 +1,3 @@
-Copie os números de rastreamento! Agora é mais fácil manter-se atento ao envio sem precisar abrir o aplicativo. Em Detalhes do pedido> Rastreamento do envio> Mais, há uma nova ação para copiar o número de rastreamento e usá-lo onde você quiser.
-
-Diga adeus às mensagens de erro de estatísticas! Se o seu site não tiver o módulo de estatísticas do site Jetpack ou se você não tiver permissão para visualizar as estatísticas, a página de estatísticas simplesmente não aparecerá. Não havia necessidade de mostrar uma mensagem de erro irritante, então a removemos.
+- Notificações são exibidas em “Pedidos”, então a guia “Notificações” precisava de uma nova identidade. Já que, na verdade, ela exibe apenas comentários, a renomeamos astutamente como "Comentários".
+- Houve um bug na tela Detalhes do pedido que criou uma interface estranha com rótulos perdidos quando você tentou atualizar as informações, mas ele já foi corrigido.
+- Agora há um selo na guia inferior, sobreposto ao ícone “Pedidos”, para que você possa ver rapidamente o número de pedidos em andamento.

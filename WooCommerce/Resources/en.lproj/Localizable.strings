@@ -1,5 +1,12 @@
-﻿/* Title for an untitled post, should match WP core */
+﻿/* Displays a date range for a stats interval */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(no title)";
+
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.";
@@ -91,7 +98,8 @@
 /* Notification status description for 'approved' */
 "approved" = "approved";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Approved";
 
 /* Approves a comment. Spoken Hint. */
@@ -350,14 +358,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Feature Request";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Filter notifications";
-
 /* Filter the orders list. */
 "Filter orders" = "Filter orders";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Filters the notifications list by notification type.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filters the order list by payment status.";
@@ -591,18 +593,17 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "No data available";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "No Notifications Yet!";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "No Orders found";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "No results for the selected criteria";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
 "No results found for \(term)\nAdd a custom provider" = "No results found for \(term)\nAdd a custom provider";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "No Reviews Yet!";
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "not allowed";
@@ -619,13 +620,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Note to customer";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Notifications: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Number of files:";
@@ -651,6 +645,9 @@
 
 /* Display label for the product's inventory stock status */
 "On back order" = "On back order";
+
+/* Display label for the review's hold status */
+"On hold" = "On hold";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Open Device Settings";
@@ -821,8 +818,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Regular price:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Remove Filters";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -848,7 +844,7 @@
 "Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Reviews";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
@@ -987,7 +983,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Sorry, you may not use that site address.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Spam";
 
 /* Notification status description for 'spam' */
@@ -1171,7 +1168,8 @@
 /* Notification status description for 'trash' */
 "trash" = "trash";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "Trash";
 
 /* Connect when the SSL certificate is invalid */
@@ -1254,6 +1252,12 @@
 
 /* Used when the response doesn't have a valid url to display */
 "unknown url" = "unknown url";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Unspam";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Untrash";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Up to seven days՚ worth of logs are saved.";

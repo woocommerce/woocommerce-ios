@@ -67,6 +67,10 @@ protocol Style {
     ///
     var statusBarDark: UIStatusBarStyle { get }
     var statusBarLight: UIStatusBarStyle { get }
+
+    /// Announcement
+    ///
+    var announcementDotColor: UIColor { get }
 }
 
 
@@ -79,7 +83,9 @@ class DefaultStyle: Style {
     static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
-    let badgeFont                       = UIFont.font(forStyle: .caption2, weight: .semibold)
+    let badgeFont                       = DefaultStyle.fontForTextStyle(.caption2,
+                                                                        weight: .regular,
+                                                                        maximumPointSize: 11.0)
     let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
                                                                         weight: .semibold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
@@ -87,7 +93,7 @@ class DefaultStyle: Style {
     let subheadlineBoldFont             = DefaultStyle.fontForTextStyle(.subheadline,
                                                                         weight: .bold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
-    let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
+    let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .regular)
     let thinCaptionFont                 = DefaultStyle.fontForTextStyle(.caption1,
                                                                         weight: .thin,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
@@ -144,6 +150,10 @@ class DefaultStyle: Style {
     ///
     let statusBarDark                   = UIStatusBarStyle.default
     let statusBarLight                  = UIStatusBarStyle.lightContent
+
+    /// Announcement
+    ///
+    let announcementDotColor            = HandbookColors.murielRed50
 }
 
 
@@ -174,6 +184,9 @@ private extension DefaultStyle {
 
         static let goldStarColor         = UIColor(red: 238.0/255.0, green: 180.0/255.0, blue: 34.0/255.0, alpha: 1.0)
         static let grayStarColor         = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
+
+        // Muriel theme in https://color-studio.blog/
+        static let murielRed50                 = UIColor(red: 0.84, green: 0.21, blue: 0.22, alpha: 1)
     }
 }
 
@@ -407,5 +420,11 @@ class StyleManager {
 
     static var statusBarLight: UIStatusBarStyle {
         return active.statusBarLight
+    }
+
+    // MARK: - Announcement
+
+    static var announcementDotColor: UIColor {
+        return active.announcementDotColor
     }
 }

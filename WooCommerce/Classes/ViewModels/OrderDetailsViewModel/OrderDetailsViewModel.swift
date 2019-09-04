@@ -161,7 +161,7 @@ extension OrderDetailsViewModel {
         switch dataSource.sections[indexPath.section].rows[indexPath.row] {
 
         case .addOrderNote:
-            WooAnalytics.shared.track(.orderDetailAddNoteButtonTapped)
+            ServiceLocator.analytics.track(.orderDetailAddNoteButtonTapped)
 
             let newNoteViewController = NewNoteViewController()
             newNoteViewController.viewModel = self
@@ -169,7 +169,7 @@ extension OrderDetailsViewModel {
             let navController = WooNavigationController(rootViewController: newNoteViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .trackingAdd:
-            WooAnalytics.shared.track(.orderDetailAddTrackingButtonTapped)
+            ServiceLocator.analytics.track(.orderDetailAddTrackingButtonTapped)
 
             let addTrackingViewModel = AddTrackingViewModel(order: order)
             let addTracking = ManualTrackingViewController(viewModel: addTrackingViewModel)
@@ -183,11 +183,11 @@ extension OrderDetailsViewModel {
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .billingDetail:
-            WooAnalytics.shared.track(.orderDetailShowBillingTapped)
+            ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order)
             viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .details:
-            WooAnalytics.shared.track(.orderDetailProductDetailTapped)
+            ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         default:
             break
@@ -209,7 +209,7 @@ extension OrderDetailsViewModel {
             onCompletion?(order, nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
@@ -223,12 +223,12 @@ extension OrderDetailsViewModel {
                                                                             return
                                                                         }
 
-                                                                        WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+                                                                        ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
 
                                                                         onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
@@ -242,11 +242,11 @@ extension OrderDetailsViewModel {
             }
 
             self?.orderNotes = orderNotes
-            WooAnalytics.shared.track(.orderNotesLoaded, withProperties: ["id": self?.order.orderID ?? 0])
+            ServiceLocator.analytics.track(.orderNotesLoaded, withProperties: ["id": self?.order.orderID ?? 0])
             onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
@@ -261,7 +261,7 @@ extension OrderDetailsViewModel {
             onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
@@ -272,7 +272,7 @@ extension OrderDetailsViewModel {
         let statusKey = order.statusKey
         let providerName = tracking.trackingProvider ?? ""
 
-        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+        ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
                                                                          "status": statusKey,
                                                                          "carrier": providerName,
                                                                          "source": "order_detail"])
@@ -283,18 +283,18 @@ extension OrderDetailsViewModel {
                                                                     if let error = error {
                                                                         DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
 
-                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                        ServiceLocator.analytics.track(.orderTrackingDeleteFailed,
                                                                                                   withError: error)
                                                                         onCompletion(error)
                                                                         return
                                                                     }
 
-                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
+                                                                    ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
                                                                     onCompletion(nil)
 
         }
 
-        StoresManager.shared.dispatch(deleteTrackingAction)
+        ServiceLocator.stores.dispatch(deleteTrackingAction)
     }
 }
 

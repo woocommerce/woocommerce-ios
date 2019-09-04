@@ -16,10 +16,10 @@ class NewNoteViewController: UIViewController {
 
     private var noteText: String = ""
 
-    /// Dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
-    private lazy var noticePresenter: NoticePresenter = {
-        let noticePresenter = NoticePresenter()
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         return noticePresenter
     }()
@@ -51,8 +51,8 @@ class NewNoteViewController: UIViewController {
     @objc func addButtonTapped() {
         configureForCommittingNote()
 
-        WooAnalytics.shared.track(.orderNoteAddButtonTapped)
-        WooAnalytics.shared.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
+        ServiceLocator.analytics.track(.orderNoteAddButtonTapped)
+        ServiceLocator.analytics.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
                                                                   "status": viewModel.order.statusKey,
                                                                   "type": isCustomerNote ? "customer" : "private"])
 
@@ -62,17 +62,17 @@ class NewNoteViewController: UIViewController {
                                                   note: noteText) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
-                WooAnalytics.shared.track(.orderNoteAddFailed, withError: error)
+                ServiceLocator.analytics.track(.orderNoteAddFailed, withError: error)
 
                 self?.displayErrorNotice()
                 self?.configureForEditingNote()
                 return
             }
-            WooAnalytics.shared.track(.orderNoteAddSuccess)
+            ServiceLocator.analytics.track(.orderNoteAddSuccess)
             self?.dismiss(animated: true, completion: nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -176,7 +176,7 @@ private extension NewNoteViewController {
             )
 
             let stateValue = newValue ? "on" : "off"
-            WooAnalytics.shared.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
+            ServiceLocator.analytics.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
         }
     }
 

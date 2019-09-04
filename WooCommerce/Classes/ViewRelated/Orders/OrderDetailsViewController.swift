@@ -24,7 +24,7 @@ final class OrderDetailsViewController: UIViewController {
     /// EntityListener: Update / Deletion Notifications.
     ///
     private lazy var entityListener: EntityListener<Order> = {
-        return EntityListener(storageManager: AppDelegate.shared.storageManager, readOnlyEntity: viewModel.order)
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: viewModel.order)
     }()
 
     /// Order to be rendered!
@@ -195,7 +195,7 @@ private extension OrderDetailsViewController {
 extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
-        WooAnalytics.shared.track(.orderDetailPulledToRefresh)
+        ServiceLocator.analytics.track(.orderDetailPulledToRefresh)
         let group = DispatchGroup()
 
         group.enter()
@@ -287,7 +287,7 @@ private extension OrderDetailsViewController {
     }
 
     func fulfillWasPressed() {
-        WooAnalytics.shared.track(.orderDetailFulfillButtonTapped)
+        ServiceLocator.analytics.track(.orderDetailFulfillButtonTapped)
         let fulfillViewController = FulfillViewController(order: viewModel.order, products: viewModel.products)
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }
@@ -306,7 +306,7 @@ private extension OrderDetailsViewController {
             return
         }
 
-        WooAnalytics.shared.track(.orderDetailTrackPackageButtonTapped)
+        ServiceLocator.analytics.track(.orderDetailTrackPackageButtonTapped)
         displayWebView(url: url)
     }
 
@@ -413,7 +413,7 @@ private extension OrderDetailsViewController {
         }
 
         actionSheet.addDestructiveActionWithTitle(TrackingAction.deleteTracking) { [weak self] _ in
-            WooAnalytics.shared.track(.orderDetailTrackingDeleteButtonTapped)
+            ServiceLocator.analytics.track(.orderDetailTrackingDeleteButtonTapped)
             self?.deleteTracking(tracking)
         }
 
@@ -430,7 +430,7 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
     private func displayOrderStatusList() {
-        WooAnalytics.shared.track(.orderDetailOrderStatusEditButtonTapped,
+        ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
                                   withProperties: ["status": viewModel.order.statusKey])
         let statusList = OrderStatusListViewController(order: viewModel.order)
         let navigationController = UINavigationController(rootViewController: statusList)

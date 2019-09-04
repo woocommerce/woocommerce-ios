@@ -101,7 +101,7 @@ public class CurrencySettings {
     /// ResultsController: Whenever settings change, I will change. We both change. The world changes.
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
         return ResultsController<StorageSiteSetting>(storageManager: storageManager, sortedBy: [descriptor])
     }()
@@ -522,7 +522,7 @@ extension CurrencySettings {
     }
 
     private func refreshResultsPredicate() {
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.general.rawValue)
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
         try? resultsController.performFetch()

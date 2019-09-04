@@ -14,4 +14,5 @@ extension Site {
     @NSManaged public var plan: String?
     @NSManaged public var isWooCommerceActive: NSNumber?
     @NSManaged public var isWordPressStore: NSNumber?
+    @NSManaged public var timezone: String?
 }

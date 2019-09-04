@@ -21,20 +21,20 @@ class SettingsViewController: UIViewController {
     /// Main Account's displayName
     ///
     private var accountName: String {
-        return StoresManager.shared.sessionManager.defaultAccount?.displayName ?? String()
+        return ServiceLocator.stores.sessionManager.defaultAccount?.displayName ?? String()
     }
 
     /// Main Site's URL
     ///
     private var siteUrl: String {
-        let urlAsString = StoresManager.shared.sessionManager.defaultSite?.url as NSString?
+        let urlAsString = ServiceLocator.stores.sessionManager.defaultSite?.url as NSString?
         return urlAsString?.hostname() ?? String()
     }
 
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
     private let resultsController: ResultsController<StorageSite> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "isWooCommerceActive == YES")
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
@@ -133,14 +133,42 @@ private extension SettingsViewController {
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
-        sections = [
-            Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
-            Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-            Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
-            Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
-            Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
-            Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
-        ]
+        if FeatureFlag.stats.enabled {
+            rowsForImproveTheAppSection { [weak self] improveTheAppRows in
+                self?.sections = [
+                    Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+                    Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+                    Section(title: improveTheAppTitle, rows: improveTheAppRows, footerHeight: UITableView.automaticDimension),
+                    Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+                    Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
+                    Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+                ]
+            }
+        } else {
+            sections = [
+                Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+                Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+                Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
+                Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+            ]
+        }
+    }
+
+    func rowsForImproveTheAppSection(onCompletion: @escaping (_ rows: [Row]) -> Void) {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("Cannot find store ID")
+            return
+        }
+        let action = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { eligibleStatsVersion in
+            guard eligibleStatsVersion == .v4 else {
+                onCompletion([.privacy, .featureRequest])
+                return
+            }
+            onCompletion([.privacy, .betaFeatures, .featureRequest])
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func registerTableViewCells() {
@@ -161,6 +189,8 @@ private extension SettingsViewController {
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
+        case let cell as BasicTableViewCell where row == .betaFeatures:
+            configureBetaFeatures(cell: cell)
         case let cell as BasicTableViewCell where row == .featureRequest:
             configureFeatureSuggestions(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
@@ -200,6 +230,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
+    }
+
+    func configureBetaFeatures(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Beta Features", comment: "Navigates to Beta features screen")
     }
 
     func configureFeatureSuggestions(cell: BasicTableViewCell) {
@@ -250,7 +286,7 @@ private extension SettingsViewController {
 private extension SettingsViewController {
 
     func logoutWasPressed() {
-        WooAnalytics.shared.track(.settingsLogoutTapped)
+        ServiceLocator.analytics.track(.settingsLogoutTapped)
         let messageUnformatted = NSLocalizedString(
             "Are you sure you want to log out of the account %@?",
             comment: "Alert message to confirm a user meant to log out."
@@ -260,12 +296,12 @@ private extension SettingsViewController {
 
         let cancelText = NSLocalizedString("Back", comment: "Alert button title - dismisses alert, which cancels the log out attempt")
         alertController.addActionWithTitle(cancelText, style: .cancel) { _ in
-            WooAnalytics.shared.track(.settingsLogoutConfirmation, withProperties: ["result": "negative"])
+            ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "negative"])
         }
 
         let logoutText = NSLocalizedString("Log Out", comment: "Alert button title - confirms and logs out the user")
         alertController.addDefaultActionWithTitle(logoutText) { _ in
-            WooAnalytics.shared.track(.settingsLogoutConfirmation, withProperties: ["result": "positive"])
+            ServiceLocator.analytics.track(.settingsLogoutConfirmation, withProperties: ["result": "positive"])
             self.logOutUser()
         }
 
@@ -273,7 +309,7 @@ private extension SettingsViewController {
     }
 
     func switchStoreWasPressed() {
-        WooAnalytics.shared.track(.settingsSelectedStoreTapped)
+        ServiceLocator.analytics.track(.settingsSelectedStoreTapped)
         if let navigationController = navigationController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
@@ -281,23 +317,32 @@ private extension SettingsViewController {
     }
 
     func supportWasPressed() {
-        WooAnalytics.shared.track(.settingsContactSupportTapped)
+        ServiceLocator.analytics.track(.settingsContactSupportTapped)
         performSegue(withIdentifier: Segues.helpSupportSegue, sender: nil)
     }
 
     func privacyWasPressed() {
-        WooAnalytics.shared.track(.settingsPrivacySettingsTapped)
+        ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
         performSegue(withIdentifier: Segues.privacySegue, sender: nil)
     }
 
     func aboutWasPressed() {
-        WooAnalytics.shared.track(.settingsAboutLinkTapped)
+        ServiceLocator.analytics.track(.settingsAboutLinkTapped)
         performSegue(withIdentifier: Segues.aboutSegue, sender: nil)
     }
 
     func licensesWasPressed() {
-        WooAnalytics.shared.track(.settingsLicensesLinkTapped)
+        ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
         performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
+    }
+
+    func betaFeaturesWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("Cannot find store ID")
+            return
+        }
+        let betaFeaturesViewController = BetaFeaturesViewController(siteID: siteID)
+        navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
     func featureRequestWasPressed() {
@@ -313,12 +358,12 @@ private extension SettingsViewController {
     }
 
     func logOutUser() {
-        StoresManager.shared.deauthenticate()
+        ServiceLocator.stores.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
     }
 
     func weAreHiringWasPressed(url: URL) {
-        WooAnalytics.shared.track(.settingsWereHiringTapped)
+        ServiceLocator.analytics.track(.settingsWereHiringTapped)
 
         WebviewHelper.launch(url, with: self)
     }
@@ -399,6 +444,8 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .privacy:
             privacyWasPressed()
+        case .betaFeatures:
+            betaFeaturesWasPressed()
         case .featureRequest:
             featureRequestWasPressed()
         case .about:
@@ -435,6 +482,7 @@ private enum Row: CaseIterable {
     case support
     case logout
     case privacy
+    case betaFeatures
     case featureRequest
     case about
     case licenses
@@ -451,6 +499,8 @@ private enum Row: CaseIterable {
         case .logout:
             return BasicTableViewCell.self
         case .privacy:
+            return BasicTableViewCell.self
+        case .betaFeatures:
             return BasicTableViewCell.self
         case .featureRequest:
             return BasicTableViewCell.self

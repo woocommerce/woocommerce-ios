@@ -46,7 +46,7 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
             onCompletion()
             return
         }
-        guard storeID != StoresManager.shared.sessionManager.defaultStoreID else {
+        guard storeID != ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion()
             return
         }
@@ -55,7 +55,7 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
     }
 
     func didSelectStore(with storeID: Int) {
-        guard storeID != StoresManager.shared.sessionManager.defaultStoreID else {
+        guard storeID != ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
@@ -84,7 +84,7 @@ private extension StorePickerCoordinator {
         guard selectedConfiguration == .switchingStores else {
             return
         }
-        guard let newStoreName = StoresManager.shared.sessionManager.defaultSite?.name else {
+        guard let newStoreName = ServiceLocator.stores.sessionManager.defaultSite?.name else {
             return
         }
 
@@ -93,11 +93,11 @@ private extension StorePickerCoordinator {
                 + "Reads like: Switched to {store name}. You will only receive notifications from this store.")
         let notice = Notice(title: message, feedbackType: .success)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
-        StoresManager.shared.removeDefaultStore()
+        ServiceLocator.stores.removeDefaultStore()
 
         // Note: We are not deleting products here because products from multiple sites
         // can exist in Storage simultaneously. Eventually we should make orders and stats
@@ -109,13 +109,19 @@ private extension StorePickerCoordinator {
         let statsAction = StatsAction.resetStoredStats {
             group.leave()
         }
-        StoresManager.shared.dispatch(statsAction)
+        ServiceLocator.stores.dispatch(statsAction)
+
+        group.enter()
+        let statsV4Action = StatsActionV4.resetStoredStats {
+            group.leave()
+        }
+        ServiceLocator.stores.dispatch(statsV4Action)
 
         group.enter()
         let orderAction = OrderAction.resetStoredOrders {
             group.leave()
         }
-        StoresManager.shared.dispatch(orderAction)
+        ServiceLocator.stores.dispatch(orderAction)
 
         group.notify(queue: .main) {
             onCompletion()
@@ -123,13 +129,13 @@ private extension StorePickerCoordinator {
     }
 
     func finalizeStoreSelection(_ storeID: Int) {
-        StoresManager.shared.updateDefaultStore(storeID: storeID)
+        ServiceLocator.stores.updateDefaultStore(storeID: storeID)
 
         // We need to call refreshUserData() here because the user selected
         // their default store and tracks should to know about it.
-        WooAnalytics.shared.refreshUserData()
-        WooAnalytics.shared.track(.sitePickerContinueTapped,
-                                  withProperties: ["selected_store_id": StoresManager.shared.sessionManager.defaultStoreID ?? String()])
+        ServiceLocator.analytics.refreshUserData()
+        ServiceLocator.analytics.track(.sitePickerContinueTapped,
+                                  withProperties: ["selected_store_id": ServiceLocator.stores.sessionManager.defaultStoreID ?? String()])
 
         AppDelegate.shared.authenticatorWasDismissed()
         if selectedConfiguration == .login {

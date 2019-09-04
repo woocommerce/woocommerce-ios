@@ -16,10 +16,10 @@ final class ManualTrackingViewController: UIViewController {
         return self.viewModel.sections
     }()
 
-    /// Dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
-    private lazy var noticePresenter: NoticePresenter = {
-        let noticePresenter = NoticePresenter()
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         return noticePresenter
     }()
@@ -140,7 +140,7 @@ private extension ManualTrackingViewController {
     }
 
     @objc func primaryButtonTapped() {
-        WooAnalytics.shared.track(.orderShipmentTrackingAddButtonTapped)
+        ServiceLocator.analytics.track(.orderShipmentTrackingAddButtonTapped)
         viewModel.isCustom ? addCustomTracking() : addTracking()
     }
 }
@@ -398,7 +398,7 @@ private extension ManualTrackingViewController {
 //
 extension ManualTrackingViewController: ShipmentProviderListDelegate {
     func shipmentProviderList(_ list: ShipmentProvidersViewController, didSelect: Yosemite.ShipmentTrackingProvider, groupName: String) {
-        WooAnalytics.shared.track(.orderShipmentTrackingCarrierSelected,
+        ServiceLocator.analytics.track(.orderShipmentTrackingCarrierSelected,
                                   withProperties: ["option": didSelect.name])
 
         viewModel.shipmentProvider = didSelect
@@ -469,7 +469,7 @@ private extension ManualTrackingViewController {
             .yearMonthDayDateFormatter
             .string(from: viewModel.shipmentDate)
 
-        WooAnalytics.shared.track(.orderTrackingAdd, withProperties: ["id": orderID,
+        ServiceLocator.analytics.track(.orderTrackingAdd, withProperties: ["id": orderID,
                                                                       "status": statusKey,
                                                                       "carrier": providerName])
 
@@ -483,7 +483,7 @@ private extension ManualTrackingViewController {
                                                             if let error = error {
                                                                 DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                                WooAnalytics.shared.track(.orderTrackingAddFailed,
+                                                                ServiceLocator.analytics.track(.orderTrackingAddFailed,
                                                                                           withError: error)
 
                                                                 self?.configureForEditingTracking()
@@ -492,12 +492,12 @@ private extension ManualTrackingViewController {
                                                                 return
                                                             }
 
-                                                        WooAnalytics.shared.track(.orderTrackingAddSuccess)
+                                                        ServiceLocator.analytics.track(.orderTrackingAddSuccess)
 
                                                             self?.dismiss()
         }
 
-        StoresManager.shared.dispatch(addTrackingAction)
+        ServiceLocator.stores.dispatch(addTrackingAction)
     }
 
     func addCustomTracking() {
@@ -517,7 +517,7 @@ private extension ManualTrackingViewController {
             .yearMonthDayDateFormatter
             .string(from: viewModel.shipmentDate)
 
-        WooAnalytics.shared.track(.orderTrackingAdd, withProperties: ["id": orderID,
+        ServiceLocator.analytics.track(.orderTrackingAdd, withProperties: ["id": orderID,
                                                                       "status": statusKey,
                                                                       "carrier": providerName])
 
@@ -530,7 +530,7 @@ private extension ManualTrackingViewController {
                                                         if let error = error {
                                                             DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                            WooAnalytics.shared.track(.orderTrackingAddFailed,
+                                                            ServiceLocator.analytics.track(.orderTrackingAddFailed,
                                                                                       withError: error)
 
                                                             self?.configureForEditingTracking()
@@ -539,12 +539,12 @@ private extension ManualTrackingViewController {
                                                             return
                                                         }
 
-                                                        WooAnalytics.shared.track(.orderTrackingAddSuccess)
+                                                        ServiceLocator.analytics.track(.orderTrackingAddSuccess)
 
                                                         self?.dismiss()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
 
     }
 

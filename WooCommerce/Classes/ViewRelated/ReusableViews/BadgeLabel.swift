@@ -9,6 +9,8 @@ final class BadgeLabel: UILabel {
         }
     }
 
+    @IBInspectable var fillColor: UIColor = StyleManager.wooCommerceBrandColor
+
     // MARK: Initialization
 
     override init(frame: CGRect) {
@@ -24,18 +26,19 @@ final class BadgeLabel: UILabel {
     private func setupView() {
         textAlignment = .center
         layer.masksToBounds = true
-
-        cornerRadius = 2.0
+        clipsToBounds = true
     }
 
     // MARK: Padding
 
     override func drawText(in rect: CGRect) {
-        let path = UIBezierPath(ovalIn: CGRect(x: rect.origin.x + borderWidth,
-                                               y: rect.origin.y + borderWidth,
-                                               width: rect.size.width - borderWidth * 2,
-                                               height: rect.size.height - borderWidth * 2))
-        StyleManager.wooCommerceBrandColor.setFill()
+        let roundedRect = CGRect(x: rect.origin.x + borderWidth,
+                                 y: rect.origin.y + borderWidth,
+                                 width: rect.size.width - borderWidth * 2,
+                                 height: rect.size.height - borderWidth * 2)
+
+        let path = UIBezierPath(roundedRect: roundedRect, cornerRadius: layer.cornerRadius)
+        fillColor.setFill()
         path.fill()
 
         let insets = UIEdgeInsets.init(top: 0, left: horizontalPadding, bottom: 0, right: horizontalPadding)

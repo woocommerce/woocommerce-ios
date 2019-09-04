@@ -109,10 +109,10 @@ class StorePickerViewController: UIViewController {
         return AccountHeaderView.instantiateFromNib()
     }()
 
-    /// Site Picker's dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    /// Site Picker's dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
-    private lazy var noticePresenter: NoticePresenter = {
-        let noticePresenter = NoticePresenter()
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         return noticePresenter
     }()
@@ -120,7 +120,7 @@ class StorePickerViewController: UIViewController {
     /// ResultsController: Loads Sites from the Storage Layer.
     ///
     private let resultsController: ResultsController<StorageSite> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "isWooCommerceActive == YES")
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
@@ -196,7 +196,7 @@ private extension StorePickerViewController {
     }
 
     func setupAccountHeader() {
-        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
             return
         }
 
@@ -204,7 +204,7 @@ private extension StorePickerViewController {
         accountHeaderView.fullname = defaultAccount.displayName
         accountHeaderView.downloadGravatar(with: defaultAccount.email)
         accountHeaderView.isHelpButtonEnabled = configuration == .login
-        accountHeaderView.onHelpRequested = { AppDelegate.shared.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
+        accountHeaderView.onHelpRequested = { ServiceLocator.authenticationManager.presentSupport(from: self, sourceTag: .generalLogin) }
     }
 
     func setupNavigation() {
@@ -231,7 +231,7 @@ private extension StorePickerViewController {
 
     func refreshResults() {
         try? resultsController.performFetch()
-        WooAnalytics.shared.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
+        ServiceLocator.analytics.track(.sitePickerStoresShown, withProperties: ["num_of_stores": resultsController.numberOfObjects])
         state = StorePickerState(sites: resultsController.fetchedObjects)
     }
 
@@ -262,7 +262,7 @@ extension StorePickerViewController {
     /// Runs whenever the application is about to terminate.
     ///
     @objc func applicationTerminating() {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 
@@ -270,7 +270,7 @@ extension StorePickerViewController {
         // was never selected so force the user to go through the auth flow again.
         //
         // For more deets, see: https://github.com/woocommerce/woocommerce-ios/issues/466
-        StoresManager.shared.deauthenticate()
+        ServiceLocator.stores.deauthenticate()
     }
 }
 
@@ -290,14 +290,14 @@ private extension StorePickerViewController {
         }
 
         // If a site address was passed in credentials, select it
-        if let siteAddress = StoresManager.shared.sessionManager.defaultCredentials?.siteAddress,
+        if let siteAddress = ServiceLocator.stores.sessionManager.defaultCredentials?.siteAddress,
             let site = sites.filter({ $0.url == siteAddress }).first {
             currentlySelectedSite = site
             return
         }
 
         // If there is a defaultSite already set, select it
-        if let site = StoresManager.shared.sessionManager.defaultSite {
+        if let site = ServiceLocator.stores.sessionManager.defaultSite {
             currentlySelectedSite = site
             return
         }
@@ -362,13 +362,13 @@ private extension StorePickerViewController {
     /// Re-initializes the Login Flow, forcing a logout. This may be required if the WordPress.com Account has no Stores available.
     ///
     func restartAuthentication() {
-        guard StoresManager.shared.needsDefaultStore, let navigationController = navigationController else {
+        guard ServiceLocator.stores.needsDefaultStore, let navigationController = navigationController else {
             return
         }
 
-        StoresManager.shared.deauthenticate()
+        ServiceLocator.stores.deauthenticate()
 
-        let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
+        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
         navigationController.setViewControllers([loginViewController], animated: true)
     }
 

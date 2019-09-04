@@ -10,7 +10,16 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    private var dashboardUI: DashboardUI!
+    private var siteID: Int?
+
+    private var dashboardUIFactory: DashboardUIFactory?
+    private var dashboardUI: DashboardUI?
+
+    // MARK: Subviews
+
+    private lazy var containerView: UIView = {
+        return UIView(frame: .zero)
+    }()
 
     // MARK: View Lifecycle
 
@@ -28,14 +37,19 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
-        configureDashboardUI()
+        configureDashboardUIContainer()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
-        reloadData()
+        reloadDashboardUIStatsVersion()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        dashboardUI?.view.frame = containerView.bounds
     }
 }
 
@@ -58,7 +72,7 @@ private extension DashboardViewController {
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
-        title = StoresManager.shared.sessionManager.defaultSite?.name ?? myStore
+        title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? myStore
         tabBarItem.title = myStore
     }
 
@@ -94,20 +108,61 @@ private extension DashboardViewController {
         navigationItem.backBarButtonItem = backButton
     }
 
-    func configureDashboardUI() {
-        dashboardUI = DashboardUIFactory.dashboardUI()
-        add(dashboardUI)
-        let contentView = dashboardUI.view!
-        NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
-            contentView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            ])
-        dashboardUI.onPullToRefresh = { [weak self] in
+    func configureDashboardUIContainer() {
+        // A container view is added to respond to safe area insets from the view controller.
+        // This is needed when the child view controller's view has to use a frame-based layout
+        // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
+        view.addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(containerView)
+    }
+
+    func reloadDashboardUIStatsVersion() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        if siteID != self.siteID {
+            dashboardUIFactory = DashboardUIFactory(siteID: siteID)
+            self.siteID = siteID
+        }
+
+        dashboardUIFactory?.reloadDashboardUI(isFeatureFlagOn: FeatureFlag.stats.enabled,
+                                              onUIUpdate: { [weak self] dashboardUI in
+                                                self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
+        })
+    }
+}
+
+// MARK: - Updates
+//
+private extension DashboardViewController {
+    func onDashboardUIUpdate(updatedDashboardUI: DashboardUI) {
+        defer {
+            // Reloads data of the updated dashboard UI at the end.
+            reloadData()
+        }
+
+        // No need to continue replacing the dashboard UI child view controller if the updated dashboard UI is the same as the currently displayed one.
+        guard dashboardUI !== updatedDashboardUI else {
+            return
+        }
+
+        // Tears down the previous child view controller.
+        if let previousDashboardUI = dashboardUI {
+            remove(previousDashboardUI)
+        }
+
+        dashboardUI = updatedDashboardUI
+
+        let contentView = updatedDashboardUI.view!
+        addChild(updatedDashboardUI)
+        containerView.addSubview(contentView)
+        updatedDashboardUI.didMove(toParent: self)
+
+        updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
         }
-        dashboardUI.displaySyncingErrorNotice = { [weak self] in
+        updatedDashboardUI.displaySyncingErrorNotice = { [weak self] in
             self?.displaySyncingErrorNotice()
         }
     }
@@ -133,12 +188,12 @@ extension DashboardViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        guard isViewLoaded, StoresManager.shared.isAuthenticated == false else {
+        guard isViewLoaded, ServiceLocator.stores.isAuthenticated == false else {
             return
         }
 
         resetTitle()
-        dashboardUI.defaultAccountDidUpdate()
+        dashboardUI?.defaultAccountDidUpdate()
     }
 }
 
@@ -156,13 +211,13 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        WooAnalytics.shared.track(.settingsTapped)
+        ServiceLocator.analytics.track(.settingsTapped)
         performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
     }
 
     func pullToRefresh() {
-        WooAnalytics.shared.track(.dashboardPulledToRefresh)
-        reloadData()
+        ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+        reloadDashboardUIStatsVersion()
     }
 
     func displaySyncingErrorNotice() {
@@ -173,7 +228,7 @@ private extension DashboardViewController {
             self?.reloadData()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -182,7 +237,7 @@ private extension DashboardViewController {
 private extension DashboardViewController {
     func reloadData() {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        dashboardUI.reloadData(completion: { [weak self] in
+        dashboardUI?.reloadData(completion: { [weak self] in
             self?.configureTitle()
         })
     }

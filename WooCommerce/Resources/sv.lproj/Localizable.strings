@@ -1,10 +1,13 @@
-/* Translation-Revision-Date: 2019-08-08 00:54:04+0000 */
+/* Translation-Revision-Date: 2019-08-21 00:54:32+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
 
 /* No comment provided by engineer. */
 "(no title)" = "(ingen rubrik)";
+
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Det krävs en giltig e-postadress för att skicka en autentiseringslänk. Gå tillbaka till föregående sida och ange en giltig e‑postadress.";
@@ -346,14 +349,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Funktionsförfrågan";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Filtrera aviseringar";
-
 /* Filter the orders list. */
 "Filter orders" = "Filtrera beställningar";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Filtrerar aviseringslistan enligt aviseringstyp.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtrera orderlistan efter betalningsstatus.";
@@ -574,11 +571,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "Nästa";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "Inga aviseringar än!";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "Inga ordrar hittades";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "Inga recensioner än!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Ingen aktivitet den här perioden";
@@ -590,8 +587,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Inga data tillgängliga";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Inga resultat för de valda kriterierna";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +599,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Kundmeddelande";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notiser";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Aviseringar: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Antal filer:";
@@ -805,8 +794,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Ordinarie pris:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Ta bort filter";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +820,7 @@
 "Review, prepare, and ship these pending orders" = "Granska, förbered och skicka dessa väntande ordrar";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Recensioner";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */

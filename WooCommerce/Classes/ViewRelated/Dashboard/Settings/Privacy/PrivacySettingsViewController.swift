@@ -69,7 +69,7 @@ class PrivacySettingsViewController: UIViewController {
 private extension PrivacySettingsViewController {
 
     func loadAccountSettings(completion: (()-> Void)? = nil) {
-        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
             return
         }
 
@@ -87,7 +87,7 @@ private extension PrivacySettingsViewController {
             completion?()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -260,7 +260,7 @@ private extension PrivacySettingsViewController {
     func collectInfoWasUpdated(newValue: Bool) {
         let userOptedOut = !newValue
 
-        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
             return
         }
 
@@ -269,20 +269,20 @@ private extension PrivacySettingsViewController {
         let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { error in
 
             guard let _ = error else {
-                WooAnalytics.shared.setUserHasOptedOut(userOptedOut)
+                ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
 
                 return
             }
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
 
         // This event will only report if the user has turned tracking back on
-        WooAnalytics.shared.track(.settingsCollectInfoToggled)
+        ServiceLocator.analytics.track(.settingsCollectInfoToggled)
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {
         // This event will only report if the user has Analytics currently on
-        WooAnalytics.shared.track(.settingsReportCrashesToggled)
+        ServiceLocator.analytics.track(.settingsReportCrashesToggled)
     }
 
     /// Display Automattic's Cookie Policy web page
@@ -360,13 +360,13 @@ extension PrivacySettingsViewController: UITableViewDelegate {
 
         switch sections[indexPath.section].rows[indexPath.row] {
         case .shareInfoPolicy:
-            WooAnalytics.shared.track(.settingsShareInfoLearnMoreTapped)
+            ServiceLocator.analytics.track(.settingsShareInfoLearnMoreTapped)
             presentCookiePolicyWebView()
         case .thirdPartyPolicy:
-            WooAnalytics.shared.track(.settingsThirdPartyLearnMoreTapped)
+            ServiceLocator.analytics.track(.settingsThirdPartyLearnMoreTapped)
             presentCookiePolicyWebView()
         case .privacyPolicy:
-            WooAnalytics.shared.track(.settingsPrivacyPolicyTapped)
+            ServiceLocator.analytics.track(.settingsPrivacyPolicyTapped)
             presentPrivacyPolicyWebView()
         default:
             break

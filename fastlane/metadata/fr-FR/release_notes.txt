@@ -1,3 +1,3 @@
-Copier le numéro de suivi ! Il est maintenant plus facile de garder un œil sur votre envoi sans ouvrir l’application. Dans Détails de la commande > Suivi de l’envoi > Plus, vous pouvez désormais copier votre numéro de suivi et l’utiliser où vous voulez.
-
-Adieu le message d’erreur des statistiques ! Si votre site n’a pas le module de statistiques de site Jetpack ou si vous n’avez pas l’autorisation de consulter les statistiques, vous ne verrez tout simplement pas la page de statistiques. Nous l’avons enlevée pour ne pas que vous rencontriez de message d’erreur.
+- Les notifications étant accessibles dans « Commandes », l'onglet « Notifications » avait besoin d'une nouvelle identité. Comme il ne sert qu'à afficher les avis, il a été renommé « Avis ».
+- Un bug de l'écran Détails de la commande qui déréglait l'interface utilisateur en modifiant l'emplacement des étiquettes lors de la tentative d'actualisation des informations a été résolu.
+- Un badge est désormais disponible dans l'onglet inférieur. Il chevauche l'icône « Commandes » et permet de voir rapidement le nombre de commandes en cours.

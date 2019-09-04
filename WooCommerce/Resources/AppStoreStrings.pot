@@ -47,11 +47,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v2.4-whats-new"
+msgctxt "v2.6-whats-new"
 msgid ""
-"Copy tracking numbers! It is now easier to keep a watchful eye on your shipment without opening the app. In Order Details > Shipment Tracking > More, there is a new action to copy your tracking number to use wherever you want.\n"
-"\n"
-"Goodbye stats error message! If your site does not have the Jetpack site stats module, or you don’t have permission to view stats, you simply won’t see the stats page. You don’t need to see an annoying error message, so we have taken it away.\n"
+"- Some of you could see your site on the login screen, but couldn’t tap Continue. Well, we fixed that.\n"
+"- Being a prolific seller is something to celebrate — so we made the Orders badge a lot .easier to read.\n"
+"- We discovered you could no longer automatically download product images from the Order Detail screen. We’ve restored the ability to download them.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

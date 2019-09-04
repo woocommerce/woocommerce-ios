@@ -1,4 +1,5 @@
 import Foundation
+@testable import WooCommerce
 
 public class MockupAnalyticsProvider: AnalyticsProvider {
     var receivedEvents = [String]()

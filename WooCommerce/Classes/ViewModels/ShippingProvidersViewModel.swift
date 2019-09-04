@@ -53,7 +53,7 @@ final class ShippingProvidersViewModel {
     /// ResultsController to fetch the list of shipment providers,
     /// excluding the store country
     private lazy var providersExcludingStoreCountry: ResultsController<StorageShipmentTrackingProvider> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
         let excludingStoreCountry = predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
@@ -72,7 +72,7 @@ final class ShippingProvidersViewModel {
     /// Results controller, to fetch the list of shipment providers
     /// correspoding to the store country
     private lazy var providersForStoreCountry: ResultsController<StorageShipmentTrackingProvider> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
 
@@ -309,7 +309,7 @@ extension ShippingProvidersViewModel {
 private enum ResultsControllerConstants {
     static let predicateForAllProviders =
         NSPredicate(format: "siteID == %lld",
-                    StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+                    ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     static let groupNameKeyPath =
         #keyPath(StorageShipmentTrackingProvider.group.name)
     static let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)

@@ -124,12 +124,12 @@ private extension BillingInformationViewController {
                 return
             }
 
-            WooAnalytics.shared.track(.orderDetailCustomerPhoneOptionTapped)
+            ServiceLocator.analytics.track(.orderDetailCustomerPhoneOptionTapped)
             self.callCustomerIfPossible(at: phoneURL)
         }
 
         actionSheet.addDefaultActionWithTitle(ContactAction.message) { [weak self] _ in
-            WooAnalytics.shared.track(.orderDetailCustomerSMSOptionTapped)
+            ServiceLocator.analytics.track(.orderDetailCustomerSMSOptionTapped)
             self?.displayMessageComposerIfPossible(from: from)
         }
 
@@ -139,7 +139,7 @@ private extension BillingInformationViewController {
 
         from.present(actionSheet, animated: true)
 
-        WooAnalytics.shared.track(.orderDetailCustomerPhoneMenuTapped)
+        ServiceLocator.analytics.track(.orderDetailCustomerPhoneMenuTapped)
     }
 
     /// Attempts to perform a phone call at the specified URL
@@ -150,7 +150,7 @@ private extension BillingInformationViewController {
         }
 
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
-        WooAnalytics.shared.track(.orderContactAction, withProperties: ["id": order.orderID,
+        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
                                                                         "status": order.statusKey,
                                                                         "type": "call"])
 
@@ -228,7 +228,7 @@ extension BillingInformationViewController: UITableViewDelegate {
             break
 
         case .billingEmail:
-            WooAnalytics.shared.track(.orderDetailCustomerEmailTapped)
+            ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
             displayEmailComposerIfPossible(from: self)
             break
         default:

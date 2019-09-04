@@ -1,3 +1,0 @@
-- Notifications are shown under “Orders,” so the “Notifications” tab was in need of a new identity. Since it actually just displays reviews, we’ve cunningly renamed it “Reviews.”
-- There was a bug in the Order Details screen that created a weird UI with misplaced labels when you tried to refresh the information, and now there is not a bug there.
-- There’s now a badge in the bottom tab, overlapping the “Orders” icon, so you can quickly see the number of orders you have in process.

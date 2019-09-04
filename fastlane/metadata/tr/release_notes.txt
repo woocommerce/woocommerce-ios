@@ -1,3 +1,0 @@
-- Bildirimler "Siparişler" bölümünde gösterildiğinden "Bildirimler" sekmesi için yeni bir kimlik gerekiyordu. Aslında yalnızca yorumları görüntülediğinden, buna uygun şekilde “Yorumlar” adını verdik.
-- Sipariş Ayrıntıları ekranında, bilgileri yenilemeye çalıştığınızda etiketlerin yanlış yerleştirildiği normal dışı bir kullanıcı arayüzü oluşturan hata düzeltildi.
-- Artık alt sekmede “Siparişler” simgesinin üzerine binen bir rozet bulunmaktadır, bu sayede verdiğiniz siparişlerin sayısını hızlı bir şekilde görebilirsiniz.

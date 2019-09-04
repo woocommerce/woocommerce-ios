@@ -1,3 +1,0 @@
-- Les notifications étant accessibles dans « Commandes », l'onglet « Notifications » avait besoin d'une nouvelle identité. Comme il ne sert qu'à afficher les avis, il a été renommé « Avis ».
-- Un bug de l'écran Détails de la commande qui déréglait l'interface utilisateur en modifiant l'emplacement des étiquettes lors de la tentative d'actualisation des informations a été résolu.
-- Un badge est désormais disponible dans l'onglet inférieur. Il chevauche l'icône « Commandes » et permet de voir rapidement le nombre de commandes en cours.

@@ -81,7 +81,7 @@ final class ReviewsViewModelTests: XCTestCase {
 }
 
 
-// MARK : - Mocks
+// MARK: - Mocks
 
 final class MockReviewsDataSource: NSObject, ReviewsDataSource {
     private lazy var reviews: [ProductReview] = {

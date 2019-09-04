@@ -62,6 +62,6 @@ final class ReviewViewModel {
 private extension ReviewViewModel {
     enum Strings {
         static let pendingReviews = NSLocalizedString("Pending Review",
-                                                      comment: "Indicates a review is pending approval. It would read { Pending Review · Content of the reiview}")
+                                                      comment: "Indicates a review is pending approval. It reads { Pending Review · Content of the reiview}")
     }
 }

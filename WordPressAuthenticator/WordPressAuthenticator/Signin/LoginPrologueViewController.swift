@@ -51,6 +51,9 @@ class LoginPrologueViewController: LoginViewController {
             vc.googleTapped = { [weak self] in
                 self?.performSegue(withIdentifier: .showGoogle, sender: self)
             }
+            vc.appleTapped = { [weak self] in
+                self?.appleTapped()
+            }
             vc.modalPresentationStyle = .custom
         }
             

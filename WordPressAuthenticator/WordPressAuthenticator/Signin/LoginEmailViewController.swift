@@ -453,6 +453,9 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             vc.googleTapped = { [weak self] in
                 self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showGoogle.rawValue, sender: self)
             }
+            vc.appleTapped = { [weak self] in
+                self?.appleTapped()
+            }
             vc.modalPresentationStyle = .custom
         }
     }
@@ -540,6 +543,13 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             }
         }
     }
+
+    private func appleTapped() {
+        #if XCODE11
+        AppleAuthenticator.sharedInstance.delegate = self
+        AppleAuthenticator.sharedInstance.showFrom(viewController: self)
+        #endif
+    }
 }
 
 // LoginFacadeDelegate methods for Google Google Sign In
@@ -626,3 +636,12 @@ extension LoginEmailViewController: LoginSocialErrorViewControllerDelegate {
 /// This is needed to set self as uiDelegate, even though none of the methods are called
 extension LoginEmailViewController: GIDSignInUIDelegate {
 }
+
+#if XCODE11
+extension LoginEmailViewController: AppleAuthenticatorDelegate {
+    func showWPComLogin(loginFields: LoginFields) {
+        self.loginFields = loginFields
+         performSegue(withIdentifier: .showWPComLogin, sender: self)
+    }
+}
+#endif

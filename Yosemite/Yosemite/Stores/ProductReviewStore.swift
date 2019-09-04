@@ -118,7 +118,7 @@ private extension ProductReviewStore {
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
-        }        
+        }
     }
 }
 

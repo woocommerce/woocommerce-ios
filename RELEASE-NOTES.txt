@@ -1,5 +1,6 @@
 2.7
 -----
+- Enhancement: Enhancements to the Order Details screen.
  
 2.6
 -----

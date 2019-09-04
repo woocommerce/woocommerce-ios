@@ -55,6 +55,7 @@ final class ProductReviewTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         configureSubjectLabel()
+        configureSnippetLabel()
         configureNoticonLabel()
         configureStarView()
     }
@@ -101,6 +102,10 @@ private extension ProductReviewTableViewCell {
 
     func configureSubjectLabel() {
         subjectLabel.applyBodyStyle()
+    }
+
+    func configureSnippetLabel() {
+        snippetLabel.numberOfLines = 2
     }
 
     func configureNoticonLabel() {

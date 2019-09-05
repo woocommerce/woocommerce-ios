@@ -2,7 +2,6 @@ import Foundation
 import CocoaLumberjack
 import Storage
 
-
 /// Provides global depedencies.
 ///
 final class ServiceLocator {
@@ -20,6 +19,10 @@ final class ServiceLocator {
     /// WordPressAuthenticator Wrapper
     ///
     private static var _authenticationManager: Authentication = AuthenticationManager()
+
+    /// FeatureFlagService
+    ///
+    private static var _featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
 
     /// In-App Notifications Presenter
     ///
@@ -44,6 +47,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the Analytics protocol. It defaults to WooAnalytics
     static var analytics: Analytics {
         return _analytics
+    }
+
+    /// Provides the access point to the feature flag service.
+    /// - Returns: An implementation of the FeatureFlagService protocol. It defaults to DefaultFeatureFlagService
+    static var featureFlagService: FeatureFlagService {
+        return _featureFlagService
     }
 
     /// Provides the access point to the stores.
@@ -96,6 +105,14 @@ extension ServiceLocator {
         }
 
         _analytics = mock
+    }
+
+    static func setFeatureFlagService(_ mock: FeatureFlagService) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _featureFlagService = mock
     }
 
     static func setStores(_ mock: StoresManager) {

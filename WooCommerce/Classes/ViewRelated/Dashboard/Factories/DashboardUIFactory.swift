@@ -102,8 +102,10 @@ private extension DashboardUIFactory {
             }
 
             let topBannerView = DashboardTopBannerFactory.v3ToV4BannerView(actionHandler: { [weak self] in
+                ServiceLocator.analytics.track(.dashboardNewStatsAvailabilityBannerTryTapped)
                 self?.stateCoordinator.statsV4ButtonPressed()
                 }, dismissHandler: { [weak self] in
+                    ServiceLocator.analytics.track(.dashboardNewStatsAvailabilityBannerCancelTapped)
                     self?.stateCoordinator.dismissV3ToV4Banner()
             })
             updatedDashboardUI.hideTopBanner(animated: false)
@@ -122,8 +124,10 @@ private extension DashboardUIFactory {
                 guard let url = URL(string: "https://wordpress.org/plugins/woocommerce-admin/") else {
                     return
                 }
+                ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerLearnMoreTapped)
                 WebviewHelper.launch(url, with: updatedDashboardUI)
             }, dismissHandler: { [weak self] in
+                ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerDismissTapped)
                 self?.stateCoordinator.dismissV4ToV3Banner()
             })
             updatedDashboardUI.hideTopBanner(animated: false)

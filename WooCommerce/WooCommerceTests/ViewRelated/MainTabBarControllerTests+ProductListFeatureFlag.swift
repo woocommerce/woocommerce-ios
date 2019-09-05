@@ -7,7 +7,7 @@ class MainTabBarControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(ofClass: MainTabBarController.self)
+        tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController
     }
 
     override func tearDown() {

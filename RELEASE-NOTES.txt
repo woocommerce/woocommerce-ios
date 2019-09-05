@@ -1,6 +1,6 @@
 2.7
 -----
-- Enhancement: Enhancements to the Order Details screen.
+- Enhancement: Enhancements to the Order Details screen, adding more customer information.
  
 2.6
 -----

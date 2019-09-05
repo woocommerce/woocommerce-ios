@@ -1,0 +1,3 @@
+- Bazı müşterilerimiz oturum açma ekranında kendi sitesini görebiliyor ancak Devam’a dokunamıyordu. Bunu düzelttik.
+- Çok satış yapan bir satıcı olmak kutlanmaya değer, bu nedenle Siparişler rozetini okumayı çok daha kolay hale getirdik.
+- Sipariş Ayrıntıları ekranındaki ürün resimlerini artık otomatik olarak indiremediğinizi tespit ettik. Bunları yeniden indirilebilir hale getirdik.

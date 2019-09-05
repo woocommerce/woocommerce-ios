@@ -1,0 +1,3 @@
+- Algunos podíais ver vuestro sitio en la pantalla de inicio de sesión, pero no podíais tocar Continuar. Ya lo hemos solucionado.
+- Ser un vendedor prolífico es algo que hay que celebrar, así que hemos hecho que la insignia Pedidos sea mucho más fácil de leer.
+- Descubrimos que ya no podías descargar automáticamente imágenes de productos en la pantalla Información del pedido. Hemos restaurado la función para descargarlas.

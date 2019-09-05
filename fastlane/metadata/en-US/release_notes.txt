@@ -1,0 +1,3 @@
+- Some of you could see your site on the login screen, but couldn’t tap Continue. Well, we fixed that.
+- Being a prolific seller is something to celebrate — so we made the Orders badge a lot .easier to read.
+- We discovered you could no longer automatically download product images from the Order Detail screen. We’ve restored the ability to download them.

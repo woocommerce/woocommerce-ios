@@ -1,0 +1,3 @@
+- Einige von euch konnten ihre Website auf dem Anmeldebildschirm sehen, aber sie konnten nicht auf „Weiter“ tippen. Wir haben das behoben.
+- Ein erfolgreicher Verkäufer zu sein, ist ein Grund zum Feiern. Daher haben wir das Badge „Bestellungen“ viel leichter lesbar gemacht.
+- Wir haben festgestellt, dass du Produktbilder nicht mehr automatisch vom Bestelldetailbildschirm herunterladen konntest. Jetzt ist es wieder möglich, sie herunterzuladen.

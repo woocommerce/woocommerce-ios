@@ -1,0 +1,3 @@
+- Certains utilisateurs pouvaient voir leur site sur l'écran de connexion mais n'avaient pas accès au bouton Continuer. Ce problème a été résolu.
+- Il est important de souligner que vous êtes un excellent vendeur. C'est pourquoi nous avons facilité la lecture du badge de commandes.
+- Nous avons découvert que vous ne pouvez pas télécharger automatiquement les images de produits à partir de la page Détails de la commande. Nous avons rétabli la capacité de les télécharger.

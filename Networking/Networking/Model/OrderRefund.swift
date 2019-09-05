@@ -1,7 +1,7 @@
 import Foundation
 
 
-/// Represents a Order's refund Entity.
+/// Represents a Order Refund Entity.
 ///
 public struct OrderRefund: Decodable {
     public let siteID: Int

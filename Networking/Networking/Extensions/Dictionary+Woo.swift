@@ -22,7 +22,7 @@ extension Dictionary where Key: Hashable, Value: Any {
     ///
     func toJSONEncoded() -> String? {
         let jsonData = try? JSONSerialization.data(withJSONObject: self, options: [])
-        guard jsonData != nil else {return nil}
-        return String(data: jsonData!, encoding: .utf8)
+        guard let data = jsonData else {return nil}
+        return String(data: data, encoding: .utf8)
     }
 }

@@ -68,8 +68,6 @@ final class MainTabBarController: UITabBarController {
         return nil
     }
 
-//    var isProductListFeatureOn: Bool = FeatureFlag.productList.enabled
-
     /// Used for overriding the status bar style for all child view controllers
     ///
     override var preferredStatusBarStyle: UIStatusBarStyle {

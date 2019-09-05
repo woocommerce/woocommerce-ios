@@ -9,15 +9,4 @@ enum FeatureFlag: Int {
     /// Store stats
     ///
     case stats
-
-    /// Returns a boolean indicating if the feature is enabled
-    ///
-    var enabled: Bool {
-        switch self {
-        case .stats:
-            return BuildConfiguration.current == .localDeveloper
-        default:
-            return true
-        }
-    }
 }

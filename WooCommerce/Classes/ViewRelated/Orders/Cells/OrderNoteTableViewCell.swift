@@ -87,13 +87,13 @@ private extension OrderNoteTableViewCell {
         } else if isSystemAuthor {
             iconButton.backgroundColor = StyleManager.wooCommerceBrandColor
             let template =
-                NSLocalizedString("%@ - %@ (System)",
+                NSLocalizedString("%1$@ - %2$@ (System)",
                                   comment: "Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System)")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else {
             iconButton.backgroundColor = StyleManager.wooGreyMid
             let template =
-                NSLocalizedString("%@ - %@ (Private)",
+                NSLocalizedString("%1$@ - %2$@ (Private)",
                                   comment: "Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private)")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         }

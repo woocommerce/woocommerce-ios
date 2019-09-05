@@ -84,12 +84,13 @@ private extension AppleAuthenticator {
                                             let wpcom = WordPressComCredentials(authToken: wpcomToken, isJetpackLogin: false, multifactor: false, siteURL: self?.loginFields.siteAddress ?? "")
                                             let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
-                                            self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
-
                                             if accountCreated {
+                                                self?.authenticationDelegate.createdWordPressComAccount(username: wpcomUsername, authToken: wpcomToken)
                                                 self?.signupSuccessful(with: credentials)
                                             } else {
-                                                self?.loginSuccessful(with: credentials)
+                                                self?.authenticationDelegate.sync(credentials: credentials) {
+                                                    self?.loginSuccessful(with: credentials)
+                                                }
                                             }
 
             }, failure: { [weak self] error in

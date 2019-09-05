@@ -77,7 +77,7 @@ final class OrderPaymentDetailsViewModel {
 
         let datePaid = order.datePaid?.toString(dateStyle: .medium, timeStyle: .none) ?? String()
         let template = NSLocalizedString(
-            "%@ via %@",
+            "%1$@ via %2$@",
             comment: "Payment on <date> received via (payment method title)")
         return String.localizedStringWithFormat(template, datePaid, order.paymentMethodTitle)
     }

@@ -131,25 +131,33 @@ extension FancyAlertViewController {
     }
 
 
-    /// Shows a generic error message. The view
-    /// is configured so the user can open Support for assistance.
+    /// Shows a generic error message.
+    /// If Support is enabled, the view is configured so the user can open Support for assistance.
     ///
     /// - Parameter message: The error message to show.
     /// - Parameter sourceTag: tag of the source of the error
     ///
     static func alertForGenericErrorMessageWithHelpButton(_ message: String, loginFields: LoginFields, sourceTag: WordPressSupportSourceTag) -> FancyAlertViewController {
-        let moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
-            controller.dismiss(animated: true) {
-                // Find the topmost view controller that we can present from
-                guard let appDelegate = UIApplication.shared.delegate,
-                    let window = appDelegate.window,
-                    let viewController = window?.topmostPresentedViewController,
-                    WordPressAuthenticator.shared.delegate?.supportEnabled == true
-                else {
-                    return
-                }
 
-                WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag)
+        // If support is not enabled, don't add a Help Button since it won't do anything.
+        var moreHelpButton: ButtonConfig? = nil
+
+        if WordPressAuthenticator.shared.delegate?.supportEnabled == false {
+            DDLogInfo("Error Alert: Support not enabled. Hiding Help button.")
+        } else {
+            moreHelpButton = ButtonConfig(Strings.moreHelp) { controller, _ in
+                controller.dismiss(animated: true) {
+                    // Find the topmost view controller that we can present from
+                    guard let appDelegate = UIApplication.shared.delegate,
+                        let window = appDelegate.window,
+                        let viewController = window?.topmostPresentedViewController,
+                        WordPressAuthenticator.shared.delegate?.supportEnabled == true
+                        else {
+                            return
+                    }
+                    
+                    WordPressAuthenticator.shared.delegate?.presentSupportRequest(from: viewController, sourceTag: sourceTag)
+                }
             }
         }
 
@@ -162,6 +170,7 @@ extension FancyAlertViewController {
                                                      moreInfoButton: moreHelpButton,
                                                      titleAccessoryButton: nil,
                                                      dismissAction: nil)
+
         return FancyAlertViewController.controllerWithConfiguration(configuration: config)
     }
 

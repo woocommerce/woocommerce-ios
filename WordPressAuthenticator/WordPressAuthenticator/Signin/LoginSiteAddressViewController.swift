@@ -370,9 +370,14 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
 
 #if XCODE11
 extension LoginSiteAddressViewController: AppleAuthenticatorDelegate {
+
     func showWPComLogin(loginFields: LoginFields) {
         self.loginFields = loginFields
         performSegue(withIdentifier: .showWPComLogin, sender: self)
+    }
+    
+    func authFailedWithError(message: String) {
+        displayErrorAlert(message, sourceTag: .loginApple)
     }
 }
 #endif

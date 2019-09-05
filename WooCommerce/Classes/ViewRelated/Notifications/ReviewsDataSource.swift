@@ -15,6 +15,10 @@ protocol ReviewsDataSource: UITableViewDataSource, UITableViewDelegate {
     ///
     var reviewsProductsIDs: [Int] { get }
 
+    /// Returns the review at a given indexpath
+    ///
+    func review(at indexPath: IndexPath) -> ProductReview
+
     /// Initializes observers for incoming reviews
     ///
     func observeReviews() throws

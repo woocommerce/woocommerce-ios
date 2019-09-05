@@ -97,6 +97,10 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     func startForwardingEvents(to tableView: UITableView) {
         reviewsResultsController.startForwardingEvents(to: tableView)
     }
+
+    func review(at indexPath: IndexPath) -> ProductReview {
+        return reviewsResultsController.object(at: indexPath)
+    }
 }
 
 
@@ -165,13 +169,6 @@ extension DefaultReviewsDataSource: UITableViewDelegate {
         return UITableView.automaticDimension
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        let review = reviewsResultsController.object(at: indexPath)
-        presentDetails(for: review)
-    }
-
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 
         // Preserve the Cell Height
@@ -180,17 +177,6 @@ extension DefaultReviewsDataSource: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
-    }
-}
-
-// MARK: - Public Methods
-//
-private extension DefaultReviewsDataSource {
-
-    /// Presents the Details for a given ProductReview
-    ///
-    func presentDetails(for review: ProductReview) {
-        // TODO. To be implemented in #1253
     }
 }
 

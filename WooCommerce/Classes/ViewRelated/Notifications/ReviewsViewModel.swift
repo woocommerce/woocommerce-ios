@@ -11,7 +11,7 @@ final class ReviewsViewModel {
         return data.isEmpty
     }
 
-    var dataSource: UITableViewDataSource {
+    var dataSource: ReviewsDataSource {
         return data
     }
 

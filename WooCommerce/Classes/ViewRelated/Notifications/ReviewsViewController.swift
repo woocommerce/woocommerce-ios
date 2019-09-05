@@ -157,7 +157,12 @@ private extension ReviewsViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
         tableView.dataSource = viewModel.dataSource
-        tableView.delegate = viewModel.delegate
+
+        // We decorate the delegate informally, because we want to intercept
+        // didSelectItem:at: but delegate the rest of the implementation of
+        // UITableViewDelegate to the implementation of UITableViewDelegate
+        // provided by the view model. It could be argued that we are just cheating.
+        tableView.delegate = self
     }
 
     /// Setup: ResultsController
@@ -198,6 +203,38 @@ private extension ReviewsViewController {
     }
 }
 
+
+// MARK: - UITableViewDelegate
+extension ReviewsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return viewModel.delegate.tableView?(tableView, heightForHeaderInSection: section) ?? 0
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return viewModel.delegate.tableView?(tableView, estimatedHeightForRowAt: indexPath) ?? 0
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return viewModel.delegate.tableView?(tableView, heightForRowAt: indexPath) ?? 0
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let review = viewModel.dataSource.review(at: indexPath)
+        presentDetails(for: review)
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        viewModel.delegate.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+    }
+
+    /// Presents the Details for a given ProductReview
+    ///
+    private func presentDetails(for review: ProductReview) {
+//        let detailsViewController = NotificationDetailsViewController(note: note)
+//        navigationController?.pushViewController(detailsViewController, animated: true)
+
+    }
+}
 
 // MARK: - Yosemite Wrappers
 //

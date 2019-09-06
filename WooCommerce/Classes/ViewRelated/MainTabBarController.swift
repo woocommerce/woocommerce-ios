@@ -291,11 +291,21 @@ extension MainTabBarController {
     static func presentNotificationDetails(for noteID: Int) {
         switchToReviewsTab()
 
-        guard let notificationsViewController: NotificationsViewController = childViewController() else {
+        if FeatureFlag.reviews.enabled {
+            guard let reviewsViewController: ReviewsViewController = childViewController() else {
             return
-        }
+            }
 
-        notificationsViewController.presentDetails(for: noteID)
+            //TODO. What to do when receiving a notification?
+            reviewsViewController.presentDetails(for: noteID)
+        }
+        else {
+            guard let notificationsViewController: NotificationsViewController = childViewController() else {
+                return
+            }
+
+            notificationsViewController.presentDetails(for: noteID)
+        }
     }
 
     /// Switches to the My Store Tab, and presents the Settings .

@@ -211,7 +211,7 @@ final class ProductReviewStoreTests: XCTestCase {
     func testResetStoredProductReviewsEffectivelyNukesTheProductsCache() {
         let expectation = self.expectation(description: "Stored Product reviews Reset")
         let action = ProductReviewAction.resetStoredProductReviews() {
-            self.store.upsertStoredProductReviews(readOnlyProductReviews: [self.sampleProductReview()], in: self.viewStorage)
+            self.store.upsertStoredProductReviews(readOnlyProductReviews: [self.sampleProductReview()], in: self.viewStorage, siteID: self.sampleSiteID)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 1)
             expectation.fulfill()
         }
@@ -228,10 +228,10 @@ final class ProductReviewStoreTests: XCTestCase {
 
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductReview.self), 0)
 
-        store.upsertStoredProductReviews(readOnlyProductReviews: [sampleProductReview()], in: viewStorage)
+        store.upsertStoredProductReviews(readOnlyProductReviews: [sampleProductReview()], in: viewStorage, siteID: sampleSiteID)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 1)
 
-        store.upsertStoredProductReviews(readOnlyProductReviews: [sampleProductReviewMutated()], in: viewStorage)
+        store.upsertStoredProductReviews(readOnlyProductReviews: [sampleProductReviewMutated()], in: viewStorage, siteID: sampleSiteID)
         let storageProductReview1 = viewStorage.loadProductReview(siteID: sampleSiteID, reviewID: sampleReviewID)
         XCTAssertEqual(storageProductReview1?.toReadOnly(), sampleProductReviewMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 1)

@@ -71,12 +71,18 @@ class ProductsViewController: UIViewController {
 
         configureNavigationBar()
         configureMainView()
-        configureSections()
         configureTableView()
+        configureSyncingCoordinator()
         registerTableViewCells()
         configureResultsController { [weak self] in
             self?.tableView.reloadData()
         }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        syncingCoordinator.synchronizeFirstPage()
     }
 
 }
@@ -102,8 +108,6 @@ extension ProductsViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-//        statusFilter = nil
-//        refreshStatusPredicate()
         syncingCoordinator.resetInternalState()
     }
 }
@@ -138,27 +142,21 @@ private extension ProductsViewController {
         tableView.delegate = self
 
         tableView.cellLayoutMarginsFollowReadableWidth = true
-//        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    /// Configure sections for table view.
+    /// Setup: Sync'ing Coordinator
     ///
-    func configureSections() {
-//        sections = [
-//            Section(rows: [.statsVersionSwitch,
-//                           .statsVersionDescription])
-//        ]
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
     }
 
     /// Register table cells.
     ///
     func registerTableViewCells() {
         tableView.register(ProductTableViewCell.loadNib(), forCellReuseIdentifier: ProductTableViewCell.reuseIdentifier)
-//        for row in Row.allCases {
-//            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
-//        }
     }
 
     func configureResultsController(onReload: @escaping () -> Void) {
@@ -252,7 +250,6 @@ extension ProductsViewController: UITableViewDelegate {
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
-        syncOrderStatus()
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
@@ -286,7 +283,6 @@ private extension ProductsViewController {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.syncOrderStatus()
             self?.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
@@ -355,43 +351,23 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
 
-//        let action = OrderAction.synchronizeOrders(siteID: siteID,
-//                                                   statusKey: statusFilter?.slug,
-//                                                   pageNumber: pageNumber,
-//                                                   pageSize: pageSize) { [weak self] error in
-//                                                    guard let `self` = self else {
-//                                                        return
-//                                                    }
-//
-//                                                    if let error = error {
-//                                                        DDLogError("⛔️ Error synchronizing orders: \(error)")
-//                                                        self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-//                                                    } else {
-//                                                        ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
-//                                                    }
-//
-//                                                    self.transitionToResultsUpdatedState()
-//                                                    onCompletion?(error == nil)
-//        }
+        let action = ProductAction
+            .synchronizeProducts(siteID: siteID,
+                                 pageNumber: pageNumber,
+                                 pageSize: pageSize) { [weak self] error in
+                                    guard let self = self else {
+                                        return
+                                    }
 
-//        ServiceLocator.stores.dispatch(action)
-    }
+                                    if let error = error {
+                                        DDLogError("⛔️ Error synchronizing orders: \(error)")
+                                        self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
+                                    } else {
+                                        //                                                                                                                ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
+                                    }
 
-    func syncOrderStatus(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
-            return
-        }
-
-        // First, let's verify our FRC predicate is up to date
-//        refreshStatusPredicate()
-
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (_, error) in
-            if let error = error {
-                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
-            }
-//            self?.resetStatusFilterIfNeeded()
-            onCompletion?(error)
+                                    self.transitionToResultsUpdatedState()
+                                    onCompletion?(error == nil)
         }
 
         ServiceLocator.stores.dispatch(action)

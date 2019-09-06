@@ -356,6 +356,16 @@ private extension StorePickerViewController {
         }
     }
 
+    /// Toggles the dismiss button, if it exists
+    ///
+    func toggleDismissButton(enabled: Bool) {
+        guard let dismissButton = navigationItem.leftBarButtonItem else {
+            return
+        }
+
+        dismissButton.isEnabled = enabled
+    }
+
     /// This method will reload the [Selected Row]
     ///
     func reloadSelectedStoreRows(afterRunning block: () -> Void) {
@@ -413,11 +423,14 @@ private extension StorePickerViewController {
         RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (result, error) in
             switch result {
             case .validWCVersion:
+                self?.toggleDismissButton(enabled: true)
                 self?.updateActionButtonAndTableState(animating: false, enabled: true)
             case .invalidWCVersion:
+                self?.toggleDismissButton(enabled: false)
                 self?.updateActionButtonAndTableState(animating: false, enabled: false)
                 self?.displayFancyWCRequirementAlert(siteName: siteName)
             case .empty, .error:
+                self?.toggleDismissButton(enabled: false)
                 self?.updateActionButtonAndTableState(animating: false, enabled: false)
                 self?.displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
             }

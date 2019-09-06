@@ -299,19 +299,6 @@ private extension ReviewDetailsViewController {
     }
 
 
-//    /// Setup: Header Cell
-//    ///
-//    func setupHeaderCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
-//        guard let headerCell = cell as? NoteDetailsHeaderTableViewCell,
-//            case let .header(gravatarBlock, _) = row else {
-//                return
-//        }
-//
-//        let formatter = StringFormatter()
-//        headerCell.textLabel?.attributedText = formatter.format(block: gravatarBlock, with: .header)
-//    }
-//
-//
     /// Setup: Header Cell (Plain)
     ///
     func setupHeaderPlainCell(_ cell: UITableViewCell) {
@@ -333,9 +320,9 @@ private extension ReviewDetailsViewController {
         }
 
         // Setup: Properties
-        commentCell.titleText = "cesar"
-        commentCell.detailsText = "23 hours ago"
-        commentCell.commentAttributedText = NSAttributedString(string: productReview.review)
+        commentCell.titleText = productReview.reviewer
+        commentCell.detailsText = ReviewAge.from(startDate: productReview.dateCreated, toDate: Date()).description
+        commentCell.commentAttributedText = NSAttributedString(string: productReview.review.strippedHTML)
         commentCell.starRating = productReview.rating
 
         //let gravatarURL = userBlock.media.first?.url

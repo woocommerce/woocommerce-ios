@@ -324,6 +324,13 @@ private extension StorePickerViewController {
     ///
     func reloadInterface() {
         actionButton.setTitle(state.actionTitle, for: .normal)
+        switch state {
+        case .empty:
+            updateActionButtonAndTableState(animating: false, enabled: false)
+        default:
+            break
+        }
+
         tableView.separatorStyle = state.separatorStyle
         tableView.reloadData()
     }

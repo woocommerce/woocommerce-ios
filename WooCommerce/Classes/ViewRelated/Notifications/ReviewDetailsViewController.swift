@@ -318,7 +318,10 @@ private extension ReviewDetailsViewController {
         // Setup: Properties
         commentCell.titleText = productReview.reviewer
         commentCell.detailsText = ReviewAge.from(startDate: productReview.dateCreated, toDate: Date()).description
-        commentCell.commentAttributedText = NSAttributedString(string: productReview.review.strippedHTML)
+
+        let attributes: [NSAttributedString.Key: Any] = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
+        commentCell.commentAttributedText = NSAttributedString(string: productReview.review.strippedHTML, attributes: attributes).trimNewlines()
+
         commentCell.starRating = productReview.rating
 
         //let gravatarURL = userBlock.media.first?.url

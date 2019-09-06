@@ -219,20 +219,11 @@ extension ReviewsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let review = viewModel.dataSource.review(at: indexPath)
-        presentDetails(for: review)
+        viewModel.delegate.didSelectItem(at: indexPath, in: self)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         viewModel.delegate.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
-    }
-
-    /// Presents the Details for a given ProductReview
-    ///
-    private func presentDetails(for review: ProductReview) {
-//        let detailsViewController = NotificationDetailsViewController(note: note)
-//        navigationController?.pushViewController(detailsViewController, animated: true)
-
     }
 }
 

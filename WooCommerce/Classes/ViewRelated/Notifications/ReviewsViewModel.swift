@@ -11,11 +11,11 @@ final class ReviewsViewModel {
         return data.isEmpty
     }
 
-    var dataSource: ReviewsDataSource {
+    var dataSource: UITableViewDataSource {
         return data
     }
 
-    var delegate: UITableViewDelegate {
+    var delegate: ReviewsInteractionDelegate {
         return data
     }
 

@@ -5,9 +5,9 @@ import Gridicons
 import SafariServices
 
 
-// MARK: - NotificationDetailsViewController
+// MARK: - ReviewDetailsViewController
 //
-class ReviewDetailsViewController: UIViewController {
+final class ReviewDetailsViewController: UIViewController {
 
     /// Main TableView
     ///
@@ -15,8 +15,8 @@ class ReviewDetailsViewController: UIViewController {
 
     /// EntityListener: Update / Deletion Notifications.
     ///
-    private lazy var entityListener: EntityListener<Note> = {
-        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: note)
+    private lazy var entityListener: EntityListener<ProductReview> = {
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: productReview)
     }()
 
     /// Pull To Refresh Support.
@@ -29,30 +29,32 @@ class ReviewDetailsViewController: UIViewController {
 
     /// Note to be displayed!
     ///
-    private var note: Note! {
+    private var productReview: ProductReview! {
         didSet {
             reloadInterface()
         }
     }
 
-    /// DetailsRow(s): Each Row is mapped to a single UI Entity!
+    private let product: Product?
+
+    /// Sections to be rendered
     ///
-    private var rows = [NoteDetailsRow]()
-
-
+    private var rows = [Row]()
 
     /// Designated Initializer
     ///
-    init(note: Note) {
-        self.note = note
+    init(productReview: ProductReview, product: Product?) {
+        self.productReview = productReview
+        self.product = product
         super.init(nibName: nil, bundle: nil)
     }
 
     /// Required!
     ///
     required init?(coder aDecoder: NSCoder) {
+        self.product = nil
         super.init(coder: aDecoder)
-        assert(note != nil, "Please use the designated initializer!")
+        assert(productReview != nil, "Please use the designated initializer!")
     }
 
 
@@ -103,8 +105,8 @@ private extension ReviewDetailsViewController {
     /// Setup: EntityListener
     ///
     func configureEntityListener() {
-        entityListener.onUpsert = { [weak self] note in
-            self?.note = note
+        entityListener.onUpsert = { [weak self] productReview in
+            self?.productReview = productReview
         }
 
         entityListener.onDelete = { [weak self] in
@@ -123,7 +125,6 @@ private extension ReviewDetailsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            NoteDetailsHeaderTableViewCell.self,
             NoteDetailsHeaderPlainTableViewCell.self,
             NoteDetailsCommentTableViewCell.self
         ]
@@ -131,6 +132,10 @@ private extension ReviewDetailsViewController {
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
+    }
+
+    func reloadRows() {
+        rows = [.header, .content]
     }
 }
 
@@ -144,17 +149,25 @@ private extension ReviewDetailsViewController {
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
 
-        synchronizeNotification(noteId: note.noteId) {
+        synchronizeReview(reviewID: productReview.reviewID) {
             sender.endRefreshing()
         }
+
+//        synchronizeNotification(noteId: note.noteId) {
+//            sender.endRefreshing()
+//        }
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    func synchronizeNotification(noteId: Int64, onCompletion: @escaping () -> Void) {
-        let action = NotificationAction.synchronizeNotification(noteId: noteId) { error in
+    func synchronizeReview(reviewID: Int, onCompletion: @escaping () -> Void) {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        let action = ProductReviewAction.retrieveProductReview(siteID: siteID, reviewID: reviewID) { (productReview, error) in
             if let error = error {
-                DDLogError("⛔️ Error synchronizing notification [\(noteId)]: \(error)")
+                DDLogError("⛔️ Error synchronizing product review [\(reviewID)]: \(error)")
             }
 
             onCompletion()
@@ -169,10 +182,10 @@ private extension ReviewDetailsViewController {
 //
 private extension ReviewDetailsViewController {
 
-    /// Displays a Notice onScreen, indicating that the current Note has been deleted from the Store.
+    /// Displays a Notice onScreen, indicating that the current Review has been deleted from the Store.
     ///
     func displayNoteDeletedNotice() {
-        let title = NSLocalizedString("The notification has been removed", comment: "Displayed whenever a Notification that was onscreen got deleted.")
+        let title = NSLocalizedString("The review has been removed", comment: "Displayed whenever a review that was onscreen got deleted.")
         let notice = Notice(title: title, feedbackType: .error)
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
@@ -222,14 +235,14 @@ private extension ReviewDetailsViewController {
     /// Reloads all of the Details Interface
     ///
     func reloadInterface() {
-        title = note.title
-        rows = NoteDetailsRow.details(from: note)
+        title = Constants.title
+        reloadRows()
         tableView.reloadData()
     }
 
-    /// Returns the DetailsRow at a given IndexPath.
+    /// Returns the Row at a given IndexPath.
     ///
-    func detailsForRow(at indexPath: IndexPath) -> NoteDetailsRow {
+    func detailsForRow(at indexPath: IndexPath) -> Row {
         return rows[indexPath.row]
     }
 }
@@ -259,13 +272,13 @@ extension ReviewDetailsViewController: UITableViewDataSource {
 extension ReviewDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let row = detailsForRow(at: indexPath)
-        switch row {
-        case .headerPlain(_, let url):
-            displaySafariViewController(at: url)
-        default:
-            break
-        }
+//        let row = detailsForRow(at: indexPath)
+//        switch row {
+//        case .headerPlain(_, let url):
+//            displaySafariViewController(at: url)
+//        default:
+//            break
+//        }
     }
 }
 
@@ -276,96 +289,92 @@ private extension ReviewDetailsViewController {
 
     /// Main Cell Setup Method
     ///
-    func setup(cell: UITableViewCell, at row: NoteDetailsRow) {
+    func setup(cell: UITableViewCell, at row: Row) {
         switch row {
         case .header:
-            setupHeaderCell(cell, at: row)
-        case .headerPlain:
-            setupHeaderPlainCell(cell, at: row)
-        case .comment:
-            setupCommentCell(cell, at: row)
+            setupHeaderPlainCell(cell)
+        case .content:
+            setupCommentCell(cell)
         }
     }
 
 
-    /// Setup: Header Cell
-    ///
-    func setupHeaderCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
-        guard let headerCell = cell as? NoteDetailsHeaderTableViewCell,
-            case let .header(gravatarBlock, _) = row else {
-                return
-        }
-
-        let formatter = StringFormatter()
-        headerCell.textLabel?.attributedText = formatter.format(block: gravatarBlock, with: .header)
-    }
-
-
+//    /// Setup: Header Cell
+//    ///
+//    func setupHeaderCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
+//        guard let headerCell = cell as? NoteDetailsHeaderTableViewCell,
+//            case let .header(gravatarBlock, _) = row else {
+//                return
+//        }
+//
+//        let formatter = StringFormatter()
+//        headerCell.textLabel?.attributedText = formatter.format(block: gravatarBlock, with: .header)
+//    }
+//
+//
     /// Setup: Header Cell (Plain)
     ///
-    func setupHeaderPlainCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
-        guard let headerCell = cell as? NoteDetailsHeaderPlainTableViewCell,
-            case let .headerPlain(title, _) = row else {
-                return
+    func setupHeaderPlainCell(_ cell: UITableViewCell) {
+        guard let headerCell = cell as? NoteDetailsHeaderPlainTableViewCell else {
+            return
         }
 
         headerCell.leftImage = .productImage
         headerCell.rightImage = .externalImage
-        headerCell.plainText = title
+        headerCell.plainText = product?.name ?? "Unknown"
     }
 
 
     /// Setup: Comment Cell
     ///
-    func setupCommentCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
-        guard let commentCell = cell as? NoteDetailsCommentTableViewCell,
-            case let .comment(commentBlock, userBlock, _) = row else {
+    func setupCommentCell(_ cell: UITableViewCell) {
+        guard let commentCell = cell as? NoteDetailsCommentTableViewCell else {
                 return
         }
 
         // Setup: Properties
-        let formatter = StringFormatter()
-        commentCell.titleText = userBlock.text
-        commentCell.detailsText = note.timestampAsDate.mediumString()
-        commentCell.commentAttributedText = formatter.format(block: commentBlock, with: .body)
-        commentCell.starRating = note.starRating
+        commentCell.titleText = "cesar"
+        commentCell.detailsText = "23 hours ago"
+        commentCell.commentAttributedText = NSAttributedString(string: productReview.review)
+        commentCell.starRating = productReview.rating
 
-        let gravatarURL = userBlock.media.first?.url
+        //let gravatarURL = userBlock.media.first?.url
+        let gravatarURL = URL(string: "https://2.gravatar.com/avatar/b371b7de1e58a5dcc3fc3aa236784081?s=32&d=mm&r=G")
         commentCell.downloadGravatar(with: gravatarURL)
 
-        commentCell.isApproveEnabled  = commentBlock.isActionEnabled(.approve)
-        commentCell.isTrashEnabled    = commentBlock.isActionEnabled(.trash)
-        commentCell.isSpamEnabled     = commentBlock.isActionEnabled(.spam)
-        commentCell.isApproveSelected = commentBlock.isActionOn(.approve)
+        commentCell.isApproveEnabled  = true
+        commentCell.isTrashEnabled    = true
+        commentCell.isSpamEnabled     = true
+        commentCell.isApproveSelected = productReview.status == .approved
 
         // Setup: Callbacks
-        if let commentID = commentBlock.meta.identifier(forKey: .comment),
-            let siteID = commentBlock.meta.identifier(forKey: .site) {
-
-            commentCell.onSpam = { [weak self] in
-                ServiceLocator.analytics.track(.notificationReviewSpamTapped)
-                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.spam.rawValue])
-                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .spam, undoStatus: .unspam)
-            }
-
-            commentCell.onTrash = { [weak self] in
-                ServiceLocator.analytics.track(.notificationReviewTrashTapped)
-                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.trash.rawValue])
-                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .trash, undoStatus: .untrash)
-            }
-
-            commentCell.onApprove = { [weak self] in
-                ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
-                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.approved.rawValue])
-                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .approved, undoStatus: .unapproved)
-            }
-
-            commentCell.onUnapprove = { [weak self] in
-                ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
-                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.unapproved.rawValue])
-                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .unapproved, undoStatus: .approved)
-            }
-        }
+//        if let commentID = commentBlock.meta.identifier(forKey: .comment),
+//            let siteID = commentBlock.meta.identifier(forKey: .site) {
+//
+//            commentCell.onSpam = { [weak self] in
+//                ServiceLocator.analytics.track(.notificationReviewSpamTapped)
+//                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.spam.rawValue])
+//                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .spam, undoStatus: .unspam)
+//            }
+//
+//            commentCell.onTrash = { [weak self] in
+//                ServiceLocator.analytics.track(.notificationReviewTrashTapped)
+//                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.trash.rawValue])
+//                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .trash, undoStatus: .untrash)
+//            }
+//
+//            commentCell.onApprove = { [weak self] in
+//                ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
+//                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.approved.rawValue])
+//                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .approved, undoStatus: .unapproved)
+//            }
+//
+//            commentCell.onUnapprove = { [weak self] in
+//                ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
+//                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.unapproved.rawValue])
+//                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .unapproved, undoStatus: .approved)
+//            }
+//        }
     }
 }
 
@@ -377,96 +386,85 @@ private extension ReviewDetailsViewController {
     /// Dispatches the moderation command (Approve/Unapprove, Spam, Trash) to the backend
     ///
     func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
-        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { (error) in
-            guard let error = error else {
-                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
-                return
-            }
-
-            DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
-            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
-        }) else {
-            return
-        }
-
-        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { (error) in
-            guard let error = error else {
-                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
-                ReviewDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
-                    ServiceLocator.analytics.track(.notificationReviewActionUndo)
-                    ServiceLocator.stores.dispatch(undo)
-                })
-                return
-            }
-
-            DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
-            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
-        }) else {
-            return
-        }
-
-        ServiceLocator.stores.dispatch(done)
-        navigationController?.popViewController(animated: true)
+//        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { (error) in
+//            guard let error = error else {
+//                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
+//                return
+//            }
+//
+//            DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
+//            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
+//            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
+//        }) else {
+//            return
+//        }
+//
+//        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { (error) in
+//            guard let error = error else {
+//                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
+//                ReviewDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
+//                    ServiceLocator.analytics.track(.notificationReviewActionUndo)
+//                    ServiceLocator.stores.dispatch(undo)
+//                })
+//                return
+//            }
+//
+//            DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
+//            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
+//            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
+//        }) else {
+//            return
+//        }
+//
+//        ServiceLocator.stores.dispatch(done)
+//        navigationController?.popViewController(animated: true)
     }
 
     /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
     ///
-    func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
-        let noteID = note.noteId
-
-        switch status {
-        case .approved:
-            return [CommentAction.updateApprovalStatus(siteID: siteID,
-                                                       commentID: commentID,
-                                                       isApproved: true,
-                                                       onCompletion: { (_, error) in onCompletion(error) })]
-        case .unapproved:
-            return [CommentAction.updateApprovalStatus(siteID: siteID,
-                                                       commentID: commentID,
-                                                       isApproved: false,
-                                                       onCompletion: { (_, error) in onCompletion(error) })]
-        case .spam:
-            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
-                    CommentAction.updateSpamStatus(siteID: siteID,
-                                                   commentID: commentID,
-                                                   isSpam: true,
-                                                   onCompletion: { (_, error) in onCompletion(error) })]
-        case .unspam:
-            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
-                    CommentAction.updateSpamStatus(siteID: siteID,
-                                                   commentID: commentID,
-                                                   isSpam: false,
-                                                   onCompletion: { (_, error) in onCompletion(error) })]
-        case .trash:
-            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
-                    CommentAction.updateTrashStatus(siteID: siteID,
-                                                    commentID: commentID,
-                                                    isTrash: true,
-                                                    onCompletion: { (_, error) in onCompletion(error) })]
-        case .untrash:
-            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
-                    CommentAction.updateTrashStatus(siteID: siteID,
-                                                    commentID: commentID,
-                                                    isTrash: false,
-                                                    onCompletion: { (_, error) in onCompletion(error) })]
-        case .unknown:
-            DDLogError("⛔️ Comment moderation failure: attempted to update comment with unknown status.")
-            return nil
-        }
-    }
-
-    /// Returns a "note pending deletion" action (so the note list removes the deleted note immediately)
-    ///
-    func locallyDeletedStatusAction(noteID: Int64, deleteInProgress: Bool) -> Action {
-        let action = NotificationAction.updateLocalDeletedStatus(noteId: noteID, deleteInProgress: deleteInProgress) { error in
-            if error != nil {
-                DDLogError("⛔️ Error marking deleteInProgress == \(deleteInProgress) for note \(noteID) locally: \(String(describing: error))")
-            }
-        }
-        return action
-    }
+//    func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
+//        let noteID = productReview
+//
+//        switch status {
+//        case .approved:
+//            return [CommentAction.updateApprovalStatus(siteID: siteID,
+//                                                       commentID: commentID,
+//                                                       isApproved: true,
+//                                                       onCompletion: { (_, error) in onCompletion(error) })]
+//        case .unapproved:
+//            return [CommentAction.updateApprovalStatus(siteID: siteID,
+//                                                       commentID: commentID,
+//                                                       isApproved: false,
+//                                                       onCompletion: { (_, error) in onCompletion(error) })]
+//        case .spam:
+//            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
+//                    CommentAction.updateSpamStatus(siteID: siteID,
+//                                                   commentID: commentID,
+//                                                   isSpam: true,
+//                                                   onCompletion: { (_, error) in onCompletion(error) })]
+//        case .unspam:
+//            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
+//                    CommentAction.updateSpamStatus(siteID: siteID,
+//                                                   commentID: commentID,
+//                                                   isSpam: false,
+//                                                   onCompletion: { (_, error) in onCompletion(error) })]
+//        case .trash:
+//            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
+//                    CommentAction.updateTrashStatus(siteID: siteID,
+//                                                    commentID: commentID,
+//                                                    isTrash: true,
+//                                                    onCompletion: { (_, error) in onCompletion(error) })]
+//        case .untrash:
+//            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
+//                    CommentAction.updateTrashStatus(siteID: siteID,
+//                                                    commentID: commentID,
+//                                                    isTrash: false,
+//                                                    onCompletion: { (_, error) in onCompletion(error) })]
+//        case .unknown:
+//            DDLogError("⛔️ Comment moderation failure: attempted to update comment with unknown status.")
+//            return nil
+//        }
+//    }
 }
 
 
@@ -488,5 +486,25 @@ private extension ReviewDetailsViewController {
 private extension ReviewDetailsViewController {
     struct Constants {
         static let section = "notifications"
+        static let title = NSLocalizedString("Product Review",
+                                             comment: "Title of the view containing a single Product Review")
     }
+}
+
+
+private extension ReviewDetailsViewController {
+    enum Row {
+        case header
+        case content
+
+        var reuseIdentifier: String {
+            switch self {
+            case .header:
+                return NoteDetailsHeaderPlainTableViewCell.reuseIdentifier
+            case .content:
+                return NoteDetailsCommentTableViewCell.reuseIdentifier
+            }
+        }
+    }
+
 }

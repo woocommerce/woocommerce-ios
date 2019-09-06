@@ -97,10 +97,6 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     func startForwardingEvents(to tableView: UITableView) {
         reviewsResultsController.startForwardingEvents(to: tableView)
     }
-
-    func review(at indexPath: IndexPath) -> ProductReview {
-        return reviewsResultsController.object(at: indexPath)
-    }
 }
 
 
@@ -140,11 +136,16 @@ private extension DefaultReviewsDataSource {
     /// Initializes the Notifications Cell at the specified indexPath
     ///
     func configure(_ cell: ProductReviewTableViewCell, at indexPath: IndexPath) {
+        let viewModel = reviewViewModel(at: indexPath)
+
+        cell.configure(with: viewModel)
+    }
+
+    private func reviewViewModel(at indexPath: IndexPath) -> ReviewViewModel {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewProduct = product(id: review.productID)
 
-        let viewModel = ReviewViewModel(review: review, product: reviewProduct)
-        cell.configure(with: viewModel)
+        return ReviewViewModel(review: review, product: reviewProduct)
     }
 
     private func product(id productID: Int) -> Product? {
@@ -155,8 +156,9 @@ private extension DefaultReviewsDataSource {
 }
 
 
-extension DefaultReviewsDataSource: UITableViewDelegate {
-
+// MARK: - Conformance to ReviewsInteractionDelegate & UITableViewDelegate
+//
+extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
@@ -177,6 +179,14 @@ extension DefaultReviewsDataSource: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
+    }
+
+    func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {
+        let review = reviewsResultsController.object(at: indexPath)
+        let reviewedProduct = product(id: review.productID)
+
+        let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct)
+        viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }
 

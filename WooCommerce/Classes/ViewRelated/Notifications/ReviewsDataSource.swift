@@ -2,9 +2,15 @@ import Foundation
 import UIKit
 import Yosemite
 
+/// Adds a method to UITableViewDelegate so that we can
+/// trigger navigation from its implementation
+protocol ReviewsInteractionDelegate: UITableViewDelegate {
+    func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController)
+}
+
 
 /// Abstracts the datasource used to render the Product Review list
-protocol ReviewsDataSource: UITableViewDataSource, UITableViewDelegate {
+protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
 
     /// Boolean indicating if there are reviews
     ///
@@ -14,10 +20,6 @@ protocol ReviewsDataSource: UITableViewDataSource, UITableViewDelegate {
     /// Guaranteed to be uniqued (does not contain duplicates)
     ///
     var reviewsProductsIDs: [Int] { get }
-
-    /// Returns the review at a given indexpath
-    ///
-    func review(at indexPath: IndexPath) -> ProductReview
 
     /// Initializes observers for incoming reviews
     ///

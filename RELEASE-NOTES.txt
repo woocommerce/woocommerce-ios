@@ -1,6 +1,7 @@
 2.7
 -----
 - bugfix: Reviews were not localized.
+- bugfix: On log in, some users would see the Continue button but be unable to Continue, due to errors with the account. A new "Try another account" button has been added as an option.
  
 2.6
 -----

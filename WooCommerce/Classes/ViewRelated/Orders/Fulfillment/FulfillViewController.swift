@@ -249,7 +249,9 @@ private extension FulfillViewController {
     /// Displays the product detail screen for the provided ProductID
     ///
     func productWasPressed(for productID: Int) {
-        let loaderViewController = ProductLoaderViewController(productID: productID, siteID: order.siteID)
+        let loaderViewController = ProductLoaderViewController(productID: productID,
+                                                               siteID: order.siteID,
+                                                               currency: order.currency)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }

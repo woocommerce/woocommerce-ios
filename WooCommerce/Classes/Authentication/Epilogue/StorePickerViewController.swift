@@ -167,6 +167,8 @@ class StorePickerViewController: UIViewController {
 
         if configuration == .login {
             startListeningToNotifications()
+        } else if configuration == .switchingStores {
+            secondaryActionButton.isHidden = true
         }
     }
 

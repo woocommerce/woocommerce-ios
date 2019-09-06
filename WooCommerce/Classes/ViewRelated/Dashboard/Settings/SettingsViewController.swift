@@ -341,6 +341,7 @@ private extension SettingsViewController {
             assertionFailure("Cannot find store ID")
             return
         }
+        ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
         let betaFeaturesViewController = BetaFeaturesViewController(siteID: siteID)
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }

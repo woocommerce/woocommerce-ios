@@ -24,7 +24,7 @@ final class NotificationsBadgeController {
                                borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: tab)
         dot.isHidden = true
-        tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(dot, at: 1)
+        tabBar.subviews[tab.visibleIndex()].subviews.first?.insertSubview(dot, at: 1)
         dot.fadeIn()
     }
 
@@ -32,7 +32,7 @@ final class NotificationsBadgeController {
     ///
     func hideDotOn(_ tab: WooTab, in tabBar: UITabBar) {
         let tag = dotTag(for: tab)
-        if let subviews = tabBar.subviews[tab.rawValue].subviews.first?.subviews {
+        if let subviews = tabBar.subviews[tab.visibleIndex()].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
                 subview.fadeOut() { _ in
                     subview.removeFromSuperview()
@@ -44,7 +44,7 @@ final class NotificationsBadgeController {
     /// Returns the DotView's Tag for the specified WooTab
     ///
     func dotTag(for tab: WooTab) -> Int {
-        return tab.rawValue + DotConstants.tagOffset
+        return tab.visibleIndex() + DotConstants.tagOffset
     }
 }
 

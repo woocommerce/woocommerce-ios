@@ -1,5 +1,6 @@
 2.7
 -----
+- bugfix: the App Logs shouldn't be editable, only copy / paste.
  
 2.6
 -----

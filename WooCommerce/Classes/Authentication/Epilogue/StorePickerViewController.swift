@@ -389,13 +389,20 @@ private extension StorePickerViewController {
     /// Re-initializes the Login Flow, forcing a logout. This may be required if the WordPress.com Account has no Stores available.
     ///
     func restartAuthentication() {
-        guard ServiceLocator.stores.needsDefaultStore, let navigationController = navigationController else {
+        guard ServiceLocator.stores.needsDefaultStore else {
             return
         }
 
         ServiceLocator.stores.deauthenticate()
 
         let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
+
+        guard let navigationController = navigationController else {
+            let navController = UINavigationController(nibName: nil, bundle: nil)
+            navController.setViewControllers([loginViewController], animated: true)
+            return
+        }
+
         navigationController.setViewControllers([loginViewController], animated: true)
     }
 

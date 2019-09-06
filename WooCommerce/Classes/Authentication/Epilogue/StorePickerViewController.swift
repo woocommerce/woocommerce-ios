@@ -74,6 +74,18 @@ class StorePickerViewController: UIViewController {
         }
     }
 
+    /// Secondary Action Button.
+    ///
+    @IBOutlet private var secondaryActionButton: FancyAnimatedButton! {
+        didSet {
+            secondaryActionButton.backgroundColor = .clear
+            secondaryActionButton.titleFont = StyleManager.actionButtonTitleFont
+            secondaryActionButton.setTitle(NSLocalizedString("Try another account",
+                                                             comment: "Button to trigger connection to another account in store picker"),
+                                           for: .normal)
+        }
+    }
+
     /// No Results Placeholder Image
     ///
     @IBOutlet private var noResultsImageView: UIImageView!
@@ -453,6 +465,12 @@ extension StorePickerViewController {
             }
         }
     }
+
+    /// Proceeds with the Logout Flow.
+    ///
+    @IBAction func secondaryActionWasPressed() {
+        restartAuthentication()
+    }
 }
 
 
@@ -579,8 +597,8 @@ private extension StorePickerState {
     ///
     var actionTitle: String {
         switch self {
-        case .empty:
-            return NSLocalizedString("Try another account", comment: "")
+//        case .empty:
+//            return NSLocalizedString("Try another account", comment: "")
         default:
             return NSLocalizedString("Continue", comment: "")
         }

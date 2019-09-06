@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14460.31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14460.20"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -16,8 +16,9 @@
                 <outlet property="actionButton" destination="0KD-hY-YaS" id="mJR-Pi-S0z"/>
                 <outlet property="noResultsImageView" destination="Bm8-4s-4Cg" id="5TG-sO-2h6"/>
                 <outlet property="noResultsLabel" destination="1qT-mX-0SF" id="L6b-My-936"/>
+                <outlet property="secondaryActionButton" destination="Slo-h4-7qY" id="YFU-eL-sGS"/>
                 <outlet property="tableView" destination="oVs-XS-592" id="tgt-K5-nCu"/>
-                <outlet property="view" destination="jLk-oK-hVZ" id="tZZ-hi-Qto"/>
+                <outlet property="view" destination="jLk-oK-hVZ" id="6Kv-ov-h6s"/>
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
@@ -46,7 +47,7 @@
                     </connections>
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5J-Qa-DXp" userLabel="Action Background View">
-                    <rect key="frame" x="0.0" y="577" width="375" height="90"/>
+                    <rect key="frame" x="0.0" y="507" width="375" height="160"/>
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                 </view>
                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0KD-hY-YaS" userLabel="Action Button" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">
@@ -64,9 +65,26 @@
                         <action selector="actionWasPressed" destination="-1" eventType="touchUpInside" id="xAv-sT-ofI"/>
                     </connections>
                 </button>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Slo-h4-7qY" userLabel="secondary action button" customClass="FancyAnimatedButton" customModule="WooCommerce" customModuleProvider="target">
+                    <rect key="frame" x="20" y="527" width="335" height="50"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="50" id="HG6-bp-QRu"/>
+                    </constraints>
+                    <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
+                    <state key="normal" title="Try another account">
+                        <color key="titleColor" white="0.0" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                    </state>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="boolean" keyPath="isPrimary" value="NO"/>
+                    </userDefinedRuntimeAttributes>
+                    <connections>
+                        <action selector="secondaryActionWasPressed" destination="-1" eventType="touchUpInside" id="Dbs-az-84p"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" red="0.96862745098039216" green="0.96862745098039216" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
+                <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="Slo-h4-7qY" secondAttribute="trailing" constant="20" id="00P-ge-UGp"/>
                 <constraint firstAttribute="trailing" secondItem="1qT-mX-0SF" secondAttribute="trailing" constant="10" id="28r-Y1-luC"/>
                 <constraint firstItem="oVs-XS-592" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" id="2Y8-wP-jSa"/>
                 <constraint firstItem="H5J-Qa-DXp" firstAttribute="bottom" secondItem="jLk-oK-hVZ" secondAttribute="bottom" id="3p7-1z-Rhu"/>
@@ -76,17 +94,19 @@
                 <constraint firstItem="0KD-hY-YaS" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="20" id="TPA-QP-Qul"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="0KD-hY-YaS" secondAttribute="trailing" constant="20" id="Wdi-mf-a9X"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" constant="175" id="Wt5-9Y-bb1"/>
+                <constraint firstItem="0KD-hY-YaS" firstAttribute="top" secondItem="Slo-h4-7qY" secondAttribute="bottom" constant="20" id="Wvo-ki-eSS"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="exG-7x-7xe"/>
+                <constraint firstItem="Slo-h4-7qY" firstAttribute="top" secondItem="H5J-Qa-DXp" secondAttribute="top" constant="20" id="flG-t6-0fC"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="trailing" secondItem="t7O-Ph-IKW" secondAttribute="trailing" id="fvk-bR-p20"/>
                 <constraint firstItem="H5J-Qa-DXp" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="hj7-UB-iIW"/>
                 <constraint firstItem="oVs-XS-592" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="hu9-s1-iSg"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="H5J-Qa-DXp" secondAttribute="trailing" id="iDf-P9-Du1"/>
-                <constraint firstItem="H5J-Qa-DXp" firstAttribute="top" secondItem="0KD-hY-YaS" secondAttribute="top" constant="-20" id="qDG-7s-1jf"/>
                 <constraint firstItem="1qT-mX-0SF" firstAttribute="top" secondItem="Bm8-4s-4Cg" secondAttribute="bottom" constant="22" id="qa1-Pc-Opa"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="bottom" secondItem="0KD-hY-YaS" secondAttribute="bottom" constant="20" id="rbX-cd-fij"/>
+                <constraint firstItem="Slo-h4-7qY" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="20" id="yMo-60-lv2"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="t7O-Ph-IKW"/>
-            <point key="canvasLocation" x="-474.5" y="19.5"/>
+            <point key="canvasLocation" x="-476" y="19.340329835082461"/>
         </view>
     </objects>
     <resources>

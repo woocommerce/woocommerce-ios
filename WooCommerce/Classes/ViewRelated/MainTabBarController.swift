@@ -5,19 +5,55 @@ import WordPressUI
 
 /// Enum representing the individual tabs
 ///
-enum WooTab: Int {
+enum WooTab {
 
     /// My Store Tab
     ///
-    case myStore = 0
+    case myStore
 
     /// Orders Tab
     ///
-    case orders = 1
+    case orders
+
+    /// Products Tab
+    ///
+    case products
 
     /// Reviews Tab
     ///
-    case reviews = 2
+    case reviews
+}
+
+extension WooTab {
+    /// Initializes a tab with the visible tab index.
+    ///
+    /// - Parameters:
+    ///   - visibleIndex: the index of visible tabs on the tab bar
+    ///   - isProductListFeatureOn: whether the product list feature is enabled
+    init(visibleIndex: Int,
+         isProductListFeatureOn: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList)) {
+        let tabs = WooTab.visibleTabs(isProductListFeatureOn: isProductListFeatureOn)
+        self = tabs[visibleIndex]
+    }
+
+    /// Returns the visible tab index.
+    func visibleIndex(isProductListFeatureOn: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList)) -> Int {
+        let tabs = WooTab.visibleTabs(isProductListFeatureOn: isProductListFeatureOn)
+        guard let tabIndex = tabs.firstIndex(where: { $0 == self }) else {
+            assertionFailure("Trying to get the visible tab index for tab \(self) while the visible tabs are: \(tabs)")
+            return 0
+        }
+        return tabIndex
+    }
+
+    // Note: currently all tab view controllers except for Products tab are set up in Main.storyboard.
+    private static func visibleTabs(isProductListFeatureOn: Bool) -> [WooTab] {
+        if isProductListFeatureOn {
+            return [.myStore, .orders, .products, .reviews]
+        } else {
+            return [.myStore, .orders, .reviews]
+        }
+    }
 }
 
 
@@ -60,6 +96,10 @@ final class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) {
+            configureProductsTab()
+        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -74,11 +114,11 @@ final class MainTabBarController: UITabBarController {
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        guard let currentlySelectedTab = WooTab(rawValue: selectedIndex),
-            let userSelectedIndex = tabBar.items?.firstIndex(of: item),
-            let userSelectedTab = WooTab(rawValue: userSelectedIndex) else {
+        let currentlySelectedTab = WooTab(visibleIndex: selectedIndex)
+        guard let userSelectedIndex = tabBar.items?.firstIndex(of: item) else {
                 return
         }
+        let userSelectedTab = WooTab(visibleIndex: userSelectedIndex)
 
         // Did we reselect the already-selected tab?
         if currentlySelectedTab == userSelectedTab {
@@ -94,7 +134,7 @@ final class MainTabBarController: UITabBarController {
     /// Switches the TabBarcController to the specified Tab
     ///
     func navigateTo(_ tab: WooTab, animated: Bool = false) {
-        selectedIndex = tab.rawValue
+        selectedIndex = tab.visibleIndex()
         if let navController = selectedViewController as? UINavigationController {
             navController.popToRootViewController(animated: animated)
         }
@@ -113,6 +153,26 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
         }
 
         return FancyAlertPresentationController(presentedViewController: presented, presenting: presenting)
+    }
+}
+
+// MARK: - Products tab
+//
+private extension MainTabBarController {
+    func configureProductsTab() {
+        var tabViewControllers = viewControllers
+
+        // TODO-1262: replace the products tab with a view controller that shows the product list
+        let productsViewController = UIViewController(nibName: nil, bundle: nil)
+        productsViewController.view.backgroundColor = .white
+
+        let navController = WooNavigationController(rootViewController: productsViewController)
+        navController.tabBarItem = UITabBarItem(title: NSLocalizedString("Products",
+                                                                         comment: "Title of the Products tab — plural form of Product"),
+                                                image: UIImage.productImage,
+                                                tag: 0)
+        tabViewControllers?.insert(navController, at: WooTab.products.visibleIndex())
+        viewControllers = tabViewControllers
     }
 }
 
@@ -139,6 +199,9 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.dashboardSelected)
         case .orders:
             ServiceLocator.analytics.track(.ordersSelected)
+        case .products:
+            // TODO-1263: analytics for product list
+            return
         case .reviews:
             ServiceLocator.analytics.track(.notificationsSelected)
         }
@@ -152,6 +215,9 @@ private extension MainTabBarController {
             ServiceLocator.analytics.track(.dashboardReselected)
         case .orders:
             ServiceLocator.analytics.track(.ordersReselected)
+        case .products:
+            // TODO-1263: analytics for product list
+            return
         case .reviews:
             ServiceLocator.analytics.track(.notificationsReselected)
         }

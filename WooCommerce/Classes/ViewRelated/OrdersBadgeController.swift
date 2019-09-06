@@ -9,7 +9,7 @@ final class OrdersBadgeController {
         hideBadgeOn(tab, in: tabBar)
 
         let badgeView = badge(for: tab, with: badgeText)
-        tabBar.subviews[tab.rawValue].subviews.first?.insertSubview(badgeView, at: 1)
+        tabBar.subviews[tab.visibleIndex()].subviews.first?.insertSubview(badgeView, at: 1)
         badgeView.fadeIn()
     }
 
@@ -17,7 +17,7 @@ final class OrdersBadgeController {
     ///
     func hideBadgeOn(_ tab: WooTab, in tabBar: UITabBar) {
         let tag = badgeTag(for: tab)
-        if let subviews = tabBar.subviews[tab.rawValue].subviews.first?.subviews {
+        if let subviews = tabBar.subviews[tab.visibleIndex()].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
                 subview.fadeOut() { _ in
                     subview.removeFromSuperview()
@@ -79,6 +79,6 @@ private extension OrdersBadgeController {
     }
 
     func badgeTag(for tab: WooTab) -> Int {
-        return tab.rawValue + Constants.tagOffset
+        return tab.visibleIndex() + Constants.tagOffset
     }
 }

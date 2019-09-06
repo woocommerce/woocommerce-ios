@@ -152,10 +152,6 @@ private extension ReviewDetailsViewController {
         synchronizeReview(reviewID: productReview.reviewID) {
             sender.endRefreshing()
         }
-
-//        synchronizeNotification(noteId: note.noteId) {
-//            sender.endRefreshing()
-//        }
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
@@ -272,13 +268,13 @@ extension ReviewDetailsViewController: UITableViewDataSource {
 extension ReviewDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-//        let row = detailsForRow(at: indexPath)
-//        switch row {
-//        case .headerPlain(_, let url):
-//            displaySafariViewController(at: url)
-//        default:
-//            break
-//        }
+        let row = detailsForRow(at: indexPath)
+        switch row {
+        case .header:
+            openProductURL()
+        default:
+            break
+        }
     }
 }
 
@@ -366,105 +362,15 @@ private extension ReviewDetailsViewController {
 }
 
 
-// MARK: - Comment Moderation
-//
-private extension ReviewDetailsViewController {
-
-    /// Dispatches the moderation command (Approve/Unapprove, Spam, Trash) to the backend
-    ///
-    func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
-//        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { (error) in
-//            guard let error = error else {
-//                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
-//                return
-//            }
-//
-//            DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-//            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
-//            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
-//        }) else {
-//            return
-//        }
-//
-//        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { (error) in
-//            guard let error = error else {
-//                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
-//                ReviewDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
-//                    ServiceLocator.analytics.track(.notificationReviewActionUndo)
-//                    ServiceLocator.stores.dispatch(undo)
-//                })
-//                return
-//            }
-//
-//            DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-//            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
-//            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
-//        }) else {
-//            return
-//        }
-//
-//        ServiceLocator.stores.dispatch(done)
-//        navigationController?.popViewController(animated: true)
-    }
-
-    /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
-    ///
-//    func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
-//        let noteID = productReview
-//
-//        switch status {
-//        case .approved:
-//            return [CommentAction.updateApprovalStatus(siteID: siteID,
-//                                                       commentID: commentID,
-//                                                       isApproved: true,
-//                                                       onCompletion: { (_, error) in onCompletion(error) })]
-//        case .unapproved:
-//            return [CommentAction.updateApprovalStatus(siteID: siteID,
-//                                                       commentID: commentID,
-//                                                       isApproved: false,
-//                                                       onCompletion: { (_, error) in onCompletion(error) })]
-//        case .spam:
-//            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
-//                    CommentAction.updateSpamStatus(siteID: siteID,
-//                                                   commentID: commentID,
-//                                                   isSpam: true,
-//                                                   onCompletion: { (_, error) in onCompletion(error) })]
-//        case .unspam:
-//            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
-//                    CommentAction.updateSpamStatus(siteID: siteID,
-//                                                   commentID: commentID,
-//                                                   isSpam: false,
-//                                                   onCompletion: { (_, error) in onCompletion(error) })]
-//        case .trash:
-//            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
-//                    CommentAction.updateTrashStatus(siteID: siteID,
-//                                                    commentID: commentID,
-//                                                    isTrash: true,
-//                                                    onCompletion: { (_, error) in onCompletion(error) })]
-//        case .untrash:
-//            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
-//                    CommentAction.updateTrashStatus(siteID: siteID,
-//                                                    commentID: commentID,
-//                                                    isTrash: false,
-//                                                    onCompletion: { (_, error) in onCompletion(error) })]
-//        case .unknown:
-//            DDLogError("⛔️ Comment moderation failure: attempted to update comment with unknown status.")
-//            return nil
-//        }
-//    }
-}
-
-
 // MARK: - Private Methods
 //
 private extension ReviewDetailsViewController {
 
-    /// Presents a WebView at the specified URL
+    /// Presents a WebView at the product URL
     ///
-    func displaySafariViewController(at url: URL) {
-        let safariViewController = SFSafariViewController(url: url)
-        safariViewController.modalPresentationStyle = .pageSheet
-        present(safariViewController, animated: true, completion: nil)
+    func openProductURL() {
+        let productURL = product?.externalURL
+        WebviewHelper.launch(productURL, with: self)
     }
 }
 

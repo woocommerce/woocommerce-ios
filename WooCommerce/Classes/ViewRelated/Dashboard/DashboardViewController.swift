@@ -10,18 +10,12 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    @IBOutlet private weak var scrollView: UIScrollView!
-    @IBOutlet private weak var newOrdersContainerView: UIView!
-    @IBOutlet weak var newOrdersHeightConstraint: NSLayoutConstraint!
+    private var dashboardUI: DashboardUI!
 
-    private var storeStatsViewController: StoreStatsViewController!
-    private var newOrdersViewController: NewOrdersViewController!
-    private var topPerformersViewController: TopPerformersViewController!
+    // MARK: Subviews
 
-    private lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
-        return refreshControl
+    private lazy var containerView: UIView = {
+        return UIView(frame: .zero)
     }()
 
     // MARK: View Lifecycle
@@ -40,6 +34,7 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
+        configureDashboardUI()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -49,24 +44,9 @@ class DashboardViewController: UIViewController {
         reloadData()
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? StoreStatsViewController, segue.identifier == Segues.storeStatsSegue {
-            storeStatsViewController = vc
-        }
-        if let vc = segue.destination as? NewOrdersViewController, segue.identifier == Segues.newOrdersSegue {
-            newOrdersViewController = vc
-            newOrdersViewController.delegate = self
-        }
-        if let vc = segue.destination as? TopPerformersViewController, segue.identifier == Segues.topPerformersSegue {
-            topPerformersViewController = vc
-        }
-    }
-
-    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
-        super.preferredContentSizeDidChange(forChildContentContainer: container)
-        if let containerVC = container as? NewOrdersViewController {
-            newOrdersHeightConstraint?.constant = containerVC.preferredContentSize.height
-        }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        dashboardUI.view.frame = containerView.bounds
     }
 }
 
@@ -77,8 +57,6 @@ private extension DashboardViewController {
 
     func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
-        scrollView.refreshControl = refreshControl
-        newOrdersContainerView.isHidden = true // Hide the new orders vc by default
     }
 
     func configureNavigation() {
@@ -91,7 +69,7 @@ private extension DashboardViewController {
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
-        title = StoresManager.shared.sessionManager.defaultSite?.name ?? myStore
+        title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? myStore
         tabBarItem.title = myStore
     }
 
@@ -126,8 +104,29 @@ private extension DashboardViewController {
 
         navigationItem.backBarButtonItem = backButton
     }
-}
 
+    func configureDashboardUI() {
+        // A container view is added to respond to safe area insets from the view controller.
+        // This is needed when the child view controller's view has to use a frame-based layout
+        // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
+        view.addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(containerView)
+
+        dashboardUI = DashboardUIFactory.dashboardUI()
+        let contentView = dashboardUI.view!
+        addChild(dashboardUI)
+        containerView.addSubview(contentView)
+        dashboardUI.didMove(toParent: self)
+
+        dashboardUI.onPullToRefresh = { [weak self] in
+            self?.pullToRefresh()
+        }
+        dashboardUI.displaySyncingErrorNotice = { [weak self] in
+            self?.displaySyncingErrorNotice()
+        }
+    }
+}
 
 // MARK: - Notifications
 //
@@ -149,14 +148,12 @@ extension DashboardViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        guard storeStatsViewController != nil, StoresManager.shared.isAuthenticated == false else {
+        guard isViewLoaded, ServiceLocator.stores.isAuthenticated == false else {
             return
         }
 
         resetTitle()
-
-        storeStatsViewController.clearAllFields()
-        applyHideAnimation(for: newOrdersContainerView)
+        dashboardUI.defaultAccountDidUpdate()
     }
 }
 
@@ -174,140 +171,37 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        WooAnalytics.shared.track(.settingsTapped)
+        ServiceLocator.analytics.track(.settingsTapped)
         performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
     }
 
-    @objc func pullToRefresh() {
-        WooAnalytics.shared.track(.dashboardPulledToRefresh)
-        applyHideAnimation(for: newOrdersContainerView)
+    func pullToRefresh() {
+        ServiceLocator.analytics.track(.dashboardPulledToRefresh)
         reloadData()
     }
-}
 
-
-// MARK: - NewOrdersDelegate Conformance
-//
-extension DashboardViewController: NewOrdersDelegate {
-    func didUpdateNewOrdersData(hasNewOrders: Bool) {
-        if hasNewOrders {
-            applyUnhideAnimation(for: newOrdersContainerView)
-            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "true"])
-        } else {
-            applyHideAnimation(for: newOrdersContainerView)
-            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "false"])
-        }
-    }
-}
-
-
-// MARK: - Private Helpers
-//
-private extension DashboardViewController {
-
-    func reloadData() {
-        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        let group = DispatchGroup()
-
-        var reloadError: Error? = nil
-
-        group.enter()
-        storeStatsViewController.syncAllStats() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.enter()
-        newOrdersViewController.syncNewOrders() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.enter()
-        topPerformersViewController.syncTopPerformers() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.notify(queue: .main) { [weak self] in
-            self?.refreshControl.endRefreshing()
-            self?.configureTitle()
-
-            if let error = reloadError {
-                DDLogError("⛔️ Error loading dashboard: \(error)")
-                self?.handleSyncError(error: error)
-            } else {
-                self?.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
-            }
-        }
-    }
-
-    func applyUnhideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.showAnimationDuration,
-                       delay: 0,
-                       usingSpringWithDamping: Constants.showSpringDamping,
-                       initialSpringVelocity: Constants.showSpringVelocity,
-                       options: .curveEaseOut,
-                       animations: {
-                        view.isHidden = false
-                        view.alpha = UIKitConstants.alphaFull
-        }) { _ in
-            view.isHidden = false
-            view.alpha = UIKitConstants.alphaFull
-        }
-    }
-
-    func applyHideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
-            view.isHidden = true
-            view.alpha = UIKitConstants.alphaZero
-        }, completion: { _ in
-            view.isHidden = true
-            view.alpha = UIKitConstants.alphaZero
-        })
-    }
-
-    private func handleSyncError(error: Error) {
-        switch error {
-        case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
-            handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
-        default:
-            displaySyncingErrorNotice()
-        }
-    }
-
-    private func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
-        switch error {
-        case .statsModuleDisabled, .noPermission:
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
-        default:
-            displaySyncingErrorNotice()
-        }
-    }
-
-    private func displaySyncingErrorNotice() {
+    func displaySyncingErrorNotice() {
         let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
         let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.refreshControl.beginRefreshing()
             self?.reloadData()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
-    }
-
-    private func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
-        storeStatsViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
+// MARK: - Private Helpers
+//
+private extension DashboardViewController {
+    func reloadData() {
+        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
+        dashboardUI.reloadData(completion: { [weak self] in
+            self?.configureTitle()
+        })
+    }
+}
 
 // MARK: - Constants
 //
@@ -315,15 +209,5 @@ private extension DashboardViewController {
 
     struct Segues {
         static let settingsSegue        = "ShowSettingsViewController"
-        static let storeStatsSegue      = "StoreStatsEmbedSegue"
-        static let newOrdersSegue       = "NewOrdersEmbedSegue"
-        static let topPerformersSegue   = "TopPerformersEmbedSegue"
-    }
-
-    struct Constants {
-        static let hideAnimationDuration: TimeInterval  = 0.25
-        static let showAnimationDuration: TimeInterval  = 0.50
-        static let showSpringDamping: CGFloat           = 0.7
-        static let showSpringVelocity: CGFloat          = 0.0
     }
 }

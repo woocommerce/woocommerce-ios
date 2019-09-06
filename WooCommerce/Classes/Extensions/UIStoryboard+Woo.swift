@@ -18,3 +18,14 @@ extension UIStoryboard {
         return UIStoryboard(name: "Orders", bundle: .main)
     }
 }
+
+// MARK: UIStoryboard Helpers
+//
+extension UIStoryboard {
+    /// Returns a view controller from a Storyboard assuming the identifier is the same as the class name.
+    ///
+    func instantiateViewController<T: NSObject>(ofClass classType: T.Type) -> T? {
+        let identifier = classType.classNameWithoutNamespaces
+        return instantiateViewController(withIdentifier: identifier) as? T
+    }
+}

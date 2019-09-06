@@ -1,10 +1,17 @@
-/* Translation-Revision-Date: 2019-08-09 00:54:03+0000 */
+/* Translation-Revision-Date: 2019-09-03 19:25:43+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
 
 /* No comment provided by engineer. */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(senza titolo)";
+
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Per inviare tramite e-mail un link di autenticazione, è necessario un indirizzo e-mail valido. Torna alla schermata precedente e fornisci un indirizzo e-mail valido.";
@@ -90,7 +97,8 @@
 /* Approve a comment */
 "Approve" = "Approva";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Approvato";
 
 /* Approves a comment. Spoken Hint. */
@@ -240,7 +248,7 @@
 "Deletes a shipment's tracking information." = "Elimina le informazioni di tracciabilità di una spedizione.";
 
 /* The row label to tap for a detailed product list */
-"Details" = "Detagli";
+"Details" = "Dettagli";
 
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "Dettagli ordine n. (viewModel.order.number)";
@@ -250,7 +258,7 @@
 
 /* Add a note screen - button title for closing the view
    Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
-"Dismiss" = "Respinto";
+"Dismiss" = "Chiudi";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Non hai un account? _Registrati_";
@@ -346,14 +354,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Richiesta di funzionalità";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Filtra le notifiche";
-
 /* Filter the orders list. */
 "Filter orders" = "Filtra ordini";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Filtra le notifiche per tipo.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtra l'elenco degli ordini per stato di pagamento.";
@@ -574,11 +576,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "Successivo";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "Non hai ancora notifiche!";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "Nessun ordine trovato";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "No Reviews Yet!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Nessuna attività per questo periodo";
@@ -590,8 +592,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Nessun dato disponibile";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Nessun risultato per i criteri selezionati";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +604,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Nota per il cliente";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Notifiche: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Numero di file:";
@@ -635,6 +629,9 @@
 
 /* Display label for the product's inventory stock status */
 "On back order" = "In ordine arretrato";
+
+/* Display label for the review's hold status */
+"On hold" = "In sospeso";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Apri le impostazioni del dispositivo";
@@ -805,8 +802,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Prezzo standard:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Rimuovi filtri";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +828,7 @@
 "Review, prepare, and ship these pending orders" = "Rivedi, prepara e invia questi ordini in attesa";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Recensioni";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
@@ -971,7 +967,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Spiacenti, non puoi usare quell'indirizzo per il tuo sito.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Spam";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
@@ -1146,7 +1143,8 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Numero di tracciabilità %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "Cestino";
 
 /* Connect when the SSL certificate is invalid */
@@ -1223,6 +1221,12 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "Errore sconosciuto";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Unspam";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Untrash";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "I file di log vengono salvati per massimo sette giorni.";

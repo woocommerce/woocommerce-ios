@@ -31,7 +31,7 @@ class OrderSearchViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
         return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
@@ -40,8 +40,8 @@ class OrderSearchViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -296,8 +296,8 @@ private extension OrderSearchViewController {
         }
 
         transitionToSyncingState()
-        StoresManager.shared.dispatch(action)
-        WooAnalytics.shared.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
+        ServiceLocator.stores.dispatch(action)
+        ServiceLocator.analytics.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
     }
 }
 

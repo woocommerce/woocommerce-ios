@@ -29,7 +29,7 @@ class OrdersViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
@@ -38,7 +38,7 @@ class OrdersViewController: UIViewController {
     /// ResultsController: Handles all things order status
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
@@ -199,12 +199,12 @@ private extension OrdersViewController {
         // this will also fire upon logging out, when the account
         // is set to nil. So let's protect against multi-threaded
         // access attempts if the account is indeed nil.
-        guard StoresManager.shared.isAuthenticated,
-            StoresManager.shared.needsDefaultStore == false else {
+        guard ServiceLocator.stores.isAuthenticated,
+            ServiceLocator.stores.needsDefaultStore == false else {
                 return
         }
 
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }
 
     /// Setup: Navigation Item
@@ -324,11 +324,11 @@ extension OrdersViewController {
 extension OrdersViewController {
 
     @IBAction func displaySearchOrders() {
-        guard let storeID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let storeID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
-        WooAnalytics.shared.track(.ordersListSearchTapped)
+        ServiceLocator.analytics.track(.ordersListSearchTapped)
         let searchViewController = OrderSearchViewController(storeID: storeID)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
@@ -336,7 +336,7 @@ extension OrdersViewController {
     }
 
     @IBAction func displayFiltersAlert() {
-        WooAnalytics.shared.track(.ordersListFilterTapped)
+        ServiceLocator.analytics.track(.ordersListFilterTapped)
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
 
@@ -359,7 +359,7 @@ extension OrdersViewController {
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        WooAnalytics.shared.track(.ordersListPulledToRefresh)
+        ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         syncOrderStatus()
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
@@ -373,9 +373,9 @@ extension OrdersViewController {
 private extension OrdersViewController {
 
     func didChangeFilter(newFilter: OrderStatus?) {
-        WooAnalytics.shared.track(.filterOrdersOptionSelected,
+        ServiceLocator.analytics.track(.filterOrdersOptionSelected,
                                   withProperties: ["status": newFilter?.slug ?? String()])
-        WooAnalytics.shared.track(.ordersListFilterOrSearch,
+        ServiceLocator.analytics.track(.ordersListFilterOrSearch,
                                   withProperties: ["filter": newFilter?.slug ?? String(),
                                                    "search": ""])
         // Display the Filter in the Title
@@ -401,7 +401,7 @@ private extension OrdersViewController {
         }
 
         let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Reset the current status filter if needed (e.g. when changing stores and the currently
@@ -431,7 +431,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(false)
             return
         }
@@ -450,18 +450,18 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
             } else {
-                WooAnalytics.shared.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
+                ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
             }
 
             self.transitionToResultsUpdatedState()
             onCompletion?(error == nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncOrderStatus(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -477,7 +477,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -545,7 +545,7 @@ private extension OrdersViewController {
             self?.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the Empty State Overlay.
@@ -559,14 +559,14 @@ private extension OrdersViewController {
             guard let `self` = self else {
                 return
             }
-            guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                 return
             }
             guard let url = URL(string: site.url) else {
                 return
             }
 
-            WooAnalytics.shared.track(.orderShareStoreButtonTapped)
+            ServiceLocator.analytics.track(.orderShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 
@@ -602,7 +602,7 @@ private extension OrdersViewController {
     func displayRatingPrompt() {
         defer {
             if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                WooAnalytics.shared.track(wooEvent)
+                ServiceLocator.analytics.track(wooEvent)
             }
         }
 
@@ -719,7 +719,7 @@ extension OrdersViewController {
             return
         }
 
-        WooAnalytics.shared.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
+        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
                                                                "status": viewModel.order.statusKey])
         singleOrderViewController.viewModel = viewModel
     }

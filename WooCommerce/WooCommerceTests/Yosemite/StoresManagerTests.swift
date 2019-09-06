@@ -19,7 +19,7 @@ class StoresManagerTests: XCTestCase {
     /// Verifies that the Initial State is Deauthenticated, whenever there are no Default Credentials.
     ///
     func testInitialStateIsDeauthenticatedAssumingCredentialsWereMissing() {
-        let manager = StoresManager.testingInstance
+        let manager = DefaultStoresManager.testingInstance
         XCTAssertFalse(manager.isAuthenticated)
     }
 
@@ -30,7 +30,7 @@ class StoresManagerTests: XCTestCase {
         var session = SessionManager.testingInstance
         session.defaultCredentials = SessionSettings.credentials
 
-        let manager = StoresManager.testingInstance
+        let manager = DefaultStoresManager.testingInstance
         XCTAssertTrue(manager.isAuthenticated)
     }
 
@@ -38,7 +38,7 @@ class StoresManagerTests: XCTestCase {
     /// Verifies that `authenticate(username: authToken:)` effectively switches the Manager to an Authenticated State.
     ///
     func testAuthenticateEffectivelyTogglesStoreManagerToAuthenticatedState() {
-        let manager = StoresManager.testingInstance
+        let manager = DefaultStoresManager.testingInstance
         manager.authenticate(credentials: SessionSettings.credentials)
 
         XCTAssertTrue(manager.isAuthenticated)
@@ -48,7 +48,7 @@ class StoresManagerTests: XCTestCase {
     /// Verifies that `deauthenticate` effectively switches the Manager to a Deauthenticated State.
     ///
     func testDeauthenticateEffectivelyTogglesStoreManagerToDeauthenticatedState() {
-        let manager = StoresManager.testingInstance
+        let manager = DefaultStoresManager.testingInstance
         manager.authenticate(credentials: SessionSettings.credentials)
         manager.deauthenticate()
 
@@ -59,7 +59,7 @@ class StoresManagerTests: XCTestCase {
     /// Verifies that `authenticate(username: authToken:)` persists the Credentials in the Keychain Storage.
     ///
     func testAuthenticatePersistsDefaultCredentialsInKeychain() {
-        let manager = StoresManager.testingInstance
+        let manager = DefaultStoresManager.testingInstance
         manager.authenticate(credentials: SessionSettings.credentials)
 
         let session = SessionManager.testingInstance
@@ -69,7 +69,7 @@ class StoresManagerTests: XCTestCase {
     /// Verifies the user remains authenticated after site switching
     ///
     func testRemoveDefaultStoreLeavesUserAuthenticated() {
-        let manager = StoresManager.testingInstance
+        let manager = DefaultStoresManager.testingInstance
         manager.authenticate(credentials: SessionSettings.credentials)
         manager.removeDefaultStore()
 
@@ -79,7 +79,7 @@ class StoresManagerTests: XCTestCase {
     /// Verify the session manager resets properties after site switching
     ///
     func testRemoveDefaultStoreDeletesSessionManagerDefaultsExceptCredentials() {
-        let manager = StoresManager.testingInstance
+        let manager = DefaultStoresManager.testingInstance
         manager.authenticate(credentials: SessionSettings.credentials)
 
         let session = SessionManager.testingInstance
@@ -95,11 +95,11 @@ class StoresManagerTests: XCTestCase {
 
 // MARK: - StoresManager: Testing Methods
 //
-extension StoresManager {
+extension DefaultStoresManager {
 
     /// Returns a StoresManager instance with testing Keychain/UserDefaults
     ///
-    static var testingInstance: StoresManager {
-        return StoresManager(sessionManager: .testingInstance)
+    static var testingInstance: DefaultStoresManager {
+        return DefaultStoresManager(sessionManager: .testingInstance)
     }
 }

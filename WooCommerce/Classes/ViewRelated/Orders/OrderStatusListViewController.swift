@@ -9,8 +9,8 @@ final class OrderStatusListViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = AppDelegate.shared.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -170,15 +170,15 @@ private extension OrderStatusListViewController {
         let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: newStatus)
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
-        StoresManager.shared.dispatch(done)
-        WooAnalytics.shared.track(.orderStatusChange,
+        ServiceLocator.stores.dispatch(done)
+        ServiceLocator.analytics.track(.orderStatusChange,
                                   withProperties: ["id": orderID,
                                                    "from": undoStatus,
                                                    "to": newStatus])
 
         displayOrderUpdatedNotice {
-            StoresManager.shared.dispatch(undo)
-            WooAnalytics.shared.track(.orderStatusChange,
+            ServiceLocator.stores.dispatch(undo)
+            ServiceLocator.analytics.track(.orderStatusChange,
                                       withProperties: ["id": orderID,
                                                        "from": newStatus,
                                                        "to": undoStatus])
@@ -190,11 +190,12 @@ private extension OrderStatusListViewController {
     private func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
-                WooAnalytics.shared.track(.orderStatusChangeSuccess)
+                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+                ServiceLocator.analytics.track(.orderStatusChangeSuccess)
                 return
             }
 
-            WooAnalytics.shared.track(.orderStatusChangeFailed, withError: error)
+            ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
             DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
 
             self.displayErrorNotice(orderID: orderID)
@@ -252,7 +253,7 @@ extension OrderStatusListViewController {
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the `Unable to Change Status of Order` Notice.
@@ -267,6 +268,6 @@ extension OrderStatusListViewController {
             self?.applyButtonTapped()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

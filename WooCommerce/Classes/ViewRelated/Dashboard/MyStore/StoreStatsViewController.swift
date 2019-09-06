@@ -41,6 +41,12 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
         ensureGhostContentIsAnimated()
     }
 
+    /// Note: Overrides this function to always trigger `updateContent()` to ensure the child view controller fills the container width.
+    /// This is probably only an issue when not using `ButtonBarPagerTabStripViewController` with Storyboard.
+    override func updateIfNeeded() {
+        updateContent()
+    }
+
     // MARK: - RTL support
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -216,7 +222,7 @@ private extension StoreStatsViewController {
 private extension StoreStatsViewController {
 
     func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -230,11 +236,11 @@ private extension StoreStatsViewController {
             }
             onCompletion?(error)
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -248,7 +254,7 @@ private extension StoreStatsViewController {
             }
             onCompletion?(error)
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -270,11 +276,11 @@ private extension StoreStatsViewController {
     }
 
     func trackStatsLoaded(for granularity: StatGranularity) {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 
-        WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
     }
 }
 

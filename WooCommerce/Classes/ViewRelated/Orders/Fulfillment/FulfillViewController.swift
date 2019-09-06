@@ -35,7 +35,7 @@ final class FulfillViewController: UIViewController {
     /// ResultsController fetching ShipemntTracking data
     ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
                                     self.order.siteID,
                                     self.order.orderID)
@@ -185,19 +185,19 @@ private extension FulfillViewController {
         let done = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: doneStatus)
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
-        WooAnalytics.shared.track(.orderFulfillmentCompleteButtonTapped)
-        WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": order.orderID,
+        ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
+        ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": order.orderID,
                                                                        "from": order.statusKey,
                                                                        "to": OrderStatusEnum.completed.rawValue])
-        StoresManager.shared.dispatch(done)
+        ServiceLocator.stores.dispatch(done)
 
         displayOrderCompleteNotice {
-            WooAnalytics.shared.track(.orderMarkedCompleteUndoButtonTapped)
-            WooAnalytics.shared.track(.orderStatusChangeUndo, withProperties: ["id": orderID])
-            WooAnalytics.shared.track(.orderStatusChange, withProperties: ["id": orderID,
+            ServiceLocator.analytics.track(.orderMarkedCompleteUndoButtonTapped)
+            ServiceLocator.analytics.track(.orderStatusChangeUndo, withProperties: ["id": orderID])
+            ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": orderID,
                                                                            "from": doneStatus,
                                                                            "to": undoStatus])
-            StoresManager.shared.dispatch(undo)
+            ServiceLocator.stores.dispatch(undo)
         }
 
         AppRatingManager.shared.incrementSignificantEvent()
@@ -209,11 +209,12 @@ private extension FulfillViewController {
     func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
-                WooAnalytics.shared.track(.orderStatusChangeSuccess)
+                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+                ServiceLocator.analytics.track(.orderStatusChangeSuccess)
                 return
             }
 
-            WooAnalytics.shared.track(.orderStatusChangeFailed, withError: error)
+            ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
             DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
 
             self.displayErrorNotice(orderID: orderID)
@@ -227,7 +228,7 @@ private extension FulfillViewController {
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the `Unable to Fulfill Order` Notice.
@@ -242,7 +243,7 @@ private extension FulfillViewController {
             self?.fulfillWasPressed()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the product detail screen for the provided ProductID
@@ -431,7 +432,7 @@ extension FulfillViewController: UITableViewDelegate {
         switch sections[indexPath.section].rows[indexPath.row] {
 
         case .trackingAdd:
-            WooAnalytics.shared.track(.orderFulfillmentAddTrackingButtonTapped)
+            ServiceLocator.analytics.track(.orderFulfillmentAddTrackingButtonTapped)
 
             let viewModel = AddTrackingViewModel(order: order)
             let addTracking = ManualTrackingViewController(viewModel: viewModel)
@@ -465,7 +466,7 @@ private extension FulfillViewController {
         actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
         actionSheet.addCancelActionWithTitle(DeleteAction.cancel)
         actionSheet.addDestructiveActionWithTitle(DeleteAction.delete) { [weak self] _ in
-            WooAnalytics.shared.track(.orderFulfillmentDeleteTrackingButtonTapped)
+            ServiceLocator.analytics.track(.orderFulfillmentDeleteTrackingButtonTapped)
             self?.deleteTracking(shipmentTracking)
         }
 
@@ -488,7 +489,7 @@ private extension FulfillViewController {
         let statusKey = order.statusKey
         let providerName = tracking.trackingProvider ?? ""
 
-        WooAnalytics.shared.track(.orderTrackingDelete, withProperties: ["id": orderID,
+        ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
                                                                          "status": statusKey,
                                                                          "carrier": providerName,
                                                                          "source": "order_fulfill"])
@@ -499,17 +500,17 @@ private extension FulfillViewController {
                                                                     if let error = error {
                                                                         DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                                        WooAnalytics.shared.track(.orderTrackingDeleteFailed,
+                                                                        ServiceLocator.analytics.track(.orderTrackingDeleteFailed,
                                                                                                   withError: error)
                                                                         self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
                                                                         return
                                                                     }
 
-                                                                    WooAnalytics.shared.track(.orderTrackingDeleteSuccess)
+                                                                    ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
                                                                     self?.syncTrackingsHiddingAddButtonIfNecessary()
         }
 
-        StoresManager.shared.dispatch(deleteTrackingAction)
+        ServiceLocator.stores.dispatch(deleteTrackingAction)
     }
 
     /// Displays the `Unable to delete tracking` Notice.
@@ -527,7 +528,7 @@ private extension FulfillViewController {
                                 self?.deleteTracking(tracking)
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
 }
@@ -547,12 +548,12 @@ private extension FulfillViewController {
                                                                             return
                                                                         }
 
-                                                                        WooAnalytics.shared.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+                                                                        ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
 
                                                                         onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func configureTrackingResultsController() {

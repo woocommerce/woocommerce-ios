@@ -22,10 +22,10 @@ final class ShipmentProvidersViewController: UIViewController {
         return returnValue
     }()
 
-    /// Dedicated NoticePresenter (use this here instead of AppDelegate.shared.noticePresenter)
+    /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
-    private lazy var noticePresenter: NoticePresenter = {
-        let noticePresenter = NoticePresenter()
+    private lazy var noticePresenter: DefaultNoticePresenter = {
+        let noticePresenter = DefaultNoticePresenter()
         noticePresenter.presentingViewController = self
         return noticePresenter
     }()
@@ -76,7 +76,7 @@ private extension ShipmentProvidersViewController {
     ///
     func fetchGroups() {
         footerSpinnerView.startAnimating()
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
@@ -87,11 +87,11 @@ private extension ShipmentProvidersViewController {
                                                                                     if let error = error {
                                                                                         self?.presentNotice(error)
                                                                                     }
-                                                                                    WooAnalytics.shared.track(.orderTrackingProvidersLoaded)
+                                                                                    ServiceLocator.analytics.track(.orderTrackingProvidersLoaded)
                                                                                     self?.footerSpinnerView.stopAnimating()
         }
 
-        StoresManager.shared.dispatch(loadGroupsAction)
+        ServiceLocator.stores.dispatch(loadGroupsAction)
     }
 }
 
@@ -335,7 +335,7 @@ private extension ShipmentProvidersViewController {
     }
 
     func addCustomProvider() {
-        WooAnalytics.shared.track(.orderShipmentTrackingCustomProviderSelected)
+        ServiceLocator.analytics.track(.orderShipmentTrackingCustomProviderSelected)
 
         let initialCustomProviderName = searchController.searchBar.text
         let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order,

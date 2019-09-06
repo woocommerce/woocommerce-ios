@@ -1,3 +1,3 @@
-Salin nomor pelacakan! Kini lebih mudah memantau pengiriman Anda tanpa membuka aplikasi. Di Detail Pesanan > Pelacakan Pengiriman > Lainnya, terdapat tindakan baru untuk menyalin nomor pelacakan Anda untuk digunakan kapan pun dibutuhkan.
-
-Selamat tinggal pesan error statistik! Jika situs Anda tidak memiliki modul statistik situs Jetpack, atau Anda tidak memiliki izin untuk melihat statistik, Anda tidak akan melihat halaman statistik. Anda tidak perlu melihat pesan error yang mengganggu, jadi kami menyingkirkannya.
+- Beberapa dari Anda dapat melihat situs Anda di layar login, namun tidak dapat mengetuk Lanjut. Ya, kami telah memperbaikinya.
+- Menjadi penjual yang produktif adalah sesuatu yang perlu dirayakan — karena itu kami menjadikan lencana Pesanan jauh lebih mudah untuk dibaca.
+- Kami mendapati Anda tidak bisa lagi mengunduh gambar produk secara otomatis dari layar Detail Pesanan. Kami telah memulihkan kemampuan untuk mengunduh gambar.

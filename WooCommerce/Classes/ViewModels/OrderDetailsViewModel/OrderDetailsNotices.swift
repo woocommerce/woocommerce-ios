@@ -14,7 +14,7 @@ final class OrderDetailsNotices {
         )
 
         let notice = Notice(title: message, feedbackType: .error)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the `Unable to delete tracking` Notice.
@@ -32,6 +32,6 @@ final class OrderDetailsNotices {
                                 onAction()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

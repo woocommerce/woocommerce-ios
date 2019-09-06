@@ -1,10 +1,17 @@
-/* Translation-Revision-Date: 2019-08-07 00:54:03+0000 */
+/* Translation-Revision-Date: 2019-08-21 00:54:31+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
 
 /* No comment provided by engineer. */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(kein Titel)";
+
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Für die Zusendung des Authentifizierungs-Links wird eine gültige E-Mail-Adresse benötigt. Bitte kehre zum vorherigen Bildschirm zurück und gib eine gültige E-Mail-Adresse an.";
@@ -90,7 +97,8 @@
 /* Approve a comment */
 "Approve" = "Genehmigen";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Genehmigt";
 
 /* Approves a comment. Spoken Hint. */
@@ -346,14 +354,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Feature-Request";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Benachrichtigungen filtern";
-
 /* Filter the orders list. */
 "Filter orders" = "Bestellungen filtern";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Filtert die Benachrichtigungsliste nach Benachrichtigungstyp.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtert die Bestellliste nach Zahlungsstatus.";
@@ -574,11 +576,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "Weiter";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "Noch keine Benachrichtigungen.";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "Keine Bestellungen gefunden";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "Noch keine Rezensionen vorhanden!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Keine Aktivitäten in diesem Zeitraum";
@@ -590,8 +592,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Keine Daten verfügbar";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Keine Ergebnisse für die ausgewählten Kriterien";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +604,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Hinweis an Kunden";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Benachrichtigungen: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Anzahl der Dateien:";
@@ -635,6 +629,9 @@
 
 /* Display label for the product's inventory stock status */
 "On back order" = "Lieferrückstand";
+
+/* Display label for the review's hold status */
+"On hold" = "Angehalten";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Geräte-Einstellungen öffnen";
@@ -805,8 +802,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Regulärer Preis:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Filter entfernen";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +828,7 @@
 "Review, prepare, and ship these pending orders" = "Diese ausstehenden Bestellungen prüfen, vorbereiten und versenden";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Rezensionen";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
@@ -971,7 +967,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Tut mir Leid, du darfst diese Website-Adresse leider nicht benutzen.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Spam";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
@@ -1146,7 +1143,8 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Sendungsverfolgungsnummer %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "In den Papierkorb";
 
 /* Connect when the SSL certificate is invalid */
@@ -1223,6 +1221,12 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "Unbekannter Fehler";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Unspam";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Untrash";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Es werden Protokolle von bis zu sieben Tagen gespeichert.";

@@ -7,7 +7,7 @@ import Yosemite
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
-class PushNotificationsManager {
+class PushNotificationsManager: PushNotesManager {
 
     /// PushNotifications Configuration
     ///
@@ -71,12 +71,12 @@ extension PushNotificationsManager {
 
             nc.requestAuthorization(queue: .main) { allowed in
                 let stat: WooAnalyticsStat = allowed ? .pushNotificationOSAlertAllowed : .pushNotificationOSAlertDenied
-                WooAnalytics.shared.track(stat)
+                ServiceLocator.analytics.track(stat)
 
                 onCompletion?(allowed)
             }
 
-            WooAnalytics.shared.track(.pushNotificationOSAlertShown)
+            ServiceLocator.analytics.track(.pushNotificationOSAlertShown)
         }
     }
 
@@ -368,7 +368,7 @@ private extension PushNotificationsManager {
         }
 
         let event: WooAnalyticsStat = (applicationState == .background) ? .pushNotificationReceived : .pushNotificationAlertPressed
-        WooAnalytics.shared.track(event, withProperties: properties)
+        ServiceLocator.analytics.track(event, withProperties: properties)
     }
 }
 

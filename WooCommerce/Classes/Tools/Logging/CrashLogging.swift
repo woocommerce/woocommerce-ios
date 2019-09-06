@@ -16,7 +16,7 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     var currentUser: TracksUser? {
 
-        guard let account = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let account = ServiceLocator.stores.sessionManager.defaultAccount else {
             return nil
         }
 

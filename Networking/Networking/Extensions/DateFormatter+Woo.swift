@@ -85,5 +85,14 @@ public extension DateFormatter {
             formatter.dateFormat = "yyyy"
             return formatter
         }()
+
+        /// Date And Time Formatter used for creating the date strings in `OrderStatsV4Interval`'s `dateStart`/`dateEnd`.
+        ///
+        public static let dateTimeFormatter: DateFormatter = {
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+            return formatter
+        }()
     }
 }

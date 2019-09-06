@@ -24,15 +24,6 @@ class NotificationsViewController: UIViewController {
                                action: #selector(markAllAsRead))
     }()
 
-    /// Filter nav bar button
-    ///
-    private lazy var rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: .filterImage,
-                               style: .plain,
-                               target: self,
-                               action: #selector(displayFiltersAlert))
-    }()
-
     /// Haptic Feedback!
     ///
     private let hapticGenerator = UINotificationFeedbackGenerator()
@@ -40,27 +31,14 @@ class NotificationsViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Notes in sync.
     ///
     private lazy var resultsController: ResultsController<StorageNote> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
-        return ResultsController<StorageNote>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
+        return ResultsController<StorageNote>(storageManager: storageManager,
+                                              sectionNameKeyPath: "normalizedAgeAsString",
+                                              matching: self.filterPredicate(),
+                                              sortedBy: [descriptor])
     }()
-
-    /// OrderStatus that must be matched by retrieved orders.
-    ///
-    private var currentTypeFilter: NoteTypeFilter = .all {
-        didSet {
-            guard isViewLoaded else {
-                return
-            }
-
-            guard oldValue != currentTypeFilter else {
-                return
-            }
-
-            didChangeFilter(newFilter: currentTypeFilter)
-        }
-    }
 
     /// Pull To Refresh Support.
     ///
@@ -166,6 +144,7 @@ class NotificationsViewController: UIViewController {
         super.viewWillAppear(animated)
 
         resetApplicationBadge()
+        transitionToResultsUpdatedState()
         synchronizeNotifications() {
             // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
             // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
@@ -188,8 +167,8 @@ private extension NotificationsViewController {
     /// Setup: TabBar
     ///
     func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Notifications", comment: "Title of the Notifications tab — plural form of Notification")
-        tabBarItem.image = .bellImage
+        tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
+        tabBarItem.image = .commentImage
     }
 
     /// Setup: Navigation
@@ -208,14 +187,6 @@ private extension NotificationsViewController {
         leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read",
                                                             comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
         navigationItem.leftBarButtonItem = leftBarButton
-
-        rightBarButton.tintColor = .white
-        rightBarButton.accessibilityTraits = .button
-        rightBarButton.accessibilityLabel = NSLocalizedString("Filter notifications", comment: "Accessibility label for the Filter notifications button.")
-        rightBarButton.accessibilityHint = NSLocalizedString("Filters the notifications list by notification type.",
-                                                             comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list."
-        )
-        navigationItem.rightBarButtonItem = rightBarButton
     }
 
     /// Setup: TableView
@@ -244,22 +215,11 @@ private extension NotificationsViewController {
     }
 
     func refreshTitle() {
-        guard currentTypeFilter != .all else {
-            navigationItem.title = NSLocalizedString(
-                "Notifications",
-                comment: "Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification)."
-            )
-            return
-        }
-
-        let title = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Notifications: %@",
-                comment: "Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter}"
-            ),
-            currentTypeFilter.description.capitalized
+        transitionToResultsUpdatedState()
+        navigationItem.title = NSLocalizedString(
+            "Reviews",
+            comment: "Title that appears on top of the main Reviews screen (plural form of the word Review)."
         )
-        navigationItem.title = title
     }
 }
 
@@ -269,60 +229,20 @@ private extension NotificationsViewController {
 private extension NotificationsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        WooAnalytics.shared.track(.notificationsListPulledToRefresh)
+        ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
         synchronizeNotifications {
             sender.endRefreshing()
         }
     }
 
     @IBAction func markAllAsRead() {
-        WooAnalytics.shared.track(.notificationsListReadAllTapped)
+        ServiceLocator.analytics.track(.notificationsListReadAllTapped)
         if unreadNotes.isEmpty {
             DDLogVerbose("# Every single notification is already marked as Read!")
             return
         }
 
         markAsRead(notes: unreadNotes)
-    }
-
-    @IBAction func displayFiltersAlert() {
-        WooAnalytics.shared.track(.notificationsListFilterTapped)
-
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
-
-        actionSheet.addCancelActionWithTitle(NSLocalizedString("Dismiss", comment: "Dismiss the action sheet"))
-        for noteType in NoteTypeFilter.knownTypes {
-            actionSheet.addDefaultActionWithTitle(noteType.description) { [weak self] _ in
-                self?.currentTypeFilter = noteType
-            }
-        }
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
-        popoverController?.sourceView = self.view
-
-        present(actionSheet, animated: true)
-    }
-}
-
-
-// MARK: - Filters
-//
-private extension NotificationsViewController {
-
-    func didChangeFilter(newFilter: NoteTypeFilter?) {
-                WooAnalytics.shared.track(.filterNotificationsOptionSelected,
-                                          withProperties: ["status": newFilter?.rawValue ?? String()])
-                WooAnalytics.shared.track(.notificationListFilter,
-                                          withProperties: ["range": newFilter?.rawValue ?? String()])
-
-        // Display the Filter in the Title
-        refreshTitle()
-
-        // Filter right away the cached orders
-        refreshResultsPredicate()
-        transitionToResultsUpdatedState()
     }
 }
 
@@ -334,7 +254,7 @@ private extension NotificationsViewController {
     /// Nukes the BadgeCount
     ///
     func resetApplicationBadge() {
-        AppDelegate.shared.pushNotesManager.resetBadgeCount()
+        ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
     /// Update the last seen time for notifications
@@ -356,7 +276,7 @@ private extension NotificationsViewController {
             }
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Marks a specific Notification as read.
@@ -371,7 +291,7 @@ private extension NotificationsViewController {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
             }
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Marks the specified collection of Notifications as Read.
@@ -389,7 +309,7 @@ private extension NotificationsViewController {
             self?.updateMarkAllReadButtonState()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
@@ -399,15 +319,16 @@ private extension NotificationsViewController {
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
             } else {
-                WooAnalytics.shared.track(.notificationListLoaded)
+                ServiceLocator.analytics.track(.notificationListLoaded)
             }
 
+            self.refreshResultsPredicate()
             self.transitionToResultsUpdatedState()
             onCompletion?()
         }
 
         transitionToSyncingState()
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -417,7 +338,7 @@ private extension NotificationsViewController {
     func displayRatingPrompt() {
         defer {
             if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                WooAnalytics.shared.track(wooEvent)
+                ServiceLocator.analytics.track(wooEvent)
             }
         }
 
@@ -437,27 +358,27 @@ private extension NotificationsViewController {
     ///
     func reloadResultsController() {
         refreshResultsPredicate()
+
+        tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
+        transitionToSyncingState()
     }
 
     func refreshResultsPredicate() {
-        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-        var typePredicate: NSPredicate
-
-        switch currentTypeFilter {
-        case .all:
-            typePredicate = NSPredicate(format: "type == %@ OR subtype == %@", Note.Kind.storeOrder.rawValue, Note.Subkind.storeReview.rawValue)
-        case .orders:
-            typePredicate = NSPredicate(format: "type == %@", Note.Kind.storeOrder.rawValue)
-        case .reviews:
-            typePredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
-        }
-
-        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [typePredicate, sitePredicate, notDeletedPredicate])
-        tableView.setContentOffset(.zero, animated: false)
-        tableView.reloadData()
+        resultsController.predicate = filterPredicate()
     }
+
+    func filterPredicate() -> NSPredicate {
+        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
+        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
+                                                                   sitePredicate,
+                                                                   notDeletedPredicate])
+    }
+
+
 }
 
 
@@ -554,7 +475,7 @@ extension NotificationsViewController {
             presentNotificationDetails(for: note)
         }
 
-        WooAnalytics.shared.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
+        ServiceLocator.analytics.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
                                                                          "already_read": note.read ])
 
         markAsReadIfNeeded(note: note)
@@ -658,40 +579,25 @@ private extension NotificationsViewController {
         resultsController.startForwardingEvents(to: self.tableView)
     }
 
-
-    /// Displays the Empty State (with filters applied!) Overlay.
-    ///
-    func displayEmptyFilteredOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Notifications List (Empty State + Filters)")
-        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: removes the current filters from the notifications list")
-        overlayView.onAction = { [weak self] in
-            self?.currentTypeFilter = .all
-        }
-
-        overlayView.attach(to: view)
-    }
-
     /// Displays the Empty State Overlay.
     ///
     func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("No Notifications Yet!", comment: "Empty Notifications List Message")
+        overlayView.messageText = NSLocalizedString("No Reviews Yet!", comment: "Empty Reviews List Message")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
             guard let `self` = self else {
                 return
             }
-            guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                 return
             }
             guard let url = URL(string: site.url) else {
                 return
             }
 
-            WooAnalytics.shared.track(.notificationShareStoreButtonTapped)
+            ServiceLocator.analytics.track(.notificationShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 
@@ -753,16 +659,7 @@ private extension NotificationsViewController {
     /// Note: Just because this func runs does not guarantee `didEnter()` or `didLeave()` will run as well.
     ///
     func willEnter(state: State) {
-        switch state {
-        case .emptyUnfiltered:
-            updateNavBarButtonsState(filterEnabled: false)
-        case .emptyFiltered:
-            updateNavBarButtonsState(filterEnabled: true)
-        case .results:
-            updateNavBarButtonsState(filterEnabled: true)
-        case .syncing:
-            updateNavBarButtonsState(filterEnabled: false)
-        }
+        updateNavBarButtonsState()
     }
 
     /// Runs whenever the FSM enters a State.
@@ -770,9 +667,9 @@ private extension NotificationsViewController {
     func didEnter(state: State) {
         switch state {
         case .emptyUnfiltered:
-            displayEmptyUnfilteredOverlay()
-        case .emptyFiltered:
-            displayEmptyFilteredOverlay()
+            if isEmpty == true {
+                displayEmptyUnfilteredOverlay()
+            }
         case .results:
             break
         case .syncing:
@@ -784,8 +681,6 @@ private extension NotificationsViewController {
     ///
     func didLeave(state: State) {
         switch state {
-        case .emptyFiltered:
-            removeAllOverlays()
         case .emptyUnfiltered:
             removeAllOverlays()
         case .results:
@@ -810,11 +705,6 @@ private extension NotificationsViewController {
             return
         }
 
-        if currentTypeFilter != .all {
-            state = .emptyFiltered
-            return
-        }
-
         state = .emptyUnfiltered
     }
 }
@@ -828,8 +718,7 @@ private extension NotificationsViewController {
     ///
     /// - Parameter filterEnabled: If true, the filter navbar buttons is enabled; if false, it's disabled
     ///
-    func updateNavBarButtonsState(filterEnabled: Bool) {
-        rightBarButton.isEnabled = filterEnabled
+    func updateNavBarButtonsState() {
         updateMarkAllReadButtonState()
     }
 
@@ -848,7 +737,7 @@ private extension NotificationsViewController {
         markAsReadCount += 1
         let message = NSLocalizedString("All notifications marked as read", comment: "Mark all notifications as read notice")
         let notice = Notice(title: message, feedbackType: .success)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -894,7 +783,6 @@ private extension NotificationsViewController {
 
     enum State {
         case emptyUnfiltered
-        case emptyFiltered
         case results
         case syncing
     }

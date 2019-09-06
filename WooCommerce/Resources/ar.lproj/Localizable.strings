@@ -1,10 +1,17 @@
-/* Translation-Revision-Date: 2019-08-07 00:54:03+0000 */
+/* Translation-Revision-Date: 2019-08-21 00:54:32+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
 
 /* No comment provided by engineer. */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(بدون عنوان)";
+
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "يلزم إدخال عنوان بريد إلكتروني صحيح لإرسال رابط المصادقة. يرجى العودة إلى الشاشة السابقة وإدخال عنوان بريد إلكتروني صحيح.";
@@ -90,7 +97,8 @@
 /* Approve a comment */
 "Approve" = "موافقة";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "تمت الموافقة";
 
 /* Approves a comment. Spoken Hint. */
@@ -346,14 +354,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "تمييز الطلب";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "ترشيح التنبيهات";
-
 /* Filter the orders list. */
 "Filter orders" = "تصفية الطلبات";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "يُرشِّح قائمة التنبيهات حسب نوع التنبيه.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "تصفية قائمة الطلبات حسب حالة الدفع.";
@@ -574,11 +576,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "التالي";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "لا توجد تنبيهات بعد!";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "لم يتم العثور على طلبات";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "لا توجد مراجعات حتى الآن!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "لا يوجد أي نشاط في هذه الفترة";
@@ -590,8 +592,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "لا توجد بيانات متاحة";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "لا توجد نتائج للمعايير المحددة";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +604,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "ملاحظة إلى العميل";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "التنبيهات: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "عدد الملفات:";
@@ -635,6 +629,9 @@
 
 /* Display label for the product's inventory stock status */
 "On back order" = "جارٍ الطلب";
+
+/* Display label for the review's hold status */
+"On hold" = "موقوف";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "فتح إعدادات الجهاز";
@@ -805,8 +802,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "السعر العادي:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "حذف عوامل التصفية";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +828,7 @@
 "Review, prepare, and ship these pending orders" = "مراجعة هذه الطلبات المُعلّقة وإعدادها وشحنها";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "مراجعات";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
@@ -971,7 +967,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "عذرًا، لا يمكنك استخدام عنوان الموقع هذا.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "البريد المزعج";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
@@ -1146,7 +1143,8 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "رقم التعقب %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "سلة المهملات";
 
 /* Connect when the SSL certificate is invalid */
@@ -1223,6 +1221,12 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "خطأ غير معروف";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Unspam";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Untrash";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "تم حفظ ما يصل إلى سبعة أيام من مجموعة السجلات.";

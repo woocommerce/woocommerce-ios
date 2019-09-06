@@ -134,7 +134,7 @@ extension LoginPrologueViewController {
     /// Opens SafariViewController at the specified URL.
     ///
     func displaySafariViewController(at url: URL) {
-        WooAnalytics.shared.track(.loginPrologueJetpackInstructions)
+        ServiceLocator.analytics.track(.loginPrologueJetpackInstructions)
         let safariViewController = SFSafariViewController(url: url)
 
         safariViewController.modalPresentationStyle = .pageSheet
@@ -144,8 +144,8 @@ extension LoginPrologueViewController {
     /// Proceeds with the Login Flow.
     ///
     @IBAction func loginWasPressed() {
-        WooAnalytics.shared.track(.loginPrologueContinueTapped)
-        let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
+        ServiceLocator.analytics.track(.loginPrologueContinueTapped)
+        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
 
         navigationController?.pushViewController(loginViewController, animated: true)
         navigationController?.setNavigationBarHidden(false, animated: true)

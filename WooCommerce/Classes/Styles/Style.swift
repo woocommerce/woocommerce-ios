@@ -10,6 +10,7 @@ protocol Style {
     static var maxFontSize: CGFloat { get }
     var actionButtonTitleFont: UIFont { get }
     var alternativeLoginsTitleFont: UIFont { get }
+    var badgeFont: UIFont { get }
     var chartLabelFont: UIFont { get }
     var headlineSemiBold: UIFont { get }
     var subheadlineFont: UIFont { get }
@@ -78,6 +79,9 @@ class DefaultStyle: Style {
     static let maxFontSize              = CGFloat(28.0)
     let actionButtonTitleFont           = UIFont.font(forStyle: .headline, weight: .semibold)
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
+    let badgeFont                       = DefaultStyle.fontForTextStyle(.caption2,
+                                                                        weight: .regular,
+                                                                        maximumPointSize: 11.0)
     let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
                                                                         weight: .semibold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
@@ -85,7 +89,7 @@ class DefaultStyle: Style {
     let subheadlineBoldFont             = DefaultStyle.fontForTextStyle(.subheadline,
                                                                         weight: .bold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
-    let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .ultraLight)
+    let chartLabelFont                  = UIFont.font(forStyle: .caption2, weight: .regular)
     let thinCaptionFont                 = DefaultStyle.fontForTextStyle(.caption1,
                                                                         weight: .thin,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
@@ -227,6 +231,10 @@ class StyleManager {
 
     static var alternativeLoginsTitleFont: UIFont {
         return active.alternativeLoginsTitleFont
+    }
+
+    static var badgeFont: UIFont {
+        return active.badgeFont
     }
 
     static var chartLabelFont: UIFont {

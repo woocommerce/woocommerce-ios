@@ -42,6 +42,6 @@ extension UIApplication: ApplicationAdapter {
     ///
     func presentInAppNotification(message: String) {
         let notice = Notice(title: message, message: nil, feedbackType: .success)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

@@ -5,7 +5,7 @@ import XLPagerTabStrip
 import WordPressUI
 
 
-class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
+class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties
 
@@ -20,7 +20,7 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
     private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let formattedDateString = StatsStore.buildDateString(from: Date(), with: granularity)
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@", granularity.rawValue, formattedDateString)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)
@@ -87,7 +87,7 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 extension TopPerformerDataViewController {
 
     func syncTopPerformers(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -103,12 +103,12 @@ extension TopPerformerDataViewController {
             if let error = error {
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
             } else {
-                WooAnalytics.shared.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self.granularity.rawValue])
+                ServiceLocator.analytics.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self.granularity.rawValue])
             }
             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Renders Placeholder Content.
@@ -178,7 +178,7 @@ private extension TopPerformerDataViewController {
 
 // MARK: - IndicatorInfoProvider Conformance (Tab Bar)
 //
-extension TopPerformerDataViewController {
+extension TopPerformerDataViewController: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: tabDescription)
     }
@@ -249,7 +249,7 @@ private extension TopPerformerDataViewController {
             isInitialLoad = false
             return
         }
-        WooAnalytics.shared.track(.dashboardTopPerformersDate, withProperties: ["range": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardTopPerformersDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }
 

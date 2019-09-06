@@ -1,10 +1,17 @@
-/* Translation-Revision-Date: 2019-07-09 18:54:03+0000 */
+/* Translation-Revision-Date: 2019-08-21 00:54:31+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: es */
 
 /* No comment provided by engineer. */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(sin título)";
+
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Se requiere una dirección de correo electrónico válida a la cual enviar un enlace de verificación. Vuelve a la pantalla anterior y proporciona una dirección de correo electrónico válida.";
@@ -90,7 +97,8 @@
 /* Approve a comment */
 "Approve" = "Aprobar";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Se ha aprobado";
 
 /* Approves a comment. Spoken Hint. */
@@ -179,7 +187,7 @@
 "Copy" = "Copiar";
 
 /* Copy tracking number button title */
-"Copy Tracking Number" = "Copy Tracking Number";
+"Copy Tracking Number" = "Copiar número de seguimiento";
 
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "No se han podido comprobar las compras del sitio.";
@@ -265,7 +273,7 @@
 "Dotcom Missing Token" = "Token Dotcom perdido";
 
 /* WordPress.com error thrown when the user has no permission to view site stats. */
-"Dotcom No Stats Permission" = "Dotcom No Stats Permission";
+"Dotcom No Stats Permission" = "Sin permiso para ver estadísticas de Dotcom";
 
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "La solicitud de Dotcom ha fallado";
@@ -274,7 +282,7 @@
 "Dotcom Response Empty" = "Respuesta Dotcom vacía";
 
 /* WordPress.com error thrown when the Jetpack site stats module is disabled. */
-"Dotcom Stats Module Disabled" = "Dotcom Stats Module Disabled";
+"Dotcom Stats Module Disabled" = "El módulo de estadísticas de Dotcom está desactivado";
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "Token Dotcom no válido";
@@ -346,14 +354,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Solicitud de función";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Filtrar notificaciones";
-
 /* Filter the orders list. */
 "Filter orders" = "Filtrar pedidos";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Filtra la lista de notificaciones por tipo de notificación.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Filtra la lista de pedidos según el estado de los pagos.";
@@ -501,7 +503,7 @@
 "Lost your password?" = "¿Has perdido tu contraseña?";
 
 /* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
-"Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>";
+"Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "Con mucho cariño, por la gente de Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">¡Buscamos personal!<\/a>";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Gestiona pedidos, controla las ventas y supervisa la actividad de la tienda con alertas en tiempo real.";
@@ -574,11 +576,11 @@
    Title of a button. The text should be capitalized. */
 "Next" = "Siguiente";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "Todavía no hay notificaciones.";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "No se han encontrado pedidos";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "Aún no hay reseñas.";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Sin actividad durante este periodo";
@@ -590,8 +592,7 @@
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "No hay datos disponibles.";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "No hay resultados para los criterios elegidos";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
@@ -603,13 +604,6 @@
 /* Labels an order note to let user know it's visible to the customer
    Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Enviar la nota al cliente";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Notificaciones: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Número de archivos:";
@@ -635,6 +629,9 @@
 
 /* Display label for the product's inventory stock status */
 "On back order" = "Pedido en proceso";
+
+/* Display label for the review's hold status */
+"On hold" = "Suspendido";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Abrir ajustes del dispositivo";
@@ -694,7 +691,7 @@
 "Payment" = "Pago";
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "Payment of (subject.totalValue) received via (order.paymentMethodTitle)";
+"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "Se ha recibido el pago de (subject.totalValue) a través de (order.paymentMethodTitle)";
 
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "Se ha recibido el pago de (totalValue) a través de (order.paymentMethodTitle)";
@@ -805,8 +802,7 @@
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Precio normal:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Eliminar filtros";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
@@ -832,7 +828,7 @@
 "Review, prepare, and ship these pending orders" = "Revisa, prepara y envía estos pedidos pendientes.";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Reseñas";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
@@ -971,7 +967,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "No puedes utilizar esta dirección para el sitio.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Spam";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
@@ -1146,7 +1143,8 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Número de seguimiento %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "Papelera";
 
 /* Connect when the SSL certificate is invalid */
@@ -1174,7 +1172,7 @@
 "Unable to change status of order #(orderID)" = "No se ha podido cambiar el estado del pedido n.º (orderID)";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
-"Unable to delete tracking for order #(order.orderID)" = "Unable to delete tracking for order #(order.orderID)";
+"Unable to delete tracking for order #(order.orderID)" = "No se ha podido eliminar el seguimiento del pedido n.º (order.orderID)";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
 "Unable to delete tracking for order #(orderID)" = "No se ha podido eliminar el seguimiento del pedido n.º (orderID)";
@@ -1223,6 +1221,12 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "Error desconocido";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Unspam";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Untrash";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Se guardan los registros con una antigüedad máxima de siete días.";

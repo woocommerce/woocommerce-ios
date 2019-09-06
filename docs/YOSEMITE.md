@@ -43,6 +43,8 @@ At the moment, we provide the following subclasses of `Store`:
 * `OrderNoteStore`. Business logic pertaining order notes. Registers and responds to operation declared in `OrderNoteAction`
 * `OrderStatusStore`. Business logic related to order payment statuses, implementing operations declared in `OrderStatusAction`
 * `SettingStore` registers and responds to operations declared in `SettingAction`
+* `StatsStore` responds to operations declared in `StatsAction`, providing support for the order stats.
+* `StatsStoreV4` responds to operations declared in `StatsActionV4`, providing support for the order stats based on the V4 API, yet to be integrated in the UI.
 * `ShipmentStore` implements support for the operations declared in `ShipmentAction`
 * Finally, `StatStore`implements the logic to present statistics, supporting operations declared in `StatsAction`
 
@@ -81,7 +83,7 @@ The full listing:
             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.storesManager.dispatch(action)
     }
 ```
 

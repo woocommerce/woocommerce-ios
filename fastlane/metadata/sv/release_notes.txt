@@ -1,3 +1,3 @@
-Kopiera spårningsnummer! Det är nu enklare att hålla koll på din leverans utan att öppna appen. I Beställningsinformation > Leveransspårning > Mer finns det en ny åtgärd för att kopiera ditt spårningsnummer att använda närhelst du vill.
-
-Hejdå statistikfelmeddelandet! Om din webbplats inte har Jetpack-modulen webbplatsstatistik eller om du inte har behörighet att visa statistik så kommer du inte se statistiksidan. Du behöver inte se ett irriterande felmeddelande så vi har tagit bort det.
+- Vissa av er kunde se er webbplats på inloggningsskärmen men kunde inte trycka på fortsätt. Nu har vi fixat det.
+- Stora säljvolymer är värda att fira – vi har gjort det mycket enklare att läsa dekalen Beställningar.
+- Vi upptäckte att det inte längre gick att hämta produktbilder från skärmen Beställningsinformation. Nu går det att hämta dem igen.

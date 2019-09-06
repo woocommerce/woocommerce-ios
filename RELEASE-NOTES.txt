@@ -1,5 +1,6 @@
 2.7
 -----
+- bugfix: Reviews were not localized.
  
 2.6
 -----

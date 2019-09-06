@@ -457,7 +457,6 @@ extension StorePickerViewController {
     /// Proceeds with the Login Flow.
     ///
     @IBAction func actionWasPressed() {
-
         switch state {
         case .empty:
             restartAuthentication()
@@ -605,12 +604,7 @@ private extension StorePickerState {
     /// Action Button's Title
     ///
     var actionTitle: String {
-        switch self {
-//        case .empty:
-//            return NSLocalizedString("Try another account", comment: "")
-        default:
             return NSLocalizedString("Continue", comment: "")
-        }
     }
 
     /// Results Table's Header Title

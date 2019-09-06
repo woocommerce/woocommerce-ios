@@ -62,6 +62,9 @@ class StorePickerViewController: UIViewController {
         didSet {
             actionBackgroundView.layer.masksToBounds = false
             actionBackgroundView.layer.shadowOpacity = StorePickerConstants.backgroundShadowOpacity
+
+            // Shift the shadow so it doesn't appear on the bottom of the view.
+            actionBackgroundView.layer.shadowOffset = CGSize(width: 0, height: -5)
         }
     }
 
@@ -207,6 +210,9 @@ private extension StorePickerViewController {
         for (reuseIdentifier, nib) in cells {
             tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
+
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = StyleManager.wooWhite
     }
 
     func setupAccountHeader() {

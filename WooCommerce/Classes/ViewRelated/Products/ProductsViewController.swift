@@ -2,7 +2,9 @@ import UIKit
 import WordPressUI
 import Yosemite
 
-class ProductsViewController: UIViewController {
+/// Shows a list of products with pull to refresh and infinite scroll
+///
+final class ProductsViewController: UIViewController {
 
     /// Main TableView
     ///
@@ -156,7 +158,7 @@ private extension ProductsViewController {
     /// Register table cells.
     ///
     func registerTableViewCells() {
-        tableView.register(ProductTableViewCell.loadNib(), forCellReuseIdentifier: ProductTableViewCell.reuseIdentifier)
+        tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
     }
 
     func configureResultsController(onReload: @escaping () -> Void) {
@@ -185,12 +187,13 @@ extension ProductsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductTableViewCell.reuseIdentifier, for: indexPath) as? ProductTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, for: indexPath) as? ProductsTabProductTableViewCell else {
             fatalError()
         }
 
         let product = resultsController.object(at: indexPath)
-        cell.nameText = product.name
+        let viewModel = ProductsTabProductViewModel(product: product)
+        cell.update(viewModel: viewModel)
 
         return cell
     }
@@ -263,7 +266,7 @@ private extension ProductsViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderOrders() {
-        let options = GhostOptions(reuseIdentifier: ProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
         resultsController.stopForwardingEvents()

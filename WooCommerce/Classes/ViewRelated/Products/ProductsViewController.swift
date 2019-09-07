@@ -85,6 +85,10 @@ final class ProductsViewController: UIViewController {
         super.viewWillAppear(animated)
 
         syncingCoordinator.synchronizeFirstPage()
+
+        if AppRatingManager.shared.shouldPromptForAppReview() {
+            displayRatingPrompt()
+        }
     }
 
 }

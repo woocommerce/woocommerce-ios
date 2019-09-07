@@ -35,10 +35,12 @@ extension ProductsTabProductTableViewCell {
 
         detailsLabel.attributedText = viewModel.detailsAttributedString
 
+        productImageView.contentMode = .center
+        productImageView.image = .productsTabProductCellPlaceholderImage
         if let productURLString = viewModel.imageUrl {
-            productImageView.downloadImage(from: URL(string: productURLString), placeholderImage: UIImage.productPlaceholderImage)
-        } else {
-            productImageView.image = .productPlaceholderImage
+            productImageView.downloadImage(from: URL(string: productURLString), placeholderImage: nil, success: { [weak self] _ in
+                self?.productImageView.contentMode = .scaleAspectFit
+            })
         }
     }
 }
@@ -73,8 +75,10 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureProductImageView() {
-        productImageView.contentMode = .scaleAspectFit
-        productImageView.layer.cornerRadius = CGFloat(8.0)
+
+        productImageView.layer.cornerRadius = CGFloat(2.0)
+        productImageView.layer.borderWidth = 1
+        productImageView.layer.borderColor = StyleManager.wooGreyBorder.cgColor
 
         NSLayoutConstraint.activate([
             productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),

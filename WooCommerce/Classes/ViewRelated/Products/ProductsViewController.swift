@@ -50,18 +50,14 @@ final class ProductsViewController: UIViewController {
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
-    /// UI Active State
-    ///
-    private var state: State = .results {
-        didSet {
-            guard oldValue != state else {
-                return
-            }
-
-            didLeave(state: oldValue)
-            didEnter(state: state)
-        }
-    }
+    private lazy var stateCoordinator: ProductsViewControllerStateCoordinator = {
+        let stateCoordinator = ProductsViewControllerStateCoordinator(onLeavingState: { [weak self] state in
+            self?.didLeave(state: state)
+            }, onEnteringState: { [weak self] state in
+                self?.didEnter(state: state)
+        })
+        return stateCoordinator
+    }()
 
     // MARK: - View Lifecycle
 
@@ -256,10 +252,6 @@ extension ProductsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        guard state != .placeholder else {
-            return
-        }
-
         let product = resultsController.object(at: indexPath)
         let productViewController = ProductLoaderViewController(productID: product.productID, siteID: product.siteID)
         navigationController?.pushViewController(productViewController, animated: true)
@@ -409,7 +401,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 //
 private extension ProductsViewController {
 
-    func didEnter(state: State) {
+    func didEnter(state: ProductsViewControllerState) {
         switch state {
         case .emptyUnfiltered:
             displayEmptyUnfilteredOverlay()
@@ -424,7 +416,7 @@ private extension ProductsViewController {
         }
     }
 
-    func didLeave(state: State) {
+    func didLeave(state: ProductsViewControllerState) {
         switch state {
         case .emptyFiltered:
             removeAllOverlays()
@@ -443,35 +435,14 @@ private extension ProductsViewController {
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState() {
-        state = isEmpty ? .placeholder : .syncing
+        stateCoordinator.transitionToSyncingState(hasData: !isEmpty)
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
     func transitionToResultsUpdatedState() {
-        if isEmpty == false {
-            state = .results
-            return
-        }
-
-//        if isFiltered {
-//            state = .emptyFiltered
-//            return
-//        }
-
-        state = .emptyUnfiltered
-    }
-}
-
-// MARK: - Convenience Methods
-//
-private extension ProductsViewController {
-
-    func detailsViewModel(at indexPath: IndexPath) -> ProductDetailsViewModel {
-        let product = resultsController.object(at: indexPath)
-
-        return ProductDetailsViewModel(product: product)
+        stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
 }
 
@@ -514,13 +485,5 @@ private extension ProductsViewController {
         static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
-    }
-
-    enum State {
-        case placeholder
-        case syncing
-        case results
-        case emptyUnfiltered
-        case emptyFiltered
     }
 }

@@ -28,11 +28,12 @@ final class ProductsViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
-        let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min
+        let resultsController = createResultsController(siteID: siteID)
+        configureResultsController(resultsController) { [weak self] in
+            self?.tableView.reloadData()
+        }
+        return resultsController
     }()
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
@@ -76,14 +77,15 @@ final class ProductsViewController: UIViewController {
         configureTableView()
         configureSyncingCoordinator()
         registerTableViewCells()
-        configureResultsController { [weak self] in
-            self?.tableView.reloadData()
-        }
+
+        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min
+        updateResultsController(siteID: siteID)
         syncingCoordinator.synchronizeFirstPage()
 
         if AppRatingManager.shared.shouldPromptForAppReview() {
@@ -150,7 +152,10 @@ private extension ProductsViewController {
         tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
+
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.refreshControl = refreshControl
+        tableView.tableFooterView = footerSpinnerView
     }
 
     /// Setup: Sync'ing Coordinator
@@ -165,7 +170,7 @@ private extension ProductsViewController {
         tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
     }
 
-    func configureResultsController(onReload: @escaping () -> Void) {
+    func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
         resultsController.onDidChangeContent = {
             onReload()
         }
@@ -175,6 +180,25 @@ private extension ProductsViewController {
         }
 
         try? resultsController.performFetch()
+    }
+}
+
+// MARK: - Updates
+//
+private extension ProductsViewController {
+    func updateResultsController(siteID: Int) {
+        resultsController = createResultsController(siteID: siteID)
+        configureResultsController(resultsController) { [weak self] in
+            self?.tableView.reloadData()
+        }
+    }
+
+    func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+
+        return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 }
 

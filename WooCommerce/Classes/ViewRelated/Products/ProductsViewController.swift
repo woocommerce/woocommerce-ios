@@ -93,13 +93,14 @@ final class ProductsViewController: UIViewController {
 
 // MARK: - Notifications
 //
-extension ProductsViewController {
+private extension ProductsViewController {
 
     /// Wires all of the Notification Hooks
     ///
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
+        nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
         nc.addObserver(self, selector: #selector(stopListeningToNotifications), name: .logOutEventReceived, object: nil)
     }
 
@@ -113,6 +114,16 @@ extension ProductsViewController {
     ///
     @objc func defaultAccountWasUpdated() {
         syncingCoordinator.resetInternalState()
+    }
+
+    /// Default Site Updated Handler
+    ///
+    @objc func defaultSiteWasUpdated() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        updateResultsController(siteID: siteID)
+        tableView.reloadData()
     }
 }
 
@@ -366,9 +377,12 @@ private extension ProductsViewController {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
-        case .syncing:
-            ensureFooterSpinnerIsStarted()
-            displayPlaceholderProducts()
+        case .syncing(let withExistingData):
+            if withExistingData {
+                ensureFooterSpinnerIsStarted()
+            } else {
+                displayPlaceholderProducts()
+            }
         case .results:
             break
         }
@@ -390,7 +404,7 @@ private extension ProductsViewController {
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState() {
-        stateCoordinator.transitionToSyncingState(hasData: !isEmpty)
+        stateCoordinator.transitionToSyncingState(withExistingData: !isEmpty)
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).

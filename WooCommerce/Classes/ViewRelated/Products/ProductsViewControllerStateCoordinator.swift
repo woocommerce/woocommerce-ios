@@ -2,17 +2,13 @@ import UIKit
 
 /// UI state of `ProductsViewController`.
 ///
-/// - placeholder: <#placeholder description#>
+/// - noResultsPlaceholder: a no results placeholder is displayed
 /// - syncing: <#syncing description#>
-/// - results: <#results description#>
-/// - emptyUnfiltered: <#emptyUnfiltered description#>
-/// - emptyFiltered: <#emptyFiltered description#>
+/// - results: the results are shown
 enum ProductsViewControllerState {
-    case placeholder
+    case noResultsPlaceholder
     case syncing
     case results
-    case emptyUnfiltered
-    case emptyFiltered
 }
 
 /// Keeps track of the Products view controller UI state, and allows the owning view controller to update UI when leaving and entering a state.
@@ -46,18 +42,12 @@ final class ProductsViewControllerStateCoordinator {
     /// we've got cached results, or not.
     ///
     func transitionToSyncingState(hasData: Bool) {
-        state = hasData ? .syncing: .placeholder
+        state = hasData ? .syncing: .noResultsPlaceholder
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
-    /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
     func transitionToResultsUpdatedState(hasData: Bool) {
-        if hasData {
-            state = .results
-            return
-        }
-
-        state = .emptyUnfiltered
+        state = hasData ? .results: .noResultsPlaceholder
     }
 }

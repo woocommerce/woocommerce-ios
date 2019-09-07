@@ -25,7 +25,7 @@ final class ProductsViewController: UIViewController {
     ///
     private lazy var footerSpinnerView = FooterSpinnerView()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min
@@ -148,6 +148,8 @@ private extension ProductsViewController {
         tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedSectionHeaderHeight = 0
+        tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
@@ -221,25 +223,12 @@ extension ProductsViewController: UITableViewDataSource {
 
         return cell
     }
-
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let rawAge = resultsController.sections[section].name
-        return Age(rawValue: rawAge)?.description
-    }
 }
 
 
 // MARK: - UITableViewDelegate Conformance
 //
 extension ProductsViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return Settings.estimatedHeaderHeight
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return estimatedRowHeights[indexPath] ?? Settings.estimatedRowHeight
@@ -258,8 +247,8 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let orderIndex = resultsController.objectIndex(from: indexPath)
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
+        let productIndex = resultsController.objectIndex(from: indexPath)
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: productIndex)
 
         // Preserve the Cell Height
         // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
@@ -272,7 +261,7 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.ordersListPulledToRefresh)
+        // TODO-1263: analytics
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
@@ -285,18 +274,18 @@ private extension ProductsViewController {
 
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
-    func displayPlaceholderOrders() {
+    func displayPlaceholderProducts() {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
         resultsController.stopForwardingEvents()
     }
 
-    /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
+    /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
-    func removePlaceholderOrders() {
+    func removePlaceholderProducts() {
         tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: self.tableView)
+        resultsController.startForwardingEvents(to: tableView)
         tableView.reloadData()
     }
 
@@ -312,42 +301,14 @@ private extension ProductsViewController {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
-    /// Displays the Empty State Overlay.
+    /// Displays the overlay when there are no results.
     ///
-    func displayEmptyUnfilteredOverlay() {
+    func displayNoResultsOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Orders List (Empty State / No Filters)")
-        overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
-        overlayView.onAction = { [weak self] in
-            guard let `self` = self else {
-                return
-            }
-            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
-                return
-            }
-            guard let url = URL(string: site.url) else {
-                return
-            }
-
-            ServiceLocator.analytics.track(.orderShareStoreButtonTapped)
-            SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
-        }
-
-        overlayView.attach(to: view)
-    }
-
-    /// Displays the Empty State (with filters applied!) Overlay.
-    ///
-    func displayEmptyFilteredOverlay() {
-        let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
-        overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
-        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
-        overlayView.onAction = { [weak self] in
-//            self?.statusFilter = nil
-        }
-
+        overlayView.messageImage = nil
+        overlayView.messageText = NSLocalizedString("No Products yet",
+                                                    comment: "The text on the placeholder overlay when there are no products on the Products tab")
+        overlayView.actionVisible = false
         overlayView.attach(to: view)
     }
 
@@ -364,7 +325,7 @@ private extension ProductsViewController {
 //
 extension ProductsViewController: SyncingCoordinatorDelegate {
 
-    /// Synchronizes the Orders for the Default Store (if any).
+    /// Synchronizes the Products for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
@@ -383,10 +344,10 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                     }
 
                                     if let error = error {
-                                        DDLogError("⛔️ Error synchronizing orders: \(error)")
+                                        DDLogError("⛔️ Error synchronizing products: \(error)")
                                         self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
                                     } else {
-                                        //                                                                                                                ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
+                                        // TODO-1263: analytics
                                     }
 
                                     self.transitionToResultsUpdatedState()
@@ -403,14 +364,11 @@ private extension ProductsViewController {
 
     func didEnter(state: ProductsViewControllerState) {
         switch state {
-        case .emptyUnfiltered:
-            displayEmptyUnfilteredOverlay()
-        case .emptyFiltered:
-            displayEmptyFilteredOverlay()
-        case .placeholder:
-            displayPlaceholderOrders()
+        case .noResultsPlaceholder:
+            displayNoResultsOverlay()
         case .syncing:
             ensureFooterSpinnerIsStarted()
+            displayPlaceholderProducts()
         case .results:
             break
         }
@@ -418,14 +376,11 @@ private extension ProductsViewController {
 
     func didLeave(state: ProductsViewControllerState) {
         switch state {
-        case .emptyFiltered:
+        case .noResultsPlaceholder:
             removeAllOverlays()
-        case .emptyUnfiltered:
-            removeAllOverlays()
-        case .placeholder:
-            removePlaceholderOrders()
         case .syncing:
             ensureFooterSpinnerIsStopped()
+            removePlaceholderProducts()
         case .results:
             break
         }
@@ -460,7 +415,7 @@ extension ProductsViewController {
         footerSpinnerView.startAnimating()
     }
 
-    /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
+    /// Whenever we're sync'ing an Products Page that's beyond what we're currently displaying, this method will return *true*.
     ///
     private func mustStartFooterSpinner() -> Bool {
         guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
@@ -482,7 +437,6 @@ extension ProductsViewController {
 private extension ProductsViewController {
 
     enum Settings {
-        static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
     }

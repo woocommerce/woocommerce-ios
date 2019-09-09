@@ -1,12 +1,16 @@
-/* Translation-Revision-Date: 2019-08-09 00:54:03+0000 */
+/* Translation-Revision-Date: 2019-09-03 19:25:43+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
 
 /* No comment provided by engineer. */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(senza titolo)";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
 "9+" = "9+";
 
 /* An error message. */
@@ -93,7 +97,8 @@
 /* Approve a comment */
 "Approve" = "Approva";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Approvato";
 
 /* Approves a comment. Spoken Hint. */
@@ -243,7 +248,7 @@
 "Deletes a shipment's tracking information." = "Elimina le informazioni di tracciabilità di una spedizione.";
 
 /* The row label to tap for a detailed product list */
-"Details" = "Detagli";
+"Details" = "Dettagli";
 
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "Dettagli ordine n. (viewModel.order.number)";
@@ -253,7 +258,7 @@
 
 /* Add a note screen - button title for closing the view
    Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
-"Dismiss" = "Respinto";
+"Dismiss" = "Chiudi";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Non hai un account? _Registrati_";
@@ -625,6 +630,9 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "In ordine arretrato";
 
+/* Display label for the review's hold status */
+"On hold" = "In sospeso";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Apri le impostazioni del dispositivo";
 
@@ -959,7 +967,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Spiacenti, non puoi usare quell'indirizzo per il tuo sito.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Spam";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
@@ -1134,7 +1143,8 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Numero di tracciabilità %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "Cestino";
 
 /* Connect when the SSL certificate is invalid */
@@ -1211,6 +1221,12 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "Errore sconosciuto";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Unspam";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Untrash";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "I file di log vengono salvati per massimo sette giorni.";

@@ -4,9 +4,13 @@
 /* Language: fr */
 
 /* No comment provided by engineer. */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(aucun titre)";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
 "9+" = "9+";
 
 /* An error message. */
@@ -93,7 +97,8 @@
 /* Approve a comment */
 "Approve" = "Approuver";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Approuvé";
 
 /* Approves a comment. Spoken Hint. */
@@ -625,6 +630,9 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "Commande différée";
 
+/* Display label for the review's hold status */
+"On hold" = "En attente";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Réglages des appareils ouverts";
 
@@ -959,7 +967,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Vous ne pouvez pas utiliser cette adresse de site.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Indésirables";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
@@ -1134,7 +1143,8 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Numéro de suivi %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "Trash";
 
 /* Connect when the SSL certificate is invalid */
@@ -1211,6 +1221,12 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "Erreur inconnue";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Unspam";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Untrash";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Enregistre jusqu'à sept jours de rapports de bugs.";

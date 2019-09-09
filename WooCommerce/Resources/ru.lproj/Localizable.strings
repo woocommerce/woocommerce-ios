@@ -1,12 +1,16 @@
-/* Translation-Revision-Date: 2019-08-21 00:54:31+0000 */
+/* Translation-Revision-Date: 2019-09-04 00:54:03+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
 
 /* No comment provided by engineer. */
+"%1$@-%2$@" = "%1$@–%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(без заголовка)";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
 "9+" = "9+";
 
 /* An error message. */
@@ -93,7 +97,8 @@
 /* Approve a comment */
 "Approve" = "Одобрить";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Одобрен";
 
 /* Approves a comment. Spoken Hint. */
@@ -625,6 +630,9 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "Ожидается поставка";
 
+/* Display label for the review's hold status */
+"On hold" = "Отложен";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Открыть настройки устройства";
 
@@ -959,7 +967,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Извините, этот адрес сайта нельзя использовать.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Спамить";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
@@ -1134,7 +1143,8 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Номер для отслеживания %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "Корзина";
 
 /* Connect when the SSL certificate is invalid */
@@ -1211,6 +1221,12 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "Неизвестная ошибка";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Снять пометку «Спам»";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Восстановить";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Журналы хранятся в течение 7 дней.";

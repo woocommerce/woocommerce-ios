@@ -162,10 +162,8 @@ private extension MainTabBarController {
     func configureProductsTab() {
         var tabViewControllers = viewControllers
 
-        // TODO-1262: replace the products tab with a view controller that shows the product list
         let productsViewController = ProductsViewController(nibName: nil, bundle: nil)
-        productsViewController.view.backgroundColor = .white
-
+        
         let navController = WooNavigationController(rootViewController: productsViewController)
         navController.tabBarItem = UITabBarItem(title: NSLocalizedString("Products",
                                                                          comment: "Title of the Products tab — plural form of Product"),

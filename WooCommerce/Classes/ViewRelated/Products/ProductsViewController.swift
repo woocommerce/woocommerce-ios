@@ -80,7 +80,10 @@ final class ProductsViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("No valid site ID for Products tab")
+            return
+        }
         updateResultsController(siteID: siteID)
         syncingCoordinator.synchronizeFirstPage()
 
@@ -159,6 +162,8 @@ private extension ProductsViewController {
         tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
+
+        // Removes extra header spacing in ghost content view.
         tableView.estimatedSectionHeaderHeight = 0
         tableView.sectionHeaderHeight = 0
 
@@ -178,18 +183,6 @@ private extension ProductsViewController {
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
     }
-
-    func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
-        resultsController.onDidChangeContent = {
-            onReload()
-        }
-
-        resultsController.onDidResetContent = {
-            onReload()
-        }
-
-        try? resultsController.performFetch()
-    }
 }
 
 // MARK: - Updates
@@ -208,6 +201,18 @@ private extension ProductsViewController {
         let descriptor = NSSortDescriptor(key: "dateModified", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }
+
+    func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
+        resultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        resultsController.onDidResetContent = {
+            onReload()
+        }
+
+        try? resultsController.performFetch()
     }
 }
 
@@ -401,16 +406,10 @@ private extension ProductsViewController {
         }
     }
 
-    /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
-    /// we've got cached results, or not.
-    ///
     func transitionToSyncingState() {
         stateCoordinator.transitionToSyncingState(withExistingData: !isEmpty)
     }
 
-    /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
-    /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
-    ///
     func transitionToResultsUpdatedState() {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }

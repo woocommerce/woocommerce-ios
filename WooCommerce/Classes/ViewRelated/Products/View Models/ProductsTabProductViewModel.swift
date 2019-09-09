@@ -1,6 +1,19 @@
 import Foundation
 import Yosemite
 
+/// Converts the input product model to properties ready to be shown on `ProductsTabProductTableViewCell`.
+struct ProductsTabProductViewModel {
+    let imageUrl: String?
+    let name: String
+    let detailsAttributedString: NSAttributedString
+
+    init(product: Product) {
+        imageUrl = product.images.first?.src
+        name = product.name
+        detailsAttributedString = product.createDetailsAttributedString()
+    }
+}
+
 private extension Product {
     func createDetailsAttributedString() -> NSAttributedString {
         let statusText = createStatusText()
@@ -55,17 +68,5 @@ private extension Product {
         let pluralFormat = NSLocalizedString("%ld variants", comment: "Label about number of variations shown on Products tab")
         let format = String.pluralize(numberOfVariations, singular: singularFormat, plural: pluralFormat)
         return String.localizedStringWithFormat(format, numberOfVariations)
-    }
-}
-
-struct ProductsTabProductViewModel {
-    let imageUrl: String?
-    let name: String
-    let detailsAttributedString: NSAttributedString
-
-    init(product: Product) {
-        imageUrl = product.images.first?.src
-        name = product.name
-        detailsAttributedString = product.createDetailsAttributedString()
     }
 }

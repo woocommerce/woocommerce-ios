@@ -253,7 +253,8 @@ extension ProductsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let product = resultsController.object(at: indexPath)
-        let productViewController = ProductLoaderViewController(productID: product.productID, siteID: product.siteID)
+        let viewModel = ProductDetailsViewModel(product: product)
+        let productViewController = ProductDetailsViewController(viewModel: viewModel)
         navigationController?.pushViewController(productViewController, animated: true)
     }
 

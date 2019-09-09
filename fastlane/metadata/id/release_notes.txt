@@ -1,3 +1,3 @@
-- Pemberitahuan ditampilkan di bawah “Pesanan”, sehingga tab “Pemberitahuan” memerlukan identitas baru. Karena di dalamnya sebenarnya hanya menampilkan ulasan, kami telah mengganti namanya menjadi “Ulasan”.
-- Sebelumnya ada bug di layar Detail Pesanan yang menghasilkan UI aneh dengan label tidak pada tempatnya saat Anda mencoba menyegarkan informasi, dan sekarang sudah tidak ada lagi bug.
-- Sekarang ada lencana di tab bawah, menindih ikon “Pesanan”, sehingga Anda dapat dengan cepat melihat nomor pesanan yang sedang diproses.
+- Beberapa dari Anda dapat melihat situs Anda di layar login, namun tidak dapat mengetuk Lanjut. Ya, kami telah memperbaikinya.
+- Menjadi penjual yang produktif adalah sesuatu yang perlu dirayakan — karena itu kami menjadikan lencana Pesanan jauh lebih mudah untuk dibaca.
+- Kami mendapati Anda tidak bisa lagi mengunduh gambar produk secara otomatis dari layar Detail Pesanan. Kami telah memulihkan kemampuan untuk mengunduh gambar.

@@ -229,7 +229,8 @@ extension ProductsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, for: indexPath) as? ProductsTabProductTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier,
+                                                       for: indexPath) as? ProductsTabProductTableViewCell else {
             fatalError()
         }
 

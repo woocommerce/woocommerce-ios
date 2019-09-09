@@ -30,7 +30,7 @@ private extension Product {
                                                             .font: StyleManager.footerLabelFont
             ])
         if let statusText = statusText {
-            attributedString.addAttributes([.foregroundColor : StyleManager.highlightTextColor],
+            attributedString.addAttributes([.foregroundColor: StyleManager.highlightTextColor],
                                            range: NSRange(location: 0, length: statusText.count))
         }
         return attributedString

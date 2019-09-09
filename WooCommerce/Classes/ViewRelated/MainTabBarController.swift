@@ -163,7 +163,7 @@ private extension MainTabBarController {
         var tabViewControllers = viewControllers
 
         let productsViewController = ProductsViewController(nibName: nil, bundle: nil)
-        
+
         let navController = WooNavigationController(rootViewController: productsViewController)
         navController.tabBarItem = UITabBarItem(title: NSLocalizedString("Products",
                                                                          comment: "Title of the Products tab — plural form of Product"),

@@ -74,6 +74,13 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersLoaded           = "dashboard_top_performers_loaded"
     case dashboardUnfulfilledOrdersLoaded       = "dashboard_unfulfilled_orders_loaded"
 
+    // Dashboard Stats v3/v4 Events
+    //
+    case dashboardNewStatsAvailabilityBannerCancelTapped = "dashboard_new_stats_availability_banner_cancel_tapped"
+    case dashboardNewStatsAvailabilityBannerTryTapped = "dashboard_new_stats_availability_banner_try_tapped"
+    case dashboardNewStatsRevertedBannerDismissTapped = "dashboard_new_stats_reverted_banner_dismiss_tapped"
+    case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
+
     // Site picker. Can be triggered by login epilogue or settings.
     //
     case sitePickerContinueTapped               = "site_picker_continue_tapped"
@@ -105,6 +112,9 @@ public enum WooAnalyticsStat: String {
     case settingsTapped                         = "main_menu_settings_tapped"
     case settingsSelectedStoreTapped            = "settings_selected_site_tapped"
     case settingsContactSupportTapped           = "main_menu_contact_support_tapped"
+
+    case settingsBetaFeaturesButtonTapped       = "settings_beta_features_button_tapped"
+    case settingsBetaFeaturesNewStatsUIToggled  = "settings_beta_features_new_stats_ui_toggled"
 
     case settingsPrivacySettingsTapped          = "settings_privacy_settings_button_tapped"
     case settingsCollectInfoToggled             = "privacy_settings_collect_info_toggled"

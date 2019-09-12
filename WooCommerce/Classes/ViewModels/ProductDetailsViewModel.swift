@@ -25,6 +25,10 @@ final class ProductDetailsViewModel {
         }
     }
 
+    /// Yosemite.Order.currency
+    ///
+    let currency: String
+
     /// Nav bar title
     ///
     var title: String {
@@ -135,8 +139,9 @@ final class ProductDetailsViewModel {
 
     /// Designated initializer.
     ///
-    init(product: Product) {
+    init(product: Product, currency: String) {
         self.product = product
+        self.currency = currency
 
         refreshResultsController()
     }
@@ -365,17 +370,18 @@ extension ProductDetailsViewModel {
             let salePrice = product.salePrice, !salePrice.isEmpty {
             let regularPricePrefix = NSLocalizedString("Regular price:",
                                                        comment: "A descriptive label prefix. Example: 'Regular price: $20.00'")
-            let regularPriceFormatted = currencyFormatter.formatAmount(regularPrice) ?? ""
+
+            let regularPriceFormatted = currencyFormatter.formatAmount(regularPrice, with: currency) ?? String()
             let bodyText = regularPricePrefix + " " + regularPriceFormatted
 
             let salePricePrefix = NSLocalizedString("Sale price:",
                                                     comment: "A descriptive label prefix. Example: 'Sale price: $18.00'")
-            let salePriceFormatted = currencyFormatter.formatAmount(salePrice) ?? ""
+            let salePriceFormatted = currencyFormatter.formatAmount(salePrice, with: currency) ?? String()
             let secondLineText = salePricePrefix + " " + salePriceFormatted
 
             cell.bodyLabel?.text = bodyText + "\n" + secondLineText
         } else {
-            cell.bodyLabel?.text = product.price.isEmpty ? "--" : currencyFormatter.formatAmount(product.price)
+            cell.bodyLabel?.text = product.price.isEmpty ? "--" : currencyFormatter.formatAmount(product.price, with: currency)
         }
     }
 

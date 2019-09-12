@@ -151,14 +151,19 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         waitForExpectations(timeout: 0.1, handler: nil)
     }
 
-    /// V3 --> v4 and then dismisses banner
+    /// Reloads with V3 --> v4, dismisses banner, then reloads again
     func testDismissV3ToV4Banner() {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible, .eligible(statsVersion: .v3)]
+        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v3), .v3ShownV4Eligible,
+                                                   // From dismissing v3 to v4 banner
+                                                   .eligible(statsVersion: .v3),
+                                                   // From the second reload
+                                                   .initial(statsVersion: .v3)
+        ]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
@@ -175,6 +180,8 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
 
         // Dismiss v3 to v4 banner.
         stateCoordinator.dismissV3ToV4Banner()
+
+        stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
 
         waitForExpectations(timeout: 0.1, handler: nil)
     }
@@ -207,14 +214,26 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
         waitForExpectations(timeout: 0.1, handler: nil)
     }
 
-    /// V4 --> v3 and then dismisses banner
+    /// V4 --> v3, dismisses banner, back to v4 and reloads, then v4 --> v3 and reloads again
     func testDismissV4ToV3Banner() {
         mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
                                                             sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
-        let expectedStates: [StatsVersionState] = [.initial(statsVersion: .v4), .v4RevertedToV3, .eligible(statsVersion: .v3)]
+        let expectedStates: [StatsVersionState] = [
+            // From the first reload when v4 becomes unavailable
+            .initial(statsVersion: .v4), .v4RevertedToV3,
+            // From dismissing v4 to v3 banner
+            .eligible(statsVersion: .v3),
+            // From the second reload when v4 becomes available
+            .initial(statsVersion: .v3), .v3ShownV4Eligible,
+            // From upgrading from v3 to v4
+            .eligible(statsVersion: .v4),
+            // From the third reload when v4 becomes unavailble,
+            // and this time no banner should be shown
+            .initial(statsVersion: .v4), .eligible(statsVersion: .v3)
+        ]
         let expectation = self.expectation(description: "Wait for states to match")
         expectation.expectedFulfillmentCount = 1
 
@@ -228,9 +247,20 @@ final class StatsVersionStateCoordinatorTests: XCTestCase {
             }
         }
         stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
+        mockStoresManager.statsVersionLastShown = .v3
 
         // Dismiss v4 to v3 banner.
         stateCoordinator.dismissV4ToV3Banner()
+
+        // V4 becomes available.
+        mockStoresManager.isStatsV4Available = true
+        stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
+        stateCoordinator.statsV4ButtonPressed()
+        mockStoresManager.statsVersionLastShown = .v4
+
+        // V4 becomes unavailable, and this time no banner should be shown.
+        mockStoresManager.isStatsV4Available = false
+        stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
 
         waitForExpectations(timeout: 0.1, handler: nil)
     }

@@ -1,3 +1,3 @@
-- Le notifiche vengono visualizzate sotto "Ordini", perciò la scheda "Notifiche" aveva bisogno di una nuova identità. Poiché visualizza solo le recensioni, la abbiamo ovviamente rinominata in "Recensioni".
-- C'era un bug nella schermata Dettagli dell'ordine che creava un'interfaccia utente strana con etichette fuori posto quando si tentava di aggiornare le informazioni. Adesso non vi è alcun bug.
-- Ora c'è un badge nella scheda in basso, sovrapposto all'icona "Ordini", che consente di vedere rapidamente il numero degli ordini in corso.
+- Alcuni utenti riuscivano a vedere il proprio sito sulla schermata di accesso ma non riuscivano a toccare Continua. Abbiamo risolto questo problema.
+- I venditori prolifici devono essere festeggiati: per questo abbiamo notevolmente semplificato la lettura del badge Ordini.
+- Abbiamo scoperto che non era più possibile scaricare automaticamente le immagini del prodotto dalla schermata Dettaglio dell'ordine. Abbiamo ripristinato la funzionalità per scaricarle.

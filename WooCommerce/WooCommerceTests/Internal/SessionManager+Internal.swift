@@ -12,6 +12,10 @@ extension SessionManager {
     static var testingInstance: SessionManager {
         return SessionManager(defaults: SessionSettings.defaults, keychainServiceName: SessionSettings.keychainServiceName)
     }
+
+    func setStoreId(_ id: Int) {
+        UserDefaults(suiteName: "storesManagerTests")!.set(id, forKey: .defaultStoreID)
+    }
 }
 
 

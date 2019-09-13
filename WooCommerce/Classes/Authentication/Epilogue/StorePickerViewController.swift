@@ -212,7 +212,6 @@ private extension StorePickerViewController {
         }
 
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        view.backgroundColor = StyleManager.wooWhite
     }
 
     func setupAccountHeader() {

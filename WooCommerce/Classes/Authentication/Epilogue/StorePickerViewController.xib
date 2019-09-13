@@ -47,7 +47,7 @@
                     </connections>
                 </tableView>
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="H5J-Qa-DXp" userLabel="Action Background View">
-                    <rect key="frame" x="0.0" y="618" width="375" height="160"/>
+                    <rect key="frame" x="0.0" y="618" width="375" height="194"/>
                     <subviews>
                         <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="0a6-Ee-KF8">
                             <rect key="frame" x="20" y="20" width="335" height="120"/>
@@ -90,7 +90,7 @@
                     <constraints>
                         <constraint firstAttribute="trailing" secondItem="0a6-Ee-KF8" secondAttribute="trailing" constant="20" id="896-aT-jOX"/>
                         <constraint firstItem="0a6-Ee-KF8" firstAttribute="leading" secondItem="H5J-Qa-DXp" secondAttribute="leading" constant="20" id="KYV-nt-jdS"/>
-                        <constraint firstAttribute="bottom" secondItem="0a6-Ee-KF8" secondAttribute="bottom" constant="20" id="otL-uQ-MFX"/>
+                        <constraint firstAttribute="bottom" secondItem="0a6-Ee-KF8" secondAttribute="bottom" constant="54" id="otL-uQ-MFX"/>
                         <constraint firstItem="0a6-Ee-KF8" firstAttribute="top" secondItem="H5J-Qa-DXp" secondAttribute="top" constant="20" id="vtM-Zz-k3W"/>
                     </constraints>
                 </view>
@@ -101,8 +101,8 @@
                 <constraint firstItem="oVs-XS-592" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" id="2Y8-wP-jSa"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="bottom" secondItem="oVs-XS-592" secondAttribute="bottom" constant="70" id="Jzl-N4-xnb"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="oVs-XS-592" secondAttribute="trailing" id="Mr3-k9-GG9"/>
-                <constraint firstItem="H5J-Qa-DXp" firstAttribute="bottom" secondItem="t7O-Ph-IKW" secondAttribute="bottom" id="N77-U9-XdF"/>
                 <constraint firstItem="1qT-mX-0SF" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="10" id="OAu-kM-52v"/>
+                <constraint firstAttribute="bottom" secondItem="H5J-Qa-DXp" secondAttribute="bottom" id="Rfd-el-xmy"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" constant="175" id="Wt5-9Y-bb1"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="exG-7x-7xe"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="trailing" secondItem="t7O-Ph-IKW" secondAttribute="trailing" id="fvk-bR-p20"/>
@@ -112,7 +112,7 @@
                 <constraint firstItem="1qT-mX-0SF" firstAttribute="top" secondItem="Bm8-4s-4Cg" secondAttribute="bottom" constant="22" id="qa1-Pc-Opa"/>
             </constraints>
             <viewLayoutGuide key="safeArea" id="t7O-Ph-IKW"/>
-            <point key="canvasLocation" x="-476" y="19.340329835082461"/>
+            <point key="canvasLocation" x="-476" y="19.211822660098523"/>
         </view>
     </objects>
     <resources>

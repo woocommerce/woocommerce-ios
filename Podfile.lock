@@ -88,7 +88,7 @@ DEPENDENCIES:
   - WordPressShared (~> 1.8.2)
   - WordPressUI (~> 1.3.5-beta)
   - XLPagerTabStrip (~> 9.0)
-  - ZendeskSDK (from `https://github.com/zendesk/zendesk_sdk_ios.git`, branch `3.0.1-swift5.1-beta6`)
+  - ZendeskSDK (from `https://github.com/zendesk/zendesk_sdk_ios.git`, branch `3.0.1-swift5.1-GM`)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -119,12 +119,12 @@ SPEC REPOS:
 
 EXTERNAL SOURCES:
   ZendeskSDK:
-    :branch: 3.0.1-swift5.1-beta6
+    :branch: 3.0.1-swift5.1-GM
     :git: https://github.com/zendesk/zendesk_sdk_ios.git
 
 CHECKOUT OPTIONS:
   ZendeskSDK:
-    :commit: 7a0d934dc322fbb1f3aaea51c2600a6f476faaad
+    :commit: d31a64ab45945e8a4a9cdf0c8037a30274c270f5
     :git: https://github.com/zendesk/zendesk_sdk_ios.git
 
 SPEC CHECKSUMS:
@@ -154,6 +154,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: ce880e75f12ae5dacaa3658f49e545f3c8471030
 
-PODFILE CHECKSUM: 5c4d5aca33e4018ad407d1323b923578f1fe7a11
+PODFILE CHECKSUM: a9d4b7e373944e9d1d1221e6612ebc42ec87db30
 
 COCOAPODS: 1.6.2

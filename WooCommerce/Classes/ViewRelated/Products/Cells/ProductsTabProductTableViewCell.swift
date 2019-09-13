@@ -39,7 +39,7 @@ extension ProductsTabProductTableViewCell {
         productImageView.image = .productsTabProductCellPlaceholderImage
         if let productURLString = viewModel.imageUrl {
             productImageView.downloadImage(from: URL(string: productURLString), placeholderImage: nil, success: { [weak self] _ in
-                self?.productImageView.contentMode = .scaleAspectFit
+                self?.productImageView.contentMode = .scaleAspectFill
             })
         }
     }
@@ -79,6 +79,7 @@ private extension ProductsTabProductTableViewCell {
         productImageView.layer.cornerRadius = CGFloat(2.0)
         productImageView.layer.borderWidth = 1
         productImageView.layer.borderColor = StyleManager.wooGreyBorder.cgColor
+        productImageView.clipsToBounds = true
 
         NSLayoutConstraint.activate([
             productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),

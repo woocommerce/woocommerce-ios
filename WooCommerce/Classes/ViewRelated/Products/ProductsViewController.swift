@@ -198,6 +198,7 @@ private extension ProductsViewController {
     func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
+//        let predicate = NSPredicate(format: "siteID == %lld AND name = 'hi'", siteID)
         let descriptor = NSSortDescriptor(key: "dateModified", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -324,7 +325,7 @@ private extension ProductsViewController {
     func displayNoResultsOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = nil
-        overlayView.messageText = NSLocalizedString("No Products yet",
+        overlayView.messageText = NSLocalizedString("No products yet",
                                                     comment: "The text on the placeholder overlay when there are no products on the Products tab")
         overlayView.actionVisible = false
         overlayView.attach(to: view)

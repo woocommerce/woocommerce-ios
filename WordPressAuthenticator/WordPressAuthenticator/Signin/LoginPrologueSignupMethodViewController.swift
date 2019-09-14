@@ -71,13 +71,11 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
         buttonViewController.stackView?.insertArrangedSubview(termsButton, at: 0)
 
         if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
-            #if XCODE11
             if #available(iOS 13.0, *) {
                 let appleButton = WPStyleGuide.appleLoginButton()
                 appleButton.addTarget(self, action: #selector(handleAppleButtonTapped), for: .touchDown)
                 buttonViewController.stackView?.insertArrangedSubview(appleButton, at: 1)
             }
-            #endif
         }
 
         buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor

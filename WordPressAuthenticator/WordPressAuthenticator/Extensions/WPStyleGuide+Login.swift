@@ -122,7 +122,6 @@ extension WPStyleGuide {
     ///
     
     class func appleLoginButton() -> UIControl {
-        #if XCODE11
         if #available(iOS 13.0, *) {
             let traits = UITraitCollection.current
             let buttonStyle: ASAuthorizationAppleIDButton.Style = (traits.userInterfaceStyle == .dark) ? .white : .black
@@ -132,7 +131,6 @@ extension WPStyleGuide {
             appleButton.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.buttonMinHeight).isActive = true
             return appleButton
         }
-        #endif
         
         return UIControl()
     }

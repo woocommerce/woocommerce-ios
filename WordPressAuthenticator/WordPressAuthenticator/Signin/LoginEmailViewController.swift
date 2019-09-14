@@ -545,10 +545,8 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     }
 
     private func appleTapped() {
-        #if XCODE11
         AppleAuthenticator.sharedInstance.delegate = self
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
-        #endif
     }
 }
 
@@ -637,7 +635,6 @@ extension LoginEmailViewController: LoginSocialErrorViewControllerDelegate {
 extension LoginEmailViewController: GIDSignInUIDelegate {
 }
 
-#if XCODE11
 extension LoginEmailViewController: AppleAuthenticatorDelegate {
 
     func showWPComLogin(loginFields: LoginFields) {
@@ -650,4 +647,3 @@ extension LoginEmailViewController: AppleAuthenticatorDelegate {
     }
     
 }
-#endif

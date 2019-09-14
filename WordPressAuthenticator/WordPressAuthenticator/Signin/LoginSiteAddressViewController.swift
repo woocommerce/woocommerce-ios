@@ -286,10 +286,8 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     }
 
     private func appleTapped() {
-        #if XCODE11
         AppleAuthenticator.sharedInstance.delegate = self
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
-        #endif
     }
 
     /// Whether the form can be submitted.
@@ -368,7 +366,6 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     }
 }
 
-#if XCODE11
 extension LoginSiteAddressViewController: AppleAuthenticatorDelegate {
 
     func showWPComLogin(loginFields: LoginFields) {
@@ -380,4 +377,3 @@ extension LoginSiteAddressViewController: AppleAuthenticatorDelegate {
         displayErrorAlert(message, sourceTag: .loginApple)
     }
 }
-#endif

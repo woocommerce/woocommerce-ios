@@ -3,8 +3,6 @@ import AuthenticationServices
 import WordPressKit
 import SVProgressHUD
 
-#if XCODE11
-
 @objc protocol AppleAuthenticatorDelegate {
     func showWPComLogin(loginFields: LoginFields)
     func authFailedWithError(message: String)
@@ -193,5 +191,3 @@ extension AppleAuthenticator: ASAuthorizationControllerPresentationContextProvid
         return showFromViewController?.view.window ?? UIWindow()
     }
 }
-
-#endif

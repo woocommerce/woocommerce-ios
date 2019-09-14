@@ -118,15 +118,12 @@ class LoginPrologueViewController: LoginViewController {
     }
 
     private func appleTapped() {
-        #if XCODE11
         AppleAuthenticator.sharedInstance.delegate = self
         AppleAuthenticator.sharedInstance.showFrom(viewController: self)
-        #endif
     }
 
 }
 
-#if XCODE11
 extension LoginPrologueViewController: AppleAuthenticatorDelegate {
 
     func showWPComLogin(loginFields: LoginFields) {
@@ -139,4 +136,3 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
     }
     
 }
-#endif

@@ -62,7 +62,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
             if #available(iOS 13.0, *) {
                 let appleButton = WPStyleGuide.appleLoginButton()
                 appleButton.addTarget(self, action: #selector(handleAppleButtonTapped), for: .touchDown)
-                buttonViewController.stackView?.insertArrangedSubview(appleButton, at: 0)
+                buttonViewController.stackView?.insertArrangedSubview(appleButton, at: 2)
             }
         }
         

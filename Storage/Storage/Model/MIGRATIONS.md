@@ -2,6 +2,11 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 20 (Release 2.8.0.0)
+- @jaclync 2019-09-17
+- New `ProductSearchResults` entity
+- New `Product.searchResults` relationship
+
 ## Model 19 (Release 2.6.0.0)
 - @ctarda 2019-08-21
 - Add `ProductReview` entity

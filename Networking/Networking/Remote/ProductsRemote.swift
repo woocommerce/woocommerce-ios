@@ -15,7 +15,7 @@ public class ProductsRemote: Remote {
     ///     - context: view or edit. Scope under which the request is made;
     ///                determines fields present in response. Default is view.
     ///     - pageNumber: Number of page that should be retrieved.
-    ///     - pageSize: Number of Orders to be retrieved per page.
+    ///     - pageSize: Number of products to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllProducts(for siteID: Int,
@@ -73,6 +73,33 @@ public class ProductsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
+
+    /// Retrieves all of the `Product`s available.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote products.
+    ///     - keyword: Search string that should be matched by the products.
+    ///     - pageNumber: Number of page that should be retrieved.
+    ///     - pageSize: Number of products to be retrieved per page.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func searchProducts(for siteID: Int,
+                               keyword: String,
+                               pageNumber: Int,
+                               pageSize: Int,
+                               completion: @escaping ([Product]?, Error?) -> Void) {
+        let parameters = [
+            ParameterKey.page: String(pageNumber),
+            ParameterKey.perPage: String(pageSize),
+            ParameterKey.search: keyword
+        ]
+
+        let path = Path.products
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
 }
 
 
@@ -94,5 +121,6 @@ public extension ProductsRemote {
         static let perPage: String    = "per_page"
         static let contextKey: String = "context"
         static let include: String    = "include"
+        static let search: String     = "search"
     }
 }

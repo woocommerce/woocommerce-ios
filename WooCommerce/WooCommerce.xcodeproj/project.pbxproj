@@ -30,6 +30,7 @@
 		020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E723176F8E00776C4D /* TopBannerPresenter.swift */; };
 		022DAD772332D71300DEF02F /* ProductSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DAD762332D71300DEF02F /* ProductSearchViewController.swift */; };
 		022DAD792332E90300DEF02F /* ProductSearchViewControllerStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DAD782332E90300DEF02F /* ProductSearchViewControllerStateCoordinator.swift */; };
+		022DAD7B2332F0E800DEF02F /* ProductSearchControllerStateCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DAD7A2332F0E800DEF02F /* ProductSearchControllerStateCoordinatorTests.swift */; };
 		02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */; };
 		02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */; };
 		02404EDC2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */; };
@@ -471,6 +472,7 @@
 		020F41E723176F8E00776C4D /* TopBannerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerPresenter.swift; sourceTree = "<group>"; };
 		022DAD762332D71300DEF02F /* ProductSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchViewController.swift; sourceTree = "<group>"; };
 		022DAD782332E90300DEF02F /* ProductSearchViewControllerStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchViewControllerStateCoordinator.swift; sourceTree = "<group>"; };
+		022DAD7A2332F0E800DEF02F /* ProductSearchControllerStateCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchControllerStateCoordinatorTests.swift; sourceTree = "<group>"; };
 		02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV3ToV4BannerActionHandler.swift; sourceTree = "<group>"; };
 		02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsVersionStateCoordinator.swift; sourceTree = "<group>"; };
 		02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV4ToV3BannerActionHandler.swift; sourceTree = "<group>"; };
@@ -954,6 +956,7 @@
 			children = (
 				0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */,
 				02691781232605B9002AFC20 /* ProductsViewControllerStateCoordinatorTests.swift */,
+				022DAD7A2332F0E800DEF02F /* ProductSearchControllerStateCoordinatorTests.swift */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -2574,6 +2577,7 @@
 				B57C5C9A21B80E7100FF82B2 /* DataWooTests.swift in Sources */,
 				B53A56A42112483E000776C9 /* Constants.swift in Sources */,
 				D89E0C31226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift in Sources */,
+				022DAD7B2332F0E800DEF02F /* ProductSearchControllerStateCoordinatorTests.swift in Sources */,
 				02B296A922FA6E0000FD7A4C /* DateStartAndEndTests.swift in Sources */,
 				02404EE2231501E000FF1170 /* StatsVersionStateCoordinatorTests.swift in Sources */,
 				D83F5939225B424B00626E75 /* AddManualTrackingViewModelTests.swift in Sources */,

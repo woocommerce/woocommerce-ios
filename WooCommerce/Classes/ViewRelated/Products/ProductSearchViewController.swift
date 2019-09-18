@@ -1,6 +1,8 @@
 import UIKit
 import Yosemite
 
+/// ProductSearchViewController: Displays the "Search Products" Interface
+///
 class ProductSearchViewController: UIViewController {
 
     /// Top container view that contains search bar, cancel button 
@@ -29,21 +31,11 @@ class ProductSearchViewController: UIViewController {
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
     ///
-    private lazy var resultsController: ResultsController<StorageOrder> = {
+    private lazy var resultsController: ResultsController<StorageProduct> = {
         let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
+        let descriptor = NSSortDescriptor(keyPath: \StorageProduct.dateCreated, ascending: false)
 
-        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
-    }()
-
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
-    ///
-    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return ResultsController<StorageProduct>(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
@@ -194,6 +186,9 @@ private extension ProductSearchViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
+        tableView.delegate = self
+        tableView.dataSource = self
+
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
@@ -203,6 +198,8 @@ private extension ProductSearchViewController {
     /// Setup: Search Bar
     ///
     func configureSearchBar() {
+        searchBar.delegate = self
+
         searchBar.searchBarStyle = .minimal
         searchBar.placeholder = NSLocalizedString("Search all products", comment: "Products Search Placeholder")
         searchBar.tintColor = .black
@@ -235,7 +232,6 @@ private extension ProductSearchViewController {
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
-        try? statusResultsController.performFetch()
     }
 
     /// Setup: Sync'ing Coordinator
@@ -247,11 +243,7 @@ private extension ProductSearchViewController {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
-        let cells = [ OrderTableViewCell.self ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
     }
 
     /// Registers for all of the related Notifications
@@ -311,10 +303,10 @@ extension ProductSearchViewController: UISearchBarDelegate {
 //
 extension ProductSearchViewController: SyncingCoordinatorDelegate {
 
-    /// Synchronizes the Orders for the Default Store (if any).
+    /// Synchronizes the Products for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
-        synchronizeOrders(keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        synchronizeProducts(keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
     }
 }
 
@@ -334,25 +326,28 @@ private extension ProductSearchViewController {
         syncingCoordinator.resynchronize()
     }
 
-    /// Synchronizes the Orders matching a given Keyword
+    /// Synchronizes the Products matching a given Keyword
     ///
-    func synchronizeOrders(keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
-        let action = OrderAction.searchOrders(siteID: storeID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
-            if let error = error {
-                DDLogError("☠️ Order Search Failure! \(error)")
-            }
+    func synchronizeProducts(keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+        let action = ProductAction.searchProducts(siteID: storeID,
+                                                  keyword: keyword,
+                                                  pageNumber: pageNumber,
+                                                  pageSize: pageSize) { [weak self] error in
+                                                    if let error = error {
+                                                        DDLogError("☠️ Product Search Failure! \(error)")
+                                                    }
 
-            // Disregard OPs that don't really match the latest keyword
-            if keyword == self?.keyword {
-                self?.transitionToResultsUpdatedState()
-            }
+                                                    // Disregard OPs that don't really match the latest keyword
+                                                    if keyword == self?.keyword {
+                                                        self?.transitionToResultsUpdatedState()
+                                                    }
 
-            onCompletion?(error == nil)
+                                                    onCompletion?(error == nil)
         }
 
         transitionToSyncingState()
         ServiceLocator.stores.dispatch(action)
-        ServiceLocator.analytics.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
+        // TODO-1263: analytics
     }
 }
 
@@ -370,13 +365,13 @@ extension ProductSearchViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, for: indexPath) as? ProductsTabProductTableViewCell else {
             fatalError()
         }
 
-        let viewModel = detailsViewModel(at: indexPath)
-        let orderStatus = lookUpOrderStatus(for: viewModel.order)
-        cell.configureCell(viewModel: viewModel, orderStatus: orderStatus)
+        let product = resultsController.object(at: indexPath)
+        let viewModel = ProductsTabProductViewModel(product: product)
+        cell.update(viewModel: viewModel)
 
         return cell
     }
@@ -389,33 +384,16 @@ extension ProductSearchViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-        presentOrderDetails(for: detailsViewModel(at: indexPath))
+
+        let product = resultsController.object(at: indexPath)
+        let viewModel = ProductDetailsViewModel(product: product)
+        let productViewController = ProductDetailsViewController(viewModel: viewModel)
+        navigationController?.pushViewController(productViewController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let orderIndex = resultsController.objectIndex(from: indexPath)
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
-    }
-}
-
-
-// MARK: - Convenience Methods
-//
-private extension ProductSearchViewController {
-
-    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
-        let order = resultsController.object(at: indexPath)
-
-        return OrderDetailsViewModel(order: order)
-    }
-
-    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        let listAll = statusResultsController.fetchedObjects
-        for orderStatus in listAll where orderStatus.slug == order.statusKey {
-            return orderStatus
-        }
-
-        return nil
     }
 }
 
@@ -427,17 +405,6 @@ extension ProductSearchViewController {
     @IBAction func dismissWasPressed() {
         view.endEditing(true)
         dismiss(animated: true, completion: nil)
-    }
-
-    private func presentOrderDetails(for order: OrderDetailsViewModel) {
-        let identifier = OrderDetailsViewController.classNameWithoutNamespaces
-        guard let detailsViewController = UIStoryboard.orders.instantiateViewController(withIdentifier: identifier) as? OrderDetailsViewController else {
-            fatalError()
-        }
-
-        detailsViewController.viewModel = order
-
-        navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }
 
@@ -456,7 +423,7 @@ extension ProductSearchViewController {
         footerSpinnerView.startAnimating()
     }
 
-    /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
+    /// Whenever we're sync'ing an Products Page that's beyond what we're currently displaying, this method will return *true*.
     ///
     private func mustStartFooterSpinner() -> Bool {
         guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {

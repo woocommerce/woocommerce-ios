@@ -507,7 +507,9 @@ class ProductStoreTests: XCTestCase {
                                                         XCTFail()
                                                         return
                                                     }
-                                                    let readOnlyProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProduct.productID)?.toReadOnly()
+                                                    let readOnlyProduct = self.viewStorage
+                                                        .loadProduct(siteID: self.sampleSiteID,
+                                                                     productID: expectedProduct.productID)?.toReadOnly()
                                                     XCTAssertEqual(readOnlyProduct, expectedProduct)
                                                     XCTAssertNil(error)
 
@@ -565,31 +567,32 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
         let keyword = "hiii"
-        let nestedAction = ProductAction.searchProducts(siteID: sampleSiteID,
-                                                        keyword: keyword,
-                                                        pageNumber: defaultPageNumber,
-                                                        pageSize: defaultPageSize,
-                                                        onCompletion: { [weak self] error in
-                                                            guard let self = self else {
-                                                                XCTFail()
-                                                                return
-                                                            }
-                                                            let products = self.viewStorage.allObjects(ofType: Storage.Product.self, matching: nil, sortedBy: nil)
-                                                            XCTAssertEqual(products.count, 10)
-                                                            for product in products {
-                                                                XCTAssertEqual(product.searchResults?.count, 1)
-                                                                XCTAssertEqual(product.searchResults?.first?.keyword, keyword)
-                                                            }
+        let nestedAction = ProductAction
+            .searchProducts(siteID: sampleSiteID,
+                            keyword: keyword,
+                            pageNumber: defaultPageNumber,
+                            pageSize: defaultPageSize,
+                            onCompletion: { [weak self] error in
+                                guard let self = self else {
+                                    XCTFail()
+                                    return
+                                }
+                                let products = self.viewStorage.allObjects(ofType: Storage.Product.self, matching: nil, sortedBy: nil)
+                                XCTAssertEqual(products.count, 10)
+                                for product in products {
+                                    XCTAssertEqual(product.searchResults?.count, 1)
+                                    XCTAssertEqual(product.searchResults?.first?.keyword, keyword)
+                                }
 
-                                                            let searchResults = self.viewStorage.allObjects(ofType: Storage.ProductSearchResults.self, matching: nil, sortedBy: nil)
-                                                            XCTAssertEqual(searchResults.count, 1)
-                                                            XCTAssertEqual(searchResults.first?.products?.count, 10)
-                                                            XCTAssertEqual(searchResults.first?.keyword, keyword)
+                                let searchResults = self.viewStorage.allObjects(ofType: Storage.ProductSearchResults.self, matching: nil, sortedBy: nil)
+                                XCTAssertEqual(searchResults.count, 1)
+                                XCTAssertEqual(searchResults.first?.products?.count, 10)
+                                XCTAssertEqual(searchResults.first?.keyword, keyword)
 
-                                                            XCTAssertNil(error)
+                                XCTAssertNil(error)
 
-                                                            expectation.fulfill()
-        })
+                                expectation.fulfill()
+            })
 
         let firstAction = ProductAction.searchProducts(siteID: sampleSiteID,
                                                        keyword: keyword,

@@ -29,6 +29,7 @@
 		020F41E623163C0100776C4D /* TopBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E423163C0100776C4D /* TopBannerView.swift */; };
 		020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E723176F8E00776C4D /* TopBannerPresenter.swift */; };
 		022DAD772332D71300DEF02F /* ProductSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DAD762332D71300DEF02F /* ProductSearchViewController.swift */; };
+		022DAD792332E90300DEF02F /* ProductSearchViewControllerStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 022DAD782332E90300DEF02F /* ProductSearchViewControllerStateCoordinator.swift */; };
 		02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */; };
 		02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */; };
 		02404EDC2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */; };
@@ -469,6 +470,7 @@
 		020F41E423163C0100776C4D /* TopBannerView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TopBannerView.swift; sourceTree = "<group>"; };
 		020F41E723176F8E00776C4D /* TopBannerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerPresenter.swift; sourceTree = "<group>"; };
 		022DAD762332D71300DEF02F /* ProductSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchViewController.swift; sourceTree = "<group>"; };
+		022DAD782332E90300DEF02F /* ProductSearchViewControllerStateCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchViewControllerStateCoordinator.swift; sourceTree = "<group>"; };
 		02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV3ToV4BannerActionHandler.swift; sourceTree = "<group>"; };
 		02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsVersionStateCoordinator.swift; sourceTree = "<group>"; };
 		02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV4ToV3BannerActionHandler.swift; sourceTree = "<group>"; };
@@ -1108,6 +1110,7 @@
 				0260F40023224E8100EDA10A /* ProductsViewController.swift */,
 				020DD49023239DD6005822B1 /* ProductsViewControllerStateCoordinator.swift */,
 				022DAD762332D71300DEF02F /* ProductSearchViewController.swift */,
+				022DAD782332E90300DEF02F /* ProductSearchViewControllerStateCoordinator.swift */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -2358,6 +2361,7 @@
 				B59C09D92188CBB100AB41D6 /* Array+Notes.swift in Sources */,
 				D85136C1231E09C300DD0539 /* ReviewsDataSource.swift in Sources */,
 				CE1AFE622200B1BD00432745 /* ApplicationLogDetailViewController.swift in Sources */,
+				022DAD792332E90300DEF02F /* ProductSearchViewControllerStateCoordinator.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,

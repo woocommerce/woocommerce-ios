@@ -46,10 +46,10 @@ class ProductSearchViewController: UIViewController {
     ///
     private let storeID: Int
 
-    /// Indicates if there are no results onscreen.
+    /// Indicates if there are results onscreen.
     ///
-    private var isEmpty: Bool {
-        return resultsController.isEmpty
+    private var hasData: Bool {
+        return !resultsController.isEmpty
     }
 
     /// Returns the active Keyword
@@ -58,15 +58,16 @@ class ProductSearchViewController: UIViewController {
         return searchBar.text ?? String()
     }
 
-    /// UI Active State
+    /// Coordinates view controller UI state.
     ///
-    private var state: State = .results {
-        didSet {
-            didLeave(state: oldValue)
-            didEnter(state: state)
-        }
-    }
-
+    private lazy var stateCoordinator: ProductSearchViewControllerStateCoordinator = {
+        let stateCoordinator = ProductSearchViewControllerStateCoordinator(onLeavingState: { [weak self] state in
+            self?.didLeave(state: state)
+            }, onEnteringState: { [weak self] state in
+                self?.didEnter(state: state)
+        })
+        return stateCoordinator
+    }()
 
     /// Deinitializer
     ///
@@ -232,6 +233,7 @@ private extension ProductSearchViewController {
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
+        stateCoordinator.transitionToResultsUpdatedState(hasData: hasData)
     }
 
     /// Setup: Sync'ing Coordinator
@@ -333,19 +335,23 @@ private extension ProductSearchViewController {
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,
                                                   pageSize: pageSize) { [weak self] error in
+                                                    guard let self = self else {
+                                                        return
+                                                    }
+
                                                     if let error = error {
                                                         DDLogError("☠️ Product Search Failure! \(error)")
                                                     }
 
                                                     // Disregard OPs that don't really match the latest keyword
-                                                    if keyword == self?.keyword {
-                                                        self?.transitionToResultsUpdatedState()
+                                                    if keyword == self.keyword {
+                                                        self.stateCoordinator.transitionToResultsUpdatedState(hasData: self.hasData)
                                                     }
 
                                                     onCompletion?(error == nil)
         }
 
-        transitionToSyncingState()
+        stateCoordinator.transitionToSyncingState()
         ServiceLocator.stores.dispatch(action)
         // TODO-1263: analytics
     }
@@ -463,9 +469,9 @@ private extension ProductSearchViewController {
 //
 private extension ProductSearchViewController {
 
-    func didEnter(state: State) {
+    func didEnter(state: ProductSearchViewControllerState) {
         switch state {
-        case .empty:
+        case .noResultsPlaceholder:
             displayEmptyState()
         case .syncing:
             ensureFooterSpinnerIsStarted()
@@ -474,27 +480,15 @@ private extension ProductSearchViewController {
         }
     }
 
-    func didLeave(state: State) {
+    func didLeave(state: ProductSearchViewControllerState) {
         switch state {
-        case .empty:
+        case .noResultsPlaceholder:
             removeEmptyState()
         case .syncing:
             ensureFooterSpinnerIsStopped()
         case .results:
             break
         }
-    }
-
-    /// Should be called before Sync'ing. Transitions to either `results` state.
-    ///
-    func transitionToSyncingState() {
-        state = .syncing
-    }
-
-    /// Should be called whenever new results have been retrieved. Transitions to `.results` / `.empty` accordingly.
-    ///
-    func transitionToResultsUpdatedState() {
-        state = isEmpty ? .empty : .results
     }
 }
 
@@ -504,13 +498,4 @@ private extension ProductSearchViewController {
 private enum Settings {
     static let estimatedHeaderHeight = CGFloat(43)
     static let estimatedRowHeight = CGFloat(86)
-}
-
-
-// MARK: - FSM States
-//
-private enum State {
-    case syncing
-    case results
-    case empty
 }

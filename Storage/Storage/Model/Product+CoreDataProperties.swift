@@ -66,7 +66,7 @@ extension Product {
     @NSManaged public var downloads: Set<ProductDownload>?
     @NSManaged public var images: Set<ProductImage>?
     @NSManaged public var tags: Set<ProductTag>?
-    @NSManaged public var searchResults: Set<ProductSearchResults>
+    @NSManaged public var searchResults: Set<ProductSearchResults>?
 
 }
 

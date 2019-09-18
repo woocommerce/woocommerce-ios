@@ -131,6 +131,7 @@ private extension ProductsViewController {
 }
 
 // MARK: - Navigation Bar Actions
+//
 private extension ProductsViewController {
     @IBAction func displaySearchProducts() {
         guard let storeID = ServiceLocator.stores.sessionManager.defaultStoreID else {

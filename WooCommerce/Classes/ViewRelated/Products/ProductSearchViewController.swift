@@ -29,7 +29,7 @@ class ProductSearchViewController: UIViewController {
     ///
     private lazy var footerSpinnerView = FooterSpinnerView()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let storageManager = ServiceLocator.storageManager

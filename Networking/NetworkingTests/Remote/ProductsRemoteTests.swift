@@ -95,4 +95,45 @@ class ProductsRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    // MARK: - Search Products
+
+    /// Verifies that searchProducts properly parses the `products-load-all` sample response.
+    ///
+    func testSearchProductsProperlyReturnsParsedProducts() {
+        let remote = ProductsRemote(network: network)
+        let expectation = self.expectation(description: "Load All Products")
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        remote.searchProducts(for: sampleSiteID,
+                              keyword: String(),
+                              pageNumber: 0,
+                              pageSize: 100) { (products, error) in
+                                XCTAssertNil(error)
+                                XCTAssertNotNil(products)
+                                XCTAssert(products!.count == 10)
+                                expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that searchProducts properly relays Networking Layer errors.
+    ///
+    func testSearchProductsProperlyRelaysNetwokingErrors() {
+        let remote = ProductsRemote(network: network)
+        let expectation = self.expectation(description: "Load All Products")
+
+        remote.searchProducts(for: sampleSiteID,
+                              keyword: String(),
+                              pageNumber: 0,
+                              pageSize: 100) { (products, error) in
+                                XCTAssertNil(products)
+                                XCTAssertNotNil(error)
+                                expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

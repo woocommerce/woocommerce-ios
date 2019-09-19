@@ -23,7 +23,7 @@ class ProductSearchViewController: UIViewController {
 
     /// TableView
     ///
-    private lazy var tableView: UITableView = UITableView(frame: .zero, style: .grouped)
+    private lazy var tableView: UITableView = UITableView(frame: .zero, style: .plain)
 
     /// Footer "Loading More" Spinner.
     ///

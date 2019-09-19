@@ -29,13 +29,16 @@ class ProductSearchViewController: UIViewController {
     ///
     private lazy var footerSpinnerView = FooterSpinnerView()
 
+    private lazy var storeIDPredicate = NSPredicate(format: "siteID = %ld", storeID)
+
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProduct.dateCreated, ascending: false)
-
-        return ResultsController<StorageProduct>(storageManager: storageManager, sortedBy: [descriptor])
+        let resultsController = ResultsController<StorageProduct>(storageManager: storageManager, sortedBy: [descriptor])
+        resultsController.predicate = storeIDPredicate
+        return resultsController
     }()
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
@@ -320,7 +323,8 @@ private extension ProductSearchViewController {
     /// Updates the Predicate + Triggers a Sync Event
     ///
     func synchronizeSearchResults(with keyword: String) {
-        resultsController.predicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
+        let searchResultsPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
+        resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [storeIDPredicate, searchResultsPredicate])
 
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()

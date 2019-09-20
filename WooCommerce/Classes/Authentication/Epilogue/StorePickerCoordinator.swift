@@ -72,8 +72,6 @@ private extension StorePickerCoordinator {
     func showStorePicker() {
         switch selectedConfiguration {
         case .standard:
-            let loginVC = ServiceLocator.authenticationManager.loginForWordPressDotCom()
-            navigationController.setViewControllers([loginVC], animated: false)
             navigationController.present(storePicker, animated: true)
         case .switchingStores:
             let wrapper = UINavigationController(rootViewController: storePicker)

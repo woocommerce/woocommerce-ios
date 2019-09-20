@@ -72,7 +72,8 @@ private extension StorePickerCoordinator {
     func showStorePicker() {
         switch selectedConfiguration {
         case .standard:
-            navigationController.present(storePicker, animated: true)
+            let wrapper = UINavigationController(rootViewController: storePicker)
+            navigationController.present(wrapper, animated: true)
         case .switchingStores:
             let wrapper = UINavigationController(rootViewController: storePicker)
             navigationController.present(wrapper, animated: true)

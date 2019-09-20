@@ -402,16 +402,14 @@ private extension StorePickerViewController {
             return
         }
 
-        ServiceLocator.stores.deauthenticate()
-
         let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
 
         guard let navigationController = navigationController else {
-            let navController = UINavigationController(nibName: nil, bundle: nil)
-            navController.setViewControllers([loginViewController], animated: true)
+            assertionFailure("Navigation error: one of the login / logout states is not correctly handling navigation. No navigationController found.")
             return
         }
 
+        ServiceLocator.stores.deauthenticate()
         navigationController.setViewControllers([loginViewController], animated: true)
     }
 
@@ -426,8 +424,14 @@ private extension StorePickerViewController {
                 self?.updateActionButtonAndTableState(animating: false, enabled: true)
             case .invalidWCVersion:
                 self?.toggleDismissButton(enabled: false)
-                self?.updateActionButtonAndTableState(animating: false, enabled: false)
-                self?.displayFancyWCRequirementAlert(siteName: siteName)
+                switch self?.state {
+                case .empty?:
+                    self?.hideActionButton()
+                    self?.displayFancyWCRequirementAlert(siteName: siteName)
+                default:
+                    self?.updateActionButtonAndTableState(animating: false, enabled: false)
+                    self?.displayFancyWCRequirementAlert(siteName: siteName)
+                }
             case .empty, .error:
                 self?.toggleDismissButton(enabled: false)
                 self?.updateActionButtonAndTableState(animating: false, enabled: false)
@@ -445,6 +449,13 @@ private extension StorePickerViewController {
 
         // Wait till the requirement check is complete before allowing the user to select another store
         tableView.allowsSelection = !animating
+    }
+
+    /// Helper function that hides the "Continue" action button
+    /// upon finding a valid WP login and no valid WC sites.
+    func hideActionButton() {
+        actionButton.isHidden = true
+        actionButton.showActivityIndicator(false)
     }
 
     /// Displays the Error Notice for the version check.
@@ -525,6 +536,7 @@ extension StorePickerViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let site = state.site(at: indexPath) else {
+            hideActionButton()
             return tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier, for: indexPath)
         }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreTableViewCell.reuseIdentifier, for: indexPath) as? StoreTableViewCell else {

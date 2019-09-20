@@ -39,7 +39,7 @@
                     <nil key="highlightedColor"/>
                 </label>
                 <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" contentInsetAdjustmentBehavior="never" style="grouped" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="18" sectionFooterHeight="18" translatesAutoresizingMaskIntoConstraints="NO" id="oVs-XS-592" userLabel="Sites Table View">
-                    <rect key="frame" x="0.0" y="44" width="375" height="664"/>
+                    <rect key="frame" x="0.0" y="44" width="375" height="574"/>
                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                     <connections>
                         <outlet property="dataSource" destination="-1" id="m9y-Av-zfJ"/>
@@ -99,10 +99,10 @@
             <constraints>
                 <constraint firstAttribute="trailing" secondItem="1qT-mX-0SF" secondAttribute="trailing" constant="10" id="28r-Y1-luC"/>
                 <constraint firstItem="oVs-XS-592" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" id="2Y8-wP-jSa"/>
-                <constraint firstItem="t7O-Ph-IKW" firstAttribute="bottom" secondItem="oVs-XS-592" secondAttribute="bottom" constant="70" id="Jzl-N4-xnb"/>
                 <constraint firstItem="t7O-Ph-IKW" firstAttribute="trailing" secondItem="oVs-XS-592" secondAttribute="trailing" id="Mr3-k9-GG9"/>
                 <constraint firstItem="1qT-mX-0SF" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" constant="10" id="OAu-kM-52v"/>
                 <constraint firstAttribute="bottom" secondItem="H5J-Qa-DXp" secondAttribute="bottom" id="Rfd-el-xmy"/>
+                <constraint firstItem="H5J-Qa-DXp" firstAttribute="top" secondItem="oVs-XS-592" secondAttribute="bottom" id="VGs-Zq-OOi"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="top" secondItem="t7O-Ph-IKW" secondAttribute="top" constant="175" id="Wt5-9Y-bb1"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="leading" secondItem="t7O-Ph-IKW" secondAttribute="leading" id="exG-7x-7xe"/>
                 <constraint firstItem="Bm8-4s-4Cg" firstAttribute="trailing" secondItem="t7O-Ph-IKW" secondAttribute="trailing" id="fvk-bR-p20"/>

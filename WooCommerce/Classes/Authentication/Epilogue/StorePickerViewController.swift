@@ -165,10 +165,13 @@ class StorePickerViewController: UIViewController {
         setupTableView()
         refreshResults()
 
-        if configuration == .login {
+        switch configuration {
+        case .login:
             startListeningToNotifications()
-        } else if configuration == .switchingStores {
+        case .switchingStores:
             secondaryActionButton.isHidden = true
+        default:
+            break
         }
     }
 

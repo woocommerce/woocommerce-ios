@@ -1,5 +1,6 @@
 2.7
 -----
+- bugfix: the App Logs shouldn't be editable, only copy / paste.
 - bugfix: Reviews were not localized.
 - bugfix: On log in, some users would see the Continue button but be unable to Continue, due to errors with the account. A new "Try another account" button has been added as an option.
 - bugfix: Product Details page was displaying the Price in the wrong currency.

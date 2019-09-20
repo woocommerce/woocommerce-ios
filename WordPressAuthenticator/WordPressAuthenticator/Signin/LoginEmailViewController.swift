@@ -172,7 +172,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         GIDSignIn.sharedInstance().signIn()
 
-        WordPressAuthenticator.track(.loginSocialButtonClick)
+        WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "google"])
     }
 
     /// Add the log in with site address button to the view

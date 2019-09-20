@@ -49,7 +49,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
 
         buttonViewController.setupBottomButton(title: createTitle, isPrimary: false, accessibilityIdentifier: "Sign up with Google Button") { [weak self] in
             defer {
-                WordPressAuthenticator.track(.signupSocialButtonTapped)
+                WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "google"])
             }
 
             self?.dismiss(animated: true)
@@ -87,6 +87,8 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     }
 
     @objc func handleAppleButtonTapped() {
+        WordPressAuthenticator.track(.signupSocialButtonTapped, properties: ["source": "apple"])
+        
         dismiss(animated: true)
         appleTapped?()
     }

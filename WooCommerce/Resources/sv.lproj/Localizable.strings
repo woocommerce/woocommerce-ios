@@ -1,12 +1,16 @@
-/* Translation-Revision-Date: 2019-08-21 00:54:32+0000 */
+/* Translation-Revision-Date: 2019-09-04 00:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
 
 /* No comment provided by engineer. */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(ingen rubrik)";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
 "9+" = "9+";
 
 /* An error message. */
@@ -93,7 +97,8 @@
 /* Approve a comment */
 "Approve" = "Godkänn";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Godkänd";
 
 /* Approves a comment. Spoken Hint. */
@@ -625,6 +630,9 @@
 /* Display label for the product's inventory stock status */
 "On back order" = "Beställningsvara";
 
+/* Display label for the review's hold status */
+"On hold" = "Pausad";
+
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "Öppna enhetsinställningar";
 
@@ -959,7 +967,8 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Du kan inte använda den adressen till webbplatsen.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Skräppost";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
@@ -1134,7 +1143,8 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Spårningsnummer %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "Ta bort";
 
 /* Connect when the SSL certificate is invalid */
@@ -1211,6 +1221,12 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "Okänt fel";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Avmarkera skräppost";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Återställ";
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Upp till sju dagar med loggar sparas.";

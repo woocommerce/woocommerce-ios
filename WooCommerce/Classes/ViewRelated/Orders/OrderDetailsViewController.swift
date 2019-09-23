@@ -21,15 +21,6 @@ final class OrderDetailsViewController: UIViewController {
         return refreshControl
     }()
 
-    /// Indicates if the Billing details should be rendered.
-    ///
-    private var displaysBillingDetails = false {
-        didSet {
-            viewModel.displaysBillingDetails = displaysBillingDetails
-            reloadSections()
-        }
-    }
-
     /// EntityListener: Update / Deletion Notifications.
     ///
     private lazy var entityListener: EntityListener<Order> = {
@@ -281,15 +272,6 @@ private extension OrderDetailsViewController {
 //
 private extension OrderDetailsViewController {
 
-    func toggleBillingFooter() {
-        displaysBillingDetails = !displaysBillingDetails
-        if displaysBillingDetails {
-            ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
-        } else {
-            ServiceLocator.analytics.track(.orderDetailHideBillingTapped)
-        }
-    }
-
     func handleCellAction(_ type: OrderDetailsDataSource.CellActionType, at indexPath: IndexPath?) {
         switch type {
         case .fulfill:
@@ -301,8 +283,6 @@ private extension OrderDetailsViewController {
                 break
             }
             trackingWasPressed(at: indexPath)
-        case .footer:
-            toggleBillingFooter()
         }
     }
 
@@ -388,14 +368,6 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         return viewModel.dataSource.viewForHeaderInSection(section, tableView: tableView)
-    }
-
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        return viewModel.dataSource.heightForFooterInSection(section)
-    }
-
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        return viewModel.dataSource.viewForFooterInSection(section, tableView: tableView)
     }
 }
 

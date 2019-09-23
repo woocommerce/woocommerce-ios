@@ -5,23 +5,23 @@ import Alamofire
 ///
 public final class RefundsRemote: Remote {
 
-    /// Retrieves a specific list of `OrderRefunds`s by `orderID`.
+    /// Retrieves all refunds for a specific `orderID`.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote order refunds.
-    ///     - orderID: Unique identifier for the Order you're searching for.
+    ///     - orderID: Unique identifier for the order we're searching for.
     ///     - context: view or edit. Scope under which the request is made;
     ///                determines fields present in response. Default is view.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of Refunds to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadOrderRefunds(for siteID: Int,
-                                 by orderID: Int,
-                                 context: String = Default.context,
-                                 pageNumber: Int = Default.pageNumber,
-                                 pageSize: Int = Default.pageSize,
-                                 completion: @escaping ([OrderRefund]?, Error?) -> Void) {
+    public func loadAllRefunds(for siteID: Int,
+                               by orderID: Int,
+                               context: String = Default.context,
+                               pageNumber: Int = Default.pageNumber,
+                               pageSize: Int = Default.pageSize,
+                               completion: @escaping ([OrderRefund]?, Error?) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
@@ -38,8 +38,8 @@ public final class RefundsRemote: Remote {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote order refunds.
-    ///     - orderID: Unique identifier for the Order you're searching for.
-    ///     - refundID: Unique identifier for the
+    ///     - orderID: Unique identifier for the order we're searching for.
+    ///     - refundID: Unique identifier for the refund we're searching for.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadRefund(siteID: Int,

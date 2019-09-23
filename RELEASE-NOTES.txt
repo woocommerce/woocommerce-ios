@@ -1,3 +1,6 @@
+2.8
+-----
+ 
 2.7
 -----
 - bugfix: the App Logs shouldn't be editable, only copy / paste.

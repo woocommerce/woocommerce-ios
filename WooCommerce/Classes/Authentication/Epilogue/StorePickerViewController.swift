@@ -420,24 +420,40 @@ private extension StorePickerViewController {
         RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (result, error) in
             switch result {
             case .validWCVersion:
-                self?.toggleDismissButton(enabled: true)
-                self?.updateActionButtonAndTableState(animating: false, enabled: true)
+                self?.updateUIForValidSite()
             case .invalidWCVersion:
-                self?.toggleDismissButton(enabled: false)
-                switch self?.state {
-                case .empty?:
-                    self?.hideActionButton()
-                    self?.displayFancyWCRequirementAlert(siteName: siteName)
-                default:
-                    self?.updateActionButtonAndTableState(animating: false, enabled: false)
-                    self?.displayFancyWCRequirementAlert(siteName: siteName)
-                }
+                self?.updateUIForInvalidSite(named: siteName)
             case .empty, .error:
-                self?.toggleDismissButton(enabled: false)
-                self?.updateActionButtonAndTableState(animating: false, enabled: false)
-                self?.displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
+                self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
             }
         }
+    }
+
+    /// Update the UI upon receiving a response for a valid WC site
+    ///
+    func updateUIForValidSite() {
+        toggleDismissButton(enabled: true)
+        updateActionButtonAndTableState(animating: false, enabled: true)
+    }
+
+    /// Update the UI upon receiving a response for an invalid WC site
+    ///
+    func updateUIForInvalidSite(named siteName: String) {
+        toggleDismissButton(enabled: false)
+        switch state {
+        case .empty:
+            updateUIForNoSitesFound(named: siteName)
+        default:
+            updateUIForInvalidSiteFound(named: siteName)
+        }
+    }
+
+    /// Update the UI upon receiving an error or empty response instead of site info
+    ///
+    func updateUIForEmptyOrErroredSite(named siteName: String, with siteID: Int) {
+        toggleDismissButton(enabled: false)
+        updateActionButtonAndTableState(animating: false, enabled: false)
+        displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
     }
 
     /// Little helper func that helps manage the actionButton and Table state while checking on a
@@ -449,6 +465,21 @@ private extension StorePickerViewController {
 
         // Wait till the requirement check is complete before allowing the user to select another store
         tableView.allowsSelection = !animating
+    }
+
+    /// Update the UI when the user has a valid login but no WC sites.
+    ///
+    func updateUIForNoSitesFound(named siteName: String) {
+        hideActionButton()
+        displayFancyWCRequirementAlert(siteName: siteName)
+    }
+
+    /// Update the UI when the user has a valid login
+    /// but the currently selected WC site is not valid.
+    ///
+    func updateUIForInvalidSiteFound(named siteName: String) {
+        updateActionButtonAndTableState(animating: false, enabled: false)
+        displayFancyWCRequirementAlert(siteName: siteName)
     }
 
     /// Helper function that hides the "Continue" action button

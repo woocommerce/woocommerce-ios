@@ -33,7 +33,7 @@ final class RefundsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds", filename: "order-refunds-list")
 
-        remote.loadOrderRefunds(for: sampleSiteID, by: sampleOrderID) { refunds, error in
+        remote.loadAllRefunds(for: sampleSiteID, by: sampleOrderID) { refunds, error in
             XCTAssertNil(error)
             XCTAssertNotNil(refunds)
             XCTAssert(refunds?.count == 2)
@@ -49,7 +49,7 @@ final class RefundsRemoteTests: XCTestCase {
         let remote = RefundsRemote(network: network)
         let expectation = self.expectation(description: "Load All Order Refunds")
 
-        remote.loadOrderRefunds(for: sampleSiteID, by: sampleOrderID) { refunds, error in
+        remote.loadAllRefunds(for: sampleSiteID, by: sampleOrderID) { refunds, error in
             XCTAssertNil(refunds)
             XCTAssertNotNil(error)
             expectation.fulfill()

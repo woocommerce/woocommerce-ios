@@ -56,8 +56,8 @@ public final class RefundsRemote: Remote {
     /// Create a refund by `orderID`.
     ///
     /// - Parameters:
-    ///     - siteID: Site for which we'll emit a refund.
-    ///     - orderID: Unique identifier for the resource "order" for which you are emitting a refund.
+    ///     - siteID: Site for which we'll send a refund.
+    ///     - orderID: Unique identifier for the order we're sending a refund for.
     ///     - refund: The Refund model used to create the custom entity for the request.
     ///     - completion: Closure to be executed upon completion.
     ///

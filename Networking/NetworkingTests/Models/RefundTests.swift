@@ -18,7 +18,7 @@ final class RefundTests: XCTestCase {
     func testPartialRefundForSingleProductIncludingTax() {
         let expectation = dictionaryRefundForSingleProductIncludingTax()
 
-        let itemRefund = LineItemRefund(itemID: "123", quantity: 1, refundTotal: "8.00", refundTax: [TaxRefund(taxIDLineItem: "789", amount: "2.00")])
+        let itemRefund = OrderItemRefund(itemID: "123", quantity: 1, refundTotal: "8.00", refundTax: [TaxRefund(taxIDLineItem: "789", amount: "2.00")])
         let refund = Refund(amount: "10.00", reason: "Product No Longer Needed", items: [itemRefund])
         let refundDict = refund.toDictionary()
 
@@ -28,7 +28,7 @@ final class RefundTests: XCTestCase {
     func testPartialRefundForSingleProductOnlyTax() {
         let expectation: [String: Any] = dictionaryPartialRefundForSingleProductOnlyTax()
 
-        let itemRefund = LineItemRefund(itemID: "123", quantity: 1, refundTotal: nil, refundTax: [TaxRefund(taxIDLineItem: "789", amount: "2.00")])
+        let itemRefund = OrderItemRefund(itemID: "123", quantity: 1, refundTotal: nil, refundTax: [TaxRefund(taxIDLineItem: "789", amount: "2.00")])
         let refund = Refund(amount: "2.00", reason: nil, items: [itemRefund])
         let refundDict = refund.toDictionary()
 
@@ -42,7 +42,7 @@ final class RefundTests: XCTestCase {
                                            "line_items": ["123": ["qty": 1,
                                                                   "refund_total": "8.00"]]]
 
-        let itemRefund = LineItemRefund(itemID: "123", quantity: 1, refundTotal: "8.00", refundTax: nil)
+        let itemRefund = OrderItemRefund(itemID: "123", quantity: 1, refundTotal: "8.00", refundTax: nil)
         let refund = Refund(amount: "10.00", reason: "Product No Longer Needed", apiRefund: false, items: [itemRefund])
         let refundDict = refund.toDictionary()
 

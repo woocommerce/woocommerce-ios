@@ -1,8 +1,8 @@
 import Foundation
 
-/// Represents a Line Item to be Refunded
+/// Represents an Order Item to be Refunded
 ///
-public struct LineItemRefund {
+public struct OrderItemRefund {
 
     ///  ID from the order's line_items
     ///
@@ -44,22 +44,22 @@ public struct LineItemRefund {
 
 // MARK: - Comparable Conformance
 //
-extension LineItemRefund: Comparable {
-    public static func == (lhs: LineItemRefund, rhs: LineItemRefund) -> Bool {
+extension OrderItemRefund: Comparable {
+    public static func == (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
         return lhs.quantity == rhs.quantity &&
             lhs.refundTotal == rhs.refundTotal &&
         (lhs.refundTax != nil && rhs.refundTax != nil) ? lhs.refundTax!.count == rhs.refundTax!.count &&
         lhs.refundTax!.sorted() == rhs.refundTax!.sorted() : true
     }
 
-    public static func < (lhs: LineItemRefund, rhs: LineItemRefund) -> Bool {
+    public static func < (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
         return lhs.quantity == rhs.quantity
     }
 }
 
 // MARK: - Constants
 //
-public extension LineItemRefund {
+public extension OrderItemRefund {
     private enum ParameterKey {
         static let quantity: String       = "qty"
         static let refundTotal: String    = "refund_total"

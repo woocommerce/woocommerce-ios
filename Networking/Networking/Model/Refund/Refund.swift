@@ -16,11 +16,11 @@ public struct Refund {
     ///
     public let apiRefund: Bool
 
-    /// Optional Line items to be refunded
+    /// Optional order items to be refunded
     ///
-    public let items: [LineItemRefund]?
+    public let items: [OrderItemRefund]?
 
-    public init(amount: String, reason: String?, apiRefund: Bool = true, items: [LineItemRefund]?) {
+    public init(amount: String, reason: String?, apiRefund: Bool = true, items: [OrderItemRefund]?) {
         self.amount = amount
         self.reason = reason
         self.items = items
@@ -35,7 +35,7 @@ public struct Refund {
         }
 
         if items != nil {
-            dict[ParameterKey.line_items] = Dictionary(uniqueKeysWithValues: items!.map { ($0.itemID, $0.toDictionary()) })
+            dict[ParameterKey.orderItems] = Dictionary(uniqueKeysWithValues: items!.map { ($0.itemID, $0.toDictionary()) })
         }
         return dict
     }
@@ -64,6 +64,6 @@ public extension Refund {
         static let amount: String       = "amount"
         static let apiRefund: String    = "api_refund"
         static let reason: String       = "reason"
-        static let line_items: String   = "line_items"
+        static let orderItems: String   = "line_items"
     }
 }

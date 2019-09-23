@@ -6,7 +6,7 @@ import Foundation
 public struct OrderRefund: Decodable {
     public let siteID: Int
     public let refundID: Int
-    public let dateCreated: Date
+    public let dateCreated: Date   // in gmt
     public let amount: String
     public let reason: String?
     public let refundedBy: Int

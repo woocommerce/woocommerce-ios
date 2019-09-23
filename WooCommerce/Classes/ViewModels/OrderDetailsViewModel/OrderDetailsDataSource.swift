@@ -183,7 +183,7 @@ private extension OrderDetailsDataSource {
     func configureCustomerNote(cell: CustomerNoteTableViewCell) {
         cell.headline = Title.customerNote
         let localizedBody = String.localizedStringWithFormat(
-            NSLocalizedString("“%@“",
+            NSLocalizedString("“%@”",
                               comment: "Customer note, wrapped in quotes"),
             customerNote)
         cell.body = localizedBody

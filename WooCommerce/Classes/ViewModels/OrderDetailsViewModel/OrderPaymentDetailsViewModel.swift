@@ -60,26 +60,26 @@ final class OrderPaymentDetailsViewModel {
     }
 
     /// Payment Summary
-    /// - returns: A full sentence summary of when was paid and using what method.
+    /// - returns: A full sentence summary of how much (if any) was paid, when, and using what method.
     ///
     var paymentSummary: String? {
         if order.paymentMethodTitle.isEmpty {
             return nil
         }
 
-        if order.datePaid == nil {
-
+        guard let datePaid = order.datePaid else {
             return String.localizedStringWithFormat(
                 NSLocalizedString("Awaiting payment via %@",
                                   comment: "Awaiting payment via (payment method title)"),
                 order.paymentMethodTitle)
         }
 
-        let datePaid = order.datePaid?.toString(dateStyle: .medium, timeStyle: .none) ?? String()
+        let styleDate = datePaid.toString(dateStyle: .medium, timeStyle: .none)
         let template = NSLocalizedString(
             "%1$@ via %2$@",
             comment: "Payment on <date> received via (payment method title)")
-        return String.localizedStringWithFormat(template, datePaid, order.paymentMethodTitle)
+
+        return String.localizedStringWithFormat(template, styleDate, order.paymentMethodTitle)
     }
 
     var couponLines: [OrderCouponLine] {

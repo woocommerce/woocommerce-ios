@@ -63,6 +63,6 @@ public extension LineItemRefund {
     private enum ParameterKey {
         static let quantity: String       = "qty"
         static let refundTotal: String    = "refund_total"
-        static let refundTax: String = "refund_tax"
+        static let refundTax: String      = "refund_tax"
     }
 }

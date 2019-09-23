@@ -1,7 +1,7 @@
 import Foundation
 
 
-/// Represents a Order Refund Entity.
+/// Represents an OrderRefund Entity.
 ///
 public struct OrderRefund: Decodable {
     public let siteID: Int
@@ -12,8 +12,8 @@ public struct OrderRefund: Decodable {
     public let refundedBy: Int
     public let items: [OrderItem]
 
-    /// If the refundedPayment field in this response is true, then we can assume that the refund was processed using automatic refund.
-    /// If false, refund is processed manually.
+    /// If the refunded payment field in this response is true, then we can assume that the refund was processed using automatic refund.
+    /// If false, the refund is processed manually.
     ///
     public let refundedPayment: Bool?
 

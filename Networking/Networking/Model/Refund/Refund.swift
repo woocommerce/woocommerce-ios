@@ -63,7 +63,7 @@ public extension Refund {
     private enum ParameterKey {
         static let amount: String       = "amount"
         static let apiRefund: String    = "api_refund"
-        static let reason: String = "reason"
-        static let line_items: String = "line_items"
+        static let reason: String       = "reason"
+        static let line_items: String   = "line_items"
     }
 }

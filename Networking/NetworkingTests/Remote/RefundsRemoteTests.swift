@@ -47,7 +47,7 @@ final class RefundsRemoteTests: XCTestCase {
     ///
     func testLoadAllOrderRefundsProperlyRelaysNetwokingErrors() {
         let remote = RefundsRemote(network: network)
-        let expectation = self.expectation(description: "Load All Order Refunds")
+        let expectation = self.expectation(description: "Load All Refunds for an Order")
 
         remote.loadAllRefunds(for: sampleSiteID, by: sampleOrderID) { refunds, error in
             XCTAssertNil(refunds)

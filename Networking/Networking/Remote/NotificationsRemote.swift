@@ -117,7 +117,7 @@ private extension NotificationsRemote {
     ///     - completion: Callback to be executed on completion.
     ///
     func requestForNotifications(fields: Fields? = nil, noteIds: [Int64]? = nil, pageSize: Int?) -> DotcomRequest {
-        var parameters = [String: String]()
+        var parameters = [ParameterKeys.locale: Locale.current.description]
         if let fields = fields {
             parameters[ParameterKeys.fields] = fields.rawValue
         }
@@ -162,5 +162,6 @@ private extension NotificationsRemote {
         static let identifiers = "ids"
         static let number = "number"
         static let time = "time"
+        static let locale = "locale"
     }
 }

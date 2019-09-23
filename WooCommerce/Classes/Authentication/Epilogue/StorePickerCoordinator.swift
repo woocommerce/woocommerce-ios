@@ -70,12 +70,14 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 private extension StorePickerCoordinator {
 
     func showStorePicker() {
-        if selectedConfiguration == .standard {
-            navigationController.present(storePicker, animated: true)
-        } else if selectedConfiguration == .switchingStores {
+        switch selectedConfiguration {
+        case .standard:
             let wrapper = UINavigationController(rootViewController: storePicker)
             navigationController.present(wrapper, animated: true)
-        } else {
+        case .switchingStores:
+            let wrapper = UINavigationController(rootViewController: storePicker)
+            navigationController.present(wrapper, animated: true)
+        default:
             navigationController.pushViewController(storePicker, animated: true)
         }
     }
@@ -122,6 +124,12 @@ private extension StorePickerCoordinator {
             group.leave()
         }
         ServiceLocator.stores.dispatch(orderAction)
+
+        group.enter()
+        let reviewAction = ProductReviewAction.resetStoredProductReviews {
+            group.leave()
+        }
+        ServiceLocator.stores.dispatch(reviewAction)
 
         group.notify(queue: .main) {
             onCompletion()

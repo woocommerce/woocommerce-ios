@@ -34,9 +34,11 @@ protocol Style {
 
     var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
+    var highlightTextColor: UIColor { get }
 
     var goldStarColor: UIColor { get }
     var grayStarColor: UIColor { get }
+    var yellowStarColor: UIColor { get }
 
     var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
@@ -48,6 +50,7 @@ protocol Style {
     var statusPrimaryBoldColor: UIColor { get }
     var statusSuccessColor: UIColor { get }
     var statusSuccessBoldColor: UIColor { get }
+    var statusWarningColor: UIColor { get }
     var tableViewBackgroundColor: UIColor { get }
 
     var wooCommerceBrandColor: UIColor { get }
@@ -115,6 +118,7 @@ class DefaultStyle: Style {
     let cellSeparatorColor              = HandbookColors.wooGreyBorder
     let defaultTextColor                = HandbookColors.wooSecondary
     let destructiveActionColor          = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
+    let highlightTextColor              = HandbookColors.murielBlue50
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
@@ -127,6 +131,7 @@ class DefaultStyle: Style {
     let statusPrimaryBoldColor          = HandbookColors.statusBlue
     let statusSuccessColor              = HandbookColors.statusGreenDimmed
     let statusSuccessBoldColor          = HandbookColors.statusGreen
+    let statusWarningColor              = HandbookColors.statusYellowDimmed
 
     let wooCommerceBrandColor           = HandbookColors.wooPrimary
     let wooSecondary                    = HandbookColors.wooSecondary
@@ -141,6 +146,7 @@ class DefaultStyle: Style {
     ///
     let goldStarColor                   = HandbookColors.goldStarColor
     let grayStarColor                   = HandbookColors.grayStarColor
+    let yellowStarColor                 = HandbookColors.murielYellow30
 
     /// NavBar
     ///
@@ -170,6 +176,7 @@ private extension DefaultStyle {
         static let statusBlue            = UIColor(red: 188.0/255.0, green: 222.0/255.0, blue: 238.0/255.0, alpha: 1.0)
         static let statusGreenDimmed     = UIColor(red: 239.00/255.0, green: 249.0/255.0, blue: 230.0/255.0, alpha: 1.0)
         static let statusGreen           = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)
+        static let statusYellowDimmed    = UIColor(red: 0.97, green: 0.88, blue: 0.68, alpha: 1.0)
 
         static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0) // woo purple
         static let wooSecondary          = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
@@ -187,6 +194,8 @@ private extension DefaultStyle {
 
         // Muriel theme in https://color-studio.blog/
         static let murielRed50                 = UIColor(red: 0.84, green: 0.21, blue: 0.22, alpha: 1)
+        static let murielYellow30        = UIColor(red: 0.86, green: 0.68, blue: 0.09, alpha: 1.0)
+        static let murielBlue50          = UIColor(red: 0.13, green: 0.44, blue: 0.69, alpha: 1.0)
     }
 }
 
@@ -322,6 +331,10 @@ class StyleManager {
         return active.destructiveActionColor
     }
 
+    static var hightlightTextColor: UIColor {
+        return active.highlightTextColor
+    }
+
     static var sectionBackgroundColor: UIColor {
         return active.sectionBackgroundColor
     }
@@ -362,8 +375,16 @@ class StyleManager {
         return active.statusSuccessBoldColor
     }
 
+    static var statusWarningColor: UIColor {
+        return active.statusWarningColor
+    }
+
     static var goldStarColor: UIColor {
         return active.goldStarColor
+    }
+
+    static var yellowStarColor: UIColor {
+        return active.yellowStarColor
     }
 
     static var tableViewBackgroundColor: UIColor {

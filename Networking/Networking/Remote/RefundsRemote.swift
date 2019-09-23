@@ -9,12 +9,11 @@ public final class RefundsRemote: Remote {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote order refunds.
-    ///     - orderID: Unique identifier for the resource "order" which you are searching
-    ///                 for.
+    ///     - orderID: Unique identifier for the Order you're searching for.
     ///     - context: view or edit. Scope under which the request is made;
     ///                determines fields present in response. Default is view.
     ///     - pageNumber: Number of page that should be retrieved.
-    ///     - pageSize: Number of Orders to be retrieved per page.
+    ///     - pageSize: Number of Refunds to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadOrderRefunds(for siteID: Int,
@@ -30,6 +29,25 @@ public final class RefundsRemote: Remote {
         ]
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = OrderRefundsMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Retrieves a single refund by refundID and orderID.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote order refunds.
+    ///     - orderID: Unique identifier for the Order you're searching for.
+    ///     - refundID: Unique identifier for the
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func loadRefund(siteID: Int,
+                           orderID: Int,
+                           refundID: Int,
+                           completion: @escaping ([OrderRefund]?, Error?) -> Void) {
+        let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = OrderRefundsMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

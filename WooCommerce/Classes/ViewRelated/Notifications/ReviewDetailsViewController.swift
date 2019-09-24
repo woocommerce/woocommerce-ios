@@ -189,7 +189,7 @@ private extension ReviewDetailsViewController {
 
     /// Displays the Error Notice.
     ///
-    static func displayModerationErrorNotice(failedStatus: CommentStatus) {
+    static func displayModerationErrorNotice(failedStatus: ProductReviewStatus) {
         let message = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Unable to mark review as %@",
@@ -204,10 +204,7 @@ private extension ReviewDetailsViewController {
 
     /// Displays the `Comment moderated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    static func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
-        guard newStatus != .unknown else {
-            return
-        }
+    static func displayModerationCompleteNotice(newStatus: ProductReviewStatus, onUndoAction: @escaping () -> Void) {
 
         let message = String.localizedStringWithFormat(
             NSLocalizedString(
@@ -333,6 +330,30 @@ private extension ReviewDetailsViewController {
         commentCell.isSpamEnabled     = true
         commentCell.isApproveSelected = productReview.status == .approved
 
+        let reviewID = productReview.reviewID
+        let reviewSiteID = productReview.siteID
+
+        commentCell.onApprove = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
+            ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": ProductReviewStatus.approved.rawValue])
+
+            self.moderateReview(siteID: reviewSiteID, reviewID: reviewID, doneStatus: .approved, undoStatus: .hold)
+        }
+
+        commentCell.onUnapprove = { [weak self] in
+            guard let self = self else {
+                return
+            }
+            ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
+            ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": ProductReviewStatus.hold.rawValue])
+
+            self.moderateReview(siteID: reviewSiteID, reviewID: reviewID, doneStatus: .hold, undoStatus: .approved)
+        }
+
         // Setup: Callbacks
 //        if let commentID = commentBlock.meta.identifier(forKey: .comment),
 //            let siteID = commentBlock.meta.identifier(forKey: .site) {
@@ -376,6 +397,85 @@ private extension ReviewDetailsViewController {
         WebviewHelper.launch(productURL, with: self)
     }
 }
+
+
+// MARK: - Moderation actions
+//
+private extension ReviewDetailsViewController {
+    func moderateReview(siteID: Int, reviewID: Int, doneStatus: ProductReviewStatus, undoStatus: ProductReviewStatus) {
+        guard let undo = moderateReviewAction(siteID: siteID, reviewID: reviewID, status: undoStatus, onCompletion: { error in
+            guard let error = error else {
+                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
+                return
+            }
+
+            DDLogError("⛔️ Review (UNDO) moderation failure for ID: \(reviewID) attempting \(doneStatus.description) status. Error: \(error)")
+            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
+            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
+        }) else {
+            return
+        }
+
+        guard let done = moderateReviewAction(siteID: siteID, reviewID: reviewID, status: doneStatus, onCompletion: { error in
+            guard let error = error else {
+                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
+                ReviewDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
+                    ServiceLocator.analytics.track(.notificationReviewActionUndo)
+                    ServiceLocator.stores.dispatch(undo)
+                })
+                return
+            }
+
+            DDLogError("⛔️ Review moderation failure for ID: \(reviewID) attempting \(doneStatus.description) status. Error: \(error)")
+            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
+            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
+        }) else {
+            return
+        }
+
+        ServiceLocator.stores.dispatch(done)
+        navigationController?.popViewController(animated: true)
+    }
+
+    /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
+    ///
+    func moderateReviewAction(siteID: Int, reviewID: Int, status: ProductReviewStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
+
+        switch status {
+        case .approved:
+            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+                                                             reviewID: reviewID,
+                                                             isApproved: true,
+                                                             onCompletion: {(_, error) in onCompletion(error)})]
+        case .hold:
+            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+                                                             reviewID: reviewID,
+                                                             isApproved: false,
+                                                             onCompletion: {(_, error) in onCompletion(error)})]
+        case .spam:
+            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+                                                             reviewID: reviewID,
+                                                             isApproved: true,
+                                                             onCompletion: {(_, error) in onCompletion(error)})]
+        case .unspam:
+            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+                                                             reviewID: reviewID,
+                                                             isApproved: true,
+                                                             onCompletion: {(_, error) in onCompletion(error)})]
+        case .trash:
+            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+                                                             reviewID: reviewID,
+                                                             isApproved: true,
+                                                             onCompletion: {(_, error) in onCompletion(error)})]
+        case .untrash:
+            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+                                                             reviewID: reviewID,
+                                                             isApproved: true,
+                                                             onCompletion: {(_, error) in onCompletion(error)})]
+        }
+    }
+}
+
 
 // MARK: - Nested Types
 //

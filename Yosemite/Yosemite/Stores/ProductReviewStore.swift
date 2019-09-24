@@ -32,6 +32,8 @@ public final class ProductReviewStore: Store {
             synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .retrieveProductReview(let siteID, let reviewID, let onCompletion):
             retrieveProductReview(siteID: siteID, reviewID: reviewID, onCompletion: onCompletion)
+        case .updateApprovalStatus(let siteID, let reviewID, let isApproved, let onCompletion):
+            updateApprovalStatus(siteID: siteID, reviewID: reviewID, isApproved: isApproved, onCompletion: onCompletion)
         }
     }
 }
@@ -88,6 +90,13 @@ private extension ProductReviewStore {
             }
         }
     }
+
+    /// Updates the review's approval status
+    ///
+    func updateApprovalStatus(siteID: Int, reviewID: Int, isApproved: Bool, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
+        let newStatus = isApproved ? ProductReviewStatus.approved : ProductReviewStatus.hold
+        moderateReview(siteID: siteID, reviewID: reviewID, status: newStatus, onCompletion: onCompletion)
+    }
 }
 
 
@@ -118,6 +127,18 @@ private extension ProductReviewStore {
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    func moderateReview(siteID: Int, reviewID: Int, status: ProductReviewStatus, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
+        let remote = ProductReviewsRemote(network: network)
+        remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { (productReview, error) in
+            guard let productReview = productReview else {
+                onCompletion(nil, error)
+                return
+            }
+
+            onCompletion(productReview.status, nil)
         }
     }
 }

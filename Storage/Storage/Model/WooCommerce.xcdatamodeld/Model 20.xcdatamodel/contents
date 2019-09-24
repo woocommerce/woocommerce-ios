@@ -303,7 +303,7 @@
         <attribute name="statusKey" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="verified" optional="YES" attributeType="Boolean" usesScalarValueType="YES" syncable="YES"/>
     </entity>
-    <entity name="ProductSearchResults" representedClassName="ProductSearchResults" syncable="YES" codeGenerationType="class">
+    <entity name="ProductSearchResults" representedClassName="ProductSearchResults" syncable="YES">
         <attribute name="keyword" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="products" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Product" inverseName="searchResults" inverseEntity="Product" syncable="YES"/>
     </entity>

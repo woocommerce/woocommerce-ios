@@ -132,10 +132,15 @@ private extension ProductReviewStore {
 
     func moderateReview(siteID: Int, reviewID: Int, status: ProductReviewStatus, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
         let remote = ProductReviewsRemote(network: network)
+        let storage = storageManager.viewStorage
         remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { (productReview, error) in
             guard let productReview = productReview else {
                 onCompletion(nil, error)
                 return
+            }
+
+            if let existingStorageProductReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) {
+                existingStorageProductReview.update(with: productReview)
             }
 
             onCompletion(productReview.status, nil)

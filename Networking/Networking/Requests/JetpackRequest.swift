@@ -28,7 +28,7 @@ struct JetpackRequest: URLRequestConvertible {
 
     /// Jetpack-Tunneled Parameters
     ///
-    let parameters: [String: String]
+    let parameters: [String: Any]
 
 
     /// Designated Initializer.
@@ -40,7 +40,7 @@ struct JetpackRequest: URLRequestConvertible {
     ///     - path: RPC that should be called.
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
     ///
-    init(wooApiVersion: WooAPIVersion, method: HTTPMethod, siteID: Int, path: String, parameters: [String: String]? = nil) {
+    init(wooApiVersion: WooAPIVersion, method: HTTPMethod, siteID: Int, path: String, parameters: [String: Any]? = nil) {
         if [.mark1, .mark2].contains(wooApiVersion) {
             DDLogWarn("⚠️ You are using an older version of the Woo REST API: \(wooApiVersion.rawValue), for path: \(path)")
         }

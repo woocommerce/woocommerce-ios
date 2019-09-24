@@ -106,7 +106,7 @@ private extension AppleAuthenticator {
     func loginSuccessful(with credentials: AuthenticatorCredentials) {
         WordPressAuthenticator.track(.signedIn, properties: ["source": "apple"])
         WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "apple"])
-        showSigninEpilogue(for: credentials)
+        showLoginEpilogue(for: credentials)
     }
     
     func showSignupEpilogue(for credentials: AuthenticatorCredentials) {
@@ -121,7 +121,7 @@ private extension AppleAuthenticator {
         authenticationDelegate.presentSignupEpilogue(in: navigationController, for: credentials, service: service)
     }
     
-    func showSigninEpilogue(for credentials: AuthenticatorCredentials) {
+    func showLoginEpilogue(for credentials: AuthenticatorCredentials) {
         guard let navigationController = showFromViewController?.navigationController else {
             fatalError()
         }
@@ -190,5 +190,13 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
 extension AppleAuthenticator: ASAuthorizationControllerPresentationContextProviding {
     func presentationAnchor(for controller: ASAuthorizationController) -> ASPresentationAnchor {
         return showFromViewController?.view.window ?? UIWindow()
+    }
+}
+
+@available(iOS 13.0, *)
+extension AppleAuthenticator {
+    func checkAppleIDCredentialState(for userID: String,
+                                     completion: @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {
+        ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userID, completion: completion)
     }
 }

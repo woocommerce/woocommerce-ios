@@ -354,34 +354,27 @@ private extension ReviewDetailsViewController {
             self.moderateReview(siteID: reviewSiteID, reviewID: reviewID, doneStatus: .hold, undoStatus: .approved)
         }
 
-        // Setup: Callbacks
-//        if let commentID = commentBlock.meta.identifier(forKey: .comment),
-//            let siteID = commentBlock.meta.identifier(forKey: .site) {
-//
-//            commentCell.onSpam = { [weak self] in
-//                ServiceLocator.analytics.track(.notificationReviewSpamTapped)
-//                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.spam.rawValue])
-//                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .spam, undoStatus: .unspam)
-//            }
-//
-//            commentCell.onTrash = { [weak self] in
-//                ServiceLocator.analytics.track(.notificationReviewTrashTapped)
-//                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.trash.rawValue])
-//                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .trash, undoStatus: .untrash)
-//            }
-//
-//            commentCell.onApprove = { [weak self] in
-//                ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
-//                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.approved.rawValue])
-//                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .approved, undoStatus: .unapproved)
-//            }
-//
-//            commentCell.onUnapprove = { [weak self] in
-//                ServiceLocator.analytics.track(.notificationReviewApprovedTapped)
-//                ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": CommentStatus.unapproved.rawValue])
-//                self?.moderateComment(siteID: siteID, commentID: commentID, doneStatus: .unapproved, undoStatus: .approved)
-//            }
-//        }
+        commentCell.onTrash = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            ServiceLocator.analytics.track(.notificationReviewTrashTapped)
+            ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": ProductReviewStatus.trash.rawValue])
+
+            self.moderateReview(siteID: reviewSiteID, reviewID: reviewID, doneStatus: .trash, undoStatus: .untrash)
+        }
+
+        commentCell.onSpam = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            ServiceLocator.analytics.track(.notificationReviewSpamTapped)
+            ServiceLocator.analytics.track(.notificationReviewAction, withProperties: ["type": ProductReviewStatus.spam.rawValue])
+
+            self.moderateReview(siteID: reviewSiteID, reviewID: reviewID, doneStatus: .spam, undoStatus: .unspam)
+        }
     }
 }
 
@@ -453,24 +446,24 @@ private extension ReviewDetailsViewController {
                                                              isApproved: false,
                                                              onCompletion: {(_, error) in onCompletion(error)})]
         case .spam:
-            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+            return [ProductReviewAction.updateSpamStatus(siteID: siteID,
                                                              reviewID: reviewID,
-                                                             isApproved: true,
+                                                             isSpam: true,
                                                              onCompletion: {(_, error) in onCompletion(error)})]
         case .unspam:
-            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+            return [ProductReviewAction.updateSpamStatus(siteID: siteID,
                                                              reviewID: reviewID,
-                                                             isApproved: true,
+                                                             isSpam: false,
                                                              onCompletion: {(_, error) in onCompletion(error)})]
         case .trash:
-            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+            return [ProductReviewAction.updateTrashStatus(siteID: siteID,
                                                              reviewID: reviewID,
-                                                             isApproved: true,
+                                                             isTrashed: true,
                                                              onCompletion: {(_, error) in onCompletion(error)})]
         case .untrash:
-            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
+            return [ProductReviewAction.updateTrashStatus(siteID: siteID,
                                                              reviewID: reviewID,
-                                                             isApproved: true,
+                                                             isTrashed: false,
                                                              onCompletion: {(_, error) in onCompletion(error)})]
         }
     }

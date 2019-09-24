@@ -34,6 +34,10 @@ public final class ProductReviewStore: Store {
             retrieveProductReview(siteID: siteID, reviewID: reviewID, onCompletion: onCompletion)
         case .updateApprovalStatus(let siteID, let reviewID, let isApproved, let onCompletion):
             updateApprovalStatus(siteID: siteID, reviewID: reviewID, isApproved: isApproved, onCompletion: onCompletion)
+        case .updateTrashStatus(let siteID, let reviewID, let isTrashed, let onCompletion):
+            updateTrashStatus(siteID: siteID, reviewID: reviewID, isTrashed: isTrashed, onCompletion: onCompletion)
+        case .updateSpamStatus(let siteID, let reviewID, let isSpam, let onCompletion):
+            updateSpamStatus(siteID: siteID, reviewID: reviewID, isSpam: isSpam, onCompletion: onCompletion)
         }
     }
 }
@@ -95,6 +99,20 @@ private extension ProductReviewStore {
     ///
     func updateApprovalStatus(siteID: Int, reviewID: Int, isApproved: Bool, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
         let newStatus = isApproved ? ProductReviewStatus.approved : ProductReviewStatus.hold
+        moderateReview(siteID: siteID, reviewID: reviewID, status: newStatus, onCompletion: onCompletion)
+    }
+
+    /// Updates the review's trash status
+    ///
+    func updateTrashStatus(siteID: Int, reviewID: Int, isTrashed: Bool, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
+        let newStatus = isTrashed ? ProductReviewStatus.trash : ProductReviewStatus.untrash
+        moderateReview(siteID: siteID, reviewID: reviewID, status: newStatus, onCompletion: onCompletion)
+    }
+
+    /// Updates the review's spam status
+    ///
+    func updateSpamStatus(siteID: Int, reviewID: Int, isSpam: Bool, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
+        let newStatus = isSpam ? ProductReviewStatus.spam : ProductReviewStatus.unspam
         moderateReview(siteID: siteID, reviewID: reviewID, status: newStatus, onCompletion: onCompletion)
     }
 }

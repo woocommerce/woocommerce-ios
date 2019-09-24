@@ -765,11 +765,13 @@ private extension NotificationsViewController {
                 )
             case .orders:
                 return NSLocalizedString("Orders",
-                                         comment: "Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order."
+                                         comment: "Name of the Orders filter on the Notifications screen - " +
+                    "it means only order notifications will be displayed. Plural form of the word Order."
                 )
             case .reviews:
                 return NSLocalizedString("Reviews",
-                                         comment: "Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review."
+                                         comment: "Name of the Reviews filter on the Notifications screen - " +
+                    "it means only review notifications will be displayed. Plural form of the word Review."
                 )
             }
         }

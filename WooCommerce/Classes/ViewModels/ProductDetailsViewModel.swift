@@ -641,7 +641,7 @@ extension ProductDetailsViewModel {
         let title = NSLocalizedString("Purchase Details",
                                       comment: "Product Details - purchase details section title")
         switch product.productType {
-        case .simple, .variable, .custom(_):
+        case .simple, .variable, .custom:
             var rows = [Row]()
 
             // downloadable and a download is specified

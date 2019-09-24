@@ -493,8 +493,10 @@ private extension StorePickerViewController {
     ///
     func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
         let message = String.localizedStringWithFormat(
-            NSLocalizedString("Unable to successfully connect to %@",
-                              comment: "On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name}"
+            NSLocalizedString(
+                "Unable to successfully connect to %@",
+                comment: "On the site picker screen, the error displayed when connecting to a site fails. " +
+                "It reads: Unable to successfully connect to {site name}"
             ),
             siteName
         )

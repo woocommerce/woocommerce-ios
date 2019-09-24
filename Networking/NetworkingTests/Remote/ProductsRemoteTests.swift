@@ -102,17 +102,17 @@ class ProductsRemoteTests: XCTestCase {
     ///
     func testSearchProductsProperlyReturnsParsedProducts() {
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Load All Products")
+        let expectation = self.expectation(description: "Wait for product search results")
 
-        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
 
         remote.searchProducts(for: sampleSiteID,
-                              keyword: String(),
+                              keyword: "photo",
                               pageNumber: 0,
                               pageSize: 100) { (products, error) in
                                 XCTAssertNil(error)
                                 XCTAssertNotNil(products)
-                                XCTAssert(products!.count == 10)
+                                XCTAssertEqual(products?.count, 2)
                                 expectation.fulfill()
         }
 
@@ -123,7 +123,7 @@ class ProductsRemoteTests: XCTestCase {
     ///
     func testSearchProductsProperlyRelaysNetwokingErrors() {
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Load All Products")
+        let expectation = self.expectation(description: "Wait for product search results")
 
         remote.searchProducts(for: sampleSiteID,
                               keyword: String(),

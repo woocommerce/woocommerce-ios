@@ -1,6 +1,9 @@
 ﻿/* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
 
+/* Displays a time range followed by a specific date/time */
+"%1$@ › %2$@" = "%1$@ › %2$@";
+
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
@@ -138,10 +141,12 @@
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "Backorders:";
 
-/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
+   VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Bar number %1$i, %2$@, ";
 
-/* Navigates to Beta features screen */
+/* Beta features navigation title
+   Navigates to Beta features screen */
 "Beta Features" = "Beta Features";
 
 /* Billing title for customer info cell */
@@ -157,7 +162,10 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
+   Cancel button label
+   Cancel prompt for user information.
+   Cancel the action sheet
+   Change order status screen - button title for closing the view */
 "Cancel" = "Cancel";
 
 /* shown in promotional screens during first launch */
@@ -199,6 +207,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continue reading";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "Continue with Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "Continue with WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "Continuing with Apple";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copy";
 
@@ -233,7 +250,8 @@
 "Custom" = "Custom";
 
 /* Add custom shipping provider. Content of cell titled Shipping Provider
-   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
+   Placeholder name of a custom shipment tracking provider
+   Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Custom Provider";
 
 /* Customer info section title
@@ -273,7 +291,12 @@
 "Discount" = "Discount";
 
 /* Add a note screen - button title for closing the view
-   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker
+   Dismiss button title shown in alert warning users to upgrade to WC 3.5.
+   Dismiss button title shown in an alert displaying full purchase note text.
+   Dismiss the action sheet
+   Dismiss the shipment tracking action sheet
+   Product details screen - button title for closing the view */
 "Dismiss" = "Dismiss";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -401,7 +424,8 @@
 "Google sign up failed." = "Google sign up failed.";
 
 /* Help and Support navigation title
-   Help button - Help button on store picker screen. */
+   Help button
+   Help button on store picker screen. */
 "Help" = "Help";
 
 /* Contact Support Action */
@@ -421,6 +445,9 @@
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "If disabled the note will be private";
+
+/* My Store > Settings > Beta features > Switch stats version */
+"Improved stats" = "Improved stats";
 
 /* Display label for the product's inventory stock status */
 "In stock" = "In stock";
@@ -456,7 +483,8 @@
 "Invalid username" = "Invalid username";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+   Product Details > Pricing & Inventory > Inventory cell title
+   Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
 "Inventory" = "Inventory";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -513,7 +541,7 @@
 "Log in to the WordPress.com account you used to connect Jetpack." = "Log in to the WordPress.com account you used to connect Jetpack.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "Log in to WordPress.com using an email address to manage all your WordPress sites.";
+"Log in to your WordPress.com account with your email address." = "Log in to your WordPress.com account with your email address.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Log in with Jetpack";
@@ -628,6 +656,9 @@
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
 "No results found for \(term)\nAdd a custom provider" = "No results found for \(term)\nAdd a custom provider";
 
+/* Text displayed when no order data are available for the selected time range. */
+"No revenue this period" = "No revenue this period";
+
 /* Empty Reviews List Message */
 "No Reviews Yet!" = "No Reviews Yet!";
 
@@ -654,7 +685,10 @@
 "Off" = "Off";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt.
+   Dismisses the alert
+   Ok button for dismissing alert helping users understand their site address
+   Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* +2 Days Section Header */
@@ -690,6 +724,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optional Tracking Information";
 
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #\(viewModel.order.number)" = "Order #\(viewModel.order.number)";
@@ -710,7 +747,9 @@
 "Order status updated" = "Order status updated";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural.
+   Title of the Orders tab — plural form of Order
+   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Orders";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -760,6 +799,9 @@
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "Please enter a valid email address.";
 
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Please enter the password for your WordPress.com account to log in with your Apple ID.";
+
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Please enter your credentials";
 
@@ -799,7 +841,8 @@
 "Private note" = "Private note";
 
 /* Description for Top Performers left column header
-   Product section title - Section header title for the product */
+   Product section title
+   Section header title for the product */
 "Product" = "Product";
 
 /* Product section title */
@@ -826,7 +869,8 @@
 /* Product Details - purchase details section title */
 "Purchase Details" = "Purchase Details";
 
-/* Product Details > Purchase Details > Purchase note cell title */
+/* Product Details > Purchase Details > Purchase note cell title
+   Title for purchase note alert. */
 "Purchase note" = "Purchase note";
 
 /* Quantity abbreviation for section title */
@@ -877,7 +921,9 @@
 "Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
+   Reviews descriptive label
+   Title of the Reviews tab — plural form of Review
+   Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Reviews";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
@@ -965,7 +1011,8 @@
 "SKU" = "SKU";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'
+   SKU label */
 "SKU:" = "SKU:";
 
 /* One Time Code has been sent via SMS */
@@ -1128,22 +1175,28 @@
 /* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
 "This app requires Jetpack to connect to your Store. <br /> Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>." = "This app requires Jetpack to connect to your Store. <br /> Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.";
 
+/* Body text of alert warning users to upgrade to WC 3.5. */
+"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app.";
+
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "This email address is not registered on WordPress.com.";
 
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.";
 
-/* Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month
+   Top Performers section title - this month */
 "This Month" = "This Month";
 
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "This product couldn't be loaded";
 
-/* Top Performers section title - this week */
+/* Tab selector title that shows the statistics for this week
+   Top Performers section title - this week */
 "This Week" = "This Week";
 
-/* Top Performers section title - this year */
+/* Tab selector title that shows the statistics for this year
+   Top Performers section title - this year */
 "This Year" = "This Year";
 
 /* Product details screen — product title descriptive label */
@@ -1161,7 +1214,8 @@
 /* Today */
 "today" = "today";
 
-/* Today Section Header
+/* Tab selector title that shows the statistics for today
+   Today Section Header
    Top Performers section title - today */
 "Today" = "Today";
 
@@ -1216,6 +1270,9 @@
 
 /* The title of the top banner on Dashboard that indicates new stats is available */
 "Try our improved stats" = "Try our improved stats";
+
+/* My Store > Settings > Beta features > Stats version description */
+"Try the new stats available with the WooCommerce Admin plugin" = "Try the new stats available with the WooCommerce Admin plugin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Try with another email";
@@ -1301,8 +1358,17 @@
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Up to seven days՚ worth of logs are saved.";
 
+/* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
+"Update %@ to WooCommerce 3.5" = "Update %@ to WooCommerce 3.5";
+
+/* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
+"Update Instructions" = "Update Instructions";
+
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Update Order Status";
+
+/* Title of alert warning users to upgrade to WC 3.5. */
+"Update to WooCommerce 3.5 to keep using this app" = "Update to WooCommerce 3.5 to keep using this app";
 
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Updated %ld hour ago";

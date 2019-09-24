@@ -27,23 +27,10 @@ class DashboardStatsV3ViewController: UIViewController {
         return UIStackView(arrangedSubviews: [])
     }()
 
-    private var newOrdersContainerView: UIView = {
-        return UIView(frame: .zero)
-    }()
-
-    private var newOrdersHeightConstraint: NSLayoutConstraint?
-
     // MARK: child view controllers
     //
     private var storeStatsViewController: StoreStatsViewController = {
         guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: StoreStatsViewController.self) else {
-            fatalError()
-        }
-        return viewController
-    }()
-
-    private var newOrdersViewController: NewOrdersViewController = {
-        guard let viewController = UIStoryboard.dashboard.instantiateViewController(ofClass: NewOrdersViewController.self) else {
             fatalError()
         }
         return viewController
@@ -62,21 +49,10 @@ class DashboardStatsV3ViewController: UIViewController {
         super.viewDidLoad()
 
         scrollView.refreshControl = refreshControl
-        newOrdersContainerView.isHidden = true // Hide the new orders vc by default
-
-        newOrdersViewController.delegate = self
-
         stackView.axis = .vertical
 
         configureContainerViews()
         configureChildViewControllerContainerViews()
-    }
-
-    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
-        super.preferredContentSizeDidChange(forChildContentContainer: container)
-        if let containerVC = container as? NewOrdersViewController {
-            newOrdersHeightConstraint?.constant = containerVC.preferredContentSize.height
-        }
     }
 }
 
@@ -84,7 +60,6 @@ class DashboardStatsV3ViewController: UIViewController {
 //
 private extension DashboardStatsV3ViewController {
     @objc func pullToRefresh() {
-        applyHideAnimation(for: newOrdersContainerView)
         onPullToRefresh()
     }
 }
@@ -92,7 +67,6 @@ private extension DashboardStatsV3ViewController {
 extension DashboardStatsV3ViewController: DashboardUI {
     func defaultAccountDidUpdate() {
         storeStatsViewController.clearAllFields()
-        applyHideAnimation(for: newOrdersContainerView)
     }
 
     func reloadData(completion: @escaping () -> Void) {
@@ -104,14 +78,6 @@ extension DashboardStatsV3ViewController: DashboardUI {
 
         group.enter()
         storeStatsViewController.syncAllStats() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.enter()
-        newOrdersViewController.syncNewOrders() { error in
             if let error = error {
                 reloadError = error
             }
@@ -224,20 +190,6 @@ private extension DashboardStatsV3ViewController {
     }
 }
 
-// MARK: - NewOrdersDelegate Conformance
-//
-extension DashboardStatsV3ViewController: NewOrdersDelegate {
-    func didUpdateNewOrdersData(hasNewOrders: Bool) {
-        if hasNewOrders {
-            applyUnhideAnimation(for: newOrdersContainerView)
-            ServiceLocator.analytics.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "true"])
-        } else {
-            applyHideAnimation(for: newOrdersContainerView)
-            ServiceLocator.analytics.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "false"])
-        }
-    }
-}
-
 private extension DashboardStatsV3ViewController {
     func configureContainerViews() {
         view.addSubview(scrollView)
@@ -265,23 +217,6 @@ private extension DashboardStatsV3ViewController {
             storeStatsView.heightAnchor.constraint(equalToConstant: 380),
             ])
 
-        // Spacer view.
-        let spacerView = UIView(frame: .zero)
-        NSLayoutConstraint.activate([
-            spacerView.heightAnchor.constraint(equalToConstant: 18),
-            ])
-
-        // New orders.
-        let newOrdersView = newOrdersViewController.view!
-        newOrdersContainerView.addSubview(newOrdersView)
-        newOrdersContainerView.pinSubviewToAllEdges(newOrdersView)
-        let newOrdersHeightConstraint = newOrdersContainerView.heightAnchor.constraint(equalToConstant: 80)
-        self.newOrdersHeightConstraint = newOrdersHeightConstraint
-        NSLayoutConstraint.activate([
-            newOrdersHeightConstraint,
-            newOrdersContainerView.heightAnchor.constraint(greaterThanOrEqualToConstant: 80)
-            ])
-
         // Top performers.
         let topPerformersView = topPerformersViewController.view!
         NSLayoutConstraint.activate([
@@ -290,7 +225,7 @@ private extension DashboardStatsV3ViewController {
             ])
 
         // Add all child view controllers and their container/view to stack view's arranged subviews.
-        let childViewControllers = [storeStatsViewController, newOrdersViewController, topPerformersViewController]
+        let childViewControllers = [storeStatsViewController, topPerformersViewController]
         childViewControllers.forEach { childViewController in
             addChild(childViewController)
             childViewController.view.translatesAutoresizingMaskIntoConstraints = false
@@ -299,8 +234,6 @@ private extension DashboardStatsV3ViewController {
         let arrangedSubviews = [
             topSpacerView,
             storeStatsView,
-            spacerView,
-            newOrdersContainerView,
             topPerformersView
         ]
         arrangedSubviews.forEach { subview in

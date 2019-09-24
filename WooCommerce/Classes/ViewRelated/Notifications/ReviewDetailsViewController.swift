@@ -324,7 +324,6 @@ private extension ReviewDetailsViewController {
 
         commentCell.starRating = productReview.rating
 
-        //let gravatarURL = userBlock.media.first?.url
         let gravatar = productReview.reviewerAvatarURL
         let gravatarURL = URL(string: gravatar)
         commentCell.downloadGravatar(with: gravatarURL)
@@ -373,7 +372,7 @@ private extension ReviewDetailsViewController {
     /// Presents a WebView at the product URL
     ///
     func openProductURL() {
-        let productURL = product?.externalURL
+        let productURL = product?.permalink
         WebviewHelper.launch(productURL, with: self)
     }
 }

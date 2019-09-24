@@ -219,6 +219,7 @@ extension ReviewsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
         viewModel.delegate.didSelectItem(at: indexPath, in: self)
     }
 

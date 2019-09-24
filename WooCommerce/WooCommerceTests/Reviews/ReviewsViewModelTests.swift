@@ -124,9 +124,7 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
         stopsForwardingEventsWasHit = true
     }
 
-    func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {
-        
-    }
+    func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {}
 }
 
 final class MockReviewsStoresManager: DefaultStoresManager {

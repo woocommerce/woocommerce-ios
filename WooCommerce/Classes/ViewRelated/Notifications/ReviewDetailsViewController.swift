@@ -316,7 +316,9 @@ private extension ReviewDetailsViewController {
         commentCell.titleText = productReview.reviewer
         commentCell.detailsText = ReviewAge.from(startDate: productReview.dateCreated, toDate: Date()).description
 
-        let attributes: [NSAttributedString.Key: Any] = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
+        let attributes: [NSAttributedString.Key: Any] = [.paragraphStyle: NSParagraphStyle.body,
+                                                         .font: UIFont.body,
+                                                         .foregroundColor: StyleManager.defaultTextColor]
         commentCell.commentAttributedText = NSAttributedString(string: productReview.review.strippedHTML, attributes: attributes).trimNewlines()
 
         commentCell.starRating = productReview.rating

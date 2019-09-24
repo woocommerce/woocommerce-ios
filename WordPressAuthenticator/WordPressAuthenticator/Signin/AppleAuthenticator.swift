@@ -165,6 +165,7 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let credentials as ASAuthorizationAppleIDCredential:
+            authenticationDelegate.userAuthenticatedWithAppleUserID(credentials.user)
             createWordPressComUser(appleCredentials: credentials)
         default:
             break

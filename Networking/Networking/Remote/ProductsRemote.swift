@@ -78,7 +78,7 @@ public class ProductsRemote: Remote {
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote products.
-    ///     - keyword: Search string that should be matched by the products.
+    ///     - keyword: Search string that should be matched by the products - title, excerpt and content (description).
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of products to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.

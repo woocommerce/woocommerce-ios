@@ -256,21 +256,6 @@ private extension ReviewsViewController {
         ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
-    /// Marks a specific Notification as read.
-    ///
-    func markAsReadIfNeeded(note: Note) {
-        guard note.read == false else {
-            return
-        }
-
-        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
-            if let error = error {
-                DDLogError("⛔️ Error marking single notification as read: \(error)")
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
     func synchronizeReviews(onCompletion: (() -> Void)? = nil) {

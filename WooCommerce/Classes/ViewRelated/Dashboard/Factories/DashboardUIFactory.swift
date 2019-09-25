@@ -32,13 +32,18 @@ final class DashboardUIFactory {
         self.stateCoordinator = StatsVersionStateCoordinator(siteID: siteID)
     }
 
-    func reloadDashboardUI(onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
-        stateCoordinator.onStateChange = { [weak self] (previousState, currentState) in
-            self?.onStatsVersionStateChange(previousState: previousState,
-                                            currentState: currentState,
-                                            onUIUpdate: onUIUpdate)
+    func reloadDashboardUI(isFeatureFlagOn: Bool,
+                           onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
+        if isFeatureFlagOn {
+            stateCoordinator.onStateChange = { [weak self] (previousState, currentState) in
+                self?.onStatsVersionStateChange(previousState: previousState,
+                                                currentState: currentState,
+                                                onUIUpdate: onUIUpdate)
+            }
+            stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
+        } else {
+            onUIUpdate(statsV3DashboardUI())
         }
-        stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
     }
 
     private func statsV3DashboardUI() -> DashboardUI & TopBannerPresenter {

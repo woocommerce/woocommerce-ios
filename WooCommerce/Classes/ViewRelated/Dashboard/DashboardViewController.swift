@@ -126,8 +126,9 @@ private extension DashboardViewController {
             self.siteID = siteID
         }
 
-        dashboardUIFactory?.reloadDashboardUI(onUIUpdate: { [weak self] dashboardUI in
-            self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
+        dashboardUIFactory?.reloadDashboardUI(isFeatureFlagOn: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stats),
+                                              onUIUpdate: { [weak self] dashboardUI in
+                                                self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
         })
     }
 }

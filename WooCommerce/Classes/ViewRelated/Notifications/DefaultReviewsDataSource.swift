@@ -102,7 +102,16 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     /// Initialise obervers
     ///
     private func observeResults() {
+        observeProducts()
+        observeNotifications()
+    }
+
+    private func observeProducts() {
         try? productsResultsController.performFetch()
+    }
+
+    private func observeNotifications() {
+        try? notificationsResultsController.performFetch()
     }
 
     /// Initializes observers for incoming reviews

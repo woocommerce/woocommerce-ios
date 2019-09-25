@@ -10,10 +10,6 @@ enum FeatureFlag: Int {
     ///
     case productList
 
-    /// Store stats
-    ///
-    case stats
-
     /// Product Reviews
     ///
     case reviews
@@ -22,8 +18,6 @@ enum FeatureFlag: Int {
     ///
     var enabled: Bool {
         switch self {
-        case .stats:
-            return BuildConfiguration.current == .localDeveloper
         case .reviews:
             return false
         default:

@@ -51,6 +51,10 @@ final class ReviewsViewModel {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
     }
+
+    func markAllAsRead(onCompletion: @escaping (Error?) -> Void) {
+        markAsRead(notes: data.notifications, onCompletion: onCompletion)
+    }
 }
 
 
@@ -137,6 +141,32 @@ extension ReviewsViewModel {
 
             onCompletion?()
         }
+
+        ServiceLocator.stores.dispatch(action)
+    }
+}
+
+private extension ReviewsViewModel {
+    /// Marks a specific Notification as read.
+    ///
+    func markAsReadIfNeeded(note: Note) {
+        guard note.read == false else {
+            return
+        }
+
+        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Error marking single notification as read: \(error)")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Marks the specified collection of Notifications as Read.
+    ///
+    func markAsRead(notes: [Note], onCompletion: @escaping (Error?) -> Void) {
+        let identifiers = notes.map { $0.noteId }
+        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true, onCompletion: onCompletion)
 
         ServiceLocator.stores.dispatch(action)
     }

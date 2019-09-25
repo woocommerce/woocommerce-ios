@@ -473,7 +473,7 @@ private extension ReviewsViewController {
     }
 
     func updateMarkAllReadButtonState() {
-//        leftBarButton.isEnabled = !unreadNotes.isEmpty
+        rightBarButton.isEnabled = viewModel.hasUnreadNotifications
     }
 
     /// Displays the `Mark all as read` Notice if the number of times it was previously displayed is lower than the

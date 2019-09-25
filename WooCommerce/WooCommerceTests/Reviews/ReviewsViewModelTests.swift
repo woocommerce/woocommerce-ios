@@ -100,6 +100,10 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
             .uniqued()
     }
 
+    var notifications: [Note] {
+        return []
+    }
+
     var startForwardingEventsWasHit = false
     var stopsForwardingEventsWasHit = false
     var startObservingWasHit = false

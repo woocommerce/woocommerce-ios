@@ -33,6 +33,18 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
                                                        sortedBy: [descriptor])
     }()
 
+    /// Notifications
+    ///
+    private lazy var notificationsResultsController: ResultsController<StorageNote> = {
+        let storageManager = ServiceLocator.storageManager
+        let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
+
+        return ResultsController<StorageNote>(storageManager: storageManager,
+                                              sectionNameKeyPath: "normalizedAgeAsString",
+                                              matching: notificationsPredicate,
+                                              sortedBy: [descriptor])
+    }()
+
     /// Predicate to filter only Product Reviews that are either approved or on hold
     ///
     private lazy var filterPredicate: NSPredicate = {

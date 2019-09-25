@@ -26,6 +26,10 @@ final class ReviewsViewController: UIViewController {
 
     private let viewModel = ReviewsViewModel(data: DefaultReviewsDataSource())
 
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
+
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {
@@ -199,7 +203,20 @@ private extension ReviewsViewController {
     }
 
     @IBAction func markAllAsRead() {
-        // TODO. MArk all as read
+        viewModel.markAllAsRead { [weak self] error in
+            guard let self = self else {
+                return
+            }
+
+            if let error = error {
+                DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
+                self.hapticGenerator.notificationOccurred(.error)
+            } else {
+                self.hapticGenerator.notificationOccurred(.success)
+                self.displayMarkAllAsReadNoticeIfNeeded()
+            }
+            self.updateMarkAllReadButtonState()
+        }
     }
 }
 
@@ -456,7 +473,6 @@ private extension ReviewsViewController {
     }
 
     func updateMarkAllReadButtonState() {
-        // TODO. Mark as read
 //        leftBarButton.isEnabled = !unreadNotes.isEmpty
     }
 

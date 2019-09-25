@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14490.99" systemVersion="18F132" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14492.1" systemVersion="18G95" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
@@ -297,6 +297,7 @@
         <attribute name="rating" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="review" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="reviewer" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="reviewerAvatarURL" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="reviewerEmail" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="reviewID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="siteID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
@@ -401,7 +402,8 @@
         <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="105"/>
         <element name="ProductDownload" positionX="-684" positionY="45" width="128" height="105"/>
         <element name="ProductImage" positionX="-859.9296875" positionY="471.46484375" width="128" height="148"/>
-        <element name="ProductReview" positionX="-693" positionY="36" width="128" height="195"/>
+        <element name="ProductReview" positionX="-693" positionY="36" width="128" height="210"/>
+        <element name="ProductSearchResults" positionX="-693" positionY="36" width="128" height="75"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="103"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
@@ -412,6 +414,5 @@
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="ProductSearchResults" positionX="-693" positionY="36" width="128" height="75"/>
     </elements>
 </model>

@@ -13,6 +13,7 @@ public struct ProductReview: Decodable {
 
     public let reviewer: String
     public let reviewerEmail: String
+    public let reviewerAvatarURL: String
 
     public let review: String
     public let rating: Int
@@ -32,6 +33,7 @@ public struct ProductReview: Decodable {
                 statusKey: String,
                 reviewer: String,
                 reviewerEmail: String,
+                reviewerAvatarURL: String,
                 review: String,
                 rating: Int,
                 verified: Bool) {
@@ -42,6 +44,7 @@ public struct ProductReview: Decodable {
         self.statusKey = statusKey
         self.reviewer = reviewer
         self.reviewerEmail = reviewerEmail
+        self.reviewerAvatarURL = reviewerAvatarURL
         self.review = review
         self.rating = rating
         self.verified = verified
@@ -62,6 +65,8 @@ public struct ProductReview: Decodable {
         let statusKey = try container.decode(String.self, forKey: .status)
         let reviewer = try container.decode(String.self, forKey: .reviewer)
         let reviewerEmail = try container.decode(String.self, forKey: .reviewerEmail)
+        let avatarURLs = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .avatarURLs)
+        let reviewerAvatarURL = try avatarURLs.decode(String.self, forKey: .avatar96)
         let review = try container.decode(String.self, forKey: .review)
         let rating = try container.decode(Int.self, forKey: .rating)
         let verified = try container.decode(Bool.self, forKey: .verified)
@@ -73,6 +78,7 @@ public struct ProductReview: Decodable {
                   statusKey: statusKey,
                   reviewer: reviewer,
                   reviewerEmail: reviewerEmail,
+                  reviewerAvatarURL: reviewerAvatarURL,
                   review: review,
                   rating: rating,
                   verified: verified)
@@ -91,6 +97,10 @@ private extension ProductReview {
         case status         = "status"
         case reviewer       = "reviewer"
         case reviewerEmail  = "reviewer_email"
+        case avatarURLs     = "reviewer_avatar_urls"
+        /// We are ignoring all avatars except the one marked as 96
+        /// to avoid adding an unecessary intermediate object
+        case avatar96       = "96"
         case review         = "review"
         case rating         = "rating"
         case verified       = "verified"

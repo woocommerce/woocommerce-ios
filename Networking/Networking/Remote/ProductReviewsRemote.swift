@@ -62,7 +62,7 @@ public final class ProductReviewsRemote: Remote {
     public func updateProductReviewStatus(for siteID: Int, reviewID: Int, statusKey: String, completion: @escaping (ProductReview?, Error?) -> Void) {
         let path = "\(Path.reviews)/\(reviewID)"
         let parameters = [ParameterKey.status: statusKey]
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .put, siteID: siteID, path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductReviewMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)

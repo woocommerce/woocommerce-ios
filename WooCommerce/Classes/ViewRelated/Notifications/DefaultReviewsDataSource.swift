@@ -136,11 +136,16 @@ private extension DefaultReviewsDataSource {
     /// Initializes the Notifications Cell at the specified indexPath
     ///
     func configure(_ cell: ProductReviewTableViewCell, at indexPath: IndexPath) {
+        let viewModel = reviewViewModel(at: indexPath)
+
+        cell.configure(with: viewModel)
+    }
+
+    private func reviewViewModel(at indexPath: IndexPath) -> ReviewViewModel {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewProduct = product(id: review.productID)
 
-        let viewModel = ReviewViewModel(review: review, product: reviewProduct)
-        cell.configure(with: viewModel)
+        return ReviewViewModel(review: review, product: reviewProduct)
     }
 
     private func product(id productID: Int) -> Product? {
@@ -151,8 +156,9 @@ private extension DefaultReviewsDataSource {
 }
 
 
-extension DefaultReviewsDataSource: UITableViewDelegate {
-
+// MARK: - Conformance to ReviewsInteractionDelegate & UITableViewDelegate
+//
+extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
@@ -165,13 +171,6 @@ extension DefaultReviewsDataSource: UITableViewDelegate {
         return UITableView.automaticDimension
     }
 
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        let review = reviewsResultsController.object(at: indexPath)
-        presentDetails(for: review)
-    }
-
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
 
         // Preserve the Cell Height
@@ -181,16 +180,13 @@ extension DefaultReviewsDataSource: UITableViewDelegate {
         //
         estimatedRowHeights[indexPath] = cell.frame.height
     }
-}
 
-// MARK: - Public Methods
-//
-private extension DefaultReviewsDataSource {
+    func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {
+        let review = reviewsResultsController.object(at: indexPath)
+        let reviewedProduct = product(id: review.productID)
 
-    /// Presents the Details for a given ProductReview
-    ///
-    func presentDetails(for review: ProductReview) {
-        // TODO. To be implemented in #1253
+        let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct)
+        viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }
 

@@ -2,8 +2,8 @@ import Foundation
 import Yosemite
 
 final class ReviewViewModel {
-    private let review: ProductReview
-    private let product: Product?
+    let review: ProductReview
+    let product: Product?
 
     let notIcon: String = "\u{f300}"
 

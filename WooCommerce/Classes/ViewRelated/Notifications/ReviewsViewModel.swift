@@ -71,6 +71,11 @@ extension ReviewsViewModel {
             group.leave()
         }
 
+        group.enter()
+        synchronizeNotifications {
+            group.leave()
+        }
+
         group.notify(queue: .main) {
             if let completionBlock = onCompletion {
                 completionBlock()
@@ -115,6 +120,22 @@ extension ReviewsViewModel {
             }
 
             onCompletion()
+        }
+
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    /// Synchronizes the Notifications associated to the active WordPress.com account.
+    ///
+    private func synchronizeNotifications(onCompletion: (() -> Void)? = nil) {
+        let action = NotificationAction.synchronizeNotifications { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing notifications: \(error)")
+            } else {
+                ServiceLocator.analytics.track(.notificationListLoaded)
+            }
+
+            onCompletion?()
         }
 
         ServiceLocator.stores.dispatch(action)

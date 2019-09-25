@@ -98,6 +98,8 @@ private extension ProductReview {
         case reviewer       = "reviewer"
         case reviewerEmail  = "reviewer_email"
         case avatarURLs     = "reviewer_avatar_urls"
+        /// We are ignoring all avatars except the one marked as 96
+        /// to avoid adding an unecessary intermediate object
         case avatar96       = "96"
         case review         = "review"
         case rating         = "rating"

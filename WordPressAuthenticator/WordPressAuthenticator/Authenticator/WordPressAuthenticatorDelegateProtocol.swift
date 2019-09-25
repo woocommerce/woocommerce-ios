@@ -28,9 +28,15 @@ public protocol WordPressAuthenticatorDelegate: class {
     /// - Parameters:
     ///     - username: WordPress.com Username.
     ///     - authToken: WordPress.com Bearer Token.
-    ///     - onCompletion: Closure to be executed on completion.
     ///
     func createdWordPressComAccount(username: String, authToken: String)
+
+    /// Signals the Host App that the user has successfully authenticated with an Apple account.
+    ///
+    /// - Parameters:
+    ///     - appleUserID: User ID received in the Apple credentials.
+    ///
+    func userAuthenticatedWithAppleUserID(_ appleUserID: String)
 
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///

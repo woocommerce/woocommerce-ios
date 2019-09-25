@@ -227,8 +227,9 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
     func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewedProduct = product(id: review.productID)
+        let note = notification(id: review.reviewID)
 
-        let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct)
+        let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct, notification: note)
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }

@@ -132,6 +132,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
     func startForwardingEvents(to tableView: UITableView) {
         reviewsResultsController.startForwardingEvents(to: tableView)
+        notificationsResultsController.startForwardingEvents(to: tableView)
     }
 }
 

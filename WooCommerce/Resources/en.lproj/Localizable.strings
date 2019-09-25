@@ -162,10 +162,7 @@
 "Can Not Request Link" = "Can Not Request Link";
 
 /* Button title. Tapping it cancels the login flow.
-   Cancel button label
-   Cancel prompt for user information.
-   Cancel the action sheet
-   Change order status screen - button title for closing the view */
+   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "Cancel";
 
 /* shown in promotional screens during first launch */
@@ -250,8 +247,7 @@
 "Custom" = "Custom";
 
 /* Add custom shipping provider. Content of cell titled Shipping Provider
-   Placeholder name of a custom shipment tracking provider
-   Title of button to add a custom tracking provider if filtering the list yields no results. */
+   Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Custom Provider";
 
 /* Customer info section title
@@ -291,12 +287,7 @@
 "Discount" = "Discount";
 
 /* Add a note screen - button title for closing the view
-   Dismiss button in store picker
-   Dismiss button title shown in alert warning users to upgrade to WC 3.5.
-   Dismiss button title shown in an alert displaying full purchase note text.
-   Dismiss the action sheet
-   Dismiss the shipment tracking action sheet
-   Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Dismiss";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -424,8 +415,7 @@
 "Google sign up failed." = "Google sign up failed.";
 
 /* Help and Support navigation title
-   Help button
-   Help button on store picker screen. */
+   Help button - Help button on store picker screen. */
 "Help" = "Help";
 
 /* Contact Support Action */
@@ -483,8 +473,7 @@
 "Invalid username" = "Invalid username";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title
-   Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
 "Inventory" = "Inventory";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -685,10 +674,7 @@
 "Off" = "Off";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt.
-   Dismisses the alert
-   Ok button for dismissing alert helping users understand their site address
-   Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* +2 Days Section Header */
@@ -747,9 +733,7 @@
 "Order status updated" = "Order status updated";
 
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order
-   Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Orders";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -841,8 +825,7 @@
 "Private note" = "Private note";
 
 /* Description for Top Performers left column header
-   Product section title
-   Section header title for the product */
+   Product section title - Section header title for the product */
 "Product" = "Product";
 
 /* Product section title */
@@ -917,13 +900,8 @@
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Review marked as %@";
 
-/* Description text used on the UI element displayed when a user has pending orders to process. */
-"Review, prepare, and ship these pending orders" = "Review, prepare, and ship these pending orders";
-
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label
-   Title of the Reviews tab — plural form of Review
-   Title that appears on top of the main Reviews screen (plural form of the word Review). */
+   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Reviews";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
@@ -1011,8 +989,7 @@
 "SKU" = "SKU";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie'
-   SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "SKU:";
 
 /* One Time Code has been sent via SMS */
@@ -1215,8 +1192,7 @@
 "today" = "today";
 
 /* Tab selector title that shows the statistics for today
-   Today Section Header
-   Top Performers section title - today */
+   Today Section Header - Top Performers section title - today */
 "Today" = "Today";
 
 /* Header label for Top Performers section of My Store tab. */
@@ -1490,12 +1466,6 @@
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider.";
-
-/* Title text used on the My Store UI when a user has a _single_ pending order to process. */
-"You have %ld order to fulfill" = "You have %ld order to fulfill";
-
-/* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
-"You have %ld orders to fulfill" = "You have %ld orders to fulfill";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog";

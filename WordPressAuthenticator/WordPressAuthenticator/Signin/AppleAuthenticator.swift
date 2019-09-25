@@ -17,6 +17,9 @@ class AppleAuthenticator: NSObject {
     private var showFromViewController: UIViewController?
     private let loginFields = LoginFields()
     weak var delegate: AppleAuthenticatorDelegate?
+    
+    @available(iOS 13.0, *)
+    static let credentialRevokedNotification = ASAuthorizationAppleIDProvider.credentialRevokedNotification
 
     private var authenticationDelegate: WordPressAuthenticatorDelegate {
         guard let delegate = WordPressAuthenticator.shared.delegate else {

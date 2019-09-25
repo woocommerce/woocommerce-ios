@@ -14,6 +14,10 @@ import WordPressUI
     ///
     private static var privateInstance: WordPressAuthenticator?
 
+    /// Observer for AppleID Credential State
+    ///
+    private var appleIDCredentialObserver: NSObjectProtocol?
+
     /// Shared Instance.
     ///
     @objc public static var shared: WordPressAuthenticator {
@@ -465,10 +469,25 @@ import WordPressUI
 
 @available(iOS 13.0, *)
 public extension WordPressAuthenticator {
+    
     func checkAppleIDCredentialState(for userID: String, completion:  @escaping (Bool, Error?) -> Void) {
         AppleAuthenticator.sharedInstance.checkAppleIDCredentialState(for: userID) { (state, error) in
             // If credentialState == .notFound, error will have a value.
             completion(state == .authorized, error)
         }
     }
+
+    func startObservingAppleIDCredentialRevoked(completion:  @escaping () -> Void) {
+        appleIDCredentialObserver = NotificationCenter.default.addObserver(forName: AppleAuthenticator.credentialRevokedNotification, object: nil, queue: nil) { (notification) in
+            completion()
+        }
+    }
+    
+    func stopObservingAppleIDCredentialRevoked() {
+        if let observer = appleIDCredentialObserver {
+            NotificationCenter.default.removeObserver(observer)
+        }
+        appleIDCredentialObserver = nil
+    }
+
 }

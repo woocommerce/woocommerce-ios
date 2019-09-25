@@ -83,6 +83,12 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         return reviewsResultsController.isEmpty
     }
 
+    /// Notifications associated with the reviews.
+    ///
+    var notifications: [Note] {
+        return notificationsResultsController.fetchedObjects
+    }
+
     /// Identifiers of the Products mentioned in the reviews.
     /// Guaranteed to be uniqued (does not contain duplicates)
     ///

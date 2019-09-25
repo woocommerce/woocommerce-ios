@@ -301,7 +301,8 @@ private extension ReviewDetailsViewController {
 
         headerCell.leftImage = .productImage
         headerCell.rightImage = .externalImage
-        headerCell.plainText = product?.name ?? "Unknown"
+        headerCell.plainText = product?.name ?? NSLocalizedString("Unknown",
+                                                                  comment: "Unknown product name, displayed in a review")
     }
 
 

@@ -216,6 +216,7 @@ private extension ReviewsViewController {
                 self.displayMarkAllAsReadNoticeIfNeeded()
             }
             self.updateMarkAllReadButtonState()
+            self.tableView.reloadData()
         }
     }
 }

@@ -61,7 +61,7 @@ final class ReviewsViewModel {
     }
 
     func markAllAsRead(onCompletion: @escaping (Error?) -> Void) {
-        markAsRead(notes: data.notifications, onCompletion: onCompletion)
+        markAsRead(notes: unreadNotifications, onCompletion: onCompletion)
     }
 }
 

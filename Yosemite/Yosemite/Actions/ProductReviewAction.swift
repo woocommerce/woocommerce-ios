@@ -24,7 +24,7 @@ public enum ProductReviewAction: Action {
     ///
     case updateTrashStatus(siteID: Int, reviewID: Int, isTrashed: Bool, onCompletion: (ProductReviewStatus?, Error?) -> Void)
 
-    /// Updates the spam status of a review (trash/untrash).
+    /// Updates the spam/unspam status of a review (trash/untrash).
     /// The completion closure will return the updated review status or error (if any).
     ///
     case updateSpamStatus(siteID: Int, reviewID: Int, isSpam: Bool, onCompletion: (ProductReviewStatus?, Error?) -> Void)

@@ -262,6 +262,7 @@ private extension ReviewsViewController {
         transitionToSyncingState()
         viewModel.synchronizeReviews { [weak self] in
             self?.transitionToResultsUpdatedState()
+            self?.tableView.reloadData()
             onCompletion?()
         }
     }

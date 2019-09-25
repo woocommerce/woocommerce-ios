@@ -165,14 +165,21 @@ private extension DefaultReviewsDataSource {
     private func reviewViewModel(at indexPath: IndexPath) -> ReviewViewModel {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewProduct = product(id: review.productID)
+        let note = notification(id: review.reviewID)
 
-        return ReviewViewModel(review: review, product: reviewProduct)
+        return ReviewViewModel(review: review, product: reviewProduct, notification: note)
     }
 
     private func product(id productID: Int) -> Product? {
         let products = productsResultsController.fetchedObjects
 
         return products.filter { $0.productID == productID }.first
+    }
+
+    private func notification(id reviewID: Int) -> Note? {
+        let notifications = notificationsResultsController.fetchedObjects
+
+        return notifications.filter { $0.meta.identifier(forKey: .comment) == reviewID }.first
     }
 }
 

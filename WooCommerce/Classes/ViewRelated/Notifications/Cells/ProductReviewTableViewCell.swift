@@ -81,9 +81,7 @@ final class ProductReviewTableViewCell: UITableViewCell {
         noticonLabel.text = viewModel.notIcon
         noticonLabel.textColor = viewModel.notIconColor
 
-        // hardcoding read status to true.
-        // to be implemented in issue #1252
-        read = true
+        read = viewModel.read
 
         starRating = viewModel.rating
     }

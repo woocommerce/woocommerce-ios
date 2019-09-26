@@ -492,12 +492,15 @@ class ProductStoreTests: XCTestCase {
     func testSearchProductsEffectivelyPersistsRetrievedSearchProducts() {
         let expectation = self.expectation(description: "Search Products")
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        let expectedProduct = sampleProduct()
 
-        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let keyword = "Book"
+        // A product that is expected to be in the search results.
+        let expectedProductID = 67
+        let expectedProductName = "Photo"
+
+        let keyword = "photo"
         let action = ProductAction.searchProducts(siteID: sampleSiteID,
                                                   keyword: keyword,
                                                   pageNumber: defaultPageNumber,
@@ -507,10 +510,14 @@ class ProductStoreTests: XCTestCase {
                                                         XCTFail()
                                                         return
                                                     }
-                                                    let readOnlyProduct = self.viewStorage
+
+                                                    let expectedProduct = self.viewStorage
                                                         .loadProduct(siteID: self.sampleSiteID,
-                                                                     productID: expectedProduct.productID)?.toReadOnly()
-                                                    XCTAssertEqual(readOnlyProduct, expectedProduct)
+                                                                     productID: expectedProductID)?.toReadOnly()
+                                                    XCTAssertEqual(expectedProduct?.name, expectedProductName)
+
+                                                    XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 2)
+
                                                     XCTAssertNil(error)
 
                                                     expectation.fulfill()

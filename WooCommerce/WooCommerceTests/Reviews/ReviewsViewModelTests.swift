@@ -123,6 +123,8 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
     func stopForwardingEvents() {
         stopsForwardingEventsWasHit = true
     }
+
+    func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {}
 }
 
 final class MockReviewsStoresManager: DefaultStoresManager {

@@ -1,0 +1,47 @@
+{
+    "data":{
+        "id": 726,
+        "date_created": "2017-03-21T17:07:11",
+        "date_created_gmt": "2017-03-21T20:07:11",
+        "amount": "10.00",
+        "reason": "Product No Longer Needed",
+        "refunded_by": 1,
+        "refunded_payment": false,
+        "meta_data": [],
+        "line_items": [
+            {
+                "id": 888,
+                "name": "Poster (Product Add-On)",
+                "product_id": 956,
+                "variation_id": 0,
+                "quantity": 1,
+                "tax_class": "",
+                "subtotal": "10.00",
+                "subtotal_tax": "0.00",
+                "total": "10.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [],
+                "sku": "",
+                "price": 10
+            }
+        ],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/orders/723/refunds/726"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/orders/723/refunds"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https://example.com/wp-json/wc/v3/orders/723"
+                }
+            ]
+        }
+    }
+}

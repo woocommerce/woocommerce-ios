@@ -473,7 +473,7 @@ public extension WordPressAuthenticator {
     func checkAppleIDCredentialState(for userID: String, completion:  @escaping (Bool, Error?) -> Void) {
         AppleAuthenticator.sharedInstance.checkAppleIDCredentialState(for: userID) { (state, error) in
             // If credentialState == .notFound, error will have a value.
-            completion(state == .authorized, error)
+            completion(state != .revoked, error)
         }
     }
 

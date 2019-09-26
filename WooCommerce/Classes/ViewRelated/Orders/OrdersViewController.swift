@@ -329,7 +329,7 @@ extension OrdersViewController {
         }
 
         ServiceLocator.analytics.track(.ordersListSearchTapped)
-        let searchViewController = OrderSearchViewController(storeID: storeID)
+        let searchViewController = SearchViewController(storeID: storeID)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)

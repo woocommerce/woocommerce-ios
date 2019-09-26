@@ -257,8 +257,8 @@
 		B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */; };
 		B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */; };
 		B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */; };
-		B5F355EF21CD500200A7077A /* OrderSearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F355EE21CD500200A7077A /* OrderSearchViewController.swift */; };
-		B5F355F121CD504400A7077A /* OrderSearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F355F021CD504400A7077A /* OrderSearchViewController.xib */; };
+		B5F355EF21CD500200A7077A /* SearchViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F355EE21CD500200A7077A /* SearchViewController.swift */; };
+		B5F355F121CD504400A7077A /* SearchViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F355F021CD504400A7077A /* SearchViewController.xib */; };
 		B5F571A421BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5F571A321BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift */; };
 		B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B5F571A521BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib */; };
 		B5F571A921BEECA50010D1B8 /* Responses in Resources */ = {isa = PBXBuildFile; fileRef = B5F571A821BEECA50010D1B8 /* Responses */; };
@@ -727,8 +727,8 @@
 		B5DBF3C420E148E000B53AED /* DeauthenticatedState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeauthenticatedState.swift; sourceTree = "<group>"; };
 		B5DBF3CA20E149CC00B53AED /* AuthenticatedState.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AuthenticatedState.swift; sourceTree = "<group>"; };
 		B5F04D942194F2A300501EE1 /* NoteDetailsRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsRow.swift; sourceTree = "<group>"; };
-		B5F355EE21CD500200A7077A /* OrderSearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchViewController.swift; sourceTree = "<group>"; };
-		B5F355F021CD504400A7077A /* OrderSearchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderSearchViewController.xib; sourceTree = "<group>"; };
+		B5F355EE21CD500200A7077A /* SearchViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchViewController.swift; sourceTree = "<group>"; };
+		B5F355F021CD504400A7077A /* SearchViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SearchViewController.xib; sourceTree = "<group>"; };
 		B5F571A321BEC90D0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoteDetailsHeaderPlainTableViewCell.swift; sourceTree = "<group>"; };
 		B5F571A521BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteDetailsHeaderPlainTableViewCell.xib; sourceTree = "<group>"; };
 		B5F571A821BEECA50010D1B8 /* Responses */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Responses; path = ../../Networking/NetworkingTests/Responses; sourceTree = "<group>"; };
@@ -1599,8 +1599,8 @@
 				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
 				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
 				B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */,
-				B5F355EE21CD500200A7077A /* OrderSearchViewController.swift */,
-				B5F355F021CD504400A7077A /* OrderSearchViewController.xib */,
+				B5F355EE21CD500200A7077A /* SearchViewController.swift */,
+				B5F355F021CD504400A7077A /* SearchViewController.xib */,
 				CE583A0321076C0100D73C1C /* NewNoteViewController.swift */,
 				B5FD111121D3CE7700560344 /* NewNoteViewController.xib */,
 				D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */,
@@ -2072,7 +2072,7 @@
 				CE37C04522984E81008DCB39 /* PickListTableViewCell.xib in Resources */,
 				D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */,
 				B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */,
-				B5F355F121CD504400A7077A /* OrderSearchViewController.xib in Resources */,
+				B5F355F121CD504400A7077A /* SearchViewController.xib in Resources */,
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
 				74A95B5821C403EA00FEE953 /* pure-min.css in Resources */,
@@ -2319,7 +2319,7 @@
 				028BAC4222F30B05008BB4AF /* StoreStatsV4PeriodViewController.swift in Sources */,
 				740987B321B87760000E4C80 /* FancyAnimatedButton+Woo.swift in Sources */,
 				B511ED27218A660E005787DC /* StringDescriptor.swift in Sources */,
-				B5F355EF21CD500200A7077A /* OrderSearchViewController.swift in Sources */,
+				B5F355EF21CD500200A7077A /* SearchViewController.swift in Sources */,
 				B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */,
 				D8C2A28823190B2300F503E9 /* StorageProductReview+Woo.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,

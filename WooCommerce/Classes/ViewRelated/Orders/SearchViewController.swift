@@ -4,9 +4,9 @@ import Yosemite
 import WordPressUI
 
 
-/// OrderSearchViewController: Displays the "Search Orders" Interface
+/// SearchViewController: Displays the "Search Orders" Interface
 ///
-class OrderSearchViewController: UIViewController {
+class SearchViewController: UIViewController {
 
     /// Dismiss Action
     ///
@@ -133,7 +133,7 @@ class OrderSearchViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-private extension OrderSearchViewController {
+private extension SearchViewController {
 
     /// Setup: Main View
     ///
@@ -216,7 +216,7 @@ private extension OrderSearchViewController {
 
 // MARK: - Notifications
 //
-extension OrderSearchViewController {
+extension SearchViewController {
 
     /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted
     ///
@@ -240,7 +240,7 @@ extension OrderSearchViewController {
 
 // MARK: - UISearchBarDelegate Conformance
 //
-extension OrderSearchViewController: UISearchBarDelegate {
+extension SearchViewController: UISearchBarDelegate {
 
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
         synchronizeSearchResults(with: searchText)
@@ -254,7 +254,7 @@ extension OrderSearchViewController: UISearchBarDelegate {
 
 // MARK: - SyncingCoordinatorDelegate Conformance
 //
-extension OrderSearchViewController: SyncingCoordinatorDelegate {
+extension SearchViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Orders for the Default Store (if any).
     ///
@@ -266,7 +266,7 @@ extension OrderSearchViewController: SyncingCoordinatorDelegate {
 
 // MARK: - Actions
 //
-private extension OrderSearchViewController {
+private extension SearchViewController {
 
     /// Updates the Predicate + Triggers a Sync Event
     ///
@@ -304,7 +304,7 @@ private extension OrderSearchViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension OrderSearchViewController: UITableViewDataSource {
+extension SearchViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return resultsController.sections.count
@@ -330,7 +330,7 @@ extension OrderSearchViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension OrderSearchViewController: UITableViewDelegate {
+extension SearchViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -346,7 +346,7 @@ extension OrderSearchViewController: UITableViewDelegate {
 
 // MARK: - Convenience Methods
 //
-private extension OrderSearchViewController {
+private extension SearchViewController {
 
     func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
@@ -367,7 +367,7 @@ private extension OrderSearchViewController {
 
 // MARK: - Actions
 //
-extension OrderSearchViewController {
+extension SearchViewController {
 
     @IBAction func dismissWasPressed() {
         view.endEditing(true)
@@ -389,7 +389,7 @@ extension OrderSearchViewController {
 
 // MARK: - Spinner Helpers
 //
-extension OrderSearchViewController {
+extension SearchViewController {
 
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
     ///
@@ -421,7 +421,7 @@ extension OrderSearchViewController {
 
 // MARK: - Placeholders
 //
-private extension OrderSearchViewController {
+private extension SearchViewController {
 
     /// Displays the Empty State Legend.
     ///
@@ -439,7 +439,7 @@ private extension OrderSearchViewController {
 
 // MARK: - FSM
 //
-private extension OrderSearchViewController {
+private extension SearchViewController {
 
     func didEnter(state: State) {
         switch state {

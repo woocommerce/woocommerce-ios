@@ -37,6 +37,10 @@
 		0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */; };
 		0274C25423162FB200EF1E40 /* DashboardTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0274C25323162FB200EF1E40 /* DashboardTopBannerFactory.swift */; };
 		02820F3422C257B700DE0D37 /* UITableView+FooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */; };
+		0282DD94233C9465006A5FDB /* SearchCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282DD93233C9465006A5FDB /* SearchCommand.swift */; };
+		0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282DD95233C960C006A5FDB /* SearchResultCell.swift */; };
+		0282DD98233CA093006A5FDB /* OrderSearchCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282DD97233CA093006A5FDB /* OrderSearchCommand.swift */; };
+		0282DD9A233CA32D006A5FDB /* OrderSearchCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282DD99233CA32D006A5FDB /* OrderSearchCellViewModel.swift */; };
 		0285BF7022FBD91C003A2525 /* TopPerformersSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0285BF6F22FBD91C003A2525 /* TopPerformersSectionHeaderView.swift */; };
 		028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */; };
 		028BAC4022F2EFA5008BB4AF /* StoreStatsAndTopPerformersPeriodViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028BAC3F22F2EFA5008BB4AF /* StoreStatsAndTopPerformersPeriodViewController.swift */; };
@@ -477,6 +481,10 @@
 		0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDictionary.swift; sourceTree = "<group>"; };
 		0274C25323162FB200EF1E40 /* DashboardTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardTopBannerFactory.swift; sourceTree = "<group>"; };
 		02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+FooterHelpers.swift"; sourceTree = "<group>"; };
+		0282DD93233C9465006A5FDB /* SearchCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchCommand.swift; sourceTree = "<group>"; };
+		0282DD95233C960C006A5FDB /* SearchResultCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchResultCell.swift; sourceTree = "<group>"; };
+		0282DD97233CA093006A5FDB /* OrderSearchCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchCommand.swift; sourceTree = "<group>"; };
+		0282DD99233CA32D006A5FDB /* OrderSearchCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderSearchCellViewModel.swift; sourceTree = "<group>"; };
 		0285BF6F22FBD91C003A2525 /* TopPerformersSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopPerformersSectionHeaderView.swift; sourceTree = "<group>"; };
 		028BAC3C22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersViewController.swift; sourceTree = "<group>"; };
 		028BAC3F22F2EFA5008BB4AF /* StoreStatsAndTopPerformersPeriodViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsAndTopPerformersPeriodViewController.swift; sourceTree = "<group>"; };
@@ -939,6 +947,19 @@
 			path = Developer;
 			sourceTree = "<group>";
 		};
+		0282DD92233C9397006A5FDB /* Search */ = {
+			isa = PBXGroup;
+			children = (
+				B5F355EE21CD500200A7077A /* SearchViewController.swift */,
+				B5F355F021CD504400A7077A /* SearchViewController.xib */,
+				0282DD93233C9465006A5FDB /* SearchCommand.swift */,
+				0282DD95233C960C006A5FDB /* SearchResultCell.swift */,
+				0282DD97233CA093006A5FDB /* OrderSearchCommand.swift */,
+				0282DD99233CA32D006A5FDB /* OrderSearchCellViewModel.swift */,
+			);
+			path = Search;
+			sourceTree = "<group>";
+		};
 		028BAC4322F3AE3B008BB4AF /* Stats v4 */ = {
 			isa = PBXGroup;
 			children = (
@@ -1312,6 +1333,7 @@
 				CE1CCB4920570B05000EE3AC /* Orders */,
 				B59C09DA2188D6E800AB41D6 /* Notifications */,
 				74EC34A3225FE1F3004BBC2E /* Products */,
+				0282DD92233C9397006A5FDB /* Search */,
 				02404EE52315272C00FF1170 /* Top Banner */,
 				B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */,
 				CE263DE7206ACE3E0015A693 /* MainTabBarController.swift */,
@@ -1599,8 +1621,6 @@
 				B509112E2049E27A007D25DC /* OrdersViewController.swift */,
 				CEE006072077D14C0079161F /* OrderDetailsViewController.swift */,
 				B53B3F36219C75AC00DF1EB6 /* OrderLoaderViewController.swift */,
-				B5F355EE21CD500200A7077A /* SearchViewController.swift */,
-				B5F355F021CD504400A7077A /* SearchViewController.xib */,
 				CE583A0321076C0100D73C1C /* NewNoteViewController.swift */,
 				B5FD111121D3CE7700560344 /* NewNoteViewController.xib */,
 				D81D9226222E7F0800FFA585 /* OrderStatusListViewController.swift */,
@@ -2309,6 +2329,7 @@
 				02E4FD7A230688BA0049610C /* OrderStatsV4Interval+Chart.swift in Sources */,
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,
 				D817586222BB64C300289CFE /* OrderDetailsNotices.swift in Sources */,
+				0282DD94233C9465006A5FDB /* SearchCommand.swift in Sources */,
 				028BAC4722F3B550008BB4AF /* StatsTimeRangeV4+UI.swift in Sources */,
 				B5AA7B3F20ED81C2004DA14F /* UserDefaults+Woo.swift in Sources */,
 				0274C25423162FB200EF1E40 /* DashboardTopBannerFactory.swift in Sources */,
@@ -2340,6 +2361,7 @@
 				747AA08B2107CF8D0047A89B /* TracksProvider.swift in Sources */,
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				D8C11A5E22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift in Sources */,
+				0282DD9A233CA32D006A5FDB /* OrderSearchCellViewModel.swift in Sources */,
 				D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */,
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,
 				02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */,
@@ -2471,6 +2493,7 @@
 				740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
 				744F00D221B582A9007EFA93 /* StarRatingView.swift in Sources */,
+				0282DD96233C960C006A5FDB /* SearchResultCell.swift in Sources */,
 				74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */,
 				029D444922F13F8A00DEFA8A /* DashboardUIFactory.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
@@ -2511,6 +2534,7 @@
 				B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */,
 				743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
+				0282DD98233CA093006A5FDB /* OrderSearchCommand.swift in Sources */,
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,
 				CE1F512920697F0100C6C810 /* UIFont+Helpers.swift in Sources */,

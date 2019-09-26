@@ -41,7 +41,7 @@ PODS:
   - Sentry/Core (4.4.0)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.1.4)
-  - WordPressAuthenticator (1.8.0):
+  - WordPressAuthenticator (1.9.0):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.3)
     - CocoaLumberjack (~> 3.5)
@@ -84,7 +84,7 @@ DEPENDENCIES:
   - CocoaLumberjack/Swift (~> 3.5)
   - Gridicons (~> 0.19)
   - KeychainAccess (~> 3.2)
-  - WordPressAuthenticator (~> 1.8.0)
+  - WordPressAuthenticator (~> 1.9.0)
   - WordPressShared (~> 1.8.2)
   - WordPressUI (~> 1.3.5)
   - XLPagerTabStrip (~> 9.0)
@@ -146,7 +146,7 @@ SPEC CHECKSUMS:
   Sentry: 26650184fe71eb7476dfd2737acb5ea6cc64b4b1
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
-  WordPressAuthenticator: 17ad69bd1fc4dc54af15fb706c61bfe81da12ddd
+  WordPressAuthenticator: 4a047f354ff6486b2b446a2c4d517611800eed48
   WordPressKit: 87ba4cce3f5269e26a09568a749ec1b8b2ba2267
   WordPressShared: 09cf184caa614835f5811e8609227165201e6d3e
   WordPressUI: 1b006c7440e85e724b9773c7ebe3a2e783f70941
@@ -154,6 +154,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: 787414f9240ee6ef8cfe4ea0f00e8b4d01d2d264
 
-PODFILE CHECKSUM: b7a0795016cbdecafa2d78b7fe1fecd961219b51
+PODFILE CHECKSUM: 35de80b89d3bd27ec2ccbd91686b95f51af87453
 
 COCOAPODS: 1.7.5

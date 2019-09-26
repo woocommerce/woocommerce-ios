@@ -259,7 +259,9 @@ extension ProductsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let product = resultsController.object(at: indexPath)
-        let viewModel = ProductDetailsViewModel(product: product)
+        let currencyCode = CurrencySettings.shared.currencyCode
+        let currency = CurrencySettings.shared.symbol(from: currencyCode)
+        let viewModel = ProductDetailsViewModel(product: product, currency: currency)
         let productViewController = ProductDetailsViewController(viewModel: viewModel)
         navigationController?.pushViewController(productViewController, animated: true)
     }

@@ -251,6 +251,7 @@ private extension ProductReviewStoreTests {
                                         statusKey: "hold",
                                         reviewer: "someone",
                                         reviewerEmail: "somewhere@theinternet.com",
+                                        reviewerAvatarURL: "http://animage.com",
                                         review: "Meh",
                                         rating: 1,
                                         verified: true)
@@ -264,6 +265,7 @@ private extension ProductReviewStoreTests {
                                         statusKey: "hold",
                                         reviewer: "someone else mutated",
                                         reviewerEmail: "somewhere@theinternet.com",
+                                        reviewerAvatarURL: "http://animage.com",
                                         review: "Meh",
                                         rating: 1,
                                         verified: true)

@@ -4,7 +4,7 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .productList:
             return BuildConfiguration.current == .localDeveloper
         case .stats:
-            return BuildConfiguration.current == .localDeveloper
+            return true
         default:
             return true
         }

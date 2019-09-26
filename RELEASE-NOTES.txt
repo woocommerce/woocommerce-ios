@@ -9,6 +9,7 @@
 - bugfix: On log in, some users would see the Continue button but be unable to Continue, due to errors with the account. A new "Try another account" button has been added as an option.
 - bugfix: Product Details page was displaying the Price in the wrong currency.
 - Enhancement: removed the "New Orders" card from the My store tab, now that the Orders tab displays the same information.
+- Added brand new stats page for user with the WooCommerce Admin plugin and provided an option for users to opt in or out directly from the Settings page.
  
 2.6
 -----

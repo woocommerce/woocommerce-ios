@@ -57,7 +57,6 @@ class SettingsViewController: UIViewController {
         refreshResultsController()
         configureNavigation()
         configureMainView()
-        configureSections()
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
@@ -65,6 +64,7 @@ class SettingsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        configureSections()
         tableView.reloadData()
     }
 

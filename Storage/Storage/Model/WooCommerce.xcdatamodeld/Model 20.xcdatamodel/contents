@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14492.1" systemVersion="18G95" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14492.1" systemVersion="18G87" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
@@ -74,6 +74,7 @@
         <relationship name="coupons" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderCoupon" inverseName="order" inverseEntity="OrderCoupon" syncable="YES"/>
         <relationship name="items" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderItem" inverseName="order" inverseEntity="OrderItem" syncable="YES"/>
         <relationship name="notes" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderNote" inverseName="order" inverseEntity="OrderNote" syncable="YES"/>
+        <relationship name="refunds" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderRefundCondensed" inverseName="order" inverseEntity="OrderRefundCondensed" syncable="YES"/>
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="OrderSearchResults" inverseName="orders" inverseEntity="OrderSearchResults" syncable="YES"/>
     </entity>
     <entity name="OrderCount" representedClassName="OrderCount" syncable="YES">
@@ -115,6 +116,12 @@
         <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="noteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="notes" inverseEntity="Order" syncable="YES"/>
+    </entity>
+    <entity name="OrderRefundCondensed" representedClassName="OrderRefundCondensed" syncable="YES" codeGenerationType="class">
+        <attribute name="reason" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="refundID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="total" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="refunds" inverseEntity="Order" syncable="YES"/>
     </entity>
     <entity name="OrderSearchResults" representedClassName="OrderSearchResults" syncable="YES">
         <attribute name="keyword" attributeType="String" syncable="YES"/>
@@ -382,7 +389,7 @@
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
         <element name="AccountSettings" positionX="-846" positionY="270" width="128" height="75"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
-        <element name="Order" positionX="-20" positionY="27" width="128" height="720"/>
+        <element name="Order" positionX="-20" positionY="27" width="128" height="30"/>
         <element name="OrderCount" positionX="-693" positionY="36" width="128" height="75"/>
         <element name="OrderCountItem" positionX="-684" positionY="45" width="128" height="105"/>
         <element name="OrderCoupon" positionX="-206.01953125" positionY="379.74609375" width="128" height="120"/>
@@ -414,5 +421,6 @@
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
+        <element name="OrderRefundCondensed" positionX="-693" positionY="45" width="128" height="30"/>
     </elements>
 </model>

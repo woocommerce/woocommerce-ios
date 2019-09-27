@@ -1,69 +1,125 @@
 import Foundation
 
-/// Represents a Refund request Entity
+
+/// Represents a Refund Entity.
 ///
-public struct Refund {
-
-    /// Total amount to be refunded
-    ///
+public struct Refund: Codable {
+    public let siteID: Int
+    public let refundID: Int
+    public let dateCreated: Date   // in gmt
     public let amount: String
-
-    /// Optional refund reason
-    ///
     public let reason: String?
+    public let refundedByUserID: Int
+    public let items: [OrderItemRefund]
 
-    /// If true, the automatic refund is used. When false, manual refund process is used.
+    /// If the refunded payment field in this response is true,
+    /// then we can assume that the refund was processed using automatic refund.
+    /// If false, the refund is processed manually.
     ///
-    public let apiRefund: Bool
+    public let automaticGatewayRefund: Bool?
 
-    /// Optional order items to be refunded
+
+    /// OrderRefund struct initializer.
     ///
-    public let items: [OrderItemRefund]?
-
-    public init(amount: String, reason: String?, apiRefund: Bool = true, items: [OrderItemRefund]?) {
+    public init(siteID: Int,
+                refundID: Int,
+                dateCreated: Date,
+                amount: String,
+                reason: String?,
+                refundedByUserID: Int,
+                items: [OrderItemRefund],
+                automaticGatewayRefund: Bool?
+        ) {
+        self.siteID = siteID
+        self.refundID = refundID
+        self.dateCreated = dateCreated
         self.amount = amount
         self.reason = reason
+        self.refundedByUserID = refundedByUserID
         self.items = items
-        self.apiRefund = apiRefund
+        self.automaticGatewayRefund = automaticGatewayRefund
     }
 
-    public func toDictionary() -> [String: Any] {
-        var dict: [String: Any] = [ParameterKey.amount: amount, ParameterKey.apiRefund: apiRefund]
 
-        if reason != nil {
-            dict[ParameterKey.reason] = reason
+    /// The public initializer for Refund.
+    ///
+    public init(from decoder: Decoder) throws {
+        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+            throw OrderRefundDecodingError.missingSiteID
         }
 
-        if items != nil {
-            dict[ParameterKey.orderItems] = Dictionary(uniqueKeysWithValues: items!.map { ($0.itemID, $0.toDictionary()) })
-        }
-        return dict
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        let refundID = try container.decode(Int.self, forKey: .refundID)
+        let dateCreated = try container.decode(Date.self, forKey: .dateCreated)
+        let amount = try container.decode(String.self, forKey: .amount)
+        let reason = try container.decodeIfPresent(String.self, forKey: .reason)
+        let refundedByUserID = try container.decode(Int.self, forKey: .refundedByUserID)
+        let items = try container.decode([OrderItemRefund].self, forKey: .items)
+        let automaticGatewayRefund = try container.decodeIfPresent(Bool.self, forKey: .automaticGatewayRefund)
+
+        self.init(siteID: siteID,
+                  refundID: refundID,
+                  dateCreated: dateCreated,
+                  amount: amount,
+                  reason: reason,
+                  refundedByUserID: refundedByUserID,
+                  items: items,
+                  automaticGatewayRefund: automaticGatewayRefund)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(refundID, forKey: .refundID)
+        try container.encode(dateCreated, forKey: .dateCreated)
+        try container.encode(amount, forKey: .amount)
+        try container.encode(reason, forKey: .reason)
+        try container.encode(refundedByUserID, forKey: .refundedByUserID)
+        try container.encode(items, forKey: .items)
+        try container.encode(automaticGatewayRefund, forKey: .automaticGatewayRefund)
     }
 }
+
+
+/// Defines all of the Refund CodingKeys
+///
+private extension Refund {
+
+    enum CodingKeys: String, CodingKey {
+        case refundID                   = "id"
+        case dateCreated                = "date_created_gmt"
+        case amount                     = "amount"
+        case reason                     = "reason"
+        case refundedByUserID           = "refunded_by"
+        case items                      = "line_items"
+        case automaticGatewayRefund     = "refunded_payment"
+    }
+}
+
 
 // MARK: - Comparable Conformance
 //
 extension Refund: Comparable {
     public static func == (lhs: Refund, rhs: Refund) -> Bool {
-        return lhs.amount == rhs.amount &&
+        return lhs.siteID == rhs.siteID &&
+            lhs.refundID == rhs.refundID &&
+            lhs.dateCreated == rhs.dateCreated &&
+            lhs.amount == rhs.amount &&
             lhs.reason == rhs.reason &&
-            lhs.apiRefund == rhs.apiRefund &&
-            (lhs.items != nil && rhs.items != nil) ? lhs.items!.count == rhs.items!.count &&
-                lhs.items!.sorted() == rhs.items!.sorted() : true
+            lhs.refundedByUserID == rhs.refundedByUserID &&
+            lhs.items.count == rhs.items.count &&
+            lhs.items.sorted() == rhs.items.sorted() &&
+            lhs.automaticGatewayRefund == rhs.automaticGatewayRefund
     }
 
     public static func < (lhs: Refund, rhs: Refund) -> Bool {
-        return lhs.amount == rhs.amount
+        return lhs.refundID == rhs.refundID && lhs.dateCreated < rhs.dateCreated
     }
 }
 
-// MARK: - Constants
+// MARK: - Decoding Errors
 //
-public extension Refund {
-    private enum ParameterKey {
-        static let amount: String       = "amount"
-        static let apiRefund: String    = "api_refund"
-        static let reason: String       = "reason"
-        static let orderItems: String   = "line_items"
-    }
+enum RefundDecodingError: Error {
+    case missingSiteID
 }

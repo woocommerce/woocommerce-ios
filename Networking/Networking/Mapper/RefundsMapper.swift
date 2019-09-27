@@ -1,40 +1,40 @@
 import Foundation
 
 
-/// Mapper: OrderRefund
+/// Mapper: Refunds
 ///
-struct OrderRefundsMapper: Mapper {
+struct RefundsMapper: Mapper {
 
     /// Site Identifier associated to the order refund that will be parsed.
     ///
-    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Order Endpoints.
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Order Refund Endpoints.
     ///
     let siteID: Int
 
 
-    /// (Attempts) to convert a dictionary into [OrderRefund].
+    /// (Attempts) to convert a dictionary into [Refund].
     ///
-    func map(response: Data) throws -> [OrderRefund] {
+    func map(response: Data) throws -> [Refund] {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
             .siteID: siteID
         ]
 
-        return try decoder.decode(OrderRefundsEnvelope.self, from: response).orderRefunds
+        return try decoder.decode(RefundsEnvelope.self, from: response).refunds
     }
 }
 
 
-/// OrdersRefundsEnvelope Disposable Entity
+/// RefundsEnvelope Disposable Entity
 ///
 /// `Load Order Refunds` endpoint returns the requested order refund document in the `data` key. This entity
 /// allows us to do parse all the things with JSONDecoder.
 ///
-private struct OrderRefundsEnvelope: Decodable {
-    let orderRefunds: [OrderRefund]
+private struct RefundsEnvelope: Decodable {
+    let refunds: [Refund]
 
     private enum CodingKeys: String, CodingKey {
-        case orderRefunds = "data"
+        case refunds = "data"
     }
 }

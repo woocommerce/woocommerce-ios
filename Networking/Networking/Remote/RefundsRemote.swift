@@ -21,7 +21,7 @@ public final class RefundsRemote: Remote {
                                context: String = Default.context,
                                pageNumber: Int = Default.pageNumber,
                                pageSize: Int = Default.pageSize,
-                               completion: @escaping ([OrderRefund]?, Error?) -> Void) {
+                               completion: @escaping ([Refund]?, Error?) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
@@ -29,7 +29,7 @@ public final class RefundsRemote: Remote {
         ]
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = OrderRefundsMapper(siteID: siteID)
+        let mapper = RefundsMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -45,10 +45,10 @@ public final class RefundsRemote: Remote {
     public func loadRefund(siteID: Int,
                            orderID: Int,
                            refundID: Int,
-                           completion: @escaping ([OrderRefund]?, Error?) -> Void) {
+                           completion: @escaping ([Refund]?, Error?) -> Void) {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = OrderRefundsMapper(siteID: siteID)
+        let mapper = RefundsMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -64,12 +64,19 @@ public final class RefundsRemote: Remote {
     public func createRefund(for siteID: Int,
                                  by orderID: Int,
                                  refund: Refund,
-                                 completion: @escaping (OrderRefund?, Error?) -> Void) {
+                                 completion: @escaping (Refund?, Error?) -> Void) {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: refund.toDictionary())
-        let mapper = OrderRefundMapper(siteID: siteID)
+        let mapper = RefundMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        do {
+            let encodedJson = try mapper.map(refund: refund)
+            let parameters: [String: Any]? = try JSONSerialization.jsonObject(with: encodedJson, options: []) as? [String: Any]
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            DDLogError("Unable to serialize data for refunds: \(error)")
+        }
     }
 
 }

@@ -105,7 +105,8 @@ private extension SummaryTableViewCellTests {
                      items: sampleItems(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: sampleCoupons())
+                     coupons: sampleCoupons(),
+                     refunds: nil)
     }
 
     func sampleAddress() -> Address {

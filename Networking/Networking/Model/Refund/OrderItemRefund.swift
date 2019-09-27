@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents an Order Item to be Refunded
 ///
-public struct OrderItemRefund: Codable {
+public struct OrderItemRefund: Encodable {
     public let itemID: Int
     public let name: String
     public let productID: Int
@@ -14,7 +14,7 @@ public struct OrderItemRefund: Codable {
     public let subtotalTax: String
     public let taxClass: String
     public let taxes: [OrderItemTaxRefund]
-    public let total: String
+    public let refundTotal: String
     public let totalTax: String
     public let variationID: Int
 
@@ -30,7 +30,7 @@ public struct OrderItemRefund: Codable {
                 subtotalTax: String,
                 taxClass: String,
                 taxes: [OrderItemTaxRefund],
-                total: String,
+                refundTotal: String,
                 totalTax: String,
                 variationID: Int) {
         self.itemID = itemID
@@ -43,45 +43,9 @@ public struct OrderItemRefund: Codable {
         self.subtotalTax = subtotalTax
         self.taxClass = taxClass
         self.taxes = taxes
-        self.total = total
+        self.refundTotal = refundTotal
         self.totalTax = totalTax
         self.variationID = variationID
-    }
-
-    /// The public initializer for OrderItemRefund.
-    ///
-    public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: CodingKeys.self)
-        let itemID = try container.decode(Int.self, forKey: .itemID)
-        let name = try container.decode(String.self, forKey: .name)
-        let productID = try container.decode(Int.self, forKey: .productID)
-        let decimalQuantity = try container.decode(Decimal.self, forKey: .quantity)
-        let quantity = NSDecimalNumber(decimal: decimalQuantity)
-        let decimalPrice = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)
-        let price = NSDecimalNumber(decimal: decimalPrice)
-        let sku = try container.decodeIfPresent(String.self, forKey: .sku)
-        let subtotal = try container.decode(String.self, forKey: .subtotal)
-        let subtotalTax = try container.decode(String.self, forKey: .subtotalTax)
-        let taxClass = try container.decode(String.self, forKey: .taxClass)
-        let taxes = try container.decode([OrderItemTaxRefund].self, forKey: .taxes)
-        let total = try container.decode(String.self, forKey: .total)
-        let totalTax = try container.decode(String.self, forKey: .totalTax)
-        let variationID = try container.decode(Int.self, forKey: .variationID)
-
-        // initialize the struct
-        self.init(itemID: itemID,
-                  name: name,
-                  productID: productID,
-                  quantity: quantity,
-                  price: price,
-                  sku: sku,
-                  subtotal: subtotal,
-                  subtotalTax: subtotalTax,
-                  taxClass: taxClass,
-                  taxes: taxes,
-                  total: total,
-                  totalTax: totalTax,
-                  variationID: variationID)
     }
 
     /// The public encoder for OrderItemRefund.
@@ -98,11 +62,8 @@ public struct OrderItemRefund: Codable {
         try container.encode(subtotal, forKey: .subtotal)
         try container.encode(subtotalTax, forKey: .subtotalTax)
         try container.encode(taxClass, forKey: .taxClass)
-
-        // TODO: encode the OrderItemTaxes container
-        //try container.encode(taxes, forKey: .taxes)
-
-        try container.encode(total, forKey: .total)
+//        try container.encodeIfPresent(OrderItemTaxRefund.self, forKey: .refundTax)
+        try container.encode(refundTotal, forKey: .refundTotal)
         try container.encode(totalTax, forKey: .totalTax)
         try container.encode(variationID, forKey: .variationID)
     }
@@ -123,8 +84,8 @@ private extension OrderItemRefund {
         case subtotal       = "subtotal"
         case subtotalTax    = "subtotal_tax"
         case taxClass       = "tax_class"
-        case taxes          = "taxes"
-        case total          = "total"
+        case refundTax      = "refund_tax"
+        case refundTotal    = "refund_total"
         case totalTax       = "total_tax"
         case variationID    = "variation_id"
     }
@@ -144,7 +105,7 @@ extension OrderItemRefund: Comparable {
             lhs.subtotal == rhs.subtotal &&
             lhs.subtotalTax == rhs.subtotalTax &&
             lhs.taxClass == rhs.taxClass &&
-            lhs.total == rhs.total &&
+            lhs.refundTotal == rhs.refundTotal &&
             lhs.totalTax == rhs.totalTax &&
             lhs.variationID == rhs.variationID
     }

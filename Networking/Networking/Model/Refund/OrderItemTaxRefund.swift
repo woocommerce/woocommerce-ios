@@ -43,7 +43,6 @@ public struct OrderItemTaxRefund: Codable {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(taxID, forKey: .taxID)
-        try container.encode(subtotal, forKey: .subtotal)
         try container.encode(total, forKey: .total)
     }
 }

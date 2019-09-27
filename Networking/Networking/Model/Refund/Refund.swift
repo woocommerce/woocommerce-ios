@@ -10,7 +10,7 @@ public struct Refund: Codable {
     public let amount: String
     public let reason: String?
     public let refundedByUserID: Int
-    public let items: [OrderItemRefund]
+    public let items: [OrderItem]?
 
     /// If the refunded payment field in this response is true,
     /// then we can assume that the refund was processed using automatic refund.
@@ -27,7 +27,7 @@ public struct Refund: Codable {
                 amount: String,
                 reason: String?,
                 refundedByUserID: Int,
-                items: [OrderItemRefund],
+                items: [OrderItem]?,
                 automaticGatewayRefund: Bool?
         ) {
         self.siteID = siteID
@@ -55,7 +55,7 @@ public struct Refund: Codable {
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decodeIfPresent(String.self, forKey: .reason)
         let refundedByUserID = try container.decode(Int.self, forKey: .refundedByUserID)
-        let items = try container.decode([OrderItemRefund].self, forKey: .items)
+        let items = try container.decodeIfPresent([OrderItem].self, forKey: .items)
         let automaticGatewayRefund = try container.decodeIfPresent(Bool.self, forKey: .automaticGatewayRefund)
 
         self.init(siteID: siteID,
@@ -71,12 +71,9 @@ public struct Refund: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
-        try container.encode(refundID, forKey: .refundID)
-        try container.encode(dateCreated, forKey: .dateCreated)
         try container.encode(amount, forKey: .amount)
         try container.encode(reason, forKey: .reason)
-        try container.encode(refundedByUserID, forKey: .refundedByUserID)
-        try container.encode(items, forKey: .items)
+//        try container.encodeIfPresent(items, forKey: .items)
         try container.encode(automaticGatewayRefund, forKey: .automaticGatewayRefund)
     }
 }
@@ -108,8 +105,8 @@ extension Refund: Comparable {
             lhs.amount == rhs.amount &&
             lhs.reason == rhs.reason &&
             lhs.refundedByUserID == rhs.refundedByUserID &&
-            lhs.items.count == rhs.items.count &&
-            lhs.items.sorted() == rhs.items.sorted() &&
+            lhs.items?.count == rhs.items?.count &&
+            lhs.items?.sorted() == rhs.items?.sorted() &&
             lhs.automaticGatewayRefund == rhs.automaticGatewayRefund
     }
 

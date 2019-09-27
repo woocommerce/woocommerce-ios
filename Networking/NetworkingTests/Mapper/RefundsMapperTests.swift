@@ -25,19 +25,15 @@ final class RefundsMapperTests: XCTestCase {
 
         XCTAssertEqual(firstRefund.amount, "10.00")
         XCTAssertEqual(firstRefund.reason, "Product No Longer Needed")
-        XCTAssertEqual(firstRefund.refundedBy, 1)
-        XCTAssertEqual(firstRefund.refundedPayment, false)
+        XCTAssertEqual(firstRefund.refundedByUserID, 1)
+        XCTAssertEqual(firstRefund.automaticGatewayRefund, false)
     }
 
     /// Verifies that all of the Refunded Order Items are parsed correctly.
     ///
     func testRefundItemsAreCorrectlyParsed() {
         let refunds = mapLoadAllRefundsResponse()
-
-        let firstRefund = refunds[0]
-        guard let item = firstRefund.items?.first else {
-            XCTFail()
-        }
+        let item = refunds[0].items[0]
 
         XCTAssertEqual(item.itemID, 888)
         XCTAssertEqual(item.name, "Poster (Product Add-On)")

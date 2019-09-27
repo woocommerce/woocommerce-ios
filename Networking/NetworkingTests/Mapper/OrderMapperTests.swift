@@ -40,6 +40,20 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.shippingTax, "0.00")
         XCTAssertEqual(order.total, "31.20")
         XCTAssertEqual(order.totalTax, "1.20")
+
+        // Has a coupon
+        XCTAssertNotNil(order.coupons)
+        XCTAssertEqual(order.coupons.count, 1)
+
+        guard let coupon = order.coupons.first else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(coupon.couponID, 894)
+        XCTAssertEqual(coupon.code, "30$off")
+        XCTAssertEqual(coupon.discount, "30")
+        XCTAssertEqual(coupon.discountTax, "1.2")
     }
 
     /// Verifies that all of the Order Address fields are parsed correctly.
@@ -147,5 +161,11 @@ private extension OrderMapperTests {
     ///
     func mapLoadBrokenOrderResponse() -> Order? {
         return mapOrder(from: "broken-order")
+    }
+
+    /// Returns the OrderMapper output upon receiving `order-fully-refunded`
+    ///
+    func mapLoadFullyRefundedOrderResponse() -> Order? {
+        return mapOrder(from: "order-fully-refunded")
     }
 }

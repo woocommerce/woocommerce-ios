@@ -331,7 +331,7 @@ class StyleManager {
         return active.destructiveActionColor
     }
 
-    static var hightlightTextColor: UIColor {
+    static var highlightTextColor: UIColor {
         return active.highlightTextColor
     }
 

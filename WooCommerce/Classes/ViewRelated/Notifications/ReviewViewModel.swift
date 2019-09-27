@@ -61,7 +61,7 @@ final class ReviewViewModel {
 
     lazy var read: Bool = {
         guard let note = notification else {
-            return false
+            return true
         }
 
         return note.read

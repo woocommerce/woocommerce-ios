@@ -153,6 +153,31 @@ class OrderMapperTests: XCTestCase {
 
         XCTAssertNil(order.refunds)
     }
+
+    /// Verfies that an Order with refund fields are correctly parsed.
+    ///
+    func testOrderRefundCondensedFieldsAreParsedCorrectly() {
+        guard let order = mapLoadFullyRefundedOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        guard let refunds = order.refunds else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(refunds.count, 1)
+
+        guard let fullRefund = refunds.first else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(fullRefund.refundID, 622)
+        XCTAssertEqual(fullRefund.reason, "Order fully refunded")
+        XCTAssertEqual(fullRefund.total, "-223.71")
+    }
 }
 
 

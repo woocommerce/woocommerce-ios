@@ -53,6 +53,6 @@ extension OrderRefundCondensed: Comparable {
 
     public static func < (lhs: OrderRefundCondensed, rhs: OrderRefundCondensed) -> Bool {
         return lhs.refundID < rhs.refundID ||
-            (lhs.refundID == rhs.refundID && lhs.total < rhs.total) 
+            (lhs.refundID == rhs.refundID && lhs.total < rhs.total)
     }
 }

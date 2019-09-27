@@ -783,25 +783,6 @@ private extension OrderStoreTests {
         return [coupon1, coupon2]
     }
 
-    func sampleRefunds() -> [Networking.OrderRefundCondensed] {
-        let refund1 = OrderRefundCondensed(refundID: 333,
-                                           reason: "Wrong size received",
-                                           total: "-8.71")
-        return [refund1]
-    }
-
-    func sampleRefundsMutated() -> [Networking.OrderRefundCondensed] {
-        let refund1 = OrderRefundCondensed(refundID: 333,
-                                           reason: "Wrong size received",
-                                           total: "-8.71")
-
-        let refund2 = OrderRefundCondensed(refundID: 677,
-                                           reason: "Wrong color received",
-                                           total: "-3.26")
-
-        return [refund1, refund2]
-    }
-
     func sampleItems() -> [Networking.OrderItem] {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product)",

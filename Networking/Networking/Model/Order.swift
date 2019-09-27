@@ -30,6 +30,7 @@ public struct Order: Decodable {
     public let billingAddress: Address?
     public let shippingAddress: Address?
     public let coupons: [OrderCouponLine]
+    public let refunds: [OrderRefundCondensed]?
 
     /// Order struct initializer.
     ///
@@ -54,7 +55,8 @@ public struct Order: Decodable {
                 items: [OrderItem],
                 billingAddress: Address?,
                 shippingAddress: Address?,
-                coupons: [OrderCouponLine]) {
+                coupons: [OrderCouponLine],
+                refunds: [OrderRefundCondensed]?) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -82,6 +84,7 @@ public struct Order: Decodable {
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
         self.coupons = coupons
+        self.refunds = refunds
     }
 
 
@@ -122,6 +125,7 @@ public struct Order: Decodable {
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
+        let refunds = try container.decodeIfPresent([OrderRefundsCondensed], forKey: .refunds)
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -144,7 +148,8 @@ public struct Order: Decodable {
                   items: items,
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress,
-                  coupons: coupons)
+                  coupons: coupons,
+                  refunds: refunds)
     }
 }
 
@@ -179,6 +184,7 @@ private extension Order {
         case shippingAddress    = "shipping"
         case billingAddress     = "billing"
         case couponLines        = "coupon_lines"
+        case refunds            = "refunds"
     }
 }
 
@@ -207,6 +213,8 @@ extension Order: Comparable {
             lhs.shippingAddress == rhs.shippingAddress &&
             lhs.coupons.count == rhs.coupons.count &&
             lhs.coupons.sorted() == rhs.coupons.sorted() &&
+            lhs.refunds.count == rhs.refunds.count &&
+            lhs.refunds.sorted() == rhs.refunds.sorted() &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted()
     }

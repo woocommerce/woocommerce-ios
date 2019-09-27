@@ -1,7 +1,7 @@
 import Yosemite
 
-/// Implementation of `SearchCommand` for Order search.
-final class OrderSearchCommand: SearchCommand {
+/// Implementation of `SearchUICommand` for Order search.
+final class OrderSearchUICommand: SearchUICommand {
     typealias Model = Order
     typealias CellViewModel = OrderSearchCellViewModel
 
@@ -55,7 +55,7 @@ final class OrderSearchCommand: SearchCommand {
     }
 }
 
-private extension OrderSearchCommand {
+private extension OrderSearchUICommand {
     func configureResultsController() {
         try? statusResultsController.performFetch()
     }

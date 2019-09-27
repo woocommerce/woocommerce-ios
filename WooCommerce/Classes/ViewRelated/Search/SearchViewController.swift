@@ -6,7 +6,7 @@ import WordPressUI
 
 /// SearchViewController: Displays the Search Interface for A Generic Model
 ///
-final class SearchViewController<ResultsControllerModel: ResultsControllerMutableType, Cell: UITableViewCell & SearchResultCell, Command: SearchCommand>:
+final class SearchViewController<ResultsControllerModel: ResultsControllerMutableType, Cell: UITableViewCell & SearchResultCell, Command: SearchUICommand>:
     UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate
 where Cell.SearchModel == Command.CellViewModel, ResultsControllerModel.ReadOnlyType == Command.Model {
 
@@ -63,7 +63,7 @@ where Cell.SearchModel == Command.CellViewModel, ResultsControllerModel.ReadOnly
         }
     }
 
-    private let searchCommand: Command
+    private let searchUICommand: Command
 
 
     /// Deinitializer
@@ -79,7 +79,7 @@ where Cell.SearchModel == Command.CellViewModel, ResultsControllerModel.ReadOnly
          command: Command,
          cellType: Cell.Type) {
         self.resultsController = resultsController
-        self.searchCommand = command
+        self.searchUICommand = command
         self.storeID = storeID
         super.init(nibName: "SearchViewController", bundle: nil)
     }
@@ -140,7 +140,7 @@ where Cell.SearchModel == Command.CellViewModel, ResultsControllerModel.ReadOnly
         }
 
         let model = resultsController.object(at: indexPath)
-        let cellModel = searchCommand.createCellViewModel(model: model)
+        let cellModel = searchUICommand.createCellViewModel(model: model)
         cell.configureCell(searchModel: cellModel)
         return cell
     }
@@ -151,7 +151,7 @@ where Cell.SearchModel == Command.CellViewModel, ResultsControllerModel.ReadOnly
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let model = resultsController.object(at: indexPath)
-        searchCommand.didSelectSearchResult(model: model, from: self)
+        searchUICommand.didSelectSearchResult(model: model, from: self)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -222,7 +222,7 @@ private extension SearchViewController {
     /// Setup: Search Bar
     ///
     func configureSearchBar() {
-        searchBar.placeholder = searchCommand.searchBarPlaceholder
+        searchBar.placeholder = searchUICommand.searchBarPlaceholder
         searchBar.tintColor = .black
     }
 
@@ -237,7 +237,7 @@ private extension SearchViewController {
     /// Setup: No Results
     ///
     func configureEmptyStateLabel() {
-        emptyStateLabel.text = searchCommand.emptyStateText
+        emptyStateLabel.text = searchUICommand.emptyStateText
         emptyStateLabel.textColor = StyleManager.wooGreyMid
         emptyStateLabel.font = .headline
         emptyStateLabel.adjustsFontForContentSizeCategory = true
@@ -286,7 +286,7 @@ extension SearchViewController: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
         let keyword = self.keyword
-        searchCommand.synchronizeModels(siteID: storeID,
+        searchUICommand.synchronizeModels(siteID: storeID,
                                         keyword: keyword,
                                         pageNumber: pageNumber,
                                         pageSize: pageSize,

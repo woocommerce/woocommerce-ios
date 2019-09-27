@@ -335,9 +335,9 @@ extension OrdersViewController {
 
         let searchResultsController = ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
 
-        let searchViewController = SearchViewController<StorageOrder, OrderTableViewCell, OrderSearchCommand>(storeID: storeID,
+        let searchViewController = SearchViewController<StorageOrder, OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
                                                                                                               resultsController: searchResultsController,
-                                                                                                              command: OrderSearchCommand(),
+                                                                                                              command: OrderSearchUICommand(),
                                                                                                               cellType: OrderTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 

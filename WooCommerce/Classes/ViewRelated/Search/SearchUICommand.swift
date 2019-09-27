@@ -1,7 +1,7 @@
 import UIKit
 
 /// An interface for search UI associated with a generic model and cell view model.
-protocol SearchCommand {
+protocol SearchUICommand {
     associatedtype Model
     associatedtype CellViewModel
 

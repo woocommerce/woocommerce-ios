@@ -125,7 +125,7 @@ public struct Order: Decodable {
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
-        let refunds = try container.decodeIfPresent([OrderRefundsCondensed], forKey: .refunds)
+        let refunds = try container.decodeIfPresent([OrderRefundCondensed].self, forKey: .refunds)
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -213,8 +213,8 @@ extension Order: Comparable {
             lhs.shippingAddress == rhs.shippingAddress &&
             lhs.coupons.count == rhs.coupons.count &&
             lhs.coupons.sorted() == rhs.coupons.sorted() &&
-            lhs.refunds.count == rhs.refunds.count &&
-            lhs.refunds.sorted() == rhs.refunds.sorted() &&
+            lhs.refunds?.count == rhs.refunds?.count &&
+            lhs.refunds?.sorted() == rhs.refunds?.sorted() &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted()
     }

@@ -693,7 +693,8 @@ private extension OrderStoreTests {
                      items: sampleItems(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: sampleCoupons())
+                     coupons: sampleCoupons(),
+                     refunds: sampleRefunds())
     }
 
     func sampleOrderMutated() -> Networking.Order {
@@ -718,7 +719,8 @@ private extension OrderStoreTests {
                      items: sampleItemsMutated(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: sampleCouponsMutated())
+                     coupons: sampleCouponsMutated(),
+                     refunds: sampleRefundsMutated())
     }
 
     func sampleOrderMutated2() -> Networking.Order {
@@ -743,7 +745,8 @@ private extension OrderStoreTests {
                      items: sampleItemsMutated2(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: [])
+                     coupons: [],
+                     refunds: nil)
     }
 
     func sampleAddress() -> Networking.Address {
@@ -778,6 +781,25 @@ private extension OrderStoreTests {
                                       discount: "50",
                                       discountTax: "0.66")
         return [coupon1, coupon2]
+    }
+
+    func sampleRefunds() -> [Networking.OrderRefundCondensed] {
+        let refund1 = OrderRefundCondensed(refundID: 333,
+                                           reason: "Wrong size received",
+                                           total: "-8.71")
+        return [refund1]
+    }
+
+    func sampleRefundsMutated() -> [Networking.OrderRefundCondensed] {
+        let refund1 = OrderRefundCondensed(refundID: 333,
+                                           reason: "Wrong size received",
+                                           total: "-8.71")
+
+        let refund2 = OrderRefundCondensed(refundID: 677,
+                                           reason: "Wrong color received",
+                                           total: "-3.26")
+
+        return [refund1, refund2]
     }
 
     func sampleItems() -> [Networking.OrderItem] {

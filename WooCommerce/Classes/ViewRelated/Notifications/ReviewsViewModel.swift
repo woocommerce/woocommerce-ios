@@ -75,21 +75,25 @@ extension ReviewsViewModel {
 
         group.enter()
         synchronizeAllReviews {
+            print("===== reviews syncronized ===")
             group.leave()
         }
 
         group.enter()
         synchronizeProductsReviewed {
+            print("===== products syncronized ===")
             group.leave()
         }
 
         group.enter()
         synchronizeNotifications {
+            print("===== notifications syncronized ===")
             group.leave()
         }
 
         group.notify(queue: .main) {
             if let completionBlock = onCompletion {
+                print("==== initiating render ===")
                 completionBlock()
             }
         }

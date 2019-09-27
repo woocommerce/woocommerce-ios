@@ -31,6 +31,7 @@ final class ProductReviewTableViewCell: UITableViewCell {
     ///
     var read: Bool = false {
         didSet {
+            print("setting read to ", read)
             refreshColors()
         }
     }
@@ -58,6 +59,8 @@ final class ProductReviewTableViewCell: UITableViewCell {
         configureSnippetLabel()
         configureNoticonLabel()
         configureStarView()
+
+        initialiseReadStateToFalse()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -115,6 +118,10 @@ private extension ProductReviewTableViewCell {
         starRatingView.starImage = Star.filledImage
         starRatingView.emptyStarImage = Star.emptyImage
         starRatingView.isHidden = (starRating == nil)
+    }
+
+    func initialiseReadStateToFalse() {
+        read = false
     }
 }
 

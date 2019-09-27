@@ -178,6 +178,15 @@ extension UIImage {
         return Gridicon.iconOfType(.product).imageWithTintColor(tintColor)!
     }
 
+    /// Product Placeholder Image on Products Tab Cell
+    ///
+    static var productsTabProductCellPlaceholderImage: UIImage {
+        let tintColor = StyleManager.wooGreyBorder
+        return Gridicon
+            .iconOfType(.product, withSize: CGSize(width: 20, height: 20))
+            .imageWithTintColor(tintColor)!
+    }
+
     /// Product Image
     ///
     static var productImage: UIImage {

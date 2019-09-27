@@ -40,23 +40,6 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(order.shippingTax, "0.00")
         XCTAssertEqual(order.total, "31.20")
         XCTAssertEqual(order.totalTax, "1.20")
-
-        // Has a coupon
-        XCTAssertNotNil(order.coupons)
-        XCTAssertEqual(order.coupons.count, 1)
-
-        guard let coupon = order.coupons.first else {
-            XCTFail()
-            return
-        }
-
-        XCTAssertEqual(coupon.couponID, 894)
-        XCTAssertEqual(coupon.code, "30$off")
-        XCTAssertEqual(coupon.discount, "30")
-        XCTAssertEqual(coupon.discountTax, "1.2")
-
-        // Doesn't have any refunds
-        XCTAssertNil(order.refunds)
     }
 
     /// Verifies that all of the Order Address fields are parsed correctly.
@@ -136,6 +119,39 @@ class OrderMapperTests: XCTestCase {
 
         let orderModifiedString = format.string(from: brokenOrder.dateModified)
         XCTAssertEqual(orderModifiedString, todayCreatedString)
+    }
+
+    /// Verfies that the coupon fields for an Order are correctly parsed.
+    ///
+    func testOrderCouponFieldsAreCorrectlyParsed() {
+        guard let order = mapLoadOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertNotNil(order.coupons)
+        XCTAssertEqual(order.coupons.count, 1)
+
+        guard let coupon = order.coupons.first else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(coupon.couponID, 894)
+        XCTAssertEqual(coupon.code, "30$off")
+        XCTAssertEqual(coupon.discount, "30")
+        XCTAssertEqual(coupon.discountTax, "1.2")
+    }
+
+    /// Verifies that an Order with no refunds is correctly parsed.
+    ///
+    func testOrderRefundCondensedFieldsDoNotExistAreParsedCorrectly() {
+        guard let order = mapLoadOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertNil(order.refunds)
     }
 }
 

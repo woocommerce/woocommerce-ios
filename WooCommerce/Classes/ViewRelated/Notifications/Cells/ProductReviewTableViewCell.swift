@@ -31,7 +31,6 @@ final class ProductReviewTableViewCell: UITableViewCell {
     ///
     var read: Bool = false {
         didSet {
-            print("setting read to ", read)
             refreshColors()
         }
     }

@@ -262,8 +262,6 @@ private extension ReviewsViewController {
         transitionToSyncingState()
         viewModel.synchronizeReviews { [weak self] in
             self?.transitionToResultsUpdatedState()
-            print("====== tableview ====")
-            print(self?.tableView)
             self?.tableView.reloadData()
             onCompletion?()
         }

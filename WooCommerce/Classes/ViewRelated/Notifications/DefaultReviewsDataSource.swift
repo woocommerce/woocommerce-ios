@@ -128,12 +128,10 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
     func stopForwardingEvents() {
         reviewsResultsController.stopForwardingEvents()
-        //notificationsResultsController.stopForwardingEvents()
     }
 
     func startForwardingEvents(to tableView: UITableView) {
         reviewsResultsController.startForwardingEvents(to: tableView)
-        //notificationsResultsController.startForwardingEvents(to: tableView)
     }
 }
 
@@ -184,11 +182,6 @@ private extension DefaultReviewsDataSource {
         let reviewProduct = product(id: review.productID)
         let note = notification(id: review.reviewID)
 
-        print("====== instantiating view model " )
-        print("review ", review.review )
-        print("product id ", reviewProduct?.productID)
-        print("matching notification is read", note?.read)
-        print("////// instantiating view model " )
         return ReviewViewModel(review: review, product: reviewProduct, notification: note)
     }
 

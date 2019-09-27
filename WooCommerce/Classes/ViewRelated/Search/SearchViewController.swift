@@ -6,9 +6,9 @@ import WordPressUI
 
 /// SearchViewController: Displays the Search Interface for A Generic Model
 ///
-final class SearchViewController<ResultsControllerModel: ResultsControllerMutableType, Cell: UITableViewCell & SearchResultCell, Command: SearchUICommand>:
+final class SearchViewController<Cell: UITableViewCell & SearchResultCell, Command: SearchUICommand>:
     UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate
-where Cell.SearchModel == Command.CellViewModel, ResultsControllerModel.ReadOnlyType == Command.Model {
+where Cell.SearchModel == Command.CellViewModel {
 
     /// Dismiss Action
     ///
@@ -32,7 +32,7 @@ where Cell.SearchModel == Command.CellViewModel, ResultsControllerModel.ReadOnly
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) models in sync.
     ///
-    private let resultsController: ResultsController<ResultsControllerModel>
+    private let resultsController: ResultsController<Command.ResultsControllerModel>
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -75,10 +75,9 @@ where Cell.SearchModel == Command.CellViewModel, ResultsControllerModel.ReadOnly
     /// Designated Initializer
     ///
     init(storeID: Int,
-         resultsController: ResultsController<ResultsControllerModel>,
          command: Command,
          cellType: Cell.Type) {
-        self.resultsController = resultsController
+        self.resultsController = command.createResultsController()
         self.searchUICommand = command
         self.storeID = storeID
         super.init(nibName: "SearchViewController", bundle: nil)

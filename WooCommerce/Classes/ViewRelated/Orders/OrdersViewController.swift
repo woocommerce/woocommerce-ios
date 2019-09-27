@@ -330,15 +330,9 @@ extension OrdersViewController {
 
         ServiceLocator.analytics.track(.ordersListSearchTapped)
 
-        let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
-
-        let searchResultsController = ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
-
-        let searchViewController = SearchViewController<StorageOrder, OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
-                                                                                                              resultsController: searchResultsController,
-                                                                                                              command: OrderSearchUICommand(),
-                                                                                                              cellType: OrderTableViewCell.self)
+        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
+                                                                                                  command: OrderSearchUICommand(),
+                                                                                                  cellType: OrderTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)

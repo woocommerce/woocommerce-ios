@@ -1,4 +1,5 @@
 import UIKit
+import Yosemite
 
 /// An interface for search UI associated with a generic model and cell view model.
 protocol SearchUICommand {
@@ -10,6 +11,10 @@ protocol SearchUICommand {
 
     /// Displayed when there are no search results.
     var emptyStateText: String { get }
+
+    associatedtype ResultsControllerModel: ResultsControllerMutableType where ResultsControllerModel.ReadOnlyType == Model
+    /// Creates a results controller for the search results. The result model's readonly type matches the search result model.
+    func createResultsController() -> ResultsController<ResultsControllerModel>
 
     /// Creates a view model for the search result cell.
     ///

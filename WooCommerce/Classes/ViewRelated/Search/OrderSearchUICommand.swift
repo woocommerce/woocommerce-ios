@@ -4,6 +4,7 @@ import Yosemite
 final class OrderSearchUICommand: SearchUICommand {
     typealias Model = Order
     typealias CellViewModel = OrderSearchCellViewModel
+    typealias ResultsControllerModel = StorageOrder
 
     let searchBarPlaceholder = NSLocalizedString("Search all orders", comment: "Orders Search Placeholder")
 
@@ -19,6 +20,12 @@ final class OrderSearchUICommand: SearchUICommand {
 
     init() {
         configureResultsController()
+    }
+
+    func createResultsController() -> ResultsController<ResultsControllerModel> {
+        let storageManager = ServiceLocator.storageManager
+        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
+        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
     }
 
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {

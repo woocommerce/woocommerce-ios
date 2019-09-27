@@ -54,6 +54,9 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(coupon.code, "30$off")
         XCTAssertEqual(coupon.discount, "30")
         XCTAssertEqual(coupon.discountTax, "1.2")
+
+        // Doesn't have any refunds
+        XCTAssertNil(order.refunds)
     }
 
     /// Verifies that all of the Order Address fields are parsed correctly.

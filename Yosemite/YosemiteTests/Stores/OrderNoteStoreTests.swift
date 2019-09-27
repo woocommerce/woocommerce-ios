@@ -291,7 +291,8 @@ private extension OrderNoteStoreTests {
                      items: [],
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: [])
+                     coupons: [],
+                     refunds: nil)
     }
 
     func sampleAddress() -> Networking.Address {

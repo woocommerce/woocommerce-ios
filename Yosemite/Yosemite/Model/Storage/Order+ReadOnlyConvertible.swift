@@ -64,7 +64,7 @@ extension Storage.Order: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.Order {
         let orderItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderItem]()
         let orderCoupons = coupons?.map { $0.toReadOnly() } ?? [Yosemite.OrderCouponLine]()
-        let orderRefunds = refunds?.map { $0.toReadOnly() } ?? [Yosemite.OrderRefundCondensed]()
+        let orderRefunds = refunds?.map { $0.toReadOnly() } ?? nil
 
         return Order(siteID: Int(siteID),
                      orderID: Int(orderID),

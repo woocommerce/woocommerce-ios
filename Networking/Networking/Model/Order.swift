@@ -213,8 +213,6 @@ extension Order: Comparable {
             lhs.shippingAddress == rhs.shippingAddress &&
             lhs.coupons.count == rhs.coupons.count &&
             lhs.coupons.sorted() == rhs.coupons.sorted() &&
-            lhs.refunds?.count == rhs.refunds?.count &&
-            lhs.refunds?.sorted() == rhs.refunds?.sorted() &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted()
     }

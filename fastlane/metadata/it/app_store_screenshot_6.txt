@@ -1,0 +1,2 @@
+Visualizza i dati del negozio per settimana,
+mese e anno

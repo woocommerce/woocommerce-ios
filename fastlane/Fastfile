@@ -205,17 +205,133 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     sh("cd .. && rm WooCommerce.app.dSYM.zip")
   end
 
-########################################################################
-# Helper Lanes
-########################################################################  
-desc "Get a list of pull request from `start_tag` to the current state"
-lane :get_pullrequests_list do | options |
-  get_prs_list(repository:GHHELPER_REPO, start_tag:"#{options[:start_tag]}", report_path:"#{File.expand_path('~')}/wcios_prs_list.txt")
-end
+  ########################################################################
+  # Screenshot Lanes
+  ########################################################################  
+  desc "Take Screenshots"
+  lane :screenshots do | options |
 
-desc "Run release preflight checks"
-lane :release_preflight do | options |
-    configure_validate()
-end
+    languages = ENV["MAGNIFICENT_16"].split() + ["en"]
 
+    if options[:languages] != nil
+      languages = languages & options[:languages].split(",")
+    end
+
+    snapshot(
+      clean: true,
+      devices: [
+        'iPhone 8',
+      ],
+      languages: languages,
+      scheme: "WooCommerceScreenshots",
+      output_directory: "./fastlane/screenshots",
+      clear_previous_screenshots: true,
+      erase_simulator: false,
+      localize_simulator: true,
+      concurrent_simulators: true,
+    )
+
+  end
+
+  desc "Download App Store Translations"
+  lane :download_app_store_translations do | options |
+
+    files = {
+
+      # Metadata fields
+      "app_store_desc"            => {desc: "description.txt"},
+      "app_store_keywords"        => {desc: "keywords.txt"},
+      "app_store_subtitle"        => {desc: "subtitle.txt"},
+      "app_store_promo_text"      => {desc: "promotional_text.txt"},
+      "whats_new"                 => {desc: "whats_new.txt"},
+
+      # Screenshots
+      "app_store_screenshot-1"    => {desc: "app_store_screenshot_1.txt"},
+      "app_store_screenshot-1_b"  => {desc: "app_store_screenshot_1b.txt"},
+      "app_store_screenshot-2"    => {desc: "app_store_screenshot_2.txt"},
+      "app_store_screenshot-3"    => {desc: "app_store_screenshot_3.txt"},
+      "app_store_screenshot-4"    => {desc: "app_store_screenshot_4.txt"},
+      "app_store_screenshot-5"    => {desc: "app_store_screenshot_5.txt"},
+      "app_store_screenshot-6"    => {desc: "app_store_screenshot_6.txt"},
+      "app_store_screenshot-7"    => {desc: "app_store_screenshot_7.txt"},
+      "app_store_screenshot-8"    => {desc: "app_store_screenshot_8.txt"},
+    }
+
+    metadata_locales = ENV["MAGNIFICENT_16"].split().map { |locale| locale.downcase }
+
+    gp_downloadmetadata(project_url: "https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/", 
+      target_files: files,
+      locales: metadata_locales,
+      source_locale: "en-US",
+      download_path: "./fastlane/metadata"
+    )
+
+    # Create the marketing and privacy URL files
+    metadata_locales.each { |locale|
+      marketing_path = Dir.pwd + "/metadata/#{locale}/marketing_url.txt"
+      write_file(marketing_path, 'https://woocommerce.com/mobile/')
+      
+      privacy_path = Dir.pwd + "/metadata/#{locale}/privacy_url.txt"
+      write_file(privacy_path, "https://automattic.com/privacy/")
+
+      support_path = Dir.pwd + "/metadata/#{locale}/support_url.txt"
+      write_file(support_path, "https://docs.woocommerce.com/")
+    }
+  end
+
+  desc "Upload App Store Data"
+  lane :upload_app_store_data do | options |
+    
+    deliver(
+      app_identifier: 'com.automattic.woocommerce',
+      copyright: '2019 WooCommerce',
+      skip_binary_upload: true,
+      team_id: '299112',
+      skip_screenshots: true,
+      ignore_language_directory_validation: true
+    )
+  end
+
+  desc "Create Promo Screenshots"
+  lane :create_promo_screenshots do | options |
+
+    # Create a copy of the files to work with – this ensures that if we're doing multiple
+     # screenshot generation tasks close together, we can keep reusing the same source files
+     original_screenshot_directory = File.join(Dir.pwd, "screenshots")
+     metadata_directory = File.join(Dir.pwd, "metadata")
+     output_directory = File.join(Dir.pwd, "/promo_screenshots")
+
+     # Run screenshots generator tool 
+     promo_screenshots(
+       orig_folder: original_screenshot_directory,
+       metadata_folder: metadata_directory,
+       output_folder: output_directory,
+       force: options[:force],
+     )
+  end
+
+  ########################################################################
+  # Helper Lanes
+  ########################################################################  
+  desc "Get a list of pull request from `start_tag` to the current state"
+  lane :get_pullrequests_list do | options |
+    get_prs_list(repository:GHHELPER_REPO, start_tag:"#{options[:start_tag]}", report_path:"#{File.expand_path('~')}/wcios_prs_list.txt")
+  end
+
+  desc "Run release preflight checks"
+  lane :release_preflight do | options |
+      configure_validate()
+  end
+
+  def write_file(path, contents)
+    begin
+      FileUtils.rm_f(path)
+      file = File.new(path, "w")
+      file.write(contents) 
+    rescue IOError => e
+      UI.crash(e)
+    ensure
+      file.close unless file.nil?
+    end
+  end
 end

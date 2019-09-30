@@ -4,7 +4,7 @@ import NSURL_IDN
 import GoogleSignIn
 import WordPressShared
 import WordPressUI
-
+import AuthenticationServices
 
 // MARK: - WordPressAuthenticator: Public API to deal with WordPress.com and WordPress.org authentication.
 //
@@ -469,11 +469,11 @@ import WordPressUI
 
 @available(iOS 13.0, *)
 public extension WordPressAuthenticator {
-    
-    func checkAppleIDCredentialState(for userID: String, completion:  @escaping (Bool, Error?) -> Void) {
-        AppleAuthenticator.sharedInstance.checkAppleIDCredentialState(for: userID) { (state, error) in
+
+    func getAppleIDCredentialState(for userID: String, completion:  @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {
+        AppleAuthenticator.sharedInstance.getAppleIDCredentialState(for: userID) { (state, error) in
             // If credentialState == .notFound, error will have a value.
-            completion(state != .revoked, error)
+            completion(state, error)
         }
     }
 

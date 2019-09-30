@@ -199,8 +199,8 @@ extension AppleAuthenticator: ASAuthorizationControllerPresentationContextProvid
 
 @available(iOS 13.0, *)
 extension AppleAuthenticator {
-    func checkAppleIDCredentialState(for userID: String,
-                                     completion: @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {
+    func getAppleIDCredentialState(for userID: String,
+                                   completion: @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {
         ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userID, completion: completion)
     }
 }

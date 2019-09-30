@@ -33,6 +33,18 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
                                                        sortedBy: [descriptor])
     }()
 
+    /// Notifications
+    ///
+    private lazy var notificationsResultsController: ResultsController<StorageNote> = {
+        let storageManager = ServiceLocator.storageManager
+        let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
+
+        return ResultsController<StorageNote>(storageManager: storageManager,
+                                              sectionNameKeyPath: "normalizedAgeAsString",
+                                              matching: notificationsPredicate,
+                                              sortedBy: [descriptor])
+    }()
+
     /// Predicate to filter only Product Reviews that are either approved or on hold
     ///
     private lazy var filterPredicate: NSPredicate = {
@@ -50,6 +62,15 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
                           ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }()
 
+    private lazy var notificationsPredicate: NSPredicate = {
+        let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
+        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
+                                                                   sitePredicate,
+                                                                   notDeletedPredicate])
+    }()
+
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
     ///
     private var estimatedRowHeights = [IndexPath: CGFloat]()
@@ -60,6 +81,12 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     ///
     var isEmpty: Bool {
         return reviewsResultsController.isEmpty
+    }
+
+    /// Notifications associated with the reviews.
+    ///
+    var notifications: [Note] {
+        return notificationsResultsController.fetchedObjects
     }
 
     /// Identifiers of the Products mentioned in the reviews.
@@ -81,7 +108,16 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     /// Initialise obervers
     ///
     private func observeResults() {
+        observeProducts()
+        observeNotifications()
+    }
+
+    private func observeProducts() {
         try? productsResultsController.performFetch()
+    }
+
+    private func observeNotifications() {
+        try? notificationsResultsController.performFetch()
     }
 
     /// Initializes observers for incoming reviews
@@ -144,14 +180,21 @@ private extension DefaultReviewsDataSource {
     private func reviewViewModel(at indexPath: IndexPath) -> ReviewViewModel {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewProduct = product(id: review.productID)
+        let note = notification(id: review.reviewID)
 
-        return ReviewViewModel(review: review, product: reviewProduct)
+        return ReviewViewModel(review: review, product: reviewProduct, notification: note)
     }
 
     private func product(id productID: Int) -> Product? {
         let products = productsResultsController.fetchedObjects
 
         return products.filter { $0.productID == productID }.first
+    }
+
+    private func notification(id reviewID: Int) -> Note? {
+        let notifications = notificationsResultsController.fetchedObjects
+
+        return notifications.filter { $0.meta.identifier(forKey: .comment) == reviewID }.first
     }
 }
 
@@ -184,8 +227,9 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
     func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewedProduct = product(id: review.productID)
+        let note = notification(id: review.reviewID)
 
-        let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct)
+        let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct, notification: note)
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
 }

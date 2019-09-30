@@ -130,6 +130,24 @@ private extension ProductsViewController {
     }
 }
 
+// MARK: - Navigation Bar Actions
+//
+private extension ProductsViewController {
+    @IBAction func displaySearchProducts() {
+        guard let storeID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+
+        // TODO-1263: analytics
+        let searchViewController = SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>(storeID: storeID,
+                                                                                                  command: ProductSearchUICommand(siteID: storeID),
+                                                                                                  cellType: ProductsTabProductTableViewCell.self)
+        let navigationController = WooNavigationController(rootViewController: searchViewController)
+
+        present(navigationController, animated: true, completion: nil)
+    }
+}
+
 // MARK: - View Configuration
 //
 private extension ProductsViewController {
@@ -141,6 +159,22 @@ private extension ProductsViewController {
             "Products",
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
+
+        navigationItem.leftBarButtonItem = {
+            let button = UIBarButtonItem(image: .searchImage,
+                                         style: .plain,
+                                         target: self,
+                                         action: #selector(displaySearchProducts))
+            button.tintColor = StyleManager.wooWhite
+            button.accessibilityTraits = .button
+            button.accessibilityLabel = NSLocalizedString("Search products", comment: "Search Products")
+            button.accessibilityHint = NSLocalizedString(
+                "Retrieves a list of products that contain a given keyword.",
+                comment: "VoiceOver accessibility hint, informing the user the button can be used to search products."
+            )
+
+            return button
+        }()
     }
 
     /// Apply Woo styles.

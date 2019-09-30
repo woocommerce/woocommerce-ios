@@ -1,3 +1,3 @@
-- Eftersom meddelanden nu visas under "Beställningar", behövde fliken "Meddelanden" en ny identitet. Eftersom den faktiskt bara visar recensioner har vi döpt om den till "Recensioner".
-- Det fanns ett fel på skärmen för beställningsinformation som skapade ett konstigt användargränssnitt med felplacerade etiketter när man försökte uppdatera informationen. Detta fel har nu åtgärdats.
-- Det finns nu en aktivitetsikon på den nedre fliken, som överlappar ikonen för "Beställningar", så att du snabbt kan se antalet pågående beställningar.
+- Vissa av er kunde se er webbplats på inloggningsskärmen men kunde inte trycka på fortsätt. Nu har vi fixat det.
+- Stora säljvolymer är värda att fira – vi har gjort det mycket enklare att läsa dekalen Beställningar.
+- Vi upptäckte att det inte längre gick att hämta produktbilder från skärmen Beställningsinformation. Nu går det att hämta dem igen.

@@ -15,7 +15,7 @@ final class ReviewsViewModel {
         return data
     }
 
-    var delegate: UITableViewDelegate {
+    var delegate: ReviewsInteractionDelegate {
         return data
     }
 

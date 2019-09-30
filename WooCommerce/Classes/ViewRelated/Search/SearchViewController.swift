@@ -4,9 +4,11 @@ import Yosemite
 import WordPressUI
 
 
-/// OrderSearchViewController: Displays the "Search Orders" Interface
+/// SearchViewController: Displays the Search Interface for A Generic Model
 ///
-class OrderSearchViewController: UIViewController {
+final class SearchViewController<Cell: UITableViewCell & SearchResultCell, Command: SearchUICommand>:
+    UIViewController, UITableViewDataSource, UITableViewDelegate, UISearchBarDelegate
+where Cell.SearchModel == Command.CellViewModel {
 
     /// Dismiss Action
     ///
@@ -30,24 +32,9 @@ class OrderSearchViewController: UIViewController {
         return FooterSpinnerView(tableViewStyle: tableView.style)
     }()
 
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
+    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) models in sync.
     ///
-    private lazy var resultsController: ResultsController<StorageOrder> = {
-        let storageManager = ServiceLocator.storageManager
-        let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
-
-        return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
-    }()
-
-    /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) OrderStatuses in sync.
-    ///
-    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
-
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-    }()
+    private let resultsController: ResultsController<Command.ResultsControllerModel>
 
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
@@ -78,6 +65,8 @@ class OrderSearchViewController: UIViewController {
         }
     }
 
+    private let searchUICommand: Command
+
 
     /// Deinitializer
     ///
@@ -87,9 +76,13 @@ class OrderSearchViewController: UIViewController {
 
     /// Designated Initializer
     ///
-    init(storeID: Int) {
+    init(storeID: Int,
+         command: Command,
+         cellType: Cell.Type) {
+        self.resultsController = command.createResultsController()
+        self.searchUICommand = command
         self.storeID = storeID
-        super.init(nibName: nil, bundle: nil)
+        super.init(nibName: "SearchViewController", bundle: nil)
     }
 
     /// Unsupported: NSCoder
@@ -130,12 +123,87 @@ class OrderSearchViewController: UIViewController {
 
         navigationController?.setNavigationBarHidden(false, animated: true)
     }
+
+    // MARK: - UITableViewDataSource Conformance
+    //
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return resultsController.sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return resultsController.sections[section].numberOfObjects
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: Cell.reuseIdentifier, for: indexPath) as? Cell else {
+            fatalError()
+        }
+
+        let model = resultsController.object(at: indexPath)
+        let cellModel = searchUICommand.createCellViewModel(model: model)
+        cell.configureCell(searchModel: cellModel)
+        return cell
+    }
+
+    // MARK: - UITableViewDelegate Conformance
+    //
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let model = resultsController.object(at: indexPath)
+        searchUICommand.didSelectSearchResult(model: model, from: self)
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let objectIndex = resultsController.objectIndex(from: indexPath)
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: objectIndex)
+    }
+
+    // MARK: - UISearchBarDelegate Conformance
+    //
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        synchronizeSearchResults(with: searchText)
+    }
+
+    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
+        return true
+    }
+
+    // MARK: - Notifications
+    //
+
+    /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted
+    ///
+    @objc func keyboardWillShow(_ note: Notification) {
+        let bottomInset = keyboardHeight(from: note)
+
+        tableView.contentInset.bottom = bottomInset
+        tableView.scrollIndicatorInsets.bottom = bottomInset
+    }
+
+    /// Returns the Keyboard Height from a (hopefully) Keyboard Notification.
+    ///
+    func keyboardHeight(from note: Notification) -> CGFloat {
+        let wrappedRect = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+        let keyboardRect = wrappedRect?.cgRectValue ?? .zero
+
+        return keyboardRect.height
+    }
+
+    // MARK: - Actions
+    //
+
+    @IBAction func dismissWasPressed() {
+        view.endEditing(true)
+        dismiss(animated: true, completion: nil)
+    }
 }
 
 
 // MARK: - User Interface Initialization
 //
-private extension OrderSearchViewController {
+private extension SearchViewController {
 
     /// Setup: Main View
     ///
@@ -155,7 +223,7 @@ private extension OrderSearchViewController {
     /// Setup: Search Bar
     ///
     func configureSearchBar() {
-        searchBar.placeholder = NSLocalizedString("Search all orders", comment: "Orders Search Placeholder")
+        searchBar.placeholder = searchUICommand.searchBarPlaceholder
         searchBar.tintColor = .black
     }
 
@@ -170,7 +238,7 @@ private extension OrderSearchViewController {
     /// Setup: No Results
     ///
     func configureEmptyStateLabel() {
-        emptyStateLabel.text = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
+        emptyStateLabel.text = searchUICommand.emptyStateText
         emptyStateLabel.textColor = StyleManager.wooGreyMid
         emptyStateLabel.font = .headline
         emptyStateLabel.adjustsFontForContentSizeCategory = true
@@ -182,7 +250,6 @@ private extension OrderSearchViewController {
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
-        try? statusResultsController.performFetch()
     }
 
     /// Setup: Sync'ing Coordinator
@@ -194,11 +261,7 @@ private extension OrderSearchViewController {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
-        let cells = [ OrderTableViewCell.self ]
-
-        for cell in cells {
-            tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
-        }
+        Cell.register(for: tableView)
     }
 
     /// Registers for all of the related Notifications
@@ -216,59 +279,33 @@ private extension OrderSearchViewController {
 }
 
 
-// MARK: - Notifications
-//
-extension OrderSearchViewController {
-
-    /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted
-    ///
-    @objc func keyboardWillShow(_ note: Notification) {
-        let bottomInset = keyboardHeight(from: note)
-
-        tableView.contentInset.bottom = bottomInset
-        tableView.scrollIndicatorInsets.bottom = bottomInset
-    }
-
-    /// Returns the Keyboard Height from a (hopefully) Keyboard Notification.
-    ///
-    func keyboardHeight(from note: Notification) -> CGFloat {
-        let wrappedRect = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
-        let keyboardRect = wrappedRect?.cgRectValue ?? .zero
-
-        return keyboardRect.height
-    }
-}
-
-
-// MARK: - UISearchBarDelegate Conformance
-//
-extension OrderSearchViewController: UISearchBarDelegate {
-
-    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-        synchronizeSearchResults(with: searchText)
-    }
-
-    func searchBarShouldBeginEditing(_ searchBar: UISearchBar) -> Bool {
-        return true
-    }
-}
-
-
 // MARK: - SyncingCoordinatorDelegate Conformance
 //
-extension OrderSearchViewController: SyncingCoordinatorDelegate {
+extension SearchViewController: SyncingCoordinatorDelegate {
 
-    /// Synchronizes the Orders for the Default Store (if any).
+    /// Synchronizes the models for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
-        synchronizeOrders(keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        let keyword = self.keyword
+        searchUICommand.synchronizeModels(siteID: storeID,
+                                        keyword: keyword,
+                                        pageNumber: pageNumber,
+                                        pageSize: pageSize,
+                                        onCompletion: { [weak self] isCompleted in
+                                            // Disregard OPs that don't really match the latest keyword
+                                            if keyword == self?.keyword {
+                                                self?.transitionToResultsUpdatedState()
+                                            }
+                                            onCompletion?(isCompleted)
+        })
+        transitionToSyncingState()
     }
 }
 
 
 // MARK: - Actions
 //
-private extension OrderSearchViewController {
+private extension SearchViewController {
 
     /// Updates the Predicate + Triggers a Sync Event
     ///
@@ -280,118 +317,12 @@ private extension OrderSearchViewController {
 
         syncingCoordinator.resynchronize()
     }
-
-    /// Synchronizes the Orders matching a given Keyword
-    ///
-    func synchronizeOrders(keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
-        let action = OrderAction.searchOrders(siteID: storeID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
-            if let error = error {
-                DDLogError("☠️ Order Search Failure! \(error)")
-            }
-
-            // Disregard OPs that don't really match the latest keyword
-            if keyword == self?.keyword {
-                self?.transitionToResultsUpdatedState()
-            }
-
-            onCompletion?(error == nil)
-        }
-
-        transitionToSyncingState()
-        ServiceLocator.stores.dispatch(action)
-        ServiceLocator.analytics.track(.ordersListFilterOrSearch, withProperties: ["filter": "", "search": "\(keyword)"])
-    }
-}
-
-
-// MARK: - UITableViewDataSource Conformance
-//
-extension OrderSearchViewController: UITableViewDataSource {
-
-    func numberOfSections(in tableView: UITableView) -> Int {
-        return resultsController.sections.count
-    }
-
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return resultsController.sections[section].numberOfObjects
-    }
-
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: OrderTableViewCell.reuseIdentifier, for: indexPath) as? OrderTableViewCell else {
-            fatalError()
-        }
-
-        let viewModel = detailsViewModel(at: indexPath)
-        let orderStatus = lookUpOrderStatus(for: viewModel.order)
-        cell.configureCell(viewModel: viewModel, orderStatus: orderStatus)
-
-        return cell
-    }
-}
-
-
-// MARK: - UITableViewDelegate Conformance
-//
-extension OrderSearchViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        presentOrderDetails(for: detailsViewModel(at: indexPath))
-    }
-
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        let orderIndex = resultsController.objectIndex(from: indexPath)
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
-    }
-}
-
-
-// MARK: - Convenience Methods
-//
-private extension OrderSearchViewController {
-
-    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
-        let order = resultsController.object(at: indexPath)
-
-        return OrderDetailsViewModel(order: order)
-    }
-
-    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        let listAll = statusResultsController.fetchedObjects
-        for orderStatus in listAll where orderStatus.slug == order.statusKey {
-            return orderStatus
-        }
-
-        return nil
-    }
-}
-
-
-// MARK: - Actions
-//
-extension OrderSearchViewController {
-
-    @IBAction func dismissWasPressed() {
-        view.endEditing(true)
-        dismiss(animated: true, completion: nil)
-    }
-
-    private func presentOrderDetails(for order: OrderDetailsViewModel) {
-        let identifier = OrderDetailsViewController.classNameWithoutNamespaces
-        guard let detailsViewController = UIStoryboard.orders.instantiateViewController(withIdentifier: identifier) as? OrderDetailsViewController else {
-            fatalError()
-        }
-
-        detailsViewController.viewModel = order
-
-        navigationController?.pushViewController(detailsViewController, animated: true)
-    }
 }
 
 
 // MARK: - Spinner Helpers
 //
-extension OrderSearchViewController {
+extension SearchViewController {
 
     /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
     ///
@@ -403,7 +334,7 @@ extension OrderSearchViewController {
         footerSpinnerView.startAnimating()
     }
 
-    /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
+    /// Whenever we're sync'ing a page of models that's beyond what we're currently displaying, this method will return *true*.
     ///
     private func mustStartFooterSpinner() -> Bool {
         guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
@@ -423,7 +354,7 @@ extension OrderSearchViewController {
 
 // MARK: - Placeholders
 //
-private extension OrderSearchViewController {
+private extension SearchViewController {
 
     /// Displays the Empty State Legend.
     ///
@@ -441,7 +372,7 @@ private extension OrderSearchViewController {
 
 // MARK: - FSM
 //
-private extension OrderSearchViewController {
+private extension SearchViewController {
 
     func didEnter(state: State) {
         switch state {

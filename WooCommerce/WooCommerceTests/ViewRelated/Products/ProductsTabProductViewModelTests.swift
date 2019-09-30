@@ -2,7 +2,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-class ProductsTabProductViewModelTests: XCTestCase {
+final class ProductsTabProductViewModelTests: XCTestCase {
 
     // MARK: Stock status
 

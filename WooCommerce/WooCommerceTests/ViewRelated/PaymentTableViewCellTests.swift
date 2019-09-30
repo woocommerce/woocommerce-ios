@@ -75,21 +75,34 @@ final class PaymentTableViewCellTests: XCTestCase {
         XCTAssertEqual(label.text, viewModel.totalValue)
     }
 
-    func testFooterTextContainsExpectedText() {
-        XCTAssertEqual(cell.getFooterText(), viewModel.paymentSummary)
+    func testPaidByCustomerContainsExpectedText() {
+        let label = cell.getPaidByCustomerLabel()
+        XCTAssertEqual(label.text, Titles.paidByCustomer)
+    }
+
+    func testTotalPaidByCustomerContainsExpectedText() {
+        let label = cell.getTotalPaidByCustomerLabel()
+        XCTAssertEqual(label.text, viewModel.paymentTotal)
+    }
+
+    func testFooterContainsExpectedText() {
+        let label = cell.getFooterLabel()
+        XCTAssertEqual(label.text, viewModel.paymentSummary)
     }
 }
 
 
 private extension PaymentTableViewCellTests {
     enum Titles {
-        static let subtotalLabel = NSLocalizedString("Subtotal",
-                                                     comment: "Subtotal label for payment view")
+        static let subtotalLabel = NSLocalizedString("Product Total",
+                                                     comment: "Product Total label for payment view")
         static let shippingLabel = NSLocalizedString("Shipping",
                                                      comment: "Shipping label for payment view")
         static let taxesLabel = NSLocalizedString("Taxes",
                                                   comment: "Taxes label for payment view")
-        static let totalLabel = NSLocalizedString("Total",
-                                                  comment: "Total label for payment view")
+        static let totalLabel = NSLocalizedString("Order Total",
+                                                  comment: "Order Total label for payment view")
+        static let paidByCustomer = NSLocalizedString("Paid by customer",
+                                                      comment: "Paid by customer label for payment view")
     }
 }

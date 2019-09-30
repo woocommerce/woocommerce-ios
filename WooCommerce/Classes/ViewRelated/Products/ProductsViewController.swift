@@ -204,7 +204,6 @@ private extension ProductsViewController {
     func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-//        let predicate = NSPredicate(format: "siteID == %lld AND name = 'hi'", siteID)
         let descriptor = NSSortDescriptor(key: "dateModified", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -266,7 +265,9 @@ extension ProductsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let product = resultsController.object(at: indexPath)
-        let viewModel = ProductDetailsViewModel(product: product)
+        let currencyCode = CurrencySettings.shared.currencyCode
+        let currency = CurrencySettings.shared.symbol(from: currencyCode)
+        let viewModel = ProductDetailsViewModel(product: product, currency: currency)
         let productViewController = ProductDetailsViewController(viewModel: viewModel)
         navigationController?.pushViewController(productViewController, animated: true)
     }

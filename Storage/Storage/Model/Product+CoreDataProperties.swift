@@ -66,6 +66,7 @@ extension Product {
     @NSManaged public var downloads: Set<ProductDownload>?
     @NSManaged public var images: Set<ProductImage>?
     @NSManaged public var tags: Set<ProductTag>?
+    @NSManaged public var searchResults: Set<ProductSearchResults>?
 
 }
 
@@ -168,5 +169,22 @@ extension Product {
 
     @objc(removeTags:)
     @NSManaged public func removeFromTags(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for searchResults
+extension Product {
+
+    @objc(addSearchResultsObject:)
+    @NSManaged public func addToSearchResults(_ value: ProductSearchResults)
+
+    @objc(removeSearchResultsObject:)
+    @NSManaged public func removeFromSearchResults(_ value: ProductSearchResults)
+
+    @objc(addSearchResults:)
+    @NSManaged public func addToSearchResults(_ values: NSSet)
+
+    @objc(removeSearchResults:)
+    @NSManaged public func removeFromSearchResults(_ values: NSSet)
 
 }

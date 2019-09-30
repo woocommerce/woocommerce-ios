@@ -11,6 +11,7 @@ final class MockReviews {
     let statusKey       = "hold"
     let reviewer        = "A Human"
     let reviewerEmail   = "somewhere@on.the.internet.com"
+    let reviewerAvatar  = "http://somewhere@on.the.internet.com"
     let reviewText      = "<p>A remarkable artifact</p>"
     let rating          = 4
     let verified        = true
@@ -25,6 +26,7 @@ final class MockReviews {
                              statusKey: statusKey,
                              reviewer: reviewer,
                              reviewerEmail: reviewerEmail,
+                             reviewerAvatarURL: reviewerAvatar,
                              review: reviewText,
                              rating: rating,
                              verified: verified)
@@ -38,6 +40,7 @@ final class MockReviews {
                              statusKey: statusKey,
                              reviewer: "",
                              reviewerEmail: reviewerEmail,
+                             reviewerAvatarURL: reviewerAvatar,
                              review: reviewText,
                              rating: rating,
                              verified: verified)

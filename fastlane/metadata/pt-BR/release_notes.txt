@@ -1,3 +1,3 @@
-- Notificações são exibidas em “Pedidos”, então a guia “Notificações” precisava de uma nova identidade. Já que, na verdade, ela exibe apenas comentários, a renomeamos astutamente como "Comentários".
-- Houve um bug na tela Detalhes do pedido que criou uma interface estranha com rótulos perdidos quando você tentou atualizar as informações, mas ele já foi corrigido.
-- Agora há um selo na guia inferior, sobreposto ao ícone “Pedidos”, para que você possa ver rapidamente o número de pedidos em andamento.
+- Alguns usuários viam seus sites na tela de login, mas não conseguiam clicar em Continuar. Isso foi corrigido.
+- Ser um vendedor produtivo é algo a se comemorar. Por isso, fizemos com que a leitura do selo de pedidos seja bem mais fácil.
+- Descobrimos que não era mais possível baixar automaticamente imagens de produtos na tela Detalhes do pedido. Restauramos a capacidade de fazer downloads.

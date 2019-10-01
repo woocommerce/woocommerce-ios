@@ -694,7 +694,7 @@ private extension OrderStoreTests {
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
                      coupons: sampleCoupons(),
-                     refunds: nil)
+                     refunds: [])
     }
 
     func sampleOrderMutated() -> Networking.Order {
@@ -720,7 +720,7 @@ private extension OrderStoreTests {
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
                      coupons: sampleCouponsMutated(),
-                     refunds: nil)
+                     refunds: [])
     }
 
     func sampleOrderMutated2() -> Networking.Order {
@@ -746,7 +746,7 @@ private extension OrderStoreTests {
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
                      coupons: [],
-                     refunds: nil)
+                     refunds: [])
     }
 
     func sampleAddress() -> Networking.Address {

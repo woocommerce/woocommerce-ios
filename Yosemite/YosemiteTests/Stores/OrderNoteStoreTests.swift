@@ -292,7 +292,7 @@ private extension OrderNoteStoreTests {
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
                      coupons: [],
-                     refunds: nil)
+                     refunds: [])
     }
 
     func sampleAddress() -> Networking.Address {

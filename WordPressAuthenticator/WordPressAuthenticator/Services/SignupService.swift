@@ -71,9 +71,16 @@ class SignupService {
                                     success(createdAccount, false, username, bearer_token)
         }, failure: { error in
             if let error = (error as NSError?) {
+                
+                var existingEmail = ""
+                if let errorData = error.userInfo[WordPressComRestApi.ErrorKeyErrorData] as? [String: String],
+                    let email = errorData.first?.value {
+                    existingEmail = email
+                }
+
                 let existingNonSocialAccount = (error.userInfo[ErrorKeys.errorCode] as? String ?? "") == ErrorKeys.existingNonSocialUser
                 if existingNonSocialAccount {
-                    success(false, true, "", "")
+                    success(false, true, existingEmail, "")
                     return
                 }
             }

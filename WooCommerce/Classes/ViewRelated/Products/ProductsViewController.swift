@@ -139,9 +139,9 @@ private extension ProductsViewController {
         }
 
         // TODO-1263: analytics
-        let searchViewController = SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>(storeID: storeID,
-                                                                                                  command: ProductSearchUICommand(siteID: storeID),
-                                                                                                  cellType: ProductsTabProductTableViewCell.self)
+        let searchViewController = SearchViewController(storeID: storeID,
+                                                        command: ProductSearchUICommand(siteID: storeID),
+                                                        cellType: ProductsTabProductTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)

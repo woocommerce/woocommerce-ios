@@ -37,15 +37,18 @@ final class ReviewDetailsViewController: UIViewController {
 
     private let product: Product?
 
+    private let notification: Note?
+
     /// Sections to be rendered
     ///
     private var rows = [Row]()
 
     /// Designated Initializer
     ///
-    init(productReview: ProductReview, product: Product?) {
+    init(productReview: ProductReview, product: Product?, notification: Note?) {
         self.productReview = productReview
         self.product = product
+        self.notification = notification
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -53,6 +56,7 @@ final class ReviewDetailsViewController: UIViewController {
     ///
     required init?(coder aDecoder: NSCoder) {
         self.product = nil
+        self.notification = nil
         super.init(coder: aDecoder)
         assert(productReview != nil, "Please use the designated initializer!")
     }
@@ -71,6 +75,11 @@ final class ReviewDetailsViewController: UIViewController {
 
         registerTableViewCells()
         reloadInterface()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        markAsReadIfNeeded(notification)
     }
 }
 
@@ -469,6 +478,21 @@ private extension ReviewDetailsViewController {
                                                              isTrashed: false,
                                                              onCompletion: {(_, error) in onCompletion(error)})]
         }
+    }
+
+    /// Marks a specific Notification as read.
+    ///
+    func markAsReadIfNeeded(_ note: Note?) {
+        guard let note = note, note.read == false else {
+            return
+        }
+
+        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Error marking single notification as read: \(error)")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

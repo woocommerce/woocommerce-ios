@@ -58,6 +58,8 @@ final class ProductReviewTableViewCell: UITableViewCell {
         configureSnippetLabel()
         configureNoticonLabel()
         configureStarView()
+
+        initialiseReadStateToFalse()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -81,9 +83,7 @@ final class ProductReviewTableViewCell: UITableViewCell {
         noticonLabel.text = viewModel.notIcon
         noticonLabel.textColor = viewModel.notIconColor
 
-        // hardcoding read status to true.
-        // to be implemented in issue #1252
-        read = true
+        read = viewModel.read
 
         starRating = viewModel.rating
     }
@@ -117,6 +117,10 @@ private extension ProductReviewTableViewCell {
         starRatingView.starImage = Star.filledImage
         starRatingView.emptyStarImage = Star.emptyImage
         starRatingView.isHidden = (starRating == nil)
+    }
+
+    func initialiseReadStateToFalse() {
+        read = false
     }
 }
 

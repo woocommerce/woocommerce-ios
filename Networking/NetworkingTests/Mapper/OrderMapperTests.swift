@@ -162,11 +162,7 @@ class OrderMapperTests: XCTestCase {
             return
         }
 
-        guard let refunds = order.refunds else {
-            XCTFail()
-            return
-        }
-
+        let refunds = order.refunds
         XCTAssertEqual(refunds.count, 1)
 
         guard let fullRefund = refunds.first else {
@@ -187,11 +183,7 @@ class OrderMapperTests: XCTestCase {
             return
         }
 
-        guard let refunds = order.refunds else {
-            XCTFail()
-            return
-        }
-
+        let refunds = order.refunds
         XCTAssertEqual(refunds.count, 2)
 
         let partialRefund1 = refunds[0]

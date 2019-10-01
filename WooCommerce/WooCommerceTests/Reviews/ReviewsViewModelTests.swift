@@ -100,6 +100,10 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
             .uniqued()
     }
 
+    var notifications: [Note] {
+        return []
+    }
+
     var startForwardingEventsWasHit = false
     var stopsForwardingEventsWasHit = false
     var startObservingWasHit = false
@@ -130,6 +134,7 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
 final class MockReviewsStoresManager: DefaultStoresManager {
     var syncReviewsIsHit = false
     var retrieveProductsIsHit = false
+    var syncNotificationsIsHit = false
 
     init() {
         let sessionManager = SessionManager.testingInstance
@@ -145,6 +150,10 @@ final class MockReviewsStoresManager: DefaultStoresManager {
 
         if let productAction = action as? ProductAction {
             onProductAction(productAction)
+        }
+
+        if let notificationAction = action as? NotificationAction {
+            onNotificationAction(notificationAction)
         }
     }
 
@@ -162,6 +171,16 @@ final class MockReviewsStoresManager: DefaultStoresManager {
         switch action {
         case .retrieveProducts(_, _, onCompletion: let onCompletion):
             retrieveProductsIsHit = true
+            onCompletion(nil)
+        default:
+            return
+        }
+    }
+
+    private func onNotificationAction(_ action: NotificationAction) {
+        switch action {
+        case .synchronizeNotifications(let onCompletion):
+            syncNotificationsIsHit = true
             onCompletion(nil)
         default:
             return

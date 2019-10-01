@@ -30,7 +30,7 @@ enum FeatureFlag: Int {
             return BuildConfiguration.current == .localDeveloper
         case .reviews:
             return false
-        case .reviews:
+        case .refunds:
             return BuildConfiguration.current == .localDeveloper
         default:
             return true

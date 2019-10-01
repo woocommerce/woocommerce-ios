@@ -30,7 +30,7 @@ public struct Order: Decodable {
     public let billingAddress: Address?
     public let shippingAddress: Address?
     public let coupons: [OrderCouponLine]
-    public let refunds: [OrderRefundCondensed]?
+    public let refunds: [OrderRefundCondensed]
 
     /// Order struct initializer.
     ///
@@ -56,7 +56,7 @@ public struct Order: Decodable {
                 billingAddress: Address?,
                 shippingAddress: Address?,
                 coupons: [OrderCouponLine],
-                refunds: [OrderRefundCondensed]?) {
+                refunds: [OrderRefundCondensed]) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -125,7 +125,9 @@ public struct Order: Decodable {
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
-        let refunds = try container.decodeIfPresent([OrderRefundCondensed].self, forKey: .refunds)
+
+        // The refunds field will not always exist in the response, so let's default to an emtpy array.
+        let refunds = try container.decodeIfPresent([OrderRefundCondensed].self, forKey: .refunds) ?? []
 
         self.init(siteID: siteID,
                   orderID: orderID,
@@ -213,8 +215,8 @@ extension Order: Comparable {
             lhs.shippingAddress == rhs.shippingAddress &&
             lhs.coupons.count == rhs.coupons.count &&
             lhs.coupons.sorted() == rhs.coupons.sorted() &&
-            lhs.refunds?.count == rhs.refunds?.count &&
-            lhs.refunds?.sorted() == rhs.refunds?.sorted() &&
+            lhs.refunds.count == rhs.refunds.count &&
+            lhs.refunds.sorted() == rhs.refunds.sorted() &&
             lhs.items.count == rhs.items.count &&
             lhs.items.sorted() == rhs.items.sorted()
     }

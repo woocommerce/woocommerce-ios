@@ -121,7 +121,7 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(orderModifiedString, todayCreatedString)
     }
 
-    /// Verfies that the coupon fields for an Order are correctly parsed.
+    /// Verifies that the coupon fields for an Order are correctly parsed.
     ///
     func testOrderCouponFieldsAreCorrectlyParsed() {
         guard let order = mapLoadOrderResponse() else {
@@ -154,7 +154,7 @@ class OrderMapperTests: XCTestCase {
         XCTAssertNil(order.refunds)
     }
 
-    /// Verfies that an Order with refund fields are correctly parsed.
+    /// Verifies that an Order with refund fields are correctly parsed.
     ///
     func testOrderFullRefundFieldsAreParsedCorrectly() {
         guard let order = mapLoadFullyRefundedOrderResponse() else {

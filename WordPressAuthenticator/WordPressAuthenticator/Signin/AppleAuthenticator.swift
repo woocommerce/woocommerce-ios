@@ -81,6 +81,7 @@ private extension AppleAuthenticator {
                                             self?.authenticationDelegate.userAuthenticatedWithAppleUserID(appleCredentials.user)
                                             
                                             guard !existingNonSocialAccount else {
+                                                self?.updateLoginEmail(wpcomUsername)
                                                 self?.logInInstead()
                                                 return
                                             }
@@ -157,10 +158,14 @@ private extension AppleAuthenticator {
     }
     
     func updateLoginFields(email: String, fullName: String, token: String) {
-        loginFields.emailAddress = email
-        loginFields.username = email
+        updateLoginEmail(email)
         loginFields.meta.socialServiceIDToken = token
         loginFields.meta.appleUser = AppleUser(email: email, fullName: fullName)
+    }
+
+    func updateLoginEmail(_ email: String) {
+        loginFields.emailAddress = email
+        loginFields.username = email
     }
 
 }

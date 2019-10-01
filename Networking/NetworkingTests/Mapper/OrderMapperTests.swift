@@ -143,7 +143,7 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(coupon.discountTax, "1.2")
     }
 
-    /// Verifies that an Order with no refunds is correctly parsed.
+    /// Verifies that an Order with no refunds is correctly parsed to an empty array.
     ///
     func testOrderRefundCondensedFieldsDoNotExistAreParsedCorrectly() {
         guard let order = mapLoadOrderResponse() else {
@@ -151,7 +151,7 @@ class OrderMapperTests: XCTestCase {
             return
         }
 
-        XCTAssertNil(order.refunds)
+        XCTAssertEqual(order.refunds, [])
     }
 
     /// Verifies that an Order with refund fields are correctly parsed.
@@ -162,11 +162,7 @@ class OrderMapperTests: XCTestCase {
             return
         }
 
-        guard let refunds = order.refunds else {
-            XCTFail()
-            return
-        }
-
+        let refunds = order.refunds
         XCTAssertEqual(refunds.count, 1)
 
         guard let fullRefund = refunds.first else {
@@ -187,11 +183,7 @@ class OrderMapperTests: XCTestCase {
             return
         }
 
-        guard let refunds = order.refunds else {
-            XCTFail()
-            return
-        }
-
+        let refunds = order.refunds
         XCTAssertEqual(refunds.count, 2)
 
         let partialRefund1 = refunds[0]

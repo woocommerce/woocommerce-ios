@@ -26,6 +26,10 @@ final class ReviewsViewController: UIViewController {
 
     private let viewModel = ReviewsViewModel(data: DefaultReviewsDataSource())
 
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
+
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {
@@ -199,7 +203,21 @@ private extension ReviewsViewController {
     }
 
     @IBAction func markAllAsRead() {
-        // TODO. MArk all as read
+        viewModel.markAllAsRead { [weak self] error in
+            guard let self = self else {
+                return
+            }
+
+            if let error = error {
+                DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
+                self.hapticGenerator.notificationOccurred(.error)
+            } else {
+                self.hapticGenerator.notificationOccurred(.success)
+                self.displayMarkAllAsReadNoticeIfNeeded()
+            }
+            self.updateMarkAllReadButtonState()
+            self.tableView.reloadData()
+        }
     }
 }
 
@@ -238,27 +256,13 @@ private extension ReviewsViewController {
         ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
-    /// Marks a specific Notification as read.
-    ///
-    func markAsReadIfNeeded(note: Note) {
-        guard note.read == false else {
-            return
-        }
-
-        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
-            if let error = error {
-                DDLogError("⛔️ Error marking single notification as read: \(error)")
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
     func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
         transitionToSyncingState()
         viewModel.synchronizeReviews { [weak self] in
             self?.transitionToResultsUpdatedState()
+            self?.tableView.reloadData()
             onCompletion?()
         }
     }
@@ -439,8 +443,7 @@ private extension ReviewsViewController {
     }
 
     func updateMarkAllReadButtonState() {
-        // TODO. Mark as read
-//        leftBarButton.isEnabled = !unreadNotes.isEmpty
+        rightBarButton.isEnabled = viewModel.hasUnreadNotifications
     }
 
     /// Displays the `Mark all as read` Notice if the number of times it was previously displayed is lower than the

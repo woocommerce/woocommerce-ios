@@ -48,6 +48,8 @@ final class ProductReviewTableViewCellTests: XCTestCase {
 private extension ProductReviewTableViewCellTests {
     func mockViewModel() -> ReviewViewModel {
         let mocks = MockReviews()
-        return ReviewViewModel(review: mocks.review(), product: mocks.product())
+        return ReviewViewModel(review: mocks.review(),
+                               product: mocks.product(),
+                               notification: mocks.emptyNotification())
     }
 }

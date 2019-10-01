@@ -21,6 +21,11 @@ protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
     ///
     var reviewsProductsIDs: [Int] { get }
 
+    /// Notifications associated with the reviews.
+    /// We need to expose them in order to mark them as read
+    ///
+    var notifications: [Note] { get }
+
     /// Initializes observers for incoming reviews
     ///
     func observeReviews() throws

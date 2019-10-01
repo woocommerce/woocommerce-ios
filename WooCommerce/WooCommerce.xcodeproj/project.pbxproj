@@ -1799,19 +1799,11 @@
 		CE35F10F2343E694007B2A6B /* Order Summary Section */ = {
 			isa = PBXGroup;
 			children = (
-				CE35F1102343E6AB007B2A6B /* Cells */,
+				CEE006032077D1280079161F /* SummaryTableViewCell.swift */,
+				CEE006042077D1280079161F /* SummaryTableViewCell.xib */,
 				CE35F10C2343E5B3007B2A6B /* Edit Order Status */,
 			);
 			path = "Order Summary Section";
-			sourceTree = "<group>";
-		};
-		CE35F1102343E6AB007B2A6B /* Cells */ = {
-			isa = PBXGroup;
-			children = (
-				CEE006032077D1280079161F /* SummaryTableViewCell.swift */,
-				CEE006042077D1280079161F /* SummaryTableViewCell.xib */,
-			);
-			path = Cells;
 			sourceTree = "<group>";
 		};
 		CE35F1112343E6C1007B2A6B /* Product List Section */ = {

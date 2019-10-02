@@ -53,6 +53,7 @@ extension Order {
     @NSManaged public var items: Set<OrderItem>?
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
+    @NSManaged public var refunds: Set<OrderRefundCondensed>?
 
 }
 
@@ -121,5 +122,22 @@ extension Order {
 
     @objc(removeSearchResults:)
     @NSManaged public func removeFromSearchResults(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for refunds
+extension Order {
+
+    @objc(addRefundsObject:)
+    @NSManaged public func addToRefunds(_ value: OrderRefundCondensed)
+
+    @objc(removeRefundsObject:)
+    @NSManaged public func removeFromRefunds(_ value: OrderRefundCondensed)
+
+    @objc(addRefunds:)
+    @NSManaged public func addToRefunds(_ values: NSSet)
+
+    @objc(removeRefunds:)
+    @NSManaged public func removeFromRefunds(_ values: NSSet)
 
 }

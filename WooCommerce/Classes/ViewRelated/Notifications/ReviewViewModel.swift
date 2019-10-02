@@ -23,7 +23,7 @@ final class ReviewViewModel {
         let reviewerName = review.reviewer
 
         if reviewerName.isEmpty {
-            return Strings.anonymous
+            return Strings.someone
         }
 
         return reviewerName
@@ -83,7 +83,7 @@ private extension ReviewViewModel {
     enum Strings {
         static let pendingReviews = NSLocalizedString("Pending Review",
                                                       comment: "Indicates a review is pending approval. It reads { Pending Review · Content of the review}")
-        static let anonymous = NSLocalizedString("Anonymous",
-                                                      comment: "Indicates the reviewer does not have a name. It reads { Anonymous left a review}")
+        static let someone = NSLocalizedString("Someone",
+                                               comment: "Indicates the reviewer does not have a name. It reads { Someone left a review}")
     }
 }

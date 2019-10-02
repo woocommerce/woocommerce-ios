@@ -40,7 +40,7 @@ final class ReviewViewModelTests: XCTestCase {
 
         let reviewSubject = viewModel.subject
 
-        XCTAssertTrue(reviewSubject!.contains("Anonymous"))
+        XCTAssertTrue(reviewSubject!.contains("Someone"))
     }
 
     func testNotIconIsCommentIcon() {

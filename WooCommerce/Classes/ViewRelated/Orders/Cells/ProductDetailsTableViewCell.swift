@@ -85,19 +85,48 @@ class ProductDetailsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
+        configureProductImageView()
+        configureNameLabel()
+        configureQuantityLabel()
+        configurePriceLabel()
+        configureSelectionStyle()
+    }
+}
+
+
+private extension ProductDetailsTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureProductImageView() {
         productImageView.image = .productPlaceholderImage
         productImageView.tintColor = StyleManager.wooGreyBorder
-        selectionStyle = .none
+    }
 
+    func configureNameLabel() {
         nameLabel.applyBodyStyle()
-        quantityLabel.applyBodyStyle()
-        priceLabel.applySecondaryFootnoteStyle()
-        skuLabel.applySecondaryFootnoteStyle()
-
         nameLabel?.text = ""
+    }
+
+    func configureQuantityLabel() {
+        quantityLabel.applyBodyStyle()
         quantityLabel?.text = ""
+    }
+
+    func configurePriceLabel() {
+        priceLabel.applySecondaryFootnoteStyle()
         priceLabel?.text = ""
+    }
+
+    func configureSKULabel() {
+        skuLabel.applySecondaryFootnoteStyle()
         skuLabel?.text = ""
+    }
+
+    func configureSelectionStyle() {
+        selectionStyle = .none
     }
 }
 

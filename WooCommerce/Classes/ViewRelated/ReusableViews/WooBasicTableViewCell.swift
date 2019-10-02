@@ -26,8 +26,13 @@ class WooBasicTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         configureSelectionStyle()
         configureLabel()
+    }
+
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
     }
 
     /// Set up the cell selection style

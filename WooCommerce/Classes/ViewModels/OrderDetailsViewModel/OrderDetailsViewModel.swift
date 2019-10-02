@@ -122,6 +122,7 @@ extension OrderDetailsViewModel {
             OrderNoteHeaderTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
+            TwoColumnTitleFootnoteTableViewCell.self,
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,

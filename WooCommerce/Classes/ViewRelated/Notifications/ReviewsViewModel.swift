@@ -64,8 +64,10 @@ final class ReviewsViewModel {
         markAsRead(notes: unreadNotifications, onCompletion: onCompletion)
     }
 
-    func presentDetails(for noteId: Int) {
-        
+    func loadReview(for noteId: Int, onCompletion: @escaping () -> Void) {
+        synchronizeReviews() {
+            onCompletion()
+        }
     }
 }
 

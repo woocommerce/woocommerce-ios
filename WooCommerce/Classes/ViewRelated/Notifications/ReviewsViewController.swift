@@ -484,16 +484,3 @@ private extension ReviewsViewController {
         static let section = "notifications"
     }
 }
-
-
-// MARK: - Testability
-extension ReviewsViewController {
-    func tapMarkAllAsRead() {
-        markAllAsRead()
-    }
-
-    convenience init() {
-        //super.init
-        super.init(
-    }
-}

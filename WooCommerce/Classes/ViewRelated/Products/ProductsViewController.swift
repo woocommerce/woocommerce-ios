@@ -23,7 +23,13 @@ final class ProductsViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = FooterSpinnerView()
+    private lazy var footerSpinnerView = {
+        return FooterSpinnerView(tableViewStyle: tableView.style)
+    }()
+
+    private lazy var footerEmptyView = {
+        return UIView(frame: .zero)
+    }()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
@@ -429,6 +435,7 @@ extension ProductsViewController {
             return
         }
 
+        tableView.tableFooterView = footerSpinnerView
         footerSpinnerView.startAnimating()
     }
 
@@ -446,6 +453,7 @@ extension ProductsViewController {
     ///
     private func ensureFooterSpinnerIsStopped() {
         footerSpinnerView.stopAnimating()
+        tableView.tableFooterView = footerEmptyView
     }
 }
 

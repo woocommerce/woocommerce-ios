@@ -39,9 +39,6 @@ import WordPressUI
             frm.origin.y = (frame.height - frm.height) / 2.0
             activityIndicator.frame = frm.integral
         }
-
-        configureBackgrounds()
-        configureTitleColors()
     }
 
     // MARK: - Instance Methods

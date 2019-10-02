@@ -126,7 +126,7 @@ public struct Order: Decodable {
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 
-        // The refunds field will not always exist in the response, so let's default to an emtpy array.
+        // The refunds field will not always exist in the response, so let's default to an empty array.
         let refunds = try container.decodeIfPresent([OrderRefundCondensed].self, forKey: .refunds) ?? []
 
         self.init(siteID: siteID,

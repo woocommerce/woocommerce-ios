@@ -208,6 +208,7 @@ public enum WooAnalyticsStat: String {
     case notificationShareStoreButtonTapped     = "notifications_share_your_store_button_tapped"
 
     // Review View Events
+    //
     case reviewsListPulledToRefresh             = "reviews_list_pulled_to_refresh"
     case reviewsListReadAllTapped               = "reviews_list_menu_mark_read_button_tapped"
     case reviewsShareStoreButtonTapped          = "reviews_share_your_store_button_tapped"
@@ -220,6 +221,11 @@ public enum WooAnalyticsStat: String {
     case notificationReviewActionSuccess        = "review_action_success"
     case notificationReviewActionFailed         = "review_action_failed"
     case notificationReviewActionUndo           = "review_action_undo"
+
+    // Review Data/Action Events
+    case reviewsMarkAllRead                     = "reviews_mark_all_read"
+    case reviewsMarkAllReadSuccess              = "reviews_mark_all_read_success"
+    case reviewsMarkAllReadFailed               = "reviews_mark_all_read_failed"
 
     // Jetpack Tunnel Events
     //

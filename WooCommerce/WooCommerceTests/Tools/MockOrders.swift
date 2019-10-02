@@ -26,7 +26,8 @@ final class MockOrders {
                      items: [],
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: [])
+                     coupons: [],
+                     refunds: [])
     }
 
     func sampleAddress() -> Networking.Address {

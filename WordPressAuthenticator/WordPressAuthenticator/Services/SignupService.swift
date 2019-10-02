@@ -76,7 +76,7 @@ class SignupService {
                 // Extract it and return it.
                 var existingEmail = ""
                 if let errorData = error.userInfo[WordPressComRestApi.ErrorKeyErrorData] as? [String: String] {
-                    let emailDict = errorData.first { $0.key == "email" }
+                    let emailDict = errorData.first { $0.key == WordPressComRestApi.ErrorKeyErrorDataEmail }
                     let email = emailDict?.value ?? ""
                     existingEmail = email
                 }

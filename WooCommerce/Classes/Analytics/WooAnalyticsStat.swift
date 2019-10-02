@@ -207,6 +207,10 @@ public enum WooAnalyticsStat: String {
     case notificationReviewSpamTapped           = "review_detail_spam_button_tapped"
     case notificationShareStoreButtonTapped     = "notifications_share_your_store_button_tapped"
 
+    // Review View Events
+    case reviewsListPulledToRefresh             = "reviews_list_pulled_to_refresh"
+    case reviewsListReadAllTapped               = "reviews_list_menu_mark_read_button_tapped"
+
     // Notification Data/Action Events
     //
     case notificationListLoaded                 = "notifications_loaded"

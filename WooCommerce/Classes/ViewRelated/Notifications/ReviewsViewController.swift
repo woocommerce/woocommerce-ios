@@ -196,13 +196,15 @@ private extension ReviewsViewController {
 private extension ReviewsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
+        ServiceLocator.analytics.track(.reviewsListPulledToRefresh)
         synchronizeReviews {
             sender.endRefreshing()
         }
     }
 
     @IBAction func markAllAsRead() {
+        ServiceLocator.analytics.track(.reviewsListReadAllTapped)
+
         viewModel.markAllAsRead { [weak self] error in
             guard let self = self else {
                 return
@@ -480,5 +482,18 @@ private extension ReviewsViewController {
 
     struct Constants {
         static let section = "notifications"
+    }
+}
+
+
+// MARK: - Testability
+extension ReviewsViewController {
+    func tapMarkAllAsRead() {
+        markAllAsRead()
+    }
+
+    convenience init() {
+        //super.init
+        super.init(
     }
 }

@@ -39,6 +39,9 @@ import WordPressUI
             frm.origin.y = (frame.height - frm.height) / 2.0
             activityIndicator.frame = frm.integral
         }
+
+        configureBackgrounds()
+        configureTitleColors()
     }
 
     // MARK: - Instance Methods
@@ -137,10 +140,6 @@ import WordPressUI
         setTitleColor(titleColorNormal, for: .normal)
         setTitleColor(titleColorNormal, for: .highlighted)
         setTitleColor(style.disabledTitleColor, for: .disabled)
-
-        if #available(iOS 13, *) {
-            activityIndicator.color = titleColorNormal
-        }
     }
 
     /// Setup: TitleLabel

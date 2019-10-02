@@ -8,6 +8,14 @@ import WordPressUI
         return activityIndicator.isAnimating
     }
 
+    open override var isEnabled: Bool {
+        didSet {
+            if #available(iOS 13, *) {
+                activityIndicator.color = isEnabled ? style.primaryTitleColor : style.secondaryTitleColor
+            }
+        }
+    }
+
     @objc let activityIndicator: UIActivityIndicatorView = {
         let indicator: UIActivityIndicatorView
         if #available(iOS 13, *) {

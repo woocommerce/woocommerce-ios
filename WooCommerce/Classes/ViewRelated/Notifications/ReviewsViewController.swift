@@ -120,7 +120,7 @@ final class ReviewsViewController: UIViewController {
     }
 
     func presentDetails(for noteId: Int) {
-        // TO BE IMPLEMENTED
+        viewModel.presentDetails(for: noteId)
     }
 }
 

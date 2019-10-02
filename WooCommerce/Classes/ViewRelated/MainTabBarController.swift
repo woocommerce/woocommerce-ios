@@ -294,7 +294,6 @@ extension MainTabBarController {
             return
             }
 
-            //TODO. What to do when receiving a notification?
             reviewsViewController.presentDetails(for: noteID)
         }
         else {

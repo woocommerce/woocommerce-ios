@@ -46,8 +46,8 @@ final class TwoColumnTitleFootnoteTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        leftTitleLabel.applyTitleStyle()
-        rightTitleLabel.applyTitleStyle()
+        leftTitleLabel.applyHeadlineStyle()
+        rightTitleLabel.applyHeadlineStyle()
         footnoteLabel.applyFootnoteStyle()
     }
 }

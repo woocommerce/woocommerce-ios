@@ -18,7 +18,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="gol-Cw-OHh">
-                        <rect key="frame" x="15" y="11" width="290" height="66"/>
+                        <rect key="frame" x="15" y="19" width="290" height="50"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="firstBaseline" spacing="9" translatesAutoresizingMaskIntoConstraints="NO" id="hcs-ir-12a">
                                 <rect key="frame" x="0.0" y="0.0" width="290" height="20.5"/>
@@ -38,7 +38,7 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="This line details payment that has been received." textAlignment="natural" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="CNs-xG-hz8">
-                                <rect key="frame" x="0.0" y="26.5" width="290" height="39.5"/>
+                                <rect key="frame" x="0.0" y="26.5" width="290" height="23.5"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -47,10 +47,10 @@
                     </stackView>
                 </subviews>
                 <constraints>
-                    <constraint firstAttribute="trailingMargin" secondItem="gol-Cw-OHh" secondAttribute="trailing" id="4Zp-VZ-LAc"/>
-                    <constraint firstItem="gol-Cw-OHh" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="Bzx-X2-96o"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="gol-Cw-OHh" secondAttribute="bottom" id="c0f-ra-kwY"/>
-                    <constraint firstItem="gol-Cw-OHh" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="zfV-Qd-XvL"/>
+                    <constraint firstItem="gol-Cw-OHh" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" constant="8" id="98Q-E4-OXk"/>
+                    <constraint firstAttribute="trailingMargin" secondItem="gol-Cw-OHh" secondAttribute="trailing" id="9gr-mw-vo5"/>
+                    <constraint firstItem="gol-Cw-OHh" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="DGT-am-bCN"/>
+                    <constraint firstAttribute="bottomMargin" secondItem="gol-Cw-OHh" secondAttribute="bottom" constant="8" id="vOY-DF-SpR"/>
                 </constraints>
             </tableViewCellContentView>
             <viewLayoutGuide key="safeArea" id="njF-e1-oar"/>

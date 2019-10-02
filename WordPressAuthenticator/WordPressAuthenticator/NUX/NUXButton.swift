@@ -129,6 +129,10 @@ import WordPressUI
         setTitleColor(titleColorNormal, for: .normal)
         setTitleColor(titleColorNormal, for: .highlighted)
         setTitleColor(style.disabledTitleColor, for: .disabled)
+
+        if #available(iOS 13, *) {
+            activityIndicator.color = titleColorNormal
+        }
     }
 
     /// Setup: TitleLabel

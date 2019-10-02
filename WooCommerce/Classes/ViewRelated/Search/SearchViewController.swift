@@ -28,7 +28,9 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = FooterSpinnerView()
+    private lazy var footerSpinnerView = {
+        return FooterSpinnerView(tableViewStyle: tableView.style)
+    }()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) models in sync.
     ///

@@ -77,6 +77,9 @@ private extension AppleAuthenticator {
                                          success: { [weak self] accountCreated, existingNonSocialAccount, wpcomUsername, wpcomToken in
                                             SVProgressHUD.dismiss()
 
+                                            // Notify host app of successful Apple authentication
+                                            self?.authenticationDelegate.userAuthenticatedWithAppleUserID(appleCredentials.user)
+                                            
                                             guard !existingNonSocialAccount else {
                                                 self?.logInInstead()
                                                 return
@@ -168,7 +171,6 @@ extension AppleAuthenticator: ASAuthorizationControllerDelegate {
     func authorizationController(controller: ASAuthorizationController, didCompleteWithAuthorization authorization: ASAuthorization) {
         switch authorization.credential {
         case let credentials as ASAuthorizationAppleIDCredential:
-            authenticationDelegate.userAuthenticatedWithAppleUserID(credentials.user)
             createWordPressComUser(appleCredentials: credentials)
         default:
             break
@@ -199,8 +201,8 @@ extension AppleAuthenticator: ASAuthorizationControllerPresentationContextProvid
 
 @available(iOS 13.0, *)
 extension AppleAuthenticator {
-    func checkAppleIDCredentialState(for userID: String,
-                                     completion: @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {
+    func getAppleIDCredentialState(for userID: String,
+                                   completion: @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {
         ASAuthorizationAppleIDProvider().getCredentialState(forUserID: userID, completion: completion)
     }
 }

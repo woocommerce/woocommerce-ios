@@ -9,7 +9,12 @@ import WordPressUI
     }
 
     @objc let activityIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .white)
+        let indicator: UIActivityIndicatorView
+        if #available(iOS 13, *) {
+            indicator = UIActivityIndicatorView(style: .medium)
+        } else {
+            indicator = UIActivityIndicatorView(style: .white)
+        }
         indicator.color = WordPressAuthenticator.shared.style.primaryTitleColor
         indicator.hidesWhenStopped = true
         return indicator
@@ -69,7 +74,10 @@ import WordPressUI
     open override func awakeFromNib() {
         super.awakeFromNib()
         configureAppearance()
-        activityIndicator.style = .gray
+        guard #available(iOS 13, *) else {
+            activityIndicator.style = .gray
+            return
+        }
     }
 
     /// Setup: shorter reference for style

@@ -319,7 +319,7 @@ private extension ReviewsViewController {
                 return
             }
 
-            ServiceLocator.analytics.track(.notificationShareStoreButtonTapped)
+            ServiceLocator.analytics.track(.reviewsShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 

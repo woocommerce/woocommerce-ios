@@ -210,6 +210,7 @@ public enum WooAnalyticsStat: String {
     // Review View Events
     case reviewsListPulledToRefresh             = "reviews_list_pulled_to_refresh"
     case reviewsListReadAllTapped               = "reviews_list_menu_mark_read_button_tapped"
+    case reviewsShareStoreButtonTapped          = "reviews_share_your_store_button_tapped"
 
     // Notification Data/Action Events
     //

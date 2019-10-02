@@ -2,8 +2,9 @@ import Foundation
 import Yosemite
 
 final class ReviewViewModel {
-    private let review: ProductReview
-    private let product: Product?
+    let review: ProductReview
+    let product: Product?
+    let notification: Note?
 
     let notIcon: String = "\u{f300}"
 
@@ -33,7 +34,7 @@ final class ReviewViewModel {
             return NSAttributedString(string: review.review.strippedHTML).trimNewlines()
         }
 
-        let accentColor = StyleManager.hightlightTextColor
+        let accentColor = StyleManager.highlightTextColor
         let textColor = StyleManager.wooGreyTextMin
 
         let pendingReviewLiteral = NSAttributedString(string: Strings.pendingReviews,
@@ -55,16 +56,25 @@ final class ReviewViewModel {
     }()
 
     lazy var notIconColor: UIColor = {
-        return StyleManager.wooGreyMid
+        return read ? StyleManager.wooGreyMid : StyleManager.wooAccent
+    }()
+
+    lazy var read: Bool = {
+        guard let note = notification else {
+            return true
+        }
+
+        return note.read
     }()
 
     private var shouldDisplayStatus: Bool {
         return review.status == .hold
     }
 
-    init(review: ProductReview, product: Product?) {
+    init(review: ProductReview, product: Product?, notification: Note?) {
         self.review = review
         self.product = product
+        self.notification = notification
     }
 }
 

@@ -9,16 +9,17 @@ extension Storage.ProductReview: ReadOnlyConvertible {
     /// Updates the Storage.ProductReview with the ReadOnly.
     ///
     public func update(with review: Yosemite.ProductReview) {
-        siteID          = Int64(review.siteID)
-        reviewID        = Int64(review.reviewID)
-        productID       = Int64(review.productID)
-        dateCreated     = review.dateCreated
-        statusKey       = review.statusKey
-        reviewer        = review.reviewer
-        reviewerEmail   = review.reviewerEmail
-        self.review     = review.review
-        rating          = Int64(review.rating)
-        verified        = review.verified
+        siteID              = Int64(review.siteID)
+        reviewID            = Int64(review.reviewID)
+        productID           = Int64(review.productID)
+        dateCreated         = review.dateCreated
+        statusKey           = review.statusKey
+        reviewer            = review.reviewer
+        reviewerEmail       = review.reviewerEmail
+        reviewerAvatarURL   = review.reviewerAvatarURL
+        self.review         = review.review
+        rating              = Int64(review.rating)
+        verified            = review.verified
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -31,6 +32,7 @@ extension Storage.ProductReview: ReadOnlyConvertible {
                              statusKey: statusKey ?? "",
                              reviewer: reviewer ?? "" ,
                              reviewerEmail: reviewerEmail ?? "",
+                             reviewerAvatarURL: reviewerAvatarURL ?? "",
                              review: review ?? "",
                              rating: Int(rating),
                              verified: verified)

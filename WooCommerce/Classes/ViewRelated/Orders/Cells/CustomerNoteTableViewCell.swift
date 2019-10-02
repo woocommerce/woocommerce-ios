@@ -1,26 +1,49 @@
 import UIKit
-import Gridicons
 
-class CustomerNoteTableViewCell: UITableViewCell {
-    @IBOutlet private weak var noteLabel: UILabel! {
-        didSet {
-            noteLabel.applyBodyStyle()
-        }
-    }
+final class CustomerNoteTableViewCell: UITableViewCell {
 
-    @IBOutlet private weak var iconImageView: UIImageView! {
-        didSet {
-            iconImageView.image = .quoteImage
-            iconImageView.tintColor = .black
-        }
-    }
+    @IBOutlet private weak var headlineLabel: UILabel!
 
-    public var quote: String? {
+    @IBOutlet private weak var bodyLabel: UILabel!
+
+    /// Headline label text
+    ///
+    var headline: String? {
         get {
-            return noteLabel.text
+            return headlineLabel.text
         }
         set {
-            noteLabel.text = newValue
+            headlineLabel.text = newValue
         }
+    }
+
+    /// Body label text
+    ///
+    var body: String? {
+        get {
+            return bodyLabel.text
+        }
+        set {
+            bodyLabel.text = newValue
+        }
+    }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+        headlineLabel.applyHeadlineStyle()
+        bodyLabel.applyBodyStyle()
+    }
+
+}
+
+/// MARK: - Testability
+extension CustomerNoteTableViewCell {
+    func getHeadlineLabel() -> UILabel {
+        return headlineLabel
+    }
+
+    func getBodyLabel() -> UILabel {
+        return bodyLabel
     }
 }

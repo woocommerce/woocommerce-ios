@@ -4,7 +4,8 @@ import Yosemite
 
 // MARK: - OrderTableViewCell
 //
-final class OrderTableViewCell: UITableViewCell {
+final class OrderTableViewCell: UITableViewCell & SearchResultCell {
+    typealias SearchModel = OrderSearchCellViewModel
 
     /// Order's Title
     ///
@@ -21,6 +22,15 @@ final class OrderTableViewCell: UITableViewCell {
     /// Top-level stack view that contains the stack view of title and payment status labels, and total price label.
     ///
     @IBOutlet weak var contentStackView: UIStackView!
+
+    static func register(for tableView: UITableView) {
+        tableView.register(loadNib(), forCellReuseIdentifier: reuseIdentifier)
+    }
+
+    func configureCell(searchModel: OrderSearchCellViewModel) {
+        configureCell(viewModel: searchModel.orderDetailsViewModel,
+                      orderStatus: searchModel.orderStatus)
+    }
 
     /// Renders the specified Order ViewModel
     ///

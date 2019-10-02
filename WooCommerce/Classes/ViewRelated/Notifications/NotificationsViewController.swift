@@ -332,23 +332,6 @@ private extension NotificationsViewController {
     }
 }
 
-// MARK: - App Store Review Prompt
-//
-private extension NotificationsViewController {
-    func displayRatingPrompt() {
-        defer {
-            if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                ServiceLocator.analytics.track(wooEvent)
-            }
-        }
-
-        // Show the app store ratings alert
-        // Note: Optimistically assuming our prompting succeeds since we try to stay
-        // in line and not prompt more than two times a year
-        AppRatingManager.shared.ratedCurrentVersion()
-        SKStoreReviewController.requestReview()
-    }
-}
 
 // MARK: - ResultsController
 //
@@ -765,11 +748,13 @@ private extension NotificationsViewController {
                 )
             case .orders:
                 return NSLocalizedString("Orders",
-                                         comment: "Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order."
+                                         comment: "Name of the Orders filter on the Notifications screen - " +
+                    "it means only order notifications will be displayed. Plural form of the word Order."
                 )
             case .reviews:
                 return NSLocalizedString("Reviews",
-                                         comment: "Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review."
+                                         comment: "Name of the Reviews filter on the Notifications screen - " +
+                    "it means only review notifications will be displayed. Plural form of the word Review."
                 )
             }
         }

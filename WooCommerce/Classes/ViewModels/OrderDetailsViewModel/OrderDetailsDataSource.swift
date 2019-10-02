@@ -165,7 +165,7 @@ private extension OrderDetailsDataSource {
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as PaymentTableViewCell:
             configurePayment(cell: cell)
-        case let cell as TwoColumnTitleFootnoteTableViewCell where row == .customerPaid:
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
         case let cell as ProductDetailsTableViewCell:
             configureOrderItem(cell: cell, at: indexPath)
@@ -251,7 +251,7 @@ private extension OrderDetailsDataSource {
         cell.configure(with: paymentViewModel)
     }
 
-    func configureCustomerPaid(cell: TwoColumnTitleFootnoteTableViewCell) {
+    func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
         cell.rightText = paymentViewModel.paymentTotal
@@ -536,7 +536,7 @@ extension OrderDetailsDataSource {
             case .payment:
                 return PaymentTableViewCell.reuseIdentifier
             case .customerPaid:
-                return TwoColumnTitleFootnoteTableViewCell.reuseIdentifier
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .tracking:
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:

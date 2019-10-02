@@ -20,6 +20,14 @@ import WordPressUI
         return indicator
     }()
 
+    open override var isEnabled: Bool {
+        didSet {
+            if #available(iOS 13, *) {
+                activityIndicator.color = isEnabled ? style.primaryTitleColor : style.secondaryTitleColor
+            }
+        }
+    }
+
     override open func layoutSubviews() {
         super.layoutSubviews()
 

@@ -46,6 +46,10 @@ class WooBasicTableViewCell: UITableViewCell {
     /// Add the accessoryView image, if any
     ///
     func configureAccessoryView() {
+        guard let accessoryImage = accessoryImage else {
+            accessoryView = nil
+            return
+        }
         let accessoryImageView = UIImageView(image: accessoryImage)
         accessoryImageView.tintColor = StyleManager.buttonPrimaryColor
         accessoryView = accessoryImageView

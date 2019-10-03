@@ -302,6 +302,7 @@ private extension OrderDetailsDataSource {
     func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Titles.productDetails
         cell.bodyLabel?.applyBodyStyle()
+        cell.accessoryImage = nil
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
     }

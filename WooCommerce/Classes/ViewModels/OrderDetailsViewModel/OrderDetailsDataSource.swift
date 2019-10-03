@@ -165,6 +165,8 @@ private extension OrderDetailsDataSource {
             configureOrderNote(cell: cell, at: indexPath)
         case let cell as PaymentTableViewCell:
             configurePayment(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
+            configureCustomerPaid(cell: cell)
         case let cell as ProductDetailsTableViewCell:
             configureOrderItem(cell: cell, at: indexPath)
         case let cell as FulfillButtonTableViewCell:
@@ -247,6 +249,13 @@ private extension OrderDetailsDataSource {
     func configurePayment(cell: PaymentTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.configure(with: paymentViewModel)
+    }
+
+    func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
+        cell.leftText = Titles.paidByCustomer
+        cell.rightText = paymentViewModel.paymentTotal
+        cell.footnoteText = paymentViewModel.paymentSummary
     }
 
     func configureDetails(cell: WooBasicTableViewCell) {
@@ -394,7 +403,7 @@ extension OrderDetailsDataSource {
             return Section(title: Title.information, rows: rows)
         }()
 
-        let payment = Section(title: Title.payment, row: .payment)
+        let payment = Section(title: Title.payment, rows: [.payment, .customerPaid])
 
         let tracking: Section? = {
             guard orderTracking.count > 0 else {
@@ -490,49 +499,54 @@ extension OrderDetailsDataSource {
         }
     }
 
+    /// Rows listed in the order they appear on screen
+    ///
     enum Row {
         case summary
-        case fulfillButton
         case orderItem
+        case fulfillButton
         case details
-        case tracking
-        case trackingAdd
         case customerNote
         case shippingAddress
         case billingDetail
+        case payment
+        case customerPaid
+        case tracking
+        case trackingAdd
         case addOrderNote
         case orderNoteHeader
         case orderNote
-        case payment
 
         var reuseIdentifier: String {
             switch self {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
-            case .fulfillButton:
-                return FulfillButtonTableViewCell.reuseIdentifier
             case .orderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
+            case .fulfillButton:
+                return FulfillButtonTableViewCell.reuseIdentifier
             case .details:
                 return WooBasicTableViewCell.reuseIdentifier
-            case .tracking:
-                return OrderTrackingTableViewCell.reuseIdentifier
-            case .trackingAdd:
-                return LeftImageTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
             case .billingDetail:
                 return WooBasicTableViewCell.reuseIdentifier
+            case .payment:
+                return PaymentTableViewCell.reuseIdentifier
+            case .customerPaid:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .tracking:
+                return OrderTrackingTableViewCell.reuseIdentifier
+            case .trackingAdd:
+                return LeftImageTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:
                 return OrderNoteHeaderTableViewCell.reuseIdentifier
             case .orderNote:
                 return OrderNoteTableViewCell.reuseIdentifier
-            case .payment:
-                return PaymentTableViewCell.reuseIdentifier
             }
         }
     }
@@ -667,6 +681,8 @@ private extension OrderDetailsDataSource {
                                                     comment: "Begin fulfill order button title")
         static let addNoteText = NSLocalizedString("Add a note",
                                                    comment: "Button text for adding a new order note")
+        static let paidByCustomer = NSLocalizedString("Paid By Customer",
+                                                      comment: "The title for the customer payment cell")
     }
 
     enum Icons {

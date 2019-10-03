@@ -21,12 +21,6 @@ final class PaymentTableViewCell: UITableViewCell {
     @IBOutlet private var totalView: UIView!
     @IBOutlet private weak var totalLabel: UILabel!
     @IBOutlet private weak var totalValue: UILabel!
-
-    @IBOutlet private var footerView: UIView!
-    @IBOutlet private weak var separatorLine: UIView!
-    @IBOutlet weak var paidByCustomerLabel: UILabel!
-    @IBOutlet weak var totalPaidByCustomerLabel: UILabel!
-    @IBOutlet private weak var footerLabel: UILabel!
     @IBOutlet private weak var totalBottomConstraint: NSLayoutConstraint?
 
     override func awakeFromNib() {
@@ -41,11 +35,6 @@ final class PaymentTableViewCell: UITableViewCell {
         taxesValue.applyBodyStyle()
         totalLabel.applyHeadlineStyle()
         totalValue.applyHeadlineStyle()
-
-        separatorLine?.backgroundColor = StyleManager.cellSeparatorColor
-        paidByCustomerLabel?.applyHeadlineStyle()
-        totalPaidByCustomerLabel?.applyHeadlineStyle()
-        footerLabel?.applySubheadlineStyle()
     }
 
     func configure(with viewModel: OrderPaymentDetailsViewModel) {
@@ -66,10 +55,6 @@ final class PaymentTableViewCell: UITableViewCell {
         totalLabel.text = Titles.totalLabel
         totalValue.text = viewModel.totalValue
 
-        paidByCustomerLabel?.text = Titles.paidByCustomer
-        totalPaidByCustomerLabel?.text = viewModel.paymentTotal
-        footerLabel.text = viewModel.paymentSummary
-
         accessibilityElements = [subtotalLabel as Any,
                                  subtotalValue as Any,
                                  discountLabel as Any,
@@ -79,10 +64,7 @@ final class PaymentTableViewCell: UITableViewCell {
                                  taxesLabel as Any,
                                  taxesValue as Any,
                                  totalLabel as Any,
-                                 totalValue as Any,
-                                 paidByCustomerLabel as Any,
-                                 totalPaidByCustomerLabel as Any,
-                                 footerLabel as Any
+                                 totalValue as Any
                                 ]
     }
 }
@@ -98,8 +80,6 @@ private extension PaymentTableViewCell {
                                                   comment: "Taxes label for payment view")
         static let totalLabel = NSLocalizedString("Order Total",
                                                   comment: "Order Total label for payment view")
-        static let paidByCustomer = NSLocalizedString("Paid by customer",
-                                                      comment: "Paid by customer label for payment view")
     }
 }
 
@@ -144,17 +124,5 @@ extension PaymentTableViewCell {
 
     func getTotalValue() -> UILabel {
         return totalValue
-    }
-
-    func getPaidByCustomerLabel() -> UILabel {
-        return paidByCustomerLabel
-    }
-
-    func getTotalPaidByCustomerLabel() -> UILabel {
-        return totalPaidByCustomerLabel
-    }
-
-    func getFooterLabel() -> UILabel {
-        return footerLabel
     }
 }

@@ -526,6 +526,9 @@ extension CurrencySettings {
         let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.general.rawValue)
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
         try? resultsController.performFetch()
+        resultsController.fetchedObjects.forEach {
+            updateCurrencyOptions(with: $0)
+        }
     }
 }
 

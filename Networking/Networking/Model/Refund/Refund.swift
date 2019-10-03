@@ -10,7 +10,7 @@ public struct Refund: Decodable {
     public let amount: String
     public let reason: String
     public let refundedByUserID: Int
-    public let automatedRefund: Bool
+    public let isAutomatedRefund: Bool
     public let orderItems: [OrderItem]
 
     /// Refund struct initializer
@@ -21,7 +21,7 @@ public struct Refund: Decodable {
                 amount: String,
                 reason: String,
                 refundedByUserID: Int,
-                automatedRefund: Bool,
+                isAutomatedRefund: Bool,
                 orderItems: [OrderItem]) {
         self.refundID = refundID
         self.orderID = orderID
@@ -29,7 +29,7 @@ public struct Refund: Decodable {
         self.amount = amount
         self.reason = reason
         self.refundedByUserID = refundedByUserID
-        self.automatedRefund = automatedRefund
+        self.isAutomatedRefund = isAutomatedRefund
         self.orderItems = orderItems
     }
 
@@ -47,7 +47,7 @@ public struct Refund: Decodable {
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
         let refundedByUserID = try container.decode(Int.self, forKey: .refundedByUserID)
-        let automatedRefund = try container.decode(Bool.self, forKey: .automatedRefund)
+        let isAutomatedRefund = try container.decode(Bool.self, forKey: .automatedRefund)
         let orderItems = try container.decode([OrderItem].self, forKey: .orderItems)
 
         self.init(refundID: refundID,
@@ -56,7 +56,7 @@ public struct Refund: Decodable {
                   amount: amount,
                   reason: reason,
                   refundedByUserID: refundedByUserID,
-                  automatedRefund: automatedRefund,
+                  isAutomatedRefund: isAutomatedRefund,
                   orderItems: orderItems)
     }
 }
@@ -67,13 +67,14 @@ public struct Refund: Decodable {
 private extension Refund {
 
     enum CodingKeys: String, CodingKey {
-        case refundID           = "id"
-        case dateCreated        = "date_created_gmt"
+        case refundID               = "id"
+        case dateCreated            = "date_created_gmt"
         case amount
         case reason
-        case refundedByUserID   = "refunded_by"
-        case automatedRefund    = "refunded_Payment"
-        case orderItems         = "line_items"
+        case refundedByUserID       = "refunded_by"
+        case automatedRefund        = "refunded_payment"    // read-only
+        case createAutomatedRefund  = "api_refund"          // write-only
+        case orderItems             = "line_items"
     }
 }
 

@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -207,6 +207,7 @@
 		CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */ = {isa = PBXBuildFile; fileRef = CE19CB10222486A500E8AF7A /* order-statuses.json */; };
 		CE20179320E3EFA7005B4C18 /* broken-orders.json in Resources */ = {isa = PBXBuildFile; fileRef = CE20179220E3EFA7005B4C18 /* broken-orders.json */; };
 		CE227093228DD44C00C0626C /* ProductStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE227092228DD44C00C0626C /* ProductStatus.swift */; };
+		CE43066A23465F340073CBFF /* Refund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066923465F340073CBFF /* Refund.swift */; };
 		CE43A8F9229F463000A4FF29 /* ProductDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43A8F8229F463000A4FF29 /* ProductDownload.swift */; };
 		CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345D21B571A7007573C6 /* SitePlanMapper.swift */; };
 		CE50346021B5799F007573C6 /* SitePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345F21B5799F007573C6 /* SitePlan.swift */; };
@@ -473,6 +474,7 @@
 		CE19CB10222486A500E8AF7A /* order-statuses.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-statuses.json"; sourceTree = "<group>"; };
 		CE20179220E3EFA7005B4C18 /* broken-orders.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "broken-orders.json"; sourceTree = "<group>"; };
 		CE227092228DD44C00C0626C /* ProductStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStatus.swift; sourceTree = "<group>"; };
+		CE43066923465F340073CBFF /* Refund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refund.swift; sourceTree = "<group>"; };
 		CE43A8F8229F463000A4FF29 /* ProductDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownload.swift; sourceTree = "<group>"; };
 		CE50345D21B571A7007573C6 /* SitePlanMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlanMapper.swift; sourceTree = "<group>"; };
 		CE50345F21B5799F007573C6 /* SitePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlan.swift; sourceTree = "<group>"; };
@@ -558,6 +560,7 @@
 		45AE58142306ADA8001901E3 /* Refund */ = {
 			isa = PBXGroup;
 			children = (
+				CE43066923465F340073CBFF /* Refund.swift */,
 			);
 			path = Refund;
 			sourceTree = "<group>";
@@ -1373,6 +1376,7 @@
 				B53EF5342180F646003E146F /* DotcomValidator.swift in Sources */,
 				74046E1D217A6989007DD7BF /* SiteSetting.swift in Sources */,
 				B5BB1D1020A237FB00112D92 /* Address.swift in Sources */,
+				CE43066A23465F340073CBFF /* Refund.swift in Sources */,
 				B524194121AC60A700D6FC0A /* DotcomDevice.swift in Sources */,
 				D823D90D2237784A00C90817 /* ShipmentTrackingProvider.swift in Sources */,
 				CE17C6B1229462C000AACE1C /* ProductStockStatus.swift in Sources */,

@@ -295,6 +295,10 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   desc "Create Promo Screenshots"
   lane :create_promo_screenshots do | options |
 
+    if !Fastlane::Helper::GitHelper.has_git_lfs then
+      UI.user_error!("LFS not enabled – unable to generate promo screenshots. Run `git lfs install && git lfs fetch && git lfs pull` to fix this.")
+    end
+
     # Create a copy of the files to work with – this ensures that if we're doing multiple
      # screenshot generation tasks close together, we can keep reusing the same source files
      original_screenshot_directory = File.join(Dir.pwd, "screenshots")

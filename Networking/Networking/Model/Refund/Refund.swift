@@ -79,6 +79,42 @@ private extension Refund {
 }
 
 
+// MARK: - Comparable Conformance
+//
+extension Refund: Comparable {
+    public static func == (lhs: Refund, rhs: Refund) -> Bool {
+        return lhs.refundID == rhs.refundID &&
+            lhs.orderID == rhs.orderID &&
+            lhs.dateCreated == rhs.dateCreated &&
+            lhs.amount == rhs.amount &&
+            lhs.reason == rhs.reason &&
+            lhs.refundedByUserID == rhs.refundedByUserID &&
+            lhs.isAutomatedRefund == rhs.isAutomatedRefund &&
+            (!lhs.orderItems.isEmpty && !rhs.orderItems.isEmpty) ?
+        lhs.orderItems.count == rhs.orderItems.count &&
+        lhs.orderItems.sorted() == rhs.orderItems.sorted() : true
+    }
+
+    public static func < (lhs: Refund, rhs: Refund) -> Bool {
+        return lhs.orderID == rhs.orderID ||
+            (lhs.orderID == rhs.orderID && lhs.refundID < rhs.refundID) ||
+            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
+                lhs.dateCreated < rhs.dateCreated) ||
+            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
+                lhs.dateCreated == rhs.dateCreated  &&
+                lhs.amount < rhs.amount) ||
+            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
+                lhs.dateCreated == rhs.dateCreated  &&
+                lhs.amount == rhs.amount &&
+                rhs.orderItems.count < rhs.orderItems.count) ||
+            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
+                lhs.dateCreated == rhs.dateCreated &&
+                lhs.amount == rhs.amount &&
+                rhs.orderItems.count == rhs.orderItems.count)
+    }
+}
+
+
 // MARK: - Decoding Errors
 //
 enum RefundDecodingError: Error {

@@ -18,6 +18,8 @@ final class StatusListTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+
+        configureBackground()
         styleCheckmark()
     }
 
@@ -34,8 +36,15 @@ final class StatusListTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
         accessoryType = selected ? .checkmark : .none
     }
+}
 
-    private func styleCheckmark() {
+
+private extension StatusListTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func styleCheckmark() {
         tintColor = StyleManager.wooCommerceBrandColor
     }
 }

@@ -16,4 +16,17 @@ class EmptyStoresTableViewCell: UITableViewCell {
                                                  comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
         }
     }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        configureBackground()
+    }
+}
+
+
+private extension EmptyStoresTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
 }

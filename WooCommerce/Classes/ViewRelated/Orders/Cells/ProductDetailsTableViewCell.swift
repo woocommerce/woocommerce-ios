@@ -89,6 +89,7 @@ class ProductDetailsTableViewCell: UITableViewCell {
         configureProductImageView()
         configureNameLabel()
         configureQuantityLabel()
+        configureSKULabel()
         configurePriceLabel()
         configureSelectionStyle()
     }

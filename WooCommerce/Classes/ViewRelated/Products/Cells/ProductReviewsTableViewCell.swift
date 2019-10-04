@@ -24,8 +24,16 @@ final class ProductReviewsTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         configureLabels()
         configureStarView()
+    }
+}
+
+
+private extension ProductReviewsTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
     }
 
     func configureLabels() {

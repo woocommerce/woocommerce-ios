@@ -1,9 +1,9 @@
 GIT
   remote: https://github.com/wordpress-mobile/release-toolkit
-  revision: ec71331a42652d9ffedf435de3dd824eb0e66bf6
-  branch: add/screenshot-tool-updates-for-woo
+  revision: c8007b8c11c282ea3e9f97f722d1971271959770
+  tag: 0.8.0
   specs:
-    fastlane-plugin-wpmreleasetoolkit (0.7.2)
+    fastlane-plugin-wpmreleasetoolkit (0.8.0)
       activesupport (~> 4)
       chroma (= 0.2.0)
       diffy (~> 3.3)

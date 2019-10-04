@@ -31,13 +31,32 @@ class TextViewTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        noteTextView.delegate = self
+
+        configureBackground()
+        configureTextView()
+
         noteIconButton.accessibilityTraits = .image
     }
 }
 
+
 extension TextViewTableViewCell: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         onTextChange?(noteTextView.text)
+    }
+}
+
+private extension TextViewTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureTextView() {
+        noteTextView.delegate = self
+        // Overriding the textview user interface style until Dark Mode
+        // is fully supported
+        if #available(iOS 13.0, *) {
+            noteTextView.overrideUserInterfaceStyle = .light
+        }
     }
 }

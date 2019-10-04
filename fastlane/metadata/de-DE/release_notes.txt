@@ -1,3 +1,5 @@
-- Einige von euch konnten ihre Website auf dem Anmeldebildschirm sehen, aber sie konnten nicht auf „Weiter“ tippen. Wir haben das behoben.
-- Ein erfolgreicher Verkäufer zu sein, ist ein Grund zum Feiern. Daher haben wir das Badge „Bestellungen“ viel leichter lesbar gemacht.
-- Wir haben festgestellt, dass du Produktbilder nicht mehr automatisch vom Bestelldetailbildschirm herunterladen konntest. Jetzt ist es wieder möglich, sie herunterzuladen.
+- Es gibt eine brandneue Statistikseite mit noch detaillierteren Analysen für alle, die das WooCommerce Admin-Plugin verwenden! Du kannst sie über die Seite mit den Einstellungen verwenden.
+- Wir haben einen Fehler behoben, der Preise in der falschen Währung auf der Seite mit den Produktdetails angezeigt hat.
+- Nachdem wir entdeckt haben, dass App-Protokolle bearbeitet werden können, haben wir sichergestellt, dass sie ab jetzt nur noch kopiert werden können.
+- Da jetzt der Tab „Aufträge“ jetzt all deine Auftragsdetails anzeigt, haben wir den Tab „Mein Shop“ optimiert und die Karte „Neue Aufträge“ von ihm entfernt.
+- Du hast vielleicht darauf gewartet, dass Bewertungen lokalisiert werden - und dies ist jetzt der Fall, nachdem wir einen entsprechenden Fehler behoben haben.

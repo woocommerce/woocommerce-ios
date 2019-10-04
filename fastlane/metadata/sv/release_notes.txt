@@ -1,3 +1,5 @@
-- Vissa av er kunde se er webbplats på inloggningsskärmen men kunde inte trycka på fortsätt. Nu har vi fixat det.
-- Stora säljvolymer är värda att fira – vi har gjort det mycket enklare att läsa dekalen Beställningar.
-- Vi upptäckte att det inte längre gick att hämta produktbilder från skärmen Beställningsinformation. Nu går det att hämta dem igen.
+– Det finns en helt ny statistiksida (med mer detaljerade analyser) för dem som använder WooCommerce adminplugin-programmet! Du kan välja att använda det från sidan Inställningar.
+– Vi har åtgärdat ett fel som visade priser i fel valuta på sidan Produktinformation.
+– Vi upptäckte att applogotyperna kunde redigeras. Nu har vi sett till att de baka kan kopieras framöver.
+– Nu när fliken Order visar all din orderinformation har vi effektiviserat fliken Min butik och tagit bort kortet Nya ordrar från den.
+– Du vill förmodligen att recensionerna ska lokaliseras och nu sker det (det fanns ett programfel som vi åtgärdade).

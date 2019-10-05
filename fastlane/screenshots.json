@@ -60,7 +60,7 @@
 			"device": "iPhone Xs",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt",
 			"filename": "04-iphone-x.png",
-			"background": "appstoreres/assets/simple/screenshot-5-iphone-x.png"
+			"background": "appstoreres/assets/simple/screenshot-4-iphone-x.png"
 		},
 		// Scroll through, filter, or look up specific orders
 		{
@@ -132,7 +132,7 @@
 			"device": "iPhone 8",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt",
 			"filename": "04-iphone-8.png",
-			"background": "appstoreres/assets/simple/screenshot-5-iphone-8.png"
+			"background": "appstoreres/assets/simple/screenshot-4-iphone-8.png"
 		},
 		// Scroll through, filter, or look up specific orders
 		{

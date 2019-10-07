@@ -14,6 +14,7 @@ extension ProductReview {
     @NSManaged public var review: String?
     @NSManaged public var reviewer: String?
     @NSManaged public var reviewerEmail: String?
+    @NSManaged public var reviewerAvatarURL: String?
     @NSManaged public var reviewID: Int64
     @NSManaged public var siteID: Int64
     @NSManaged public var statusKey: String?

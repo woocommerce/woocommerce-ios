@@ -32,6 +32,8 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
+        case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
+            searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .requestMissingProducts(let order, let onCompletion):
@@ -54,6 +56,27 @@ private extension ProductStore {
         DDLogDebug("Products deleted")
 
         onCompletion()
+    }
+
+    /// Searches all of the products that contain a given Keyword.
+    ///
+    func searchProducts(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+        remote.searchProducts(for: siteID,
+                              keyword: keyword,
+                              pageNumber: pageNumber,
+                              pageSize: pageSize) { [weak self] (products, error) in
+                                guard let products = products else {
+                                    onCompletion(error)
+                                    return
+                                }
+
+                                self?.upsertSearchResultsInBackground(siteID: siteID,
+                                                                      keyword: keyword,
+                                                                      readOnlyProducts: products) {
+                                    onCompletion(nil)
+                                }
+        }
     }
 
     /// Synchronizes the products associated with a given Site ID (if any!).
@@ -346,6 +369,41 @@ private extension ProductStore {
                 storageProduct.removeFromTags(storageTag)
                 storage.deleteObject(storageTag)
             }
+        }
+    }
+}
+
+
+// MARK: - Storage: Search Results
+//
+private extension ProductStore {
+
+    /// Upserts the Products, and associates them to the SearchResults Entity (in Background)
+    ///
+    private func upsertSearchResultsInBackground(siteID: Int, keyword: String, readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
+            self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyProducts: readOnlyProducts, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)
+    ///
+    private func upsertStoredResults(siteID: Int, keyword: String, readOnlyProducts: [Networking.Product], in storage: StorageType) {
+        let searchResults = storage.loadProductSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.ProductSearchResults.self)
+        searchResults.keyword = keyword
+
+        for readOnlyProduct in readOnlyProducts {
+            guard let storedProduct = storage.loadProduct(siteID: siteID, productID: readOnlyProduct.productID) else {
+                continue
+            }
+
+            searchResults.addToProducts(storedProduct)
         }
     }
 }

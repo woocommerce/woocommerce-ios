@@ -148,7 +148,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let isSelfHosted = false
 
         guard let site = siteInfo, site.hasJetpack == true else {
-            let errorInfo = NSLocalizedString("Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.", comment: "Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps.")
+            let errorInfo = NSLocalizedString(
+                "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.",
+                comment: "Error message that displays on the 'Log in by entering your site address.' screen. " +
+                "Jetpack is required for logging into the WooCommerce mobile apps.")
             let error = NSError(domain: "WooCommerceAuthenticationErrorDomain",
                                 code: 555,
                                 userInfo: [NSLocalizedDescriptionKey: errorInfo])

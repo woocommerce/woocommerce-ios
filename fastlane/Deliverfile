@@ -6,9 +6,12 @@
 # App Metadata
 ########################################
 
-# This folder has to include one folder for each language
-screenshots_path "./screenshots/"
+# The Bundle Identifier in App Store Connect
 app_identifier "com.automattic.woocommerce"
+
+
+# This folder has to include one folder for each language
+screenshots_path "./promo_screenshots/"
 
 # Make sure to update these keys for a new version
 app_version "2.7"

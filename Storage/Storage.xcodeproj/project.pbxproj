@@ -7,6 +7,9 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		023FA29523316A4D008C1769 /* Product+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023FA29223316A4D008C1769 /* Product+CoreDataProperties.swift */; };
+		023FA29623316A4D008C1769 /* ProductSearchResults+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023FA29323316A4D008C1769 /* ProductSearchResults+CoreDataProperties.swift */; };
+		023FA29723316A4D008C1769 /* ProductSearchResults+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023FA29423316A4D008C1769 /* ProductSearchResults+CoreDataClass.swift */; };
 		02D45649231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */; };
 		02DA64172313C26400284168 /* StatsVersionBySite.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DA64162313C26400284168 /* StatsVersionBySite.swift */; };
 		02DA64192313C2AA00284168 /* StatsVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02DA64182313C2AA00284168 /* StatsVersion.swift */; };
@@ -33,7 +36,6 @@
 		747453A12242C85E00E0B5EE /* ProductCategory+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747453932242C85E00E0B5EE /* ProductCategory+CoreDataClass.swift */; };
 		747453A22242C85E00E0B5EE /* ProductCategory+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747453942242C85E00E0B5EE /* ProductCategory+CoreDataProperties.swift */; };
 		747453A32242C85E00E0B5EE /* Product+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747453952242C85E00E0B5EE /* Product+CoreDataClass.swift */; };
-		747453A42242C85E00E0B5EE /* Product+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747453962242C85E00E0B5EE /* Product+CoreDataProperties.swift */; };
 		747453A52242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747453972242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataClass.swift */; };
 		747453A62242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747453982242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift */; };
 		747453A72242C85E00E0B5EE /* ProductTag+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 747453992242C85E00E0B5EE /* ProductTag+CoreDataClass.swift */; };
@@ -85,6 +87,8 @@
 		CE3B7AD32225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE3B7AD12225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift */; };
 		CE43A8FD229F498D00A4FF29 /* ProductDownload+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43A8FB229F498D00A4FF29 /* ProductDownload+CoreDataClass.swift */; };
 		CE43A8FE229F498D00A4FF29 /* ProductDownload+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43A8FC229F498D00A4FF29 /* ProductDownload+CoreDataProperties.swift */; };
+		CEF88DB2233EAAF100BED485 /* OrderRefundCondensed+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */; };
+		CEF88DB3233EAAF100BED485 /* OrderRefundCondensed+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */; };
 		D821645B2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164572239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift */; };
 		D821645C2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164582239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift */; };
 		D821645D2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */; };
@@ -119,6 +123,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		023FA29223316A4D008C1769 /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		023FA29323316A4D008C1769 /* ProductSearchResults+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductSearchResults+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		023FA29423316A4D008C1769 /* ProductSearchResults+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ProductSearchResults+CoreDataClass.swift"; sourceTree = "<group>"; };
+		028F00652331605000E6C283 /* Model 20.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 20.xcdatamodel"; sourceTree = "<group>"; };
 		02A9F16A22F9873600EE36EA /* Model 19.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 19.xcdatamodel"; sourceTree = "<group>"; };
 		02D45648231CFB27008CF0A9 /* StatsVersionBannerVisibility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionBannerVisibility.swift; sourceTree = "<group>"; };
 		02DA64162313C26400284168 /* StatsVersionBySite.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionBySite.swift; sourceTree = "<group>"; };
@@ -152,7 +160,6 @@
 		747453932242C85E00E0B5EE /* ProductCategory+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductCategory+CoreDataClass.swift"; sourceTree = "<group>"; };
 		747453942242C85E00E0B5EE /* ProductCategory+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductCategory+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		747453952242C85E00E0B5EE /* Product+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataClass.swift"; sourceTree = "<group>"; };
-		747453962242C85E00E0B5EE /* Product+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		747453972242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDefaultAttribute+CoreDataClass.swift"; sourceTree = "<group>"; };
 		747453982242C85E00E0B5EE /* ProductDefaultAttribute+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDefaultAttribute+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		747453992242C85E00E0B5EE /* ProductTag+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductTag+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -219,6 +226,8 @@
 		CE43A8FB229F498D00A4FF29 /* ProductDownload+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownload+CoreDataClass.swift"; sourceTree = "<group>"; };
 		CE43A8FC229F498D00A4FF29 /* ProductDownload+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductDownload+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		CE6B4810227C915B00488C39 /* Model 15.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = "Model 15.xcdatamodel"; sourceTree = "<group>"; };
+		CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataClass.swift"; sourceTree = "<group>"; };
+		CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OrderRefundCondensed+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D82164572239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProvider+CoreDataClass.swift"; sourceTree = "<group>"; };
 		D82164582239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProvider+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		D82164592239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+CoreDataClass.swift"; sourceTree = "<group>"; };
@@ -453,12 +462,14 @@
 				7426A05320F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift */,
 				74B7D6AB20F90CBB002667AC /* OrderNote+CoreDataClass.swift */,
 				74B7D6AC20F90CBB002667AC /* OrderNote+CoreDataProperties.swift */,
+				CEF88DB0233EAAF000BED485 /* OrderRefundCondensed+CoreDataClass.swift */,
+				CEF88DB1233EAAF000BED485 /* OrderRefundCondensed+CoreDataProperties.swift */,
 				B5FD111D21D4046E00560344 /* OrderSearchResults+CoreDataClass.swift */,
 				B5FD111C21D4046E00560344 /* OrderSearchResults+CoreDataProperties.swift */,
 				CE3B7AD02225E62C0050FE4B /* OrderStatus+CoreDataClass.swift */,
 				CE3B7AD12225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift */,
 				747453952242C85E00E0B5EE /* Product+CoreDataClass.swift */,
-				747453962242C85E00E0B5EE /* Product+CoreDataProperties.swift */,
+				023FA29223316A4D008C1769 /* Product+CoreDataProperties.swift */,
 				7474538F2242C85E00E0B5EE /* ProductAttribute+CoreDataClass.swift */,
 				747453902242C85E00E0B5EE /* ProductAttribute+CoreDataProperties.swift */,
 				747453932242C85E00E0B5EE /* ProductCategory+CoreDataClass.swift */,
@@ -473,6 +484,8 @@
 				747453922242C85E00E0B5EE /* ProductImage+CoreDataProperties.swift */,
 				D8550D01230D3F8B00AAC4F8 /* ProductReview+CoreDataClass.swift */,
 				D8550D00230D3F8B00AAC4F8 /* ProductReview+CoreDataProperties.swift */,
+				023FA29423316A4D008C1769 /* ProductSearchResults+CoreDataClass.swift */,
+				023FA29323316A4D008C1769 /* ProductSearchResults+CoreDataProperties.swift */,
 				747453992242C85E00E0B5EE /* ProductTag+CoreDataClass.swift */,
 				7474539A2242C85E00E0B5EE /* ProductTag+CoreDataProperties.swift */,
 				7499FA42221C7A60004EC0B4 /* ShipmentTracking+CoreDataClass.swift */,
@@ -707,11 +720,13 @@
 				D8736B6B22F0AC9000A14A29 /* OrderCount+CoreDataProperties.swift in Sources */,
 				02DA64172313C26400284168 /* StatsVersionBySite.swift in Sources */,
 				B505F6DB20BEEA3200BB1B69 /* Account+CoreDataClass.swift in Sources */,
+				CEF88DB3233EAAF100BED485 /* OrderRefundCondensed+CoreDataProperties.swift in Sources */,
 				7426A05520F69DA4002A4E07 /* OrderItem+CoreDataProperties.swift in Sources */,
 				747453A72242C85E00E0B5EE /* ProductTag+CoreDataClass.swift in Sources */,
 				74938EC8216FA9B200540BA1 /* OrderStatsItem+CoreDataClass.swift in Sources */,
 				D8736B6822F0AC9000A14A29 /* OrderCountItem+CoreDataClass.swift in Sources */,
 				747453A32242C85E00E0B5EE /* Product+CoreDataClass.swift in Sources */,
+				023FA29723316A4D008C1769 /* ProductSearchResults+CoreDataClass.swift in Sources */,
 				D821645B2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataClass.swift in Sources */,
 				D821645C2239F5FC00F46F89 /* ShipmentTrackingProvider+CoreDataProperties.swift in Sources */,
 				7499FA45221C7A60004EC0B4 /* ShipmentTracking+CoreDataProperties.swift in Sources */,
@@ -733,8 +748,9 @@
 				7474539F2242C85E00E0B5EE /* ProductImage+CoreDataClass.swift in Sources */,
 				D8736B6922F0AC9000A14A29 /* OrderCountItem+CoreDataProperties.swift in Sources */,
 				7474539D2242C85E00E0B5EE /* ProductAttribute+CoreDataClass.swift in Sources */,
-				747453A42242C85E00E0B5EE /* Product+CoreDataProperties.swift in Sources */,
+				023FA29623316A4D008C1769 /* ProductSearchResults+CoreDataProperties.swift in Sources */,
 				746A9D22214078080013F6FF /* TopEarnerStats+CoreDataProperties.swift in Sources */,
+				023FA29523316A4D008C1769 /* Product+CoreDataProperties.swift in Sources */,
 				937D6C48226E1D1F004FB8A5 /* AccountSettings+CoreDataProperties.swift in Sources */,
 				74F009C12183B99B002B4566 /* Note+CoreDataProperties.swift in Sources */,
 				CE12FBE32220515600C59248 /* WooCommerceModelV9toV10.xcmappingmodel in Sources */,
@@ -769,6 +785,7 @@
 				D8550D02230D3F8B00AAC4F8 /* ProductReview+CoreDataProperties.swift in Sources */,
 				9302E3A6220DC3AE00DA5018 /* CoreDataIterativeMigrator.swift in Sources */,
 				D821645E2239F5FC00F46F89 /* ShipmentTrackingProviderGroup+CoreDataProperties.swift in Sources */,
+				CEF88DB2233EAAF100BED485 /* OrderRefundCondensed+CoreDataClass.swift in Sources */,
 				CE3B7AD32225E62C0050FE4B /* OrderStatus+CoreDataProperties.swift in Sources */,
 				746A9D24214078080013F6FF /* TopEarnerStatsItem+CoreDataProperties.swift in Sources */,
 				CE43A8FE229F498D00A4FF29 /* ProductDownload+CoreDataProperties.swift in Sources */,
@@ -1068,6 +1085,7 @@
 		B59E11D820A9D00C004121A4 /* WooCommerce.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
+				028F00652331605000E6C283 /* Model 20.xcdatamodel */,
 				02A9F16A22F9873600EE36EA /* Model 19.xcdatamodel */,
 				D8736B6322F0AB4E00A14A29 /* Model 18.xcdatamodel */,
 				D8FBFF2A22D63B12006E3336 /* Model 17.xcdatamodel */,
@@ -1088,7 +1106,7 @@
 				746A9D14214071F90013F6FF /* Model 2.xcdatamodel */,
 				B59E11D920A9D00C004121A4 /* Model.xcdatamodel */,
 			);
-			currentVersion = 02A9F16A22F9873600EE36EA /* Model 19.xcdatamodel */;
+			currentVersion = 028F00652331605000E6C283 /* Model 20.xcdatamodel */;
 			path = WooCommerce.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

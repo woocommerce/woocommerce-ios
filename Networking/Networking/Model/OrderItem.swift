@@ -14,6 +14,7 @@ public struct OrderItem: Decodable {
     public let subtotal: String
     public let subtotalTax: String
     public let taxClass: String
+    public let taxes: [OrderItemTax]
     public let total: String
     public let totalTax: String
 
@@ -29,6 +30,7 @@ public struct OrderItem: Decodable {
                 subtotal: String,
                 subtotalTax: String,
                 taxClass: String,
+                taxes: [OrderItemTax],
                 total: String,
                 totalTax: String) {
         self.itemID = itemID
@@ -41,6 +43,7 @@ public struct OrderItem: Decodable {
         self.subtotal = subtotal
         self.subtotalTax = subtotalTax
         self.taxClass = taxClass
+        self.taxes = taxes
         self.total = total
         self.totalTax = totalTax
     }
@@ -61,6 +64,7 @@ public struct OrderItem: Decodable {
         let subtotal = try container.decode(String.self, forKey: .subtotal)
         let subtotalTax = try container.decode(String.self, forKey: .subtotalTax)
         let taxClass = try container.decode(String.self, forKey: .taxClass)
+        let taxes = try container.decode([OrderItemTax].self, forKey: .taxes)
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
@@ -75,6 +79,7 @@ public struct OrderItem: Decodable {
                   subtotal: subtotal,
                   subtotalTax: subtotalTax,
                   taxClass: taxClass,
+                  taxes: taxes,
                   total: total,
                   totalTax: totalTax)
     }
@@ -96,6 +101,7 @@ private extension OrderItem {
         case subtotal
         case subtotalTax    = "subtotal_tax"
         case taxClass       = "tax_class"
+        case taxes
         case total
         case totalTax       = "total_tax"
     }

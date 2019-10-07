@@ -10,6 +10,10 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 - @ctarda 2019-09-24
 - Add `reviewerAvatarURL` to `ProductReview` entity
 
+- @mindgraffiti 2019-09-27
+- New `OrderRefundCondensed` entity
+- New `Order.refunds` relationship
+
 ## Model 19 (Release 2.6.0.0)
 - @ctarda 2019-08-21
 - Add `ProductReview` entity

@@ -55,8 +55,8 @@ private extension OrderItemTaxRefund {
 
     enum CodingKeys: String, CodingKey {
         case taxID      = "id"
-        case subtotal   = "subtotal"
-        case total      = "total"
+        case subtotal
+        case total
     }
 }
 

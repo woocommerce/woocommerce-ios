@@ -211,6 +211,7 @@
 		CE43066C2347C5F90073CBFF /* OrderItemRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066B2347C5F90073CBFF /* OrderItemRefund.swift */; };
 		CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */; };
 		CE430672234B9EB20073CBFF /* OrderItemTax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE430671234B9EB20073CBFF /* OrderItemTax.swift */; };
+		CE430674234BA6AD0073CBFF /* RefundMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE430673234BA6AD0073CBFF /* RefundMapper.swift */; };
 		CE43A8F9229F463000A4FF29 /* ProductDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43A8F8229F463000A4FF29 /* ProductDownload.swift */; };
 		CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345D21B571A7007573C6 /* SitePlanMapper.swift */; };
 		CE50346021B5799F007573C6 /* SitePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345F21B5799F007573C6 /* SitePlan.swift */; };
@@ -481,6 +482,7 @@
 		CE43066B2347C5F90073CBFF /* OrderItemRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemRefund.swift; sourceTree = "<group>"; };
 		CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemTaxRefund.swift; sourceTree = "<group>"; };
 		CE430671234B9EB20073CBFF /* OrderItemTax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemTax.swift; sourceTree = "<group>"; };
+		CE430673234BA6AD0073CBFF /* RefundMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundMapper.swift; sourceTree = "<group>"; };
 		CE43A8F8229F463000A4FF29 /* ProductDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownload.swift; sourceTree = "<group>"; };
 		CE50345D21B571A7007573C6 /* SitePlanMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlanMapper.swift; sourceTree = "<group>"; };
 		CE50345F21B5799F007573C6 /* SitePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlan.swift; sourceTree = "<group>"; };
@@ -905,6 +907,7 @@
 				93D8BBFC226BBEE800AD2EB3 /* AccountSettingsMapper.swift */,
 				740211E221939C83002248DA /* CommentResultMapper.swift */,
 				B524193E21AC5FE400D6FC0A /* DotcomDeviceMapper.swift */,
+				D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */,
 				B554FA8E2180BC7000C54DFF /* NoteHashListMapper.swift */,
 				B59325CB217E2B4C000B0E8E /* NoteListMapper.swift */,
 				B5C6FCD320A373BA00A4F8E4 /* OrderMapper.swift */,
@@ -913,12 +916,15 @@
 				74C8F06720EEB7BC00B6EDC9 /* OrderNotesMapper.swift */,
 				CE583A0D2109154500D73C1C /* OrderNoteMapper.swift */,
 				748D424B210FA34400CF7D1B /* OrderStatsMapper.swift */,
+				D8FBFF1022D3B3FC006E3336 /* OrderStatsV4Mapper.swift */,
 				74749B96224134FF005C4CF2 /* ProductMapper.swift */,
 				CE0A0F18223987DF0075ED8D /* ProductListMapper.swift */,
 				D88D5A4A230BCF0A007B6E01 /* ProductReviewListMapper.swift */,
 				D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */,
+				CE430673234BA6AD0073CBFF /* RefundMapper.swift */,
 				7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */,
 				743E84ED2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift */,
+				D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */,
 				7426CA1021AF30BD004E9FFC /* SiteAPIMapper.swift */,
 				B56C1EB520EA757B00D749F9 /* SiteListMapper.swift */,
 				CE50345D21B571A7007573C6 /* SitePlanMapper.swift */,
@@ -926,9 +932,6 @@
 				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
 				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
 				74ABA1D2213F25AE00FFAD30 /* TopEarnerStatsMapper.swift */,
-				D823D904223746CE00C90817 /* NewShipmentTrackingMapper.swift */,
-				D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */,
-				D8FBFF1022D3B3FC006E3336 /* OrderStatsV4Mapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -1408,6 +1411,7 @@
 				B59325C7217E22FC000B0E8E /* Note.swift in Sources */,
 				CE0A0F13223942D90075ED8D /* ProductImage.swift in Sources */,
 				D8FBFF0B22D3ADB1006E3336 /* OrderStatsRemoteV4.swift in Sources */,
+				CE430674234BA6AD0073CBFF /* RefundMapper.swift in Sources */,
 				CE0A0F1B223989670075ED8D /* ProductsRemote.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

@@ -210,6 +210,7 @@
 		CE43066A23465F340073CBFF /* Refund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066923465F340073CBFF /* Refund.swift */; };
 		CE43066C2347C5F90073CBFF /* OrderItemRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066B2347C5F90073CBFF /* OrderItemRefund.swift */; };
 		CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */; };
+		CE430672234B9EB20073CBFF /* OrderItemTax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE430671234B9EB20073CBFF /* OrderItemTax.swift */; };
 		CE43A8F9229F463000A4FF29 /* ProductDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43A8F8229F463000A4FF29 /* ProductDownload.swift */; };
 		CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345D21B571A7007573C6 /* SitePlanMapper.swift */; };
 		CE50346021B5799F007573C6 /* SitePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345F21B5799F007573C6 /* SitePlan.swift */; };
@@ -479,6 +480,7 @@
 		CE43066923465F340073CBFF /* Refund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refund.swift; sourceTree = "<group>"; };
 		CE43066B2347C5F90073CBFF /* OrderItemRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemRefund.swift; sourceTree = "<group>"; };
 		CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemTaxRefund.swift; sourceTree = "<group>"; };
+		CE430671234B9EB20073CBFF /* OrderItemTax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemTax.swift; sourceTree = "<group>"; };
 		CE43A8F8229F463000A4FF29 /* ProductDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownload.swift; sourceTree = "<group>"; };
 		CE50345D21B571A7007573C6 /* SitePlanMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlanMapper.swift; sourceTree = "<group>"; };
 		CE50345F21B5799F007573C6 /* SitePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlan.swift; sourceTree = "<group>"; };
@@ -794,6 +796,7 @@
 				D8736B5D22F0849700A14A29 /* OrderCountItem.swift */,
 				741B950020EBC8A700DD6E2D /* OrderCouponLine.swift */,
 				B5C6FCCE20A3592900A4F8E4 /* OrderItem.swift */,
+				CE430671234B9EB20073CBFF /* OrderItemTax.swift */,
 				74C8F06320EEB44800B6EDC9 /* OrderNote.swift */,
 				CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */,
 				CE12FBD8221F3A6F00C59248 /* OrderStatus.swift */,
@@ -1304,6 +1307,7 @@
 				B5BB1D0C20A2050300112D92 /* DateFormatter+Woo.swift in Sources */,
 				743E84EE2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift in Sources */,
 				B567AF2520A0CCA300AB6C62 /* AuthenticatedRequest.swift in Sources */,
+				CE430672234B9EB20073CBFF /* OrderItemTax.swift in Sources */,
 				D8736B5C22F083C500A14A29 /* OrderCount.swift in Sources */,
 				B505F6EA20BEFC3700BB1B69 /* MockupNetwork.swift in Sources */,
 				CE0A0F17223970E80075ED8D /* ProductDefaultAttribute.swift in Sources */,

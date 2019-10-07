@@ -29,6 +29,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
         return OrderItem(itemID: Int(itemID),
                          name: name ?? "",
                          productID: Int(productID),
+                         variationID: Int(variationID),
                          quantity: quantity,
                          price: price ?? NSDecimalNumber(integerLiteral: 0),
                          sku: sku,
@@ -36,7 +37,6 @@ extension Storage.OrderItem: ReadOnlyConvertible {
                          subtotalTax: subtotalTax ?? "",
                          taxClass: taxClass ?? "",
                          total: total ?? "",
-                         totalTax: totalTax ?? "",
-                         variationID: Int(variationID))
+                         totalTax: totalTax ?? "")
     }
 }

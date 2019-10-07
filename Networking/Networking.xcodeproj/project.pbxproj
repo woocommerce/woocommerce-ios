@@ -212,6 +212,7 @@
 		CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */; };
 		CE430672234B9EB20073CBFF /* OrderItemTax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE430671234B9EB20073CBFF /* OrderItemTax.swift */; };
 		CE430674234BA6AD0073CBFF /* RefundMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE430673234BA6AD0073CBFF /* RefundMapper.swift */; };
+		CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE430675234BA7920073CBFF /* RefundListMapper.swift */; };
 		CE43A8F9229F463000A4FF29 /* ProductDownload.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43A8F8229F463000A4FF29 /* ProductDownload.swift */; };
 		CE50345E21B571A7007573C6 /* SitePlanMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345D21B571A7007573C6 /* SitePlanMapper.swift */; };
 		CE50346021B5799F007573C6 /* SitePlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE50345F21B5799F007573C6 /* SitePlan.swift */; };
@@ -483,6 +484,7 @@
 		CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemTaxRefund.swift; sourceTree = "<group>"; };
 		CE430671234B9EB20073CBFF /* OrderItemTax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemTax.swift; sourceTree = "<group>"; };
 		CE430673234BA6AD0073CBFF /* RefundMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundMapper.swift; sourceTree = "<group>"; };
+		CE430675234BA7920073CBFF /* RefundListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundListMapper.swift; sourceTree = "<group>"; };
 		CE43A8F8229F463000A4FF29 /* ProductDownload.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDownload.swift; sourceTree = "<group>"; };
 		CE50345D21B571A7007573C6 /* SitePlanMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlanMapper.swift; sourceTree = "<group>"; };
 		CE50345F21B5799F007573C6 /* SitePlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SitePlan.swift; sourceTree = "<group>"; };
@@ -922,6 +924,7 @@
 				D88D5A4A230BCF0A007B6E01 /* ProductReviewListMapper.swift */,
 				D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */,
 				CE430673234BA6AD0073CBFF /* RefundMapper.swift */,
+				CE430675234BA7920073CBFF /* RefundListMapper.swift */,
 				7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */,
 				743E84ED2217244C00FAC9D7 /* ShipmentTrackingListMapper.swift */,
 				D823D91122377DF200C90817 /* ShipmentTrackingProviderListMapper.swift */,
@@ -1372,6 +1375,7 @@
 				B518662220A097C200037A38 /* Network.swift in Sources */,
 				B572F69A21AC475C003EEFF0 /* DevicesRemote.swift in Sources */,
 				B518662420A099BF00037A38 /* AlamofireNetwork.swift in Sources */,
+				CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */,
 				B557DA1820979D51005962F4 /* Credentials.swift in Sources */,
 				CE583A0E2109154500D73C1C /* OrderNoteMapper.swift in Sources */,
 				D8FBFF0D22D3AF4A006E3336 /* StatsGranularityV4.swift in Sources */,

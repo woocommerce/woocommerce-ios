@@ -41,7 +41,7 @@ PODS:
   - Sentry/Core (4.4.0)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.1.4)
-  - WordPressAuthenticator (1.10.0-beta.2):
+  - WordPressAuthenticator (1.10.0):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.3)
     - CocoaLumberjack (~> 3.5)
@@ -50,10 +50,10 @@ PODS:
     - lottie-ios (= 2.5.2)
     - "NSURL+IDN (= 0.3)"
     - SVProgressHUD (= 2.2.5)
-    - WordPressKit (~> 4.5.0)
+    - WordPressKit (~> 4.5.1)
     - WordPressShared (~> 1.8)
     - WordPressUI (~> 1.3)
-  - WordPressKit (4.5.0):
+  - WordPressKit (4.5.1):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.3)
@@ -66,13 +66,13 @@ PODS:
   - WordPressUI (1.3.5)
   - wpxmlrpc (0.8.4)
   - XLPagerTabStrip (9.0.0)
-  - ZendeskSDK (3.0.1):
-    - ZendeskSDK/Providers (= 3.0.1)
-    - ZendeskSDK/UI (= 3.0.1)
-  - ZendeskSDK/Core (3.0.1)
-  - ZendeskSDK/Providers (3.0.1):
+  - ZendeskSDK (3.0.2):
+    - ZendeskSDK/Providers (= 3.0.2)
+    - ZendeskSDK/UI (= 3.0.2)
+  - ZendeskSDK/Core (3.0.2)
+  - ZendeskSDK/Providers (3.0.2):
     - ZendeskSDK/Core
-  - ZendeskSDK/UI (3.0.1):
+  - ZendeskSDK/UI (3.0.2):
     - ZendeskSDK/Core
     - ZendeskSDK/Providers
 
@@ -84,11 +84,11 @@ DEPENDENCIES:
   - CocoaLumberjack/Swift (~> 3.5)
   - Gridicons (~> 0.19)
   - KeychainAccess (~> 3.2)
-  - WordPressAuthenticator (~> 1.10.0-beta.2)
+  - WordPressAuthenticator (~> 1.10.0)
   - WordPressShared (~> 1.8.2)
   - WordPressUI (~> 1.3.5)
   - XLPagerTabStrip (~> 9.0)
-  - ZendeskSDK (from `https://github.com/zendesk/zendesk_sdk_ios.git`, branch `3.0.1-swift5.1-GM`)
+  - ZendeskSDK (~> 3.0.2)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
@@ -116,16 +116,7 @@ SPEC REPOS:
     - WordPressUI
     - wpxmlrpc
     - XLPagerTabStrip
-
-EXTERNAL SOURCES:
-  ZendeskSDK:
-    :branch: 3.0.1-swift5.1-GM
-    :git: https://github.com/zendesk/zendesk_sdk_ios.git
-
-CHECKOUT OPTIONS:
-  ZendeskSDK:
-    :commit: d31a64ab45945e8a4a9cdf0c8037a30274c270f5
-    :git: https://github.com/zendesk/zendesk_sdk_ios.git
+    - ZendeskSDK
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
@@ -146,14 +137,14 @@ SPEC CHECKSUMS:
   Sentry: 26650184fe71eb7476dfd2737acb5ea6cc64b4b1
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
-  WordPressAuthenticator: df4fe0236ff746bcdc7d1d3b4f7124d4374739f3
-  WordPressKit: 87ba4cce3f5269e26a09568a749ec1b8b2ba2267
+  WordPressAuthenticator: c4585d7a5a005df4f9dada8efbeebab32b12844f
+  WordPressKit: c35230114bbd380d63250b6d9a43337c29266c9b
   WordPressShared: 09cf184caa614835f5811e8609227165201e6d3e
   WordPressUI: 1b006c7440e85e724b9773c7ebe3a2e783f70941
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
-  ZendeskSDK: 787414f9240ee6ef8cfe4ea0f00e8b4d01d2d264
+  ZendeskSDK: f1c093a28ffcd0dc84b0cc1844801c7fc3a3dffd
 
-PODFILE CHECKSUM: d55f67d2f6c3b2b0e7020988fc5678da5c92cce1
+PODFILE CHECKSUM: a902a502e9051af9cff4b027417f04567f141111
 
 COCOAPODS: 1.7.5

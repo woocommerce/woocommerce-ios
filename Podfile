@@ -26,7 +26,7 @@ target 'WooCommerce' do
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
-  pod 'WordPressAuthenticator', '~> 1.10.0-beta.2'
+  pod 'WordPressAuthenticator', '~> 1.10.0'
 
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
   pod 'WordPressShared', '~> 1.8.2'
@@ -43,7 +43,7 @@ target 'WooCommerce' do
   pod 'CocoaLumberjack/Swift', '~> 3.5'
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.3.0'
-  pod 'ZendeskSDK', :git => 'https://github.com/zendesk/zendesk_sdk_ios.git', :branch => '3.0.1-swift5.1-GM'
+  pod 'ZendeskSDK', '~> 3.0.2'
 
   # Unit Tests
   # ==========

@@ -11,7 +11,7 @@ public struct Refund: Decodable {
     public let reason: String
     public let refundedByUserID: Int
     public let isAutomatedRefund: Bool
-    public let orderItems: [OrderItem]
+    public let orderItems: [OrderItemRefund]
 
     /// Refund struct initializer
     ///
@@ -22,7 +22,7 @@ public struct Refund: Decodable {
                 reason: String,
                 refundedByUserID: Int,
                 isAutomatedRefund: Bool,
-                orderItems: [OrderItem]) {
+                orderItems: [OrderItemRefund]) {
         self.refundID = refundID
         self.orderID = orderID
         self.dateCreated = dateCreated
@@ -48,7 +48,7 @@ public struct Refund: Decodable {
         let reason = try container.decode(String.self, forKey: .reason)
         let refundedByUserID = try container.decode(Int.self, forKey: .refundedByUserID)
         let isAutomatedRefund = try container.decode(Bool.self, forKey: .automatedRefund)
-        let orderItems = try container.decode([OrderItem].self, forKey: .orderItems)
+        let orderItems = try container.decode([OrderItemRefund].self, forKey: .orderItems)
 
         self.init(refundID: refundID,
                   orderID: orderID,

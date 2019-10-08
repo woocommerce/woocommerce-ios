@@ -1,16 +1,21 @@
 import Foundation
 
 
-/// Represents a Refund entity.
+/// Represents a decoded Refund entity.
 ///
 public struct Refund: Decodable {
     public let refundID: Int
     public let orderID: Int
-    public let dateCreated: Date //gmt
+    public let dateCreated: Date // gmt
     public let amount: String
     public let reason: String
     public let refundedByUserID: Int
+
+    /// If true, the automatic refund is used.
+    /// When false, manual refund process is used.
+    ///
     public let isAutomatedRefund: Bool
+
     public let orderItems: [OrderItemRefund]
 
     /// Refund struct initializer
@@ -58,6 +63,20 @@ public struct Refund: Decodable {
                   refundedByUserID: refundedByUserID,
                   isAutomatedRefund: isAutomatedRefund,
                   orderItems: orderItems)
+    }
+
+    // The public initializer for an encodable Refund
+    ///
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(amount, forKey: .amount)
+        try container.encode(reason, forKey: .reason)
+
+        // take an orderItem and convert it to an orderItemRefund.
+
+        // then encode it.
+        try container.encode(orderItems, forKey: .orderItems)
     }
 }
 

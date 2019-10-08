@@ -1,10 +1,19 @@
-/* Translation-Revision-Date: 2019-09-04 00:54:03+0000 */
+/* Translation-Revision-Date: 2019-09-25 00:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
 
 /* No comment provided by engineer. */
+"%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
+
+/* Displays a time range followed by a specific date/time */
+"%1$@ › %2$@" = "%1$@ › %2$@";
+
+/* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
+"%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
 
 /* Title for an untitled post, should match WP core */
 "(no title)" = "(无标题)";
@@ -67,6 +76,9 @@
 /* Mark all notifications as read notice */
 "All notifications marked as read" = "所有通知标为已读";
 
+/* Mark all reviews as read notice */
+"All reviews marked as read" = "All reviews marked as read";
+
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "马上就好！请输入验证器应用程序中的验证码。";
 
@@ -87,6 +99,9 @@
 
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "处理您的请求时出错：";
+
+/* Indicates the reviewer does not have a name. It reads { Anonymous left a review} */
+"Anonymous" = "Anonymous";
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "应用程序日志";
@@ -125,8 +140,13 @@
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "预订：";
 
-/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
+   VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "%2$@ 栏号 %1$i";
+
+/* Beta features navigation title
+   Navigates to Beta features screen */
+"Beta Features" = "Beta Features";
 
 /* Billing title for customer info cell */
 "Billing details" = "账单详情";
@@ -183,6 +203,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "继续阅读";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "Continue with Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "Continue with WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "Continuing with Apple";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "复制";
 
@@ -205,7 +234,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "无法连接。服务器上没有所需的 XML-RPC 方法。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "无法连接。尝试访问您站点的 XMLRPC 终端时收到 403 错误。与您的站点进行通信所需要的应用程序。请联系您的托管服务提供商以解决此问题。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "无法连接。您的主机会阻止 POST 请求，而应用程序需要通过该请求与您的站点通信。请联系您的托管服务提供商以解决此问题。";
@@ -257,7 +286,7 @@
 "Discount" = "折扣";
 
 /* Add a note screen - button title for closing the view
-   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "关闭";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -403,6 +432,9 @@
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "如果禁用，备注将不会公开";
 
+/* My Store > Settings > Beta features > Switch stats version */
+"Improved stats" = "Improved stats";
+
 /* Display label for the product's inventory stock status */
 "In stock" = "有货";
 
@@ -446,7 +478,14 @@
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "您可能输入了错误的密码。是否想重试？";
 
-/* Settings > Privacy Settings. A text link to the cookie policy. */
+/* Last 24 hours section header */
+"Last 24 hours" = "Last 24 hours";
+
+/* Last 7 days section header */
+"Last 7 days" = "Last 7 days";
+
+/* Settings > Privacy Settings. A text link to the cookie policy.
+   The action of the top banner on Dashboard that indicates new stats is unavailable */
 "Learn more" = "了解更多";
 
 /* Licenses (information page title) */
@@ -485,10 +524,10 @@
 "Log in failed. Please try again." = "登录失败，请重试。";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "使用电子邮件地址登录 WordPress.com 管理您的所有 WordPress 站点。";
+"Log in to the WordPress.com account you used to connect Jetpack." = "登录关联 Jetpack 时使用的 WordPress.com 帐户。";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "登录关联 Jetpack 时使用的 WordPress.com 帐户。";
+"Log in to your WordPress.com account with your email address." = "Log in to your WordPress.com account with your email address.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "使用 Jetpack 帐户登录";
@@ -517,7 +556,8 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "已映射的域";
 
-/* Accessibility label for the Mark All Notifications as Read Button */
+/* Accessibility label for the Mark All Notifications as Read Button
+   Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "全部标为已读";
 
 /* Fulfill Order Action Button */
@@ -525,6 +565,9 @@
 
 /* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
 "Marks Every Notification as Read" = "将所有通知标为已读";
+
+/* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
+"Marks Every Review as Read" = "Marks Every Review as Read";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "媒体没有可上传的关联文件。";
@@ -598,6 +641,9 @@
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
 "No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
 
+/* Text displayed when no order data are available for the selected time range. */
+"No revenue this period" = "No revenue this period";
+
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "尚未配送";
 
@@ -618,6 +664,9 @@
 /* +2 Days Section Header */
 "Older than 2 days" = "超过 2 天";
 
+/* +7 Days Section Header */
+"Older than 7 days" = "Older than 7 days";
+
 /* Months Section Header */
 "Older than a Month" = "超过 1 个月";
 
@@ -629,9 +678,6 @@
 
 /* Display label for the product's inventory stock status */
 "On back order" = "延迟交货";
-
-/* Display label for the review's hold status */
-"On hold" = "保留";
 
 /* Opens iOS's Device Settings for the app */
 "Open Device Settings" = "打开设备设置";
@@ -647,6 +693,9 @@
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "可选的跟踪信息";
+
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -696,8 +745,12 @@
 /* Payment of <currency symbol><payment total> received via (payment method title) */
 "Payment of (totalValue) received via (order.paymentMethodTitle)" = "通过 (order.paymentMethodTitle) 接受 (totalValue) 的付款";
 
-/* Display label for the product's pending status */
+/* Display label for the product's pending status
+   Display label for the review's pending status */
 "Pending" = "待审";
+
+/* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
+"Pending Review" = "Pending Review";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "电话号码：%@";
@@ -716,6 +769,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "请输入一个合法的 E-mail 地址。";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Please enter the password for your WordPress.com account to log in with your Apple ID.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "请输入你的验证信息";
@@ -762,6 +818,9 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "产品 %ld 已从您的商店中删除";
 
+/* Title of the Products tab — plural form of Product */
+"Products" = "Products";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "可选择给账单付款客户打电话还是发邮件的提示。";
 
@@ -777,7 +836,8 @@
 /* Product Details - purchase details section title */
 "Purchase Details" = "购买详情";
 
-/* Product Details > Purchase Details > Purchase note cell title */
+/* Product Details > Purchase Details > Purchase note cell title
+   Title for purchase note alert. */
 "Purchase note" = "购买备注";
 
 /* Quantity abbreviation for section title */
@@ -822,10 +882,7 @@
 "Revenue" = "收益";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
-"Review marked as %@" = "Review marked as %@";
-
-/* Description text used on the UI element displayed when a user has pending orders to process. */
-"Review, prepare, and ship these pending orders" = "审核、准备和配送这些待处理订单";
+"Review marked as %@" = "评论已标记为%@";
 
 /* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
    Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
@@ -1073,17 +1130,23 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "删除指定站点的阻碍时出现问题。";
 
-/* Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month
+   Top Performers section title - this month */
 "This Month" = "本月";
 
-/* Top Performers section title - this week */
+/* Tab selector title that shows the statistics for this week
+   Top Performers section title - this week */
 "This Week" = "本周";
 
-/* Top Performers section title - this year */
+/* Tab selector title that shows the statistics for this year
+   Top Performers section title - this year */
 "This Year" = "今年";
 
 /* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "这款应用程序需要安装 Jetpack 才能关联您的商店。<br \/>请查看<a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">配置说明<\/a>。";
+
+/* Body text of alert warning users to upgrade to WC 3.5. */
+"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "此电子邮件地址并未在 WordPress.com 上注册。";
@@ -1106,8 +1169,8 @@
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "要继续使用此 Google 帐户，请先使用您的 WordPress.com 密码登录。此要求只会出现一次。";
 
-/* Today Section Header
-   Top Performers section title - today */
+/* Tab selector title that shows the statistics for today
+   Today Section Header - Top Performers section title - today */
 "Today" = "今天";
 
 /* Header label for Top Performers section of My Store tab. */
@@ -1150,8 +1213,17 @@
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信任";
 
+/* The action of the top banner on Dashboard that indicates new stats is available */
+"Try It Now" = "Try It Now";
+
 /* No comment provided by engineer. */
 "Try another account" = "试试其他帐户";
+
+/* The title of the top banner on Dashboard that indicates new stats is available */
+"Try our improved stats" = "Try our improved stats";
+
+/* My Store > Settings > Beta features > Stats version description */
+"Try the new stats available with the WooCommerce Admin plugin" = "Try the new stats available with the WooCommerce Admin plugin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "试试其他电子邮件地址";
@@ -1190,7 +1262,7 @@
 "Unable to load content" = "无法加载内容";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
-"Unable to mark review as %@" = "Unable to mark review as %@";
+"Unable to mark review as %@" = "无法将评论标记为%@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "无法通过该 URL 读取 WordPress 站点。轻点“需要帮助？”，以查看常见问题解答。";
@@ -1231,8 +1303,17 @@
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "最多保存七天的日志。";
 
+/* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
+"Update %@ to WooCommerce 3.5" = "Update %@ to WooCommerce 3.5";
+
+/* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
+"Update Instructions" = "Update Instructions";
+
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "更新订单状态";
+
+/* Title of alert warning users to upgrade to WC 3.5. */
+"Update to WooCommerce 3.5 to keep using this app" = "Update to WooCommerce 3.5 to keep using this app";
 
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "已于 %ld 小时之前更新";
@@ -1295,6 +1376,9 @@
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "实时观看世界各地的读者阅读您的站点以及与您的站点交互。";
 
+/* The info of the top banner on Dashboard that indicates new stats is unavailable */
+"We have reverted to the old stats as we couldn’t find the WooCommerce Admin plugin" = "We have reverted to the old stats as we couldn’t find the WooCommerce Admin plugin";
+
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "我们向您发送了一个免密注册链接！请在该设备上检查电子邮件，并轻点电子邮件中的免密注册链接以完成注册。";
 
@@ -1318,6 +1402,9 @@
 
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "重量：";
+
+/* The info of the top banner on Dashboard that indicates new stats is available */
+"We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的站点地址是什么？";
@@ -1348,12 +1435,6 @@
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "这个 E-mail 地址不可用。我们发现这个 E-mail 提供商会屏蔽我们的邮件，请更换一个。";
-
-/* Title text used on the My Store UI when a user has a _single_ pending order to process. */
-"You have %ld order to fulfill" = "您有 %ld 个订单待处理";
-
-/* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
-"You have %ld orders to fulfill" = "您有 %ld 个订单待处理";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "您似乎安装了来自 DudaMobile 的移动插件，该插件会阻止应用程序连接到您的博客";

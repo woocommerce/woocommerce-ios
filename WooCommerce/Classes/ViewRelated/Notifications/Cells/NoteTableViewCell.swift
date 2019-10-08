@@ -123,6 +123,7 @@ private extension NoteTableViewCell {
     /// Refreshes the Cell's Colors.
     ///
     func refreshColors() {
+        backgroundColor = StyleManager.wooWhite
         sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
     }
 

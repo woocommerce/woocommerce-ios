@@ -64,6 +64,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
         configureLabels()
     }
 
@@ -100,6 +101,10 @@ private extension OrderTableViewCell {
 
         paymentStatusLabel.backgroundColor = paymentColor
         paymentStatusLabel.layer.borderColor = borderColor
+    }
+
+    func configureBackground() {
+        backgroundColor = StyleManager.wooWhite
     }
 
     /// Setup: Labels

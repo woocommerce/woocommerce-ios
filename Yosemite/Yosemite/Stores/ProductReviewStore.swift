@@ -63,7 +63,7 @@ private extension ProductReviewStore {
                 return
             }
 
-            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: productReviews) {
+            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: productReviews, siteID: siteID) {
                 onCompletion(nil)
             }
         }
@@ -83,7 +83,7 @@ private extension ProductReviewStore {
                 return
             }
 
-            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: [productReview]) {
+            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: [productReview], siteID: siteID) {
                 onCompletion(productReview, nil)
             }
         }
@@ -110,10 +110,10 @@ private extension ProductReviewStore {
     /// Updates (OR Inserts) the specified ReadOnly ProductReview Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    func upsertStoredProductReviewsInBackground(readOnlyProductReviews: [Networking.ProductReview], onCompletion: @escaping () -> Void) {
+    func upsertStoredProductReviewsInBackground(readOnlyProductReviews: [Networking.ProductReview], siteID: Int, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            self.upsertStoredProductReviews(readOnlyProductReviews: readOnlyProductReviews, in: derivedStorage)
+            self.upsertStoredProductReviews(readOnlyProductReviews: readOnlyProductReviews, in: derivedStorage, siteID: siteID)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -130,12 +130,24 @@ extension ProductReviewStore {
     ///     - readOnlyProductReviews: Remote ProductReviews to be persisted.
     ///     - storage: Where we should save all the things!
     ///
-    func upsertStoredProductReviews(readOnlyProductReviews: [Networking.ProductReview], in storage: StorageType) {
+    func upsertStoredProductReviews(readOnlyProductReviews: [Networking.ProductReview], in storage: StorageType, siteID: Int) {
+        // Upsert the Product reviews from the read-only reviews
         for readOnlyProductReview in readOnlyProductReviews {
-            let storageProductReview = storage.loadProductReview(siteID: readOnlyProductReview.siteID, reviewID: readOnlyProductReview.reviewID) ??
-                storage.insertNewObject(ofType: Storage.ProductReview.self)
+            if let existingStorageProductReview = storage.loadProductReview(siteID: siteID, reviewID: readOnlyProductReview.reviewID) {
+                existingStorageProductReview.update(with: readOnlyProductReview)
+            } else {
+                let newStorageProductReview = storage.insertNewObject(ofType: Storage.ProductReview.self)
+                newStorageProductReview.update(with: readOnlyProductReview)
+            }
+        }
 
-            storageProductReview.update(with: readOnlyProductReview)
+        // Now, remove any objects that exist in storageProductReviews but not in readOnlyProductReviews
+        if let storageProductReviews = storage.loadProductReviews(siteID: siteID) {
+            storageProductReviews.forEach({ storageProductReview in
+                if readOnlyProductReviews.first(where: { $0.reviewID == storageProductReview.reviewID }) == nil {
+                    storage.deleteObject(storageProductReview)
+                }
+            })
         }
     }
 }

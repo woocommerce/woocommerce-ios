@@ -51,6 +51,7 @@ class SwitchTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         setupTextLabels()
         setupSwitch()
         setupGestureRecognizers()
@@ -65,6 +66,10 @@ class SwitchTableViewCell: UITableViewCell {
 // MARK: - Private Methods
 //
 private extension SwitchTableViewCell {
+
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
 
     func setupTextLabels() {
         textLabel?.text = String()

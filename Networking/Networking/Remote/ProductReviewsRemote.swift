@@ -25,7 +25,8 @@ public final class ProductReviewsRemote: Remote {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.contextKey: context ?? Default.context
+            ParameterKey.contextKey: context ?? Default.context,
+            ParameterKey.status: Default.allReviews
         ]
 
         let path = Path.reviews
@@ -73,9 +74,10 @@ public final class ProductReviewsRemote: Remote {
 //
 public extension ProductReviewsRemote {
     enum Default {
-        public static let pageSize: Int   = 25
-        public static let pageNumber: Int = 1
-        public static let context: String = "view"
+        public static let pageSize: Int         = 25
+        public static let pageNumber: Int       = 1
+        public static let context: String       = "view"
+        public static let allReviews: String    = "all"
     }
 
     private enum Path {

@@ -28,6 +28,7 @@ class OrderNoteTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         configureLabels()
         configureIconButton()
     }
@@ -90,6 +91,10 @@ private extension OrderNoteTableViewCell {
             iconButton.backgroundColor = StyleManager.wooGreyMid
             statusLabel.text = NSLocalizedString("Private note", comment: "Labels an order note to let the user know it's private and not seen by the customer")
         }
+    }
+
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
     }
 
     /// Setup: Labels

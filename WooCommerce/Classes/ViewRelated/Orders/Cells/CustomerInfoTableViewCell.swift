@@ -44,4 +44,17 @@ class CustomerInfoTableViewCell: UITableViewCell {
             addressLabel.text = newValue
         }
     }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+
+        configureBackground()
+    }
+}
+
+
+private extension CustomerInfoTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
 }

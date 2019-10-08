@@ -37,9 +37,15 @@ class AuthenticationManager: Authentication {
                                                 primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
                                                 secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
                                                 disabledTitleColor: StyleManager.buttonDisabledTitleColor,
+                                                textButtonColor: StyleManager.wooCommerceBrandColor,
+                                                textButtonHighlightColor: StyleManager.wooCommerceBrandColor,
+                                                instructionColor: StyleManager.wooCommerceBrandColor,
                                                 subheadlineColor: StyleManager.wooCommerceBrandColor,
+                                                placeholderColor: StyleManager.wooGreyTextMin,
                                                 viewControllerBackgroundColor: StyleManager.wooGreyLight,
-                                                navBarImage: StyleManager.navBarImage)
+                                                textFieldBackgroundColor: StyleManager.wooWhite,
+                                                navBarImage: StyleManager.navBarImage,
+                                                navBarBadgeColor: StyleManager.wooCommerceBrandColor)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                      jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
@@ -57,6 +63,11 @@ class AuthenticationManager: Authentication {
         let prologueViewController = LoginPrologueViewController()
         let navigationController = LoginNavigationController(rootViewController: prologueViewController)
         navigationController.modalPresentationStyle = .fullScreen
+
+        // TODO-1335: properly handle login input field text color in Dark mode in `WordPressAuthenticator`.
+        if #available(iOS 13.0, *) {
+            navigationController.overrideUserInterfaceStyle = .light
+        }
 
         presenter.present(navigationController, animated: true, completion: nil)
     }

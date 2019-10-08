@@ -26,8 +26,13 @@ class WooBasicTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         configureSelectionStyle()
         configureLabel()
+    }
+
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
     }
 
     /// Set up the cell selection style
@@ -46,6 +51,10 @@ class WooBasicTableViewCell: UITableViewCell {
     /// Add the accessoryView image, if any
     ///
     func configureAccessoryView() {
+        guard let accessoryImage = accessoryImage else {
+            accessoryView = nil
+            return
+        }
         let accessoryImageView = UIImageView(image: accessoryImage)
         accessoryImageView.tintColor = StyleManager.buttonPrimaryColor
         accessoryView = accessoryImageView

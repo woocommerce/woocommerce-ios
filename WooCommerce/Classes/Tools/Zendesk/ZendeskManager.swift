@@ -1,7 +1,7 @@
 import Foundation
 import ZendeskSDK
 import ZendeskCoreSDK
-import CommonUISDK // Zendesk UI SDK
+import CommonUISDK// Zendesk UI SDK
 import WordPressShared
 import CoreTelephony
 import SafariServices
@@ -12,6 +12,7 @@ extension NSNotification.Name {
     static let ZDPNReceived = NSNotification.Name(rawValue: "ZDPNReceived")
     static let ZDPNCleared = NSNotification.Name(rawValue: "ZDPNCleared")
 }
+
 
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
@@ -211,7 +212,6 @@ class ZendeskManager: NSObject {
         return tags
     }
 }
-
 
 // MARK: - Push Notifications
 //

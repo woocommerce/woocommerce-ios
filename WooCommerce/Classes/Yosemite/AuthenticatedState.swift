@@ -31,6 +31,7 @@ class AuthenticatedState: StoresManagerState {
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+            AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
@@ -40,6 +41,7 @@ class AuthenticatedState: StoresManagerState {
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
@@ -104,6 +106,7 @@ private extension AuthenticatedState {
 private extension AuthenticatedState {
     func resetServices() {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
-        ServiceLocator.stores.dispatch(resetStoredProviders)
+        let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
+        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates])
     }
 }

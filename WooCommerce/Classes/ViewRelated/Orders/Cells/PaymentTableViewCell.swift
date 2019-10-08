@@ -45,20 +45,14 @@ final class PaymentTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        subtotalLabel.applyBodyStyle()
-        subtotalValue.applyBodyStyle()
-        discountLabel.applyBodyStyle()
-        discountValue.applyBodyStyle()
-        shippingLabel.applyBodyStyle()
-        shippingValue.applyBodyStyle()
-        taxesLabel.applyBodyStyle()
-        taxesValue.applyBodyStyle()
-        totalLabel.applyHeadlineStyle()
-        totalValue.applyHeadlineStyle()
-
-        footerLabel?.text = nil
-        footerLabel?.applyFootnoteStyle()
-        separatorLine?.backgroundColor = StyleManager.cellSeparatorColor
+        configureBackground()
+        configureSubTotal()
+        configureDiscount()
+        configureShipping()
+        configureTaxes()
+        configureTotal()
+        configureLabel()
+        configureSeparator()
     }
 
     func configure(with viewModel: OrderPaymentDetailsViewModel) {
@@ -95,6 +89,47 @@ final class PaymentTableViewCell: UITableViewCell {
         if let footerText = footerText {
             accessibilityElements?.append(footerText)
         }
+    }
+}
+
+
+private extension PaymentTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureSubTotal() {
+        subtotalLabel.applyBodyStyle()
+        subtotalValue.applyBodyStyle()
+    }
+
+    func configureDiscount() {
+        discountLabel.applyBodyStyle()
+        discountValue.applyBodyStyle()
+    }
+
+    func configureShipping() {
+        shippingLabel.applyBodyStyle()
+        shippingValue.applyBodyStyle()
+    }
+
+    func configureTaxes() {
+        taxesLabel.applyBodyStyle()
+        taxesValue.applyBodyStyle()
+    }
+
+    func configureTotal() {
+        totalLabel.applyHeadlineStyle()
+        totalValue.applyHeadlineStyle()
+    }
+
+    func configureLabel() {
+        footerLabel?.text = nil
+        footerLabel?.applyFootnoteStyle()
+    }
+
+    func configureSeparator() {
+        separatorLine?.backgroundColor = StyleManager.cellSeparatorColor
     }
 }
 

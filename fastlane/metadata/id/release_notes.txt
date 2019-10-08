@@ -1,3 +1,5 @@
-- Beberapa dari Anda dapat melihat situs Anda di layar login, namun tidak dapat mengetuk Lanjut. Ya, kami telah memperbaikinya.
-- Menjadi penjual yang produktif adalah sesuatu yang perlu dirayakan — karena itu kami menjadikan lencana Pesanan jauh lebih mudah untuk dibaca.
-- Kami mendapati Anda tidak bisa lagi mengunduh gambar produk secara otomatis dari layar Detail Pesanan. Kami telah memulihkan kemampuan untuk mengunduh gambar.
+- Ada halaman statistik baru (dengan analitik yang lebih mendetail) untuk Anda yang menggunakan plugin Admin WooCommerce! Anda dapat memilih untuk menggunakannya dari halaman Pengaturan.
+- Kami memperbaiki bug yang menyebabkan harga ditampilkan dalam mata uang yang salah di halaman Detail Produk.
+- Setelah mendapati bahwa log aplikasi dapat disunting, kami telah memastikan bahwa selanjutnya log hanya akan dapat disalin.
+- Karena sekarang tab Pesanan menampilkan semua informasi pesanan Anda, kami menyederhanakan tab Toko Saya dan menghapus kartu Pesanan Baru dari bagian ini.
+- Anda mungkin ingin Ulasan dilokalkan, dan sekarang keinginan itu terkabul (sempat ada bug, sudah kami perbaiki).

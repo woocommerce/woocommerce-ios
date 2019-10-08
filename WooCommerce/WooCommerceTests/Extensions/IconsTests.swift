@@ -66,8 +66,16 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.filterImage)
     }
 
+    func testGiftWithTopRightRedDotImageIsNotNil() {
+        XCTAssertNotNil(UIImage.giftWithTopRightRedDotImage)
+    }
+
     func testHeartOutlineImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.heartOutlineImage)
+    }
+
+    func testIconImageIsNotNil() {
+        XCTAssertNotNil(UIImage.infoImage)
     }
 
     func testJetpackLogoImageIconIsNotNil() {

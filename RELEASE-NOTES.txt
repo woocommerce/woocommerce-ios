@@ -1,5 +1,14 @@
+2.8
+-----
+ 
 2.7
 -----
+- bugfix: the App Logs shouldn't be editable, only copy / paste.
+- bugfix: Reviews were not localized.
+- bugfix: Product Details page was displaying the Price in the wrong currency.
+- Enhancement: removed the "New Orders" card from the My store tab, now that the Orders tab displays the same information.
+- Added brand new stats page for user with the WooCommerce Admin plugin and provided an option for users to opt in or out directly from the Settings page.
+- bugfix: Order Details: icon on "Details" cell for fulfilled order can be wrong.
  
 2.6
 -----

@@ -57,7 +57,6 @@ class SettingsViewController: UIViewController {
         refreshResultsController()
         configureNavigation()
         configureMainView()
-        configureSections()
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
@@ -65,6 +64,7 @@ class SettingsViewController: UIViewController {
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
+        configureSections()
         tableView.reloadData()
     }
 
@@ -133,14 +133,42 @@ private extension SettingsViewController {
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
-        sections = [
-            Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
-            Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-            Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
-            Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
-            Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
-            Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
-        ]
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stats) {
+            rowsForImproveTheAppSection { [weak self] improveTheAppRows in
+                self?.sections = [
+                    Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+                    Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+                    Section(title: improveTheAppTitle, rows: improveTheAppRows, footerHeight: UITableView.automaticDimension),
+                    Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+                    Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
+                    Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+                ]
+            }
+        } else {
+            sections = [
+                Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+                Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+                Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
+                Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+            ]
+        }
+    }
+
+    func rowsForImproveTheAppSection(onCompletion: @escaping (_ rows: [Row]) -> Void) {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("Cannot find store ID")
+            return
+        }
+        let action = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { eligibleStatsVersion in
+            guard eligibleStatsVersion == .v4 else {
+                onCompletion([.privacy, .featureRequest])
+                return
+            }
+            onCompletion([.privacy, .betaFeatures, .featureRequest])
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func registerTableViewCells() {
@@ -161,6 +189,8 @@ private extension SettingsViewController {
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
+        case let cell as BasicTableViewCell where row == .betaFeatures:
+            configureBetaFeatures(cell: cell)
         case let cell as BasicTableViewCell where row == .featureRequest:
             configureFeatureSuggestions(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
@@ -200,6 +230,12 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
+    }
+
+    func configureBetaFeatures(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Beta Features", comment: "Navigates to Beta features screen")
     }
 
     func configureFeatureSuggestions(cell: BasicTableViewCell) {
@@ -298,6 +334,16 @@ private extension SettingsViewController {
     func licensesWasPressed() {
         ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
         performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
+    }
+
+    func betaFeaturesWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("Cannot find store ID")
+            return
+        }
+        ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
+        let betaFeaturesViewController = BetaFeaturesViewController(siteID: siteID)
+        navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
     func featureRequestWasPressed() {
@@ -399,6 +445,8 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .privacy:
             privacyWasPressed()
+        case .betaFeatures:
+            betaFeaturesWasPressed()
         case .featureRequest:
             featureRequestWasPressed()
         case .about:
@@ -435,6 +483,7 @@ private enum Row: CaseIterable {
     case support
     case logout
     case privacy
+    case betaFeatures
     case featureRequest
     case about
     case licenses
@@ -451,6 +500,8 @@ private enum Row: CaseIterable {
         case .logout:
             return BasicTableViewCell.self
         case .privacy:
+            return BasicTableViewCell.self
+        case .betaFeatures:
             return BasicTableViewCell.self
         case .featureRequest:
             return BasicTableViewCell.self

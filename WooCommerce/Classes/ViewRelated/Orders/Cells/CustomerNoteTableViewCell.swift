@@ -23,4 +23,16 @@ class CustomerNoteTableViewCell: UITableViewCell {
             noteLabel.text = newValue
         }
     }
+
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        configureBackground()
+    }
+}
+
+
+private extension CustomerNoteTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
 }

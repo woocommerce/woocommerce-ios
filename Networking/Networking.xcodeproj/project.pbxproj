@@ -210,6 +210,7 @@
 		CE43066A23465F340073CBFF /* Refund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066923465F340073CBFF /* Refund.swift */; };
 		CE43066C2347C5F90073CBFF /* OrderItemRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066B2347C5F90073CBFF /* OrderItemRefund.swift */; };
 		CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */; };
+		CE430670234B99F50073CBFF /* RefundsRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE43066F234B99F50073CBFF /* RefundsRemote.swift */; };
 		CE430672234B9EB20073CBFF /* OrderItemTax.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE430671234B9EB20073CBFF /* OrderItemTax.swift */; };
 		CE430674234BA6AD0073CBFF /* RefundMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE430673234BA6AD0073CBFF /* RefundMapper.swift */; };
 		CE430676234BA7920073CBFF /* RefundListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE430675234BA7920073CBFF /* RefundListMapper.swift */; };
@@ -482,6 +483,7 @@
 		CE43066923465F340073CBFF /* Refund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Refund.swift; sourceTree = "<group>"; };
 		CE43066B2347C5F90073CBFF /* OrderItemRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemRefund.swift; sourceTree = "<group>"; };
 		CE43066D2347CBA70073CBFF /* OrderItemTaxRefund.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemTaxRefund.swift; sourceTree = "<group>"; };
+		CE43066F234B99F50073CBFF /* RefundsRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundsRemote.swift; sourceTree = "<group>"; };
 		CE430671234B9EB20073CBFF /* OrderItemTax.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemTax.swift; sourceTree = "<group>"; };
 		CE430673234BA6AD0073CBFF /* RefundMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundMapper.swift; sourceTree = "<group>"; };
 		CE430675234BA7920073CBFF /* RefundListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundListMapper.swift; sourceTree = "<group>"; };
@@ -744,15 +746,16 @@
 				B5DAEFEF2180DD5A0002356A /* NotificationsRemote.swift */,
 				B557DA0120975500005962F4 /* OrdersRemote.swift */,
 				748D4247210F89ED00CF7D1B /* OrderStatsRemote.swift */,
+				D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */,
 				D88D5A44230BC6F9007B6E01 /* ProductReviewsRemote.swift */,
 				CE0A0F1A223989670075ED8D /* ProductsRemote.swift */,
+				CE43066F234B99F50073CBFF /* RefundsRemote.swift */,
 				7412A8E921B6E192005D182A /* ReportRemote.swift */,
 				743E84E922171C5800FAC9D7 /* ShipmentsRemote.swift */,
 				7426CA0C21AF27B9004E9FFC /* SiteAPIRemote.swift */,
 				74046E1A217A684D007DD7BF /* SiteSettingsRemote.swift */,
 				74A1D26E21189EA000931DFA /* SiteVisitStatsRemote.swift */,
 				74ABA1D0213F22CA00FFAD30 /* TopEarnersStatsRemote.swift */,
-				D8FBFF0A22D3ADB1006E3336 /* OrderStatsRemoteV4.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -1292,6 +1295,7 @@
 				74ABA1CF213F1D1600FFAD30 /* TopEarnerStatsItem.swift in Sources */,
 				7452387421124B7700A973CD /* AnyDecodable.swift in Sources */,
 				CEF88DAD233E95B000BED485 /* OrderRefundCondensed.swift in Sources */,
+				CE430670234B99F50073CBFF /* RefundsRemote.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B50A583921AD861700617455 /* APNSDevice.swift in Sources */,
 				7426CA0D21AF27B9004E9FFC /* SiteAPIRemote.swift in Sources */,

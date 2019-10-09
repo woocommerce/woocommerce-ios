@@ -73,10 +73,7 @@ public struct Refund: Decodable {
         try container.encode(amount, forKey: .amount)
         try container.encode(reason, forKey: .reason)
 
-        // take an orderItem and convert it to an orderItemRefund.
-
-        // then encode it.
-        try container.encode(orderItems, forKey: .orderItems)
+        try container.encode(true, forKey: .createAutomatedRefund)
     }
 }
 
@@ -93,7 +90,7 @@ private extension Refund {
         case refundedByUserID       = "refunded_by"
         case automatedRefund        = "refunded_payment"    // read-only
         case createAutomatedRefund  = "api_refund"          // write-only
-        case orderItems             = "line_items"
+        case items                  = "line_items"
     }
 }
 
@@ -109,9 +106,9 @@ extension Refund: Comparable {
             lhs.reason == rhs.reason &&
             lhs.refundedByUserID == rhs.refundedByUserID &&
             lhs.isAutomatedRefund == rhs.isAutomatedRefund &&
-            (!lhs.orderItems.isEmpty && !rhs.orderItems.isEmpty) ?
-        lhs.orderItems.count == rhs.orderItems.count &&
-        lhs.orderItems.sorted() == rhs.orderItems.sorted() : true
+            (!lhs.items.isEmpty && !rhs.items.isEmpty) ?
+        lhs.items.count == rhs.items.count &&
+        lhs.items.sorted() == rhs.items.sorted() : true
     }
 
     public static func < (lhs: Refund, rhs: Refund) -> Bool {
@@ -125,11 +122,11 @@ extension Refund: Comparable {
             (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
                 lhs.dateCreated == rhs.dateCreated  &&
                 lhs.amount == rhs.amount &&
-                rhs.orderItems.count < rhs.orderItems.count) ||
+                rhs.items.count < rhs.items.count) ||
             (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
                 lhs.dateCreated == rhs.dateCreated &&
                 lhs.amount == rhs.amount &&
-                rhs.orderItems.count == rhs.orderItems.count)
+                rhs.items.count == rhs.items.count)
     }
 }
 

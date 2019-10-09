@@ -46,10 +46,10 @@ public final class RefundsRemote: Remote {
     public func loadRefund(siteID: Int,
                            orderID: Int,
                            refundID: Int,
-                           completion: @escaping ([Refund]?, Error?) -> Void) {
+                           completion: @escaping (Refund?, Error?) -> Void) {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
-        let mapper = RefundListMapper(siteID: siteID)
+        let mapper = RefundMapper(siteID: siteID, orderID: orderID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }
@@ -67,7 +67,7 @@ public final class RefundsRemote: Remote {
                              refund: Refund,
                              completion: @escaping (Refund?, Error?) -> Void) {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
-        let mapper = RefundMapper(siteID: siteID)
+        let mapper = RefundMapper(siteID: siteID, orderID: orderID)
 
         do {
             let encodedJson = try mapper.map(refund: refund)
@@ -76,6 +76,7 @@ public final class RefundsRemote: Remote {
 
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
+            completion(nil, error)
             DDLogError("Unable to serialize data for refunds: \(error)")
         }
     }

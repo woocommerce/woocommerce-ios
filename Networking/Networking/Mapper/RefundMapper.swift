@@ -5,11 +5,16 @@ import Foundation
 ///
 struct RefundMapper: Mapper {
 
-    /// Site Identifier associated to the order refund that will be parsed.
+    /// Site Identifier associated to the refund that will be parsed.
     ///
-    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Order Endpoints.
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Refund Endpoints.
     ///
     let siteID: Int
+
+    /// Order Identifier associated with the refund that will be parsed.
+    /// We're injecting this field via `JSONDecoder.userInfo` because the orderID is not returned in any of the Refund Endpoints.
+    ///
+    let orderID: Int
 
 
     /// (Attempts) to convert a dictionary into a single Refund.
@@ -18,7 +23,8 @@ struct RefundMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
-            .siteID: siteID
+            .siteID: siteID,
+            .orderID: orderID
         ]
 
         return try decoder.decode(RefundEnvelope.self, from: response).refund

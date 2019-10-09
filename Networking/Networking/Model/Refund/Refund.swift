@@ -6,6 +6,7 @@ import Foundation
 public struct Refund: Codable {
     public let refundID: Int
     public let orderID: Int
+    public let siteID: Int
     public let dateCreated: Date // gmt
     public let amount: String
     public let reason: String
@@ -14,7 +15,12 @@ public struct Refund: Codable {
     /// If true, the automatic refund is used.
     /// When false, manual refund process is used.
     ///
-    public let isAutomatedRefund: Bool
+    public let isAutomatedRefund: Bool?
+
+    /// If true, the automated refund for a payment gateway is used.
+    /// When false, the manual refund process is used.
+    ///
+    public let createAutomatedRefund: Bool?
 
     public let items: [OrderItemRefund]
 
@@ -22,19 +28,23 @@ public struct Refund: Codable {
     ///
     public init(refundID: Int,
                 orderID: Int,
+                siteID: Int,
                 dateCreated: Date,
                 amount: String,
                 reason: String,
                 refundedByUserID: Int,
-                isAutomatedRefund: Bool,
+                isAutomatedRefund: Bool?,
+                createAutomatedRefund: Bool?,
                 items: [OrderItemRefund]) {
         self.refundID = refundID
         self.orderID = orderID
+        self.siteID = siteID
         self.dateCreated = dateCreated
         self.amount = amount
         self.reason = reason
         self.refundedByUserID = refundedByUserID
         self.isAutomatedRefund = isAutomatedRefund
+        self.createAutomatedRefund = createAutomatedRefund
         self.items = items
     }
 
@@ -43,6 +53,10 @@ public struct Refund: Codable {
     public init(from decoder: Decoder) throws {
         guard let orderID = decoder.userInfo[.orderID] as? Int else {
             throw RefundDecodingError.missingOrderID
+        }
+
+        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+            throw RefundDecodingError.missingSiteID
         }
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -57,11 +71,13 @@ public struct Refund: Codable {
 
         self.init(refundID: refundID,
                   orderID: orderID,
+                  siteID: siteID,
                   dateCreated: dateCreated,
                   amount: amount,
                   reason: reason,
                   refundedByUserID: refundedByUserID,
                   isAutomatedRefund: isAutomatedRefund,
+                  createAutomatedRefund: nil,
                   items: items)
     }
 
@@ -136,4 +152,5 @@ extension Refund: Comparable {
 //
 enum RefundDecodingError: Error {
     case missingOrderID
+    case missingSiteID
 }

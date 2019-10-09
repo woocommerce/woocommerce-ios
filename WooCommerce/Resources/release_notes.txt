@@ -1,5 +1,1 @@
-- There’s a brand-new stats page (with more granular analytics) for those of you who use the WooCommerce Admin plugin! You can opt in to use it from the Settings page.
-- We fixed a bug that showed prices in the wrong currency on the Product Details page.
-- After discovering that app logs could be edited, we’ve made sure they’re copy-only going forward.
-- Now that the Orders tab displays all your order information, we’ve streamlined the My Store tab and removed the New Orders card from it.
-- You probably want Reviews to be localized, and now they are (there was a bug; we fixed it).
+No changes! 2.7 was so great, we thought we’d release it again. (Kidding! There’ll be loads of good stuff in 2.9 — we just need a little more time to perfect it.)

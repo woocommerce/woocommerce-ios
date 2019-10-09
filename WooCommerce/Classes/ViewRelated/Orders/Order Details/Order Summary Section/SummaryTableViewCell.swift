@@ -65,6 +65,8 @@ final class SummaryTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+
+        configureBackground()
         configureLabels()
         configureIcon()
     }
@@ -102,6 +104,10 @@ private extension SummaryTableViewCell {
 
         paymentStatusLabel.backgroundColor = paymentColor
         paymentStatusLabel.layer.borderColor = borderColor
+    }
+
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
     }
 
     /// Setup: Labels

@@ -11,12 +11,24 @@ final class FulfillButtonTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        fulfillButton.applyPrimaryButtonStyle()
+        configureBackground()
+        configureFulfillButton()
     }
 }
 
 extension FulfillButtonTableViewCell {
     @IBAction func fulfillWasPressed() {
         onFullfillTouchUp?()
+    }
+}
+
+
+private extension FulfillButtonTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureFulfillButton() {
+        fulfillButton.applyPrimaryButtonStyle()
     }
 }

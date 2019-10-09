@@ -101,6 +101,12 @@ final class RefundListMapperTests: XCTestCase {
         XCTAssertEqual(item2.sku, "HOODIE-SHIP-YOUR-IDEA-BLUE-XL")
         XCTAssertEqual(item2.price, NSDecimalNumber(integerLiteral: 27))
     }
+
+    /// Verifies that a created refund object is encoded properly.
+    ///
+    func testRefundIsEncodedProperly() {
+        // test to come in future updates.
+    }
 }
 
 

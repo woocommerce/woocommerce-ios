@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a decoded Refund entity.
 ///
-public struct Refund: Decodable {
+public struct Refund: Codable {
     public let refundID: Int
     public let orderID: Int
     public let dateCreated: Date // gmt
@@ -72,6 +72,7 @@ public struct Refund: Decodable {
 
         try container.encode(amount, forKey: .amount)
         try container.encode(reason, forKey: .reason)
+        try container.encode(items, forKey: .items)
 
         try container.encode(true, forKey: .createAutomatedRefund)
     }

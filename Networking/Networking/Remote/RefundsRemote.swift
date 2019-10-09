@@ -63,9 +63,9 @@ public final class RefundsRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func createRefund(for siteID: Int,
-                                 by orderID: Int,
-                                 refund: Refund,
-                                 completion: @escaping (Refund?, Error?) -> Void) {
+                             by orderID: Int,
+                             refund: Refund,
+                             completion: @escaping (Refund?, Error?) -> Void) {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let mapper = RefundMapper(siteID: siteID)
 
@@ -92,8 +92,8 @@ public extension RefundsRemote {
     }
 
     private enum Path {
-        static let orders = "orders"
-        static let refunds = "refunds"
+        static let orders   = "orders"
+        static let refunds  = "refunds"
     }
 
     private enum ParameterKey {

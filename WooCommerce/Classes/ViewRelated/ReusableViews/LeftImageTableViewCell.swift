@@ -31,8 +31,13 @@ class LeftImageTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
         imageView?.tintColor = StyleManager.wooCommerceBrandColor
         textLabel?.applyBodyStyle()
+    }
+
+    private func configureBackground() {
+        applyDefaultBackgroundStyle()
     }
 }
 

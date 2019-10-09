@@ -1,3 +1,5 @@
-- Certains utilisateurs pouvaient voir leur site sur l'écran de connexion mais n'avaient pas accès au bouton Continuer. Ce problème a été résolu.
-- Il est important de souligner que vous êtes un excellent vendeur. C'est pourquoi nous avons facilité la lecture du badge de commandes.
-- Nous avons découvert que vous ne pouvez pas télécharger automatiquement les images de produits à partir de la page Détails de la commande. Nous avons rétabli la capacité de les télécharger.
+- Une nouvelle page de statistiques (proposant des analyses plus approfondies) est disponible pour les utilisateurs de l'extension d'administration WooCommerce ! Vous pouvez vous inscrire afin de l'utiliser sur la page Paramètres.
+- Nous avons résolu un bug qui affichait les prix dans une devise erronée sur la page Détails sur le produit.
+- Après nous être aperçus que les journaux de l'application pouvaient être modifiés, nous nous sommes assurés qu'ils sont disponibles en copie seule.
+- Maintenant que l'onglet Commandes affiche toutes les informations de vos commandes, nous avons rationalisé l'onglet Ma boutique et supprimé la section Nouvelles commandes qu'il contenait.
+- Vous souhaitez probablement localiser les avis. C'est désormais possible (le bug a été résolu).

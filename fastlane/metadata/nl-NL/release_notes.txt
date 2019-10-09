@@ -1,3 +1,5 @@
-- Sommige gebruikers konden hun site zien op het inlogscherm, maar niet op Doorgaan klikken. Dat probleem hebben we nu opgelost.
-- Een productieve verkoper zijn, is iets wat gevierd mag worden. Daarom is de badge Bestellingen nu eenvoudiger te lezen.
-- We hebben gemerkt dat je niet meer automatisch productafbeeldingen kon downloaden vanuit het scherm Bestelgegevens. Vanaf nu zijn deze weer te downloaden.
+- Voor degenen die de WooCommerce Admin-plugin gebruiken, is er nu een gloednieuwe statistiekenpagina (met grondigere analyse) beschikbaar! Je kunt je hiervoor aanmelden via de pagina Instellingen.
+- We hebben een bug opgelost waarbij prijzen in de verkeerde valuta werden weergegeven op de pagina Productgegevens.
+- Nadat we hadden gemerkt dat app-logs bewerkbaar waren, hebben we er nu voor gezorgd dat ze alleen gekopieerd kunnen worden.
+- Nu al je bestelgegevens in het tabblad Bestellingen worden weergegeven, hebben we het tabblad Mijn winkel gestroomlijnd en de kaart Nieuwe bestellingen hieruit verwijderd.
+- Je wilt waarschijnlijk dat beoordelingen gelokaliseerd zijn en dat zijn ze nu ook (er was een bug, maar die hebben we opgelost).

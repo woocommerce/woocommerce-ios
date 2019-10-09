@@ -16,7 +16,7 @@ public struct Refund: Decodable {
     ///
     public let isAutomatedRefund: Bool
 
-    public let orderItems: [OrderItemRefund]
+    public let items: [OrderItemRefund]
 
     /// Refund struct initializer
     ///
@@ -27,7 +27,7 @@ public struct Refund: Decodable {
                 reason: String,
                 refundedByUserID: Int,
                 isAutomatedRefund: Bool,
-                orderItems: [OrderItemRefund]) {
+                items: [OrderItemRefund]) {
         self.refundID = refundID
         self.orderID = orderID
         self.dateCreated = dateCreated
@@ -35,7 +35,7 @@ public struct Refund: Decodable {
         self.reason = reason
         self.refundedByUserID = refundedByUserID
         self.isAutomatedRefund = isAutomatedRefund
-        self.orderItems = orderItems
+        self.items = items
     }
 
     // The public initializer for a Refund
@@ -53,7 +53,7 @@ public struct Refund: Decodable {
         let reason = try container.decode(String.self, forKey: .reason)
         let refundedByUserID = try container.decode(Int.self, forKey: .refundedByUserID)
         let isAutomatedRefund = try container.decode(Bool.self, forKey: .automatedRefund)
-        let orderItems = try container.decode([OrderItemRefund].self, forKey: .orderItems)
+        let items = try container.decode([OrderItemRefund].self, forKey: .items)
 
         self.init(refundID: refundID,
                   orderID: orderID,
@@ -62,7 +62,7 @@ public struct Refund: Decodable {
                   reason: reason,
                   refundedByUserID: refundedByUserID,
                   isAutomatedRefund: isAutomatedRefund,
-                  orderItems: orderItems)
+                  items: items)
     }
 
     // The public initializer for an encodable Refund

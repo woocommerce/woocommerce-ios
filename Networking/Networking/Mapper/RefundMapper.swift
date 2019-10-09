@@ -43,7 +43,7 @@ struct RefundMapper: Mapper {
 /// RefundEnvelope Disposable Entity
 ///
 /// `Load Refund` endpoint returns the requested order refund document in the `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
+/// allows us to parse all the things with JSONDecoder.
 ///
 private struct RefundEnvelope: Decodable {
     let refund: Refund

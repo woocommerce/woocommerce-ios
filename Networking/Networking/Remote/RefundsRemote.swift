@@ -30,7 +30,7 @@ public final class RefundsRemote: Remote {
         ]
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
-        let mapper = RefundListMapper(siteID: siteID)
+        let mapper = RefundListMapper(siteID: siteID, orderID: orderID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

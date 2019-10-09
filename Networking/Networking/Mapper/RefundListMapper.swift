@@ -11,6 +11,11 @@ struct RefundListMapper: Mapper {
     ///
     let siteID: Int
 
+    /// Order Identifier associated with the refund that will be parsed.
+    /// We're injecting this field via `JSONDecoder.userInfo` because the orderID is not returned in any of the Refund Endpoints.
+    ///
+    let orderID: Int
+
 
     /// (Attempts) to convert a dictionary into [Refund].
     ///
@@ -18,7 +23,8 @@ struct RefundListMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
-            .siteID: siteID
+            .siteID: siteID,
+            .orderID: orderID
         ]
 
         return try decoder.decode(RefundsEnvelope.self, from: response).refunds
@@ -28,8 +34,8 @@ struct RefundListMapper: Mapper {
 
 /// RefundsEnvelope Disposable Entity
 ///
-/// `Load Order Refunds` endpoint returns the requested order refund document in the `data` key. This entity
-/// allows us to do parse all the things with JSONDecoder.
+/// `Load Refunds` endpoint returns the requested order refunds document in the `data` key. This entity
+/// allows us to parse all the things with JSONDecoder.
 ///
 private struct RefundsEnvelope: Decodable {
     let refunds: [Refund]

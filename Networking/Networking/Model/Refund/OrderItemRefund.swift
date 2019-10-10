@@ -125,16 +125,7 @@ private extension OrderItemRefund {
 extension OrderItemRefund: Comparable {
     public static func == (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
         return lhs.itemID == rhs.itemID &&
-            lhs.name == rhs.name &&
             lhs.productID == rhs.productID &&
-            lhs.quantity == rhs.quantity &&
-            lhs.price == rhs.price &&
-            lhs.sku == rhs.sku &&
-            lhs.subtotal == rhs.subtotal &&
-            lhs.subtotalTax == rhs.subtotalTax &&
-            lhs.taxClass == rhs.taxClass &&
-            lhs.refundTotal == rhs.refundTotal &&
-            lhs.totalTax == rhs.totalTax &&
             lhs.variationID == rhs.variationID
     }
 

@@ -47,13 +47,9 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v2.7-whats-new"
+msgctxt "v2.8-whats-new"
 msgid ""
-"- There’s a brand-new stats page (with more granular analytics) for those of you who use the WooCommerce Admin plugin! You can opt in to use it from the Settings page.\n"
-"- We fixed a bug that showed prices in the wrong currency on the Product Details page.\n"
-"- After discovering that app logs could be edited, we’ve made sure they’re copy-only going forward.\n"
-"- Now that the Orders tab displays all your order information, we’ve streamlined the My Store tab and removed the New Orders card from it.\n"
-"- You probably want Reviews to be localized, and now they are (there was a bug; we fixed it).\n"
+"We’ve rearranged some parts of Order Details for better readability and usability: Customer payment details are more prominent, and Order Notes are grouped with date headings for easier scanning. And no more awkward expanding animation when you view the Billing Details!\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

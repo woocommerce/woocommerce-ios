@@ -4,7 +4,7 @@ source 'https://rubygems.org' do
   gem 'cocoapods-repo-update', '~> 0.0.4'
   gem 'xcpretty-travis-formatter'
   gem 'dotenv'
-  gem 'fastlane', '2.127.2'
+  gem 'fastlane', '~> 2'
 end
 
 

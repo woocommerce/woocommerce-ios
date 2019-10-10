@@ -81,3 +81,4 @@ Preview.html
 
 # Ignore Local Configuration files (like the ones used for Fastlane)
 .env
+/fastlane/promo_screenshots

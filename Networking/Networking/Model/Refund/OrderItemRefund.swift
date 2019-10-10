@@ -51,7 +51,7 @@ public struct OrderItemRefund: Codable {
     /// The public decoder for OrderItemRefund.
     ///
     public init(from decoder: Decoder) throws {
-        let container = try decoder.container(keyedBy: DecodingKeys.self)
+        let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let itemID = try container.decode(Int.self, forKey: .itemID)
         let name = try container.decode(String.self, forKey: .name)
@@ -76,7 +76,7 @@ public struct OrderItemRefund: Codable {
     /// The public encoder for OrderItemRefund.
     ///
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: EncodingKeys.self)
+        var container = encoder.container(keyedBy: CodingKeys.self)
 
         try container.encode(itemID, forKey: .itemID)
         try container.encode(name, forKey: .name)
@@ -84,7 +84,7 @@ public struct OrderItemRefund: Codable {
         try container.encode(variationID, forKey: .variationID)
         try container.encode(Double(truncating: quantity), forKey: .quantity)
         try container.encode(price.stringValue, forKey: .price)
-        try container.encode(sku, forKey: .sku)
+
         try container.encode(subtotal, forKey: .subtotal)
         try container.encode(subtotalTax, forKey: .subtotalTax)
         try container.encode(taxClass, forKey: .taxClass)
@@ -101,7 +101,7 @@ public struct OrderItemRefund: Codable {
 ///
 private extension OrderItemRefund {
 
-    enum EncodingKeys: String, CodingKey {
+    enum CodingKeys: String, CodingKey {
         case itemID         = "id"
         case variationID    = "variation_id"
         case name
@@ -114,23 +114,6 @@ private extension OrderItemRefund {
         case taxClass       = "tax_class"
         case refundTax      = "refund_tax"
         case refundTotal    = "refund_total"
-        case totalTax       = "total_tax"
-        case taxes
-    }
-
-    enum DecodingKeys: String, CodingKey {
-        case itemID         = "id"
-        case variationID    = "variation_id"
-        case name
-        case productID      = "product_id"
-        case quantity
-        case price
-        case sku
-        case subtotal
-        case subtotalTax    = "subtotal_tax"
-        case taxClass       = "tax_class"
-        case refundTax      = "refund_tax"
-        case refundTotal    = "total"
         case totalTax       = "total_tax"
         case taxes
     }

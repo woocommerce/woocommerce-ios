@@ -59,7 +59,7 @@ public struct Refund: Codable {
             throw RefundDecodingError.missingSiteID
         }
 
-        let container = try decoder.container(keyedBy: CodingKeys.self)
+        let container = try decoder.container(keyedBy: DecodingKeys.self)
 
         let refundID = try container.decode(Int.self, forKey: .refundID)
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
@@ -84,13 +84,16 @@ public struct Refund: Codable {
     // The public initializer for an encodable Refund
     ///
     public func encode(to encoder: Encoder) throws {
-        var container = encoder.container(keyedBy: CodingKeys.self)
+        var container = encoder.container(keyedBy: EncodingKeys.self)
 
         try container.encode(amount, forKey: .amount)
         try container.encode(reason, forKey: .reason)
+
+        // FIXME: What happens when you encode a struct that has a nested struct?
+        // `items` contains `taxes: [OrderItemTaxRefund]`.
         try container.encode(items, forKey: .items)
 
-        try container.encode(true, forKey: .createAutomatedRefund)
+        try container.encode(createAutomatedRefund, forKey: .createAutomatedRefund)
     }
 }
 
@@ -99,13 +102,22 @@ public struct Refund: Codable {
 ///
 private extension Refund {
 
-    enum CodingKeys: String, CodingKey {
+    enum DecodingKeys: String, CodingKey {
         case refundID               = "id"
         case dateCreated            = "date_created_gmt"
         case amount
         case reason
         case refundedByUserID       = "refunded_by"
         case automatedRefund        = "refunded_payment"    // read-only
+        case items                  = "line_items"
+    }
+
+    enum EncodingKeys: String, CodingKey {
+        case refundID               = "id"
+        case dateCreated            = "date_created_gmt"
+        case amount
+        case reason
+        case refundedByUserID       = "refunded_by"
         case createAutomatedRefund  = "api_refund"          // write-only
         case items                  = "line_items"
     }

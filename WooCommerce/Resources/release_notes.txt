@@ -1,1 +1,1 @@
-No changes! 2.7 was so great, we thought we’d release it again. (Kidding! There’ll be loads of good stuff in 2.9 — we just need a little more time to perfect it.)
+We’ve rearranged some parts of Order Details for better readability and usability: Customer payment details are more prominent, and Order Notes are grouped with date headings for easier scanning. And no more awkward expanding animation when you view the Billing Details!

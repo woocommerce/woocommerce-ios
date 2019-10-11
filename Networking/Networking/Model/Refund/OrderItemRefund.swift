@@ -11,8 +11,10 @@ public struct OrderItemRefund: Codable {
     public let quantity: NSDecimalNumber
 
     /// Price is a currency.
-    /// When handling currencies, `NSDecimalNumber` is a power house.
-    /// Plus, `localize()`
+    /// When handling currencies, `NSDecimalNumber` is a power house
+    /// for localization and string-to-number conversions.
+    /// `Decimal` doesn't yet have all of the `NSDecimalNumber` APIs.
+    ///
     public let price: NSDecimalNumber
     public let sku: String?
     public let subtotal: String

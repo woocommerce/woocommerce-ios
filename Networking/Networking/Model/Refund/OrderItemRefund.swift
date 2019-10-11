@@ -112,7 +112,7 @@ private extension OrderItemRefund {
         case subtotal
         case subtotalTax    = "subtotal_tax"
         case taxClass       = "tax_class"
-        case total          = "total"
+        case total
         case totalTax       = "total_tax"
         case taxes
     }

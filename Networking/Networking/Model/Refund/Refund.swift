@@ -10,17 +10,17 @@ public struct Refund: Codable {
     public let dateCreated: Date // gmt
     public let amount: String
     public let reason: String
-    public let refundedByUserID: Int
+    public let byUserID: Int
 
     /// If true, the automatic refund is used.
     /// When false, manual refund process is used.
     ///
-    public let isAutomatedRefund: Bool?
+    public let isAutomated: Bool?
 
     /// If true, the automated refund for a payment gateway is used.
     /// When false, the manual refund process is used.
     ///
-    public let createAutomatedRefund: Bool?
+    public let createAutomated: Bool?
 
     public let items: [OrderItemRefund]
 
@@ -32,9 +32,9 @@ public struct Refund: Codable {
                 dateCreated: Date,
                 amount: String,
                 reason: String,
-                refundedByUserID: Int,
-                isAutomatedRefund: Bool?,
-                createAutomatedRefund: Bool?,
+                byUserID: Int,
+                isAutomated: Bool?,
+                createAutomated: Bool?,
                 items: [OrderItemRefund]) {
         self.refundID = refundID
         self.orderID = orderID
@@ -42,9 +42,9 @@ public struct Refund: Codable {
         self.dateCreated = dateCreated
         self.amount = amount
         self.reason = reason
-        self.refundedByUserID = refundedByUserID
-        self.isAutomatedRefund = isAutomatedRefund
-        self.createAutomatedRefund = createAutomatedRefund
+        self.byUserID = byUserID
+        self.isAutomated = isAutomated
+        self.createAutomated = createAutomated
         self.items = items
     }
 
@@ -65,8 +65,8 @@ public struct Refund: Codable {
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
-        let refundedByUserID = try container.decode(Int.self, forKey: .refundedByUserID)
-        let isAutomatedRefund = try container.decode(Bool.self, forKey: .automatedRefund)
+        let byUserID = try container.decode(Int.self, forKey: .byUserID)
+        let isAutomated = try container.decode(Bool.self, forKey: .automatedRefund)
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
 
         self.init(refundID: refundID,
@@ -75,9 +75,9 @@ public struct Refund: Codable {
                   dateCreated: dateCreated,
                   amount: amount,
                   reason: reason,
-                  refundedByUserID: refundedByUserID,
-                  isAutomatedRefund: isAutomatedRefund,
-                  createAutomatedRefund: nil,
+                  byUserID: byUserID,
+                  isAutomated: isAutomated,
+                  createAutomated: nil,
                   items: items)
     }
 
@@ -93,7 +93,7 @@ public struct Refund: Codable {
         // `items` contains `taxes: [OrderItemTaxRefund]`.
         try container.encode(items, forKey: .items)
 
-        try container.encode(createAutomatedRefund, forKey: .createAutomatedRefund)
+        try container.encode(createAutomated, forKey: .createAutomatedRefund)
     }
 }
 
@@ -107,7 +107,7 @@ private extension Refund {
         case dateCreated            = "date_created_gmt"
         case amount
         case reason
-        case refundedByUserID       = "refunded_by"
+        case byUserID               = "refunded_by"
         case automatedRefund        = "refunded_payment"    // read-only
         case items                  = "line_items"
     }
@@ -117,7 +117,7 @@ private extension Refund {
         case dateCreated            = "date_created_gmt"
         case amount
         case reason
-        case refundedByUserID       = "refunded_by"
+        case byUserID               = "refunded_by"
         case createAutomatedRefund  = "api_refund"          // write-only
         case items                  = "line_items"
     }

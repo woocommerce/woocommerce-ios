@@ -15,7 +15,7 @@ public struct OrderItemRefund: Codable {
     public let subtotalTax: String
     public let taxClass: String
     public let taxes: [OrderItemTaxRefund]
-    public let refundTotal: String
+    public let total: String
     public let totalTax: String
 
     /// OrderItemRefund struct initializer.
@@ -31,7 +31,7 @@ public struct OrderItemRefund: Codable {
                 subtotalTax: String,
                 taxClass: String,
                 taxes: [OrderItemTaxRefund],
-                refundTotal: String,
+                total: String,
                 totalTax: String) {
         self.itemID = itemID
         self.name = name
@@ -44,7 +44,7 @@ public struct OrderItemRefund: Codable {
         self.subtotalTax = subtotalTax
         self.taxClass = taxClass
         self.taxes = taxes
-        self.refundTotal = refundTotal
+        self.total = total
         self.totalTax = totalTax
     }
 
@@ -66,11 +66,11 @@ public struct OrderItemRefund: Codable {
         let subtotalTax = try container.decode(String.self, forKey: .subtotalTax)
         let taxClass = try container.decode(String.self, forKey: .taxClass)
         let taxes = try container.decode([OrderItemTaxRefund].self, forKey: .taxes)
-        let refundTotal = try container.decode(String.self, forKey: .refundTotal)
+        let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
         // initialize the struct
-        self.init(itemID: itemID, name: name, productID: productID, variationID: variationID, quantity: quantity, price: price, sku: sku, subtotal: subtotal, subtotalTax: subtotalTax, taxClass: taxClass, taxes: taxes, refundTotal: refundTotal, totalTax: totalTax)
+        self.init(itemID: itemID, name: name, productID: productID, variationID: variationID, quantity: quantity, price: price, sku: sku, subtotal: subtotal, subtotalTax: subtotalTax, taxClass: taxClass, taxes: taxes, total: total, totalTax: totalTax)
     }
 
     /// The public encoder for OrderItemRefund.
@@ -91,7 +91,7 @@ public struct OrderItemRefund: Codable {
 
         try container.encode(taxes, forKey: .taxes)
 
-        try container.encode(refundTotal, forKey: .refundTotal)
+        try container.encode(total, forKey: .total)
         try container.encode(totalTax, forKey: .totalTax)
     }
 }
@@ -112,8 +112,7 @@ private extension OrderItemRefund {
         case subtotal
         case subtotalTax    = "subtotal_tax"
         case taxClass       = "tax_class"
-        case refundTax      = "refund_tax"
-        case refundTotal    = "refund_total"
+        case total          = "total"
         case totalTax       = "total_tax"
         case taxes
     }

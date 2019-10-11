@@ -108,7 +108,7 @@
         <attribute name="totalTax" optional="YES" attributeType="String"/>
         <attribute name="variationID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="order" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="items" inverseEntity="Order"/>
-        <relationship name="tax" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemTax" inverseName="item" inverseEntity="OrderItemTax"/>
+        <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemTax" inverseName="item" inverseEntity="OrderItemTax"/>
     </entity>
     <entity name="OrderItemRefund" representedClassName="OrderItemRefund" syncable="YES">
         <attribute name="itemID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -130,7 +130,7 @@
         <attribute name="subtotal" optional="YES" attributeType="String"/>
         <attribute name="taxID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="total" optional="YES" attributeType="String"/>
-        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderItem" inverseName="tax" inverseEntity="OrderItem"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderItem" inverseName="taxes" inverseEntity="OrderItem"/>
     </entity>
     <entity name="OrderItemTaxRefund" representedClassName="OrderItemTaxRefund" syncable="YES">
         <attribute name="subtotal" optional="YES" attributeType="String"/>

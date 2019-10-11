@@ -21,7 +21,7 @@ extension OrderItem {
     @NSManaged public var totalTax: String?
     @NSManaged public var variationID: Int64
     @NSManaged public var order: Order
-    @NSManaged public var tax: Set<OrderItemTax>?
+    @NSManaged public var taxes: Set<OrderItemTax>?
 
 }
 
@@ -29,15 +29,15 @@ extension OrderItem {
 extension OrderItem {
 
     @objc(addTaxObject:)
-    @NSManaged public func addToTax(_ value: OrderItemTax)
+    @NSManaged public func addToTaxes(_ value: OrderItemTax)
 
     @objc(removeTaxObject:)
-    @NSManaged public func removeFromTax(_ value: OrderItemTax)
+    @NSManaged public func removeFromTaxes(_ value: OrderItemTax)
 
     @objc(addTax:)
-    @NSManaged public func addToTax(_ values: NSSet)
+    @NSManaged public func addToTaxes(_ values: NSSet)
 
     @objc(removeTax:)
-    @NSManaged public func removeFromTax(_ values: NSSet)
+    @NSManaged public func removeFromTaxes(_ values: NSSet)
 
 }

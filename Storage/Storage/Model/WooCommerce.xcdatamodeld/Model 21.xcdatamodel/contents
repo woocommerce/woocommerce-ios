@@ -123,6 +123,7 @@
         <attribute name="taxClass" optional="YES" attributeType="String"/>
         <attribute name="totalTax" optional="YES" attributeType="String"/>
         <attribute name="variationID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="refund" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Refund" inverseName="items" inverseEntity="Refund"/>
         <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemTaxRefund" inverseName="item" inverseEntity="OrderItemTaxRefund"/>
     </entity>
     <entity name="OrderItemTax" representedClassName="OrderItemTax" syncable="YES">
@@ -349,6 +350,18 @@
         <attribute name="tagID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="tags" inverseEntity="Product"/>
     </entity>
+    <entity name="Refund" representedClassName="Refund" syncable="YES">
+        <attribute name="amount" optional="YES" attributeType="String"/>
+        <attribute name="byUserID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="createAutomated" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="isAutomated" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="reason" optional="YES" attributeType="String"/>
+        <attribute name="refundID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="items" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemRefund" inverseName="refund" inverseEntity="OrderItemRefund"/>
+    </entity>
     <entity name="ShipmentTracking" representedClassName="ShipmentTracking" syncable="YES">
         <attribute name="dateShipped" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="orderID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -453,5 +466,6 @@
         <element name="OrderItemTax" positionX="-693" positionY="36" width="128" height="103"/>
         <element name="OrderItemTaxRefund" positionX="-675" positionY="54" width="128" height="28"/>
         <element name="OrderItemRefund" positionX="-666" positionY="72" width="128" height="28"/>
+        <element name="Refund" positionX="-657" positionY="81" width="128" height="28"/>
     </elements>
 </model>

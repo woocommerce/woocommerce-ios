@@ -5,6 +5,7 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 ## Model 21 (Release 2.9.0.0)
 - @mindgraffiti 2019-10-11
 - New `OrderItemTax` entity
+- New `OrderItemTaxRefund` entity
 
 ## Model 20 (Release 2.8.0.0)
 - @jaclync 2019-09-17

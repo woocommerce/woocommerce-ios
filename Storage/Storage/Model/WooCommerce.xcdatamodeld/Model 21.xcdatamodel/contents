@@ -116,6 +116,11 @@
         <attribute name="total" optional="YES" attributeType="String"/>
         <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderItem" inverseName="tax" inverseEntity="OrderItem"/>
     </entity>
+    <entity name="OrderItemTaxRefund" representedClassName="OrderItemTaxRefund" syncable="YES">
+        <attribute name="subtotal" optional="YES" attributeType="String"/>
+        <attribute name="taxID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="total" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="OrderNote" representedClassName="OrderNote" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String"/>
         <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -430,5 +435,6 @@
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
         <element name="OrderItemTax" positionX="-693" positionY="36" width="128" height="103"/>
+        <element name="OrderItemTaxRefund" positionX="-675" positionY="54" width="128" height="28"/>
     </elements>
 </model>

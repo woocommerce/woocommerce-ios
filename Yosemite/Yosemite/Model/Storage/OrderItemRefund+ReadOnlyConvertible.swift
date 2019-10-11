@@ -19,7 +19,7 @@ extension Storage.OrderItemRefund: ReadOnlyConvertible {
         subtotal = orderItemRefund.subtotal
         subtotalTax = orderItemRefund.subtotalTax
         taxClass = orderItemRefund.taxClass
-        refundTotal = orderItemRefund.refundTotal
+        total = orderItemRefund.total
         totalTax = orderItemRefund.totalTax
     }
 
@@ -39,7 +39,7 @@ extension Storage.OrderItemRefund: ReadOnlyConvertible {
                                subtotalTax: subtotalTax ?? "",
                                taxClass: taxClass ?? "",
                                taxes: orderItemTaxesRefund,
-                               refundTotal: refundTotal ?? "",
+                               total: total ?? "",
                                totalTax: totalTax ?? "")
     }
 }

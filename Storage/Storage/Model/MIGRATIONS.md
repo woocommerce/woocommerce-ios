@@ -6,6 +6,9 @@ This file documents changes in the WCiOS Storage data model. Please explain any 
 - @mindgraffiti 2019-10-11
 - New `OrderItemTax` entity
 - New `OrderItemTaxRefund` entity
+- New `OrderItem.taxes` relationship
+- New `OrderItemRefund` entity
+- New `OrderItemRefund.taxes` relationship
 
 ## Model 20 (Release 2.8.0.0)
 - @jaclync 2019-09-17

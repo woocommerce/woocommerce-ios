@@ -110,6 +110,21 @@
         <relationship name="order" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="items" inverseEntity="Order"/>
         <relationship name="tax" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemTax" inverseName="item" inverseEntity="OrderItemTax"/>
     </entity>
+    <entity name="OrderItemRefund" representedClassName="OrderItemRefund" syncable="YES">
+        <attribute name="itemID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="price" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="productID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="quantity" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="refundTotal" optional="YES" attributeType="String"/>
+        <attribute name="sku" optional="YES" attributeType="String"/>
+        <attribute name="subtotal" optional="YES" attributeType="String"/>
+        <attribute name="subtotalTax" optional="YES" attributeType="String"/>
+        <attribute name="taxClass" optional="YES" attributeType="String"/>
+        <attribute name="totalTax" optional="YES" attributeType="String"/>
+        <attribute name="variationID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="taxes" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="OrderItemTaxRefund" inverseName="item" inverseEntity="OrderItemTaxRefund"/>
+    </entity>
     <entity name="OrderItemTax" representedClassName="OrderItemTax" syncable="YES">
         <attribute name="subtotal" optional="YES" attributeType="String"/>
         <attribute name="taxID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -120,6 +135,7 @@
         <attribute name="subtotal" optional="YES" attributeType="String"/>
         <attribute name="taxID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="total" optional="YES" attributeType="String"/>
+        <relationship name="item" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="OrderItemRefund" inverseName="taxes" inverseEntity="OrderItemRefund"/>
     </entity>
     <entity name="OrderNote" representedClassName="OrderNote" syncable="YES">
         <attribute name="author" optional="YES" attributeType="String"/>
@@ -436,5 +452,6 @@
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
         <element name="OrderItemTax" positionX="-693" positionY="36" width="128" height="103"/>
         <element name="OrderItemTaxRefund" positionX="-675" positionY="54" width="128" height="28"/>
+        <element name="OrderItemRefund" positionX="-666" positionY="72" width="128" height="28"/>
     </elements>
 </model>

@@ -130,14 +130,13 @@ extension Refund: Comparable {
     public static func == (lhs: Refund, rhs: Refund) -> Bool {
         return lhs.refundID == rhs.refundID &&
             lhs.orderID == rhs.orderID &&
+            lhs.siteID == rhs.siteID &&
             lhs.dateCreated == rhs.dateCreated &&
             lhs.amount == rhs.amount &&
             lhs.reason == rhs.reason &&
-            lhs.refundedByUserID == rhs.refundedByUserID &&
-            lhs.isAutomatedRefund == rhs.isAutomatedRefund &&
-            (!lhs.items.isEmpty && !rhs.items.isEmpty) ?
-        lhs.items.count == rhs.items.count &&
-        lhs.items.sorted() == rhs.items.sorted() : true
+            lhs.byUserID == rhs.byUserID &&
+            lhs.isAutomated == rhs.isAutomated &&
+            lhs.items.sorted() == rhs.items.sorted()
     }
 
     public static func < (lhs: Refund, rhs: Refund) -> Bool {

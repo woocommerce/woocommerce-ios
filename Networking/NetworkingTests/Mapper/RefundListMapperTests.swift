@@ -78,7 +78,7 @@ final class RefundListMapperTests: XCTestCase {
         XCTAssertEqual(item.total, "-18.00")
         XCTAssertEqual(item.totalTax, "0.00")
         XCTAssertEqual(item.sku, "T-SHIRT-NINJA-SILHOUETTE")
-        XCTAssertEqual(item.price, Decimal(integerLiteral: 18))
+        XCTAssertEqual(item.price, NSDecimalNumber(integerLiteral: 18))
 
         let refund2 = refunds[1]
         guard let item2 = refund2.items.first else {
@@ -99,7 +99,7 @@ final class RefundListMapperTests: XCTestCase {
         XCTAssertEqual(item2.total, "-27.00")
         XCTAssertEqual(item2.totalTax, "0.00")
         XCTAssertEqual(item2.sku, "HOODIE-SHIP-YOUR-IDEA-BLUE-XL")
-        XCTAssertEqual(item2.price, Decimal(integerLiteral: 27))
+        XCTAssertEqual(item2.price, NSDecimalNumber(integerLiteral: 27))
     }
 
     /// Verifies that a created refund object is encoded properly.

@@ -79,7 +79,7 @@ class OrderMapperTests: XCTestCase {
         XCTAssertEqual(firstItem.name, "Fruits Basket (Mix & Match Product)")
         XCTAssertEqual(firstItem.productID, 52)
         XCTAssertEqual(firstItem.quantity, 2)
-        XCTAssertEqual(firstItem.price, Decimal(integerLiteral: 30))
+        XCTAssertEqual(firstItem.price, NSDecimalNumber(integerLiteral: 30))
         XCTAssertEqual(firstItem.sku, "")
         XCTAssertEqual(firstItem.subtotal, "50.00")
         XCTAssertEqual(firstItem.subtotalTax, "2.00")
@@ -99,7 +99,7 @@ class OrderMapperTests: XCTestCase {
 
         let secondItem = order.items[1]
         XCTAssertEqual(secondItem.itemID, 891)
-        XCTAssertEqual(secondItem.quantity, Decimal(floatLiteral: 1.5))
+        XCTAssertEqual(secondItem.quantity, NSDecimalNumber(floatLiteral: 1.5))
     }
 
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]

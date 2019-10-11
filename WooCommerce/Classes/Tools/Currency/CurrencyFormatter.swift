@@ -11,7 +11,7 @@ public class CurrencyFormatter {
     ///
     func convertToDecimal(from stringValue: String) -> NSDecimalNumber? {
         let decimalValue = NSDecimalNumber(string: stringValue)
-
+        
         guard decimalValue != NSDecimalNumber.notANumber else {
             DDLogError("Error: string input is not a number: \(stringValue)")
             return nil

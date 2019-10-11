@@ -38,14 +38,12 @@ struct OrderItemViewModel {
     /// Always return a string, even for zero amounts.
     ///
     var price: String {
-        guard item.quantity > 1 else {
+        guard item.quantity.doubleValue > 1 else {
             return currencyFormatter.formatAmount(item.total, with: currency) ?? String()
         }
 
         let itemTotal = currencyFormatter.formatAmount(item.total, with: currency) ?? String()
-
-        let price = NSDecimalNumber(decimal: item.price)
-        let itemSubtotal = currencyFormatter.formatAmount(price, with: currency) ?? String()
+        let itemSubtotal = currencyFormatter.formatAmount(item.price, with: currency) ?? String()
 
         return itemTotal + " (" + itemSubtotal + " × " + quantity + ")"
     }

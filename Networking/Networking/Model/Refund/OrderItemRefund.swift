@@ -8,8 +8,12 @@ public struct OrderItemRefund: Codable {
     public let name: String
     public let productID: Int
     public let variationID: Int
-    public let quantity: Decimal
-    public let price: Decimal
+    public let quantity: NSDecimalNumber
+
+    /// Price is a currency.
+    /// When handling currencies, `NSDecimalNumber` is a power house.
+    /// Plus, `localize()`
+    public let price: NSDecimalNumber
     public let sku: String?
     public let subtotal: String
     public let subtotalTax: String
@@ -24,8 +28,8 @@ public struct OrderItemRefund: Codable {
                 name: String,
                 productID: Int,
                 variationID: Int,
-                quantity: Decimal,
-                price: Decimal,
+                quantity: NSDecimalNumber,
+                price: NSDecimalNumber,
                 sku: String?,
                 subtotal: String,
                 subtotalTax: String,
@@ -58,8 +62,10 @@ public struct OrderItemRefund: Codable {
         let productID = try container.decode(Int.self, forKey: .productID)
         let variationID = try container.decode(Int.self, forKey: .variationID)
 
-        let quantity = try container.decode(Decimal.self, forKey: .quantity)
-        let price = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)
+        let decimalQuantity = try container.decode(Decimal.self, forKey: .quantity)
+        let quantity = NSDecimalNumber(decimal: decimalQuantity)
+        let decimalPrice = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)
+        let price = NSDecimalNumber(decimal: decimalPrice)
 
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
         let subtotal = try container.decode(String.self, forKey: .subtotal)
@@ -82,8 +88,8 @@ public struct OrderItemRefund: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(productID, forKey: .productID)
         try container.encode(variationID, forKey: .variationID)
-        try container.encode(Double(truncating: quantity as NSNumber), forKey: .quantity)
-        try container.encode(NSDecimalNumber(decimal: price).stringValue, forKey: .price)
+        try container.encode(Double(truncating: quantity), forKey: .quantity)
+        try container.encode(price.stringValue, forKey: .price)
 
         try container.encode(subtotal, forKey: .subtotal)
         try container.encode(subtotalTax, forKey: .subtotalTax)

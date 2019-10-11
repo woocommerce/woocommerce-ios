@@ -30,8 +30,8 @@ final class RefundMapperTests: XCTestCase {
 
         XCTAssertEqual(refund.amount, "27.00")
         XCTAssertEqual(refund.reason, "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.")
-        XCTAssertEqual(refund.refundedByUserID, 1)
-        XCTAssertEqual(refund.isAutomatedRefund, true)
+        XCTAssertEqual(refund.byUserID, 1)
+        XCTAssertEqual(refund.isAutomated, true)
     }
 
     /// Verifies that all of the Refunded Order Items are parsed correctly.
@@ -59,7 +59,7 @@ final class RefundMapperTests: XCTestCase {
         XCTAssertEqual(item.refundTotal, "-27.00")
         XCTAssertEqual(item.totalTax, "0.00")
         XCTAssertEqual(item.sku, "HOODIE-SHIP-YOUR-IDEA-BLUE-XL")
-        XCTAssertEqual(item.price, NSDecimalNumber(integerLiteral: 27))
+        XCTAssertEqual(item.price, Decimal(integerLiteral: 27))
     }
 }
 

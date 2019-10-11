@@ -18,7 +18,7 @@ extension OrderItemRefund {
     @NSManaged public var subtotal: String?
     @NSManaged public var subtotalTax: String?
     @NSManaged public var taxClass: String?
-    @NSManaged public var refundTotal: String?
+    @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var taxes: Set<OrderItemTaxRefund>?
     @NSManaged public var refund: Refund?

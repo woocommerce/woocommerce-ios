@@ -30,9 +30,9 @@ final class RefundListMapperTests: XCTestCase {
 
         XCTAssertEqual(firstRefund.amount, "18.00")
         XCTAssertEqual(firstRefund.reason, "Only 1 black hoodie left. Inventory count was off. My bad!")
-        XCTAssertEqual(firstRefund.refundedByUserID, 1)
+        XCTAssertEqual(firstRefund.byUserID, 1)
 
-        if let isAutomated = firstRefund.isAutomatedRefund {
+        if let isAutomated = firstRefund.isAutomated {
             XCTAssertTrue(isAutomated)
         }
 
@@ -46,9 +46,9 @@ final class RefundListMapperTests: XCTestCase {
 
         XCTAssertEqual(secondRefund.amount, "27.00")
         XCTAssertEqual(secondRefund.reason, "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.")
-        XCTAssertEqual(secondRefund.refundedByUserID, 1)
+        XCTAssertEqual(secondRefund.byUserID, 1)
 
-        if let isAutomated = secondRefund.isAutomatedRefund {
+        if let isAutomated = secondRefund.isAutomated {
             XCTAssertTrue(isAutomated)
         }
     }
@@ -78,7 +78,7 @@ final class RefundListMapperTests: XCTestCase {
         XCTAssertEqual(item.refundTotal, "-18.00")
         XCTAssertEqual(item.totalTax, "0.00")
         XCTAssertEqual(item.sku, "T-SHIRT-NINJA-SILHOUETTE")
-        XCTAssertEqual(item.price, NSDecimalNumber(integerLiteral: 18))
+        XCTAssertEqual(item.price, Decimal(integerLiteral: 18))
 
         let refund2 = refunds[1]
         guard let item2 = refund2.items.first else {
@@ -99,7 +99,7 @@ final class RefundListMapperTests: XCTestCase {
         XCTAssertEqual(item2.refundTotal, "-27.00")
         XCTAssertEqual(item2.totalTax, "0.00")
         XCTAssertEqual(item2.sku, "HOODIE-SHIP-YOUR-IDEA-BLUE-XL")
-        XCTAssertEqual(item2.price, NSDecimalNumber(integerLiteral: 27))
+        XCTAssertEqual(item2.price, Decimal(integerLiteral: 27))
     }
 
     /// Verifies that a created refund object is encoded properly.

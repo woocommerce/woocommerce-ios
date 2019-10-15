@@ -1,5 +1,6 @@
 2.9
 -----
+- Enhancement: preselect current Order status when editing the status with a list of order statuses.
  
 2.8
 -----

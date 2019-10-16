@@ -13,7 +13,7 @@ extension Storage.OrderItemRefund: ReadOnlyConvertible {
         name = orderItemRefund.name
         productID = Int64(orderItemRefund.productID)
         variationID = Int64(orderItemRefund.variationID)
-        quantity = orderItemRefund.quantity
+        quantity = NSDecimalNumber(decimal: orderItemRefund.quantity)
         price = orderItemRefund.price
         sku = orderItemRefund.sku
         subtotal = orderItemRefund.subtotal
@@ -32,7 +32,7 @@ extension Storage.OrderItemRefund: ReadOnlyConvertible {
                                name: name ?? "",
                                productID: Int(productID),
                                variationID: Int(variationID),
-                               quantity: quantity ?? NSDecimalNumber(integerLiteral: 0),
+                               quantity: quantity?.decimalValue ?? Decimal.zero,
                                price: price ?? NSDecimalNumber(integerLiteral: 0),
                                sku: sku,
                                subtotal: subtotal ?? "",

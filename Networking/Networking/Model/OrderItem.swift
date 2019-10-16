@@ -8,17 +8,10 @@ public struct OrderItem: Decodable {
     public let name: String
     public let productID: Int
     public let variationID: Int
-<<<<<<< HEAD
-    public let quantity: NSDecimalNumber
-
-    /// Price is a currency.
-    /// When handling currencies, `NSDecimalNumber` is a power house
-=======
     public let quantity: Decimal
 
     /// Price is a currency.
     /// When handling currencies, `NSDecimalNumber` is a powerhouse
->>>>>>> 1096-storage-ii
     /// for localization and string-to-number conversions.
     /// `Decimal` doesn't yet have all of the `NSDecimalNumber` APIs.
     ///

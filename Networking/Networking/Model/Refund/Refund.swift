@@ -15,12 +15,12 @@ public struct Refund: Codable {
     /// If true, the automatic refund is used.
     /// When false, manual refund process is used.
     ///
-    public let isAutomatedRefund: Bool?
+    public let isAutomated: Bool?
 
     /// If true, the automated refund for a payment gateway is used.
     /// When false, the manual refund process is used.
     ///
-    public let createAutomatedRefund: Bool?
+    public let createAutomated: Bool?
 
     public let items: [OrderItemRefund]
 
@@ -33,8 +33,8 @@ public struct Refund: Codable {
                 amount: String,
                 reason: String,
                 refundedByUserID: Int,
-                isAutomatedRefund: Bool?,
-                createAutomatedRefund: Bool?,
+                isAutomated: Bool?,
+                createAutomated: Bool?,
                 items: [OrderItemRefund]) {
         self.refundID = refundID
         self.orderID = orderID
@@ -43,8 +43,8 @@ public struct Refund: Codable {
         self.amount = amount
         self.reason = reason
         self.refundedByUserID = refundedByUserID
-        self.isAutomatedRefund = isAutomatedRefund
-        self.createAutomatedRefund = createAutomatedRefund
+        self.isAutomated = isAutomated
+        self.createAutomated = createAutomated
         self.items = items
     }
 
@@ -66,7 +66,7 @@ public struct Refund: Codable {
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
         let refundedByUserID = try container.decode(Int.self, forKey: .refundedByUserID)
-        let isAutomatedRefund = try container.decode(Bool.self, forKey: .automatedRefund)
+        let isAutomated = try container.decode(Bool.self, forKey: .automatedRefund)
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
 
         self.init(refundID: refundID,
@@ -76,8 +76,8 @@ public struct Refund: Codable {
                   amount: amount,
                   reason: reason,
                   refundedByUserID: refundedByUserID,
-                  isAutomatedRefund: isAutomatedRefund,
-                  createAutomatedRefund: nil,
+                  isAutomated: isAutomated,
+                  createAutomated: nil,
                   items: items)
     }
 
@@ -93,7 +93,7 @@ public struct Refund: Codable {
         // `items` contains `taxes: [OrderItemTaxRefund]`.
         try container.encode(items, forKey: .items)
 
-        try container.encode(createAutomatedRefund, forKey: .createAutomatedRefund)
+        try container.encode(createAutomated, forKey: .createAutomatedRefund)
     }
 }
 
@@ -130,14 +130,13 @@ extension Refund: Comparable {
     public static func == (lhs: Refund, rhs: Refund) -> Bool {
         return lhs.refundID == rhs.refundID &&
             lhs.orderID == rhs.orderID &&
+            lhs.siteID == rhs.siteID &&
             lhs.dateCreated == rhs.dateCreated &&
             lhs.amount == rhs.amount &&
             lhs.reason == rhs.reason &&
             lhs.refundedByUserID == rhs.refundedByUserID &&
-            lhs.isAutomatedRefund == rhs.isAutomatedRefund &&
-            (!lhs.items.isEmpty && !rhs.items.isEmpty) ?
-        lhs.items.count == rhs.items.count &&
-        lhs.items.sorted() == rhs.items.sorted() : true
+            lhs.isAutomated == rhs.isAutomated &&
+            lhs.items.sorted() == rhs.items.sorted()
     }
 
     public static func < (lhs: Refund, rhs: Refund) -> Bool {

@@ -116,7 +116,7 @@ extension TopPerformerDataViewController {
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func displayGhostContent() {
-        // Table's `estimatedSectionHeaderHeight` is temporarily set to 0 while ghost content is displayed, for an issue with Dark mode (#1334).
+        // Table's `estimatedSectionHeaderHeight` is temporarily set to 0 while ghost content is displayed, for an issue with ghost content header (#1334).
         // `GhostOptions`'s `displaysSectionHeader` also needs to be set to false.
         tableView.estimatedSectionHeaderHeight = 0
         let options = GhostOptions(displaysSectionHeader: false,
@@ -132,7 +132,7 @@ extension TopPerformerDataViewController {
     func removeGhostContent() {
         tableView.removeGhostContent()
 
-        // Table's `estimatedSectionHeaderHeight` is back to normal when ghost content is removed, for an issue with Dark mode (#1334).
+        // Table's `estimatedSectionHeaderHeight` is back to normal when ghost content is removed, for an issue with ghost content header (#1334).
         tableView.estimatedSectionHeaderHeight = Constants.estimatedSectionHeight
     }
 }

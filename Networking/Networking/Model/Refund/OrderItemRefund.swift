@@ -8,7 +8,7 @@ public struct OrderItemRefund: Codable {
     public let name: String
     public let productID: Int
     public let variationID: Int
-    public let quantity: NSDecimalNumber
+    public let quantity: Decimal
 
     /// Price is a currency.
     /// When handling currencies, `NSDecimalNumber` is a power house
@@ -30,7 +30,7 @@ public struct OrderItemRefund: Codable {
                 name: String,
                 productID: Int,
                 variationID: Int,
-                quantity: NSDecimalNumber,
+                quantity: Decimal,
                 price: NSDecimalNumber,
                 sku: String?,
                 subtotal: String,
@@ -64,8 +64,7 @@ public struct OrderItemRefund: Codable {
         let productID = try container.decode(Int.self, forKey: .productID)
         let variationID = try container.decode(Int.self, forKey: .variationID)
 
-        let decimalQuantity = try container.decode(Decimal.self, forKey: .quantity)
-        let quantity = NSDecimalNumber(decimal: decimalQuantity)
+        let quantity = try container.decode(Decimal.self, forKey: .quantity)
         let decimalPrice = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)
         let price = NSDecimalNumber(decimal: decimalPrice)
 
@@ -90,7 +89,11 @@ public struct OrderItemRefund: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(productID, forKey: .productID)
         try container.encode(variationID, forKey: .variationID)
-        try container.encode(Double(truncating: quantity), forKey: .quantity)
+
+        // Decimal does not play nice when encoding.
+        // Cast the Decimal to an NSNumber, then convert to a Double.
+        let doubleValue = Double(truncating: quantity as NSNumber)
+        try container.encode(doubleValue, forKey: .quantity)
         try container.encode(price.stringValue, forKey: .price)
 
         try container.encode(subtotal, forKey: .subtotal)

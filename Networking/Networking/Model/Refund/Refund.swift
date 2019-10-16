@@ -117,7 +117,7 @@ private extension Refund {
         case dateCreated            = "date_created_gmt"
         case amount
         case reason
-        case byUserID               = "refunded_by"
+        case refundedByUserID       = "refunded_by"
         case createAutomatedRefund  = "api_refund"          // write-only
         case items                  = "line_items"
     }

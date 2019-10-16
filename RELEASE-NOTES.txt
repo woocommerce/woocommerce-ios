@@ -1,5 +1,6 @@
 2.9
 -----
+- bugfix: the Top Performers in the new stats page should not have a dark header bar when launching the app in Dark mode.
  
 2.8
 -----

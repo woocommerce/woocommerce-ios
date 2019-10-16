@@ -116,9 +116,6 @@ extension TopPerformerDataViewController {
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func displayGhostContent() {
-        // Table's `estimatedSectionHeaderHeight` is temporarily set to 0 while ghost content is displayed, for an issue with ghost content header (#1334).
-        // `GhostOptions`'s `displaysSectionHeader` also needs to be set to false.
-        tableView.estimatedSectionHeaderHeight = 0
         let options = GhostOptions(displaysSectionHeader: false,
                                    reuseIdentifier: ProductTableViewCell.reuseIdentifier,
                                    rowsPerSection: Constants.placeholderRowsPerSection)
@@ -131,9 +128,6 @@ extension TopPerformerDataViewController {
     ///
     func removeGhostContent() {
         tableView.removeGhostContent()
-
-        // Table's `estimatedSectionHeaderHeight` is back to normal when ghost content is removed, for an issue with ghost content header (#1334).
-        tableView.estimatedSectionHeaderHeight = Constants.estimatedSectionHeight
     }
 }
 
@@ -151,7 +145,6 @@ private extension TopPerformerDataViewController {
         tableView.separatorColor = StyleManager.cellSeparatorColor
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
-        tableView.estimatedSectionHeaderHeight = Constants.estimatedSectionHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = Constants.emptyView
     }
@@ -235,6 +228,9 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension TopPerformerDataViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return Constants.estimatedSectionHeight
+    }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension

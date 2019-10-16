@@ -83,7 +83,7 @@ private extension OrdersBadgeController {
         static let cornerRadius = CGFloat(8)
 
         static let width = CGFloat(18)
-        static let xOffset = CGFloat(12)
+        static let xOffset = CGFloat(13)
         static let yOffset = CGFloat(-2)
         static let xOffsetLandscape = CGFloat(10)
         static let yOffsetLandscape = CGFloat(-4)
@@ -91,7 +91,7 @@ private extension OrdersBadgeController {
         // "9+" layout to account for longer text
         static let widthForNinePlus = CGFloat(22)
         static let xOffsetForNinePlus = CGFloat(10)
-        static let yOffsetForNinePlus = CGFloat(-2)
+        static let yOffsetForNinePlus = CGFloat(-1)
         static let xOffsetForNinePlusLandscape = CGFloat(8)
         static let yOffsetForNinePlusLandscape = CGFloat(-4)
 

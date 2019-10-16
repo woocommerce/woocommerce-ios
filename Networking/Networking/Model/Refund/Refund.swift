@@ -10,7 +10,7 @@ public struct Refund: Codable {
     public let dateCreated: Date // gmt
     public let amount: String
     public let reason: String
-    public let byUserID: Int
+    public let refundedByUserID: Int
 
     /// If true, the automatic refund is used.
     /// When false, manual refund process is used.
@@ -32,7 +32,7 @@ public struct Refund: Codable {
                 dateCreated: Date,
                 amount: String,
                 reason: String,
-                byUserID: Int,
+                refundedByUserID: Int,
                 isAutomated: Bool?,
                 createAutomated: Bool?,
                 items: [OrderItemRefund]) {
@@ -42,7 +42,7 @@ public struct Refund: Codable {
         self.dateCreated = dateCreated
         self.amount = amount
         self.reason = reason
-        self.byUserID = byUserID
+        self.refundedByUserID = refundedByUserID
         self.isAutomated = isAutomated
         self.createAutomated = createAutomated
         self.items = items
@@ -65,7 +65,7 @@ public struct Refund: Codable {
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
-        let byUserID = try container.decode(Int.self, forKey: .byUserID)
+        let refundedByUserID = try container.decode(Int.self, forKey: .refundedByUserID)
         let isAutomated = try container.decode(Bool.self, forKey: .automatedRefund)
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
 
@@ -75,7 +75,7 @@ public struct Refund: Codable {
                   dateCreated: dateCreated,
                   amount: amount,
                   reason: reason,
-                  byUserID: byUserID,
+                  refundedByUserID: refundedByUserID,
                   isAutomated: isAutomated,
                   createAutomated: nil,
                   items: items)
@@ -107,7 +107,7 @@ private extension Refund {
         case dateCreated            = "date_created_gmt"
         case amount
         case reason
-        case byUserID               = "refunded_by"
+        case refundedByUserID       = "refunded_by"
         case automatedRefund        = "refunded_payment"    // read-only
         case items                  = "line_items"
     }
@@ -117,7 +117,7 @@ private extension Refund {
         case dateCreated            = "date_created_gmt"
         case amount
         case reason
-        case byUserID               = "refunded_by"
+        case refundedByUserID       = "refunded_by"
         case createAutomatedRefund  = "api_refund"          // write-only
         case items                  = "line_items"
     }
@@ -134,7 +134,7 @@ extension Refund: Comparable {
             lhs.dateCreated == rhs.dateCreated &&
             lhs.amount == rhs.amount &&
             lhs.reason == rhs.reason &&
-            lhs.byUserID == rhs.byUserID &&
+            lhs.refundedByUserID == rhs.refundedByUserID &&
             lhs.isAutomated == rhs.isAutomated &&
             lhs.items.sorted() == rhs.items.sorted()
     }

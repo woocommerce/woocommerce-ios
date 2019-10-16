@@ -8,10 +8,17 @@ public struct OrderItem: Decodable {
     public let name: String
     public let productID: Int
     public let variationID: Int
+<<<<<<< HEAD
     public let quantity: NSDecimalNumber
 
     /// Price is a currency.
     /// When handling currencies, `NSDecimalNumber` is a power house
+=======
+    public let quantity: Decimal
+
+    /// Price is a currency.
+    /// When handling currencies, `NSDecimalNumber` is a powerhouse
+>>>>>>> 1096-storage-ii
     /// for localization and string-to-number conversions.
     /// `Decimal` doesn't yet have all of the `NSDecimalNumber` APIs.
     ///
@@ -30,7 +37,7 @@ public struct OrderItem: Decodable {
                 name: String,
                 productID: Int,
                 variationID: Int,
-                quantity: NSDecimalNumber,
+                quantity: Decimal,
                 price: NSDecimalNumber,
                 sku: String?,
                 subtotal: String,
@@ -62,10 +69,11 @@ public struct OrderItem: Decodable {
         let name = try container.decode(String.self, forKey: .name)
         let productID = try container.decode(Int.self, forKey: .productID)
         let variationID = try container.decode(Int.self, forKey: .variationID)
-        let decimalQuantity = try container.decode(Decimal.self, forKey: .quantity)
-        let quantity = NSDecimalNumber(decimal: decimalQuantity)
+
+        let quantity = try container.decode(Decimal.self, forKey: .quantity)
         let decimalPrice = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)
         let price = NSDecimalNumber(decimal: decimalPrice)
+
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
         let subtotal = try container.decode(String.self, forKey: .subtotal)
         let subtotalTax = try container.decode(String.self, forKey: .subtotalTax)

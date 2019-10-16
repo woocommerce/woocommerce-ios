@@ -56,7 +56,7 @@ final class RefundMapperTests: XCTestCase {
         XCTAssertEqual(item.subtotalTax, "0.00")
         XCTAssertEqual(item.taxClass, "")
         XCTAssertEqual(item.taxes, [])
-        XCTAssertEqual(item.refundTotal, "-27.00")
+        XCTAssertEqual(item.total, "-27.00")
         XCTAssertEqual(item.totalTax, "0.00")
         XCTAssertEqual(item.sku, "HOODIE-SHIP-YOUR-IDEA-BLUE-XL")
         XCTAssertEqual(item.price, NSDecimalNumber(integerLiteral: 27))

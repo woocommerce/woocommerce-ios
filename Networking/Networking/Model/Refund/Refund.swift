@@ -10,7 +10,7 @@ public struct Refund: Codable {
     public let dateCreated: Date // gmt
     public let amount: String
     public let reason: String
-    public let byUserID: Int
+    public let refundedByUserID: Int
 
     /// If true, the automatic refund is used.
     /// When false, manual refund process is used.
@@ -107,7 +107,7 @@ private extension Refund {
         case dateCreated            = "date_created_gmt"
         case amount
         case reason
-        case byUserID               = "refunded_by"
+        case refundedByUserID       = "refunded_by"
         case automatedRefund        = "refunded_payment"    // read-only
         case items                  = "line_items"
     }

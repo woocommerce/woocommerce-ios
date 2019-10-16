@@ -11,7 +11,7 @@ public struct OrderItemRefund: Codable {
     public let quantity: Decimal
 
     /// Price is a currency.
-    /// When handling currencies, `NSDecimalNumber` is a power house
+    /// When handling currencies, `NSDecimalNumber` is a powerhouse
     /// for localization and string-to-number conversions.
     /// `Decimal` doesn't yet have all of the `NSDecimalNumber` APIs.
     ///

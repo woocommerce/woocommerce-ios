@@ -32,7 +32,7 @@ final class RefundListMapperTests: XCTestCase {
         XCTAssertEqual(firstRefund.reason, "Only 1 black hoodie left. Inventory count was off. My bad!")
         XCTAssertEqual(firstRefund.refundedByUserID, 1)
 
-        if let isAutomated = firstRefund.isAutomatedRefund {
+        if let isAutomated = firstRefund.isAutomated {
             XCTAssertTrue(isAutomated)
         }
 
@@ -48,7 +48,7 @@ final class RefundListMapperTests: XCTestCase {
         XCTAssertEqual(secondRefund.reason, "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.")
         XCTAssertEqual(secondRefund.refundedByUserID, 1)
 
-        if let isAutomated = secondRefund.isAutomatedRefund {
+        if let isAutomated = secondRefund.isAutomated {
             XCTAssertTrue(isAutomated)
         }
     }

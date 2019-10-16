@@ -31,7 +31,7 @@ final class RefundMapperTests: XCTestCase {
         XCTAssertEqual(refund.amount, "27.00")
         XCTAssertEqual(refund.reason, "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.")
         XCTAssertEqual(refund.refundedByUserID, 1)
-        XCTAssertEqual(refund.isAutomatedRefund, true)
+        XCTAssertEqual(refund.isAutomated, true)
     }
 
     /// Verifies that all of the Refunded Order Items are parsed correctly.

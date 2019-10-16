@@ -15,7 +15,7 @@ extension Storage.Refund: ReadOnlyConvertible {
         dateCreated = fullRefund.dateCreated
         amount = fullRefund.amount
         reason = fullRefund.reason
-        byUserID = Int64(fullRefund.byUserID)
+        byUserID = Int64(fullRefund.refundedByUserID)
 
         if let automated = fullRefund.isAutomated {
             isAutomated = automated
@@ -37,7 +37,7 @@ extension Storage.Refund: ReadOnlyConvertible {
                       dateCreated: dateCreated ?? Date(),
                       amount: amount ?? "",
                       reason: reason ?? "",
-                      byUserID: Int(byUserID),
+                      refundedByUserID: Int(byUserID),
                       isAutomated: isAutomated,
                       createAutomated: createAutomated,
                       items: orderItems)

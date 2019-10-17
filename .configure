@@ -1,15 +1,20 @@
 {
   "project_name": "woocommerce-ios",
   "branch": "master",
-  "pinned_hash": "5440b3f904dcc59f3f7a6a20fd5cd213fcefe766",
+  "pinned_hash": "6455a68d499070d59f6900a5a489610f7d52ab4e",
   "files_to_copy": [
     {
       "file": "shared/google_cloud_keys.json",
       "destination": ".configure-files/google_cloud_keys.json",
       "encrypt": true
+    },
+    {
+      "file": "iOS/WCiOS/woo_app_credentials.json",
+      "destination": ".configure-files/woo_app_credentials.json",
+      "encrypt": true
     }
   ],
   "file_dependencies": [
-    "iOS/WCiOS/"
+
   ]
 }

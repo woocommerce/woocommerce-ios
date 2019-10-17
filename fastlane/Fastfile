@@ -1,6 +1,13 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
 
+before_all do
+  # This allows code signing to work on CircleCI
+  # It is skipped if this isn't running on CI
+  # See https://circleci.com/docs/2.0/ios-codesigning/
+  setup_circle_ci
+end
+
 platform :ios do
 ########################################################################
 # Environment
@@ -183,13 +190,12 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true) unless (options[:skip_prechecks])
     ios_build_preflight() unless (options[:skip_prechecks])
 
+    code_signing
+
     gym(scheme: "WooCommerce", workspace: "./WooCommerce.xcworkspace",
       clean: true, export_team_id: ENV["EXT_EXPORT_TEAM_ID"], 
       export_options: {
-        method: "app-store",
-        provisioningProfiles: { 
-          "com.automattic.woocommerce" => "WooCommerce App Store"
-        }
+        method: "app-store"
       }
     )
     
@@ -312,6 +318,17 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
        output_folder: output_directory,
        force: options[:force],
      )
+  end
+
+  ########################################################################
+  # Fastlane match code signing
+  ########################################################################  
+  private_lane :code_signing do |options|
+    match(
+      type: "appstore",
+      team_id: ENV["EXT_EXPORT_TEAM_ID"],
+      readonly: options[:readonly] || is_ci,
+      app_identifier: ["com.automattic.woocommerce"])
   end
 
   ########################################################################

@@ -432,7 +432,7 @@ private extension OrderDetailsViewController {
     private func displayOrderStatusList() {
         ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
                                   withProperties: ["status": viewModel.order.statusKey])
-        let statusList = OrderStatusListViewController(order: viewModel.order)
+        let statusList = OrderStatusListViewController(order: viewModel.order, currentStatus: viewModel.orderStatus)
         let navigationController = UINavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)

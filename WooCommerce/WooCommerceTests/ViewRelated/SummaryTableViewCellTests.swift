@@ -147,6 +147,7 @@ private extension SummaryTableViewCellTests {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product)",
                               productID: 52,
+                              variationID: 0,
                               quantity: 2,
                               price: NSDecimalNumber(integerLiteral: 30),
                               sku: "",
@@ -154,11 +155,11 @@ private extension SummaryTableViewCellTests {
                               subtotalTax: "2.00",
                               taxClass: "",
                               total: "30.00",
-                              totalTax: "1.20",
-                              variationID: 0)
+                              totalTax: "1.20")
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
                               productID: 234,
+                              variationID: 0,
                               quantity: NSDecimalNumber(decimal: 1.5),
                               price: NSDecimalNumber(integerLiteral: 0),
                               sku: "5555-A",
@@ -166,8 +167,7 @@ private extension SummaryTableViewCellTests {
                               subtotalTax: "0.40",
                               taxClass: "",
                               total: "0.00",
-                              totalTax: "0.00",
-                              variationID: 0)
+                              totalTax: "0.00")
         return [item1, item2]
     }
 
@@ -175,6 +175,7 @@ private extension SummaryTableViewCellTests {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product) 2",
                               productID: 52,
+                              variationID: 0,
                               quantity: 10,
                               price: NSDecimalNumber(integerLiteral: 30),
                               sku: "",
@@ -182,11 +183,11 @@ private extension SummaryTableViewCellTests {
                               subtotalTax: "4.00",
                               taxClass: "",
                               total: "64.00",
-                              totalTax: "4.00",
-                              variationID: 0)
+                              totalTax: "4.00")
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle 2",
                               productID: 234,
+                              variationID: 0,
                               quantity: 3,
                               price: NSDecimalNumber(integerLiteral: 0),
                               sku: "5555-A",
@@ -194,11 +195,11 @@ private extension SummaryTableViewCellTests {
                               subtotalTax: "0.40",
                               taxClass: "",
                               total: "30.40",
-                              totalTax: "0.40",
-                              variationID: 0)
+                              totalTax: "0.40")
         let item3 = OrderItem(itemID: 23,
                               name: "Some new product",
                               productID: 12,
+                              variationID: 0,
                               quantity: 1,
                               price: NSDecimalNumber(integerLiteral: 10),
                               sku: "QWE123",
@@ -206,8 +207,7 @@ private extension SummaryTableViewCellTests {
                               subtotalTax: "10.40",
                               taxClass: "",
                               total: "140.40",
-                              totalTax: "10.40",
-                              variationID: 0)
+                              totalTax: "10.40")
         return [item1, item2, item3]
     }
 
@@ -215,6 +215,7 @@ private extension SummaryTableViewCellTests {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product) 2",
                               productID: 52,
+                              variationID: 0,
                               quantity: 10,
                               price: NSDecimalNumber(integerLiteral: 10),
                               sku: "",
@@ -222,8 +223,7 @@ private extension SummaryTableViewCellTests {
                               subtotalTax: "4.00",
                               taxClass: "",
                               total: "64.00",
-                              totalTax: "4.00",
-                              variationID: 0)
+                              totalTax: "4.00")
         return [item1]
     }
 

@@ -1,9 +1,9 @@
 import Foundation
 
 
-/// Represents an Order's Item Entity.
+/// Represents an Order Item to be Refunded
 ///
-public struct OrderItem: Decodable {
+public struct OrderItemRefund: Codable {
     public let itemID: Int
     public let name: String
     public let productID: Int
@@ -20,11 +20,11 @@ public struct OrderItem: Decodable {
     public let subtotal: String
     public let subtotalTax: String
     public let taxClass: String
-    public let taxes: [OrderItemTax]
+    public let taxes: [OrderItemTaxRefund]
     public let total: String
     public let totalTax: String
 
-    /// OrderItem struct initializer.
+    /// OrderItemRefund struct initializer.
     ///
     public init(itemID: Int,
                 name: String,
@@ -36,7 +36,7 @@ public struct OrderItem: Decodable {
                 subtotal: String,
                 subtotalTax: String,
                 taxClass: String,
-                taxes: [OrderItemTax],
+                taxes: [OrderItemTaxRefund],
                 total: String,
                 totalTax: String) {
         self.itemID = itemID
@@ -54,10 +54,11 @@ public struct OrderItem: Decodable {
         self.totalTax = totalTax
     }
 
-    /// The public initializer for OrderItem.
+    /// The public decoder for OrderItemRefund.
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
+
         let itemID = try container.decode(Int.self, forKey: .itemID)
         let name = try container.decode(String.self, forKey: .name)
         let productID = try container.decode(Int.self, forKey: .productID)
@@ -71,69 +72,74 @@ public struct OrderItem: Decodable {
         let subtotal = try container.decode(String.self, forKey: .subtotal)
         let subtotalTax = try container.decode(String.self, forKey: .subtotalTax)
         let taxClass = try container.decode(String.self, forKey: .taxClass)
-        let taxes = try container.decode([OrderItemTax].self, forKey: .taxes)
+        let taxes = try container.decode([OrderItemTaxRefund].self, forKey: .taxes)
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
         // initialize the struct
-        self.init(itemID: itemID,
-                  name: name,
-                  productID: productID,
-                  variationID: variationID,
-                  quantity: quantity,
-                  price: price,
-                  sku: sku,
-                  subtotal: subtotal,
-                  subtotalTax: subtotalTax,
-                  taxClass: taxClass,
-                  taxes: taxes,
-                  total: total,
-                  totalTax: totalTax)
+        self.init(itemID: itemID, name: name, productID: productID, variationID: variationID, quantity: quantity, price: price, sku: sku, subtotal: subtotal, subtotalTax: subtotalTax, taxClass: taxClass, taxes: taxes, total: total, totalTax: totalTax)
+    }
+
+    /// The public encoder for OrderItemRefund.
+    ///
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(itemID, forKey: .itemID)
+        try container.encode(name, forKey: .name)
+        try container.encode(productID, forKey: .productID)
+        try container.encode(variationID, forKey: .variationID)
+
+        // Decimal does not play nice when encoding.
+        // Cast the Decimal to an NSNumber, then convert to a Double.
+        let doubleValue = Double(truncating: quantity as NSNumber)
+        try container.encode(doubleValue, forKey: .quantity)
+        try container.encode(price.stringValue, forKey: .price)
+
+        try container.encode(subtotal, forKey: .subtotal)
+        try container.encode(subtotalTax, forKey: .subtotalTax)
+        try container.encode(taxClass, forKey: .taxClass)
+
+        try container.encode(taxes, forKey: .taxes)
+
+        try container.encode(total, forKey: .total)
+        try container.encode(totalTax, forKey: .totalTax)
     }
 }
 
 
-/// Defines all of the OrderItem's CodingKeys.
+/// Defines all of the OrderItemRefund CodingKeys.
 ///
-private extension OrderItem {
+private extension OrderItemRefund {
 
     enum CodingKeys: String, CodingKey {
         case itemID         = "id"
+        case variationID    = "variation_id"
         case name
         case productID      = "product_id"
-        case variationID    = "variation_id"
         case quantity
         case price
         case sku
         case subtotal
         case subtotalTax    = "subtotal_tax"
         case taxClass       = "tax_class"
-        case taxes
         case total
         case totalTax       = "total_tax"
+        case taxes
     }
 }
 
 
 // MARK: - Comparable Conformance
 //
-extension OrderItem: Comparable {
-    public static func == (lhs: OrderItem, rhs: OrderItem) -> Bool {
+extension OrderItemRefund: Comparable {
+    public static func == (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
         return lhs.itemID == rhs.itemID &&
-            lhs.name == rhs.name &&
             lhs.productID == rhs.productID &&
-            lhs.variationID == rhs.variationID &&
-            lhs.quantity == rhs.quantity &&
-            lhs.price == rhs.price &&
-            lhs.sku == rhs.sku &&
-            lhs.subtotal == rhs.subtotal &&
-            lhs.subtotalTax == rhs.subtotalTax &&
-            lhs.taxClass == rhs.taxClass &&
-            lhs.total == rhs.total &&
-            lhs.totalTax == rhs.totalTax
+            lhs.variationID == rhs.variationID
     }
 
-    public static func < (lhs: OrderItem, rhs: OrderItem) -> Bool {
+    public static func < (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
         return lhs.itemID < rhs.itemID ||
             (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) ||
             (lhs.itemID == rhs.itemID && lhs.productID == rhs.productID && lhs.name < rhs.name)

@@ -2,6 +2,16 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 21 (Release 2.9.0.0)
+- @mindgraffiti 2019-10-11
+- New `OrderItemTax` entity
+- New `OrderItemTaxRefund` entity
+- New `OrderItem.taxes` relationship
+- New `OrderItemRefund` entity
+- New `OrderItemRefund.taxes` relationship
+- New `Refund` entity
+- New `Refund.items` relationship
+
 ## Model 20 (Release 2.8.0.0)
 - @jaclync 2019-09-17
 - New `ProductSearchResults` entity

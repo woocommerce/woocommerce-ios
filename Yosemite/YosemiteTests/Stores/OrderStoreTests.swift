@@ -768,6 +768,7 @@ private extension OrderStoreTests {
                                       code: "30$off",
                                       discount: "30",
                                       discountTax: "1.2")
+
         return [coupon1]
     }
 
@@ -780,6 +781,7 @@ private extension OrderStoreTests {
                                       code: "hithere!",
                                       discount: "50",
                                       discountTax: "0.66")
+
         return [coupon1, coupon2]
     }
 
@@ -794,20 +796,24 @@ private extension OrderStoreTests {
                               subtotal: "50.00",
                               subtotalTax: "2.00",
                               taxClass: "",
+                              taxes: taxes(),
                               total: "30.00",
                               totalTax: "1.20")
+
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
                               productID: 234,
                               variationID: 0,
-                              quantity: NSDecimalNumber(decimal: 1.5),
+                              quantity: 1.5,
                               price: NSDecimalNumber(integerLiteral: 0),
                               sku: "5555-A",
                               subtotal: "10.00",
                               subtotalTax: "0.40",
                               taxClass: "",
+                              taxes: taxes(),
                               total: "0.00",
                               totalTax: "0.00")
+
         return [item1, item2]
     }
 
@@ -822,8 +828,10 @@ private extension OrderStoreTests {
                               subtotal: "60.00",
                               subtotalTax: "4.00",
                               taxClass: "",
+                              taxes: taxes(),
                               total: "64.00",
                               totalTax: "4.00")
+
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle 2",
                               productID: 234,
@@ -834,8 +842,10 @@ private extension OrderStoreTests {
                               subtotal: "30.00",
                               subtotalTax: "0.40",
                               taxClass: "",
+                              taxes: taxes(),
                               total: "30.40",
                               totalTax: "0.40")
+
         let item3 = OrderItem(itemID: 23,
                               name: "Some new product",
                               productID: 12,
@@ -846,8 +856,10 @@ private extension OrderStoreTests {
                               subtotal: "130.00",
                               subtotalTax: "10.40",
                               taxClass: "",
+                              taxes: taxes(),
                               total: "140.40",
                               totalTax: "10.40")
+
         return [item1, item2, item3]
     }
 
@@ -862,8 +874,10 @@ private extension OrderStoreTests {
                               subtotal: "60.00",
                               subtotalTax: "4.00",
                               taxClass: "",
+                              taxes: taxes(),
                               total: "64.00",
                               totalTax: "4.00")
+
         return [item1]
     }
 
@@ -872,5 +886,9 @@ private extension OrderStoreTests {
             return Date()
         }
         return date
+    }
+
+    func taxes() -> [Networking.OrderItemTax] {
+        return [Networking.OrderItemTax]()
     }
 }

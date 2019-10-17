@@ -1,7 +1,27 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
 
+USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
+PROJECT_ENV_FILE_PATH = File.expand_path(File.join(Dir.pwd, '../.configure-files/project.env'))
+
+# Use this instead of getting values from ENV directly
+# It will throw an error if the requested value is missing
+def get_required_env(key)
+  unless ENV.key?(key)
+    UI.user_error!("Environment variable '#{key}' is not set. Have you setup #{USER_ENV_FILE_PATH} correctly?")
+  end
+  ENV[key]
+end
+
 before_all do
+  # Check that the env files exist
+  unless is_ci || File.file?(USER_ENV_FILE_PATH)
+    UI.user_error!("~/.wcios-env.default not found: Please copy env/user.env-example to #{USER_ENV_FILE_PATH} and fill in the values")
+  end
+  unless File.file?(PROJECT_ENV_FILE_PATH)
+    UI.user_error!("project.env not found: Make sure your configuration is up to date with `rake dependencies`")
+  end
+
   # This allows code signing to work on CircleCI
   # It is skipped if this isn't running on CI
   # See https://circleci.com/docs/2.0/ios-codesigning/
@@ -12,7 +32,8 @@ platform :ios do
 ########################################################################
 # Environment
 ########################################################################
-Dotenv.load('~/.wcios-env.default')
+Dotenv.load(USER_ENV_FILE_PATH)
+Dotenv.load(PROJECT_ENV_FILE_PATH)
 ENV[GHHELPER_REPO="woocommerce/woocommerce-iOS"]
 ENV["PROJECT_NAME"]="WooCommerce"
 ENV["PUBLIC_CONFIG_FILE"]="config/Version.Public.xcconfig"
@@ -193,7 +214,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     code_signing
 
     gym(scheme: "WooCommerce", workspace: "./WooCommerce.xcworkspace",
-      clean: true, export_team_id: ENV["EXT_EXPORT_TEAM_ID"], 
+      clean: true, export_team_id: get_required_env("EXT_EXPORT_TEAM_ID"), 
       export_options: {
         method: "app-store"
       }
@@ -203,7 +224,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     sh("cd .. && rm WooCommerce.ipa")
 
     sentry_upload_dsym(
-      auth_token: ENV["SENTRY_AUTH_TOKEN"],
+      auth_token: get_required_env("SENTRY_AUTH_TOKEN"),
       org_slug: 'a8c',
       project_slug: 'woocommerce-ios',
       dsym_path: "./WooCommerce.app.dSYM.zip",
@@ -217,7 +238,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   desc "Take Screenshots"
   lane :screenshots do | options |
 
-    languages = ENV["MAGNIFICENT_16"].split() + ["en"]
+    languages = get_required_env("MAGNIFICENT_16").split() + ["en"]
 
     if options[:languages] != nil
       languages = languages & options[:languages].split(",")
@@ -263,7 +284,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       "app_store_screenshot-8"    => {desc: "app_store_screenshot_8.txt"},
     }
 
-    metadata_locales = ENV["MAGNIFICENT_16"].split().map { |locale| locale.downcase }
+    metadata_locales = get_required_env("MAGNIFICENT_16").split().map { |locale| locale.downcase }
 
     gp_downloadmetadata(project_url: "https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/", 
       target_files: files,
@@ -326,7 +347,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   private_lane :code_signing do |options|
     match(
       type: "appstore",
-      team_id: ENV["EXT_EXPORT_TEAM_ID"],
+      team_id: get_required_env("EXT_EXPORT_TEAM_ID"),
       readonly: options[:readonly] || is_ci,
       app_identifier: ["com.automattic.woocommerce"])
   end

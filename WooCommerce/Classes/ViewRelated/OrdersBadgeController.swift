@@ -87,13 +87,15 @@ private extension OrdersBadgeController {
         static let yOffset = CGFloat(-2)
         static let xOffsetLandscape = CGFloat(10)
         static let yOffsetLandscape = CGFloat(-4)
+        static let horizontalPadding = CGFloat(2)
 
         // "9+" layout to account for longer text
-        static let widthForNinePlus = CGFloat(22)
+        static let widthForNinePlus = CGFloat(24)
         static let xOffsetForNinePlus = CGFloat(10)
         static let yOffsetForNinePlus = CGFloat(-1)
         static let xOffsetForNinePlusLandscape = CGFloat(8)
         static let yOffsetForNinePlusLandscape = CGFloat(-4)
+        static let horizontalPaddingForNinePlus = CGFloat(4)
 
         static let tagOffset = 999
 
@@ -104,11 +106,14 @@ private extension OrdersBadgeController {
 
     func badge(for tab: WooTab, with text: String) -> BadgeLabel {
         let width: CGFloat
+        let horizontalPadding: CGFloat // Badge inset
 
         if text == Constants.ninePlus {
             width = Constants.widthForNinePlus
+            horizontalPadding = Constants.horizontalPaddingForNinePlus
         } else {
             width = Constants.width
+            horizontalPadding = Constants.horizontalPadding
         }
 
         let returnValue = BadgeLabel(frame: CGRect(x: Constants.xOffset,
@@ -122,7 +127,7 @@ private extension OrdersBadgeController {
         returnValue.borderColor = StyleManager.wooWhite
         returnValue.borderWidth = Constants.borderWidth
         returnValue.textColor = StyleManager.wooWhite
-        returnValue.horizontalPadding = CGFloat(2)
+        returnValue.horizontalPadding = horizontalPadding
         returnValue.cornerRadius = Constants.cornerRadius
 
         // BUGFIX: Don't add the backgroundColor property, use this!

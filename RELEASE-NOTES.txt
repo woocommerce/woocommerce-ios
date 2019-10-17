@@ -1,5 +1,6 @@
 2.9
 -----
+- bugfix: on Orders tab, the order status filter now stays after changing an Order status.
  
 2.8
 -----

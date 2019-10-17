@@ -1,3 +1,9 @@
+2.9
+-----
+- bugfix: the Top Performers in the new stats page should not have a dark header bar when launching the app in Dark mode.
+- Enhancement: preselect current Order status when editing the status with a list of order statuses.
+- bugfix: on Orders tab, the order status filter now stays after changing an Order status.
+ 
 2.8
 -----
  

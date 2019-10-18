@@ -211,7 +211,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true) unless (options[:skip_prechecks])
     ios_build_preflight() unless (options[:skip_prechecks])
 
-    code_signing
+    appstore_code_signing
 
     gym(scheme: "WooCommerce", workspace: "./WooCommerce.xcworkspace",
       clean: true, export_team_id: get_required_env("EXT_EXPORT_TEAM_ID"), 
@@ -343,8 +343,16 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
   ########################################################################
   # Fastlane match code signing
-  ########################################################################  
-  private_lane :code_signing do |options|
+  ########################################################################
+  private_lane :alpha_code_signing do |options|
+    match(
+      type: "enterprise",
+      team_id: get_required_env("INT_EXPORT_TEAM_ID"),
+      readonly: options[:readonly] || is_ci,
+      app_identifier: ["com.automattic.alpha.woocommerce"])
+  end
+
+  private_lane :appstore_code_signing do |options|
     match(
       type: "appstore",
       team_id: get_required_env("EXT_EXPORT_TEAM_ID"),

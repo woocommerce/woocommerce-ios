@@ -11,7 +11,7 @@ extension Storage.OrderItem: ReadOnlyConvertible {
     public func update(with orderItem: Yosemite.OrderItem) {
         itemID = Int64(orderItem.itemID)
         name = orderItem.name
-        quantity = orderItem.quantity
+        quantity = NSDecimalNumber(decimal: orderItem.quantity)
         price = orderItem.price
         productID = Int64(orderItem.productID)
         sku = orderItem.sku
@@ -26,17 +26,20 @@ extension Storage.OrderItem: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.OrderItem {
+        let orderItemTaxes = taxes?.map { $0.toReadOnly() } ?? [Yosemite.OrderItemTax]()
+
         return OrderItem(itemID: Int(itemID),
                          name: name ?? "",
                          productID: Int(productID),
-                         quantity: quantity,
+                         variationID: Int(variationID),
+                         quantity: quantity as Decimal,
                          price: price ?? NSDecimalNumber(integerLiteral: 0),
                          sku: sku,
                          subtotal: subtotal ?? "",
                          subtotalTax: subtotalTax ?? "",
                          taxClass: taxClass ?? "",
+                         taxes: orderItemTaxes,
                          total: total ?? "",
-                         totalTax: totalTax ?? "",
-                         variationID: Int(variationID))
+                         totalTax: totalTax ?? "")
     }
 }

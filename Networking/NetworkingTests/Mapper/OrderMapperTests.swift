@@ -99,7 +99,7 @@ class OrderMapperTests: XCTestCase {
 
         let secondItem = order.items[1]
         XCTAssertEqual(secondItem.itemID, 891)
-        XCTAssertEqual(secondItem.quantity, NSDecimalNumber(decimal: 1.5))
+        XCTAssertEqual(secondItem.quantity, 1.5)
     }
 
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]

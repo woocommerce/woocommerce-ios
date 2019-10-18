@@ -91,7 +91,7 @@ DEPENDENCIES:
   - ZendeskSDK (~> 3.0.2)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - 1PasswordExtension
     - Alamofire
     - Automattic-Tracks-iOS
@@ -145,6 +145,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: f1c093a28ffcd0dc84b0cc1844801c7fc3a3dffd
 
-PODFILE CHECKSUM: a902a502e9051af9cff4b027417f04567f141111
+PODFILE CHECKSUM: f58e1bab0dfda29a863289776a8e76fc43bb8687
 
-COCOAPODS: 1.7.5
+COCOAPODS: 1.8.4

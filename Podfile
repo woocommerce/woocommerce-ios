@@ -1,11 +1,11 @@
+source 'https://cdn.cocoapods.org/'
+
 inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
 platform :ios, '12.0'
 workspace 'WooCommerce.xcworkspace'
-
-plugin 'cocoapods-repo-update'
 
 # Main Target!
 # ============

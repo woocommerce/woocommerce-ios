@@ -117,59 +117,53 @@ private extension StoreStatsAndTopPerformersViewController {
             }
         }
 
-        // Loads site for the latest site timezone.
-        let loadSiteAction = AccountAction.loadSite(siteID: siteID) { [weak self] site in
-            guard let site = site, let self = self else {
-                return
+
+        let timezoneForStatsUI = TimeZone.current
+
+        self.periodVCs.forEach { (vc) in
+            vc.siteTimezone = timezoneForStatsUI
+
+            let currentDate = Date()
+            vc.currentDate = currentDate
+            let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForStatsUI)
+
+            group.enter()
+            self.syncStats(for: siteID,
+                           siteTimezone: timezoneForStatsUI,
+                           timeRange: vc.timeRange,
+                           latestDateToInclude: latestDateToInclude) { [weak self] error in
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing order stats: \(error)")
+                    syncError = error
+                } else {
+                    self?.trackStatsLoaded(for: vc.granularity)
+                }
+                group.leave()
             }
-            let timezone = site.timezone
-            let siteTimezone = TimeZone(identifier: timezone) ?? TimeZone.current
-            self.periodVCs.forEach { (vc) in
-                vc.siteTimezone = siteTimezone
 
-                let currentDate = Date()
-                vc.currentDate = currentDate
-                let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
-
-                group.enter()
-                self.syncStats(for: siteID,
-                               siteTimezone: siteTimezone,
-                               timeRange: vc.timeRange,
-                               latestDateToInclude: latestDateToInclude) { [weak self] error in
-                    if let error = error {
-                        DDLogError("⛔️ Error synchronizing order stats: \(error)")
-                        syncError = error
-                    } else {
-                        self?.trackStatsLoaded(for: vc.granularity)
-                    }
-                    group.leave()
+            group.enter()
+            self.syncSiteVisitStats(for: siteID,
+                                    siteTimezone: timezoneForStatsUI,
+                                    timeRange: vc.timeRange,
+                                    latestDateToInclude: latestDateToInclude) { error in
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
+                    syncError = error
                 }
+                group.leave()
+            }
 
-                group.enter()
-                self.syncSiteVisitStats(for: siteID,
-                                        siteTimezone: siteTimezone,
-                                        timeRange: vc.timeRange,
-                                        latestDateToInclude: latestDateToInclude) { error in
-                    if let error = error {
-                        DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                        syncError = error
-                    }
-                    group.leave()
+            group.enter()
+            self.syncTopEarnersStats(for: siteID,
+                                     timeRange: vc.timeRange,
+                                     latestDateToInclude: latestDateToInclude) { error in
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
+                    syncError = error
                 }
-
-                group.enter()
-                self.syncTopEarnersStats(for: siteID,
-                                         timeRange: vc.timeRange,
-                                         latestDateToInclude: latestDateToInclude) { error in
-                    if let error = error {
-                        DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
-                        syncError = error
-                    }
-                    group.leave()
-                }
+                group.leave()
             }
         }
-        ServiceLocator.stores.dispatch(loadSiteAction)
     }
 
     func showSpinner(shouldShowSpinner: Bool) {

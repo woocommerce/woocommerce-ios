@@ -1,5 +1,1 @@
-- Há uma nova página de estatísticas com análises mais granulares para quem usa o plugin WooCommerce Admin! Ative-a nas Configurações.
-- Corrigimos um bug que exibia preços na moeda errada na página Detalhes do produto.
-- Após saber que registros do app são editáveis, garantimos que sejam só cópias no futuro.
-- Com a guia Pedidos exibindo todos os dados de pedidos, simplificamos a guia Minha loja e tiramos o cartão Novos pedidos dela.
-- Agora as Avaliações são traduzidas, graças a um bug corrigido.
+Reorganizamos partes dos Detalhes do pedido para melhor fluência e utilização: os detalhes do pagamento do cliente estão mais proeminentes, e as Observações do pedido estão organizadas por data para facilitar a leitura. Além disso, a animação esquisita de ampliação ao exibir os Detalhes de cobrança foi removida!

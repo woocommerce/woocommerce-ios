@@ -232,6 +232,49 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     sh("cd .. && rm WooCommerce.app.dSYM.zip")
   end
 
+  #####################################################################################
+  # build_and_upload_installable_build
+  # -----------------------------------------------------------------------------------
+  # This lane builds the app and upload it for adhoc testing 
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane build_and_upload_installable_build [version_long:<version_long>]
+  #
+  # Example:
+  # bundle exec fastlane build_and_upload_installable_build 
+  # bundle exec fastlane build_and_upload_installable_build build_number:123 
+  #####################################################################################
+  desc "Builds and uploads an installable build"
+  lane :build_and_upload_installable_build do | options |
+    alpha_code_signing
+
+    # Get the current build version, and update it if needed
+    version_config_path = "../config/Version.Public.xcconfig"
+    versions = Xcodeproj::Config.new(File.new(version_config_path)).to_hash
+    build_number = versions["VERSION_LONG"]
+
+    if options.key?(:build_number)
+      build_number = options[:build_number]
+
+      UI.message("Updating build version to #{build_number}")
+
+      versions["VERSION_LONG"] = build_number
+      new_config = Xcodeproj::Config.new(versions)
+      new_config.save_as(Pathname.new(version_config_path))
+    end
+
+    gym(
+      scheme: "WooCommerce Alpha",
+      workspace: "WooCommerce.xcworkspace",
+      export_method: "enterprise",
+      clean: true,
+      output_directory: "build",
+      export_team_id: ENV["INT_EXPORT_TEAM_ID"],
+      export_options: { method: "enterprise", iCloudContainerEnvironment: 'Production' })
+
+    sh("mv ../build/WooCommerce.ipa \"../build/WooCommerce Alpha.ipa\"")
+  end
+
   ########################################################################
   # Screenshot Lanes
   ########################################################################  

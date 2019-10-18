@@ -117,10 +117,11 @@ private extension StoreStatsAndTopPerformersViewController {
             }
         }
 
-
+        // When the site time zone can be correctly fetched, and also supports the Stats v4 API, consider using the site time zone
+        // for stats UI (#1375).
         let timezoneForStatsUI = TimeZone.current
 
-        self.periodVCs.forEach { (vc) in
+        periodVCs.forEach { (vc) in
             vc.siteTimezone = timezoneForStatsUI
 
             let currentDate = Date()

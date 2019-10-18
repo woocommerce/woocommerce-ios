@@ -123,7 +123,7 @@ private extension StoreStatsAndTopPerformersViewController {
                 return
             }
             let timezone = site.timezone
-            let siteTimezone = TimeZone(identifier: timezone) ?? TimeZone(secondsFromGMT: 0) ?? TimeZone.current
+            let siteTimezone = TimeZone(identifier: timezone) ?? TimeZone.current
             self.periodVCs.forEach { (vc) in
                 vc.siteTimezone = siteTimezone
 

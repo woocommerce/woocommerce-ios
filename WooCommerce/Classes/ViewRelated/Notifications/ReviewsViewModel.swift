@@ -146,6 +146,8 @@ extension ReviewsViewModel {
         let action = NotificationAction.synchronizeNotifications { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
+                ServiceLocator.analytics.track(.notificationsLoadFailed,
+                                               withError: error)
             } else {
                 ServiceLocator.analytics.track(.notificationListLoaded)
             }

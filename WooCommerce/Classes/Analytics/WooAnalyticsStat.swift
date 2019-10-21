@@ -216,6 +216,7 @@ public enum WooAnalyticsStat: String {
     // Notification Data/Action Events
     //
     case notificationListLoaded                 = "notifications_loaded"
+    case notificationsLoadFailed                = "notifications_load_failed"
     case notificationListFilter                 = "notifications_filter"
     case notificationReviewAction               = "review_action"
     case notificationReviewActionSuccess        = "review_action_success"

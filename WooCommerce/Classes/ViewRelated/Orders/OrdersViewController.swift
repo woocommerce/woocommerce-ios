@@ -422,7 +422,7 @@ private extension OrdersViewController {
             return
         }
 
-        if currentSiteStatuses.contains(statusFilter) == false {
+        if !currentSiteStatuses.contains(where: { $0.name == statusFilter.name && $0.slug == statusFilter.slug }) {
             self.statusFilter = nil
         }
     }

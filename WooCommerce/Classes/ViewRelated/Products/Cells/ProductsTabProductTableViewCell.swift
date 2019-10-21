@@ -29,6 +29,18 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
     }
 }
 
+extension ProductsTabProductTableViewCell: SearchResultCell {
+    typealias SearchModel = ProductsTabProductViewModel
+
+    func configureCell(searchModel: ProductsTabProductViewModel) {
+        update(viewModel: searchModel)
+    }
+
+    static func register(for tableView: UITableView) {
+        tableView.register(self, forCellReuseIdentifier: reuseIdentifier)
+    }
+}
+
 extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel) {
         nameLabel.text = viewModel.name

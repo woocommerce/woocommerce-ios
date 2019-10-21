@@ -88,7 +88,7 @@ class DefaultStyle: Style {
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
     let badgeFont                       = DefaultStyle.fontForTextStyle(.caption2,
                                                                         weight: .regular,
-                                                                        maximumPointSize: 11.0)
+                                                                        maximumPointSize: 12.0)
     let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
                                                                         weight: .semibold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)

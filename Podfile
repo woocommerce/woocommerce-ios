@@ -1,11 +1,11 @@
+source 'https://cdn.cocoapods.org/'
+
 inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
 platform :ios, '12.0'
 workspace 'WooCommerce.xcworkspace'
-
-plugin 'cocoapods-repo-update'
 
 # Main Target!
 # ============
@@ -43,7 +43,7 @@ target 'WooCommerce' do
   pod 'CocoaLumberjack/Swift', '~> 3.5'
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.3.0'
-  pod 'ZendeskSDK', :git => 'https://github.com/zendesk/zendesk_sdk_ios.git', :branch => '3.0.1-swift5.1-GM'
+  pod 'ZendeskSDK', '~> 3.0.2'
 
   # Unit Tests
   # ==========

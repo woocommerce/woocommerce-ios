@@ -105,7 +105,8 @@ extension ReviewsViewModel {
         let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: 1, pageSize: 25) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing reviews: \(error)")
-                ServiceLocator.analytics.track(.reviewsListLoadFailed)
+                ServiceLocator.analytics.track(.reviewsListLoadFailed,
+                                               withError: error)
             } else {
                 ServiceLocator.analytics.track(.reviewsListLoaded,
                                                withProperties: ["is_loading_more": false])

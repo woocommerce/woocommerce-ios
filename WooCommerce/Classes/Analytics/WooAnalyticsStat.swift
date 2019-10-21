@@ -225,6 +225,7 @@ public enum WooAnalyticsStat: String {
 
     // Review Data/Action Events
     case reviewLoaded                           = "review_loaded"
+    case reviewLoadFailed                       = "review_load_failed"
     case reviewsListLoaded                      = "reviews_loaded"
     case reviewsListLoadFailed                  = "reviews_load_failed"
     case reviewsMarkAllRead                     = "reviews_mark_all_read"

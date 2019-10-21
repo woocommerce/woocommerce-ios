@@ -156,9 +156,6 @@ private extension ReviewDetailsViewController {
     /// Refresh Control's Callback.
     ///
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.reviewLoaded,
-                                       withProperties: ["remote_review_id": productReview.reviewID])
-
         synchronizeReview(reviewID: productReview.reviewID) {
             sender.endRefreshing()
         }
@@ -174,9 +171,13 @@ private extension ReviewDetailsViewController {
         let action = ProductReviewAction.retrieveProductReview(siteID: siteID, reviewID: reviewID) { (productReview, error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing product review [\(reviewID)]: \(error)")
+                ServiceLocator.analytics.track(.reviewLoadFailed,
+                                               withError: error)
             }
 
             onCompletion()
+            ServiceLocator.analytics.track(.reviewLoaded,
+                                           withProperties: ["remote_review_id": reviewID])
         }
 
         ServiceLocator.stores.dispatch(action)

@@ -119,18 +119,18 @@ private extension StoreStatsAndTopPerformersViewController {
 
         // When the site time zone can be correctly fetched, and also supports the Stats v4 API, consider using the site time zone
         // for stats UI (#1375).
-        let timezoneForStatsUI = TimeZone.current
+        let timezoneForStatsDates = TimeZone.current
 
         periodVCs.forEach { (vc) in
-            vc.siteTimezone = timezoneForStatsUI
+            vc.siteTimezone = timezoneForStatsDates
 
             let currentDate = Date()
             vc.currentDate = currentDate
-            let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForStatsUI)
+            let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: timezoneForStatsDates)
 
             group.enter()
             self.syncStats(for: siteID,
-                           siteTimezone: timezoneForStatsUI,
+                           siteTimezone: timezoneForStatsDates,
                            timeRange: vc.timeRange,
                            latestDateToInclude: latestDateToInclude) { [weak self] error in
                 if let error = error {
@@ -144,7 +144,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
             group.enter()
             self.syncSiteVisitStats(for: siteID,
-                                    siteTimezone: timezoneForStatsUI,
+                                    siteTimezone: timezoneForStatsDates,
                                     timeRange: vc.timeRange,
                                     latestDateToInclude: latestDateToInclude) { error in
                 if let error = error {

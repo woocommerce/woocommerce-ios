@@ -489,9 +489,17 @@ private extension ReviewDetailsViewController {
             return
         }
 
+        ServiceLocator.analytics.track(.reviewMarkRead,
+                                       withProperties: ["remote_review_id": productReview.reviewID,
+                                                        "remote_note_id": note.noteId])
+
         let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
+                ServiceLocator.analytics.track(.reviewMarkReadFailed,
+                                               withError: error)
+            } else {
+                ServiceLocator.analytics.track(.reviewMarkReadSuccess)
             }
         }
         ServiceLocator.stores.dispatch(action)

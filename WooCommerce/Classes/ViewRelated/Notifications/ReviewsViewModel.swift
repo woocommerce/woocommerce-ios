@@ -128,6 +128,8 @@ extension ReviewsViewModel {
         let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: reviewsProductIDs) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing products: \(error)")
+                ServiceLocator.analytics.track(.reviewsProductsLoadFailed,
+                                               withError: error)
             } else {
                 ServiceLocator.analytics.track(.reviewsProductsLoaded)
             }

@@ -229,6 +229,7 @@ public enum WooAnalyticsStat: String {
     case reviewsMarkAllReadSuccess              = "reviews_mark_all_read_success"
     case reviewsMarkAllReadFailed               = "reviews_mark_all_read_failed"
     case reviewsProductsLoaded                  = "reviews_products_loaded"
+    case reviewsProductsLoadFailed              = "reviews_products_load_failed"
 
     // Jetpack Tunnel Events
     //

@@ -129,8 +129,7 @@ extension ReviewsViewModel {
             if let error = error {
                 DDLogError("⛔️ Error synchronizing products: \(error)")
             } else {
-                //TODO. What event must be sent here?
-                //ServiceLocator.analytics.track(.notificationListLoaded)
+                ServiceLocator.analytics.track(.reviewsProductsLoaded)
             }
 
             onCompletion()

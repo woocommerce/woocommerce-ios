@@ -156,7 +156,8 @@ private extension ReviewDetailsViewController {
     /// Refresh Control's Callback.
     ///
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.reviewsListPulledToRefresh)
+        ServiceLocator.analytics.track(.reviewLoaded,
+                                       withProperties: ["remote_review_id": productReview.reviewID])
 
         synchronizeReview(reviewID: productReview.reviewID) {
             sender.endRefreshing()

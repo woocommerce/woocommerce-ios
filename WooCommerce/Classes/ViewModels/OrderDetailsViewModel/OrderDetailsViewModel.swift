@@ -47,15 +47,6 @@ final class OrderDetailsViewModel {
         }
     }
 
-    var displaysBillingDetails: Bool {
-        set {
-            dataSource.displaysBillingDetails = newValue
-        }
-        get {
-            return dataSource.displaysBillingDetails
-        }
-    }
-
     /// The datasource that will be used to render the Order Details screen
     ///
     private(set) lazy var dataSource: OrderDetailsDataSource = {
@@ -91,9 +82,6 @@ final class OrderDetailsViewModel {
 
     /// Helpers
     ///
-    private let emailComposer = OrderEmailComposer()
-
-    private let messageComposer = OrderMessageComposer()
 
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         return dataSource.lookUpOrderStatus(for: order)
@@ -131,8 +119,10 @@ extension OrderDetailsViewModel {
             CustomerNoteTableViewCell.self,
             CustomerInfoTableViewCell.self,
             WooBasicTableViewCell.self,
+            OrderNoteHeaderTableViewCell.self,
             OrderNoteTableViewCell.self,
             PaymentTableViewCell.self,
+            TwoColumnHeadlineFootnoteTableViewCell.self,
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,
@@ -148,8 +138,7 @@ extension OrderDetailsViewModel {
     ///
     func registerTableViewHeaderFooters(_ tableView: UITableView) {
         let headersAndFooters = [
-            TwoColumnSectionHeaderView.self,
-            ShowHideSectionFooter.self
+            TwoColumnSectionHeaderView.self
         ]
 
         for kind in headersAndFooters {
@@ -195,87 +184,16 @@ extension OrderDetailsViewModel {
                                                                    currency: order.currency)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
+        case .billingDetail:
+            ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
+            let billingInformationViewController = BillingInformationViewController(order: order)
+            viewController.navigationController?.pushViewController(billingInformationViewController, animated: true)
         case .details:
             ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
-        case .billingEmail:
-            ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
-            displayEmailComposerIfPossible(from: viewController)
-        case .billingPhone:
-            displayContactCustomerAlert(from: viewController)
         default:
             break
         }
-    }
-}
-
-
-// MARK: - Initiate communication with a customer (i.e. via email, phone call)
-//
-private extension OrderDetailsViewModel {
-    func displayEmailComposerIfPossible(from: UIViewController) {
-        emailComposer.displayEmailComposerIfPossible(for: order, from: from)
-    }
-
-    /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
-    ///
-    func displayContactCustomerAlert(from: UIViewController) {
-        guard let sourceView = from.view else {
-            return
-        }
-
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
-
-        actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
-        actionSheet.addDefaultActionWithTitle(ContactAction.call) { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-
-            guard let phoneURL = self.order.billingAddress?.cleanedPhoneNumberAsActionableURL else {
-                return
-            }
-
-            ServiceLocator.analytics.track(.orderDetailCustomerPhoneOptionTapped)
-            self.callCustomerIfPossible(at: phoneURL)
-        }
-
-        actionSheet.addDefaultActionWithTitle(ContactAction.message) { [weak self] _ in
-            ServiceLocator.analytics.track(.orderDetailCustomerSMSOptionTapped)
-            self?.displayMessageComposerIfPossible(from: from)
-        }
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.sourceView = sourceView
-        popoverController?.sourceRect = sourceView.bounds
-
-        from.present(actionSheet, animated: true)
-
-        ServiceLocator.analytics.track(.orderDetailCustomerPhoneMenuTapped)
-    }
-
-    /// Attempts to perform a phone call at the specified URL
-    ///
-    func callCustomerIfPossible(at phoneURL: URL) {
-        guard UIApplication.shared.canOpenURL(phoneURL) else {
-            return
-        }
-
-        UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
-        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
-                                                                        "status": order.statusKey,
-                                                                        "type": "call"])
-
-    }
-}
-
-
-// MARK: - Initiate communication with a customer via message
-//
-private extension OrderDetailsViewModel {
-    func displayMessageComposerIfPossible(from: UIViewController) {
-        messageComposer.displayMessageComposerIfPossible(order: order, from: from)
     }
 }
 
@@ -383,11 +301,6 @@ extension OrderDetailsViewModel {
 }
 
 private extension OrderDetailsViewModel {
-    enum ContactAction {
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let call = NSLocalizedString("Call", comment: "Call phone number button title")
-        static let message = NSLocalizedString("Message", comment: "Message phone number button title")
-    }
 
     enum Constants {
         static let productDetailsSegue = "ShowProductListViewController"

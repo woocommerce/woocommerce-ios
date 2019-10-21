@@ -6,6 +6,10 @@ import Networking
 ///
 public enum ProductAction: Action {
 
+    /// Searches products that contain a given keyword.
+    ///
+    case searchProducts(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+
     /// Synchronizes the Products matching the specified criteria.
     ///
     case synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)

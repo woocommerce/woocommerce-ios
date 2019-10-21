@@ -26,6 +26,10 @@ final class ReviewsViewController: UIViewController {
 
     private let viewModel = ReviewsViewModel(data: DefaultReviewsDataSource())
 
+    /// Haptic Feedback!
+    ///
+    private let hapticGenerator = UINotificationFeedbackGenerator()
+
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {
@@ -157,7 +161,12 @@ private extension ReviewsViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
         tableView.dataSource = viewModel.dataSource
-        tableView.delegate = viewModel.delegate
+
+        // We decorate the delegate informally, because we want to intercept
+        // didSelectItem:at: but delegate the rest of the implementation of
+        // UITableViewDelegate to the implementation of UITableViewDelegate
+        // provided by the view model. It could be argued that we are just cheating.
+        tableView.delegate = self
     }
 
     /// Setup: ResultsController
@@ -194,10 +203,48 @@ private extension ReviewsViewController {
     }
 
     @IBAction func markAllAsRead() {
-        // TODO. MArk all as read
+        viewModel.markAllAsRead { [weak self] error in
+            guard let self = self else {
+                return
+            }
+
+            if let error = error {
+                DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
+                self.hapticGenerator.notificationOccurred(.error)
+            } else {
+                self.hapticGenerator.notificationOccurred(.success)
+                self.displayMarkAllAsReadNoticeIfNeeded()
+            }
+            self.updateMarkAllReadButtonState()
+            self.tableView.reloadData()
+        }
     }
 }
 
+
+// MARK: - UITableViewDelegate
+extension ReviewsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return viewModel.delegate.tableView?(tableView, heightForHeaderInSection: section) ?? 0
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return viewModel.delegate.tableView?(tableView, estimatedHeightForRowAt: indexPath) ?? 0
+    }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return viewModel.delegate.tableView?(tableView, heightForRowAt: indexPath) ?? 0
+    }
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        viewModel.delegate.didSelectItem(at: indexPath, in: self)
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        viewModel.delegate.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+    }
+}
 
 // MARK: - Yosemite Wrappers
 //
@@ -209,49 +256,18 @@ private extension ReviewsViewController {
         ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
-    /// Marks a specific Notification as read.
-    ///
-    func markAsReadIfNeeded(note: Note) {
-        guard note.read == false else {
-            return
-        }
-
-        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
-            if let error = error {
-                DDLogError("⛔️ Error marking single notification as read: \(error)")
-            }
-        }
-        ServiceLocator.stores.dispatch(action)
-    }
-
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
     func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
         transitionToSyncingState()
         viewModel.synchronizeReviews { [weak self] in
             self?.transitionToResultsUpdatedState()
+            self?.tableView.reloadData()
             onCompletion?()
         }
     }
 }
 
-// MARK: - App Store Review Prompt
-//
-private extension ReviewsViewController {
-    func displayRatingPrompt() {
-        defer {
-            if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                ServiceLocator.analytics.track(wooEvent)
-            }
-        }
-
-        // Show the app store ratings alert
-        // Note: Optimistically assuming our prompting succeeds since we try to stay
-        // in line and not prompt more than two times a year
-        AppRatingManager.shared.ratedCurrentVersion()
-        SKStoreReviewController.requestReview()
-    }
-}
 
 // MARK: - ResultsController
 //
@@ -427,8 +443,7 @@ private extension ReviewsViewController {
     }
 
     func updateMarkAllReadButtonState() {
-        // TODO. Mark as read
-//        leftBarButton.isEnabled = !unreadNotes.isEmpty
+        rightBarButton.isEnabled = viewModel.hasUnreadNotifications
     }
 
     /// Displays the `Mark all as read` Notice if the number of times it was previously displayed is lower than the

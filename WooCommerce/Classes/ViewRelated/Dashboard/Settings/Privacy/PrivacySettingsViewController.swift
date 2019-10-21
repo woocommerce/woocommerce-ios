@@ -200,7 +200,8 @@ private extension PrivacySettingsViewController {
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
-            "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.",
+            "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, " +
+            "and more as detailed in our privacy policy.",
             comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect."
         )
     }

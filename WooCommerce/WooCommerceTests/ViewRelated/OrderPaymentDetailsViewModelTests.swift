@@ -52,10 +52,17 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(subject.totalValue, expectedValue)
     }
 
+    func testPaymentTotalMatchedExpectation() {
+        let expectedValue = CurrencyFormatter().formatAmount(order.total,
+                                                             with: order.currency)
+        XCTAssertEqual(subject.totalValue, expectedValue)
+    }
+
     func testPaymentSummaryMatchesExpectation() {
+        let datePaid = order.datePaid!.toString(dateStyle: .medium, timeStyle: .none)
         let expectedValue = NSLocalizedString(
-            "Payment of \(subject.totalValue) received via \(order.paymentMethodTitle)",
-            comment: "Payment of <currency symbol><payment total> received via (payment method title)"
+            "\(datePaid) via \(order.paymentMethodTitle)",
+            comment: "Payment on <date> received via (payment method title)"
         )
         XCTAssertEqual(subject.paymentSummary, expectedValue)
     }

@@ -7,12 +7,16 @@ final class ReviewViewModelTests: XCTestCase {
     private var subject: ReviewViewModel!
     private var review: ProductReview!
     private var product: Product!
+    private var notification: Note!
 
     override func setUp() {
         super.setUp()
         review = mocks.review()
         product = mocks.product()
-        subject = ReviewViewModel(review: review, product: product)
+        notification = mocks.emptyNotification()
+        subject = ReviewViewModel(review: review,
+                                  product: product,
+                                  notification: notification)
     }
 
     override func tearDown() {
@@ -23,7 +27,7 @@ final class ReviewViewModelTests: XCTestCase {
     }
 
     func testReviewViewModelReturnsSubjectWithoutProductNameWhenProductIsNil() {
-        let viewModel = ReviewViewModel(review: review, product: nil)
+        let viewModel = ReviewViewModel(review: review, product: nil, notification: nil)
         XCTAssertEqual(viewModel.subject, reviewWithoutProduct())
     }
 
@@ -32,11 +36,11 @@ final class ReviewViewModelTests: XCTestCase {
     }
 
     func testReviewViewModelReturnsSubjectWithAnonymousForUnknownReviewerName() {
-        let viewModel = ReviewViewModel(review: mocks.anonyousReview(), product: product)
+        let viewModel = ReviewViewModel(review: mocks.anonyousReview(), product: product, notification: notification)
 
         let reviewSubject = viewModel.subject
 
-        XCTAssertTrue(reviewSubject!.contains("Anonymous"))
+        XCTAssertTrue(reviewSubject!.contains("Someone"))
     }
 
     func testNotIconIsCommentIcon() {
@@ -51,8 +55,12 @@ final class ReviewViewModelTests: XCTestCase {
         XCTAssertEqual(subject.rating, review.rating)
     }
 
+    func testReadMatchesNotificationRead() {
+        XCTAssertEqual(subject.read, notification.read)
+    }
+
     func testIconColorMatchesExpectation() {
-        XCTAssertEqual(subject.notIconColor, StyleManager.wooGreyMid)
+        XCTAssertEqual(subject.notIconColor, StyleManager.wooAccent)
     }
 }
 

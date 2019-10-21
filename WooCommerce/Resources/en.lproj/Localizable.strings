@@ -1,5 +1,17 @@
-﻿/* Review title. Reads as {Review author} left a review on {Product}. */
+﻿/* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
+"%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (Private)";
+
+/* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
+"%1$@ - %2$@ (System)" = "%1$@ - %2$@ (System)";
+
+/* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
+"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (To Customer)";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
+
+/* Payment on <date> received via (payment method title) */
+"%1$@ via %2$@" = "%1$@ via %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -10,12 +22,24 @@
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%@ left a review on %@" = "%1$@ left a review on %2$@";
 
+/* Label about product's inventory stock status shown on Products tab */
+"%ld in stock" = "%ld in stock";
+
+/* Label about one product variation shown on Products tab */
+"%ld variant" = "%ld variant";
+
+/* Label about number of variations shown on Products tab */
+"%ld variants" = "%ld variants";
+
 /* Title for an untitled post, should match WP core */
 "(no title)" = "(no title)";
 
 /* A badge with the number of orders. More than nine new orders.
    Content of the badge presented over the Orders icon when there are more than 9 orders processing */
 "9+" = "9+";
+
+/* Payment on <date> received via (payment method title) */
+"\(datePaid) via \(order.paymentMethodTitle)" = "\(datePaid) via \(order.paymentMethodTitle)";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.";
@@ -42,14 +66,12 @@
    Add tracking screen - button title to add a tracking */
 "Add" = "Add";
 
-/* Button text for adding a new order note */
+/* Accessibility label for the 'Add a note' button
+   Button text for adding a new order note */
 "Add a note" = "Add a note";
 
-/* Accessibility label for the 'Add a note' button */
-"Add a note button" = "Add a note button";
-
 /* Accessibility label for the 'Add a tracking' button */
-"Add a tracking button" = "Add a tracking button";
+"Add a tracking" = "Add a tracking";
 
 /* Add Tracking row label
    Add tracking screen - title. */
@@ -98,9 +120,6 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "An error occurred while processing your request: ";
 
-/* Indicates the reviewer does not have a name. It reads { Anonymous left a review} */
-"Anonymous" = "Anonymous";
-
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Application Logs";
 
@@ -132,6 +151,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Auto-managed on this site";
 
+/* Awaiting payment via (payment method title) */
+"Awaiting payment via %@" = "Awaiting payment via %@";
+
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Back";
 
@@ -145,12 +167,18 @@
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %i, %@, " = "Bar number %1$i, %2$@, ";
 
+/* Begin fulfill order button title */
+"Begin Fulfillment" = "Begin Fulfillment";
+
 /* Beta features navigation title
    Navigates to Beta features screen */
 "Beta Features" = "Beta Features";
 
-/* Billing title for customer info cell */
-"Billing details" = "Billing details";
+/* Section header title for billing address in billing information */
+"Billing Address" = "Billing Address";
+
+/* Billing Information view Title */
+"Billing Information" = "Billing Information";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "By signing up, you agree to our _Terms of Service_.";
@@ -192,6 +220,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Connecting to WordPress.com";
 
+/* Section header title for contact details in billing information */
+"Contact Details" = "Contact Details";
+
 /* Contact Email title */
 "Contact Email" = "Contact Email";
 
@@ -203,15 +234,6 @@
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continue reading";
-
-/* Button title. Tapping begins log in using Google. */
-"Continue with Google" = "Continue with Google";
-
-/* Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "Continue with WordPress.com";
-
-/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
-"Continuing with Apple" = "Continuing with Apple";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copy";
@@ -250,8 +272,10 @@
    Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Custom Provider";
 
-/* Customer info section title
-   Section title for the customer's billing and shipping address */
+/* Customer info section title */
+"Customer" = "Customer";
+
+/* Section title for the customer's billing and shipping address */
 "Customer Information" = "Customer Information";
 
 /* Customer note section title
@@ -396,9 +420,6 @@
 /* User role badge */
 "Follower" = "Follower";
 
-/* Fulfill order button title */
-"Fulfill order" = "Fulfill order";
-
 /* Order Fulfillment Title */
 "Fulfill Order #\(order.number)" = "Fulfill Order #\(order.number)";
 
@@ -427,9 +448,6 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Help Improve The App";
 
-/* Footer text to hide the billing cell */
-"Hide billing" = "Hide billing";
-
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HOW CAN WE HELP?";
 
@@ -439,7 +457,8 @@
 /* My Store > Settings > Beta features > Switch stats version */
 "Improved stats" = "Improved stats";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the product's inventory stock status
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "In stock";
 
 /* Application's Inactive State */
@@ -530,7 +549,7 @@
 "Log in to the WordPress.com account you used to connect Jetpack." = "Log in to the WordPress.com account you used to connect Jetpack.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to your WordPress.com account with your email address." = "Log in to your WordPress.com account with your email address.";
+"Log in to WordPress.com using an email address to manage all your WordPress sites." = "Log in to WordPress.com using an email address to manage all your WordPress sites.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Log in with Jetpack";
@@ -629,7 +648,7 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "No activity this period";
 
-/* Order details > customer info > billing details. This is where the address would normally display.
+/* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "No address specified.";
 
@@ -638,6 +657,10 @@
 
 /* Search Orders (Empty State) */
 "No Orders found" = "No Orders found";
+
+/* Search Products (Empty State)
+   The text on the placeholder overlay when there are no products on the Products tab */
+"No products yet" = "No products yet";
 
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "No results for the selected criteria";
@@ -663,8 +686,7 @@
 /* Notification status description for 'untrash' (opposite of trash) */
 "not trash" = "not trash";
 
-/* Labels an order note to let user know it's visible to the customer
-   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Note to customer";
 
 /* Label prefix. Example: 'Number of files: 2' */
@@ -710,9 +732,6 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optional Tracking Information";
 
-/* Label for button to log in using site address. Underscores _..._ denote underline. */
-"Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
-
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #\(viewModel.order.number)" = "Order #\(viewModel.order.number)";
@@ -732,6 +751,9 @@
 /* Order status update success notice */
 "Order status updated" = "Order status updated";
 
+/* Order Total label for payment view */
+"Order Total" = "Order Total";
+
 /* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
    Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Orders";
@@ -745,18 +767,15 @@
 /* Display label for the product's inventory stock status */
 "Out of stock" = "Out of stock";
 
+/* The title for the customer payment cell */
+"Paid By Customer" = "Paid By Customer";
+
 /* Login dialog password placeholder
    Password placeholder */
 "Password" = "Password";
 
 /* Payment section title */
 "Payment" = "Payment";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of \(subject.totalValue) received via \(order.paymentMethodTitle)" = "Payment of \(subject.totalValue) received via \(order.paymentMethodTitle)";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of \(totalValue) received via \(order.paymentMethodTitle)" = "Payment of \(totalValue) received via \(order.paymentMethodTitle)";
 
 /* Display label for the product's pending status
    Display label for the review's pending status */
@@ -782,9 +801,6 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "Please enter a valid email address.";
-
-/* No comment provided by engineer. */
-"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Please enter the password for your WordPress.com account to log in with your Apple ID.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Please enter your credentials";
@@ -820,8 +836,7 @@
 /* Display label for the product's private status */
 "Private" = "Private";
 
-/* Labels an order note to let the user know it's private and not seen by the customer
-   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Private note";
 
 /* Description for Top Performers left column header
@@ -834,7 +849,14 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "Product %ld has been removed from your store";
 
-/* Title of the Products tab — plural form of Product */
+/* Title of the view containing a single Product Review */
+"Product Review" = "Product Review";
+
+/* Product Total label for payment view */
+"Product Total" = "Product Total";
+
+/* Title of the Products tab — plural form of Product
+   Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Products";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -890,6 +912,9 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Retrieves a list of orders that contain a given keyword.";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search products. */
+"Retrieves a list of products that contain a given keyword." = "Retrieves a list of products that contain a given keyword.";
+
 /* Retry Action
    Retry the last action */
 "Retry" = "Retry";
@@ -910,8 +935,14 @@
 /* Orders Search Placeholder */
 "Search all orders" = "Search all orders";
 
+/* Products Search Placeholder */
+"Search all products" = "Search all products";
+
 /* Search Orders */
 "Search orders" = "Search orders";
+
+/* Search Products */
+"Search products" = "Search products";
 
 /* Page title for the select a different store screen */
 "Select Store" = "Select Store";
@@ -958,8 +989,8 @@
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Shipping Providers";
 
-/* Footer text to show the billing cell */
-"Show billing" = "Show billing";
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show the billing details for this order." = "Show the billing details for this order.";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Shows more options.";
@@ -994,6 +1025,9 @@
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Sent";
+
+/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
+"Someone" = "Someone";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Sorry, but your username contains an invalid phrase%@.";
@@ -1068,17 +1102,11 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Store revenue chart: Y Axis";
 
-/* Subtotal label for payment view */
-"Subtotal" = "Subtotal";
-
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Switch Store";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to \(newStoreName). You will only receive notifications from this store." = "Switched to \(newStoreName). You will only receive notifications from this store.";
-
-/* Labels an order note to let user know it's a system status message */
-"System status" = "System status";
 
 /* Tax label for total taxes line */
 "Tax:" = "Tax:";
@@ -1124,6 +1152,9 @@
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "The Order couldn't be loaded!";
+
+/* Displayed whenever a review that was onscreen got deleted. */
+"The review has been removed" = "The review has been removed";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "The server returned an empty response. This usually means you need to increase the memory limit for your site.";
@@ -1201,9 +1232,6 @@
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Topic not found for id:";
 
-/* Total label for payment view */
-"Total" = "Total";
-
 /* Product details screen - total orders descriptive label */
 "Total Orders" = "Total Orders";
 
@@ -1238,7 +1266,7 @@
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Trust";
 
-/* No comment provided by engineer. */
+/* Button to trigger connection to another account in store picker */
 "Try another account" = "Try another account";
 
 /* The action of the top banner on Dashboard that indicates new stats is available */
@@ -1313,7 +1341,8 @@
 /* Undo Action */
 "Undo" = "Undo";
 
-/* Unknown Application State */
+/* Unknown Application State
+   Unknown product name, displayed in a review */
 "Unknown" = "Unknown";
 
 /* No comment provided by engineer. */
@@ -1382,6 +1411,10 @@
 
 /* View application log cell title */
 "View Application Log" = "View Application Log";
+
+/* Accessibility label for the 'View Billing Information' button
+   Button on bottom of Customer's information to show the billing details */
+"View Billing Information" = "View Billing Information";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "View previously submitted support tickets";
@@ -1484,4 +1517,7 @@
 
 /* About View's Footer Text. The variable is the current year */
 "© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+
+/* Customer note, wrapped in quotes */
+"“%@”" = "“%@”";
 

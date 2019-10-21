@@ -24,7 +24,9 @@ class OrdersViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = FooterSpinnerView()
+    private lazy var footerSpinnerView = {
+        return FooterSpinnerView(tableViewStyle: tableView.style)
+    }()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
     ///
@@ -329,7 +331,10 @@ extension OrdersViewController {
         }
 
         ServiceLocator.analytics.track(.ordersListSearchTapped)
-        let searchViewController = OrderSearchViewController(storeID: storeID)
+
+        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
+                                                                                                  command: OrderSearchUICommand(),
+                                                                                                  cellType: OrderTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
@@ -593,24 +598,6 @@ private extension OrdersViewController {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
-    }
-}
-
-// MARK: - App Store Review Prompt
-//
-private extension OrdersViewController {
-    func displayRatingPrompt() {
-        defer {
-            if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                ServiceLocator.analytics.track(wooEvent)
-            }
-        }
-
-        // Show the app store ratings alert
-        // Note: Optimistically assuming our prompting succeeds since we try to stay
-        // in line and not prompt more than two times a year
-        AppRatingManager.shared.ratedCurrentVersion()
-        SKStoreReviewController.requestReview()
     }
 }
 

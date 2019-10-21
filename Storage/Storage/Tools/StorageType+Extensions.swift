@@ -263,6 +263,13 @@ public extension StorageType {
         return firstObject(ofType: ProductCategory.self, matching: predicate)
     }
 
+    /// Retrieves the Stored ProductSearchResults Lookup.
+    ///
+    func loadProductSearchResults(keyword: String) -> ProductSearchResults? {
+        let predicate = NSPredicate(format: "keyword = %@", keyword)
+        return firstObject(ofType: ProductSearchResults.self, matching: predicate)
+    }
+
     /// Retrieves the Stored Product Tag.
     ///
     func loadProductTag(siteID: Int, productID: Int, tagID: Int) -> ProductTag? {

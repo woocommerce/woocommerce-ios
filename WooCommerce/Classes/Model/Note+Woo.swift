@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 // MARK: - Note Helper Methods
 //
 extension Note {
@@ -69,9 +68,9 @@ extension Note {
 
 // MARK: - Constants!
 //
-private extension Note {
-    enum Constants {
+extension Note {
+    fileprivate enum Constants {
         static let filledInStar = "\u{2605}"  // Unicode Black Star ★
-        static let emptyStar    = "\u{2606}"  // Unicode White Star ☆
+        static let emptyStar = "\u{2606}"  // Unicode White Star ☆
     }
 }

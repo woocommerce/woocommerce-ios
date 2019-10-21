@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// WooCommerce CodingUserInfoKey(s)
 ///
 extension CodingUserInfoKey {

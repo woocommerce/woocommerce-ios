@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// Represents a regular UITableView Cell: [Image | Text |  Disclosure]
 ///
 class LeftImageTableViewCell: UITableViewCell {

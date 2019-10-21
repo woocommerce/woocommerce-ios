@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// WordPress.com Account
 ///
 public struct Account: Decodable {
@@ -40,14 +39,14 @@ public struct Account: Decodable {
 
 /// Defines all of the Account CodingKeys
 ///
-private extension Account {
+extension Account {
 
-    enum CodingKeys: String, CodingKey {
-        case userID         = "ID"
-        case displayName    = "display_name"
-        case email          = "email"
-        case username       = "username"
-        case gravatarUrl    = "avatar_URL"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case userID = "ID"
+        case displayName = "display_name"
+        case email = "email"
+        case username = "username"
+        case gravatarUrl = "avatar_URL"
     }
 }
 
@@ -56,16 +55,13 @@ private extension Account {
 //
 extension Account: Comparable {
     public static func == (lhs: Account, rhs: Account) -> Bool {
-        return lhs.userID == rhs.userID &&
-            lhs.displayName == rhs.displayName &&
-            lhs.email == rhs.email &&
-            lhs.username == rhs.username &&
-            lhs.gravatarUrl == rhs.gravatarUrl
+        return lhs.userID == rhs.userID && lhs.displayName == rhs.displayName && lhs.email == rhs.email && lhs.username == rhs.username && lhs.gravatarUrl
+            == rhs.gravatarUrl
     }
 
     public static func < (lhs: Account, rhs: Account) -> Bool {
-        return lhs.userID < rhs.userID ||
-            (lhs.userID == rhs.userID && lhs.username < rhs.username) ||
-            (lhs.userID == rhs.userID && lhs.username == rhs.username && lhs.displayName < rhs.displayName)
+        return lhs.userID < rhs.userID || (lhs.userID == rhs.userID && lhs.username < rhs.username) || (
+            lhs.userID == rhs.userID && lhs.username == rhs.username && lhs.displayName < rhs.displayName
+        )
     }
 }

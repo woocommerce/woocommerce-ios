@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// UIView Class Methods
 ///
 extension UIView {

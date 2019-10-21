@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Represents a WordPress.com Request
 ///

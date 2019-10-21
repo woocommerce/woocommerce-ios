@@ -1,8 +1,8 @@
-import XCTest
 import Foundation
-@testable import WooCommerce
-@testable import Networking
+import XCTest
 
+@testable import Networking
+@testable import WooCommerce
 
 /// OrderNote+Woo Tests
 ///
@@ -34,11 +34,11 @@ class OrderNoteWooTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension OrderNoteWooTests {
+extension OrderNoteWooTests {
 
     /// Returns the OrderNotesMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrderNotes(from filename: String) throws -> [OrderNote] {
+    fileprivate func mapOrderNotes(from filename: String) throws -> [OrderNote] {
         let response = Loader.contentsOf(filename)!
         return try OrderNotesMapper().map(response: response)
     }

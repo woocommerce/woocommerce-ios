@@ -1,5 +1,5 @@
-import Yosemite
 import MessageUI
+import Yosemite
 
 /// Encapsulates logic necessary to share an Order via Message
 ///
@@ -7,14 +7,18 @@ final class OrderMessageComposer: NSObject, MFMessageComposeViewControllerDelega
     func displayMessageComposerIfPossible(order: Order, from: UIViewController) {
         guard let phoneNumber = order.billingAddress?.cleanedPhoneNumber,
             MFMessageComposeViewController.canSendText()
-            else {
-                return
+        else {
+            return
         }
 
         displayMessageComposer(for: phoneNumber, from: from)
-        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
-                                                                        "status": order.statusKey,
-                                                                        "type": "sms"])
+        ServiceLocator.analytics.track(
+            .orderContactAction,
+            withProperties: [
+                "id": order.orderID,
+                "status": order.statusKey,
+                "type": "sms",
+            ])
     }
 
     private func displayMessageComposer(for phoneNumber: String, from: UIViewController) {

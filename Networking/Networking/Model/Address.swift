@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents an Address Entity.
 ///
 public struct Address: Decodable {
@@ -18,17 +17,19 @@ public struct Address: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(firstName: String,
-                lastName: String,
-                company: String?,
-                address1: String,
-                address2: String?,
-                city: String,
-                state: String,
-                postcode: String,
-                country: String,
-                phone: String?,
-                email: String?) {
+    public init(
+        firstName: String,
+        lastName: String,
+        company: String?,
+        address1: String,
+        address2: String?,
+        city: String,
+        state: String,
+        postcode: String,
+        country: String,
+        phone: String?,
+        email: String?
+    ) {
         self.firstName = firstName
         self.lastName = lastName
         self.company = company
@@ -57,37 +58,38 @@ public struct Address: Decodable {
         let phone = try container.decodeIfPresent(String.self, forKey: .phone)
         let email = try container.decodeIfPresent(String.self, forKey: .email)
 
-        self.init(firstName: firstName,
-                  lastName: lastName,
-                  company: company,
-                  address1: address1,
-                  address2: address2,
-                  city: city,
-                  state: state,
-                  postcode: postcode,
-                  country: country,
-                  phone: phone,
-                  email: email)
+        self.init(
+            firstName: firstName,
+            lastName: lastName,
+            company: company,
+            address1: address1,
+            address2: address2,
+            city: city,
+            state: state,
+            postcode: postcode,
+            country: country,
+            phone: phone,
+            email: email)
     }
 }
 
 
 /// Defines all of the Address's CodingKeys.
 ///
-private extension Address {
+extension Address {
 
-    enum CodingKeys: String, CodingKey {
-        case firstName  = "first_name"
-        case lastName   = "last_name"
-        case company    = "company"
-        case address1   = "address_1"
-        case address2   = "address_2"
-        case city       = "city"
-        case state      = "state"
-        case postcode   = "postcode"
-        case country    = "country"
-        case phone      = "phone"
-        case email      = "email"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case firstName = "first_name"
+        case lastName = "last_name"
+        case company = "company"
+        case address1 = "address_1"
+        case address2 = "address_2"
+        case city = "city"
+        case state = "state"
+        case postcode = "postcode"
+        case country = "country"
+        case phone = "phone"
+        case email = "email"
     }
 }
 
@@ -96,23 +98,14 @@ private extension Address {
 //
 extension Address: Comparable {
     public static func == (lhs: Address, rhs: Address) -> Bool {
-        return lhs.firstName == rhs.firstName &&
-            lhs.lastName == rhs.lastName &&
-            lhs.company == rhs.company &&
-            lhs.address1 == rhs.address1 &&
-            lhs.address2 == rhs.address2 &&
-            lhs.city == rhs.city &&
-            lhs.state == rhs.state &&
-            lhs.postcode == rhs.postcode &&
-            lhs.country == rhs.country &&
-            lhs.phone == rhs.phone &&
-            lhs.email == rhs.email
+        return lhs.firstName == rhs.firstName && lhs.lastName == rhs.lastName && lhs.company == rhs.company && lhs.address1 == rhs.address1 && lhs.address2
+            == rhs.address2 && lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode == rhs.postcode && lhs.country == rhs.country && lhs.phone == rhs
+            .phone && lhs.email == rhs.email
     }
 
     public static func < (lhs: Address, rhs: Address) -> Bool {
-        return lhs.city < rhs.city ||
-        (lhs.city == rhs.city && lhs.state < rhs.state) ||
-        (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode < rhs.postcode) ||
-        (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode == rhs.postcode && lhs.lastName < rhs.lastName)
+        return lhs.city < rhs.city || (lhs.city == rhs.city && lhs.state < rhs.state) || (
+            lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode < rhs.postcode
+        ) || (lhs.city == rhs.city && lhs.state == rhs.state && lhs.postcode == rhs.postcode && lhs.lastName < rhs.lastName)
     }
 }

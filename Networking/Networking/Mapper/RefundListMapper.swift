@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: Refund List
 ///
 struct RefundListMapper: Mapper {
@@ -24,7 +23,7 @@ struct RefundListMapper: Mapper {
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
             .siteID: siteID,
-            .orderID: orderID
+            .orderID: orderID,
         ]
 
         return try decoder.decode(RefundsEnvelope.self, from: response).refunds

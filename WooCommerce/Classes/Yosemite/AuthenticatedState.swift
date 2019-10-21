@@ -1,9 +1,7 @@
 import Foundation
-import Yosemite
 import Networking
 import Storage
-
-
+import Yosemite
 
 // MARK: - AuthenticatedState
 //
@@ -42,7 +40,7 @@ class AuthenticatedState: StoresManagerState {
             CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
         ]
 
         startListeningToNotifications()
@@ -71,7 +69,7 @@ class AuthenticatedState: StoresManagerState {
 
     /// Executed whenever the state is activated.
     ///
-    func didEnter() { }
+    func didEnter() {}
 
 
     /// Forwards the received action to the Actions Dispatcher.
@@ -84,11 +82,11 @@ class AuthenticatedState: StoresManagerState {
 
 // MARK: - Private Methods
 //
-private extension AuthenticatedState {
+extension AuthenticatedState {
 
     /// Starts listening for Notifications
     ///
-    func startListeningToNotifications() {
+    fileprivate func startListeningToNotifications() {
         let nc = NotificationCenter.default
         errorObserverToken = nc.addObserver(forName: .RemoteDidReceiveJetpackTimeoutError, object: nil, queue: .main) { [weak self] note in
             self?.tunnelTimeoutWasReceived(note: note)
@@ -97,14 +95,14 @@ private extension AuthenticatedState {
 
     /// Executed whenever a DotcomError is received (ApplicationLayer). This allows us to have a *Master* error handling flow!
     ///
-    func tunnelTimeoutWasReceived(note: Notification) {
+    fileprivate func tunnelTimeoutWasReceived(note: Notification) {
         ServiceLocator.analytics.track(.jetpackTunnelTimeout)
     }
 }
 
 
-private extension AuthenticatedState {
-    func resetServices() {
+extension AuthenticatedState {
+    fileprivate func resetServices() {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
         let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
         ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates])

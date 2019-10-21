@@ -1,8 +1,7 @@
 import Foundation
+import Gridicons
 import UIKit
 import WordPressUI
-import Gridicons
-
 
 // MARK: - NoteDetailsCommentTableViewCell
 //
@@ -171,11 +170,11 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
 
 // MARK: - Setup
 //
-private extension NoteDetailsCommentTableViewCell {
+extension NoteDetailsCommentTableViewCell {
 
     /// Setup: Actions!
     ///
-    func configureActionButtons() {
+    fileprivate func configureActionButtons() {
         spamButton.setImage(.spamImage, for: .normal)
         spamButton.setTitle(Spam.normalTitle, for: .normal)
         spamButton.accessibilityLabel = Spam.normalLabel
@@ -195,7 +194,7 @@ private extension NoteDetailsCommentTableViewCell {
 
     /// Setup: Default Action(s) Style
     ///
-    func configureDefaultAppearance() {
+    fileprivate func configureDefaultAppearance() {
         let buttons = [spamButton, trashButton, approvalButton].compactMap { $0 }
 
         for button in buttons {
@@ -205,7 +204,7 @@ private extension NoteDetailsCommentTableViewCell {
 
     /// Setup: Star rating view
     ///
-    func configureStarView() {
+    fileprivate func configureStarView() {
         starRatingView.starImage = Star.filledImage
         starRatingView.emptyStarImage = Star.emptyImage
         starRatingView.isHidden = (starRating == nil)
@@ -213,7 +212,7 @@ private extension NoteDetailsCommentTableViewCell {
 
     /// Setup: Button Appearance
     ///
-    func refreshAppearance(button: UIButton) {
+    fileprivate func refreshAppearance(button: UIButton) {
         let bgColor = button.isSelected ? StyleManager.wooCommerceBrandColor : StyleManager.wooGreyLight
         let textColor = button.isSelected ? StyleManager.wooGreyLight : StyleManager.wooCommerceBrandColor
 
@@ -224,7 +223,7 @@ private extension NoteDetailsCommentTableViewCell {
 
     /// Refreshes the ApprovalButton's Accessibility Label
     ///
-    func refreshApprovalLabels() {
+    fileprivate func refreshApprovalLabels() {
         approvalButton.accessibilityLabel = approvalButton.isSelected ? Approve.selectedLabel : Approve.normalLabel
     }
 }
@@ -232,25 +231,30 @@ private extension NoteDetailsCommentTableViewCell {
 
 // MARK: - Delegates
 //
-private extension NoteDetailsCommentTableViewCell {
+extension NoteDetailsCommentTableViewCell {
+    @IBAction
 
     /// Spam Button Callback
     ///
-    @IBAction func spamWasPressed(_ sender: UIButton) {
+    fileprivate func spamWasPressed(_ sender: UIButton) {
         sender.animateImageOverlay(style: .explosion)
         onSpam?()
     }
 
+    @IBAction
+
     /// Trash Button Callback
     ///
-    @IBAction func trashWasPressed(_ sender: UIButton) {
+    fileprivate func trashWasPressed(_ sender: UIButton) {
         sender.animateImageOverlay(style: .explosion)
         onTrash?()
     }
 
+    @IBAction
+
     /// Approval Button Callback
     ///
-    @IBAction func approveWasPressed(_ sender: UIButton) {
+    fileprivate func approveWasPressed(_ sender: UIButton) {
         let onClick = isApproveSelected ? onUnapprove : onApprove
         let newState = !isApproveSelected
 
@@ -264,36 +268,40 @@ private extension NoteDetailsCommentTableViewCell {
 
 // MARK: - Spam Button: Strings!
 //
-private struct Spam {
-    static let normalTitle      = NSLocalizedString("Spam", comment: "Verb, spam a comment")
-    static let normalLabel      = NSLocalizedString("Moves a comment to Spam", comment: "Spam Action Spoken hint.")
+private enum Spam {
+    static let normalTitle = NSLocalizedString("Spam", comment: "Verb, spam a comment")
+    static let normalLabel = NSLocalizedString("Moves a comment to Spam", comment: "Spam Action Spoken hint.")
 }
 
 
 // MARK: - Trash Button: Strings!
 //
-private struct Trash {
-    static let normalTitle      = NSLocalizedString("Trash", comment: "Move a comment to the trash")
-    static let normalLabel      = NSLocalizedString("Moves the comment to Trash", comment: "Trash Action Spoken hint")
+private enum Trash {
+    static let normalTitle = NSLocalizedString("Trash", comment: "Move a comment to the trash")
+    static let normalLabel = NSLocalizedString("Moves the comment to Trash", comment: "Trash Action Spoken hint")
 }
 
 
 // MARK: - Approve Button: Strings!
 //
-private struct Approve {
-    static let normalTitle      = NSLocalizedString("Approve", comment: "Approve a comment")
-    static let selectedTitle    = NSLocalizedString("Approved", comment: "Unapprove a comment")
-    static let normalLabel      = NSLocalizedString("Approves the comment", comment: "Approves a comment. Spoken Hint.")
-    static let selectedLabel    = NSLocalizedString("Unapproves the comment", comment: "Unapproves a comment. Spoken Hint.")
+private enum Approve {
+    static let normalTitle = NSLocalizedString("Approve", comment: "Approve a comment")
+    static let selectedTitle = NSLocalizedString("Approved", comment: "Unapprove a comment")
+    static let normalLabel = NSLocalizedString("Approves the comment", comment: "Approves a comment. Spoken Hint.")
+    static let selectedLabel = NSLocalizedString("Unapproves the comment", comment: "Unapproves a comment. Spoken Hint.")
 }
 
 
 // MARK: - Star View: Defaults
 //
-private struct Star {
-    static let size        = Double(18)
-    static let filledImage = UIImage.starImage(size: Star.size,
-                                               tintColor: StyleManager.goldStarColor)
-    static let emptyImage = UIImage.starImage(size: Star.size,
-                                              tintColor: StyleManager.wooGreyLight)
+private enum Star {
+    static let size = Double(18)
+
+    static let filledImage = UIImage.starImage(
+        size: Star.size,
+        tintColor: StyleManager.goldStarColor)
+
+    static let emptyImage = UIImage.starImage(
+        size: Star.size,
+        tintColor: StyleManager.wooGreyLight)
 }

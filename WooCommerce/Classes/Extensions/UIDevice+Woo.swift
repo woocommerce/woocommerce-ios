@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// UIDevice: Woo Methods
 ///
 extension UIDevice {

@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a Dimensions Entity.
 ///
 public struct ProductDimensions: Decodable {
@@ -10,9 +9,11 @@ public struct ProductDimensions: Decodable {
 
     /// Dimension struct initializer.
     ///
-    public init(length: String,
-                width: String,
-                height: String) {
+    public init(
+        length: String,
+        width: String,
+        height: String
+    ) {
         self.length = length
         self.width = width
         self.height = height
@@ -21,9 +22,9 @@ public struct ProductDimensions: Decodable {
 
 /// Defines all of the Dimensions CodingKeys
 ///
-private extension ProductDimensions {
+extension ProductDimensions {
 
-    enum CodingKeys: String, CodingKey {
+    fileprivate enum CodingKeys: String, CodingKey {
         case length
         case width
         case height
@@ -34,14 +35,12 @@ private extension ProductDimensions {
 //
 extension ProductDimensions: Comparable {
     public static func == (lhs: ProductDimensions, rhs: ProductDimensions) -> Bool {
-        return lhs.length == rhs.length &&
-            lhs.width == rhs.width &&
-            lhs.height == rhs.height
+        return lhs.length == rhs.length && lhs.width == rhs.width && lhs.height == rhs.height
     }
 
     public static func < (lhs: ProductDimensions, rhs: ProductDimensions) -> Bool {
-        return lhs.length < rhs.length ||
-            (lhs.length == rhs.length && lhs.width < rhs.width) ||
-            (lhs.length == rhs.length && lhs.width == rhs.width && lhs.height < rhs.height)
+        return lhs.length < rhs.length || (lhs.length == rhs.length && lhs.width < rhs.width) || (
+            lhs.length == rhs.length && lhs.width == rhs.width && lhs.height < rhs.height
+        )
     }
 }

@@ -1,7 +1,6 @@
 import Foundation
-import UIKit
 import Gridicons
-
+import UIKit
 
 /// WooCommerce UIImage Assets
 ///
@@ -115,11 +114,14 @@ extension UIImage {
     /// Gift Icon (with a red dot at the top right corner)
     ///
     static var giftWithTopRightRedDotImage: UIImage {
-        guard let image = Gridicon.iconOfType(.gift, withSize: CGSize(width: 24, height: 24))
+        guard
+            let image = Gridicon.iconOfType(.gift, withSize: CGSize(width: 24, height: 24))
             .imageWithTintColor(StyleManager.wooGreyTextMin)?
-            .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
-                                  finalSize: CGSize(width: 26, height: 26)) else {
-                                    fatalError()
+            .imageWithTopRightDot(
+                imageOrigin: CGPoint(x: 0, y: 2),
+                finalSize: CGSize(width: 26, height: 26))
+        else {
+            fatalError()
         }
         return image
     }
@@ -145,9 +147,11 @@ extension UIImage {
     /// Info Icon
     ///
     static var infoImage: UIImage {
-        guard let image = Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
-            .imageWithTintColor(StyleManager.wooGreyTextMin) else {
-                fatalError()
+        guard
+            let image = Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
+            .imageWithTintColor(StyleManager.wooGreyTextMin)
+        else {
+            fatalError()
         }
         return image
     }
@@ -237,8 +241,9 @@ extension UIImage {
     ///
     static func starImage(size: Double, tintColor: UIColor) -> UIImage {
         let starSize = CGSize(width: size, height: size)
-        return Gridicon.iconOfType(.star,
-                                   withSize: starSize)
+        return Gridicon.iconOfType(
+            .star,
+            withSize: starSize)
             .imageWithTintColor(tintColor)!
     }
 
@@ -251,8 +256,9 @@ extension UIImage {
     ///
     static func starOutlineImage(size: Double, tintColor: UIColor) -> UIImage {
         let starSize = CGSize(width: size, height: size)
-        return Gridicon.iconOfType(.starOutline,
-                                   withSize: starSize)
+        return Gridicon.iconOfType(
+            .starOutline,
+            withSize: starSize)
             .imageWithTintColor(tintColor)!
     }
 
@@ -260,14 +266,14 @@ extension UIImage {
     ///
     static var statsImage: UIImage {
         return Gridicon.iconOfType(.stats)
-        .imageFlippedForRightToLeftLayoutDirection()
+            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Stats Alt Icon
     ///
     static var statsAltImage: UIImage {
         return Gridicon.iconOfType(.statsAlt)
-        .imageFlippedForRightToLeftLayoutDirection()
+            .imageFlippedForRightToLeftLayoutDirection()
     }
 
     /// Trash Can Icon
@@ -301,9 +307,9 @@ extension UIImage {
     }
 }
 
-private extension UIImage {
+extension UIImage {
 
-    enum Metrics {
+    fileprivate enum Metrics {
         static let defaultWooLogoSize = CGSize(width: 30, height: 18)
     }
 }

@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// OrderStatsRemote Unit Tests
 ///

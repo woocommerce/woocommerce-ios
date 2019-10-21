@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// Renders a Section Header/Footer with two labels [Left / Right].
 ///
 class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {

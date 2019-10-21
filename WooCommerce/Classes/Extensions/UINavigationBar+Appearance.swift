@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 // MARK: - UINavigationBar + Woo
 //
 extension UINavigationBar {

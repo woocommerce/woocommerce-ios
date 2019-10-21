@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents an Order Entity.
 ///
 public struct Order: Decodable {
@@ -34,29 +33,31 @@ public struct Order: Decodable {
 
     /// Order struct initializer.
     ///
-    public init(siteID: Int,
-                orderID: Int,
-                parentID: Int,
-                customerID: Int,
-                number: String,
-                statusKey: String,
-                currency: String,
-                customerNote: String?,
-                dateCreated: Date,
-                dateModified: Date,
-                datePaid: Date?,
-                discountTotal: String,
-                discountTax: String,
-                shippingTotal: String,
-                shippingTax: String,
-                total: String,
-                totalTax: String,
-                paymentMethodTitle: String,
-                items: [OrderItem],
-                billingAddress: Address?,
-                shippingAddress: Address?,
-                coupons: [OrderCouponLine],
-                refunds: [OrderRefundCondensed]) {
+    public init(
+        siteID: Int,
+        orderID: Int,
+        parentID: Int,
+        customerID: Int,
+        number: String,
+        statusKey: String,
+        currency: String,
+        customerNote: String?,
+        dateCreated: Date,
+        dateModified: Date,
+        datePaid: Date?,
+        discountTotal: String,
+        discountTax: String,
+        shippingTotal: String,
+        shippingTax: String,
+        total: String,
+        totalTax: String,
+        paymentMethodTitle: String,
+        items: [OrderItem],
+        billingAddress: Address?,
+        shippingAddress: Address?,
+        coupons: [OrderCouponLine],
+        refunds: [OrderRefundCondensed]
+    ) {
 
         self.siteID = siteID
         self.orderID = orderID
@@ -129,64 +130,65 @@ public struct Order: Decodable {
         // The refunds field will not always exist in the response, so let's default to an empty array.
         let refunds = try container.decodeIfPresent([OrderRefundCondensed].self, forKey: .refunds) ?? []
 
-        self.init(siteID: siteID,
-                  orderID: orderID,
-                  parentID: parentID,
-                  customerID: customerID,
-                  number: number,
-                  statusKey: statusKey,
-                  currency: currency,
-                  customerNote: customerNote,
-                  dateCreated: dateCreated,
-                  dateModified: dateModified,
-                  datePaid: datePaid,
-                  discountTotal: discountTotal,
-                  discountTax: discountTax,
-                  shippingTotal: shippingTotal,
-                  shippingTax: shippingTax,
-                  total: total,
-                  totalTax: totalTax,
-                  paymentMethodTitle: paymentMethodTitle,
-                  items: items,
-                  billingAddress: billingAddress,
-                  shippingAddress: shippingAddress,
-                  coupons: coupons,
-                  refunds: refunds)
+        self.init(
+            siteID: siteID,
+            orderID: orderID,
+            parentID: parentID,
+            customerID: customerID,
+            number: number,
+            statusKey: statusKey,
+            currency: currency,
+            customerNote: customerNote,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            datePaid: datePaid,
+            discountTotal: discountTotal,
+            discountTax: discountTax,
+            shippingTotal: shippingTotal,
+            shippingTax: shippingTax,
+            total: total,
+            totalTax: totalTax,
+            paymentMethodTitle: paymentMethodTitle,
+            items: items,
+            billingAddress: billingAddress,
+            shippingAddress: shippingAddress,
+            coupons: coupons,
+            refunds: refunds)
     }
 }
 
 
 /// Defines all of the Order CodingKeys
 ///
-private extension Order {
+extension Order {
 
-    enum CodingKeys: String, CodingKey {
-        case orderID            = "id"
-        case parentID           = "parent_id"
-        case customerID         = "customer_id"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case orderID = "id"
+        case parentID = "parent_id"
+        case customerID = "customer_id"
 
-        case number             = "number"
-        case status             = "status"
-        case currency           = "currency"
-        case customerNote       = "customer_note"
+        case number = "number"
+        case status = "status"
+        case currency = "currency"
+        case customerNote = "customer_note"
 
-        case dateCreated        = "date_created_gmt"
-        case dateModified       = "date_modified_gmt"
-        case datePaid           = "date_paid_gmt"
+        case dateCreated = "date_created_gmt"
+        case dateModified = "date_modified_gmt"
+        case datePaid = "date_paid_gmt"
 
-        case discountTotal      = "discount_total"
-        case discountTax        = "discount_tax"
-        case shippingTotal      = "shipping_total"
-        case shippingTax        = "shipping_tax"
-        case total              = "total"
-        case totalTax           = "total_tax"
+        case discountTotal = "discount_total"
+        case discountTax = "discount_tax"
+        case shippingTotal = "shipping_total"
+        case shippingTax = "shipping_tax"
+        case total = "total"
+        case totalTax = "total_tax"
         case paymentMethodTitle = "payment_method_title"
 
-        case items              = "line_items"
-        case shippingAddress    = "shipping"
-        case billingAddress     = "billing"
-        case couponLines        = "coupon_lines"
-        case refunds            = "refunds"
+        case items = "line_items"
+        case shippingAddress = "shipping"
+        case billingAddress = "billing"
+        case couponLines = "coupon_lines"
+        case refunds = "refunds"
     }
 }
 
@@ -195,36 +197,19 @@ private extension Order {
 //
 extension Order: Comparable {
     public static func == (lhs: Order, rhs: Order) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.orderID == rhs.orderID &&
-            lhs.parentID == rhs.parentID &&
-            lhs.customerID == rhs.customerID &&
-            lhs.number == rhs.number &&
-            lhs.statusKey == rhs.statusKey &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.dateModified == rhs.dateModified &&
-            lhs.datePaid == rhs.datePaid &&
-            lhs.discountTotal == rhs.discountTotal &&
-            lhs.discountTax == rhs.discountTax &&
-            lhs.shippingTotal == rhs.shippingTotal &&
-            lhs.shippingTax == rhs.shippingTax &&
-            lhs.total == rhs.total &&
-            lhs.totalTax == rhs.totalTax &&
-            lhs.paymentMethodTitle == rhs.paymentMethodTitle &&
-            lhs.billingAddress == rhs.billingAddress &&
-            lhs.shippingAddress == rhs.shippingAddress &&
-            lhs.coupons.count == rhs.coupons.count &&
-            lhs.coupons.sorted() == rhs.coupons.sorted() &&
-            lhs.refunds.count == rhs.refunds.count &&
-            lhs.refunds.sorted() == rhs.refunds.sorted() &&
-            lhs.items.count == rhs.items.count &&
-            lhs.items.sorted() == rhs.items.sorted()
+        return lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.parentID == rhs.parentID && lhs.customerID == rhs.customerID && lhs.number == rhs
+            .number && lhs.statusKey == rhs.statusKey && lhs.dateCreated == rhs.dateCreated && lhs.dateModified == rhs.dateModified && lhs.datePaid == rhs
+            .datePaid && lhs.discountTotal == rhs.discountTotal && lhs.discountTax == rhs.discountTax && lhs.shippingTotal == rhs.shippingTotal && lhs
+            .shippingTax == rhs.shippingTax && lhs.total == rhs.total && lhs.totalTax == rhs.totalTax && lhs.paymentMethodTitle == rhs.paymentMethodTitle && lhs
+            .billingAddress == rhs.billingAddress && lhs.shippingAddress == rhs.shippingAddress && lhs.coupons.count == rhs.coupons.count && lhs.coupons
+            .sorted() == rhs.coupons.sorted() && lhs.refunds.count == rhs.refunds.count && lhs.refunds.sorted() == rhs.refunds.sorted() && lhs.items.count
+            == rhs.items.count && lhs.items.sorted() == rhs.items.sorted()
     }
 
     public static func < (lhs: Order, rhs: Order) -> Bool {
-        return lhs.orderID < rhs.orderID ||
-            (lhs.orderID == rhs.orderID && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.orderID == rhs.orderID && lhs.dateCreated == rhs.dateCreated && lhs.dateModified < rhs.dateModified)
+        return lhs.orderID < rhs.orderID || (lhs.orderID == rhs.orderID && lhs.dateCreated < rhs.dateCreated) || (
+            lhs.orderID == rhs.orderID && lhs.dateCreated == rhs.dateCreated && lhs.dateModified < rhs.dateModified
+        )
     }
 }
 

@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// ShipmentsRemote: Remote Endpoints
 ///
@@ -32,17 +31,21 @@ public final class ShipmentsRemote: Remote {
     ///   - trackingNumber: The tracking number
     ///   - completion: Closure to be executed upon completion
     ///
-    public func createShipmentTracking(for siteID: Int,
-                                       orderID: Int,
-                                       trackingProvider: String,
-                                       dateShipped: String,
-                                       trackingNumber: String,
-                                       completion: @escaping (ShipmentTracking?, Error?) -> Void) {
+    public func createShipmentTracking(
+        for siteID: Int,
+        orderID: Int,
+        trackingProvider: String,
+        dateShipped: String,
+        trackingNumber: String,
+        completion: @escaping (ShipmentTracking?, Error?) -> Void
+    ) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
-        let parameters = [ParameterKeys.trackingNumber: trackingNumber,
-                          ParameterKeys.trackingProvider: trackingProvider,
-                          ParameterKeys.dateShipped: dateShipped]
+        let parameters = [
+            ParameterKeys.trackingNumber: trackingNumber,
+            ParameterKeys.trackingProvider: trackingProvider,
+            ParameterKeys.dateShipped: dateShipped,
+        ]
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
@@ -60,19 +63,23 @@ public final class ShipmentsRemote: Remote {
     ///   - trackingLink: The custom url offered by this provider to track shipments
     ///   - completion: Closure to be executed upon completion
     ///
-    public func createShipmentTrackingWithCustomProvider(for siteID: Int,
-                                                         orderID: Int,
-                                                         trackingProvider: String,
-                                                         trackingNumber: String,
-                                                         trackingURL: String,
-                                                         dateShipped: String,
-                                                         completion: @escaping (ShipmentTracking?, Error?) -> Void) {
+    public func createShipmentTrackingWithCustomProvider(
+        for siteID: Int,
+        orderID: Int,
+        trackingProvider: String,
+        trackingNumber: String,
+        trackingURL: String,
+        dateShipped: String,
+        completion: @escaping (ShipmentTracking?, Error?) -> Void
+    ) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
-        let parameters = [ParameterKeys.trackingNumber: trackingNumber,
-                          ParameterKeys.customTrackingLink: trackingURL,
-                          ParameterKeys.customTrackingProvider: trackingProvider,
-                          ParameterKeys.dateShipped: dateShipped]
+        let parameters = [
+            ParameterKeys.trackingNumber: trackingNumber,
+            ParameterKeys.customTrackingLink: trackingURL,
+            ParameterKeys.customTrackingProvider: trackingProvider,
+            ParameterKeys.dateShipped: dateShipped,
+        ]
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .post, siteID: siteID, path: path, parameters: parameters)
         let mapper = NewShipmentTrackingMapper(siteID: siteID, orderID: orderID)
@@ -110,19 +117,19 @@ public final class ShipmentsRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension ShipmentsRemote {
+extension ShipmentsRemote {
 
-    enum Constants {
-        static let ordersPath: String    = "orders"
-        static let shipmentPath: String  = "shipment-trackings"
+    fileprivate enum Constants {
+        static let ordersPath: String = "orders"
+        static let shipmentPath: String = "shipment-trackings"
         static let providersPath: String = "providers"
     }
 
-    enum ParameterKeys {
-        static let customTrackingLink: String     = "custom_tracking_link"
+    fileprivate enum ParameterKeys {
+        static let customTrackingLink: String = "custom_tracking_link"
         static let customTrackingProvider: String = "custom_tracking_provider"
-        static let trackingNumber: String         = "tracking_number"
-        static let trackingProvider: String       = "tracking_provider"
-        static let dateShipped: String            = "date_shipped"
+        static let trackingNumber: String = "tracking_number"
+        static let trackingProvider: String = "tracking_provider"
+        static let dateShipped: String = "date_shipped"
     }
 }

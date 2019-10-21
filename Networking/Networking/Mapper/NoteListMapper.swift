@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: Notifications List
 ///
 struct NoteListMapper: Mapper {

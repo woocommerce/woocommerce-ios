@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Defines a Mapping Entity that will be used to parse a Backend Response.
 ///
 protocol Mapper {

@@ -8,10 +8,12 @@ public struct OrderStatsV4: Decodable {
     public let totals: OrderStatsV4Totals
     public let intervals: [OrderStatsV4Interval]
 
-    public init(siteID: Int,
-                granularity: StatsGranularityV4,
-                totals: OrderStatsV4Totals,
-                intervals: [OrderStatsV4Interval]) {
+    public init(
+        siteID: Int,
+        granularity: StatsGranularityV4,
+        totals: OrderStatsV4Totals,
+        intervals: [OrderStatsV4Interval]
+    ) {
         self.siteID = siteID
         self.granularity = granularity
         self.totals = totals
@@ -31,19 +33,20 @@ public struct OrderStatsV4: Decodable {
         let totals = try container.decode(OrderStatsV4Totals.self, forKey: .totals)
         let intervals = try container.decode([OrderStatsV4Interval].self, forKey: .intervals)
 
-        self.init(siteID: siteID,
-                  granularity: granularity,
-                  totals: totals,
-                  intervals: intervals)
+        self.init(
+            siteID: siteID,
+            granularity: granularity,
+            totals: totals,
+            intervals: intervals)
     }
 }
 
 
 // MARK: - Constants!
 //
-private extension OrderStatsV4 {
+extension OrderStatsV4 {
 
-    enum CodingKeys: String, CodingKey {
+    fileprivate enum CodingKeys: String, CodingKey {
         case totals = "totals"
         case intervals = "intervals"
     }
@@ -54,10 +57,7 @@ private extension OrderStatsV4 {
 //
 extension OrderStatsV4: Equatable {
     public static func == (lhs: OrderStatsV4, rhs: OrderStatsV4) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.granularity == rhs.granularity &&
-            lhs.totals == rhs.totals &&
-            lhs.intervals == rhs.intervals
+        return lhs.siteID == rhs.siteID && lhs.granularity == rhs.granularity && lhs.totals == rhs.totals && lhs.intervals == rhs.intervals
     }
 }
 

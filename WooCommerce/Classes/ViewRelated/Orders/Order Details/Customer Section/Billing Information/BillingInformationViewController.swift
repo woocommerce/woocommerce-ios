@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 
-
 /// Renders the Order Billing Information Interface
 ///
 final class BillingInformationViewController: UIViewController {
@@ -55,17 +54,17 @@ final class BillingInformationViewController: UIViewController {
 
 // MARK: - Interface Initialization
 //
-private extension BillingInformationViewController {
+extension BillingInformationViewController {
 
     /// Setup: Navigation Item
     ///
-    func setupNavigationItem() {
+    fileprivate func setupNavigationItem() {
         title = NSLocalizedString("Billing Information", comment: "Billing Information view Title")
     }
 
     /// Setup: Main View
     ///
-    func setupMainView() {
+    fileprivate func setupMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
@@ -75,10 +74,10 @@ private extension BillingInformationViewController {
 
     /// Registers all of the available TableViewCells
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         let cells = [
             BillingAddressTableViewCell.self,
-            WooBasicTableViewCell.self
+            WooBasicTableViewCell.self,
         ]
 
         for cell in cells {
@@ -88,8 +87,8 @@ private extension BillingInformationViewController {
 
     /// Registers all of the available TableViewHeaderFooters
     ///
-    func registerTableViewHeaderFooters() {
-        let headersAndFooters = [ TwoColumnSectionHeaderView.self ]
+    fileprivate func registerTableViewHeaderFooters() {
+        let headersAndFooters = [TwoColumnSectionHeaderView.self]
 
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
@@ -99,14 +98,14 @@ private extension BillingInformationViewController {
 
 // MARK: - Initiate communication with a customer (i.e. via email, phone call, sms)
 //
-private extension BillingInformationViewController {
-    func displayEmailComposerIfPossible(from: UIViewController) {
+extension BillingInformationViewController {
+    fileprivate func displayEmailComposerIfPossible(from: UIViewController) {
         emailComposer.displayEmailComposerIfPossible(for: order, from: from)
     }
 
     /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
     ///
-    func displayContactCustomerAlert(from: UIViewController) {
+    fileprivate func displayContactCustomerAlert(from: UIViewController) {
         guard let sourceView = from.view else {
             return
         }
@@ -144,21 +143,25 @@ private extension BillingInformationViewController {
 
     /// Attempts to perform a phone call at the specified URL
     ///
-    func callCustomerIfPossible(at phoneURL: URL) {
+    fileprivate func callCustomerIfPossible(at phoneURL: URL) {
         guard UIApplication.shared.canOpenURL(phoneURL) else {
             return
         }
 
         UIApplication.shared.open(phoneURL, options: [:], completionHandler: nil)
-        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
-                                                                        "status": order.statusKey,
-                                                                        "type": "call"])
+        ServiceLocator.analytics.track(
+            .orderContactAction,
+            withProperties: [
+                "id": order.orderID,
+                "status": order.statusKey,
+                "type": "call",
+            ])
 
     }
 
     /// Initiate communication with a customer via message
     ///
-    func displayMessageComposerIfPossible(from: UIViewController) {
+    fileprivate func displayMessageComposerIfPossible(from: UIViewController) {
         messageComposer.displayMessageComposerIfPossible(order: order, from: from)
     }
 }
@@ -254,11 +257,11 @@ extension BillingInformationViewController: UITableViewDelegate {
 
 // MARK: - Cell Configuration
 //
-private extension BillingInformationViewController {
+extension BillingInformationViewController {
 
     /// Setup a given UITableViewCell instance to actually display the specified Row's Payload.
     ///
-    func setup(cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    fileprivate func setup(cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as BillingAddressTableViewCell where row == .billingAddress:
             setupBillingAddress(cell: cell)
@@ -273,16 +276,16 @@ private extension BillingInformationViewController {
 
     /// Setup: Billing Address Cell
     ///
-    func setupBillingAddress(cell: BillingAddressTableViewCell) {
+    fileprivate func setupBillingAddress(cell: BillingAddressTableViewCell) {
         let billingAddress = order.billingAddress
 
         cell.name = billingAddress?.fullNameWithCompany
-        cell.address = billingAddress?.formattedPostalAddress ??
-            NSLocalizedString("No address specified.",
-                              comment: "Order details > customer info > billing information. This is where the address would normally display.")
+        cell.address = billingAddress?.formattedPostalAddress ?? NSLocalizedString(
+            "No address specified.",
+            comment: "Order details > customer info > billing information. This is where the address would normally display.")
     }
 
-    func setupBillingPhone(cell: WooBasicTableViewCell) {
+    fileprivate func setupBillingPhone(cell: WooBasicTableViewCell) {
         guard let phoneNumber = order.billingAddress?.phone else {
             return
         }
@@ -307,7 +310,7 @@ private extension BillingInformationViewController {
         )
     }
 
-    func setupBillingEmail(cell: WooBasicTableViewCell) {
+    fileprivate func setupBillingEmail(cell: WooBasicTableViewCell) {
         guard let email = order.billingAddress?.email else {
             return
         }
@@ -319,8 +322,9 @@ private extension BillingInformationViewController {
         cell.isAccessibilityElement = true
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Email: %@",
-                              comment: "Accessibility label that lets the user know the billing customer's email address"),
+            NSLocalizedString(
+                "Email: %@",
+                comment: "Accessibility label that lets the user know the billing customer's email address"),
             email
         )
 
@@ -333,8 +337,8 @@ private extension BillingInformationViewController {
 
 // MARK: - Table view sections
 //
-private extension BillingInformationViewController {
-    func reloadSections() {
+extension BillingInformationViewController {
+    fileprivate func reloadSections() {
         let billingAddress: Section = {
             let title = NSLocalizedString("Billing Address", comment: "Section header title for billing address in billing information")
             return Section(title: title, secondaryTitle: nil, rows: [.billingAddress])
@@ -358,26 +362,26 @@ private extension BillingInformationViewController {
             return Section(title: title, secondaryTitle: nil, rows: rows)
         }()
 
-        sections =  [billingAddress, contactDetails].compactMap { $0 }
+        sections = [billingAddress, contactDetails].compactMap { $0 }
     }
 }
 
 // MARK: - Pasteboard
 //
-private extension BillingInformationViewController {
+extension BillingInformationViewController {
 
     /// Sends the provided Row's text data to the pasteboard
     ///
     /// - Parameter indexPath: IndexPath to copy text data from
     ///
-    func copyText(at indexPath: IndexPath) {
+    fileprivate func copyText(at indexPath: IndexPath) {
         let row = sections[indexPath.section].rows[indexPath.row]
 
         switch row {
         case .billingAddress:
             sendToPasteboard(order.billingAddress?.fullNameWithCompanyAndAddress)
         default:
-            break // We only send text to the pasteboard from the address rows right meow
+            break  // We only send text to the pasteboard from the address rows right meow
         }
     }
 
@@ -388,7 +392,7 @@ private extension BillingInformationViewController {
     ///   - text: string value to send to the pasteboard
     ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
     ///
-    func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
+    fileprivate func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
         guard var text = text, text.isEmpty == false else {
             return
         }
@@ -404,7 +408,7 @@ private extension BillingInformationViewController {
     /// - Parameter indexPath: index path of the row to check
     /// - Returns: true is copying is allowed, false otherwise
     ///
-    func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
+    fileprivate func checkIfCopyingIsAllowed(for indexPath: IndexPath) -> Bool {
         let row = sections[indexPath.section].rows[indexPath.row]
         switch row {
         case .billingAddress:
@@ -474,14 +478,14 @@ private enum Row {
 
 // MARK: - Constants
 //
-private extension BillingInformationViewController {
-    enum ContactAction {
+extension BillingInformationViewController {
+    fileprivate enum ContactAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let call = NSLocalizedString("Call", comment: "Call phone number button title")
         static let message = NSLocalizedString("Message", comment: "Message phone number button title")
     }
 
-    enum Constants {
+    fileprivate enum Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
         static let footerHeight = CGFloat(0)

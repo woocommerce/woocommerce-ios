@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 // MARK: - TopEarnerStatsItem Helper Methods
 //
 extension TopEarnerStatsItem {

@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// Empty Stores: Displayed whenever there are no available WooCommerce Stores associated with the active account.
 ///
 class EmptyStoresTableViewCell: UITableViewCell {
@@ -12,21 +11,22 @@ class EmptyStoresTableViewCell: UITableViewCell {
         didSet {
             legendLabel.textColor = StyleManager.wooGreyTextMin
             legendLabel.font = .subheadline
-            legendLabel.text = NSLocalizedString("Unable to find WooCommerce stores connected to this account",
-                                                 comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
+            legendLabel.text = NSLocalizedString(
+                "Unable to find WooCommerce stores connected to this account",
+                comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")
         }
     }
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         configureBackground()
     }
 }
 
 
-private extension EmptyStoresTableViewCell {
-    func configureBackground() {
+extension EmptyStoresTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 }

@@ -1,7 +1,6 @@
 import Foundation
 import Networking
 
-
 /// Extension: [Array of NoteBlock Elements]
 ///
 extension Array where Element == Networking.NoteBlock {

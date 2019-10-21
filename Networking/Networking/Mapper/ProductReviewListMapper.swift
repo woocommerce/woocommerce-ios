@@ -15,7 +15,7 @@ struct ProductReviewListMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
-            .siteID: siteID
+            .siteID: siteID,
         ]
 
         return try decoder.decode(ProductReviewListEnvelope.self, from: response).productReviews

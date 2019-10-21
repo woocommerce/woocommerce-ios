@@ -1,9 +1,8 @@
 import Foundation
-import UIKit
-import Yosemite
 import Gridicons
 import SafariServices
-
+import UIKit
+import Yosemite
 
 // MARK: - NotificationDetailsViewController
 //
@@ -40,7 +39,6 @@ class NotificationDetailsViewController: UIViewController {
     private var rows = [NoteDetailsRow]()
 
 
-
     /// Designated Initializer
     ///
     init(note: Note) {
@@ -75,24 +73,24 @@ class NotificationDetailsViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-private extension NotificationDetailsViewController {
+extension NotificationDetailsViewController {
 
     /// Setup: Navigation
     ///
-    func configureNavigationItem() {
+    fileprivate func configureNavigationItem() {
         // Don't show the Notifications title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: Main View
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup: TableView
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         // Hide "Empty Rows"
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
@@ -102,7 +100,7 @@ private extension NotificationDetailsViewController {
 
     /// Setup: EntityListener
     ///
-    func configureEntityListener() {
+    fileprivate func configureEntityListener() {
         entityListener.onUpsert = { [weak self] note in
             self?.note = note
         }
@@ -115,17 +113,17 @@ private extension NotificationDetailsViewController {
 
     /// Reports a significant event to the App Rating Manager
     ///
-    func configureAppRatingEvent() {
+    fileprivate func configureAppRatingEvent() {
         AppRatingManager.shared.incrementSignificantEvent(section: Constants.section)
     }
 
     /// Registers all of the available TableViewCells.
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         let cells = [
             NoteDetailsHeaderTableViewCell.self,
             NoteDetailsHeaderPlainTableViewCell.self,
-            NoteDetailsCommentTableViewCell.self
+            NoteDetailsCommentTableViewCell.self,
         ]
 
         for cell in cells {
@@ -137,11 +135,12 @@ private extension NotificationDetailsViewController {
 
 // MARK: - Sync
 //
-private extension NotificationDetailsViewController {
+extension NotificationDetailsViewController {
+    @IBAction
 
     /// Refresh Control's Callback.
     ///
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+    fileprivate func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
 
         synchronizeNotification(noteId: note.noteId) {
@@ -151,7 +150,7 @@ private extension NotificationDetailsViewController {
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    func synchronizeNotification(noteId: Int64, onCompletion: @escaping () -> Void) {
+    fileprivate func synchronizeNotification(noteId: Int64, onCompletion: @escaping () -> Void) {
         let action = NotificationAction.synchronizeNotification(noteId: noteId) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notification [\(noteId)]: \(error)")
@@ -167,11 +166,11 @@ private extension NotificationDetailsViewController {
 
 // MARK: - Display Notices
 //
-private extension NotificationDetailsViewController {
+extension NotificationDetailsViewController {
 
     /// Displays a Notice onScreen, indicating that the current Note has been deleted from the Store.
     ///
-    func displayNoteDeletedNotice() {
+    fileprivate func displayNoteDeletedNotice() {
         let title = NSLocalizedString("The notification has been removed", comment: "Displayed whenever a Notification that was onscreen got deleted.")
         let notice = Notice(title: title, feedbackType: .error)
 
@@ -180,7 +179,7 @@ private extension NotificationDetailsViewController {
 
     /// Displays the Error Notice.
     ///
-    static func displayModerationErrorNotice(failedStatus: CommentStatus) {
+    fileprivate static func displayModerationErrorNotice(failedStatus: CommentStatus) {
         let message = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Unable to mark review as %@",
@@ -195,7 +194,7 @@ private extension NotificationDetailsViewController {
 
     /// Displays the `Comment moderated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    static func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
+    fileprivate static func displayModerationCompleteNotice(newStatus: CommentStatus, onUndoAction: @escaping () -> Void) {
         guard newStatus != .unknown else {
             return
         }
@@ -217,11 +216,11 @@ private extension NotificationDetailsViewController {
 
 // MARK: - Private Methods
 //
-private extension NotificationDetailsViewController {
+extension NotificationDetailsViewController {
 
     /// Reloads all of the Details Interface
     ///
-    func reloadInterface() {
+    fileprivate func reloadInterface() {
         title = note.title
         rows = NoteDetailsRow.details(from: note)
         tableView.reloadData()
@@ -229,7 +228,7 @@ private extension NotificationDetailsViewController {
 
     /// Returns the DetailsRow at a given IndexPath.
     ///
-    func detailsForRow(at indexPath: IndexPath) -> NoteDetailsRow {
+    fileprivate func detailsForRow(at indexPath: IndexPath) -> NoteDetailsRow {
         return rows[indexPath.row]
     }
 }
@@ -272,11 +271,11 @@ extension NotificationDetailsViewController: UITableViewDelegate {
 
 // MARK: - Cell Setup
 //
-private extension NotificationDetailsViewController {
+extension NotificationDetailsViewController {
 
     /// Main Cell Setup Method
     ///
-    func setup(cell: UITableViewCell, at row: NoteDetailsRow) {
+    fileprivate func setup(cell: UITableViewCell, at row: NoteDetailsRow) {
         switch row {
         case .header:
             setupHeaderCell(cell, at: row)
@@ -290,10 +289,11 @@ private extension NotificationDetailsViewController {
 
     /// Setup: Header Cell
     ///
-    func setupHeaderCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
+    fileprivate func setupHeaderCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
         guard let headerCell = cell as? NoteDetailsHeaderTableViewCell,
-            case let .header(gravatarBlock, _) = row else {
-                return
+            case let .header(gravatarBlock, _) = row
+        else {
+            return
         }
 
         let formatter = StringFormatter()
@@ -303,10 +303,11 @@ private extension NotificationDetailsViewController {
 
     /// Setup: Header Cell (Plain)
     ///
-    func setupHeaderPlainCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
+    fileprivate func setupHeaderPlainCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
         guard let headerCell = cell as? NoteDetailsHeaderPlainTableViewCell,
-            case let .headerPlain(title, _) = row else {
-                return
+            case let .headerPlain(title, _) = row
+        else {
+            return
         }
 
         headerCell.leftImage = .productImage
@@ -317,10 +318,11 @@ private extension NotificationDetailsViewController {
 
     /// Setup: Comment Cell
     ///
-    func setupCommentCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
+    fileprivate func setupCommentCell(_ cell: UITableViewCell, at row: NoteDetailsRow) {
         guard let commentCell = cell as? NoteDetailsCommentTableViewCell,
-            case let .comment(commentBlock, userBlock, _) = row else {
-                return
+            case let .comment(commentBlock, userBlock, _) = row
+        else {
+            return
         }
 
         // Setup: Properties
@@ -333,14 +335,15 @@ private extension NotificationDetailsViewController {
         let gravatarURL = userBlock.media.first?.url
         commentCell.downloadGravatar(with: gravatarURL)
 
-        commentCell.isApproveEnabled  = commentBlock.isActionEnabled(.approve)
-        commentCell.isTrashEnabled    = commentBlock.isActionEnabled(.trash)
-        commentCell.isSpamEnabled     = commentBlock.isActionEnabled(.spam)
+        commentCell.isApproveEnabled = commentBlock.isActionEnabled(.approve)
+        commentCell.isTrashEnabled = commentBlock.isActionEnabled(.trash)
+        commentCell.isSpamEnabled = commentBlock.isActionEnabled(.spam)
         commentCell.isApproveSelected = commentBlock.isActionOn(.approve)
 
         // Setup: Callbacks
         if let commentID = commentBlock.meta.identifier(forKey: .comment),
-            let siteID = commentBlock.meta.identifier(forKey: .site) {
+            let siteID = commentBlock.meta.identifier(forKey: .site)
+        {
 
             commentCell.onSpam = { [weak self] in
                 ServiceLocator.analytics.track(.notificationReviewSpamTapped)
@@ -372,38 +375,48 @@ private extension NotificationDetailsViewController {
 
 // MARK: - Comment Moderation
 //
-private extension NotificationDetailsViewController {
+extension NotificationDetailsViewController {
 
     /// Dispatches the moderation command (Approve/Unapprove, Spam, Trash) to the backend
     ///
-    func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
-        guard let undo = moderateCommentAction(siteID: siteID, commentID: commentID, status: undoStatus, onCompletion: { (error) in
-            guard let error = error else {
-                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
-                return
-            }
+    fileprivate func moderateComment(siteID: Int, commentID: Int, doneStatus: CommentStatus, undoStatus: CommentStatus) {
+        guard
+            let undo = moderateCommentAction(
+                siteID: siteID, commentID: commentID, status: undoStatus,
+                onCompletion: { (error) in
+                    guard let error = error else {
+                        ServiceLocator.analytics.track(.notificationReviewActionSuccess)
+                        return
+                    }
 
-            DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
-            NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
-        }) else {
+                    DDLogError("⛔️ Comment (UNDO) moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
+                    ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
+                    NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
+                })
+        else {
             return
         }
 
-        guard let done = moderateCommentAction(siteID: siteID, commentID: commentID, status: doneStatus, onCompletion: { (error) in
-            guard let error = error else {
-                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
-                NotificationDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
-                    ServiceLocator.analytics.track(.notificationReviewActionUndo)
-                    ServiceLocator.stores.dispatch(undo)
-                })
-                return
-            }
+        guard
+            let done = moderateCommentAction(
+                siteID: siteID, commentID: commentID, status: doneStatus,
+                onCompletion: { (error) in
+                    guard let error = error else {
+                        ServiceLocator.analytics.track(.notificationReviewActionSuccess)
+                        NotificationDetailsViewController.displayModerationCompleteNotice(
+                            newStatus: doneStatus,
+                            onUndoAction: {
+                                ServiceLocator.analytics.track(.notificationReviewActionUndo)
+                                ServiceLocator.stores.dispatch(undo)
+                            })
+                        return
+                    }
 
-            DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
-            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
-            NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
-        }) else {
+                    DDLogError("⛔️ Comment moderation failure for ID: \(commentID) attempting \(doneStatus.description) status. Error: \(error)")
+                    ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
+                    NotificationDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
+                })
+        else {
             return
         }
 
@@ -413,44 +426,74 @@ private extension NotificationDetailsViewController {
 
     /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
     ///
-    func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
+    fileprivate func moderateCommentAction(siteID: Int, commentID: Int, status: CommentStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
         let noteID = note.noteId
 
         switch status {
         case .approved:
-            return [CommentAction.updateApprovalStatus(siteID: siteID,
-                                                       commentID: commentID,
-                                                       isApproved: true,
-                                                       onCompletion: { (_, error) in onCompletion(error) })]
+            return [
+                CommentAction.updateApprovalStatus(
+                    siteID: siteID,
+                    commentID: commentID,
+                    isApproved: true,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .unapproved:
-            return [CommentAction.updateApprovalStatus(siteID: siteID,
-                                                       commentID: commentID,
-                                                       isApproved: false,
-                                                       onCompletion: { (_, error) in onCompletion(error) })]
+            return [
+                CommentAction.updateApprovalStatus(
+                    siteID: siteID,
+                    commentID: commentID,
+                    isApproved: false,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .spam:
-            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
-                    CommentAction.updateSpamStatus(siteID: siteID,
-                                                   commentID: commentID,
-                                                   isSpam: true,
-                                                   onCompletion: { (_, error) in onCompletion(error) })]
+            return [
+                locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
+                CommentAction.updateSpamStatus(
+                    siteID: siteID,
+                    commentID: commentID,
+                    isSpam: true,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .unspam:
-            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
-                    CommentAction.updateSpamStatus(siteID: siteID,
-                                                   commentID: commentID,
-                                                   isSpam: false,
-                                                   onCompletion: { (_, error) in onCompletion(error) })]
+            return [
+                locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
+                CommentAction.updateSpamStatus(
+                    siteID: siteID,
+                    commentID: commentID,
+                    isSpam: false,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .trash:
-            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
-                    CommentAction.updateTrashStatus(siteID: siteID,
-                                                    commentID: commentID,
-                                                    isTrash: true,
-                                                    onCompletion: { (_, error) in onCompletion(error) })]
+            return [
+                locallyDeletedStatusAction(noteID: noteID, deleteInProgress: true),
+                CommentAction.updateTrashStatus(
+                    siteID: siteID,
+                    commentID: commentID,
+                    isTrash: true,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .untrash:
-            return [locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
-                    CommentAction.updateTrashStatus(siteID: siteID,
-                                                    commentID: commentID,
-                                                    isTrash: false,
-                                                    onCompletion: { (_, error) in onCompletion(error) })]
+            return [
+                locallyDeletedStatusAction(noteID: noteID, deleteInProgress: false),
+                CommentAction.updateTrashStatus(
+                    siteID: siteID,
+                    commentID: commentID,
+                    isTrash: false,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .unknown:
             DDLogError("⛔️ Comment moderation failure: attempted to update comment with unknown status.")
             return nil
@@ -459,7 +502,7 @@ private extension NotificationDetailsViewController {
 
     /// Returns a "note pending deletion" action (so the note list removes the deleted note immediately)
     ///
-    func locallyDeletedStatusAction(noteID: Int64, deleteInProgress: Bool) -> Action {
+    fileprivate func locallyDeletedStatusAction(noteID: Int64, deleteInProgress: Bool) -> Action {
         let action = NotificationAction.updateLocalDeletedStatus(noteId: noteID, deleteInProgress: deleteInProgress) { error in
             if error != nil {
                 DDLogError("⛔️ Error marking deleteInProgress == \(deleteInProgress) for note \(noteID) locally: \(String(describing: error))")
@@ -472,11 +515,11 @@ private extension NotificationDetailsViewController {
 
 // MARK: - Private Methods
 //
-private extension NotificationDetailsViewController {
+extension NotificationDetailsViewController {
 
     /// Presents a WebView at the specified URL
     ///
-    func displaySafariViewController(at url: URL) {
+    fileprivate func displaySafariViewController(at url: URL) {
         let safariViewController = SFSafariViewController(url: url)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
@@ -485,8 +528,8 @@ private extension NotificationDetailsViewController {
 
 // MARK: - Nested Types
 //
-private extension NotificationDetailsViewController {
-    struct Constants {
+extension NotificationDetailsViewController {
+    fileprivate enum Constants {
         static let section = "notifications"
     }
 }

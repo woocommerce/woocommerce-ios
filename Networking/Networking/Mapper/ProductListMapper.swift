@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: Product List
 ///
 struct ProductListMapper: Mapper {
@@ -16,7 +15,7 @@ struct ProductListMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
-            .siteID: siteID
+            .siteID: siteID,
         ]
 
         return try decoder.decode(ProductListEnvelope.self, from: response).products

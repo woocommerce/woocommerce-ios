@@ -1,13 +1,12 @@
 import Foundation
 
-
 /// DateFormatter Extensions
 ///
-public extension DateFormatter {
+extension DateFormatter {
 
     /// Default Formatters
     ///
-    struct Defaults {
+    public enum Defaults {
 
         /// Date And Time Formatter
         ///
@@ -44,7 +43,7 @@ public extension DateFormatter {
 
     /// Stats Formatters
     ///
-    struct Stats {
+    public enum Stats {
 
         /// Date formatter used for creating the properly-formatted date string for **day** granularity. Typically
         /// used when setting the `latestDateToInclude` on `OrderStatsRemote`.

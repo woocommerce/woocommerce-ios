@@ -20,9 +20,11 @@ final class AsyncDictionary<Key, Value> where Key: Hashable {
     ///   - onCompletion: called on main thread after the operation finishes. If the calculated value can be updated for
     ///     key, the value is returned. Otherwise, if the calculated cannot be updated for the key (e.g. the dictionary
     ///     has been cleared or a later operation has been scheduled), nil is returned
-    func calculate(forKey key: Key,
-                   operation: @escaping () -> (Value),
-                   onCompletion: @escaping (Value?) -> ()) {
+    func calculate(
+        forKey key: Key,
+        operation: @escaping () -> (Value),
+        onCompletion: @escaping (Value?) -> Void
+    ) {
         let uuid = UUID()
         operationUUIDsByKey[key] = uuid
         DispatchQueue.global().async {

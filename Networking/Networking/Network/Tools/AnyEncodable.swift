@@ -5,32 +5,30 @@
 //
 import Foundation
 
-/**
- A type-erased `Encodable` value.
- 
- The `AnyEncodable` type forwards encoding responsibilities
- to an underlying value, hiding its specific underlying type.
- 
- You can encode mixed-type values in dictionaries
- and other collections that require `Encodable` conformance
- by declaring their contained type to be `AnyEncodable`:
- 
-     let dictionary: [String: AnyEncodable] = [
-         "boolean": true,
-         "integer": 1,
-         "double": 3.14159265358979323846,
-         "string": "string",
-         "array": [1, 2, 3],
-         "nested": [
-             "a": "alpha",
-             "b": "bravo",
-             "c": "charlie"
-         ]
-     ]
- 
-     let encoder = JSONEncoder()
-     let json = try! encoder.encode(dictionary)
- */
+/// A type-erased `Encodable` value.
+/// 
+/// The `AnyEncodable` type forwards encoding responsibilities
+/// to an underlying value, hiding its specific underlying type.
+/// 
+/// You can encode mixed-type values in dictionaries
+/// and other collections that require `Encodable` conformance
+/// by declaring their contained type to be `AnyEncodable`:
+/// 
+///     let dictionary: [String: AnyEncodable] = [
+///         "boolean": true,
+///         "integer": 1,
+///         "double": 3.14159265358979323846,
+///         "string": "string",
+///         "array": [1, 2, 3],
+///         "nested": [
+///             "a": "alpha",
+///             "b": "bravo",
+///             "c": "charlie"
+///         ]
+///     ]
+/// 
+///     let encoder = JSONEncoder()
+///     let json = try! encoder.encode(dictionary)
 public struct AnyEncodable: Encodable {
     public let value: Any
 
@@ -100,7 +98,7 @@ extension _AnyEncodable {
 }
 
 extension AnyEncodable: Equatable {
-    public static func ==(lhs: AnyEncodable, rhs: AnyEncodable) -> Bool {
+    public static func == (lhs: AnyEncodable, rhs: AnyEncodable) -> Bool {
         switch (lhs.value, rhs.value) {
         case is (Void, Void):
             return true
@@ -167,12 +165,13 @@ extension AnyEncodable: CustomDebugStringConvertible {
 }
 
 extension AnyEncodable: ExpressibleByNilLiteral,
-                        ExpressibleByBooleanLiteral,
-                        ExpressibleByIntegerLiteral,
-                        ExpressibleByFloatLiteral,
-                        ExpressibleByStringLiteral,
-                        ExpressibleByArrayLiteral,
-                        ExpressibleByDictionaryLiteral {}
+    ExpressibleByBooleanLiteral,
+    ExpressibleByIntegerLiteral,
+    ExpressibleByFloatLiteral,
+    ExpressibleByStringLiteral,
+    ExpressibleByArrayLiteral,
+    ExpressibleByDictionaryLiteral
+{}
 
 extension _AnyEncodable {
     public init(nilLiteral: ()) {
@@ -204,6 +203,11 @@ extension _AnyEncodable {
     }
 
     public init(dictionaryLiteral elements: (AnyHashable, Any)...) {
-        self.init(Dictionary<AnyHashable, Any>(elements, uniquingKeysWith: { (first, _) in first }))
+        self.init(
+            [AnyHashable: Any](
+                elements,
+                uniquingKeysWith: { (first, _) in
+                    first
+                }))
     }
 }

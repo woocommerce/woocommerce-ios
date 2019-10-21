@@ -55,8 +55,7 @@ extension NSDecimalNumber {
 
         // If the receiver value is in-between the lower and upper limits return the value passed in, otherwise
         // send back the friendly (large) number
-        if self.compare(Constants.upperSmallNumberLimit) == .orderedAscending &&
-            self.compare(Constants.lowerSmallNumberLimit) == .orderedDescending {
+        if self.compare(Constants.upperSmallNumberLimit) == .orderedAscending && self.compare(Constants.lowerSmallNumberLimit) == .orderedDescending {
             return self.stringValue
         } else {
             return self.doubleValue.humanReadableString()
@@ -67,9 +66,9 @@ extension NSDecimalNumber {
 
 // MARK: - Constants!
 //
-private extension NSDecimalNumber {
+extension NSDecimalNumber {
 
-    enum Constants {
+    fileprivate enum Constants {
         static let upperSmallNumberLimit = NSDecimalNumber(string: "1000.0")
         static let lowerSmallNumberLimit = NSDecimalNumber(string: "-1000.0")
     }

@@ -1,6 +1,5 @@
 import UIKit
 
-
 // MARK: - OrderNoteHeaderTableViewCell
 //
 final class OrderNoteHeaderTableViewCell: UITableViewCell {
@@ -28,11 +27,11 @@ final class OrderNoteHeaderTableViewCell: UITableViewCell {
 
 // MARK: - Private Methods
 //
-private extension OrderNoteHeaderTableViewCell {
+extension OrderNoteHeaderTableViewCell {
 
     /// Setup: Labels
     ///
-    func configureLabels() {
+    fileprivate func configureLabels() {
         dateLabel.applyHeadlineStyle()
     }
 }

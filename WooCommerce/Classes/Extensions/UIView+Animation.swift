@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// UIView animation helpers
 ///
 extension UIView {
@@ -16,10 +15,12 @@ extension UIView {
     func fadeIn(duration: TimeInterval = 0.5, delay: TimeInterval = 0.0, completion: ((Bool) -> Void)? = nil) {
         self.alpha = 0.0
 
-        UIView.animate(withDuration: duration, delay: delay, options: .curveEaseIn, animations: {
-            self.isHidden = false
-            self.alpha = 1.0
-        }, completion: completion)
+        UIView.animate(
+            withDuration: duration, delay: delay, options: .curveEaseIn,
+            animations: {
+                self.isHidden = false
+                self.alpha = 1.0
+            }, completion: completion)
     }
 
 
@@ -33,9 +34,12 @@ extension UIView {
     func fadeOut(duration: TimeInterval = 0.5, delay: TimeInterval = 0.0, completion: ((Bool) -> Void)? = nil) {
         self.alpha = 1.0
 
-        UIView.animate(withDuration: duration, delay: delay, options: .curveEaseIn, animations: {
-            self.alpha = 0.0
-        }) { finished in
+        UIView.animate(
+            withDuration: duration, delay: delay, options: .curveEaseIn,
+            animations: {
+                self.alpha = 0.0
+            }
+        ) { finished in
             self.isHidden = true
             completion?(finished)
         }

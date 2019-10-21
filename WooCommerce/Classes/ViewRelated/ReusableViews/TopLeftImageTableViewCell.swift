@@ -19,19 +19,19 @@ class TopLeftImageTableViewCell: UITableViewCell {
 }
 
 
-private extension TopLeftImageTableViewCell {
-    func configureBackground() {
+extension TopLeftImageTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureTextLabel() {
+    fileprivate func configureTextLabel() {
         textLabel?.applyBodyStyle()
         textLabel?.numberOfLines = 0
     }
 }
 
 extension TopLeftImageTableViewCell {
-    struct Constants {
+    enum Constants {
         static let iconW = CGFloat(24)
         static let iconH = CGFloat(24)
         static let iconY = CGFloat(11)

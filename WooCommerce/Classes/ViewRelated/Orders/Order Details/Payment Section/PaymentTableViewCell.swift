@@ -55,31 +55,39 @@ final class PaymentTableViewCell: UITableViewCell {
         totalLabel.text = Titles.totalLabel
         totalValue.text = viewModel.totalValue
 
-        accessibilityElements = [subtotalLabel as Any,
-                                 subtotalValue as Any,
-                                 discountLabel as Any,
-                                 discountValue as Any,
-                                 shippingLabel as Any,
-                                 shippingValue as Any,
-                                 taxesLabel as Any,
-                                 taxesValue as Any,
-                                 totalLabel as Any,
-                                 totalValue as Any
-                                ]
+        accessibilityElements = [
+            subtotalLabel as Any,
+            subtotalValue as Any,
+            discountLabel as Any,
+            discountValue as Any,
+            shippingLabel as Any,
+            shippingValue as Any,
+            taxesLabel as Any,
+            taxesValue as Any,
+            totalLabel as Any,
+            totalValue as Any,
+        ]
     }
 }
 
 
-private extension PaymentTableViewCell {
-    enum Titles {
-        static let subtotalLabel = NSLocalizedString("Product Total",
-                                                     comment: "Product Total label for payment view")
-        static let shippingLabel = NSLocalizedString("Shipping",
-                                                     comment: "Shipping label for payment view")
-        static let taxesLabel = NSLocalizedString("Taxes",
-                                                  comment: "Taxes label for payment view")
-        static let totalLabel = NSLocalizedString("Order Total",
-                                                  comment: "Order Total label for payment view")
+extension PaymentTableViewCell {
+    fileprivate enum Titles {
+        static let subtotalLabel = NSLocalizedString(
+            "Product Total",
+            comment: "Product Total label for payment view")
+
+        static let shippingLabel = NSLocalizedString(
+            "Shipping",
+            comment: "Shipping label for payment view")
+
+        static let taxesLabel = NSLocalizedString(
+            "Taxes",
+            comment: "Taxes label for payment view")
+
+        static let totalLabel = NSLocalizedString(
+            "Order Total",
+            comment: "Order Total label for payment view")
     }
 }
 

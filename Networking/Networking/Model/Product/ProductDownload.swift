@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a ProductDownload entity.
 ///
 public struct ProductDownload: Decodable {
@@ -10,9 +9,11 @@ public struct ProductDownload: Decodable {
 
     /// ProductDownload initializer.
     ///
-    public init(downloadID: String,
-                name: String?,
-                fileURL: String?) {
+    public init(
+        downloadID: String,
+        name: String?,
+        fileURL: String?
+    ) {
         self.downloadID = downloadID
         self.name = name
         self.fileURL = fileURL
@@ -27,20 +28,21 @@ public struct ProductDownload: Decodable {
         let name = try container.decodeIfPresent(String.self, forKey: .name)
         let fileURL = try container.decodeIfPresent(String.self, forKey: .fileURL)
 
-        self.init(downloadID: downloadID,
-                  name: name,
-                  fileURL: fileURL)
+        self.init(
+            downloadID: downloadID,
+            name: name,
+            fileURL: fileURL)
     }
 }
 
 
 /// Defines all the ProductDownload CodingKeys.
 ///
-private extension ProductDownload {
-    enum CodingKeys: String, CodingKey {
+extension ProductDownload {
+    fileprivate enum CodingKeys: String, CodingKey {
         case downloadID = "id"
-        case name       = "name"
-        case fileURL    = "file"
+        case name = "name"
+        case fileURL = "file"
     }
 }
 
@@ -49,9 +51,7 @@ private extension ProductDownload {
 //
 extension ProductDownload: Comparable {
     public static func == (lhs: ProductDownload, rhs: ProductDownload) -> Bool {
-        return lhs.downloadID == rhs.downloadID &&
-            lhs.name == rhs.name &&
-            lhs.fileURL == rhs.fileURL
+        return lhs.downloadID == rhs.downloadID && lhs.name == rhs.name && lhs.fileURL == rhs.fileURL
     }
 
     public static func < (lhs: ProductDownload, rhs: ProductDownload) -> Bool {

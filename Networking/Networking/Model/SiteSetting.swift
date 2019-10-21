@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a specific setting entity for a specific site.
 ///
 public struct SiteSetting: Decodable {
@@ -60,13 +59,13 @@ public struct SiteSetting: Decodable {
 
 /// Defines all of the SiteSetting CodingKeys.
 ///
-private extension SiteSetting {
+extension SiteSetting {
 
-    enum CodingKeys: String, CodingKey {
-        case settingID          = "id"
-        case label              = "label"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case settingID = "id"
+        case label = "label"
         case settingDescription = "description"
-        case value              = "value"
+        case value = "value"
     }
 }
 
@@ -75,22 +74,17 @@ private extension SiteSetting {
 //
 extension SiteSetting: Comparable {
     public static func == (lhs: SiteSetting, rhs: SiteSetting) -> Bool {
-        return lhs.settingID == rhs.settingID &&
-            lhs.label == rhs.label &&
-            lhs.settingDescription == rhs.settingDescription &&
-            lhs.value == rhs.value &&
-            lhs.settingGroupKey == rhs.settingGroupKey
+        return lhs.settingID == rhs.settingID && lhs.label == rhs.label && lhs.settingDescription == rhs.settingDescription && lhs.value == rhs.value && lhs
+            .settingGroupKey == rhs.settingGroupKey
 
     }
 
     public static func < (lhs: SiteSetting, rhs: SiteSetting) -> Bool {
-        return lhs.settingID < rhs.settingID ||
-            (lhs.settingID == rhs.settingID && lhs.label < rhs.label)
+        return lhs.settingID < rhs.settingID || (lhs.settingID == rhs.settingID && lhs.label < rhs.label)
     }
 
     public static func > (lhs: SiteSetting, rhs: SiteSetting) -> Bool {
-        return lhs.settingID > rhs.settingID ||
-            (lhs.settingID == rhs.settingID && lhs.label > rhs.label)
+        return lhs.settingID > rhs.settingID || (lhs.settingID == rhs.settingID && lhs.label > rhs.label)
     }
 }
 

@@ -1,7 +1,7 @@
-import XCTest
 import CoreData
-@testable import Storage
+import XCTest
 
+@testable import Storage
 
 /// CoreDataManager Unit Tests
 ///

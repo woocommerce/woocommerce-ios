@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// ProductReviewsRemoteTests
 ///
@@ -106,12 +106,14 @@ final class ProductReviewsRemoteTests: XCTestCase {
         let newStatusKey = "hold"
 
         network.simulateResponse(requestUrlSuffix: "products/reviews/\(sampleReviewID)", filename: "reviews-single")
-        remote.updateProductReviewStatus(for: sampleSiteID,
-                                         reviewID: sampleReviewID,
-                                         statusKey: newStatusKey) { review, error in
-                                            XCTAssertNil(error)
-                                            XCTAssertNotNil(review)
-                                            expectation.fulfill()
+        remote.updateProductReviewStatus(
+            for: sampleSiteID,
+            reviewID: sampleReviewID,
+            statusKey: newStatusKey
+        ) { review, error in
+            XCTAssertNil(error)
+            XCTAssertNotNil(review)
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -125,12 +127,14 @@ final class ProductReviewsRemoteTests: XCTestCase {
 
         let newStatusKey = "hold"
 
-        remote.updateProductReviewStatus(for: sampleSiteID,
-                                         reviewID: sampleReviewID,
-                                         statusKey: newStatusKey) { review, error in
-                                            XCTAssertNil(review)
-                                            XCTAssertNotNil(error)
-                                            expectation.fulfill()
+        remote.updateProductReviewStatus(
+            for: sampleSiteID,
+            reviewID: sampleReviewID,
+            statusKey: newStatusKey
+        ) { review, error in
+            XCTAssertNil(review)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)

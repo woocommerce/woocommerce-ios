@@ -1,14 +1,14 @@
 import Foundation
 
-
 /// Represents a decoded Refund entity.
 ///
 public struct Refund: Codable {
     public let refundID: Int
     public let orderID: Int
     public let siteID: Int
-    public let dateCreated: Date // gmt
+    public let dateCreated: Date  // gmt
     public let amount: String
+
     public let reason: String
     public let refundedByUserID: Int
 
@@ -26,16 +26,18 @@ public struct Refund: Codable {
 
     /// Refund struct initializer
     ///
-    public init(refundID: Int,
-                orderID: Int,
-                siteID: Int,
-                dateCreated: Date,
-                amount: String,
-                reason: String,
-                refundedByUserID: Int,
-                isAutomated: Bool?,
-                createAutomated: Bool?,
-                items: [OrderItemRefund]) {
+    public init(
+        refundID: Int,
+        orderID: Int,
+        siteID: Int,
+        dateCreated: Date,
+        amount: String,
+        reason: String,
+        refundedByUserID: Int,
+        isAutomated: Bool?,
+        createAutomated: Bool?,
+        items: [OrderItemRefund]
+    ) {
         self.refundID = refundID
         self.orderID = orderID
         self.siteID = siteID
@@ -69,16 +71,17 @@ public struct Refund: Codable {
         let isAutomated = try container.decode(Bool.self, forKey: .automatedRefund)
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
 
-        self.init(refundID: refundID,
-                  orderID: orderID,
-                  siteID: siteID,
-                  dateCreated: dateCreated,
-                  amount: amount,
-                  reason: reason,
-                  refundedByUserID: refundedByUserID,
-                  isAutomated: isAutomated,
-                  createAutomated: nil,
-                  items: items)
+        self.init(
+            refundID: refundID,
+            orderID: orderID,
+            siteID: siteID,
+            dateCreated: dateCreated,
+            amount: amount,
+            reason: reason,
+            refundedByUserID: refundedByUserID,
+            isAutomated: isAutomated,
+            createAutomated: nil,
+            items: items)
     }
 
     // The public initializer for an encodable Refund
@@ -100,26 +103,26 @@ public struct Refund: Codable {
 
 /// Defines all of the Refund CodingKeys
 ///
-private extension Refund {
+extension Refund {
 
-    enum DecodingKeys: String, CodingKey {
-        case refundID               = "id"
-        case dateCreated            = "date_created_gmt"
+    fileprivate enum DecodingKeys: String, CodingKey {
+        case refundID = "id"
+        case dateCreated = "date_created_gmt"
         case amount
         case reason
-        case refundedByUserID       = "refunded_by"
-        case automatedRefund        = "refunded_payment"    // read-only
-        case items                  = "line_items"
+        case refundedByUserID = "refunded_by"
+        case automatedRefund = "refunded_payment"  // read-only
+        case items = "line_items"
     }
 
-    enum EncodingKeys: String, CodingKey {
-        case refundID               = "id"
-        case dateCreated            = "date_created_gmt"
+    fileprivate enum EncodingKeys: String, CodingKey {
+        case refundID = "id"
+        case dateCreated = "date_created_gmt"
         case amount
         case reason
-        case refundedByUserID       = "refunded_by"
-        case createAutomatedRefund  = "api_refund"          // write-only
-        case items                  = "line_items"
+        case refundedByUserID = "refunded_by"
+        case createAutomatedRefund = "api_refund"  // write-only
+        case items = "line_items"
     }
 }
 
@@ -128,33 +131,21 @@ private extension Refund {
 //
 extension Refund: Comparable {
     public static func == (lhs: Refund, rhs: Refund) -> Bool {
-        return lhs.refundID == rhs.refundID &&
-            lhs.orderID == rhs.orderID &&
-            lhs.siteID == rhs.siteID &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.amount == rhs.amount &&
-            lhs.reason == rhs.reason &&
-            lhs.refundedByUserID == rhs.refundedByUserID &&
-            lhs.isAutomated == rhs.isAutomated &&
-            lhs.items.sorted() == rhs.items.sorted()
+        return lhs.refundID == rhs.refundID && lhs.orderID == rhs.orderID && lhs.siteID == rhs.siteID && lhs.dateCreated == rhs.dateCreated && lhs.amount == rhs
+            .amount && lhs.reason == rhs.reason && lhs.refundedByUserID == rhs.refundedByUserID && lhs.isAutomated == rhs.isAutomated && lhs.items.sorted()
+            == rhs.items.sorted()
     }
 
     public static func < (lhs: Refund, rhs: Refund) -> Bool {
-        return lhs.orderID == rhs.orderID ||
-            (lhs.orderID == rhs.orderID && lhs.refundID < rhs.refundID) ||
-            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
-                lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
-                lhs.dateCreated == rhs.dateCreated  &&
-                lhs.amount < rhs.amount) ||
-            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
-                lhs.dateCreated == rhs.dateCreated  &&
-                lhs.amount == rhs.amount &&
-                rhs.items.count < rhs.items.count) ||
-            (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.amount == rhs.amount &&
-                rhs.items.count == rhs.items.count)
+        return lhs.orderID == rhs.orderID || (lhs.orderID == rhs.orderID && lhs.refundID < rhs.refundID) || (
+            lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID && lhs.dateCreated < rhs.dateCreated
+        ) || (lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID && lhs.dateCreated == rhs.dateCreated && lhs.amount < rhs.amount) || (
+            lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID && lhs.dateCreated == rhs.dateCreated && lhs.amount == rhs.amount && rhs.items.count
+                < rhs.items.count
+        ) || (
+            lhs.orderID == rhs.orderID && lhs.refundID == rhs.refundID && lhs.dateCreated == rhs.dateCreated && lhs.amount == rhs.amount && rhs.items.count
+                == rhs.items.count
+        )
     }
 }
 

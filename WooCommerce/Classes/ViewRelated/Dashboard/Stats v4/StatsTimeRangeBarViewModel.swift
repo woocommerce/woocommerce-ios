@@ -1,7 +1,7 @@
 import Yosemite
 
-private extension StatsTimeRangeV4 {
-    func timeRangeText(startDate: Date, endDate: Date, selectedDate: Date, timezone: TimeZone) -> String {
+extension StatsTimeRangeV4 {
+    fileprivate func timeRangeText(startDate: Date, endDate: Date, selectedDate: Date, timezone: TimeZone) -> String {
         let selectedDateString = timeRangeSelectedDateFormatter(timezone: timezone).string(from: selectedDate)
         switch self {
         case .today, .thisYear:
@@ -13,7 +13,7 @@ private extension StatsTimeRangeV4 {
         }
     }
 
-    func timeRangeText(startDate: Date, endDate: Date, timezone: TimeZone) -> String {
+    fileprivate func timeRangeText(startDate: Date, endDate: Date, timezone: TimeZone) -> String {
         let dateFormatter = timeRangeDateFormatter(timezone: timezone)
         switch self {
         case .today, .thisMonth, .thisYear:
@@ -26,7 +26,7 @@ private extension StatsTimeRangeV4 {
         }
     }
 
-    func timeRangeDateFormatter(timezone: TimeZone) -> DateFormatter {
+    fileprivate func timeRangeDateFormatter(timezone: TimeZone) -> DateFormatter {
         let dateFormatter: DateFormatter
         switch self {
         case .today:
@@ -45,7 +45,7 @@ private extension StatsTimeRangeV4 {
     }
 
     /// Date formatter for a selected date for a time range.
-    func timeRangeSelectedDateFormatter(timezone: TimeZone) -> DateFormatter {
+    fileprivate func timeRangeSelectedDateFormatter(timezone: TimeZone) -> DateFormatter {
         let dateFormatter: DateFormatter
         switch self {
         case .today:
@@ -64,23 +64,29 @@ private extension StatsTimeRangeV4 {
 struct StatsTimeRangeBarViewModel {
     let timeRangeText: String
 
-    init(startDate: Date,
-         endDate: Date,
-         timeRange: StatsTimeRangeV4,
-         timezone: TimeZone) {
-        timeRangeText = timeRange.timeRangeText(startDate: startDate,
-                                                endDate: endDate,
-                                                timezone: timezone)
+    init(
+        startDate: Date,
+        endDate: Date,
+        timeRange: StatsTimeRangeV4,
+        timezone: TimeZone
+    ) {
+        timeRangeText = timeRange.timeRangeText(
+            startDate: startDate,
+            endDate: endDate,
+            timezone: timezone)
     }
 
-    init(startDate: Date,
-         endDate: Date,
-         selectedDate: Date,
-         timeRange: StatsTimeRangeV4,
-         timezone: TimeZone) {
-        timeRangeText = timeRange.timeRangeText(startDate: startDate,
-                                                endDate: endDate,
-                                                selectedDate: selectedDate,
-                                                timezone: timezone)
+    init(
+        startDate: Date,
+        endDate: Date,
+        selectedDate: Date,
+        timeRange: StatsTimeRangeV4,
+        timezone: TimeZone
+    ) {
+        timeRangeText = timeRange.timeRangeText(
+            startDate: startDate,
+            endDate: endDate,
+            selectedDate: selectedDate,
+            timezone: timezone)
     }
 }

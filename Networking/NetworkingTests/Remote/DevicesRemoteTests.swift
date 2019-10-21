@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// DevicesRemote Unit Tests
 ///
@@ -25,10 +25,12 @@ class DevicesRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "devices/new", filename: "device-settings")
 
-        remote.registerDevice(device: Parameters.appleDevice,
-                              applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
+        remote.registerDevice(
+            device: Parameters.appleDevice,
+            applicationId: Parameters.applicationId,
+            applicationVersion: Parameters.applicationVersion,
+            defaultStoreID: Parameters.defaultStoreID
+        ) { (settings, error) in
 
             XCTAssertNil(error)
             XCTAssertNotNil(settings)
@@ -47,10 +49,12 @@ class DevicesRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "devices/new", filename: "generic_error")
 
-        remote.registerDevice(device: Parameters.appleDevice,
-                              applicationId: Parameters.applicationId,
-                              applicationVersion: Parameters.applicationVersion,
-                              defaultStoreID: Parameters.defaultStoreID) { (settings, error) in
+        remote.registerDevice(
+            device: Parameters.appleDevice,
+            applicationId: Parameters.applicationId,
+            applicationVersion: Parameters.applicationVersion,
+            defaultStoreID: Parameters.defaultStoreID
+        ) { (settings, error) in
 
             XCTAssertNotNil(error)
             XCTAssertNil(settings)
@@ -97,11 +101,13 @@ class DevicesRemoteTests: XCTestCase {
 // MARK: - Sample Device Parameters
 //
 private enum Parameters {
-    static let appleDevice = APNSDevice(token: "12345678123456781234567812345678",
-                                        model: "iPhone99,1",
-                                        name: "iPhone XX",
-                                        iOSVersion: "iOS 45.1",
-                                        identifierForVendor: "1234")
+    static let appleDevice = APNSDevice(
+        token: "12345678123456781234567812345678",
+        model: "iPhone99,1",
+        name: "iPhone XX",
+        iOSVersion: "iOS 45.1",
+        identifierForVendor: "1234")
+
     static let applicationId = "9"
     static let applicationVersion = "99"
     static let defaultStoreID = 1234

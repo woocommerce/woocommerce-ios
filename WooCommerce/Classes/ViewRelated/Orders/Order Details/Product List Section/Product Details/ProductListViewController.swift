@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 
-
 class ProductListViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
     private var items = [OrderItem]()
@@ -23,11 +22,11 @@ class ProductListViewController: UIViewController {
 
 // MARK: - Configuration
 //
-private extension ProductListViewController {
+extension ProductListViewController {
 
     /// Setup: Main View
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         title = NSLocalizedString("Details Order #\(viewModel.order.number)", comment: "Screen title: Details Order number (number)")
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
@@ -37,7 +36,7 @@ private extension ProductListViewController {
 
     /// Setup: TableView
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
@@ -68,9 +67,10 @@ extension ProductListViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
         let product = lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemViewModel(item: item,
-                                               currency: viewModel.order.currency,
-                                               product: product)
+        let itemViewModel = OrderItemViewModel(
+            item: item,
+            currency: viewModel.order.currency,
+            product: product)
         let cellID = PickListTableViewCell.reuseIdentifier
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? PickListTableViewCell else {
             fatalError()
@@ -110,22 +110,23 @@ extension ProductListViewController: UITableViewDelegate {
 
 // MARK: - Private Helpers
 //
-private extension ProductListViewController {
+extension ProductListViewController {
 
-    func itemAtIndexPath(_ indexPath: IndexPath) -> OrderItem {
+    fileprivate func itemAtIndexPath(_ indexPath: IndexPath) -> OrderItem {
         return items[indexPath.row]
     }
 
-    func lookUpProduct(by productID: Int) -> Product? {
+    fileprivate func lookUpProduct(by productID: Int) -> Product? {
         return products?.filter({ $0.productID == productID }).first
     }
 
     /// Displays the product detail screen for the provided ProductID
     ///
-    func productWasPressed(for productID: Int) {
-        let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: viewModel.order.siteID,
-                                                               currency: viewModel.order.currency)
+    fileprivate func productWasPressed(for productID: Int) {
+        let loaderViewController = ProductLoaderViewController(
+            productID: productID,
+            siteID: viewModel.order.siteID,
+            currency: viewModel.order.currency)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }
@@ -134,9 +135,9 @@ private extension ProductListViewController {
 
 // MARK: - Constants!
 //
-private extension ProductListViewController {
+extension ProductListViewController {
 
-    struct Constants {
+    fileprivate enum Constants {
         static let sectionHeight = CGFloat(44)
         static let rowHeight = CGFloat(80)
     }

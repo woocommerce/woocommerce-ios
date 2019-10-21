@@ -1,5 +1,5 @@
-import Foundation
 import AutomatticTracks
+import Foundation
 import Yosemite
 
 class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
@@ -41,7 +41,7 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
     }
 }
 
-struct CrashLoggingSettings {
+enum CrashLoggingSettings {
     static var didOptIn: Bool {
         get {
             return UserDefaults.standard.object(forKey: .userOptedInCrashLogging) ?? false
@@ -49,8 +49,7 @@ struct CrashLoggingSettings {
         set {
             if newValue {
                 DDLogInfo("🔵 Crash Logging reporting restored.")
-            }
-            else {
+            } else {
                 DDLogInfo("🔴 Crash Logging opt-out complete.")
             }
 

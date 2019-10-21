@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// NSParagraphStyle: Helper Methods
 ///
 extension NSParagraphStyle {

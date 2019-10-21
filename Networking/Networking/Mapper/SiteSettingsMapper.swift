@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: SiteSettings
 ///
 struct SiteSettingsMapper: Mapper {
@@ -23,7 +22,7 @@ struct SiteSettingsMapper: Mapper {
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
             .siteID: siteID,
-            .settingGroupKey: settingsGroup.rawValue
+            .settingGroupKey: settingsGroup.rawValue,
         ]
 
         return try decoder.decode(SiteSettingsEnvelope.self, from: response).settings

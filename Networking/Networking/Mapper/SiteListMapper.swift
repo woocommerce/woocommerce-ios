@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: SiteList
 ///
 class SiteListMapper: Mapper {

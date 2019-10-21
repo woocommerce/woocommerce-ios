@@ -1,10 +1,9 @@
-import UIKit
 import Gridicons
-import Yosemite
-import WordPressUI
 import SafariServices
 import StoreKit
-
+import UIKit
+import WordPressUI
+import Yosemite
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
 ///
@@ -150,11 +149,11 @@ class OrdersViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-private extension OrdersViewController {
+extension OrdersViewController {
 
     /// Setup: Title
     ///
-    func refreshTitle() {
+    fileprivate func refreshTitle() {
         guard let filterName = statusFilter?.name else {
             navigationItem.title = NSLocalizedString(
                 "Orders",
@@ -175,12 +174,12 @@ private extension OrdersViewController {
 
     /// Setup: Order filtering
     ///
-    func refreshResultsPredicate() {
+    fileprivate func refreshResultsPredicate() {
         resultsController.predicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = statusFilter.map { NSPredicate(format: "statusKey = %@", $0.slug) }
 
-            var predicates = [ excludeSearchCache, excludeNonMatchingStatus ].compactMap { $0 }
+            var predicates = [excludeSearchCache, excludeNonMatchingStatus].compactMap { $0 }
             if let tomorrow = Date.tomorrow() {
                 let dateSubPredicate = NSPredicate(format: "dateCreated < %@", tomorrow as NSDate)
                 predicates.append(dateSubPredicate)
@@ -195,15 +194,16 @@ private extension OrdersViewController {
 
     /// Setup: Order status predicate
     ///
-    func refreshStatusPredicate() {
+    fileprivate func refreshStatusPredicate() {
         // Bugfix for https://github.com/woocommerce/woocommerce-ios/issues/751.
         // Because we are listening for default account changes,
         // this will also fire upon logging out, when the account
         // is set to nil. So let's protect against multi-threaded
         // access attempts if the account is indeed nil.
         guard ServiceLocator.stores.isAuthenticated,
-            ServiceLocator.stores.needsDefaultStore == false else {
-                return
+            ServiceLocator.stores.needsDefaultStore == false
+        else {
+            return
         }
 
         statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
@@ -211,12 +211,13 @@ private extension OrdersViewController {
 
     /// Setup: Navigation Item
     ///
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         navigationItem.leftBarButtonItem = {
-            let button = UIBarButtonItem(image: .searchImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(displaySearchOrders))
+            let button = UIBarButtonItem(
+                image: .searchImage,
+                style: .plain,
+                target: self,
+                action: #selector(displaySearchOrders))
             button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
@@ -229,10 +230,11 @@ private extension OrdersViewController {
         }()
 
         navigationItem.rightBarButtonItem = {
-            let button = UIBarButtonItem(image: .filterImage,
-                                                 style: .plain,
-                                                 target: self,
-                                                 action: #selector(displayFiltersAlert))
+            let button = UIBarButtonItem(
+                image: .filterImage,
+                style: .plain,
+                target: self,
+                action: #selector(displayFiltersAlert))
             button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
@@ -250,7 +252,7 @@ private extension OrdersViewController {
 
     /// Setup: Results Controller
     ///
-    func configureResultsControllers() {
+    fileprivate func configureResultsControllers() {
         // Orders FRC
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
@@ -261,20 +263,20 @@ private extension OrdersViewController {
 
     /// Setup: Sync'ing Coordinator
     ///
-    func configureSyncingCoordinator() {
+    fileprivate func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
     }
 
     /// Setup: TabBar Item
     ///
-    func configureTabBarItem() {
+    fileprivate func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
         tabBarItem.image = .pagesImage
     }
 
     /// Setup: TableView
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
@@ -283,8 +285,8 @@ private extension OrdersViewController {
 
     /// Registers all of the available TableViewCells
     ///
-    func registerTableViewCells() {
-        let cells = [ OrderTableViewCell.self ]
+    fileprivate func registerTableViewCells() {
+        let cells = [OrderTableViewCell.self]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
@@ -332,9 +334,10 @@ extension OrdersViewController {
 
         ServiceLocator.analytics.track(.ordersListSearchTapped)
 
-        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
-                                                                                                  command: OrderSearchUICommand(),
-                                                                                                  cellType: OrderTableViewCell.self)
+        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(
+            storeID: storeID,
+            command: OrderSearchUICommand(),
+            cellType: OrderTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
@@ -375,14 +378,18 @@ extension OrdersViewController {
 
 // MARK: - Filters
 //
-private extension OrdersViewController {
+extension OrdersViewController {
 
-    func didChangeFilter(newFilter: OrderStatus?) {
-        ServiceLocator.analytics.track(.filterOrdersOptionSelected,
-                                  withProperties: ["status": newFilter?.slug ?? String()])
-        ServiceLocator.analytics.track(.ordersListFilterOrSearch,
-                                  withProperties: ["filter": newFilter?.slug ?? String(),
-                                                   "search": ""])
+    fileprivate func didChangeFilter(newFilter: OrderStatus?) {
+        ServiceLocator.analytics.track(
+            .filterOrdersOptionSelected,
+            withProperties: ["status": newFilter?.slug ?? String()])
+        ServiceLocator.analytics.track(
+            .ordersListFilterOrSearch,
+            withProperties: [
+                "filter": newFilter?.slug ?? String(),
+                "search": "",
+            ])
         // Display the Filter in the Title
         refreshTitle()
 
@@ -399,7 +406,7 @@ private extension OrdersViewController {
     /// We're dropping the entire Orders Cache whenever a filter was just removed. This is performed to avoid
     /// "interleaved Sync'ed Objects", which results in an awful UX while scrolling down
     ///
-    func ensureStoredOrdersAreReset(onCompletion: @escaping () -> Void) {
+    fileprivate func ensureStoredOrdersAreReset(onCompletion: @escaping () -> Void) {
         guard isFiltered == false else {
             onCompletion()
             return
@@ -412,7 +419,7 @@ private extension OrdersViewController {
     /// Reset the current status filter if needed (e.g. when changing stores and the currently
     /// selected filter does not exist in the new store)
     ///
-    func resetStatusFilterIfNeeded() {
+    fileprivate func resetStatusFilterIfNeeded() {
         guard let statusFilter = statusFilter else {
             // "All" is the current filter so bail
             return
@@ -443,10 +450,12 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID,
-                                                   statusKey: statusFilter?.slug,
-                                                   pageNumber: pageNumber,
-                                                   pageSize: pageSize) { [weak self] error in
+        let action = OrderAction.synchronizeOrders(
+            siteID: siteID,
+            statusKey: statusFilter?.slug,
+            pageNumber: pageNumber,
+            pageSize: pageSize
+        ) { [weak self] error in
             guard let `self` = self else {
                 return
             }
@@ -521,11 +530,11 @@ extension OrdersViewController {
 
 // MARK: - Placeholders
 //
-private extension OrdersViewController {
+extension OrdersViewController {
 
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
-    func displayPlaceholderOrders() {
+    fileprivate func displayPlaceholderOrders() {
         let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
@@ -534,7 +543,7 @@ private extension OrdersViewController {
 
     /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
     ///
-    func removePlaceholderOrders() {
+    fileprivate func removePlaceholderOrders() {
         tableView.removeGhostContent()
         resultsController.startForwardingEvents(to: self.tableView)
         tableView.reloadData()
@@ -542,7 +551,7 @@ private extension OrdersViewController {
 
     /// Displays the Error Notice.
     ///
-    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
+    fileprivate func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
@@ -555,7 +564,7 @@ private extension OrdersViewController {
 
     /// Displays the Empty State Overlay.
     ///
-    func displayEmptyUnfilteredOverlay() {
+    fileprivate func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("Waiting for Customers", comment: "Orders List (Empty State / No Filters)")
@@ -580,7 +589,7 @@ private extension OrdersViewController {
 
     /// Displays the Empty State (with filters applied!) Overlay.
     ///
-    func displayEmptyFilteredOverlay() {
+    fileprivate func displayEmptyFilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
@@ -594,7 +603,7 @@ private extension OrdersViewController {
 
     /// Removes all of the the OverlayMessageView instances in the view hierarchy.
     ///
-    func removeAllOverlays() {
+    fileprivate func removeAllOverlays() {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
@@ -604,15 +613,15 @@ private extension OrdersViewController {
 
 // MARK: - Convenience Methods
 //
-private extension OrdersViewController {
+extension OrdersViewController {
 
-    func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
+    fileprivate func detailsViewModel(at indexPath: IndexPath) -> OrderDetailsViewModel {
         let order = resultsController.object(at: indexPath)
 
         return OrderDetailsViewModel(order: order)
     }
 
-    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+    fileprivate func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         for orderStatus in currentSiteStatuses where orderStatus.slug == order.statusKey {
             return orderStatus
         }
@@ -706,8 +715,12 @@ extension OrdersViewController {
             return
         }
 
-        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
-                                                               "status": viewModel.order.statusKey])
+        ServiceLocator.analytics.track(
+            .orderOpen,
+            withProperties: [
+                "id": viewModel.order.orderID,
+                "status": viewModel.order.statusKey,
+            ])
         singleOrderViewController.viewModel = viewModel
     }
 }
@@ -715,9 +728,9 @@ extension OrdersViewController {
 
 // MARK: - Finite State Machine Management
 //
-private extension OrdersViewController {
+extension OrdersViewController {
 
-    func didEnter(state: State) {
+    fileprivate func didEnter(state: State) {
         switch state {
         case .emptyUnfiltered:
             displayEmptyUnfilteredOverlay()
@@ -732,7 +745,7 @@ private extension OrdersViewController {
         }
     }
 
-    func didLeave(state: State) {
+    fileprivate func didLeave(state: State) {
         switch state {
         case .emptyFiltered:
             removeAllOverlays()
@@ -750,14 +763,14 @@ private extension OrdersViewController {
     /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
     /// we've got cached results, or not.
     ///
-    func transitionToSyncingState() {
+    fileprivate func transitionToSyncingState() {
         state = isEmpty ? .placeholder : .syncing
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
-    func transitionToResultsUpdatedState() {
+    fileprivate func transitionToResultsUpdatedState() {
         if isEmpty == false {
             state = .results
             return
@@ -775,27 +788,28 @@ private extension OrdersViewController {
 
 // MARK: - Nested Types
 //
-private extension OrdersViewController {
+extension OrdersViewController {
 
-    enum FilterAction {
+    fileprivate enum FilterAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
+
         static let displayAll = NSLocalizedString(
             "All",
             comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
         )
     }
 
-    enum Settings {
+    fileprivate enum Settings {
         static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
     }
 
-    enum Segues {
+    fileprivate enum Segues {
         static let orderDetails = "ShowOrderDetailsViewController"
     }
 
-    enum State {
+    fileprivate enum State {
         case placeholder
         case syncing
         case results

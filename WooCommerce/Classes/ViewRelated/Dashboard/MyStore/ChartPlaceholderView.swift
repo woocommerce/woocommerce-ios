@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 // ChartPlaceholderView: Charts Mockup UI!
 //
 class ChartPlaceholderView: UIView {
@@ -25,11 +24,11 @@ class ChartPlaceholderView: UIView {
 
 // MARK: - Private Methods
 //
-private extension ChartPlaceholderView {
+extension ChartPlaceholderView {
 
     /// Applies Rounded Style to the upper views.
     ///
-    func setupSubviews() {
+    fileprivate func setupSubviews() {
         let subviews = barsStackView.subviews + topStackView.subviews.compactMap { $0.subviews.first }
         for view in subviews {
             view.layer.cornerRadius = Settings.cornerRadius

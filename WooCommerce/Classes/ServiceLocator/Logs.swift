@@ -1,5 +1,5 @@
-import Foundation
 import CocoaLumberjack
+import Foundation
 
 /// Abstracts the Login engine.
 ///
@@ -8,4 +8,4 @@ protocol Logs {
     var rollingFrequency: TimeInterval { get set }
 }
 
-extension DDFileLogger: Logs { }
+extension DDFileLogger: Logs {}

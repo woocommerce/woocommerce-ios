@@ -1,14 +1,9 @@
 import Foundation
 import UIKit
 
-
 /// WooCommerce User Agent!
 ///
-class UserAgent {
-
-    /// Private: NO-OP
-    ///
-    private init() { }
+enum UserAgent {
 
 
     /// Returns the WooCommerce User Agent
@@ -34,9 +29,9 @@ class UserAgent {
 
 // MARK: - Nested Types
 //
-private extension UserAgent {
+extension UserAgent {
 
-    struct Constants {
+    fileprivate enum Constants {
 
         /// WC UserAgent Prefix
         ///

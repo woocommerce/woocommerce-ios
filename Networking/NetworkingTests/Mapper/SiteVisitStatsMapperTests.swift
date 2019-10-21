@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// SiteVisitStatsMapper Unit Tests
 ///
@@ -39,7 +39,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
         XCTAssertEqual(weekStats.granularity, .week)
         XCTAssertEqual(weekStats.date, "2018-08-06")
         XCTAssertEqual(weekStats.items!.count, 12)
-        XCTAssertEqual(weekStats.totalVisitors, 123123241)
+        XCTAssertEqual(weekStats.totalVisitors, 123_123_241)
 
         let sampleItem1 = weekStats.items![0]
         XCTAssertEqual(sampleItem1.period, "2018W05W21")
@@ -47,7 +47,7 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
         let sampleItem2 = weekStats.items![11]
         XCTAssertEqual(sampleItem2.period, "2018W08W06")
-        XCTAssertEqual(sampleItem2.visitors, 123123123)
+        XCTAssertEqual(sampleItem2.visitors, 123_123_123)
     }
 
     /// Verifies that all of the month unit SiteVisitStats fields are parsed correctly.
@@ -98,11 +98,11 @@ class SiteVisitStatsMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension SiteVisitStatsMapperTests {
+extension SiteVisitStatsMapperTests {
 
     /// Returns the SiteVisitStatsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapSiteVisitStatItems(from filename: String) -> SiteVisitStats? {
+    fileprivate func mapSiteVisitStatItems(from filename: String) -> SiteVisitStats? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
@@ -112,25 +112,25 @@ private extension SiteVisitStatsMapperTests {
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-day`
     ///
-    func mapSiteVisitStatsWithDayUnitResponse() -> SiteVisitStats? {
+    fileprivate func mapSiteVisitStatsWithDayUnitResponse() -> SiteVisitStats? {
         return mapSiteVisitStatItems(from: "site-visits-day")
     }
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-week`
     ///
-    func mapSiteVisitStatsWithWeekUnitResponse() -> SiteVisitStats? {
+    fileprivate func mapSiteVisitStatsWithWeekUnitResponse() -> SiteVisitStats? {
         return mapSiteVisitStatItems(from: "site-visits-week")
     }
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-month`
     ///
-    func mapSiteVisitStatsWithMonthUnitResponse() -> SiteVisitStats? {
+    fileprivate func mapSiteVisitStatsWithMonthUnitResponse() -> SiteVisitStats? {
         return mapSiteVisitStatItems(from: "site-visits-month")
     }
 
     /// Returns the SiteVisitStatsMapper output upon receiving `site-visits-year`
     ///
-    func mapSiteVisitStatsWithYearUnitResponse() -> SiteVisitStats? {
+    fileprivate func mapSiteVisitStatsWithYearUnitResponse() -> SiteVisitStats? {
         return mapSiteVisitStatItems(from: "site-visits-year")
     }
 }

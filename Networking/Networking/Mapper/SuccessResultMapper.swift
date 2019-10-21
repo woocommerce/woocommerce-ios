@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: Success Result
 ///
 struct SuccessResultMapper: Mapper {

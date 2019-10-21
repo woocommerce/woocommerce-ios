@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Order: Remote Endpoints
 ///
@@ -15,16 +14,18 @@ public class OrdersRemote: Remote {
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllOrders(for siteID: Int,
-                              statusKey: String? = nil,
-                              pageNumber: Int = Defaults.pageNumber,
-                              pageSize: Int = Defaults.pageSize,
-                              completion: @escaping ([Order]?, Error?) -> Void) {
+    public func loadAllOrders(
+        for siteID: Int,
+        statusKey: String? = nil,
+        pageNumber: Int = Defaults.pageNumber,
+        pageSize: Int = Defaults.pageSize,
+        completion: @escaping ([Order]?, Error?) -> Void
+    ) {
         let parameters = [
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: statusKey ?? Defaults.statusAny,
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues,
         ]
 
         let path = Constants.ordersPath
@@ -43,7 +44,7 @@ public class OrdersRemote: Remote {
     ///
     public func loadOrder(for siteID: Int, orderID: Int, completion: @escaping (Order?, Error?) -> Void) {
         let parameters = [
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues,
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
@@ -77,17 +78,19 @@ public class OrdersRemote: Remote {
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func searchOrders(for siteID: Int,
-                             keyword: String,
-                             pageNumber: Int = Defaults.pageNumber,
-                             pageSize: Int = Defaults.pageSize,
-                             completion: @escaping ([Order]?, Error?) -> Void) {
+    public func searchOrders(
+        for siteID: Int,
+        keyword: String,
+        pageNumber: Int = Defaults.pageNumber,
+        pageSize: Int = Defaults.pageSize,
+        completion: @escaping ([Order]?, Error?) -> Void
+    ) {
         let parameters = [
             ParameterKeys.keyword: keyword,
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues,
         ]
 
         let path = Constants.ordersPath
@@ -126,9 +129,11 @@ public class OrdersRemote: Remote {
     ///
     public func addOrderNote(for siteID: Int, orderID: Int, isCustomerNote: Bool, with note: String, completion: @escaping (OrderNote?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.notesPath)"
-        let parameters = [ParameterKeys.note: note,
-                          ParameterKeys.customerNote: String(isCustomerNote),
-                          ParameterKeys.addedByUser: String(true)] // This will always be true when creating notes in-app
+        let parameters = [
+            ParameterKeys.note: note,
+            ParameterKeys.customerNote: String(isCustomerNote),
+            ParameterKeys.addedByUser: String(true),
+        ]  // This will always be true when creating notes in-app
         let mapper = OrderNoteMapper()
 
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
@@ -155,32 +160,33 @@ public class OrdersRemote: Remote {
 
 // MARK: - Constants!
 //
-public extension OrdersRemote {
-    enum Defaults {
-        public static let pageSize: Int     = 25
-        public static let pageNumber: Int   = 1
+extension OrdersRemote {
+    public enum Defaults {
+        public static let pageSize: Int = 25
+        public static let pageNumber: Int = 1
         public static let statusAny: String = "any"
     }
 
     private enum Constants {
-        static let ordersPath: String       = "orders"
-        static let notesPath: String        = "notes"
-        static let totalsPath: String       = "reports/orders/totals"
+        static let ordersPath: String = "orders"
+        static let notesPath: String = "notes"
+        static let totalsPath: String = "reports/orders/totals"
     }
 
     private enum ParameterKeys {
-        static let addedByUser: String      = "added_by_user"
-        static let customerNote: String     = "customer_note"
-        static let keyword: String          = "search"
-        static let note: String             = "note"
-        static let page: String             = "page"
-        static let perPage: String          = "per_page"
-        static let statusKey: String        = "status"
-        static let fields: String           = "_fields"
+        static let addedByUser: String = "added_by_user"
+        static let customerNote: String = "customer_note"
+        static let keyword: String = "search"
+        static let note: String = "note"
+        static let page: String = "page"
+        static let perPage: String = "per_page"
+        static let statusKey: String = "status"
+        static let fields: String = "_fields"
     }
 
-    enum ParameterValues {
-        static let fieldValues: String = """
+    public enum ParameterValues {
+        static let fieldValues: String
+            = """
             id,parent_id,number,status,currency,customer_id,customer_note,date_created_gmt,date_modified_gmt,date_paid_gmt,\
             discount_total,discount_tax,shipping_total,shipping_tax,total,total_tax,payment_method_title,line_items,shipping,billing,coupon_lines
             """

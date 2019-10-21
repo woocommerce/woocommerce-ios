@@ -1,7 +1,7 @@
-import Foundation
 import Alamofire
-@testable import Networking
+import Foundation
 
+@testable import Networking
 
 /// Network Mockup: Allows us to simulate HTTP Responses.
 ///

@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a Tax Refund for a specific Order Item.
 ///
 public struct OrderItemTaxRefund: Codable {
@@ -51,10 +50,10 @@ public struct OrderItemTaxRefund: Codable {
 
 /// Defines all of the OrderItemRefund CodingKeys.
 ///
-private extension OrderItemTaxRefund {
+extension OrderItemTaxRefund {
 
-    enum CodingKeys: String, CodingKey {
-        case taxID      = "id"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case taxID = "id"
         case subtotal
         case total
     }
@@ -65,14 +64,12 @@ private extension OrderItemTaxRefund {
 //
 extension OrderItemTaxRefund: Comparable {
     public static func == (lhs: OrderItemTaxRefund, rhs: OrderItemTaxRefund) -> Bool {
-        return lhs.taxID == rhs.taxID &&
-            lhs.subtotal == rhs.subtotal &&
-            lhs.total == rhs.total
+        return lhs.taxID == rhs.taxID && lhs.subtotal == rhs.subtotal && lhs.total == rhs.total
     }
 
     public static func < (lhs: OrderItemTaxRefund, rhs: OrderItemTaxRefund) -> Bool {
-        return lhs.taxID < rhs.taxID ||
-            (lhs.taxID == rhs.taxID && lhs.subtotal < rhs.subtotal) ||
-            (lhs.taxID == rhs.taxID && lhs.subtotal == rhs.subtotal && lhs.total < rhs.total)
+        return lhs.taxID < rhs.taxID || (lhs.taxID == rhs.taxID && lhs.subtotal < rhs.subtotal) || (
+            lhs.taxID == rhs.taxID && lhs.subtotal == rhs.subtotal && lhs.total < rhs.total
+        )
     }
 }

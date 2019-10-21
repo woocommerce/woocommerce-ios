@@ -12,17 +12,17 @@ enum ProductsViewControllerState {
 }
 
 extension ProductsViewControllerState: Equatable {
-    static func ==(lhs: ProductsViewControllerState, rhs: ProductsViewControllerState) -> Bool {
-            switch (lhs, rhs) {
-            case let (.syncing(lhs), .syncing(rhs)):
-                return lhs == rhs
-            case (.noResultsPlaceholder, .noResultsPlaceholder):
-                return true
-            case (.results, .results):
-                return true
-            default:
-                return false
-            }
+    static func == (lhs: ProductsViewControllerState, rhs: ProductsViewControllerState) -> Bool {
+        switch (lhs, rhs) {
+        case let (.syncing(lhs), .syncing(rhs)):
+            return lhs == rhs
+        case (.noResultsPlaceholder, .noResultsPlaceholder):
+            return true
+        case (.results, .results):
+            return true
+        default:
+            return false
+        }
     }
 }
 
@@ -34,8 +34,10 @@ final class ProductsViewControllerStateCoordinator {
     private let onLeavingState: (_ state: State) -> Void
     private let onEnteringState: (_ state: State) -> Void
 
-    init(onLeavingState: @escaping (_ state: State) -> Void,
-         onEnteringState: @escaping (_ state: State) -> Void) {
+    init(
+        onLeavingState: @escaping (_ state: State) -> Void,
+        onEnteringState: @escaping (_ state: State) -> Void
+    ) {
         self.onLeavingState = onLeavingState
         self.onEnteringState = onEnteringState
     }
@@ -63,6 +65,6 @@ final class ProductsViewControllerStateCoordinator {
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     ///
     func transitionToResultsUpdatedState(hasData: Bool) {
-        state = hasData ? .results: .noResultsPlaceholder
+        state = hasData ? .results : .noResultsPlaceholder
     }
 }

@@ -1,6 +1,5 @@
 import Foundation
 
-
 extension Double {
 
     /// Provides a short, friendly, and *localized* representation of the receiver.
@@ -48,9 +47,9 @@ extension Double {
 
 // MARK: - Private helpers
 //
-private extension Double {
+extension Double {
 
-    func abbreviatedString(for number: Double) -> String {
+    fileprivate func abbreviatedString(for number: Double) -> String {
         let absNumber = fabs(number)
         let abbreviation: Abbrevation = {
             var prevAbbreviation = Constants.abbreviations[0]
@@ -61,7 +60,7 @@ private extension Double {
                 prevAbbreviation = tmpAbbreviation
             }
             return prevAbbreviation
-        } ()
+        }()
 
         let value = number / abbreviation.divisor
         let numFormatter = Formatters.largeNumberFormatter
@@ -76,22 +75,24 @@ private extension Double {
 
 // MARK: - Constants!
 //
-private extension Double {
+extension Double {
 
-    typealias Abbrevation = (threshold: Double, divisor: Double, suffix: String)
+    fileprivate typealias Abbrevation = (threshold: Double, divisor: Double, suffix: String)
 
-    enum Constants {
+    fileprivate enum Constants {
         static let negativeZeroString = "-0"
-        static let zeroString         = "0"
+        static let zeroString = "0"
 
-        static let abbreviations: [Abbrevation] = [(0, 1, ""),
-                                                   (999.0, 1_000.0, "k"),
-                                                   (999_999.0, 1_000_000.0, "m"),
-                                                   (999_999_999.0, 1_000_000_000.0, "b"),
-                                                   (999_999_999_999.0, 1_000_000_000_000.0, "t")]
+        static let abbreviations: [Abbrevation] = [
+            (0, 1, ""),
+            (999.0, 1_000.0, "k"),
+            (999_999.0, 1_000_000.0, "m"),
+            (999_999_999.0, 1_000_000_000.0, "b"),
+            (999_999_999_999.0, 1_000_000_000_000.0, "t"),
+        ]
     }
 
-    enum Formatters {
+    fileprivate enum Formatters {
 
         /// Formatter used for numbers between -1000 and 1000 (exclusive)
         ///

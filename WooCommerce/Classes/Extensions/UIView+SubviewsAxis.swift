@@ -10,13 +10,14 @@ extension UIView {
             return nil
         }
         let sortedSubviews = subviews
-            .sorted { (lhs, rhs) -> Bool in
-                lhs.frame.minY < rhs.frame.minY
-            }
+            .sorted
+        { (lhs, rhs) -> Bool in
+            lhs.frame.minY < rhs.frame.minY
+        }
 
         let subviewWithSmallerY = sortedSubviews[0]
         let subviewWithLargerY = sortedSubviews[1]
 
-        return subviewWithLargerY.frame.minY >= subviewWithSmallerY.frame.maxY ? .vertical: .horizontal
+        return subviewWithLargerY.frame.minY >= subviewWithSmallerY.frame.maxY ? .vertical : .horizontal
     }
 }

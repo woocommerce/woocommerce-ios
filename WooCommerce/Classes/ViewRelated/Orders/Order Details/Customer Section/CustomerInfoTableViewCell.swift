@@ -6,11 +6,13 @@ class CustomerInfoTableViewCell: UITableViewCell {
             titleLabel.applyHeadlineStyle()
         }
     }
+
     @IBOutlet private weak var nameLabel: UILabel! {
         didSet {
             nameLabel.applyBodyStyle()
         }
     }
+
     @IBOutlet private weak var addressLabel: UILabel! {
         didSet {
             addressLabel.applyBodyStyle()
@@ -53,8 +55,8 @@ class CustomerInfoTableViewCell: UITableViewCell {
 }
 
 
-private extension CustomerInfoTableViewCell {
-    func configureBackground() {
+extension CustomerInfoTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 }

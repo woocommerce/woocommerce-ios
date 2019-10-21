@@ -50,15 +50,17 @@ extension ProductsTabProductTableViewCell {
         productImageView.contentMode = .center
         productImageView.image = .productsTabProductCellPlaceholderImage
         if let productURLString = viewModel.imageUrl {
-            productImageView.downloadImage(from: URL(string: productURLString), placeholderImage: nil, success: { [weak self] _ in
-                self?.productImageView.contentMode = .scaleAspectFill
-            })
+            productImageView.downloadImage(
+                from: URL(string: productURLString), placeholderImage: nil,
+                success: { [weak self] _ in
+                    self?.productImageView.contentMode = .scaleAspectFill
+                })
         }
     }
 }
 
-private extension ProductsTabProductTableViewCell {
-    func configureSubviews() {
+extension ProductsTabProductTableViewCell {
+    fileprivate func configureSubviews() {
         let contentStackView = createContentStackView()
         let stackView = UIStackView(arrangedSubviews: [productImageView, contentStackView])
         stackView.axis = .horizontal
@@ -70,32 +72,33 @@ private extension ProductsTabProductTableViewCell {
         contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
     }
 
-    func createContentStackView() -> UIView {
+    fileprivate func createContentStackView() -> UIView {
         let contentStackView = UIStackView(arrangedSubviews: [nameLabel, detailsLabel])
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .vertical
         return contentStackView
     }
 
-    func configureNameLabel() {
+    fileprivate func configureNameLabel() {
         nameLabel.applyBodyStyle()
         nameLabel.numberOfLines = 2
     }
 
-    func configureDetailsLabel() {
+    fileprivate func configureDetailsLabel() {
         detailsLabel.numberOfLines = 1
     }
 
-    func configureProductImageView() {
+    fileprivate func configureProductImageView() {
 
         productImageView.layer.cornerRadius = CGFloat(2.0)
         productImageView.layer.borderWidth = 1
         productImageView.layer.borderColor = StyleManager.wooGreyBorder.cgColor
         productImageView.clipsToBounds = true
 
-        NSLayoutConstraint.activate([
-            productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),
-            productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor)
+        NSLayoutConstraint.activate(
+            [
+                productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),
+                productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor),
             ])
     }
 }

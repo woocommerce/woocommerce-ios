@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Devices: Remote Endpoints (Push Notifications Registration / Unregistration!)
 ///
@@ -15,11 +14,13 @@ public class DevicesRemote: Remote {
     ///     - defaultStoreID: Active Store ID.
     ///     - completion: Closure to be executed on commpletion.
     ///
-    public func registerDevice(device: APNSDevice,
-                               applicationId: String,
-                               applicationVersion: String,
-                               defaultStoreID: Int,
-                               completion: @escaping (DotcomDevice?, Error?) -> Void) {
+    public func registerDevice(
+        device: APNSDevice,
+        applicationId: String,
+        applicationVersion: String,
+        defaultStoreID: Int,
+        completion: @escaping (DotcomDevice?, Error?) -> Void
+    ) {
         var parameters = [
             ParameterKeys.applicationId: applicationId,
             ParameterKeys.applicationVersion: applicationVersion,
@@ -28,7 +29,7 @@ public class DevicesRemote: Remote {
             ParameterKeys.deviceModel: device.model,
             ParameterKeys.deviceName: device.name,
             ParameterKeys.deviceOSVersion: device.iOSVersion,
-            ParameterKeys.defaultStoreID: String(defaultStoreID)
+            ParameterKeys.defaultStoreID: String(defaultStoreID),
         ]
 
         if let deviceUUID = device.identifierForVendor {
@@ -69,14 +70,14 @@ public class DevicesRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension DevicesRemote {
+extension DevicesRemote {
 
-    enum Paths {
+    fileprivate enum Paths {
         static let register = "devices/new"
         static let delete = "devices/%@/delete"
     }
 
-    enum ParameterKeys {
+    fileprivate enum ParameterKeys {
         static let applicationId = "app_secret_key"
         static let applicationVersion = "app_version"
         static let deviceFamily = "device_family"

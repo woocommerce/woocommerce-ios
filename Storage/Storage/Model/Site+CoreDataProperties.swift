@@ -1,6 +1,5 @@
-import Foundation
 import CoreData
-
+import Foundation
 
 extension Site {
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Site> {

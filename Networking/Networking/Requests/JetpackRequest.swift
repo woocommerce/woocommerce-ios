@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Represents a Jetpack-Tunneled WordPress.com Endpoint
 ///
@@ -65,33 +64,33 @@ struct JetpackRequest: URLRequestConvertible {
 
 // MARK: - Dotcom Request: Internal
 //
-private extension JetpackRequest {
+extension JetpackRequest {
 
     /// Returns the WordPress.com Tunneling Request
     ///
-    var dotcomPath: String {
+    fileprivate var dotcomPath: String {
         return "jetpack-blogs/" + String(siteID) + "/rest-api/"
     }
 
     /// Returns the WordPress.com Parameters Encoder
     ///
-    var dotcomEncoder: ParameterEncoding {
+    fileprivate var dotcomEncoder: ParameterEncoding {
         return dotcomMethod == .get ? URLEncoding.queryString : URLEncoding.httpBody
     }
 
     /// Returns the WordPress.com HTTP Method
     ///
-    var dotcomMethod: HTTPMethod {
+    fileprivate var dotcomMethod: HTTPMethod {
         // If we are calling DELETE via a tunneled connection, use GET instead (DELETE will be added to the `_method` query string param)
         return method == .delete ? .get : method
     }
 
     /// Returns the WordPress.com Parameters
     ///
-    var dotcomParams: [String: String] {
+    fileprivate var dotcomParams: [String: String] {
         var output = [
             "json": "true",
-            "path": jetpackPath + "&_method=" + method.rawValue.lowercased() + jetpackQueryParams
+            "path": jetpackPath + "&_method=" + method.rawValue.lowercased() + jetpackQueryParams,
         ]
 
         if let jetpackBodyParams = jetpackBodyParams {
@@ -105,23 +104,23 @@ private extension JetpackRequest {
 
 // MARK: - Jetpack Tunneled Request: Internal
 //
-private extension JetpackRequest {
+extension JetpackRequest {
 
     /// Returns the Jetpack-Tunneled-Request's Path
     ///
-    var jetpackPath: String {
+    fileprivate var jetpackPath: String {
         return wooApiVersion.path + path
     }
 
     /// Indicates if the Jetpack Tunneled Request should encode it's parameters in the Query (or Body)
     ///
-    var jetpackEncodesParametersInQuery: Bool {
+    fileprivate var jetpackEncodesParametersInQuery: Bool {
         return dotcomMethod == .get
     }
 
     /// Returns the Jetpack-Tunneled-Request's Parameters
     ///
-    var jetpackQueryParams: String {
+    fileprivate var jetpackQueryParams: String {
         guard jetpackEncodesParametersInQuery else {
             return String()
         }
@@ -133,7 +132,7 @@ private extension JetpackRequest {
 
     /// Returns the Jetpack-Tunneled-Request's Body parameters
     ///
-    var jetpackBodyParams: String? {
+    fileprivate var jetpackBodyParams: String? {
         guard jetpackEncodesParametersInQuery == false else {
             return nil
         }

@@ -1,5 +1,5 @@
-import Foundation
 import Alamofire
+import Foundation
 
 /// SiteVisitStats: Remote Endpoints
 ///
@@ -14,21 +14,25 @@ public class SiteVisitStatsRemote: Remote {
     ///   - quantity: How many `unit`s to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadSiteVisitorStats(for siteID: Int,
-                                     siteTimezone: TimeZone? = nil,
-                                     unit: StatGranularity,
-                                     latestDateToInclude: Date,
-                                     quantity: Int,
-                                     completion: @escaping (SiteVisitStats?, Error?) -> Void) {
+    public func loadSiteVisitorStats(
+        for siteID: Int,
+        siteTimezone: TimeZone? = nil,
+        unit: StatGranularity,
+        latestDateToInclude: Date,
+        quantity: Int,
+        completion: @escaping (SiteVisitStats?, Error?) -> Void
+    ) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.siteVisitStatsPath)/"
         let dateFormatter = DateFormatter.Stats.statsDayFormatter
         if let siteTimezone = siteTimezone {
             dateFormatter.timeZone = siteTimezone
         }
-        let parameters = [ParameterKeys.unit: unit.rawValue,
-                          ParameterKeys.date: dateFormatter.string(from: latestDateToInclude),
-                          ParameterKeys.quantity: String(quantity),
-                          ParameterKeys.statFields: Constants.visitorStatFieldValue]
+        let parameters = [
+            ParameterKeys.unit: unit.rawValue,
+            ParameterKeys.date: dateFormatter.string(from: latestDateToInclude),
+            ParameterKeys.quantity: String(quantity),
+            ParameterKeys.statFields: Constants.visitorStatFieldValue,
+        ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = SiteVisitStatsMapper()
         enqueue(request, mapper: mapper, completion: completion)
@@ -38,17 +42,17 @@ public class SiteVisitStatsRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension SiteVisitStatsRemote {
-    enum Constants {
-        static let sitesPath: String             = "sites"
-        static let siteVisitStatsPath: String    = "stats/visits"
+extension SiteVisitStatsRemote {
+    fileprivate enum Constants {
+        static let sitesPath: String = "sites"
+        static let siteVisitStatsPath: String = "stats/visits"
         static let visitorStatFieldValue: String = "visitors"
     }
 
-    enum ParameterKeys {
-        static let unit: String       = "unit"
-        static let date: String       = "date"
-        static let quantity: String   = "quantity"
+    fileprivate enum ParameterKeys {
+        static let unit: String = "unit"
+        static let date: String = "date"
+        static let quantity: String = "quantity"
         static let statFields: String = "stat_fields"
     }
 }

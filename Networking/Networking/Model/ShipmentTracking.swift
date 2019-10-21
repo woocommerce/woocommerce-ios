@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a Shipment Tracking Entity (from the WC Shipment Tracking extension).
 ///
 public struct ShipmentTracking: Decodable {
@@ -63,27 +62,28 @@ public struct ShipmentTracking: Decodable {
         let trackingURL = try container.decodeIfPresent(String.self, forKey: .trackingURL)
         let dateShipped = try container.decodeIfPresent(Date.self, forKey: .dateShipped)
 
-        self.init(siteID: siteID,
-                  orderID: orderID,
-                  trackingID: trackingID,
-                  trackingNumber: trackingNumber,
-                  trackingProvider: trackingProvider,
-                  trackingURL: trackingURL,
-                  dateShipped: dateShipped)  // initialize the struct
+        self.init(
+            siteID: siteID,
+            orderID: orderID,
+            trackingID: trackingID,
+            trackingNumber: trackingNumber,
+            trackingProvider: trackingProvider,
+            trackingURL: trackingURL,
+            dateShipped: dateShipped)  // initialize the struct
     }
 }
 
 
 /// Defines all of the ShipmentTracking's CodingKeys.
 ///
-private extension ShipmentTracking {
+extension ShipmentTracking {
 
-    enum CodingKeys: String, CodingKey {
-        case trackingID       = "tracking_id"
-        case trackingNumber   = "tracking_number"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case trackingID = "tracking_id"
+        case trackingNumber = "tracking_number"
         case trackingProvider = "tracking_provider"
-        case trackingURL      = "tracking_link"
-        case dateShipped      = "date_shipped"
+        case trackingURL = "tracking_link"
+        case dateShipped = "date_shipped"
     }
 }
 
@@ -100,26 +100,19 @@ enum ShipmentTrackingAPIError: Error {
 //
 extension ShipmentTracking: Comparable {
     public static func == (lhs: ShipmentTracking, rhs: ShipmentTracking) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.orderID == rhs.orderID &&
-            lhs.trackingID == rhs.trackingID &&
-            lhs.trackingNumber == rhs.trackingNumber &&
-            lhs.trackingProvider == rhs.trackingProvider &&
-            lhs.trackingURL == rhs.trackingURL &&
-            lhs.dateShipped == rhs.dateShipped
+        return lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber == rhs.trackingNumber && lhs
+            .trackingProvider == rhs.trackingProvider && lhs.trackingURL == rhs.trackingURL && lhs.dateShipped == rhs.dateShipped
     }
 
     public static func < (lhs: ShipmentTracking, rhs: ShipmentTracking) -> Bool {
-        return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.orderID < rhs.orderID) ||
-            (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID < rhs.trackingID) ||
-            (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber < rhs.trackingNumber)
+        return lhs.siteID < rhs.siteID || (lhs.siteID == rhs.siteID && lhs.orderID < rhs.orderID) || (
+            lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID < rhs.trackingID
+        ) || (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber < rhs.trackingNumber)
     }
 
     public static func > (lhs: ShipmentTracking, rhs: ShipmentTracking) -> Bool {
-        return lhs.siteID > rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.orderID > rhs.orderID) ||
-            (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID > rhs.trackingID) ||
-            (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber > rhs.trackingNumber)
+        return lhs.siteID > rhs.siteID || (lhs.siteID == rhs.siteID && lhs.orderID > rhs.orderID) || (
+            lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID > rhs.trackingID
+        ) || (lhs.siteID == rhs.siteID && lhs.orderID == rhs.orderID && lhs.trackingID == rhs.trackingID && lhs.trackingNumber > rhs.trackingNumber)
     }
 }

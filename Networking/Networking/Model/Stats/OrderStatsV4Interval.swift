@@ -2,16 +2,21 @@
 /// v4 API
 public struct OrderStatsV4Interval: Decodable {
     public let interval: String
+
     /// Interval start date string in GMT.
     public let dateStart: String
+
     /// Interval end date string in GMT.
     public let dateEnd: String
+
     public let subtotals: OrderStatsV4Totals
 
-    public init(interval: String,
-                dateStart: String,
-                dateEnd: String,
-                subtotals: OrderStatsV4Totals) {
+    public init(
+        interval: String,
+        dateStart: String,
+        dateEnd: String,
+        subtotals: OrderStatsV4Totals
+    ) {
         self.interval = interval
         self.dateStart = dateStart
         self.dateEnd = dateEnd
@@ -25,10 +30,11 @@ public struct OrderStatsV4Interval: Decodable {
         let dateEnd = try container.decode(String.self, forKey: .dateEnd)
         let subtotals = try container.decode(OrderStatsV4Totals.self, forKey: .subtotals)
 
-        self.init(interval: interval,
-                  dateStart: dateStart,
-                  dateEnd: dateEnd,
-                  subtotals: subtotals)
+        self.init(
+            interval: interval,
+            dateStart: dateStart,
+            dateEnd: dateEnd,
+            subtotals: subtotals)
     }
 }
 
@@ -37,23 +43,19 @@ public struct OrderStatsV4Interval: Decodable {
 //
 extension OrderStatsV4Interval: Comparable {
     public static func == (lhs: OrderStatsV4Interval, rhs: OrderStatsV4Interval) -> Bool {
-        return lhs.interval == rhs.interval &&
-            lhs.dateStart == rhs.dateStart &&
-            lhs.dateEnd == rhs.dateEnd &&
-            lhs.subtotals == rhs.subtotals
+        return lhs.interval == rhs.interval && lhs.dateStart == rhs.dateStart && lhs.dateEnd == rhs.dateEnd && lhs.subtotals == rhs.subtotals
     }
 
     public static func < (lhs: OrderStatsV4Interval, rhs: OrderStatsV4Interval) -> Bool {
-        return lhs.interval < rhs.interval ||
-            (lhs.interval == rhs.interval && lhs.subtotals < rhs.subtotals)
+        return lhs.interval < rhs.interval || (lhs.interval == rhs.interval && lhs.subtotals < rhs.subtotals)
     }
 }
 
 
 // MARK: - Constants!
 //
-private extension OrderStatsV4Interval {
-    enum CodingKeys: String, CodingKey {
+extension OrderStatsV4Interval {
+    fileprivate enum CodingKeys: String, CodingKey {
         case interval = "interval"
         case dateStart = "date_start_gmt"
         case dateEnd = "date_end_gmt"

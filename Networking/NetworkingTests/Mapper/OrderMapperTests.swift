@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// OrderMapper Unit Tests
 ///
@@ -201,11 +201,11 @@ class OrderMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension OrderMapperTests {
+extension OrderMapperTests {
 
     /// Returns the OrderMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrder(from filename: String) -> Order? {
+    fileprivate func mapOrder(from filename: String) -> Order? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
@@ -215,25 +215,25 @@ private extension OrderMapperTests {
 
     /// Returns the OrderMapper output upon receiving `order`
     ///
-    func mapLoadOrderResponse() -> Order? {
+    fileprivate func mapLoadOrderResponse() -> Order? {
         return mapOrder(from: "order")
     }
 
     /// Returns the OrderMapper output upon receiving `broken-order`
     ///
-    func mapLoadBrokenOrderResponse() -> Order? {
+    fileprivate func mapLoadBrokenOrderResponse() -> Order? {
         return mapOrder(from: "broken-order")
     }
 
     /// Returns the OrderMapper output upon receiving `order-fully-refunded`
     ///
-    func mapLoadFullyRefundedOrderResponse() -> Order? {
+    fileprivate func mapLoadFullyRefundedOrderResponse() -> Order? {
         return mapOrder(from: "order-fully-refunded")
     }
 
     /// Returns the OrderMapper output upon receiving `order-details-partially-refunded`
     ///
-    func mapLoadPartiallRefundedOrderResponse() -> Order? {
+    fileprivate func mapLoadPartiallRefundedOrderResponse() -> Order? {
         return mapOrder(from: "order-details-partially-refunded")
     }
 }

@@ -1,5 +1,5 @@
-import Yosemite
 import MessageUI
+import Yosemite
 
 /// Encapsulates logic to share an Order via email
 ///
@@ -10,9 +10,13 @@ final class OrderEmailComposer: NSObject, MFMailComposeViewControllerDelegate {
         }
 
         displayEmailComposer(for: email, from: from)
-        ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
-                                                                        "status": order.statusKey,
-                                                                        "type": "email"])
+        ServiceLocator.analytics.track(
+            .orderContactAction,
+            withProperties: [
+                "id": order.orderID,
+                "status": order.statusKey,
+                "type": "email",
+            ])
     }
 
     private func displayEmailComposer(for email: String, from: UIViewController) {

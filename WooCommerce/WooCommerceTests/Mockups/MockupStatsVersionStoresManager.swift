@@ -1,5 +1,6 @@
 import Storage
 import Yosemite
+
 @testable import WooCommerce
 
 /// MockupAvailabilityStoreManager: allows mocking for stats v4 availability and last shown stats version.
@@ -41,8 +42,9 @@ class MockupStatsVersionStoresManager: DefaultStoresManager {
 
     private func onAvailabilityAction(action: AvailabilityAction) {
         switch action {
-        case .checkStatsV4Availability(_,
-                                       let onCompletion):
+        case .checkStatsV4Availability(
+            _,
+            let onCompletion):
             onCompletion(isStatsV4Available)
         }
     }

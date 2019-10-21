@@ -12,16 +12,16 @@ class ValueOneTableViewCell: UITableViewCell {
 }
 
 
-private extension ValueOneTableViewCell {
-    func configureBackground() {
+extension ValueOneTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureTextLabel() {
+    fileprivate func configureTextLabel() {
         textLabel?.applyBodyStyle()
     }
 
-    func configureDetailTextLabel() {
+    fileprivate func configureDetailTextLabel() {
         detailTextLabel?.applySubheadlineStyle()
         detailTextLabel?.lineBreakMode = .byWordWrapping
         detailTextLabel?.numberOfLines = 0

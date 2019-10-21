@@ -9,9 +9,10 @@ final class OrderDetailsResultsControllers {
     // Shipment Tracking ResultsController.
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
-                                    self.order.siteID,
-                                    self.order.orderID)
+        let predicate = NSPredicate(
+            format: "siteID = %ld AND orderID = %ld",
+            self.order.siteID,
+            self.order.orderID)
         let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
 
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -68,9 +69,9 @@ final class OrderDetailsResultsControllers {
 
 // MARK: - Configuring results controllers
 //
-private extension OrderDetailsResultsControllers {
+extension OrderDetailsResultsControllers {
 
-    func configureStatusResultsController() {
+    fileprivate func configureStatusResultsController() {
         try? statusResultsController.performFetch()
     }
 

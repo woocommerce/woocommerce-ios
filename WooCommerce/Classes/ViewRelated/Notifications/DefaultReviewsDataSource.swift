@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Yosemite
 
-
 /// Default implementation of the ReviewsDataSource, dequeues and
 /// populates cells to render the Product Review list
 ///
@@ -16,10 +15,11 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProductReview.dateCreated, ascending: false)
 
-        return ResultsController<StorageProductReview>(storageManager: storageManager,
-                                                       sectionNameKeyPath: "normalizedAgeAsString",
-                                                       matching: self.filterPredicate,
-                                                       sortedBy: [descriptor])
+        return ResultsController<StorageProductReview>(
+            storageManager: storageManager,
+            sectionNameKeyPath: "normalizedAgeAsString",
+            matching: self.filterPredicate,
+            sortedBy: [descriptor])
     }()
 
     /// Products
@@ -28,9 +28,10 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageProduct.productID, ascending: true)
 
-        return ResultsController<StorageProduct>(storageManager: storageManager,
-                                                       matching: sitePredicate,
-                                                       sortedBy: [descriptor])
+        return ResultsController<StorageProduct>(
+            storageManager: storageManager,
+            matching: sitePredicate,
+            sortedBy: [descriptor])
     }()
 
     /// Notifications
@@ -39,36 +40,42 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
-        return ResultsController<StorageNote>(storageManager: storageManager,
-                                              sectionNameKeyPath: "normalizedAgeAsString",
-                                              matching: notificationsPredicate,
-                                              sortedBy: [descriptor])
+        return ResultsController<StorageNote>(
+            storageManager: storageManager,
+            sectionNameKeyPath: "normalizedAgeAsString",
+            matching: notificationsPredicate,
+            sortedBy: [descriptor])
     }()
 
     /// Predicate to filter only Product Reviews that are either approved or on hold
     ///
     private lazy var filterPredicate: NSPredicate = {
-        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
-                                          ProductReviewStatus.approved.rawValue,
-                                          ProductReviewStatus.hold.rawValue)
+        let statusPredicate = NSPredicate(
+            format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
+            ProductReviewStatus.approved.rawValue,
+            ProductReviewStatus.hold.rawValue)
 
-        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
+        return NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
     }()
 
     /// Predicate to entities that belong to the current store
     ///
     private lazy var sitePredicate: NSPredicate = {
-        return NSPredicate(format: "siteID == %lld",
-                          ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        return NSPredicate(
+            format: "siteID == %lld",
+            ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }()
 
     private lazy var notificationsPredicate: NSPredicate = {
         let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
-        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+        let typeReviewPredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
 
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
-                                                                   sitePredicate,
-                                                                   notDeletedPredicate])
+        return NSCompoundPredicate(
+            andPredicateWithSubpredicates: [
+                typeReviewPredicate,
+                sitePredicate,
+                notDeletedPredicate,
+            ])
     }()
 
     /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
@@ -95,7 +102,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     var reviewsProductsIDs: [Int] {
         return reviewsResultsController
             .fetchedObjects
-            .map { return $0.productID }
+            .map
+        { return $0.productID }
             .uniqued()
     }
 
@@ -167,11 +175,11 @@ extension DefaultReviewsDataSource: UITableViewDataSource {
 
 // MARK: - Cell Setup
 //
-private extension DefaultReviewsDataSource {
+extension DefaultReviewsDataSource {
 
     /// Initializes the Notifications Cell at the specified indexPath
     ///
-    func configure(_ cell: ProductReviewTableViewCell, at indexPath: IndexPath) {
+    fileprivate func configure(_ cell: ProductReviewTableViewCell, at indexPath: IndexPath) {
         let viewModel = reviewViewModel(at: indexPath)
 
         cell.configure(with: viewModel)
@@ -235,8 +243,8 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
 }
 
 
-private extension DefaultReviewsDataSource {
-    enum Settings {
+extension DefaultReviewsDataSource {
+    fileprivate enum Settings {
         static let estimatedRowHeight = CGFloat(88)
     }
 }

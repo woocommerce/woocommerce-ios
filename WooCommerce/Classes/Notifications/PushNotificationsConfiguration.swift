@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import UserNotifications
 
-
 /// PushNotificationsConfiguration
 ///
 struct PushNotificationsConfiguration {
@@ -62,11 +61,13 @@ struct PushNotificationsConfiguration {
     /// Why do we use @autoclosure? because the `UIApplication.shared` property, if executed during the AppDelegate instantiation
     /// will cause a circular reference (and hence a crash!).
     ///
-    init(application: @autoclosure @escaping () -> ApplicationAdapter,
-         defaults: @autoclosure @escaping () -> UserDefaults,
-         storesManager: @autoclosure @escaping () -> StoresManager,
-         supportManager: @autoclosure @escaping () -> SupportManagerAdapter,
-         userNotificationsCenter: @autoclosure @escaping () -> UserNotificationsCenterAdapter) {
+    init(
+        application: @autoclosure @escaping () -> ApplicationAdapter,
+        defaults: @autoclosure @escaping () -> UserDefaults,
+        storesManager: @autoclosure @escaping () -> StoresManager,
+        supportManager: @autoclosure @escaping () -> SupportManagerAdapter,
+        userNotificationsCenter: @autoclosure @escaping () -> UserNotificationsCenterAdapter
+    ) {
 
         self.applicationClosure = application
         self.defaultsClosure = defaults
@@ -84,10 +85,11 @@ extension PushNotificationsConfiguration {
     /// Returns the Default PushNotificationsConfiguration
     ///
     static var `default`: PushNotificationsConfiguration {
-        return PushNotificationsConfiguration(application: UIApplication.shared,
-                                              defaults: .standard,
-                                              storesManager: ServiceLocator.stores,
-                                              supportManager: ZendeskManager.shared,
-                                              userNotificationsCenter: UNUserNotificationCenter.current())
+        return PushNotificationsConfiguration(
+            application: UIApplication.shared,
+            defaults: .standard,
+            storesManager: ServiceLocator.stores,
+            supportManager: ZendeskManager.shared,
+            userNotificationsCenter: UNUserNotificationCenter.current())
     }
 }

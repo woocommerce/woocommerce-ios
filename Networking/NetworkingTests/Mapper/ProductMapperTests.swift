@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// ProductMapper Unit Tests
 ///
@@ -8,7 +8,7 @@ class ProductMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 33334444
+    private let dummySiteID = 33_334_444
 
     /// Dummy Product ID.
     ///
@@ -43,11 +43,14 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.catalogVisibilityKey, "visible")
 
         XCTAssertEqual(product.fullDescription, "<p>This is the party room!</p>\n")
-        XCTAssertEqual(product.briefDescription, """
+        XCTAssertEqual(
+            product.briefDescription,
+            """
             [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
             We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let \
             us know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests for $100.</p>\n
-            """)
+            """
+        )
         XCTAssertEqual(product.sku, "")
 
         XCTAssertEqual(product.price, "0")
@@ -88,7 +91,7 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.ratingCount, 23)
 
         XCTAssertEqual(product.relatedIDs, [31, 22, 369, 414, 56])
-        XCTAssertEqual(product.upsellIDs, [99, 1234566])
+        XCTAssertEqual(product.upsellIDs, [99, 1_234_566])
         XCTAssertEqual(product.crossSellIDs, [1234, 234234, 3])
         XCTAssertEqual(product.parentID, 0)
 
@@ -163,8 +166,9 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(productImage.imageID, 19)
         XCTAssertEqual(productImage.dateCreated, dateCreated)
         XCTAssertEqual(productImage.dateModified, dateModified)
-        XCTAssertEqual(productImage.src,
-                       "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png")
+        XCTAssertEqual(
+            productImage.src,
+            "https://somewebsite.com/thuy-nonjtpk.mystagingwebsite.com/wp-content/uploads/2018/01/vneck-tee.jpg.png")
         XCTAssertEqual(productImage.name, "Vneck Tshirt")
         XCTAssert(productImage.alt?.isEmpty == true)
     }
@@ -218,11 +222,11 @@ class ProductMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension ProductMapperTests {
+extension ProductMapperTests {
 
     /// Returns the ProductMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProduct(from filename: String) -> Product? {
+    fileprivate func mapProduct(from filename: String) -> Product? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
@@ -232,13 +236,13 @@ private extension ProductMapperTests {
 
     /// Returns the ProductMapper output upon receiving `product`
     ///
-    func mapLoadProductResponse() -> Product? {
+    fileprivate func mapLoadProductResponse() -> Product? {
         return mapProduct(from: "product")
     }
 
     /// Returns the ProductMapper output upon receiving `variation-as-product`
     ///
-    func mapLoadVariationProductResponse() -> Product? {
+    fileprivate func mapLoadVariationProductResponse() -> Product? {
         return mapProduct(from: "variation-as-product")
     }
 }

@@ -31,8 +31,9 @@ final class OrderSearchUICommand: SearchUICommand {
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {
         let orderDetailsViewModel = OrderDetailsViewModel(order: model)
         let orderStatus = lookUpOrderStatus(for: model)
-        return OrderSearchCellViewModel(orderDetailsViewModel: orderDetailsViewModel,
-                                        orderStatus: orderStatus)
+        return OrderSearchCellViewModel(
+            orderDetailsViewModel: orderDetailsViewModel,
+            orderStatus: orderStatus)
     }
 
     /// Synchronizes the Orders matching a given Keyword
@@ -62,12 +63,12 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 }
 
-private extension OrderSearchUICommand {
-    func configureResultsController() {
+extension OrderSearchUICommand {
+    fileprivate func configureResultsController() {
         try? statusResultsController.performFetch()
     }
 
-    func lookUpOrderStatus(for order: Order) -> OrderStatus? {
+    fileprivate func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         let listAll = statusResultsController.fetchedObjects
         for orderStatus in listAll where orderStatus.slug == order.statusKey {
             return orderStatus

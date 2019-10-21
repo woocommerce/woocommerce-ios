@@ -133,10 +133,11 @@ public class AppRatingManager {
 
     /// Indicates whether enough time has passed since we last prompted the user for their opinion.
     ///
-    func enoughTimePassedSinceLastPrompt()-> Bool {
+    func enoughTimePassedSinceLastPrompt() -> Bool {
         if let lastPromptDate = defaults.value(forKeyPath: Key.lastPromptToRateDate),
             let date = lastPromptDate as? Date,
-            let days = Calendar.current.dateComponents([.day], from: date, to: Date()).day {
+            let days = Calendar.current.dateComponents([.day], from: date, to: Date()).day
+        {
             return days > numberOfDaysToWaitBetweenPrompts
         }
         return true
@@ -152,7 +153,8 @@ public class AppRatingManager {
     func shouldPromptForAppReview() -> Bool {
         if !enoughTimePassedSinceLastPrompt()
             || shouldSkipRatingForCurrentVersion()
-            || promptingDisabled {
+            || promptingDisabled
+        {
             return false
         }
 
@@ -178,7 +180,8 @@ public class AppRatingManager {
         if !enoughTimePassedSinceLastPrompt()
             || shouldSkipRatingForCurrentVersion()
             || promptingDisabled
-            || !section.enabled {
+            || !section.enabled
+        {
             return false
         }
 

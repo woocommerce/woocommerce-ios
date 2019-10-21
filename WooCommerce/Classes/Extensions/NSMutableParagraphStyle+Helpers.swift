@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// NSMutableParagraphStyle: Helper Methods
 ///
 extension NSMutableParagraphStyle {
@@ -12,10 +11,12 @@ extension NSMutableParagraphStyle {
 
     /// Convenience Initializer
     ///
-    convenience init(minLineHeight: CGFloat,
-                     maxLineHeight: CGFloat = NoMaximum,
-                     lineBreakMode: NSLineBreakMode = .byWordWrapping,
-                     alignment: NSTextAlignment = .natural) {
+    convenience init(
+        minLineHeight: CGFloat,
+        maxLineHeight: CGFloat = NoMaximum,
+        lineBreakMode: NSLineBreakMode = .byWordWrapping,
+        alignment: NSTextAlignment = .natural
+    ) {
 
         self.init()
         self.minimumLineHeight = minLineHeight

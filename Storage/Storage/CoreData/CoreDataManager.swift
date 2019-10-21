@@ -1,6 +1,5 @@
-import Foundation
 import CoreData
-
+import Foundation
 
 /// CoreDataManager: Manages the entire CoreData Stack. Conforms to the StorageManager API.
 ///
@@ -148,7 +147,8 @@ public class CoreDataManager: StorageManagerType {
         guard let versionInfo = NSDictionary(contentsOfFile: versionPath),
             let modelNames = versionInfo[Constants.versionHashesKey] as? NSDictionary,
             let allKeys = modelNames.allKeys as? [String],
-            let objectModel = NSManagedObjectModel(contentsOf: modelURL) else {
+            let objectModel = NSManagedObjectModel(contentsOf: modelURL)
+        else {
             return
         }
 
@@ -157,10 +157,11 @@ public class CoreDataManager: StorageManagerType {
         }
 
         do {
-            let migrateResult = try CoreDataIterativeMigrator.iterativeMigrate(sourceStore: storeURL,
-                                                                               storeType: NSSQLiteStoreType,
-                                                                               to: objectModel,
-                                                                               using: sortedKeys)
+            let migrateResult = try CoreDataIterativeMigrator.iterativeMigrate(
+                sourceStore: storeURL,
+                storeType: NSSQLiteStoreType,
+                to: objectModel,
+                using: sortedKeys)
             if migrateResult == false {
                 DDLogError("☠️ [CoreDataManager] Unable to migrate store.")
             }
@@ -225,9 +226,9 @@ extension CoreDataManager {
 
 // MARK: - Constants!
 //
-private extension CoreDataManager {
+extension CoreDataManager {
 
-    enum Constants {
+    fileprivate enum Constants {
         static let versionInfoPlist = "VersionInfo.plist"
         static let versionHashesKey = "NSManagedObjectModel_VersionHashes"
     }

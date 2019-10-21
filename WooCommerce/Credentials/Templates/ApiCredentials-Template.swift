@@ -1,9 +1,9 @@
 /// WooCommerce API Credentials
-struct ApiCredentials {
+enum ApiCredentials {
 
     /// WordPress.com AppID
     ///
-    static let dotcomAppId: String =  "<#Wordpress.com App ID#>"
+    static let dotcomAppId: String = "<#Wordpress.com App ID#>"
 
     /// WordPress.com Secret
     ///

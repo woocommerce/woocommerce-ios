@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a ProductTag entity.
 ///
 public struct ProductTag: Decodable {
@@ -10,9 +9,11 @@ public struct ProductTag: Decodable {
 
     /// ProductTag initializer.
     ///
-    public init(tagID: Int,
-                name: String,
-                slug: String) {
+    public init(
+        tagID: Int,
+        name: String,
+        slug: String
+    ) {
         self.tagID = tagID
         self.name = name
         self.slug = slug
@@ -34,11 +35,11 @@ public struct ProductTag: Decodable {
 
 /// Defines all of the ProductTag CodingKeys
 ///
-private extension ProductTag {
-    enum CodingKeys: String, CodingKey {
-        case tagID  = "id"
-        case name   = "name"
-        case slug   = "slug"
+extension ProductTag {
+    fileprivate enum CodingKeys: String, CodingKey {
+        case tagID = "id"
+        case name = "name"
+        case slug = "slug"
     }
 }
 
@@ -47,14 +48,12 @@ private extension ProductTag {
 //
 extension ProductTag: Comparable {
     public static func == (lhs: ProductTag, rhs: ProductTag) -> Bool {
-        return lhs.tagID == rhs.tagID &&
-            lhs.name == rhs.name &&
-            lhs.slug == rhs.slug
+        return lhs.tagID == rhs.tagID && lhs.name == rhs.name && lhs.slug == rhs.slug
     }
 
     public static func < (lhs: ProductTag, rhs: ProductTag) -> Bool {
-        return lhs.tagID < rhs.tagID ||
-            (lhs.tagID == rhs.tagID && lhs.name < rhs.name) ||
-            (lhs.tagID == rhs.tagID && lhs.name == rhs.name && lhs.slug < rhs.slug)
+        return lhs.tagID < rhs.tagID || (lhs.tagID == rhs.tagID && lhs.name < rhs.name) || (
+            lhs.tagID == rhs.tagID && lhs.name == rhs.name && lhs.slug < rhs.slug
+        )
     }
 }

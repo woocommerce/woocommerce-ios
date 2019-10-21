@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a ProductCategory entity.
 ///
 public struct ProductCategory: Decodable {
@@ -10,9 +9,11 @@ public struct ProductCategory: Decodable {
 
     /// ProductCategory initializer.
     ///
-    public init(categoryID: Int,
-                name: String,
-                slug: String) {
+    public init(
+        categoryID: Int,
+        name: String,
+        slug: String
+    ) {
         self.categoryID = categoryID
         self.name = name
         self.slug = slug
@@ -34,11 +35,11 @@ public struct ProductCategory: Decodable {
 
 /// Defines all of the ProductCategory CodingKeys
 ///
-private extension ProductCategory {
-    enum CodingKeys: String, CodingKey {
+extension ProductCategory {
+    fileprivate enum CodingKeys: String, CodingKey {
         case categoryID = "id"
-        case name       = "name"
-        case slug       = "slug"
+        case name = "name"
+        case slug = "slug"
     }
 }
 
@@ -47,14 +48,12 @@ private extension ProductCategory {
 //
 extension ProductCategory: Comparable {
     public static func == (lhs: ProductCategory, rhs: ProductCategory) -> Bool {
-        return lhs.categoryID == rhs.categoryID &&
-        lhs.name == rhs.name &&
-        lhs.slug == rhs.slug
+        return lhs.categoryID == rhs.categoryID && lhs.name == rhs.name && lhs.slug == rhs.slug
     }
 
     public static func < (lhs: ProductCategory, rhs: ProductCategory) -> Bool {
-        return lhs.categoryID < rhs.categoryID ||
-            (lhs.categoryID == rhs.categoryID && lhs.name < rhs.name) ||
-            (lhs.categoryID == rhs.categoryID && lhs.name == rhs.name && lhs.slug < rhs.slug)
+        return lhs.categoryID < rhs.categoryID || (lhs.categoryID == rhs.categoryID && lhs.name < rhs.name) || (
+            lhs.categoryID == rhs.categoryID && lhs.name == rhs.name && lhs.slug < rhs.slug
+        )
     }
 }

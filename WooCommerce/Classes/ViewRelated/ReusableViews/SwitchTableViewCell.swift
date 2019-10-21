@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// UITableViewCell (Subtitle Style) with a UISwitch on its right hand side.
 ///
 class SwitchTableViewCell: UITableViewCell {
@@ -65,13 +64,13 @@ class SwitchTableViewCell: UITableViewCell {
 
 // MARK: - Private Methods
 //
-private extension SwitchTableViewCell {
+extension SwitchTableViewCell {
 
-    func configureBackground() {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func setupTextLabels() {
+    fileprivate func setupTextLabels() {
         textLabel?.text = String()
         textLabel?.applyBodyStyle()
 
@@ -79,13 +78,13 @@ private extension SwitchTableViewCell {
         detailTextLabel?.applyFootnoteStyle()
     }
 
-    func setupSwitch() {
+    fileprivate func setupSwitch() {
         toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
         toggleSwitch.addTarget(self, action: #selector(toggleSwitchWasPressed), for: .touchUpInside)
         accessoryView = toggleSwitch
     }
 
-    func setupGestureRecognizers() {
+    fileprivate func setupGestureRecognizers() {
         let gestureRecognizer = UITapGestureRecognizer()
         gestureRecognizer.on { [weak self] gesture in
             self?.contentViewWasPressed()
@@ -94,7 +93,7 @@ private extension SwitchTableViewCell {
         addGestureRecognizer(gestureRecognizer)
     }
 
-    func contentViewWasPressed() {
+    fileprivate func contentViewWasPressed() {
         let newValue = !toggleSwitch.isOn
         toggleSwitch.setOn(newValue, animated: true)
         onChange?(newValue)

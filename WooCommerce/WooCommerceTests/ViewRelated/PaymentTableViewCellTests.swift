@@ -1,6 +1,7 @@
 import XCTest
-@testable import WooCommerce
+
 @testable import Networking
+@testable import WooCommerce
 
 final class PaymentTableViewCellTests: XCTestCase {
     private var cell: PaymentTableViewCell!
@@ -77,15 +78,22 @@ final class PaymentTableViewCellTests: XCTestCase {
 }
 
 
-private extension PaymentTableViewCellTests {
-    enum Titles {
-        static let subtotalLabel = NSLocalizedString("Product Total",
-                                                     comment: "Product Total label for payment view")
-        static let shippingLabel = NSLocalizedString("Shipping",
-                                                     comment: "Shipping label for payment view")
-        static let taxesLabel = NSLocalizedString("Taxes",
-                                                  comment: "Taxes label for payment view")
-        static let totalLabel = NSLocalizedString("Order Total",
-                                                  comment: "Order Total label for payment view")
+extension PaymentTableViewCellTests {
+    fileprivate enum Titles {
+        static let subtotalLabel = NSLocalizedString(
+            "Product Total",
+            comment: "Product Total label for payment view")
+
+        static let shippingLabel = NSLocalizedString(
+            "Shipping",
+            comment: "Shipping label for payment view")
+
+        static let taxesLabel = NSLocalizedString(
+            "Taxes",
+            comment: "Taxes label for payment view")
+
+        static let totalLabel = NSLocalizedString(
+            "Order Total",
+            comment: "Order Total label for payment view")
     }
 }

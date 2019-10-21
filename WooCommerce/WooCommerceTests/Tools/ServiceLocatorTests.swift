@@ -1,6 +1,7 @@
 import XCTest
-@testable import WooCommerce
+
 @testable import CocoaLumberjack
+@testable import WooCommerce
 
 final class ServiceLocatorTests: XCTestCase {
 

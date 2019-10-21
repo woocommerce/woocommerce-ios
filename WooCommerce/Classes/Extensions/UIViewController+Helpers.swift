@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// UIViewController Helpers
 ///
 extension UIViewController {

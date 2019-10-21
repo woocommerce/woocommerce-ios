@@ -1,7 +1,7 @@
 import XCTest
 import Yosemite
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// StoresManager Unit Tests
 ///

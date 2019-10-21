@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// Represents a cell with a Title Label and Body Label
 ///
 final class HeadlineLabelTableViewCell: UITableViewCell {
@@ -39,16 +38,16 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
 }
 
 
-private extension HeadlineLabelTableViewCell {
-    func configureBackground() {
+extension HeadlineLabelTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureHeadline() {
+    fileprivate func configureHeadline() {
         headlineLabel?.applyHeadlineStyle()
     }
 
-    func configureBody() {
+    fileprivate func configureBody() {
         bodyLabel?.applyBodyStyle()
     }
 }

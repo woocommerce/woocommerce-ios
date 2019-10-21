@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// RefundListMapper Unit Tests
 ///
@@ -112,11 +112,11 @@ final class RefundListMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension RefundListMapperTests {
+extension RefundListMapperTests {
 
     /// Returns the RefundListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapRefunds(from filename: String) -> [Refund] {
+    fileprivate func mapRefunds(from filename: String) -> [Refund] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
@@ -126,7 +126,7 @@ private extension RefundListMapperTests {
 
     /// Returns the RefundListMapper output upon receiving `refunds-all`
     ///
-    func mapLoadAllRefundsResponse() -> [Refund] {
+    fileprivate func mapLoadAllRefundsResponse() -> [Refund] {
         return mapRefunds(from: "refunds-all")
     }
 }

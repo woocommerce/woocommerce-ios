@@ -1,10 +1,10 @@
-import Foundation
 import CocoaLumberjack
+import Foundation
 import Storage
 
 /// Provides global depedencies.
 ///
-final class ServiceLocator {
+enum ServiceLocator {
 
     // MARK: - Private properties
 
@@ -165,8 +165,8 @@ extension ServiceLocator {
 }
 
 
-private extension ServiceLocator {
-    static func isRunningTests() -> Bool {
+extension ServiceLocator {
+    fileprivate static func isRunningTests() -> Bool {
         return NSClassFromString("XCTestCase") != nil
     }
 }

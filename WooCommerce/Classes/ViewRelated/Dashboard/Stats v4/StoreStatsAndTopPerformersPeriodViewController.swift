@@ -127,15 +127,15 @@ extension StoreStatsAndTopPerformersPeriodViewController: IndicatorInfoProvider 
     }
 }
 
-private extension StoreStatsAndTopPerformersPeriodViewController {
-    func configureChildViewControllers() {
+extension StoreStatsAndTopPerformersPeriodViewController {
+    fileprivate func configureChildViewControllers() {
         childViewContrllers.forEach { childViewController in
             addChild(childViewController)
             childViewController.view.translatesAutoresizingMaskIntoConstraints = false
         }
     }
 
-    func configureSubviews() {
+    fileprivate func configureSubviews() {
         view.addSubview(scrollView)
         view.pinSubviewToSafeArea(scrollView)
 
@@ -145,8 +145,9 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.pinSubviewToAllEdges(stackView)
-        NSLayoutConstraint.activate([
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+        NSLayoutConstraint.activate(
+            [
+                stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             ])
 
         childViewContrllers.forEach { childViewController in
@@ -156,30 +157,34 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         // Store stats.
         let storeStatsPeriodView = storeStatsPeriodViewController.view!
         stackView.addArrangedSubview(storeStatsPeriodView)
-        NSLayoutConstraint.activate([
-            storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 380),
+        NSLayoutConstraint.activate(
+            [
+                storeStatsPeriodView.heightAnchor.constraint(equalToConstant: 380),
             ])
 
         // Top performers header.
-        let topPerformersHeaderView = TopPerformersSectionHeaderView(title:
-            NSLocalizedString("Top Performers",
-                              comment: "Header label for Top Performers section of My Store tab.")
+        let topPerformersHeaderView = TopPerformersSectionHeaderView(
+            title:
+                NSLocalizedString(
+                    "Top Performers",
+                    comment: "Header label for Top Performers section of My Store tab.")
                 .uppercased())
         stackView.addArrangedSubview(topPerformersHeaderView)
         let headerTopBorderView = createBorderView()
         let headerBottomBorderView = createBorderView()
         topPerformersHeaderView.addSubview(headerTopBorderView)
         topPerformersHeaderView.addSubview(headerBottomBorderView)
-        NSLayoutConstraint.activate([
-            topPerformersHeaderView.heightAnchor.constraint(equalToConstant: 44),
-            // Top border view
-            headerTopBorderView.topAnchor.constraint(equalTo: topPerformersHeaderView.topAnchor),
-            headerTopBorderView.leadingAnchor.constraint(equalTo: topPerformersHeaderView.leadingAnchor),
-            headerTopBorderView.trailingAnchor.constraint(equalTo: topPerformersHeaderView.trailingAnchor),
-            // Bottom border view
-            headerBottomBorderView.bottomAnchor.constraint(equalTo: topPerformersHeaderView.bottomAnchor),
-            headerBottomBorderView.leadingAnchor.constraint(equalTo: topPerformersHeaderView.leadingAnchor),
-            headerBottomBorderView.trailingAnchor.constraint(equalTo: topPerformersHeaderView.trailingAnchor),
+        NSLayoutConstraint.activate(
+            [
+                topPerformersHeaderView.heightAnchor.constraint(equalToConstant: 44),
+                // Top border view
+                headerTopBorderView.topAnchor.constraint(equalTo: topPerformersHeaderView.topAnchor),
+                headerTopBorderView.leadingAnchor.constraint(equalTo: topPerformersHeaderView.leadingAnchor),
+                headerTopBorderView.trailingAnchor.constraint(equalTo: topPerformersHeaderView.trailingAnchor),
+                // Bottom border view
+                headerBottomBorderView.bottomAnchor.constraint(equalTo: topPerformersHeaderView.bottomAnchor),
+                headerBottomBorderView.leadingAnchor.constraint(equalTo: topPerformersHeaderView.leadingAnchor),
+                headerBottomBorderView.trailingAnchor.constraint(equalTo: topPerformersHeaderView.trailingAnchor),
             ])
 
         // Top performers.
@@ -191,8 +196,9 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         let emptyView = UIView(frame: .zero)
         emptyView.translatesAutoresizingMaskIntoConstraints = false
         emptyView.backgroundColor = .clear
-        NSLayoutConstraint.activate([
-            emptyView.heightAnchor.constraint(equalToConstant: 44),
+        NSLayoutConstraint.activate(
+            [
+                emptyView.heightAnchor.constraint(equalToConstant: 44),
             ])
         stackView.addArrangedSubview(emptyView)
 
@@ -201,12 +207,13 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
         }
     }
 
-    func createBorderView() -> UIView {
+    fileprivate func createBorderView() -> UIView {
         let view = UIView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = StyleManager.wooGreyBorder
-        NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalToConstant: 1)
+        NSLayoutConstraint.activate(
+            [
+                view.heightAnchor.constraint(equalToConstant: 1),
             ])
         return view
     }
@@ -214,8 +221,9 @@ private extension StoreStatsAndTopPerformersPeriodViewController {
 
 // MARK: Actions
 //
-private extension StoreStatsAndTopPerformersPeriodViewController {
-    @objc func pullToRefresh() {
+extension StoreStatsAndTopPerformersPeriodViewController {
+    @objc
+    fileprivate func pullToRefresh() {
         onPullToRefresh()
     }
 }

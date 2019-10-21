@@ -1,7 +1,6 @@
+import SafariServices
 import UIKit
 import WordPressShared
-import SafariServices
-
 
 class AboutViewController: UIViewController {
 
@@ -47,30 +46,31 @@ class AboutViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension AboutViewController {
+extension AboutViewController {
 
     /// Set the title and back button.
     ///
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         title = NSLocalizedString("About", comment: "About this app (information page title)")
         // Don't show the About title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
+        let backButton = UIBarButtonItem(
+            title: String(),
+            style: .plain,
+            target: nil,
+            action: nil)
 
         navigationItem.backBarButtonItem = backButton
     }
 
     /// Apply Woo styles.
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Configure common table properties.
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
@@ -78,17 +78,17 @@ private extension AboutViewController {
 
     /// Setup the tableview header.
     ///
-    func configureTableViewHeader() {
-        let tintedImage             = UIImage.wooLogoImage(withSize: Constants.headerImageSize, tintColor: StyleManager.wooCommerceBrandColor)
-        let imageView               = UIImageView(image: tintedImage)
-        imageView.contentMode       = .center
+    fileprivate func configureTableViewHeader() {
+        let tintedImage = UIImage.wooLogoImage(withSize: Constants.headerImageSize, tintColor: StyleManager.wooCommerceBrandColor)
+        let imageView = UIImageView(image: tintedImage)
+        imageView.contentMode = .center
         imageView.frame.size.height += Constants.headerPadding
         tableView.tableHeaderView = imageView
     }
 
     /// Setup the tableview footer.
     ///
-    func configureTableViewFooter() {
+    fileprivate func configureTableViewFooter() {
         /// `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
         /// Hence the container view with a defined frame.
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
@@ -102,13 +102,13 @@ private extension AboutViewController {
 
     /// Setup the sections in this table view
     ///
-    func configureSections() {
+    fileprivate func configureSections() {
         sections = [Section(title: nil, rows: [.terms, .privacy])]
     }
 
     /// Register table cells.
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
@@ -116,7 +116,7 @@ private extension AboutViewController {
 
     /// Cells currently configured in the order they appear on screen
     ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    fileprivate func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as BasicTableViewCell where row == .terms:
             configureTerms(cell: cell)
@@ -129,7 +129,7 @@ private extension AboutViewController {
 
     /// Terms of service cell.
     ///
-    func configureTerms(cell: BasicTableViewCell) {
+    fileprivate func configureTerms(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Terms of Service", comment: "Opens the Terms of Service web page")
@@ -137,7 +137,7 @@ private extension AboutViewController {
 
     /// Privacy polocy cell.
     ///
-    func configurePrivacy(cell: BasicTableViewCell) {
+    fileprivate func configurePrivacy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Privacy Policy", comment: "Opens the Privacy Policy web page")
@@ -147,13 +147,13 @@ private extension AboutViewController {
 
 // MARK: - Convenience Methods
 //
-private extension AboutViewController {
+extension AboutViewController {
 
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+    fileprivate func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
-    func displayWebView(url: URL) {
+    fileprivate func displayWebView(url: URL) {
         let safariViewController = SFSafariViewController(url: url)
         present(safariViewController, animated: true, completion: nil)
     }
@@ -162,17 +162,17 @@ private extension AboutViewController {
 
 // MARK: - Actions
 //
-private extension AboutViewController {
+extension AboutViewController {
 
     /// Terms of Service action
     ///
-    func privacyWasPressed() {
+    fileprivate func privacyWasPressed() {
         displayWebView(url: WooConstants.privacyURL)
     }
 
     /// Privacy Policy action
     ///
-    func termsWasPressed() {
+    fileprivate func termsWasPressed() {
         displayWebView(url: WooConstants.termsOfServiceUrl)
     }
 }
@@ -227,11 +227,11 @@ extension AboutViewController: UITableViewDelegate {
 
 // MARK: - Private Types
 //
-private struct Constants {
-    static let rowHeight       = CGFloat(44)
+private enum Constants {
+    static let rowHeight = CGFloat(44)
     static let headerImageSize = CGSize(width: 61, height: 36)
-    static let headerPadding   = CGFloat(60)
-    static let footerHeight    = 44
+    static let headerPadding = CGFloat(60)
+    static let footerHeight = 44
 }
 
 private struct Section {

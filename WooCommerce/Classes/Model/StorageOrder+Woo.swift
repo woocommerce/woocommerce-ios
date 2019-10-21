@@ -2,7 +2,6 @@ import Foundation
 import WordPressShared
 import Yosemite
 
-
 /// Encapsulates Storage.Order Interface Helpers: Used for Time Grouping
 ///
 extension StorageOrder {

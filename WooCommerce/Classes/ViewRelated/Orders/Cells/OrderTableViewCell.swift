@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 
-
 // MARK: - OrderTableViewCell
 //
 final class OrderTableViewCell: UITableViewCell & SearchResultCell {
@@ -28,8 +27,9 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     }
 
     func configureCell(searchModel: OrderSearchCellViewModel) {
-        configureCell(viewModel: searchModel.orderDetailsViewModel,
-                      orderStatus: searchModel.orderStatus)
+        configureCell(
+            viewModel: searchModel.orderDetailsViewModel,
+            orderStatus: searchModel.orderStatus)
     }
 
     /// Renders the specified Order ViewModel
@@ -89,11 +89,11 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
 
 // MARK: - Private
 //
-private extension OrderTableViewCell {
+extension OrderTableViewCell {
 
     /// Preserves the current Payment BG Color
     ///
-    func preserveLabelColors(action: () -> Void) {
+    fileprivate func preserveLabelColors(action: () -> Void) {
         let paymentColor = paymentStatusLabel.backgroundColor
         let borderColor = paymentStatusLabel.layer.borderColor
 
@@ -103,13 +103,13 @@ private extension OrderTableViewCell {
         paymentStatusLabel.layer.borderColor = borderColor
     }
 
-    func configureBackground() {
+    fileprivate func configureBackground() {
         backgroundColor = StyleManager.wooWhite
     }
 
     /// Setup: Labels
     ///
-    func configureLabels() {
+    fileprivate func configureLabels() {
         titleLabel.applyHeadlineStyle()
         totalLabel.applyBodyStyle()
         totalLabel.numberOfLines = 0

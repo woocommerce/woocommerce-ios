@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - Note: Represents a WordPress.com Notification
 //
 public struct Note {
@@ -97,20 +96,22 @@ public struct Note {
 
     /// Designed Initializer.
     ///
-    public init(noteId: Int64,
-                hash: Int64,
-                read: Bool,
-                icon: String?,
-                noticon: String?,
-                timestamp: String,
-                type: String,
-                subtype: String?,
-                url: String?,
-                title: String?,
-                subject: Data,
-                header: Data,
-                body: Data,
-                meta: Data) {
+    public init(
+        noteId: Int64,
+        hash: Int64,
+        read: Bool,
+        icon: String?,
+        noticon: String?,
+        timestamp: String,
+        type: String,
+        subtype: String?,
+        url: String?,
+        title: String?,
+        subject: Data,
+        header: Data,
+        body: Data,
+        meta: Data
+    ) {
 
         self.noteId = noteId
         self.hash = hash
@@ -175,20 +176,21 @@ extension Note: Decodable {
         let rawMetaAsData = container.failsafeDecodeIfPresent([String: AnyCodable].self, forKey: .meta) ?? [:]
         let metaAsData = try JSONEncoder().encode(rawMetaAsData)
 
-        self.init(noteId: noteID,
-                  hash: hash,
-                  read: read,
-                  icon: icon,
-                  noticon: noticon,
-                  timestamp: timestamp,
-                  type: type,
-                  subtype: subtype,
-                  url: url,
-                  title: title,
-                  subject: subjectAsData,
-                  header: headerAsData,
-                  body: bodyAsData,
-                  meta: metaAsData)
+        self.init(
+            noteId: noteID,
+            hash: hash,
+            read: read,
+            icon: icon,
+            noticon: noticon,
+            timestamp: timestamp,
+            type: type,
+            subtype: subtype,
+            url: url,
+            title: title,
+            subject: subjectAsData,
+            header: headerAsData,
+            body: bodyAsData,
+            meta: metaAsData)
     }
 }
 

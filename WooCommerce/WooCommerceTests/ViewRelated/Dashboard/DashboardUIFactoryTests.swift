@@ -1,6 +1,7 @@
-import XCTest
 import Storage
+import XCTest
 import Yosemite
+
 @testable import WooCommerce
 
 final class DashboardUIFactoryTests: XCTestCase {
@@ -37,9 +38,11 @@ final class DashboardUIFactoryTests: XCTestCase {
         dashboardUIFactory = DashboardUIFactory(siteID: mockSiteID)
 
         var dashboardUITypes: [UIViewController.Type] = []
-        let expectedDashboardUITypes: [UIViewController.Type] = [DashboardStatsV3ViewController.self,
-                                                                 // After reload, UI is reverted to v3
-                                                                 DashboardStatsV3ViewController.self]
+        let expectedDashboardUITypes: [UIViewController.Type] = [
+            DashboardStatsV3ViewController.self,
+            // After reload, UI is reverted to v3
+            DashboardStatsV3ViewController.self,
+        ]
         let expectation = self.expectation(description: "Wait for the stats v4")
         expectation.expectedFulfillmentCount = 1
 
@@ -80,8 +83,9 @@ final class DashboardUIFactoryTests: XCTestCase {
 
     /// Stats v3 --> v3
     func testWhenV4IsUnavailableWhileStatsV3IsLastShown() {
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v3,
-                                                            sessionManager: SessionManager.testingInstance)
+        mockStoresManager = MockupStatsVersionStoresManager(
+            initialStatsVersionLastShown: .v3,
+            sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 
@@ -105,8 +109,9 @@ final class DashboardUIFactoryTests: XCTestCase {
 
     /// Stats v4 --> v4
     func testWhenV4IsAvailableWhileStatsV4IsLastShown() {
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
-                                                            sessionManager: SessionManager.testingInstance)
+        mockStoresManager = MockupStatsVersionStoresManager(
+            initialStatsVersionLastShown: .v4,
+            sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = true
         ServiceLocator.setStores(mockStoresManager)
 
@@ -130,8 +135,9 @@ final class DashboardUIFactoryTests: XCTestCase {
 
     /// Stats v4 --> v3 --> v4
     func testWhenV4IsUnavailableAndThenAvailableWhileStatsV4IsLastShown() {
-        mockStoresManager = MockupStatsVersionStoresManager(initialStatsVersionLastShown: .v4,
-                                                            sessionManager: SessionManager.testingInstance)
+        mockStoresManager = MockupStatsVersionStoresManager(
+            initialStatsVersionLastShown: .v4,
+            sessionManager: SessionManager.testingInstance)
         mockStoresManager.isStatsV4Available = false
         ServiceLocator.setStores(mockStoresManager)
 

@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 /// Encapsulates Storage.Note Interface Helpers: Used for Time Grouping
 ///
 extension StorageNote {

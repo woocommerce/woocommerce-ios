@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -7,13 +8,15 @@ final class EditableOrderTrackingTableViewCellTests: XCTestCase {
 
     private struct MockData {
         static let localizedShipmentDate = Date(timeIntervalSince1970: 0).toString(dateStyle: .medium, timeStyle: .none)
-        static let tracking = ShipmentTracking(siteID: 0,
-                                               orderID: 0,
-                                               trackingID: "mock-tracking-id",
-                                               trackingNumber: "XXX_YYY_ZZZ",
-                                               trackingProvider: "HK POST",
-                                               trackingURL: "http://automattic.com",
-                                               dateShipped: Date(timeIntervalSince1970: 0))
+
+        static let tracking = ShipmentTracking(
+            siteID: 0,
+            orderID: 0,
+            trackingID: "mock-tracking-id",
+            trackingNumber: "XXX_YYY_ZZZ",
+            trackingProvider: "HK POST",
+            trackingURL: "http://automattic.com",
+            dateShipped: Date(timeIntervalSince1970: 0))
 
         static let buttonTitle = "Track shipment"
     }
@@ -80,8 +83,9 @@ final class EditableOrderTrackingTableViewCellTests: XCTestCase {
     func testTopLabelAccessibilityLabelMatchesExpectation() {
         populateCell()
 
-        let expectedLabel = String.localizedStringWithFormat("Shipment Company %@",
-                                                             MockData.tracking.trackingProvider ?? "")
+        let expectedLabel = String.localizedStringWithFormat(
+            "Shipment Company %@",
+            MockData.tracking.trackingProvider ?? "")
 
         XCTAssertEqual(cell?.getTopLabel().accessibilityLabel, expectedLabel)
     }
@@ -89,15 +93,16 @@ final class EditableOrderTrackingTableViewCellTests: XCTestCase {
     func testMiddleLabelAccessibilityLabelMatchesExpectation() {
         populateCell()
 
-        let expectedLabel = String.localizedStringWithFormat("Tracking number %@",
-                                                             MockData.tracking.trackingNumber)
+        let expectedLabel = String.localizedStringWithFormat(
+            "Tracking number %@",
+            MockData.tracking.trackingNumber)
 
         XCTAssertEqual(cell?.getMiddleLabel().accessibilityLabel, expectedLabel)
     }
 }
 
 
-private extension EditableOrderTrackingTableViewCellTests {
+extension EditableOrderTrackingTableViewCellTests {
     private func populateCell() {
         cell?.topText = MockData.tracking.trackingProvider
         cell?.middleText = MockData.tracking.trackingNumber

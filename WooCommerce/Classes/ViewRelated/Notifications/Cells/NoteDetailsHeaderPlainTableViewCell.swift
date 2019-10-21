@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 // MARK: - NoteDetailsHeaderPlainTableViewCell
 //
 class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {

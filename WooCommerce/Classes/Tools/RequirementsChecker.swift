@@ -1,8 +1,7 @@
 import Foundation
 import UIKit
-import Yosemite
 import WordPressUI
-
+import Yosemite
 
 /// Result Enum for the RequirementsChecker
 ///
@@ -29,11 +28,7 @@ enum RequirementCheckResult: Int, CaseIterable {
 
 /// Responsible for checking the minimum requirements for the app and its features!
 ///
-class RequirementsChecker {
-
-    /// Private: NO-OP
-    ///
-    private init() { }
+enum RequirementsChecker {
 
 
     /// This function checks the default site's API version and then displays a warning if the
@@ -77,11 +72,11 @@ class RequirementsChecker {
 
 // MARK: - Private helpers
 //
-private extension RequirementsChecker {
+extension RequirementsChecker {
 
     /// Display the WC version alert
     ///
-    static func displayWCVersionAlert() {
+    fileprivate static func displayWCVersionAlert() {
         let fancyAlert = FancyAlertViewController.makeWooUpgradeAlertController()
         fancyAlert.modalPresentationStyle = .custom
         fancyAlert.transitioningDelegate = AppDelegate.shared.tabBarController
@@ -90,7 +85,7 @@ private extension RequirementsChecker {
 
     /// Returns a `SettingAction.retrieveSiteAPI` action
     ///
-    static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((RequirementCheckResult, Error?) -> Void)? = nil) -> SettingAction {
+    fileprivate static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((RequirementCheckResult, Error?) -> Void)? = nil) -> SettingAction {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
             guard error == nil else {
                 DDLogError("⛔️ An error occurred while fetching API info for siteID \(siteID): \(String(describing: error))")

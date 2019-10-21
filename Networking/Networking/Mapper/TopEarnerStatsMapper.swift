@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: TopEarnerStats
 ///
 class TopEarnerStatsMapper: Mapper {

@@ -1,13 +1,13 @@
+import AutomatticTracks
 import Foundation
 import Yosemite
-import AutomatticTracks
-
 
 public class TracksProvider: AnalyticsProvider {
 
     lazy private var contextManager: TracksContextManager = {
         return TracksContextManager()
     }()
+
     lazy private var tracksService: TracksService = {
         let tracksService = TracksService(contextManager: contextManager)!
         tracksService.eventNamePrefix = Constants.eventNamePrefix
@@ -24,17 +24,17 @@ public class TracksProvider: AnalyticsProvider {
 
 // MARK: - AnalyticsProvider Conformance
 //
-public extension TracksProvider {
-    func refreshUserData() {
+extension TracksProvider {
+    public func refreshUserData() {
         switchTracksUsersIfNeeded()
         refreshMetadata()
     }
 
-    func track(_ eventName: String) {
+    public func track(_ eventName: String) {
         track(eventName, withProperties: nil)
     }
 
-    func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
+    public func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         if let properties = properties {
             tracksService.trackEventName(eventName, withCustomProperties: properties)
             DDLogInfo("🔵 Tracked \(eventName), properties: \(properties)")
@@ -44,13 +44,13 @@ public extension TracksProvider {
         }
     }
 
-    func clearEvents() {
+    public func clearEvents() {
         tracksService.clearQueuedEvents()
     }
 
     /// When a user opts-out, wipe data
     ///
-    func clearUsers() {
+    public func clearUsers() {
         guard ServiceLocator.analytics.userHasOptedIn else {
             // To be safe, nil out the anonymousUserID guid so a fresh one is regenerated
             UserDefaults.standard[.defaultAnonymousID] = nil
@@ -66,8 +66,8 @@ public extension TracksProvider {
 
 // MARK: - Private Helpers
 //
-private extension TracksProvider {
-    func switchTracksUsersIfNeeded() {
+extension TracksProvider {
+    fileprivate func switchTracksUsersIfNeeded() {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
         if ServiceLocator.stores.isAuthenticated, let account = ServiceLocator.stores.sessionManager.defaultAccount {
             if currentAnalyticsUsername.isEmpty {
@@ -88,7 +88,7 @@ private extension TracksProvider {
         }
     }
 
-    func refreshMetadata() {
+    fileprivate func refreshMetadata() {
         DDLogInfo("♻️ Refreshing tracks metadata...")
         var userProperties = [String: Any]()
         userProperties[UserProperties.platformKey] = "iOS"
@@ -102,15 +102,15 @@ private extension TracksProvider {
 
 // MARK: - Constants!
 //
-private extension TracksProvider {
+extension TracksProvider {
 
-    enum Constants {
+    fileprivate enum Constants {
         static let eventNamePrefix = "woocommerceios"
     }
 
-    enum UserProperties {
-        static let platformKey          = "platform"
-        static let voiceOverKey         = "accessibility_voice_over_enabled"
-        static let rtlKey               = "is_rtl_language"
+    fileprivate enum UserProperties {
+        static let platformKey = "platform"
+        static let voiceOverKey = "accessibility_voice_over_enabled"
+        static let rtlKey = "is_rtl_language"
     }
 }

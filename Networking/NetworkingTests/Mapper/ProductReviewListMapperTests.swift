@@ -1,11 +1,11 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 final class ProductReviewListMapperTests: XCTestCase {
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 33334444
+    private let dummySiteID = 33_334_444
 
     /// Verifies that all of the ProductReview Fields are parsed correctly.
     ///
@@ -36,11 +36,11 @@ final class ProductReviewListMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension ProductReviewListMapperTests {
+extension ProductReviewListMapperTests {
 
     /// Returns the ProducReviewtListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapProductReviews(from filename: String) -> [ProductReview] {
+    fileprivate func mapProductReviews(from filename: String) -> [ProductReview] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
@@ -50,7 +50,7 @@ private extension ProductReviewListMapperTests {
 
     /// Returns the ProductListMapper output upon receiving `reviews-all`
     ///
-    func mapLoadAllProductReviewsResponse() -> [ProductReview] {
+    fileprivate func mapLoadAllProductReviewsResponse() -> [ProductReview] {
         return mapProductReviews(from: "reviews-all")
     }
 }

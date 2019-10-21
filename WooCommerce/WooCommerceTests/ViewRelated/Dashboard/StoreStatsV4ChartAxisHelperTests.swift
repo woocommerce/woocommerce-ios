@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import WooCommerce
 
 class StoreStatsV4ChartAxisHelperTests: XCTestCase {
@@ -6,11 +7,11 @@ class StoreStatsV4ChartAxisHelperTests: XCTestCase {
 
     func testDatesAcrossTwoMonths() {
         // GMT: Saturday, June 1, 2019 12:29:29 AM
-        let dateInJune = Date(timeIntervalSince1970: 1559348969)
+        let dateInJune = Date(timeIntervalSince1970: 1_559_348_969)
         // GMT: Monday, June 10, 2019 12:29:29 AM
-        let secondDateInJune = Date(timeIntervalSince1970: 1560126569)
+        let secondDateInJune = Date(timeIntervalSince1970: 1_560_126_569)
         // GMT: Thursday, August 1, 2019 12:29:29 AM
-        let dateInAugust = Date(timeIntervalSince1970: 1564619369)
+        let dateInAugust = Date(timeIntervalSince1970: 1_564_619_369)
         let dates = [dateInAugust, dateInJune, secondDateInJune]
         let timezone = TimeZone(identifier: "GMT")!
         let text = helper.generateLabelText(for: dates, timeRange: .thisWeek, siteTimezone: timezone)

@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// JetpackRequest Unit Tests
 ///
@@ -27,7 +27,6 @@ final class JetpackRequestTests: XCTestCase {
     private var jetpackEndpointBaseURL: String {
         return DotcomRequest.wordpressApiBaseURL + JetpackRequest.wordpressApiVersion.path + "jetpack-blogs/" + String(sampleSiteID) + "/rest-api/"
     }
-
 
 
     /// Verifies that a POST JetpackRequest will query the Jetpack Tunneled WordPress.com API.
@@ -90,11 +89,11 @@ final class JetpackRequestTests: XCTestCase {
 
 // Parameter Encoding Helpers
 //
-private extension JetpackRequestTests {
+extension JetpackRequestTests {
 
     /// Returns the expected Query Parameters for a given JetpackRequest.
     ///
-    func queryParameters(for request: JetpackRequest) -> String {
+    fileprivate func queryParameters(for request: JetpackRequest) -> String {
         switch request.method {
         case .get:
             let parameters = concatenate(request.parameters).addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
@@ -110,7 +109,7 @@ private extension JetpackRequestTests {
 
     /// Returns the expected HTTP Body for a given Jetpack Request.
     ///
-    func httpBody(for request: JetpackRequest) -> String {
+    fileprivate func httpBody(for request: JetpackRequest) -> String {
         guard request.method == .post else {
             return String()
         }
@@ -122,15 +121,13 @@ private extension JetpackRequestTests {
         let methodAsPercentEncoded = String("method=" + request.method.rawValue.lowercased())
             .addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
 
-        return "body=" + parametersAsPercentEncoded +
-            "&json=true" +
-            "&path=" + sampleWooApiVersion.path + sampleRPC +
-            ampersandAsPercentEncoded + "_" + methodAsPercentEncoded
+        return "body=" + parametersAsPercentEncoded + "&json=true" + "&path=" + sampleWooApiVersion.path + sampleRPC + ampersandAsPercentEncoded + "_"
+            + methodAsPercentEncoded
     }
 
     /// Concatenates the specified collection of Parameters for the URLRequest's httpBody.
     ///
-    func concatenate(_ parameters: [String: Any]) -> String {
+    fileprivate func concatenate(_ parameters: [String: Any]) -> String {
         return parameters.reduce("") { (output, parameter) in
             return output + "&" + parameter.key + "=" + String(describing: parameter.value)
         }

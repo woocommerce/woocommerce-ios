@@ -1,6 +1,5 @@
 import XCTest
 
-
 /// Dictionary+Woo Unit Tests
 ///
 class DictionaryWooTests: XCTestCase {

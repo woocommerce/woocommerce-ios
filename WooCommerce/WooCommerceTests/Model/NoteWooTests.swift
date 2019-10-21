@@ -1,8 +1,8 @@
-import XCTest
 import Foundation
-@testable import WooCommerce
-@testable import Networking
+import XCTest
 
+@testable import Networking
+@testable import WooCommerce
 
 /// Note+Woo Tests
 ///
@@ -76,11 +76,11 @@ class NoteWooTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension NoteWooTests {
+extension NoteWooTests {
 
     /// Returns the NoteListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapNotes(from filename: String) throws -> [Note] {
+    fileprivate func mapNotes(from filename: String) throws -> [Note] {
         let response = Loader.contentsOf(filename)!
         return try NoteListMapper().map(response: response)
     }

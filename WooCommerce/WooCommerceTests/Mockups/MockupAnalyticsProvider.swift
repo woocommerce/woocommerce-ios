@@ -1,4 +1,5 @@
 import Foundation
+
 @testable import WooCommerce
 
 public class MockupAnalyticsProvider: AnalyticsProvider {
@@ -11,28 +12,28 @@ public class MockupAnalyticsProvider: AnalyticsProvider {
 
 // MARK: - AnalyticsProvider Conformance
 //
-public extension MockupAnalyticsProvider {
+extension MockupAnalyticsProvider {
 
-    func refreshUserData() {
+    public func refreshUserData() {
         userID = "aGeneratedUserGUID"
     }
 
-    func track(_ eventName: String) {
+    public func track(_ eventName: String) {
         track(eventName, withProperties: nil)
     }
 
-    func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
+    public func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
         receivedEvents.append(eventName)
         if let properties = properties {
             receivedProperties.append(properties)
         }
     }
 
-    func clearEvents() {
+    public func clearEvents() {
         receivedEvents.removeAll()
     }
 
-    func clearUsers() {
+    public func clearUsers() {
         userOptedIn = false
         userID = nil
     }

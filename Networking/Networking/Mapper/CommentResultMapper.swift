@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: Comment Moderation Result
 ///
 struct CommentResultMapper: Mapper {
@@ -15,8 +14,8 @@ struct CommentResultMapper: Mapper {
     }
 }
 
-private extension CommentResultMapper {
-    enum Constants {
+extension CommentResultMapper {
+    fileprivate enum Constants {
         static let statusKey: String = "status"
     }
 }

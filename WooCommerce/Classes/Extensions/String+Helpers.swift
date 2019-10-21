@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// String: Helper Methods
 ///
 extension String {

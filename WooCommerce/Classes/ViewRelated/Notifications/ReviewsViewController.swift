@@ -1,11 +1,10 @@
-import UIKit
 import Gridicons
-import Yosemite
-import WordPressUI
+import Gridicons
 import SafariServices
-import Gridicons
 import StoreKit
-
+import UIKit
+import WordPressUI
+import Yosemite
 
 // MARK: - ReviewsViewController
 //
@@ -18,10 +17,11 @@ final class ReviewsViewController: UIViewController {
     /// Mark all as read nav bar button
     ///
     private lazy var rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: .checkmarkImage,
-                               style: .plain,
-                               target: self,
-                               action: #selector(markAllAsRead))
+        return UIBarButtonItem(
+            image: .checkmarkImage,
+            style: .plain,
+            target: self,
+            action: #selector(markAllAsRead))
     }()
 
     private let viewModel = ReviewsViewModel(data: DefaultReviewsDataSource())
@@ -127,36 +127,37 @@ final class ReviewsViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-private extension ReviewsViewController {
+extension ReviewsViewController {
 
     /// Setup: TabBar
     ///
-    func configureTabBarItem() {
+    fileprivate func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
         tabBarItem.image = .commentImage
     }
 
     /// Setup: Navigation
     ///
-    func configureNavigationItem() {
+    fileprivate func configureNavigationItem() {
         // Don't show the Settings title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: NavigationBar Buttons
     ///
-    func configureNavigationBarButtons() {
+    fileprivate func configureNavigationBarButtons() {
         rightBarButton.tintColor = .white
         rightBarButton.accessibilityTraits = .button
         rightBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Reviews as Read Button")
-        rightBarButton.accessibilityHint = NSLocalizedString("Marks Every Review as Read",
-                                                            comment: "VoiceOver accessibility hint for the Mark All Reviews as Read Action")
+        rightBarButton.accessibilityHint = NSLocalizedString(
+            "Marks Every Review as Read",
+            comment: "VoiceOver accessibility hint for the Mark All Reviews as Read Action")
         navigationItem.rightBarButtonItem = rightBarButton
     }
 
     /// Setup: TableView
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
@@ -171,17 +172,17 @@ private extension ReviewsViewController {
 
     /// Setup: ResultsController
     ///
-    func configureResultsController() {
+    fileprivate func configureResultsController() {
         viewModel.configureResultsController(tableView: tableView)
     }
 
     /// Setup: TableViewCells
     ///
-    func configureTableViewCells() {
+    fileprivate func configureTableViewCells() {
         viewModel.configureTableViewCells(tableView: tableView)
     }
 
-    func refreshTitle() {
+    fileprivate func refreshTitle() {
         transitionToResultsUpdatedState()
         navigationItem.title = NSLocalizedString(
             "Reviews",
@@ -193,16 +194,19 @@ private extension ReviewsViewController {
 
 // MARK: - Actions
 //
-private extension ReviewsViewController {
+extension ReviewsViewController {
+    @IBAction
 
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+    fileprivate func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
         synchronizeReviews {
             sender.endRefreshing()
         }
     }
 
-    @IBAction func markAllAsRead() {
+    @IBAction
+
+    fileprivate func markAllAsRead() {
         viewModel.markAllAsRead { [weak self] error in
             guard let self = self else {
                 return
@@ -248,17 +252,17 @@ extension ReviewsViewController: UITableViewDelegate {
 
 // MARK: - Yosemite Wrappers
 //
-private extension ReviewsViewController {
+extension ReviewsViewController {
 
     /// Nukes the BadgeCount
     ///
-    func resetApplicationBadge() {
+    fileprivate func resetApplicationBadge() {
         ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
+    fileprivate func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
         transitionToSyncingState()
         viewModel.synchronizeReviews { [weak self] in
             self?.transitionToResultsUpdatedState()
@@ -271,11 +275,11 @@ private extension ReviewsViewController {
 
 // MARK: - ResultsController
 //
-private extension ReviewsViewController {
+extension ReviewsViewController {
 
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
-    func reloadResultsController() {
+    fileprivate func reloadResultsController() {
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
         transitionToSyncingState()
@@ -285,23 +289,23 @@ private extension ReviewsViewController {
 
 // MARK: - Placeholders
 //
-private extension ReviewsViewController {
+extension ReviewsViewController {
 
     /// Renders Placeholder Reviews.
     ///
-    func displayPlaceholderReviews() {
+    fileprivate func displayPlaceholderReviews() {
         viewModel.displayPlaceholderReviews(tableView: tableView)
     }
 
     /// Removes Placeholder Reviews.
     ///
-    func removePlaceholderReviews() {
+    fileprivate func removePlaceholderReviews() {
         viewModel.removePlaceholderReviews(tableView: tableView)
     }
 
     /// Displays the Empty State Overlay.
     ///
-    func displayEmptyUnfilteredOverlay() {
+    fileprivate func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("No Reviews Yet!", comment: "Empty Reviews List Message")
@@ -326,7 +330,7 @@ private extension ReviewsViewController {
 
     /// Removes all of the the OverlayMessageView instances in the view hierarchy.
     ///
-    func removeAllOverlays() {
+    fileprivate func removeAllOverlays() {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
@@ -336,11 +340,11 @@ private extension ReviewsViewController {
 
 // MARK: - Notifications
 //
-private extension ReviewsViewController {
+extension ReviewsViewController {
 
     /// Setup: Notification Hooks
     ///
-    func startListeningToNotifications() {
+    fileprivate func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
         nc.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -348,19 +352,23 @@ private extension ReviewsViewController {
 
     /// Tear down the Notifications Hooks
     ///
-    func stopListeningToNotifications() {
+    fileprivate func stopListeningToNotifications() {
         NotificationCenter.default.removeObserver(self)
     }
 
+    @objc
+
     /// Default Site Updated Handler
     ///
-    @objc func defaultSiteWasUpdated() {
+    fileprivate func defaultSiteWasUpdated() {
         reloadResultsController()
     }
 
+    @objc
+
     /// Application became Active Again (while the Notes Tab was onscreen)
     ///
-    @objc func applicationDidBecomeActive() {
+    fileprivate func applicationDidBecomeActive() {
         guard isViewLoaded == true && view.window != nil else {
             return
         }
@@ -372,19 +380,19 @@ private extension ReviewsViewController {
 
 // MARK: - Finite State Machine Management
 //
-private extension ReviewsViewController {
+extension ReviewsViewController {
 
     /// Runs prior to the FSM entering a new state.
     ///
     /// Note: Just because this func runs does not guarantee `didEnter()` or `didLeave()` will run as well.
     ///
-    func willEnter(state: State) {
+    fileprivate func willEnter(state: State) {
         updateNavBarButtonsState()
     }
 
     /// Runs whenever the FSM enters a State.
     ///
-    func didEnter(state: State) {
+    fileprivate func didEnter(state: State) {
         switch state {
         case .emptyUnfiltered:
             if isEmpty == true {
@@ -399,7 +407,7 @@ private extension ReviewsViewController {
 
     /// Runs whenever the FSM leaves a State.
     ///
-    func didLeave(state: State) {
+    fileprivate func didLeave(state: State) {
         switch state {
         case .emptyUnfiltered:
             removeAllOverlays()
@@ -412,14 +420,14 @@ private extension ReviewsViewController {
 
     /// Should be called before Sync'ing Starts: Transitions to .results / .syncing
     ///
-    func transitionToSyncingState() {
+    fileprivate func transitionToSyncingState() {
         state = isEmpty ? .syncing : .results
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
-    func transitionToResultsUpdatedState() {
+    fileprivate func transitionToResultsUpdatedState() {
         if isEmpty == false {
             state = .results
             return
@@ -432,24 +440,24 @@ private extension ReviewsViewController {
 
 // MARK: - Private Helpers
 //
-private extension ReviewsViewController {
+extension ReviewsViewController {
 
     /// Enables/disables the navbar buttons if needed
     ///
     /// - Parameter filterEnabled: If true, the filter navbar buttons is enabled; if false, it's disabled
     ///
-    func updateNavBarButtonsState() {
+    fileprivate func updateNavBarButtonsState() {
         updateMarkAllReadButtonState()
     }
 
-    func updateMarkAllReadButtonState() {
+    fileprivate func updateMarkAllReadButtonState() {
         rightBarButton.isEnabled = viewModel.hasUnreadNotifications
     }
 
     /// Displays the `Mark all as read` Notice if the number of times it was previously displayed is lower than the
     /// `Settings.markAllAsReadNoticeMaxViews` value.
     ///
-    func displayMarkAllAsReadNoticeIfNeeded() {
+    fileprivate func displayMarkAllAsReadNoticeIfNeeded() {
         guard markAsReadCount < Settings.markAllAsReadNoticeMaxViews else {
             return
         }
@@ -464,21 +472,21 @@ private extension ReviewsViewController {
 
 // MARK: - Nested Types
 //
-private extension ReviewsViewController {
+extension ReviewsViewController {
 
-    enum Settings {
-        static let estimatedRowHeight             = CGFloat(88)
-        static let placeholderRowsPerSection      = [3]
-        static let markAllAsReadNoticeMaxViews    = 2
+    fileprivate enum Settings {
+        static let estimatedRowHeight = CGFloat(88)
+        static let placeholderRowsPerSection = [3]
+        static let markAllAsReadNoticeMaxViews = 2
     }
 
-    enum State {
+    fileprivate enum State {
         case emptyUnfiltered
         case results
         case syncing
     }
 
-    struct Constants {
+    fileprivate enum Constants {
         static let section = "notifications"
     }
 }

@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// DotcomDeviceMapper: Unit Tests
 ///
@@ -22,12 +22,11 @@ class DotcomDeviceMapperTests: XCTestCase {
 }
 
 
-
-private extension DotcomDeviceMapperTests {
+extension DotcomDeviceMapperTests {
 
     /// Returns the DotcomDeviceMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapDotcomDevice(from filename: String) throws -> DotcomDevice {
+    fileprivate func mapDotcomDevice(from filename: String) throws -> DotcomDevice {
         let response = Loader.contentsOf(filename)!
         let mapper = DotcomDeviceMapper()
 

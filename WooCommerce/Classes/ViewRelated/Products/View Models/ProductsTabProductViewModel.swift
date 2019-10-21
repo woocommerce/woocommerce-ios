@@ -14,8 +14,8 @@ struct ProductsTabProductViewModel {
     }
 }
 
-private extension Product {
-    func createDetailsAttributedString() -> NSAttributedString {
+extension Product {
+    fileprivate func createDetailsAttributedString() -> NSAttributedString {
         let statusText = createStatusText()
         let stockText = createStockText()
         let variationsText = createVariationsText()
@@ -24,19 +24,21 @@ private extension Product {
             .compactMap({ $0 })
             .joined(separator: " • ")
 
-        let attributedString = NSMutableAttributedString(string: detailsText,
-                                                         attributes: [
-                                                            .foregroundColor: StyleManager.wooGreyMid,
-                                                            .font: StyleManager.footerLabelFont
+        let attributedString = NSMutableAttributedString(
+            string: detailsText,
+            attributes: [
+                .foregroundColor: StyleManager.wooGreyMid,
+                .font: StyleManager.footerLabelFont,
             ])
         if let statusText = statusText {
-            attributedString.addAttributes([.foregroundColor: StyleManager.highlightTextColor],
-                                           range: NSRange(location: 0, length: statusText.count))
+            attributedString.addAttributes(
+                [.foregroundColor: StyleManager.highlightTextColor],
+                range: NSRange(location: 0, length: statusText.count))
         }
         return attributedString
     }
 
-    func createStatusText() -> String? {
+    fileprivate func createStatusText() -> String? {
         switch productStatus {
         case .pending, .draft:
             return productStatus.description
@@ -45,7 +47,7 @@ private extension Product {
         }
     }
 
-    func createStockText() -> String? {
+    fileprivate func createStockText() -> String? {
         switch productStockStatus {
         case .inStock:
             if let stockQuantity = stockQuantity {
@@ -59,7 +61,7 @@ private extension Product {
         }
     }
 
-    func createVariationsText() -> String? {
+    fileprivate func createVariationsText() -> String? {
         guard !variations.isEmpty else {
             return nil
         }

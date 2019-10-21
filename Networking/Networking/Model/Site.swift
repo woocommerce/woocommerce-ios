@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a WordPress.com Site.
 ///
 public struct Site: Decodable {
@@ -52,26 +51,29 @@ public struct Site: Decodable {
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
 
-        self.init(siteID: siteID,
-                  name: name,
-                  description: description,
-                  url: url,
-                  plan: String(), // Not created on init. Added in supplementary API request.
-                  isWooCommerceActive: isWooCommerceActive,
-                  isWordPressStore: isWordPressStore,
-                  timezone: timezone)
+        self.init(
+            siteID: siteID,
+            name: name,
+            description: description,
+            url: url,
+            plan: String(),  // Not created on init. Added in supplementary API request.
+            isWooCommerceActive: isWooCommerceActive,
+            isWordPressStore: isWordPressStore,
+            timezone: timezone)
     }
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int,
-                name: String,
-                description: String,
-                url: String,
-                plan: String,
-                isWooCommerceActive: Bool,
-                isWordPressStore: Bool,
-                timezone: String) {
+    public init(
+        siteID: Int,
+        name: String,
+        description: String,
+        url: String,
+        plan: String,
+        isWooCommerceActive: Bool,
+        isWordPressStore: Bool,
+        timezone: String
+    ) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -88,43 +90,38 @@ public struct Site: Decodable {
 //
 extension Site: Comparable {
     public static func == (lhs: Site, rhs: Site) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.name == rhs.name &&
-            lhs.description == rhs.description &&
-            lhs.url == rhs.url &&
-            lhs.plan == rhs.plan &&
-            lhs.isWooCommerceActive == rhs.isWooCommerceActive &&
-            lhs.isWordPressStore == rhs.isWordPressStore
+        return lhs.siteID == rhs.siteID && lhs.name == rhs.name && lhs.description == rhs.description && lhs.url == rhs.url && lhs.plan == rhs.plan && lhs
+            .isWooCommerceActive == rhs.isWooCommerceActive && lhs.isWordPressStore == rhs.isWordPressStore
     }
 
     public static func < (lhs: Site, rhs: Site) -> Bool {
-        return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.name < rhs.name) ||
-            (lhs.siteID == rhs.siteID && lhs.name == rhs.name && lhs.description < rhs.description)
+        return lhs.siteID < rhs.siteID || (lhs.siteID == rhs.siteID && lhs.name < rhs.name) || (
+            lhs.siteID == rhs.siteID && lhs.name == rhs.name && lhs.description < rhs.description
+        )
     }
 }
 
 
 /// Defines all of the Site CodingKeys.
 ///
-private extension Site {
+extension Site {
 
-    enum SiteKeys: String, CodingKey {
-        case siteID         = "ID"
-        case name           = "name"
-        case description    = "description"
-        case url            = "URL"
-        case options        = "options"
-        case plan           = "plan"
+    fileprivate enum SiteKeys: String, CodingKey {
+        case siteID = "ID"
+        case name = "name"
+        case description = "description"
+        case url = "URL"
+        case options = "options"
+        case plan = "plan"
     }
 
-    enum OptionKeys: String, CodingKey {
+    fileprivate enum OptionKeys: String, CodingKey {
         case isWordPressStore = "is_wpcom_store"
         case isWooCommerceActive = "woocommerce_is_active"
         case timezone = "timezone"
     }
 
-    enum PlanKeys: String, CodingKey {
-        case shortName      = "product_name_short"
+    fileprivate enum PlanKeys: String, CodingKey {
+        case shortName = "product_name_short"
     }
 }

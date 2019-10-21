@@ -31,15 +31,17 @@ final class ProductSearchUICommand: SearchUICommand {
     /// Synchronizes the Products matching a given Keyword
     ///
     func synchronizeModels(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
-        let action = ProductAction.searchProducts(siteID: siteID,
-                                                  keyword: keyword,
-                                                  pageNumber: pageNumber,
-                                                  pageSize: pageSize) { error in
-                                                    if let error = error {
-                                                        DDLogError("☠️ Product Search Failure! \(error)")
-                                                    }
+        let action = ProductAction.searchProducts(
+            siteID: siteID,
+            keyword: keyword,
+            pageNumber: pageNumber,
+            pageSize: pageSize
+        ) { error in
+            if let error = error {
+                DDLogError("☠️ Product Search Failure! \(error)")
+            }
 
-                                                    onCompletion?(error == nil)
+            onCompletion?(error == nil)
         }
 
         ServiceLocator.stores.dispatch(action)

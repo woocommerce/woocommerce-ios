@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import WooCommerce
 
 final class ReviewAgeTests: XCTestCase {
@@ -85,8 +86,8 @@ final class ReviewAgeTests: XCTestCase {
 }
 
 
-private extension ReviewAgeTests {
-    enum Expectations {
+extension ReviewAgeTests {
+    fileprivate enum Expectations {
         static let today = NSLocalizedString("Last 24 hours", comment: "Last 24 hours section header")
         static let last7days = NSLocalizedString("Last 7 days", comment: "Last 7 days section header")
         static let olderThan7Days = NSLocalizedString("Older than 7 days", comment: "+7 Days Section Header")

@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 // MARK: - MainTabViewModel Notifications
 //
 extension NSNotification.Name {
@@ -28,15 +27,17 @@ final class MainTabViewModel {
 }
 
 
-private extension MainTabViewModel {
-    enum Constants {
+extension MainTabViewModel {
+    fileprivate enum Constants {
         static let ninePlus = NSLocalizedString(
             "9+",
             comment: "Content of the badge presented over the Orders icon when there are more than 9 orders processing"
         )
     }
 
-    @objc func requestBadgeCount() {
+    @objc
+
+    fileprivate func requestBadgeCount() {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             DDLogError("# Error: Cannot fetch order count")
             return
@@ -53,11 +54,12 @@ private extension MainTabViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func processBadgeCount(_ orderCount: OrderCount?) {
+    fileprivate func processBadgeCount(_ orderCount: OrderCount?) {
         // Exit early if there is not data, or the count is zero
         guard let orderCount = orderCount,
             let processingCount = orderCount[OrderStatusEnum.processing.rawValue]?.total,
-            processingCount > 0 else {
+            processingCount > 0
+        else {
             onBadgeReload?(nil)
             return
         }
@@ -72,9 +74,10 @@ private extension MainTabViewModel {
     }
 
     private func observeBadgeRefreshNotifications() {
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(requestBadgeCount),
-                                               name: .ordersBadgeReloadRequired,
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(requestBadgeCount),
+            name: .ordersBadgeReloadRequired,
+            object: nil)
     }
 }

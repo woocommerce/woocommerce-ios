@@ -18,6 +18,6 @@ public struct OrderCount {
     public subscript(slug: String) -> OrderCountItem? {
         return items.filter {
             $0.slug == slug
-            }.first
+        }.first
     }
 }

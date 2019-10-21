@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// TopEarnerStatsMapper Unit Tests
 ///
@@ -121,7 +121,7 @@ class TopEarnerStatsMapperTests: XCTestCase {
         XCTAssertEqual(sampleItem2.price, -1234.23424)
         XCTAssertEqual(sampleItem2.productID, 373)
         XCTAssertEqual(sampleItem2.productName, "Black Dress (H&M)")
-        XCTAssertEqual(sampleItem2.quantity, 1231323)
+        XCTAssertEqual(sampleItem2.quantity, 1_231_323)
         XCTAssertEqual(sampleItem2.total, 585234234.00)
     }
 }
@@ -129,11 +129,11 @@ class TopEarnerStatsMapperTests: XCTestCase {
 
 /// Private Methods
 ///
-private extension TopEarnerStatsMapperTests {
+extension TopEarnerStatsMapperTests {
 
     /// Returns the TopEarnerStatsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapStatItems(from filename: String) -> TopEarnerStats? {
+    fileprivate func mapStatItems(from filename: String) -> TopEarnerStats? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
@@ -143,25 +143,25 @@ private extension TopEarnerStatsMapperTests {
 
     /// Returns the TopEarnerStatsMapper output upon receiving `top-performers-day`
     ///
-    func mapTopEarnerStatsWithDayUnitResponse() -> TopEarnerStats? {
+    fileprivate func mapTopEarnerStatsWithDayUnitResponse() -> TopEarnerStats? {
         return mapStatItems(from: "top-performers-day")
     }
 
     /// Returns the TopEarnerStatsMapper output upon receiving `top-performers-week`
     ///
-    func mapTopEarnerStatsWithWeekUnitResponse() -> TopEarnerStats? {
+    fileprivate func mapTopEarnerStatsWithWeekUnitResponse() -> TopEarnerStats? {
         return mapStatItems(from: "top-performers-week")
     }
 
     /// Returns the TopEarnerStatsMapper output upon receiving `top-performers-month`
     ///
-    func mapTopEarnerStatsWithMonthUnitResponse() -> TopEarnerStats? {
+    fileprivate func mapTopEarnerStatsWithMonthUnitResponse() -> TopEarnerStats? {
         return mapStatItems(from: "top-performers-month")
     }
 
     /// Returns the TopEarnerStatsMapper output upon receiving `top-performers-year`
     ///
-    func mapTopEarnerStatsWithYearUnitResponse() -> TopEarnerStats? {
+    fileprivate func mapTopEarnerStatsWithYearUnitResponse() -> TopEarnerStats? {
         return mapStatItems(from: "top-performers-year")
     }
 }

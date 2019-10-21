@@ -1,18 +1,17 @@
 import Foundation
 
-
 /// Enum used to represent the age of Product Reviews.
 ///
 enum ReviewAge: String {
     case last24Hours = "0"
-    case last7Days   = "1"
-    case theRest     = "2"
+    case last7Days = "1"
+    case theRest = "2"
 
     var description: String {
         switch self {
-        case .last24Hours:  return NSLocalizedString("Last 24 hours", comment: "Last 24 hours section header")
-        case .last7Days:    return NSLocalizedString("Last 7 days", comment: "Last 7 days section header")
-        case .theRest:      return NSLocalizedString("Older than 7 days", comment: "+7 Days Section Header")
+        case .last24Hours: return NSLocalizedString("Last 24 hours", comment: "Last 24 hours section header")
+        case .last7Days: return NSLocalizedString("Last 7 days", comment: "Last 7 days section header")
+        case .theRest: return NSLocalizedString("Older than 7 days", comment: "+7 Days Section Header")
         }
     }
 }
@@ -42,7 +41,8 @@ extension ReviewAge {
         if let day = dateComponents.day,
             let week = dateComponents.weekOfYear,
             day > 1,
-            week <= 1 {
+            week <= 1
+        {
             return .last7Days
         }
 

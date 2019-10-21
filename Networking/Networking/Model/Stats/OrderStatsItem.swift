@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents an single order stat for a specific period.
 ///
 public struct OrderStatsItem {
@@ -25,10 +24,12 @@ public struct OrderStatsItem {
 
     /// OrderStatsItem struct initializer.
     ///
-    public init(period: String, orders: Int, products: Int, coupons: Int, couponDiscount: Double,
-                totalSales: Double, totalTax: Double, totalShipping: Double, totalShippingTax: Double,
-                totalRefund: Double, totalTaxRefund: Double, totalShippingRefund: Double, totalShippingTaxRefund: Double,
-                currency: String, grossSales: Double, netSales: Double, avgOrderValue: Double, avgProductsPerOrder: Double) {
+    public init(
+        period: String, orders: Int, products: Int, coupons: Int, couponDiscount: Double,
+        totalSales: Double, totalTax: Double, totalShipping: Double, totalShippingTax: Double,
+        totalRefund: Double, totalTaxRefund: Double, totalShippingRefund: Double, totalShippingTaxRefund: Double,
+        currency: String, grossSales: Double, netSales: Double, avgOrderValue: Double, avgProductsPerOrder: Double
+    ) {
         self.period = period
         self.orders = orders
         self.products = products
@@ -55,35 +56,23 @@ public struct OrderStatsItem {
 //
 extension OrderStatsItem: Comparable {
     public static func == (lhs: OrderStatsItem, rhs: OrderStatsItem) -> Bool {
-        return lhs.period == rhs.period &&
-            lhs.orders == rhs.orders &&
-            lhs.products == rhs.products &&
-            lhs.coupons == rhs.coupons &&
-            lhs.couponDiscount == rhs.couponDiscount &&
-            lhs.totalSales == rhs.totalSales &&
-            lhs.totalTax == rhs.totalTax &&
-            lhs.totalShipping == rhs.totalShipping &&
-            lhs.totalShippingTax == rhs.totalShippingTax &&
-            lhs.totalRefund == rhs.totalRefund &&
-            lhs.totalTaxRefund == rhs.totalTaxRefund &&
-            lhs.totalShippingRefund == rhs.totalShippingRefund &&
-            lhs.totalShippingTaxRefund == rhs.totalShippingTaxRefund &&
-            lhs.currency == rhs.currency &&
-            lhs.grossSales == rhs.grossSales &&
-            lhs.netSales == rhs.netSales &&
-            lhs.avgOrderValue == rhs.avgOrderValue &&
-            lhs.avgProductsPerOrder == rhs.avgProductsPerOrder
+        return lhs.period == rhs.period && lhs.orders == rhs.orders && lhs.products == rhs.products && lhs.coupons == rhs.coupons && lhs.couponDiscount == rhs
+            .couponDiscount && lhs.totalSales == rhs.totalSales && lhs.totalTax == rhs.totalTax && lhs.totalShipping == rhs.totalShipping && lhs
+            .totalShippingTax == rhs.totalShippingTax && lhs.totalRefund == rhs.totalRefund && lhs.totalTaxRefund == rhs.totalTaxRefund && lhs
+            .totalShippingRefund == rhs.totalShippingRefund && lhs.totalShippingTaxRefund == rhs.totalShippingTaxRefund && lhs.currency == rhs.currency && lhs
+            .grossSales == rhs.grossSales && lhs.netSales == rhs.netSales && lhs.avgOrderValue == rhs.avgOrderValue && lhs.avgProductsPerOrder == rhs
+            .avgProductsPerOrder
     }
 
     public static func < (lhs: OrderStatsItem, rhs: OrderStatsItem) -> Bool {
-        return lhs.period < rhs.period ||
-            (lhs.period == rhs.period && lhs.totalSales < rhs.totalSales) ||
-            (lhs.period == rhs.period && lhs.totalSales == rhs.totalSales && lhs.orders < rhs.orders)
+        return lhs.period < rhs.period || (lhs.period == rhs.period && lhs.totalSales < rhs.totalSales) || (
+            lhs.period == rhs.period && lhs.totalSales == rhs.totalSales && lhs.orders < rhs.orders
+        )
     }
 
     public static func > (lhs: OrderStatsItem, rhs: OrderStatsItem) -> Bool {
-        return lhs.period > rhs.period ||
-            (lhs.period == rhs.period && lhs.totalSales > rhs.totalSales) ||
-            (lhs.period == rhs.period && lhs.totalSales == rhs.totalSales && lhs.orders > rhs.orders)
+        return lhs.period > rhs.period || (lhs.period == rhs.period && lhs.totalSales > rhs.totalSales) || (
+            lhs.period == rhs.period && lhs.totalSales == rhs.totalSales && lhs.orders > rhs.orders
+        )
     }
 }

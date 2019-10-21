@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// ApplicationAdapter: Wraps UIApplication's API. Meant for Unit Testing Purposes.
 ///
 protocol ApplicationAdapter: class {

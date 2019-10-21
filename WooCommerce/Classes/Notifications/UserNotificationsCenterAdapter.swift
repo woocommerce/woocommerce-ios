@@ -1,7 +1,6 @@
 import Foundation
 import UserNotifications
 
-
 /// UserNotificationsCenterAdapter: Wraps UNUserNotificationCenter API. Meant for Unit Testing Purposes.
 ///
 protocol UserNotificationsCenterAdapter {
@@ -33,7 +32,7 @@ extension UNUserNotificationCenter: UserNotificationsCenterAdapter {
     /// Requests Push Notifications Authorization
     ///
     func requestAuthorization(queue: DispatchQueue = .main, completion: @escaping (Bool) -> Void) {
-        requestAuthorization(options: [.badge, .sound, .alert]) { (allowed, _)  in
+        requestAuthorization(options: [.badge, .sound, .alert]) { (allowed, _) in
             queue.async {
                 completion(allowed)
             }

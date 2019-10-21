@@ -6,7 +6,7 @@ extension DateFormatter {
 
     /// Chart Formatters
     ///
-    struct Charts {
+    enum Charts {
 
         // MARK: - Chark axis formatters
 

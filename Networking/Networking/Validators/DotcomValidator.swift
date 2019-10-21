@@ -1,9 +1,8 @@
 import Foundation
 
-
 /// WordPress.com Response Validator
 ///
-struct DotcomValidator {
+enum DotcomValidator {
 
     /// Returns the DotcomError contained in a given Data Instance (if any).
     ///

@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// SiteAPIMapperTests Unit Tests
 ///
@@ -46,11 +46,11 @@ class SiteAPIMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension SiteAPIMapperTests {
+extension SiteAPIMapperTests {
 
     /// Returns the SiteAPIMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapSiteAPIData(from filename: String) -> SiteAPI? {
+    fileprivate func mapSiteAPIData(from filename: String) -> SiteAPI? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
@@ -60,13 +60,13 @@ private extension SiteAPIMapperTests {
 
     /// Returns the SiteAPIMapper output upon receiving `site-api`
     ///
-    func mapLoadSiteAPIResponse() -> SiteAPI? {
+    fileprivate func mapLoadSiteAPIResponse() -> SiteAPI? {
         return mapSiteAPIData(from: "site-api")
     }
 
     /// Returns the SiteAPIMapper output upon receiving `site-api`
     ///
-    func mapLoadBrokenSiteAPIResponse() -> SiteAPI? {
+    fileprivate func mapLoadBrokenSiteAPIResponse() -> SiteAPI? {
         return mapSiteAPIData(from: "site-api-no-woo")
     }
 }

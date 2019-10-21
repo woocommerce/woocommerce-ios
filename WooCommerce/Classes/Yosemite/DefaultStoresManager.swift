@@ -1,8 +1,6 @@
 import Foundation
 import Yosemite
 
-
-
 // MARK: - DefaultStoresManager
 //
 class DefaultStoresManager: StoresManager {
@@ -55,7 +53,6 @@ class DefaultStoresManager: StoresManager {
     var needsDefaultStore: Bool {
         return sessionManager.defaultStoreID == nil
     }
-
 
 
     /// Designated Initializer
@@ -164,11 +161,11 @@ class DefaultStoresManager: StoresManager {
 
 // MARK: - Private Methods
 //
-private extension DefaultStoresManager {
+extension DefaultStoresManager {
 
     /// Loads the Default Account into the current Session, if possible.
     ///
-    func restoreSessionAccountIfPossible() {
+    fileprivate func restoreSessionAccountIfPossible() {
         guard let accountID = sessionManager.defaultAccountID else {
             return
         }
@@ -178,7 +175,7 @@ private extension DefaultStoresManager {
 
     /// Loads the specified accountID into the Session, if possible.
     ///
-    func restoreSessionAccount(with accountID: Int) {
+    fileprivate func restoreSessionAccount(with accountID: Int) {
         let action = AccountAction.loadAccount(userID: accountID) { [weak self] account in
             guard let `self` = self, let account = account else {
                 return
@@ -192,7 +189,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Account, associated with the current credentials.
     ///
-    func synchronizeAccount(onCompletion: @escaping (Error?) -> Void) {
+    fileprivate func synchronizeAccount(onCompletion: @escaping (Error?) -> Void) {
         let action = AccountAction.synchronizeAccount { [weak self] (account, error) in
             if let `self` = self, let account = account, self.isAuthenticated {
                 self.sessionManager.defaultAccount = account
@@ -207,7 +204,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Account Settings, associated with the current credentials.
     ///
-    func synchronizeAccountSettings(onCompletion: @escaping (Error?) -> Void) {
+    fileprivate func synchronizeAccountSettings(onCompletion: @escaping (Error?) -> Void) {
         guard let userID = self.sessionManager.defaultAccount?.userID else {
             onCompletion(StoresManagerError.missingDefaultSite)
             return
@@ -216,7 +213,8 @@ private extension DefaultStoresManager {
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
             if let self = self,
                 let accountSettings = accountSettings,
-                self.isAuthenticated {
+                self.isAuthenticated
+            {
                 // Save the user's preference
                 ServiceLocator.analytics.setUserHasOptedOut(accountSettings.tracksOptOut)
             }
@@ -232,25 +230,26 @@ private extension DefaultStoresManager {
     /// under normal conditions but is a safety net in case there is an error
     /// preventing the temp username from being updated during login.
     ///
-    func replaceTempCredentialsIfNecessary(account: Account) {
+    fileprivate func replaceTempCredentialsIfNecessary(account: Account) {
         guard
             let credentials = sessionManager.defaultCredentials,
-            credentials.hasPlaceholderUsername() else {
-                return
+            credentials.hasPlaceholderUsername()
+        else {
+            return
         }
         authenticate(credentials: .init(username: account.username, authToken: credentials.authToken, siteAddress: credentials.siteAddress))
     }
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
-    func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
+    fileprivate func synchronizeSites(onCompletion: @escaping (Error?) -> Void) {
         let action = AccountAction.synchronizeSites(onCompletion: onCompletion)
         dispatch(action)
     }
 
     /// Synchronizes the WordPress.com Site Plan.
     ///
-    func synchronizeSitePlan(onCompletion: @escaping (Error?) -> Void) {
+    fileprivate func synchronizeSitePlan(onCompletion: @escaping (Error?) -> Void) {
         guard let siteID = sessionManager.defaultSite?.siteID else {
             onCompletion(StoresManagerError.missingDefaultSite)
             return
@@ -262,7 +261,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the settings for the specified site, if possible.
     ///
-    func synchronizeSettings(with siteID: Int, onCompletion: @escaping () -> Void) {
+    fileprivate func synchronizeSettings(with siteID: Int, onCompletion: @escaping () -> Void) {
         guard siteID != 0 else {
             // Just return if the siteID == 0 so we are not making extra requests
             return
@@ -301,7 +300,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the order statuses, if possible.
     ///
-    func retrieveOrderStatus(with siteID: Int) {
+    fileprivate func retrieveOrderStatus(with siteID: Int) {
         guard siteID != 0 else {
             // Just return if the siteID == 0 so we are not making extra requests
             return
@@ -318,7 +317,7 @@ private extension DefaultStoresManager {
 
     /// Loads the Default Site into the current Session, if possible.
     ///
-    func restoreSessionSiteIfPossible() {
+    fileprivate func restoreSessionSiteIfPossible() {
         guard let siteID = sessionManager.defaultStoreID else {
             return
         }
@@ -332,7 +331,7 @@ private extension DefaultStoresManager {
 
     /// Loads the specified siteID into the Session, if possible.
     ///
-    func restoreSessionSite(with siteID: Int) {
+    fileprivate func restoreSessionSite(with siteID: Int) {
         let action = AccountAction.loadSite(siteID: siteID) { [weak self] site in
             guard let `self` = self, let site = site else {
                 return

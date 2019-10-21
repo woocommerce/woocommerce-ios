@@ -1,8 +1,7 @@
-import UIKit
 import Gridicons
+import UIKit
 import WordPressUI
 import Yosemite
-
 
 // MARK: - DashboardViewController
 //
@@ -56,13 +55,13 @@ class DashboardViewController: UIViewController {
 
 // MARK: - Configuration
 //
-private extension DashboardViewController {
+extension DashboardViewController {
 
-    func configureView() {
+    fileprivate func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         configureTitle()
         configureNavigationItem()
     }
@@ -86,10 +85,11 @@ private extension DashboardViewController {
     }
 
     private func configureNavigationItem() {
-        let rightBarButton = UIBarButtonItem(image: .cogImage,
-                                             style: .plain,
-                                             target: self,
-                                             action: #selector(settingsTapped))
+        let rightBarButton = UIBarButtonItem(
+            image: .cogImage,
+            style: .plain,
+            target: self,
+            action: #selector(settingsTapped))
         rightBarButton.tintColor = .white
         rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
         rightBarButton.accessibilityTraits = .button
@@ -100,15 +100,16 @@ private extension DashboardViewController {
         navigationItem.setRightBarButton(rightBarButton, animated: false)
 
         // Don't show the Dashboard title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
+        let backButton = UIBarButtonItem(
+            title: String(),
+            style: .plain,
+            target: nil,
+            action: nil)
 
         navigationItem.backBarButtonItem = backButton
     }
 
-    func configureDashboardUIContainer() {
+    fileprivate func configureDashboardUIContainer() {
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
@@ -117,7 +118,7 @@ private extension DashboardViewController {
         view.pinSubviewToSafeArea(containerView)
     }
 
-    func reloadDashboardUIStatsVersion() {
+    fileprivate func reloadDashboardUIStatsVersion() {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
@@ -126,17 +127,18 @@ private extension DashboardViewController {
             self.siteID = siteID
         }
 
-        dashboardUIFactory?.reloadDashboardUI(isFeatureFlagOn: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stats),
-                                              onUIUpdate: { [weak self] dashboardUI in
-                                                self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
-        })
+        dashboardUIFactory?.reloadDashboardUI(
+            isFeatureFlagOn: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stats),
+            onUIUpdate: { [weak self] dashboardUI in
+                self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
+            })
     }
 }
 
 // MARK: - Updates
 //
-private extension DashboardViewController {
-    func onDashboardUIUpdate(updatedDashboardUI: DashboardUI) {
+extension DashboardViewController {
+    fileprivate func onDashboardUIUpdate(updatedDashboardUI: DashboardUI) {
         defer {
             // Reloads data of the updated dashboard UI at the end.
             reloadData()
@@ -208,19 +210,20 @@ extension DashboardViewController {
 
 // MARK: - Action Handlers
 //
-private extension DashboardViewController {
+extension DashboardViewController {
+    @objc
 
-    @objc func settingsTapped() {
+    fileprivate func settingsTapped() {
         ServiceLocator.analytics.track(.settingsTapped)
         performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
     }
 
-    func pullToRefresh() {
+    fileprivate func pullToRefresh() {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
         reloadDashboardUIStatsVersion()
     }
 
-    func displaySyncingErrorNotice() {
+    fileprivate func displaySyncingErrorNotice() {
         let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
         let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
@@ -234,20 +237,21 @@ private extension DashboardViewController {
 
 // MARK: - Private Helpers
 //
-private extension DashboardViewController {
-    func reloadData() {
+extension DashboardViewController {
+    fileprivate func reloadData() {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        dashboardUI?.reloadData(completion: { [weak self] in
-            self?.configureTitle()
-        })
+        dashboardUI?.reloadData(
+            completion: { [weak self] in
+                self?.configureTitle()
+            })
     }
 }
 
 // MARK: - Constants
 //
-private extension DashboardViewController {
+extension DashboardViewController {
 
-    struct Segues {
-        static let settingsSegue        = "ShowSettingsViewController"
+    fileprivate enum Segues {
+        static let settingsSegue = "ShowSettingsViewController"
     }
 }

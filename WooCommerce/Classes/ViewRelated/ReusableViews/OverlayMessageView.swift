@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// OverlayMessageView: Displays an `Image + Text + Action` in a given superview.
 ///
 class OverlayMessageView: UIView {
@@ -72,7 +71,6 @@ class OverlayMessageView: UIView {
     /// Closure to be executed whenever the Action Button is pressed.
     ///
     var onAction: (() -> Void)?
-
 
 
     // MARK: - Overridden Methods

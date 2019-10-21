@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Scanner: Helper Methods
 ///
 extension Scanner {

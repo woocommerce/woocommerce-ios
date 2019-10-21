@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// BordersView: Convenience UIView Subclass with the ability to render borders
 ///
 class BordersView: UIView {
@@ -101,7 +100,6 @@ class BordersView: UIView {
             setNeedsDisplay()
         }
     }
-
 
 
     // MARK: - UIView methods

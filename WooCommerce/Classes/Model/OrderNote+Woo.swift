@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 // MARK: - OrderNote Helper Methods
 //
 extension OrderNote {

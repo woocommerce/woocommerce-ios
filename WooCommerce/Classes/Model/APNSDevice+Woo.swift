@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 // MARK: - Convenience Methods Initializers
 //
 extension APNSDevice {
@@ -11,10 +10,11 @@ extension APNSDevice {
     init(deviceToken: String) {
         let uikitDevice = UIDevice.current
 
-        self.init(token: deviceToken,
-                  model: uikitDevice.model,
-                  name: uikitDevice.name,
-                  iOSVersion: uikitDevice.systemVersion,
-                  identifierForVendor: uikitDevice.identifierForVendor?.uuidString)
+        self.init(
+            token: deviceToken,
+            model: uikitDevice.model,
+            name: uikitDevice.name,
+            iOSVersion: uikitDevice.systemVersion,
+            identifierForVendor: uikitDevice.identifierForVendor?.uuidString)
     }
 }

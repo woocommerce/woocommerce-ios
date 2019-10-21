@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// AccountSettingsMapper Unit Tests
 ///
@@ -20,14 +20,13 @@ class AccountSettingsMapperTests: XCTestCase {
 }
 
 
-
 // MARK: - Private Methods.
 //
-private extension AccountSettingsMapperTests {
+extension AccountSettingsMapperTests {
 
     /// Returns the AccountSettingsMapper output upon receiving `me-settings` mockup response (Data Encoded).
     ///
-    func mapLoadAccountSettingsResponse() -> AccountSettings? {
+    fileprivate func mapLoadAccountSettingsResponse() -> AccountSettings? {
         guard let response = Loader.contentsOf("me-settings") else {
             return nil
         }

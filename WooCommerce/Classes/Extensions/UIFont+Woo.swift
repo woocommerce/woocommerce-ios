@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// WooCommerce UIFont Helpers
 ///
 extension UIFont {

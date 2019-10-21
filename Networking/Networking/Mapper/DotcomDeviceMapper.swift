@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: Dotcom Device
 ///
 struct DotcomDeviceMapper: Mapper {

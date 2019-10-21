@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: OrderStats
 ///
 struct OrderStatsV4Mapper: Mapper {
@@ -22,7 +21,7 @@ struct OrderStatsV4Mapper: Mapper {
         let decoder = JSONDecoder()
         decoder.userInfo = [
             .siteID: siteID,
-            .granularity: granularity
+            .granularity: granularity,
         ]
         return try decoder.decode(OrderStatsV4Envelope.self, from: response).orderStats
     }

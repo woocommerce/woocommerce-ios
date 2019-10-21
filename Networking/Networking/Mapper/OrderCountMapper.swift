@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: Order count
 ///
 struct OrderCountMapper: Mapper {
@@ -15,11 +14,13 @@ struct OrderCountMapper: Mapper {
     ///
     func map(response: Data) throws -> OrderCount {
         let decoder = JSONDecoder()
-        let orderCountItems = try decoder.decode(OrderCountEnvelope.self,
-                                                 from: response)
+        let orderCountItems = try decoder.decode(
+            OrderCountEnvelope.self,
+            from: response)
 
-        return OrderCount(siteID: siteID,
-                          items: orderCountItems.orderCountItems)
+        return OrderCount(
+            siteID: siteID,
+            items: orderCountItems.orderCountItems)
     }
 }
 

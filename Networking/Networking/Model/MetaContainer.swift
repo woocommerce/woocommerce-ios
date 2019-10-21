@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - MetaContainer: Simple API to query the "Notification Meta" Collection.
 //
 public struct MetaContainer {
@@ -51,7 +50,7 @@ extension MetaContainer {
         case home
         case order
         case post
-        case reply  = "reply_comment"
+        case reply = "reply_comment"
         case site
         case user
     }

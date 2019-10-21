@@ -1,9 +1,7 @@
+import AutomatticTracks
 import Foundation
 import UserNotifications
-import AutomatticTracks
 import Yosemite
-
-
 
 /// PushNotificationsManager: Encapsulates all the tasks related to Push Notifications Auth + Registration + Handling.
 ///
@@ -96,7 +94,7 @@ extension PushNotificationsManager {
 
         unregisterSupportDevice()
 
-        unregisterDotcomDeviceIfPossible() { error in
+        unregisterDotcomDeviceIfPossible { error in
             if let error = error {
                 DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
                 return
@@ -183,7 +181,7 @@ extension PushNotificationsManager {
             handleSupportNotification,
             handleForegroundNotification,
             handleInactiveNotification,
-            handleBackgroundNotification
+            handleBackgroundNotification,
         ]
 
         for handler in handlers {
@@ -197,7 +195,7 @@ extension PushNotificationsManager {
 
 // MARK: - Push Handlers
 //
-private extension PushNotificationsManager {
+extension PushNotificationsManager {
 
     /// Handles a Support Remote Notification
     ///
@@ -209,10 +207,10 @@ private extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
-    func handleSupportNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+    fileprivate func handleSupportNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
 
         guard userInfo.string(forKey: APNSKey.type) == PushType.zendesk else {
-                return false
+            return false
         }
 
         self.configuration.supportManager.pushNotificationReceived()
@@ -237,7 +235,7 @@ private extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
-    func handleForegroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+    fileprivate func handleForegroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
         guard applicationState == .active, let _ = userInfo[APNSKey.identifier] else {
             return false
         }
@@ -260,7 +258,7 @@ private extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
-    func handleInactiveNotification(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) -> Bool {
+    fileprivate func handleInactiveNotification(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) -> Bool {
         guard applicationState == .inactive, let notificationId = userInfo.integer(forKey: APNSKey.identifier) else {
             return false
         }
@@ -281,7 +279,7 @@ private extension PushNotificationsManager {
     ///
     /// - Returns: True when handled. False otherwise
     ///
-    func handleBackgroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
+    fileprivate func handleBackgroundNotification(_ userInfo: [AnyHashable: Any], completionHandler: @escaping (UIBackgroundFetchResult) -> Void) -> Bool {
         guard applicationState == .background, let _ = userInfo[APNSKey.identifier] else {
             return false
         }
@@ -295,23 +293,24 @@ private extension PushNotificationsManager {
 
 // MARK: - Dotcom Device Registration
 //
-private extension PushNotificationsManager {
+extension PushNotificationsManager {
 
     /// Registers an APNS DeviceToken in the WordPress.com backend.
     ///
-    func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
+    fileprivate func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
-        let action = NotificationAction.registerDevice(device: device,
-                                                       applicationId: WooConstants.pushApplicationID,
-                                                       applicationVersion: Bundle.main.version,
-                                                       defaultStoreID: defaultStoreID,
-                                                       onCompletion: onCompletion)
+        let action = NotificationAction.registerDevice(
+            device: device,
+            applicationId: WooConstants.pushApplicationID,
+            applicationVersion: Bundle.main.version,
+            defaultStoreID: defaultStoreID,
+            onCompletion: onCompletion)
         configuration.storesManager.dispatch(action)
     }
 
     /// Unregisters the known DeviceID (if any) from the Push Notifications Backend.
     ///
-    func unregisterDotcomDeviceIfPossible(onCompletion: @escaping (Error?) -> Void) {
+    fileprivate func unregisterDotcomDeviceIfPossible(onCompletion: @escaping (Error?) -> Void) {
         guard let knownDeviceId = deviceID else {
             onCompletion(nil)
             return
@@ -322,7 +321,7 @@ private extension PushNotificationsManager {
 
     /// Unregisters a given DeviceID from the Push Notifications backend.
     ///
-    func unregisterDotcomDevice(with deviceID: String, onCompletion: @escaping (Error?) -> Void) {
+    fileprivate func unregisterDotcomDevice(with deviceID: String, onCompletion: @escaping (Error?) -> Void) {
         let action = NotificationAction.unregisterDevice(deviceId: deviceID, onCompletion: onCompletion)
         configuration.storesManager.dispatch(action)
     }
@@ -330,17 +329,17 @@ private extension PushNotificationsManager {
 
 // MARK: - Support Relay
 //
-private extension PushNotificationsManager {
+extension PushNotificationsManager {
 
     /// Registers the specified DeviceToken for Support Push Notifications.
     ///
-    func registerSupportDevice(with deviceToken: String) {
+    fileprivate func registerSupportDevice(with deviceToken: String) {
         configuration.supportManager.deviceTokenWasReceived(deviceToken: deviceToken)
     }
 
     /// Unregisters the specified DeviceToken for Support Push Notifications.
     ///
-    func unregisterSupportDevice() {
+    fileprivate func unregisterSupportDevice() {
         configuration.supportManager.unregisterForRemoteNotifications()
     }
 }
@@ -348,11 +347,11 @@ private extension PushNotificationsManager {
 
 // MARK: - Analytics
 //
-private extension PushNotificationsManager {
+extension PushNotificationsManager {
 
     /// Tracks the specified Notification's Payload.
     ///
-    func trackNotification(with userInfo: [AnyHashable: Any]) {
+    fileprivate func trackNotification(with userInfo: [AnyHashable: Any]) {
         var properties = [String: String]()
 
         if let noteId = userInfo.string(forKey: APNSKey.identifier) {
@@ -375,11 +374,11 @@ private extension PushNotificationsManager {
 
 // MARK: - Yosemite Methods
 //
-private extension PushNotificationsManager {
+extension PushNotificationsManager {
 
     /// Synchronizes all of the Notifications. On success this method will always signal `.newData`, and `.noData` on error.
     ///
-    func synchronizeNotifications(completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    fileprivate func synchronizeNotifications(completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
         let action = NotificationAction.synchronizeNotifications { error in
             DDLogInfo("📱 Finished Synchronizing Notifications!")
 

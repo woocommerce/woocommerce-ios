@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// WooCommerce Color Constants
 ///
 extension UIColor {

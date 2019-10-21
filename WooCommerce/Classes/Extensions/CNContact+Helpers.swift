@@ -1,7 +1,6 @@
-import Foundation
 import Contacts
+import Foundation
 import Yosemite
-
 
 extension CNContact {
     static func from(address: Address) -> CNContact {

@@ -1,8 +1,7 @@
 import Foundation
-import UIKit
 import SafariServices
+import UIKit
 import WordPressAuthenticator
-
 
 /// Displays the WooCommerce Prologue UI.
 ///
@@ -68,43 +67,43 @@ final class LoginPrologueViewController: UIViewController {
 
 // MARK: - Initialization Methods
 //
-private extension LoginPrologueViewController {
+extension LoginPrologueViewController {
 
-    func setupMainView() {
+    fileprivate func setupMainView() {
         view.backgroundColor = .white
     }
 
-    func setupBackgroundView() {
+    fileprivate func setupBackgroundView() {
         backgroundView.backgroundColor = StyleManager.wooCommerceBrandColor
     }
 
-    func setupContainerView() {
+    fileprivate func setupContainerView() {
         containerView.backgroundColor = StyleManager.wooCommerceBrandColor
     }
 
-    func setupUpperLabel() {
+    fileprivate func setupUpperLabel() {
         upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
         upperLabel.adjustsFontForContentSizeCategory = true
         upperLabel.font = StyleManager.subheadlineBoldFont
         upperLabel.textColor = StyleManager.wooCommerceBrandColor
     }
 
-    func setupJetpackImage() {
+    fileprivate func setupJetpackImage() {
         jetpackImageView.image = UIImage.jetpackLogoImage.imageWithTintColor(.white)
     }
 
-    func setupDisclaimerLabel() {
+    fileprivate func setupDisclaimerLabel() {
         disclaimerTextView.attributedText = disclaimerAttributedText
         disclaimerTextView.adjustsFontForContentSizeCategory = true
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
             .foregroundColor: UIColor.white,
             .underlineColor: UIColor.white,
-            .underlineStyle: NSUnderlineStyle.single.rawValue
+            .underlineStyle: NSUnderlineStyle.single.rawValue,
         ]
     }
 
-    func setupLoginButton() {
+    fileprivate func setupLoginButton() {
         let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
         loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
         loginButton.setTitle(title, for: .normal)
@@ -167,25 +166,25 @@ extension LoginPrologueViewController {
 
 // MARK: - Private Methods
 //
-private extension LoginPrologueViewController {
+extension LoginPrologueViewController {
 
     /// Returns the Disclaimer Attributed Text (which contains a link to the Jetpack Setup URL).
     ///
-    var disclaimerAttributedText: NSAttributedString {
+    fileprivate var disclaimerAttributedText: NSAttributedString {
         let disclaimerText = NSLocalizedString(
-            "This app requires Jetpack to connect to your Store. <br /> Read the <a " +
-                "href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.",
-            comment: "Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. " +
-            "Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. " +
-            "Place the second sentence after the `<br />` tag. " +
-            "Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. " +
-            "If a literal translation of 'Read the configuration instructions' does not make sense in your language, " +
-            "please use a contextually appropriate substitution. " +
-            "For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language."
+            "This app requires Jetpack to connect to your Store. <br /> Read the <a "
+                + "href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.",
+            comment: "Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. "
+                + "Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. "
+                + "Place the second sentence after the `<br />` tag. "
+                + "Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. "
+                + "If a literal translation of 'Read the configuration instructions' does not make sense in your language, "
+                + "please use a contextually appropriate substitution. "
+                + "For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language."
         )
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.thinCaptionFont,
-            .foregroundColor: UIColor.white
+            .foregroundColor: UIColor.white,
         ]
 
         let disclaimerAttrText = NSMutableAttributedString()

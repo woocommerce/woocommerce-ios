@@ -57,11 +57,13 @@ final class ProductsViewController: UIViewController {
     private let syncingCoordinator = SyncingCoordinator()
 
     private lazy var stateCoordinator: ProductsViewControllerStateCoordinator = {
-        let stateCoordinator = ProductsViewControllerStateCoordinator(onLeavingState: { [weak self] state in
-            self?.didLeave(state: state)
-            }, onEnteringState: { [weak self] state in
+        let stateCoordinator = ProductsViewControllerStateCoordinator(
+            onLeavingState: { [weak self] state in
+                self?.didLeave(state: state)
+            },
+            onEnteringState: { [weak self] state in
                 self?.didEnter(state: state)
-        })
+            })
         return stateCoordinator
     }()
 
@@ -102,32 +104,38 @@ final class ProductsViewController: UIViewController {
 
 // MARK: - Notifications
 //
-private extension ProductsViewController {
+extension ProductsViewController {
 
     /// Wires all of the Notification Hooks
     ///
-    func startListeningToNotifications() {
+    fileprivate func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
         nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
         nc.addObserver(self, selector: #selector(stopListeningToNotifications), name: .logOutEventReceived, object: nil)
     }
 
+    @objc
+
     /// Stops listening to all related Notifications
     ///
-    @objc func stopListeningToNotifications() {
+    fileprivate func stopListeningToNotifications() {
         NotificationCenter.default.removeObserver(self)
     }
 
+    @objc
+
     /// Runs whenever the default Account is updated.
     ///
-    @objc func defaultAccountWasUpdated() {
+    fileprivate func defaultAccountWasUpdated() {
         syncingCoordinator.resetInternalState()
     }
 
+    @objc
+
     /// Default Site Updated Handler
     ///
-    @objc func defaultSiteWasUpdated() {
+    fileprivate func defaultSiteWasUpdated() {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
@@ -138,16 +146,18 @@ private extension ProductsViewController {
 
 // MARK: - Navigation Bar Actions
 //
-private extension ProductsViewController {
-    @IBAction func displaySearchProducts() {
+extension ProductsViewController {
+    @IBAction
+    fileprivate func displaySearchProducts() {
         guard let storeID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
         // TODO-1263: analytics
-        let searchViewController = SearchViewController(storeID: storeID,
-                                                        command: ProductSearchUICommand(siteID: storeID),
-                                                        cellType: ProductsTabProductTableViewCell.self)
+        let searchViewController = SearchViewController(
+            storeID: storeID,
+            command: ProductSearchUICommand(siteID: storeID),
+            cellType: ProductsTabProductTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
@@ -156,21 +166,22 @@ private extension ProductsViewController {
 
 // MARK: - View Configuration
 //
-private extension ProductsViewController {
+extension ProductsViewController {
 
     /// Set the title.
     ///
-    func configureNavigationBar() {
+    fileprivate func configureNavigationBar() {
         title = NSLocalizedString(
             "Products",
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
 
         navigationItem.leftBarButtonItem = {
-            let button = UIBarButtonItem(image: .searchImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(displaySearchProducts))
+            let button = UIBarButtonItem(
+                image: .searchImage,
+                style: .plain,
+                target: self,
+                action: #selector(displaySearchProducts))
             button.tintColor = StyleManager.wooWhite
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search products", comment: "Search Products")
@@ -185,13 +196,13 @@ private extension ProductsViewController {
 
     /// Apply Woo styles.
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Configure common table properties.
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(tableView)
@@ -214,28 +225,28 @@ private extension ProductsViewController {
 
     /// Setup: Sync'ing Coordinator
     ///
-    func configureSyncingCoordinator() {
+    fileprivate func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
     }
 
     /// Register table cells.
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
     }
 }
 
 // MARK: - Updates
 //
-private extension ProductsViewController {
-    func updateResultsController(siteID: Int) {
+extension ProductsViewController {
+    fileprivate func updateResultsController(siteID: Int) {
         resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in
             self?.tableView.reloadData()
         }
     }
 
-    func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
+    fileprivate func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "dateModified", ascending: true)
@@ -243,7 +254,7 @@ private extension ProductsViewController {
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 
-    func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
+    fileprivate func configureResultsController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
         resultsController.onDidChangeContent = {
             onReload()
         }
@@ -269,8 +280,11 @@ extension ProductsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ProductsTabProductTableViewCell else {
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: ProductsTabProductTableViewCell.reuseIdentifier,
+                for: indexPath) as? ProductsTabProductTableViewCell
+        else {
             fatalError()
         }
 
@@ -319,7 +333,7 @@ extension ProductsViewController: UITableViewDelegate {
     }
 }
 
-private extension ProductsViewController {
+extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         // TODO-1263: analytics
         syncingCoordinator.synchronizeFirstPage {
@@ -330,11 +344,11 @@ private extension ProductsViewController {
 
 // MARK: - Placeholders
 //
-private extension ProductsViewController {
+extension ProductsViewController {
 
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
-    func displayPlaceholderProducts() {
+    fileprivate func displayPlaceholderProducts() {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
@@ -343,7 +357,7 @@ private extension ProductsViewController {
 
     /// Removes the Placeholder Products (and restores the ResultsController <> UITableView link).
     ///
-    func removePlaceholderProducts() {
+    fileprivate func removePlaceholderProducts() {
         tableView.removeGhostContent()
         resultsController.startForwardingEvents(to: tableView)
         tableView.reloadData()
@@ -351,7 +365,7 @@ private extension ProductsViewController {
 
     /// Displays the Error Notice.
     ///
-    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
+    fileprivate func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
@@ -363,18 +377,19 @@ private extension ProductsViewController {
 
     /// Displays the overlay when there are no results.
     ///
-    func displayNoResultsOverlay() {
+    fileprivate func displayNoResultsOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = nil
-        overlayView.messageText = NSLocalizedString("No products yet",
-                                                    comment: "The text on the placeholder overlay when there are no products on the Products tab")
+        overlayView.messageText = NSLocalizedString(
+            "No products yet",
+            comment: "The text on the placeholder overlay when there are no products on the Products tab")
         overlayView.actionVisible = false
         overlayView.attach(to: view)
     }
 
     /// Removes all of the the OverlayMessageView instances in the view hierarchy.
     ///
-    func removeAllOverlays() {
+    fileprivate func removeAllOverlays() {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
@@ -396,22 +411,25 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
         transitionToSyncingState()
 
         let action = ProductAction
-            .synchronizeProducts(siteID: siteID,
-                                 pageNumber: pageNumber,
-                                 pageSize: pageSize) { [weak self] error in
-                                    guard let self = self else {
-                                        return
-                                    }
+            .synchronizeProducts(
+                siteID: siteID,
+                pageNumber: pageNumber,
+                pageSize: pageSize
+            )
+        { [weak self] error in
+            guard let self = self else {
+                return
+            }
 
-                                    if let error = error {
-                                        DDLogError("⛔️ Error synchronizing products: \(error)")
-                                        self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-                                    } else {
-                                        // TODO-1263: analytics
-                                    }
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing products: \(error)")
+                self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
+            } else {
+                // TODO-1263: analytics
+            }
 
-                                    self.transitionToResultsUpdatedState()
-                                    onCompletion?(error == nil)
+            self.transitionToResultsUpdatedState()
+            onCompletion?(error == nil)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -420,9 +438,9 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
 
 // MARK: - Finite State Machine Management
 //
-private extension ProductsViewController {
+extension ProductsViewController {
 
-    func didEnter(state: ProductsViewControllerState) {
+    fileprivate func didEnter(state: ProductsViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
@@ -437,7 +455,7 @@ private extension ProductsViewController {
         }
     }
 
-    func didLeave(state: ProductsViewControllerState) {
+    fileprivate func didLeave(state: ProductsViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
             removeAllOverlays()
@@ -449,11 +467,11 @@ private extension ProductsViewController {
         }
     }
 
-    func transitionToSyncingState() {
+    fileprivate func transitionToSyncingState() {
         stateCoordinator.transitionToSyncingState(withExistingData: !isEmpty)
     }
 
-    func transitionToResultsUpdatedState() {
+    fileprivate func transitionToResultsUpdatedState() {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
 }
@@ -493,9 +511,9 @@ extension ProductsViewController {
 
 // MARK: - Nested Types
 //
-private extension ProductsViewController {
+extension ProductsViewController {
 
-    enum Settings {
+    fileprivate enum Settings {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
     }

@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Networking Errors
 ///
 public enum NetworkError: Error {
@@ -43,8 +42,8 @@ extension NetworkError {
     /// Constants
     ///
     private enum StatusCode {
-        static let success  = 200..<300
+        static let success = 200..<300
         static let notFound = 404
-        static let timeout  = 408
+        static let timeout = 408
     }
 }

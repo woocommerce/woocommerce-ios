@@ -1,7 +1,6 @@
 import Foundation
 import Networking
 
-
 /// StringFormatter: Notifications Convenience Methods
 ///
 extension StringFormatter {
@@ -27,13 +26,13 @@ extension NoteRange: StringDescriptor {
     ///
     func attributes(from styles: StringStyles) -> [NSAttributedString.Key: Any]? {
         switch kind {
-        case .blockquote:   return styles.blockquote
-        case .comment:      return styles.italics
-        case .match:        return styles.match
-        case .noticon:      return styles.noticon
-        case .post:         return styles.italics
-        case .user:         return styles.bold
-        default:            return nil
+        case .blockquote: return styles.blockquote
+        case .comment: return styles.italics
+        case .match: return styles.match
+        case .noticon: return styles.noticon
+        case .post: return styles.italics
+        case .user: return styles.bold
+        default: return nil
         }
     }
 }

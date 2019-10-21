@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: Order totals report
 ///
 struct ReportOrderTotalsMapper: Mapper {
@@ -17,7 +16,7 @@ struct ReportOrderTotalsMapper: Mapper {
     func map(response: Data) throws -> [OrderStatus] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
-            .siteID: siteID
+            .siteID: siteID,
         ]
         return try decoder.decode(ReportOrderTotalsEnvelope.self, from: response).data
     }

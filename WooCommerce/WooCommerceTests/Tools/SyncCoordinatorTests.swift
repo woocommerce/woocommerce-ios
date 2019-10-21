@@ -1,6 +1,6 @@
 import XCTest
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// SyncingCoordinatorDelegate Closure-based Wrapper, for unit testing purposes.
 ///
@@ -27,7 +27,7 @@ class SyncCoordinatorTests: XCTestCase {
 
     /// Last element in the first page: Expected to trigger a Sync event
     ///
-    private let lastElementInFirstPage = SyncingCoordinator.Defaults.pageSize -  1
+    private let lastElementInFirstPage = SyncingCoordinator.Defaults.pageSize - 1
 
     /// Testing Delegate Wrapper
     ///

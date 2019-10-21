@@ -1,9 +1,8 @@
-import UIKit
-import Yosemite
 import Gridicons
 import SafariServices
+import UIKit
 import WordPressUI
-
+import Yosemite
 
 /// ProductDetailsViewController: Displays the details for a given Product.
 ///
@@ -62,23 +61,23 @@ final class ProductDetailsViewController: UIViewController {
 
 // MARK: - Configuration
 //
-private extension ProductDetailsViewController {
+extension ProductDetailsViewController {
 
     /// Setup: Navigation Title
     ///
-    func configureNavigationTitle() {
+    fileprivate func configureNavigationTitle() {
         title = viewModel.title
     }
 
     /// Setup: main view
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup: TableView
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = viewModel.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
@@ -88,21 +87,21 @@ private extension ProductDetailsViewController {
 
     /// Init the data
     ///
-    func initializeData() {
+    fileprivate func initializeData() {
         viewModel.reloadTableViewSectionsAndData()
     }
 
     /// Configure view model
     ///
-    func configureViewModel() {
+    fileprivate func configureViewModel() {
         configureViewModelForSuccess()
         configureViewModelForErrors()
     }
 
     /// Configure view model success
     ///
-    func configureViewModelForSuccess() {
-        viewModel.onReload = {  [weak self] in
+    fileprivate func configureViewModelForSuccess() {
+        viewModel.onReload = { [weak self] in
             self?.reloadTableViewDataIfPossible()
         }
         viewModel.onPurchaseNoteTapped = { [weak self] in
@@ -112,7 +111,7 @@ private extension ProductDetailsViewController {
 
     /// Configure view model errors
     ///
-    func configureViewModelForErrors() {
+    fileprivate func configureViewModelForErrors() {
         viewModel.onError = { [weak self] in
             self?.navigationController?.dismiss(animated: true, completion: nil)
             self?.displayProductRemovedNotice()
@@ -121,14 +120,14 @@ private extension ProductDetailsViewController {
 
     /// Registers all of the available TableViewCells
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         let cells = [
             LargeImageTableViewCell.self,
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
             ProductReviewsTableViewCell.self,
             WooBasicTableViewCell.self,
-            ReadMoreTableViewCell.self
+            ReadMoreTableViewCell.self,
         ]
 
         for cell in cells {
@@ -138,7 +137,7 @@ private extension ProductDetailsViewController {
 
     /// Registers all of the available TableViewHeaderFooters
     ///
-    func registerTableViewHeaderFooters() {
+    fileprivate func registerTableViewHeaderFooters() {
         let headersAndFooters = [
             TwoColumnSectionHeaderView.self,
         ]
@@ -156,9 +155,9 @@ extension ProductDetailsViewController {
 
     @objc func pullToRefresh() {
         DDLogInfo("♻️ Requesting product detail data be reloaded...")
-        viewModel.syncProduct() { [weak self] (error) in
+        viewModel.syncProduct { [weak self] (error) in
             if let error = error {
-                 DDLogError("⛔️ Error loading product details: \(error)")
+                DDLogError("⛔️ Error loading product details: \(error)")
                 self?.displaySyncingErrorNotice()
             }
             self?.refreshControl.endRefreshing()
@@ -169,15 +168,16 @@ extension ProductDetailsViewController {
 
 // MARK: - Notices
 //
-private extension ProductDetailsViewController {
+extension ProductDetailsViewController {
 
     /// Displays a notice indicating that the current Product has been removed from the Store.
     ///
-    func displayProductRemovedNotice() {
+    fileprivate func displayProductRemovedNotice() {
         let message = String.localizedStringWithFormat(
-            NSLocalizedString("Product %ld has been removed from your store",
+            NSLocalizedString(
+                "Product %ld has been removed from your store",
                 comment: "Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store."
-        ), viewModel.productID)
+            ), viewModel.productID)
 
         let notice = Notice(title: message, feedbackType: .error)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
@@ -185,11 +185,12 @@ private extension ProductDetailsViewController {
 
     /// Displays a notice indicating that an error occurred while sync'ing.
     ///
-    func displaySyncingErrorNotice() {
+    fileprivate func displaySyncingErrorNotice() {
         let message = String.localizedStringWithFormat(
-            NSLocalizedString("Unable to refresh Product #%ld",
+            NSLocalizedString(
+                "Unable to refresh Product #%ld",
                 comment: "Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number}"
-        ), viewModel.productID)
+            ), viewModel.productID)
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
             self?.refreshControl.beginRefreshing()
@@ -256,11 +257,11 @@ extension ProductDetailsViewController: UITableViewDelegate {
 
 // MARK: - Tableview helpers
 //
-private extension ProductDetailsViewController {
+extension ProductDetailsViewController {
 
     /// Reloads the tableView's data, assuming the view has been loaded.
     ///
-    func reloadTableViewDataIfPossible() {
+    fileprivate func reloadTableViewDataIfPossible() {
         guard isViewLoaded else {
             return
         }
@@ -270,7 +271,7 @@ private extension ProductDetailsViewController {
 
     /// Displays the full purchase note
     ///
-    func presentPurchaseNoteIfPossible() {
+    fileprivate func presentPurchaseNoteIfPossible() {
         guard isViewLoaded else {
             return
         }

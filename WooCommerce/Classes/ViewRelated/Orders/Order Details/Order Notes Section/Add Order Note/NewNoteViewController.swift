@@ -1,6 +1,6 @@
+import Gridicons
 import UIKit
 import Yosemite
-import Gridicons
 
 class NewNoteViewController: UIViewController {
 
@@ -52,14 +52,20 @@ class NewNoteViewController: UIViewController {
         configureForCommittingNote()
 
         ServiceLocator.analytics.track(.orderNoteAddButtonTapped)
-        ServiceLocator.analytics.track(.orderNoteAdd, withProperties: ["parent_id": viewModel.order.orderID,
-                                                                  "status": viewModel.order.statusKey,
-                                                                  "type": isCustomerNote ? "customer" : "private"])
+        ServiceLocator.analytics.track(
+            .orderNoteAdd,
+            withProperties: [
+                "parent_id": viewModel.order.orderID,
+                "status": viewModel.order.statusKey,
+                "type": isCustomerNote ? "customer" : "private",
+            ])
 
-        let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID,
-                                                  orderID: viewModel.order.orderID,
-                                                  isCustomerNote: isCustomerNote,
-                                                  note: noteText) { [weak self] (orderNote, error) in
+        let action = OrderNoteAction.addOrderNote(
+            siteID: viewModel.order.siteID,
+            orderID: viewModel.order.orderID,
+            isCustomerNote: isCustomerNote,
+            note: noteText
+        ) { [weak self] (orderNote, error) in
             if let error = error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
                 ServiceLocator.analytics.track(.orderNoteAddFailed, withError: error)
@@ -78,7 +84,7 @@ class NewNoteViewController: UIViewController {
 
 // MARK: - TableView Configuration
 //
-private extension NewNoteViewController {
+extension NewNoteViewController {
     /// Setup: TableView
     ///
     private func configureTableView() {
@@ -93,7 +99,7 @@ private extension NewNoteViewController {
     private func registerTableViewCells() {
         let cells = [
             TextViewTableViewCell.self,
-            SwitchTableViewCell.self
+            SwitchTableViewCell.self,
         ]
 
         for cell in cells {
@@ -129,11 +135,12 @@ private extension NewNoteViewController {
 
         cell.iconImage = .asideImage
         cell.iconTint = isCustomerNote ? StyleManager.statusPrimaryBoldColor : StyleManager.wooGreyMid
-        cell.iconImage?.accessibilityLabel = isCustomerNote ?
-            NSLocalizedString("Note to customer",
-                              comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :
-            NSLocalizedString("Private note",
-                              comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
+        cell.iconImage?.accessibilityLabel = isCustomerNote
+            ? NSLocalizedString(
+                "Note to customer",
+                comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") : NSLocalizedString(
+                "Private note",
+                comment: "Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer.")
 
         cell.onTextChange = { [weak self] (text) in
             self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
@@ -151,9 +158,9 @@ private extension NewNoteViewController {
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = String.localizedStringWithFormat(
             NSLocalizedString("Email note to customer %@", comment: ""),
-            isCustomerNote ?
-                NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") :
-                NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off.")
+            isCustomerNote
+                ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString(
+                    "Off", comment: "Spoken label to indicate switch control is turned off.")
         )
         cell.accessibilityHint = NSLocalizedString(
             "Double tap to toggle setting.",
@@ -170,9 +177,9 @@ private extension NewNoteViewController {
 
             cell.accessibilityLabel = String.localizedStringWithFormat(
                 NSLocalizedString("Email note to customer %@", comment: ""),
-                newValue ?
-                    NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") :
-                    NSLocalizedString("Off", comment: "Spoken label to indicate switch control is turned off.")
+                newValue
+                    ? NSLocalizedString("On", comment: "Spoken label to indicate switch control is turned on") : NSLocalizedString(
+                        "Off", comment: "Spoken label to indicate switch control is turned off.")
             )
 
             let stateValue = newValue ? "on" : "off"
@@ -227,8 +234,8 @@ extension NewNoteViewController: UITableViewDelegate {
 
 // MARK: - Error Notice
 //
-private extension NewNoteViewController {
-    func displayErrorNotice() {
+extension NewNoteViewController {
+    fileprivate func displayErrorNotice() {
         let title = NSLocalizedString(
             "Unable to add note to order #\(viewModel.order.orderID)",
             comment: "Content of error presented when Add Note Action Failed. It reads: Unable to add note to order #{order number}"
@@ -245,48 +252,53 @@ private extension NewNoteViewController {
 
 // MARK: - Navigation bar
 //
-private extension NewNoteViewController {
-    func configureNavigation() {
+extension NewNoteViewController {
+    fileprivate func configureNavigation() {
         configureTitle()
         configureDismissButton()
         configureRightButtonItemAsAdd()
     }
 
-    func configureTitle() {
-        title = NSLocalizedString("Order #\(viewModel.order.number)",
+    fileprivate func configureTitle() {
+        title = NSLocalizedString(
+            "Order #\(viewModel.order.number)",
             comment: "Add a note screen - title. Example: Order #15")
     }
 
-    func configureDismissButton() {
-        let dismissButtonTitle = NSLocalizedString("Dismiss",
-                                                   comment: "Add a note screen - button title for closing the view")
-        let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(dismissButtonTapped))
+    fileprivate func configureDismissButton() {
+        let dismissButtonTitle = NSLocalizedString(
+            "Dismiss",
+            comment: "Add a note screen - button title for closing the view")
+        let leftBarButton = UIBarButtonItem(
+            title: dismissButtonTitle,
+            style: .plain,
+            target: self,
+            action: #selector(dismissButtonTapped))
         leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 
-    func configureRightButtonItemAsAdd() {
-        let addButtonTitle = NSLocalizedString("Add",
-                                               comment: "Add a note screen - button title to send the note")
-        let rightBarButton = UIBarButtonItem(title: addButtonTitle,
-                                             style: .done,
-                                             target: self,
-                                             action: #selector(addButtonTapped))
+    fileprivate func configureRightButtonItemAsAdd() {
+        let addButtonTitle = NSLocalizedString(
+            "Add",
+            comment: "Add a note screen - button title to send the note")
+        let rightBarButton = UIBarButtonItem(
+            title: addButtonTitle,
+            style: .done,
+            target: self,
+            action: #selector(addButtonTapped))
         rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
-    func configureForCommittingNote() {
+    fileprivate func configureForCommittingNote() {
         hideKeyboard()
         configureRightButtonItemAsSpinner()
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
-    func configureRightButtonItemAsSpinner() {
+    fileprivate func configureRightButtonItemAsSpinner() {
         let activityIndicator = UIActivityIndicatorView(style: .white)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.startAnimating()
@@ -296,24 +308,24 @@ private extension NewNoteViewController {
         navigationItem.setRightBarButton(rightBarButton, animated: true)
     }
 
-    func configureForEditingNote() {
+    fileprivate func configureForEditingNote() {
         configureRightButtonItemAsAdd()
         navigationItem.rightBarButtonItem?.isEnabled = true
     }
 
-    func showKeyboard() {
+    fileprivate func showKeyboard() {
         tableView.firstSubview(ofType: UITextView.self)?.becomeFirstResponder()
     }
 
-    func hideKeyboard() {
+    fileprivate func hideKeyboard() {
         tableView.firstSubview(ofType: UITextView.self)?.resignFirstResponder()
     }
 }
 
 // MARK: - Constants
 //
-private extension NewNoteViewController {
-    struct Constants {
+extension NewNoteViewController {
+    fileprivate enum Constants {
         static let rowHeight = CGFloat(44)
     }
 

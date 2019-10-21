@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents site visit stats over a specific period.
 ///
 public struct SiteVisitStats: Decodable {
@@ -19,8 +18,12 @@ public struct SiteVisitStats: Decodable {
         let fieldNames = try container.decode([String].self, forKey: .fields)
         let rawData: [[AnyCodable]] = try container.decode([[AnyCodable]].self, forKey: .data)
         let rawDataContainers = rawData.map({ MIContainer(data: $0.map({ $0.value }), fieldNames: fieldNames) })
-        let items = rawDataContainers.map({ SiteVisitStatsItem(period: $0.fetchStringValue(for: ItemFieldNames.period),
-                                                               visitors: $0.fetchIntValue(for: ItemFieldNames.visitors)) })
+        let items = rawDataContainers.map(
+            {
+                SiteVisitStatsItem(
+                    period: $0.fetchStringValue(for: ItemFieldNames.period),
+                    visitors: $0.fetchIntValue(for: ItemFieldNames.visitors))
+            })
 
         self.init(date: date, granularity: granularity, items: items)
     }
@@ -44,9 +47,9 @@ public struct SiteVisitStats: Decodable {
 
 /// Defines all of the SiteVisitStats CodingKeys.
 ///
-private extension SiteVisitStats {
+extension SiteVisitStats {
 
-    enum CodingKeys: String, CodingKey {
+    fileprivate enum CodingKeys: String, CodingKey {
         case date = "date"
         case unit = "unit"
         case fields = "fields"
@@ -59,10 +62,7 @@ private extension SiteVisitStats {
 //
 extension SiteVisitStats: Comparable {
     public static func == (lhs: SiteVisitStats, rhs: SiteVisitStats) -> Bool {
-        return lhs.date == rhs.date &&
-            lhs.granularity == rhs.granularity &&
-            lhs.items?.count == rhs.items?.count &&
-            lhs.items?.sorted() == rhs.items?.sorted()
+        return lhs.date == rhs.date && lhs.granularity == rhs.granularity && lhs.items?.count == rhs.items?.count && lhs.items?.sorted() == rhs.items?.sorted()
     }
 
     public static func < (lhs: SiteVisitStats, rhs: SiteVisitStats) -> Bool {
@@ -73,11 +73,11 @@ extension SiteVisitStats: Comparable {
 
 // MARK: - Constants!
 //
-private extension SiteVisitStats {
+extension SiteVisitStats {
 
     /// Defines all of the possbile fields for a SiteVisitStatsItem.
     ///
-    enum ItemFieldNames: String {
+    fileprivate enum ItemFieldNames: String {
         case period = "period"
         case visitors = "visitors"
     }

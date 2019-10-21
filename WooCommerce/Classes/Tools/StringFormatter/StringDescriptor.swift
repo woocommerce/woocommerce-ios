@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Describes the kind of data contained within a specific Text Range.
 ///
 protocol StringDescriptor {

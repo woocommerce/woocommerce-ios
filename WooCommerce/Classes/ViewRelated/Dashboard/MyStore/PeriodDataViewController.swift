@@ -1,17 +1,18 @@
-import UIKit
-import Yosemite
 import Charts
+import UIKit
 import XLPagerTabStrip
-
+import Yosemite
 
 class PeriodDataViewController: UIViewController {
 
     // MARK: - Public Properties
 
     public let granularity: StatGranularity
+
     public var orderStats: OrderStats? {
         return orderStatsResultsController.fetchedObjects.first
     }
+
     public var siteStats: SiteVisitStats? {
         return siteStatsResultsController.fetchedObjects.first
     }
@@ -25,6 +26,7 @@ class PeriodDataViewController: UIViewController {
     // MARK: - Private Properties
 
     @IBOutlet private weak var visitorsStackView: UIStackView!
+
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsData: UILabel!
     @IBOutlet private weak var ordersTitle: UILabel!
@@ -196,9 +198,9 @@ extension PeriodDataViewController {
 
 // MARK: - Configuration
 //
-private extension PeriodDataViewController {
+extension PeriodDataViewController {
 
-    func configureResultsControllers() {
+    fileprivate func configureResultsControllers() {
         // Site Visitor Stats
         siteStatsResultsController.onDidChangeContent = { [weak self] in
             self?.updateSiteVisitDataIfNeeded()
@@ -218,7 +220,7 @@ private extension PeriodDataViewController {
         try? orderStatsResultsController.performFetch()
     }
 
-    func configureView() {
+    fileprivate func configureView() {
         view.backgroundColor = StyleManager.wooWhite
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
@@ -245,24 +247,28 @@ private extension PeriodDataViewController {
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
         xAxisAccessibilityView.accessibilityTraits = .staticText
-        xAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: X Axis",
-                                                                      comment: "VoiceOver accessibility label for the store revenue chart's X-axis.")
+        xAxisAccessibilityView.accessibilityLabel = NSLocalizedString(
+            "Store revenue chart: X Axis",
+            comment: "VoiceOver accessibility label for the store revenue chart's X-axis.")
         yAxisAccessibilityView.isAccessibilityElement = true
         yAxisAccessibilityView.accessibilityTraits = .staticText
-        yAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: Y Axis",
-                                                                      comment: "VoiceOver accessibility label for the store revenue chart's Y-axis.")
+        yAxisAccessibilityView.accessibilityLabel = NSLocalizedString(
+            "Store revenue chart: Y Axis",
+            comment: "VoiceOver accessibility label for the store revenue chart's Y-axis.")
         chartAccessibilityView.isAccessibilityElement = true
         chartAccessibilityView.accessibilityTraits = .image
-        chartAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart",
-                                                                      comment: "VoiceOver accessibility label for the store revenue chart.")
+        chartAccessibilityView.accessibilityLabel = NSLocalizedString(
+            "Store revenue chart",
+            comment: "VoiceOver accessibility label for the store revenue chart.")
         chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Store revenue chart %@",
-                              comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."),
+            NSLocalizedString(
+                "Store revenue chart %@",
+                comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."),
             granularity.pluralizedString
         )
     }
 
-    func configureBarChart() {
+    fileprivate func configureBarChart() {
         barChartView.chartDescription?.enabled = false
         barChartView.dragEnabled = false
         barChartView.setScaleEnabled(false)
@@ -309,8 +315,8 @@ private extension PeriodDataViewController {
 
 // MARK: - UI Updates
 //
-private extension PeriodDataViewController {
-    func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
+extension PeriodDataViewController {
+    fileprivate func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
         visitorsStackView?.isHidden = !shouldShowSiteVisitStats
     }
 }
@@ -334,11 +340,12 @@ extension PeriodDataViewController: ChartViewDelegate {
             return
         }
 
-        let marker = ChartMarker(chartView: chartView,
-                                 color: StyleManager.wooSecondary,
-                                 font: StyleManager.chartLabelFont,
-                                 textColor: StyleManager.wooWhite,
-                                 insets: Constants.chartMarkerInsets)
+        let marker = ChartMarker(
+            chartView: chartView,
+            color: StyleManager.wooSecondary,
+            font: StyleManager.chartLabelFont,
+            textColor: StyleManager.wooWhite,
+            insets: Constants.chartMarkerInsets)
         marker.minimumSize = Constants.chartMarkerMinimumSize
         marker.arrowSize = Constants.chartMarkerArrowSize
         chartView.marker = marker
@@ -366,9 +373,10 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 return ""
             } else {
                 yAxisMaximum = value.humanReadableString()
-                return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
-                                                          at: CurrencySettings.shared.currencyPosition,
-                                                          with: currencySymbol)
+                return CurrencyFormatter().formatCurrency(
+                    using: yAxisMaximum,
+                    at: CurrencySettings.shared.currencyPosition,
+                    with: currencySymbol)
             }
         }
     }
@@ -377,14 +385,14 @@ extension PeriodDataViewController: IAxisValueFormatter {
 
 // MARK: - Accessibility Helpers
 //
-private extension PeriodDataViewController {
+extension PeriodDataViewController {
 
-    func updateChartAccessibilityValues() {
+    fileprivate func updateChartAccessibilityValues() {
         yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Minimum value %@, maximum value %@",
-                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. " +
-                "It reads: Minimum value {value}, maximum value {value}."
+                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. "
+                    + "It reads: Minimum value {value}, maximum value {value}."
             ),
             yAxisMinimum,
             yAxisMaximum
@@ -403,7 +411,7 @@ private extension PeriodDataViewController {
     }
 
 
-    func chartSummaryString() -> String {
+    fileprivate func chartSummaryString() -> String {
         guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.count > 0 else {
             return barChartView.noDataText
         }
@@ -419,8 +427,8 @@ private extension PeriodDataViewController {
             chartSummaryString += String.localizedStringWithFormat(
                 NSLocalizedString(
                     "Bar number %i, %@, ",
-                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. " +
-                    "It reads: Bar number {bar number} {summary of bar}."
+                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. "
+                        + "It reads: Bar number {bar number} {summary of bar}."
                 ),
                 i+1,
                 entrySummaryString
@@ -433,9 +441,9 @@ private extension PeriodDataViewController {
 
 // MARK: - Private Helpers
 //
-private extension PeriodDataViewController {
+extension PeriodDataViewController {
 
-    func updateSiteVisitDataIfNeeded() {
+    fileprivate func updateSiteVisitDataIfNeeded() {
         if siteStats != nil {
             lastUpdatedDate = Date()
         } else {
@@ -445,7 +453,7 @@ private extension PeriodDataViewController {
         reloadLastUpdatedField()
     }
 
-    func updateOrderDataIfNeeded() {
+    fileprivate func updateOrderDataIfNeeded() {
         if orderStats != nil {
             lastUpdatedDate = Date()
         } else {
@@ -459,7 +467,7 @@ private extension PeriodDataViewController {
         reloadLastUpdatedField()
     }
 
-    func trackChangedTabIfNeeded() {
+    fileprivate func trackChangedTabIfNeeded() {
         // This is a little bit of a workaround to prevent the "tab tapped" tracks event from firing when launching the app.
         if granularity == .day && isInitialLoad {
             isInitialLoad = false
@@ -469,24 +477,29 @@ private extension PeriodDataViewController {
         isInitialLoad = false
     }
 
-    func reloadAllFields(animateChart: Bool = true) {
+    fileprivate func reloadAllFields(animateChart: Bool = true) {
         reloadOrderFields()
         reloadSiteFields()
         reloadChart(animateChart: animateChart)
         reloadLastUpdatedField()
-        let visitStatsElements = shouldShowSiteVisitStats ? [visitorsTitle as Any,
-                                                             visitorsData as Any]: []
-        view.accessibilityElements = visitStatsElements + [ordersTitle as Any,
-                                                           ordersData as Any,
-                                                           revenueTitle as Any,
-                                                           revenueData as Any,
-                                                           lastUpdated as Any,
-                                                           yAxisAccessibilityView as Any,
-                                                           xAxisAccessibilityView as Any,
-                                                           chartAccessibilityView as Any]
+        let visitStatsElements = shouldShowSiteVisitStats
+            ? [
+                visitorsTitle as Any,
+                visitorsData as Any,
+            ] : []
+        view.accessibilityElements = visitStatsElements + [
+            ordersTitle as Any,
+            ordersData as Any,
+            revenueTitle as Any,
+            revenueData as Any,
+            lastUpdated as Any,
+            yAxisAccessibilityView as Any,
+            xAxisAccessibilityView as Any,
+            chartAccessibilityView as Any,
+        ]
     }
 
-    func reloadOrderFields() {
+    fileprivate func reloadOrderFields() {
         guard ordersData != nil, revenueData != nil else {
             return
         }
@@ -501,7 +514,7 @@ private extension PeriodDataViewController {
         revenueData.text = totalRevenueText
     }
 
-    func reloadSiteFields() {
+    fileprivate func reloadSiteFields() {
         guard visitorsData != nil else {
             return
         }
@@ -513,7 +526,7 @@ private extension PeriodDataViewController {
         visitorsData.text = visitorsText
     }
 
-    func reloadChart(animateChart: Bool = true) {
+    fileprivate func reloadChart(animateChart: Bool = true) {
         guard barChartView != nil else {
             return
         }
@@ -526,15 +539,15 @@ private extension PeriodDataViewController {
         updateChartAccessibilityValues()
     }
 
-    func reloadLastUpdatedField() {
+    fileprivate func reloadLastUpdatedField() {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
     }
 
-    func clearChartMarkers() {
+    fileprivate func clearChartMarkers() {
         barChartView.highlightValue(nil, callDelegate: false)
     }
 
-    func generateBarDataSet() -> BarChartData? {
+    fileprivate func generateBarDataSet() -> BarChartData? {
         guard let orderStats = orderStats, let statItems = orderStats.items, !statItems.isEmpty else {
             return nil
         }
@@ -544,25 +557,26 @@ private extension PeriodDataViewController {
         var dataEntries: [BarChartDataEntry] = []
         statItems.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: item.grossSales)
-            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String(item.grossSales),
-                                                                                with: orderStats.currencyCode,
-                                                                                roundSmallNumbers: false) ?? String()
+            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(
+                String(item.grossSales),
+                with: orderStats.currencyCode,
+                roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
             barColors.append(StyleManager.wooGreyMid)
             dataEntries.append(entry)
             barCount += 1
         }
 
-        let dataSet =  BarChartDataSet(entries: dataEntries, label: "Data")
+        let dataSet = BarChartDataSet(entries: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
         dataSet.highlightColor = StyleManager.wooCommerceBrandColor
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
-        dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
+        dataSet.drawValuesEnabled = false  // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)
     }
 
-    func formattedAxisPeriodString(for item: OrderStatsItem) -> String {
+    fileprivate func formattedAxisPeriodString(for item: OrderStatsItem) -> String {
         var dateString = ""
         switch granularity {
         case .day:
@@ -585,7 +599,7 @@ private extension PeriodDataViewController {
         return dateString
     }
 
-    func formattedChartMarkerPeriodString(for item: OrderStatsItem) -> String {
+    fileprivate func formattedChartMarkerPeriodString(for item: OrderStatsItem) -> String {
         var dateString = ""
         switch granularity {
         case .day:
@@ -612,20 +626,20 @@ private extension PeriodDataViewController {
 
 // MARK: - Constants!
 //
-private extension PeriodDataViewController {
-    enum Constants {
-        static let placeholderText                      = "-"
+extension PeriodDataViewController {
+    fileprivate enum Constants {
+        static let placeholderText = "-"
 
         static let chartAnimationDuration: TimeInterval = 0.75
-        static let chartExtraRightOffset: CGFloat       = 25.0
-        static let chartExtraTopOffset: CGFloat         = 20.0
-        static let chartHighlightAlpha: CGFloat         = 1.0
+        static let chartExtraRightOffset: CGFloat = 25.0
+        static let chartExtraTopOffset: CGFloat = 20.0
+        static let chartHighlightAlpha: CGFloat = 1.0
 
-        static let chartMarkerInsets: UIEdgeInsets      = UIEdgeInsets(top: 5.0, left: 2.0, bottom: 5.0, right: 2.0)
-        static let chartMarkerMinimumSize: CGSize       = CGSize(width: 50.0, height: 30.0)
-        static let chartMarkerArrowSize: CGSize         = CGSize(width: 8, height: 6)
+        static let chartMarkerInsets: UIEdgeInsets = UIEdgeInsets(top: 5.0, left: 2.0, bottom: 5.0, right: 2.0)
+        static let chartMarkerMinimumSize: CGSize = CGSize(width: 50.0, height: 30.0)
+        static let chartMarkerArrowSize: CGSize = CGSize(width: 8, height: 6)
 
-        static let chartXAxisGranularity: Double        = 1.0
-        static let chartYAxisMinimum: Double            = 0.0
+        static let chartXAxisGranularity: Double = 1.0
+        static let chartYAxisMinimum: Double = 0.0
     }
 }

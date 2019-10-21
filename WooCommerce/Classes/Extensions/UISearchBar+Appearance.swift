@@ -1,6 +1,5 @@
 import UIKit
 
-
 // MARK: - UISearchBar + Woo
 //
 extension UISearchBar {
@@ -31,8 +30,9 @@ extension UISearchBar {
 //
 extension UISearchBar {
     var textField: UITextField? {
-        return subviews.map { $0.subviews.first(where: { $0 is UITextInputTraits}) as? UITextField }
-            .compactMap { $0 }
+        return subviews.map { $0.subviews.first(where: { $0 is UITextInputTraits }) as? UITextField }
+            .compactMap
+        { $0 }
             .first
     }
 }

@@ -1,7 +1,6 @@
 import Foundation
 import WordPressUI
 
-
 /// This is a subclass of WordPressUI's `FancyButton` that offers a UIActivityIndicatorView
 /// for extra spin-y fun!
 ///

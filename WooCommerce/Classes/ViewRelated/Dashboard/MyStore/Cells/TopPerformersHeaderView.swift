@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// Renders a section header for top performers with a main description label and two column labels [Left / Right].
 ///
 class TopPerformersHeaderView: UITableViewHeaderFooterView {

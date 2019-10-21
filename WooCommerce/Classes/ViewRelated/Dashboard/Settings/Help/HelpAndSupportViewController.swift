@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 
-
 // MARK: - HelpAndSupportViewController
 //
 class HelpAndSupportViewController: UIViewController {
@@ -52,11 +51,11 @@ class HelpAndSupportViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension HelpAndSupportViewController {
+extension HelpAndSupportViewController {
 
     /// Set the title and back button.
     ///
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         title = NSLocalizedString("Help", comment: "Help and Support navigation title")
 
         // Don't show the Settings title in the next-view's back button
@@ -75,13 +74,13 @@ private extension HelpAndSupportViewController {
 
     /// Apply Woo styles.
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Configure common table properties.
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
@@ -89,7 +88,7 @@ private extension HelpAndSupportViewController {
 
     /// Disable Zendesk if configuration on ZD init fails.
     ///
-    func configureSections() {
+    fileprivate func configureSections() {
         let helpAndSupportTitle = NSLocalizedString("HOW CAN WE HELP?", comment: "My Store > Settings > Help & Support section title")
 
         guard ZendeskManager.shared.zendeskEnabled == true else {
@@ -98,17 +97,21 @@ private extension HelpAndSupportViewController {
         }
 
         sections = [
-            Section(title: helpAndSupportTitle, rows: [.helpCenter,
-                                                       .contactSupport,
-                                                       .myTickets,
-                                                       .contactEmail,
-                                                       .applicationLog])
+            Section(
+                title: helpAndSupportTitle,
+                rows: [
+                    .helpCenter,
+                    .contactSupport,
+                    .myTickets,
+                    .contactEmail,
+                    .applicationLog
+                ]),
         ]
     }
 
     /// Register table cells.
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
@@ -116,15 +119,16 @@ private extension HelpAndSupportViewController {
 
     /// Warn devs that logged in with an Automattic email.
     ///
-    func warnDeveloperIfNeeded() {
+    fileprivate func warnDeveloperIfNeeded() {
         let developerEmailChecker = DeveloperEmailChecker()
         guard developerEmailChecker.isDeveloperEmail(email: accountEmail) else {
             return
         }
 
-        let alert = UIAlertController(title: "Warning",
-                                      message: "Developer email account detected. Please log in with a non-Automattic email to submit or view support tickets.",
-                                      preferredStyle: .alert)
+        let alert = UIAlertController(
+            title: "Warning",
+            message: "Developer email account detected. Please log in with a non-Automattic email to submit or view support tickets.",
+            preferredStyle: .alert)
         let cancel = UIAlertAction(title: "Dismiss", style: .cancel, handler: nil)
         alert.addAction(cancel)
 
@@ -133,7 +137,7 @@ private extension HelpAndSupportViewController {
 
     /// Cells currently configured in the order they appear on screen
     ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    fileprivate func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as ValueOneTableViewCell where row == .helpCenter:
             configureHelpCenter(cell: cell)
@@ -152,7 +156,7 @@ private extension HelpAndSupportViewController {
 
     /// Help Center cell.
     ///
-    func configureHelpCenter(cell: ValueOneTableViewCell) {
+    fileprivate func configureHelpCenter(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Help Center", comment: "Browse our help documentation website title")
@@ -161,7 +165,7 @@ private extension HelpAndSupportViewController {
 
     /// Contact Support cell.
     ///
-    func configureContactSupport(cell: ValueOneTableViewCell) {
+    fileprivate func configureContactSupport(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Contact Support", comment: "Contact Support title")
@@ -173,7 +177,7 @@ private extension HelpAndSupportViewController {
 
     /// My Tickets cell.
     ///
-    func configureMyTickets(cell: ValueOneTableViewCell) {
+    fileprivate func configureMyTickets(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("My Tickets", comment: "My Tickets title")
@@ -182,7 +186,7 @@ private extension HelpAndSupportViewController {
 
     /// Contact Email cell.
     ///
-    func configureMyContactEmail(cell: ValueOneTableViewCell) {
+    fileprivate func configureMyContactEmail(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Contact Email", comment: "Contact Email title")
@@ -191,7 +195,7 @@ private extension HelpAndSupportViewController {
 
     /// Application Log cell.
     ///
-    func configureApplicationLog(cell: ValueOneTableViewCell) {
+    fileprivate func configureApplicationLog(cell: ValueOneTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("View Application Log", comment: "View application log cell title")
@@ -205,26 +209,26 @@ private extension HelpAndSupportViewController {
 
 // MARK: - Convenience Methods
 //
-private extension HelpAndSupportViewController {
+extension HelpAndSupportViewController {
 
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+    fileprivate func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
 }
 
 // MARK: - Actions
 //
-private extension HelpAndSupportViewController {
+extension HelpAndSupportViewController {
 
     /// Help Center action
     ///
-    func helpCenterWasPressed() {
+    fileprivate func helpCenterWasPressed() {
         ZendeskManager.shared.showHelpCenter(from: self)
     }
 
     /// Contact Support action
     ///
-    func contactSupportWasPressed() {
+    fileprivate func contactSupportWasPressed() {
         guard let navController = navigationController else {
             return
         }
@@ -234,7 +238,7 @@ private extension HelpAndSupportViewController {
 
     /// My Tickets action
     ///
-    func myTicketsWasPressed() {
+    fileprivate func myTicketsWasPressed() {
         guard let navController = navigationController else {
             return
         }
@@ -244,7 +248,7 @@ private extension HelpAndSupportViewController {
 
     /// User's contact email action
     ///
-    func contactEmailWasPressed() {
+    fileprivate func contactEmailWasPressed() {
         guard let navController = navigationController else {
             return
         }
@@ -268,11 +272,13 @@ private extension HelpAndSupportViewController {
 
     /// View application log action
     ///
-    func applicationLogWasPressed() {
+    fileprivate func applicationLogWasPressed() {
         performSegue(withIdentifier: Constants.appLogSegue, sender: nil)
     }
 
-    @objc func dismissWasPressed() {
+    @objc
+
+    fileprivate func dismissWasPressed() {
         dismiss(animated: true, completion: nil)
     }
 }
@@ -331,7 +337,7 @@ extension HelpAndSupportViewController: UITableViewDelegate {
 
 // MARK: - Private Types
 //
-private struct Constants {
+private enum Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 44
     static let appLogSegue = "ShowApplicationLogViewController"

@@ -10,8 +10,9 @@ final class ShippingProvidersViewModel {
     let order: Order
 
     /// Title of view displaying all available Shipment Tracking Providers
-    let title = NSLocalizedString("Shipping Providers",
-                                  comment: "Title of view displaying all available Shipment Tracking Providers")
+    let title = NSLocalizedString(
+        "Shipping Providers",
+        comment: "Title of view displaying all available Shipment Tracking Providers")
 
     // MARK: - Store country
 
@@ -33,8 +34,9 @@ final class ShippingProvidersViewModel {
             return nil
         }
 
-        return NSPredicate(format: "group.name contains[cd] %@",
-                                    name)
+        return NSPredicate(
+            format: "group.name contains[cd] %@",
+            name)
     }()
 
     /// Predicate to match all the providers excluding those matching
@@ -44,8 +46,9 @@ final class ShippingProvidersViewModel {
             return nil
         }
 
-        return NSPredicate(format: "not group.name contains[cd] %@",
-                                    name)
+        return NSPredicate(
+            format: "not group.name contains[cd] %@",
+            name)
     }()
 
     // MARK: - Results controllers
@@ -58,15 +61,18 @@ final class ShippingProvidersViewModel {
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
         let excludingStoreCountry = predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
 
-        let providerGroupDescriptor = NSSortDescriptor(key: groupNameKeyPath,
-                                                      ascending: true)
-        let providerNameDescriptor = NSSortDescriptor(key: providerNameKeyPath,
-                                          ascending: true)
+        let providerGroupDescriptor = NSSortDescriptor(
+            key: groupNameKeyPath,
+            ascending: true)
+        let providerNameDescriptor = NSSortDescriptor(
+            key: providerNameKeyPath,
+            ascending: true)
 
-        return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
-                                                                       sectionNameKeyPath: groupNameKeyPath,
-                                                                       matching: excludingStoreCountry,
-                                                                       sortedBy: [providerGroupDescriptor, providerNameDescriptor])
+        return ResultsController<StorageShipmentTrackingProvider>(
+            storageManager: storageManager,
+            sectionNameKeyPath: groupNameKeyPath,
+            matching: excludingStoreCountry,
+            sortedBy: [providerGroupDescriptor, providerNameDescriptor])
     }()
 
     /// Results controller, to fetch the list of shipment providers
@@ -78,15 +84,18 @@ final class ShippingProvidersViewModel {
 
         let matchingStoreCountry = predicateMatchingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
 
-        let providerGroupDescriptor = NSSortDescriptor(key: groupNameKeyPath,
-                                                       ascending: true)
-        let providerNameDescriptor = NSSortDescriptor(key: providerNameKeyPath,
-                                                      ascending: true)
+        let providerGroupDescriptor = NSSortDescriptor(
+            key: groupNameKeyPath,
+            ascending: true)
+        let providerNameDescriptor = NSSortDescriptor(
+            key: providerNameKeyPath,
+            ascending: true)
 
-        return ResultsController<StorageShipmentTrackingProvider>(storageManager: storageManager,
-                                                                  sectionNameKeyPath: groupNameKeyPath,
-                                                                  matching: matchingStoreCountry,
-                                                                  sortedBy: [providerGroupDescriptor, providerNameDescriptor])
+        return ResultsController<StorageShipmentTrackingProvider>(
+            storageManager: storageManager,
+            sectionNameKeyPath: groupNameKeyPath,
+            matching: matchingStoreCountry,
+            sortedBy: [providerGroupDescriptor, providerNameDescriptor])
     }()
 
     /// Closure to be executed when the data is ready to be rendered
@@ -144,10 +153,8 @@ final class ShippingProvidersViewModel {
     /// Clear all filters
     ///
     func clearFilters() {
-        providersExcludingStoreCountry.predicate =
-            predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
-        providersForStoreCountry.predicate =
-            predicateMatchingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
+        providersExcludingStoreCountry.predicate = predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
+        providersForStoreCountry.predicate = predicateMatchingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
     }
 
     private func dataWasUpdated() {
@@ -184,18 +191,15 @@ extension ShippingProvidersViewModel {
     }
 
     func numberOfRowsInSection(_ section: Int) -> Int {
-        if !storeCountryHasProviders &&
-            section == 0 {
+        if !storeCountryHasProviders && section == 0 {
             return 1
         }
 
-        if storeCountryHasProviders &&
-            section == Constants.customSectionIndex {
+        if storeCountryHasProviders && section == Constants.customSectionIndex {
             return 1
         }
 
-        if storeCountryHasProviders &&
-            section ==  Constants.countrySectionIndex {
+        if storeCountryHasProviders && section == Constants.countrySectionIndex {
             let group = storeCountrySection()
             return group?.objects.count ?? 0
         }
@@ -205,18 +209,15 @@ extension ShippingProvidersViewModel {
     }
 
     func titleForCellAt(_ indexPath: IndexPath) -> String {
-        if !storeCountryHasProviders &&
-            indexPath.section == 0 {
+        if !storeCountryHasProviders && indexPath.section == 0 {
             return Constants.customProvider
         }
 
-        if storeCountryHasProviders &&
-            indexPath.section == Constants.customSectionIndex {
+        if storeCountryHasProviders && indexPath.section == Constants.customSectionIndex {
             return Constants.customProvider
         }
 
-        if storeCountryHasProviders &&
-            indexPath.section == Constants.countrySectionIndex {
+        if storeCountryHasProviders && indexPath.section == Constants.countrySectionIndex {
             let group = storeCountrySection()
             return group?.objects[indexPath.item].name ?? ""
         }
@@ -227,18 +228,15 @@ extension ShippingProvidersViewModel {
     }
 
     func titleForHeaderInSection(_ section: Int) -> String {
-        if !storeCountryHasProviders &&
-            section == 0 {
+        if !storeCountryHasProviders && section == 0 {
             return Constants.customGroup
         }
 
-        if storeCountryHasProviders &&
-            section == Constants.customSectionIndex {
+        if storeCountryHasProviders && section == Constants.customSectionIndex {
             return Constants.customGroup
         }
 
-        if storeCountryHasProviders &&
-            section == Constants.countrySectionIndex {
+        if storeCountryHasProviders && section == Constants.countrySectionIndex {
             return storeCountrySection()?.name ?? ""
         }
 
@@ -274,8 +272,7 @@ extension ShippingProvidersViewModel {
     /// Indicates the name of a group of shipment providers at a given IndexPath
     ///
     func groupName(at indexPath: IndexPath) -> String? {
-        if storeCountryHasProviders &&
-            indexPath.section == Constants.countrySectionIndex {
+        if storeCountryHasProviders && indexPath.section == Constants.countrySectionIndex {
             return storeCountrySection()?.name
         }
         return providersExcludingStoreCountry.sections[indexPath.section - delta()].name
@@ -284,8 +281,7 @@ extension ShippingProvidersViewModel {
     /// Returns the ShipmentTrackingProvider at a given IndexPath
     ///
     func provider(at indexPath: IndexPath) -> ShipmentTrackingProvider? {
-        if storeCountryHasProviders &&
-            indexPath.section == Constants.countrySectionIndex {
+        if storeCountryHasProviders && indexPath.section == Constants.countrySectionIndex {
             let group = storeCountrySection()
             let provider = group?.objects[indexPath.item]
 
@@ -307,11 +303,12 @@ extension ShippingProvidersViewModel {
 // MARK: - Constants
 //
 private enum ResultsControllerConstants {
-    static let predicateForAllProviders =
-        NSPredicate(format: "siteID == %lld",
-                    ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-    static let groupNameKeyPath =
-        #keyPath(StorageShipmentTrackingProvider.group.name)
+    static let predicateForAllProviders = NSPredicate(
+        format: "siteID == %lld",
+        ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+
+    static let groupNameKeyPath = #keyPath(StorageShipmentTrackingProvider.group.name)
+
     static let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)
 }
 
@@ -319,8 +316,12 @@ private enum Constants {
     static let countrySectionIndex = 0
     static let customSectionIndex = 1
     static let specialSectionsCount = 2
-    static let customGroup = NSLocalizedString("Custom",
-                                               comment: "Name of the section for custom shipment tracking providers")
-    static let customProvider = NSLocalizedString("Custom Provider",
-                                                  comment: "Placeholder name of a custom shipment tracking provider")
+
+    static let customGroup = NSLocalizedString(
+        "Custom",
+        comment: "Name of the section for custom shipment tracking providers")
+
+    static let customProvider = NSLocalizedString(
+        "Custom Provider",
+        comment: "Placeholder name of a custom shipment tracking provider")
 }

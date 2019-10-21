@@ -13,6 +13,7 @@ protocol SearchUICommand {
     var emptyStateText: String { get }
 
     associatedtype ResultsControllerModel: ResultsControllerMutableType where ResultsControllerModel.ReadOnlyType == Model
+
     /// Creates a results controller for the search results. The result model's readonly type matches the search result model.
     func createResultsController() -> ResultsController<ResultsControllerModel>
 
@@ -23,11 +24,13 @@ protocol SearchUICommand {
     func createCellViewModel(model: Model) -> CellViewModel
 
     /// Synchronizes the models matching a given keyword.
-    func synchronizeModels(siteID: Int,
-                           keyword: String,
-                           pageNumber: Int,
-                           pageSize: Int,
-                           onCompletion: ((Bool) -> Void)?)
+    func synchronizeModels(
+        siteID: Int,
+        keyword: String,
+        pageNumber: Int,
+        pageSize: Int,
+        onCompletion: ((Bool) -> Void)?
+    )
 
     /// Called when user selects a search result.
     ///

@@ -1,13 +1,13 @@
 import UIKit
-import Yosemite
 import XLPagerTabStrip
-
+import Yosemite
 
 class TopPerformersViewController: ButtonBarPagerTabStripViewController {
 
     // MARK: - Properties
 
     @IBOutlet private weak var topBorder: UIView!
+
     @IBOutlet private weak var middleBorder: UIView!
     @IBOutlet private weak var headingLabel: PaddedLabel!
 
@@ -107,11 +107,11 @@ extension TopPerformersViewController {
 
 // MARK: - Placeholders
 //
-private extension TopPerformersViewController {
+extension TopPerformersViewController {
 
     /// Displays the Ghost Placeholder whenever there is no visible data.
     ///
-    func ensureGhostContentIsDisplayed() {
+    fileprivate func ensureGhostContentIsDisplayed() {
         guard visibleChildViewController.hasTopEarnerStatsItems == false else {
             return
         }
@@ -121,7 +121,7 @@ private extension TopPerformersViewController {
 
     /// Locks UI Interaction and displays Ghost Placeholder animations.
     ///
-    func displayGhostContent() {
+    fileprivate func displayGhostContent() {
         view.isUserInteractionEnabled = false
         buttonBarView.startGhostAnimation()
         visibleChildViewController.displayGhostContent()
@@ -129,7 +129,7 @@ private extension TopPerformersViewController {
 
     /// Unlocks the and removes the Placeholder Content.
     ///
-    func removeGhostContent() {
+    fileprivate func removeGhostContent() {
         view.isUserInteractionEnabled = true
         buttonBarView.stopGhostAnimation()
         visibleChildViewController.removeGhostContent()
@@ -137,7 +137,7 @@ private extension TopPerformersViewController {
 
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
     ///
-    func ensureGhostContentIsAnimated() {
+    fileprivate func ensureGhostContentIsAnimated() {
         view.restartGhostAnimation()
     }
 }
@@ -145,19 +145,19 @@ private extension TopPerformersViewController {
 
 // MARK: - User Interface Configuration
 //
-private extension TopPerformersViewController {
+extension TopPerformersViewController {
 
-    func configureView() {
+    fileprivate func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         middleBorder.backgroundColor = StyleManager.wooGreyBorder
         headingLabel.applyFootnoteStyle()
         headingLabel.textColor = StyleManager.sectionTitleColor
         headingLabel.textInsets = Constants.headerLabelInsets
-        headingLabel.text =  NSLocalizedString("Top Performers", comment: "Header label for Top Performers section of My Store tab.").uppercased()
+        headingLabel.text = NSLocalizedString("Top Performers", comment: "Header label for Top Performers section of My Store tab.").uppercased()
     }
 
-    func configureDataViewControllers() {
+    fileprivate func configureDataViewControllers() {
         let dayVC = TopPerformerDataViewController(granularity: .day)
         let weekVC = TopPerformerDataViewController(granularity: .week)
         let monthVC = TopPerformerDataViewController(granularity: .month)
@@ -169,7 +169,7 @@ private extension TopPerformersViewController {
         dataVCs.append(yearVC)
     }
 
-    func configureTabStrip() {
+    fileprivate func configureTabStrip() {
         settings.style.buttonBarBackgroundColor = StyleManager.wooWhite
         settings.style.buttonBarItemBackgroundColor = StyleManager.wooWhite
         settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
@@ -180,29 +180,31 @@ private extension TopPerformersViewController {
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
 
         changeCurrentIndexProgressive = {
-            (oldCell: ButtonBarViewCell?,
-            newCell: ButtonBarViewCell?,
-            progressPercentage: CGFloat,
-            changeCurrentIndex: Bool,
-            animated: Bool) -> Void in
+                (
+                    oldCell: ButtonBarViewCell?,
+                    newCell: ButtonBarViewCell?,
+                    progressPercentage: CGFloat,
+                    changeCurrentIndex: Bool,
+                    animated: Bool
+                ) -> Void in
 
-            guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = StyleManager.defaultTextColor
-            newCell?.label.textColor = StyleManager.wooCommerceBrandColor
-        }
+                guard changeCurrentIndex == true else { return }
+                oldCell?.label.textColor = StyleManager.defaultTextColor
+                newCell?.label.textColor = StyleManager.wooCommerceBrandColor
+            }
     }
 }
 
 
 // MARK: - Constants!
 //
-private extension TopPerformersViewController {
-    enum Constants {
+extension TopPerformersViewController {
+    fileprivate enum Constants {
         static let headerLabelInsets = UIEdgeInsets(top: 0, left: 14, bottom: 6, right: 14)
     }
 
-    enum TabStrip {
-        static let buttonLeftRightMargin: CGFloat   = 14.0
-        static let selectedBarHeight: CGFloat       = 3.0
+    fileprivate enum TabStrip {
+        static let buttonLeftRightMargin: CGFloat = 14.0
+        static let selectedBarHeight: CGFloat = 3.0
     }
 }

@@ -1,13 +1,11 @@
-import UIKit
+import AutomatticTracks
+import CocoaLumberjack
 import CoreData
 import Storage
-
-import CocoaLumberjack
-import WordPressUI
-import WordPressKit
+import UIKit
 import WordPressAuthenticator
-import AutomatticTracks
-
+import WordPressKit
+import WordPressUI
 
 // MARK: - Woo's App Delegate!
 //
@@ -92,9 +90,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         ServiceLocator.pushNotesManager.registrationDidFail(with: error)
     }
 
-    func application(_ application: UIApplication,
-                     didReceiveRemoteNotification userInfo: [AnyHashable: Any],
-                     fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+    func application(
+        _ application: UIApplication,
+        didReceiveRemoteNotification userInfo: [AnyHashable: Any],
+        fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void
+    ) {
         ServiceLocator.pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
     }
 
@@ -132,12 +132,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 // MARK: - Initialization Methods
 //
-private extension AppDelegate {
+extension AppDelegate {
 
     /// Sets up the main UIWindow instance.
     ///
-    func setupMainWindow() {
-        let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
+    fileprivate func setupMainWindow() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)  // Main is the name of storyboard
 
         window = UIWindow()
         window?.rootViewController = storyboard.instantiateInitialViewController()
@@ -146,7 +146,7 @@ private extension AppDelegate {
 
     /// Sets up all of the component(s) Appearance.
     ///
-    func setupComponentsAppearance() {
+    fileprivate func setupComponentsAppearance() {
         setupWooAppearance()
         setupFancyAlertAppearance()
         setupFancyButtonAppearance()
@@ -154,7 +154,7 @@ private extension AppDelegate {
 
     /// Sets up WooCommerce's UIAppearance.
     ///
-    func setupWooAppearance() {
+    fileprivate func setupWooAppearance() {
         UINavigationBar.applyWooAppearance()
         UILabel.applyWooAppearance()
         UISearchBar.applyWooAppearance()
@@ -165,7 +165,7 @@ private extension AppDelegate {
 
     /// Sets up FancyAlert's UIAppearance.
     ///
-    func setupFancyAlertAppearance() {
+    fileprivate func setupFancyAlertAppearance() {
         let appearance = FancyAlertView.appearance()
         appearance.bottomDividerColor = StyleManager.wooGreyBorder
         appearance.topDividerColor = StyleManager.wooGreyBorder
@@ -184,7 +184,7 @@ private extension AppDelegate {
 
     /// Sets up FancyButton's UIAppearance.
     ///
-    func setupFancyButtonAppearance() {
+    fileprivate func setupFancyButtonAppearance() {
         let appearance = FancyButton.appearance()
         appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
         appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
@@ -194,31 +194,31 @@ private extension AppDelegate {
 
     /// Sets up Crash Logging
     ///
-    func setupCrashLogging() {
+    fileprivate func setupCrashLogging() {
         CrashLogging.start(withDataProvider: WCCrashLoggingDataProvider())
     }
 
     /// Sets up the Zendesk SDK.
     ///
-    func setupZendesk() {
+    fileprivate func setupZendesk() {
         ZendeskManager.shared.initialize()
     }
 
     /// Sets up the WordPress Authenticator.
     ///
-    func setupAnalytics() {
+    fileprivate func setupAnalytics() {
         ServiceLocator.analytics.initialize()
     }
 
     /// Sets up the WordPress Authenticator.
     ///
-    func setupAuthenticationManager() {
+    fileprivate func setupAuthenticationManager() {
         ServiceLocator.authenticationManager.initialize()
     }
 
     /// Sets up CocoaLumberjack logging.
     ///
-    func setupCocoaLumberjack() {
+    fileprivate func setupCocoaLumberjack() {
         var fileLogger = ServiceLocator.fileLogger
         fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
@@ -232,7 +232,7 @@ private extension AppDelegate {
 
     /// Sets up the current Log Leve.
     ///
-    func setupLogLevel(_ level: DDLogLevel) {
+    fileprivate func setupLogLevel(_ level: DDLogLevel) {
         let rawLevel = Int32(level.rawValue)
 
         WPSharedSetLoggingLevel(rawLevel)
@@ -242,14 +242,14 @@ private extension AppDelegate {
 
     /// Setup: Notice Presenter
     ///
-    func setupNoticePresenter() {
+    fileprivate func setupNoticePresenter() {
         var noticePresenter = ServiceLocator.noticePresenter
         noticePresenter.presentingViewController = window?.rootViewController
     }
 
     /// Push Notifications: Authorization + Registration!
     ///
-    func setupPushNotificationsManagerIfPossible() {
+    fileprivate func setupPushNotificationsManagerIfPossible() {
         guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore == false else {
             return
         }
@@ -265,7 +265,7 @@ private extension AppDelegate {
 
     /// Set up app review prompt
     ///
-    func setupAppRatingManager() {
+    fileprivate func setupAppRatingManager() {
         guard let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String else {
             DDLogError("No CFBundleShortVersionString found in Info.plist")
             return
@@ -281,9 +281,9 @@ private extension AppDelegate {
 
 // MARK: - Minimum Version
 //
-private extension AppDelegate {
+extension AppDelegate {
 
-    func checkForUpgrades() {
+    fileprivate func checkForUpgrades() {
         let currentVersion = UserAgent.bundleShortVersion
         let versionOfLastRun = UserDefaults.standard[.versionOfLastRun] as? String
         if versionOfLastRun == nil {
@@ -330,8 +330,9 @@ extension AppDelegate {
             return
         }
         guard let tabBar = AppDelegate.shared.tabBarController,
-            let navigationController = tabBar.selectedViewController as? UINavigationController else {
-                DDLogError("⛔️ Unable to locate navigationController in order to launch the store picker.")
+            let navigationController = tabBar.selectedViewController as? UINavigationController
+        else {
+            DDLogError("⛔️ Unable to locate navigationController in order to launch the store picker.")
             return
         }
 

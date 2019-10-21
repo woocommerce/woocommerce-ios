@@ -43,23 +43,23 @@ class BetaFeaturesViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension BetaFeaturesViewController {
+extension BetaFeaturesViewController {
 
     /// Set the title.
     ///
-    func configureNavigationBar() {
+    fileprivate func configureNavigationBar() {
         title = NSLocalizedString("Beta Features", comment: "Beta features navigation title")
     }
 
     /// Apply Woo styles.
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Configure common table properties.
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         view.addSubview(tableView)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(tableView)
@@ -74,16 +74,19 @@ private extension BetaFeaturesViewController {
 
     /// Configure sections for table view.
     ///
-    func configureSections() {
+    fileprivate func configureSections() {
         sections = [
-            Section(rows: [.statsVersionSwitch,
-                           .statsVersionDescription])
+            Section(
+                rows: [
+                    .statsVersionSwitch,
+                    .statsVersionDescription
+                ]),
         ]
     }
 
     /// Register table cells.
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
@@ -91,7 +94,7 @@ private extension BetaFeaturesViewController {
 
     /// Cells currently configured in the order they appear on screen
     ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    fileprivate func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         guard type(of: cell) == row.type else {
             assertionFailure("The type of cell (\(type(of: cell)) does not match the type (\(row.type)) for row: \(row)")
             return
@@ -109,11 +112,12 @@ private extension BetaFeaturesViewController {
 
     // MARK: - Stats version feature
 
-    func configureStatsVersionSwitch(cell: SwitchTableViewCell) {
+    fileprivate func configureStatsVersionSwitch(cell: SwitchTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .none
-        let statsVersionTitle = NSLocalizedString("Improved stats",
-                                                  comment: "My Store > Settings > Beta features > Switch stats version")
+        let statsVersionTitle = NSLocalizedString(
+            "Improved stats",
+            comment: "My Store > Settings > Beta features > Switch stats version")
         cell.title = statsVersionTitle
 
         let action = AppSettingsAction.loadInitialStatsVersionToShow(siteID: siteID) { initialStatsVersion in
@@ -127,28 +131,30 @@ private extension BetaFeaturesViewController {
             }
             ServiceLocator.analytics.track(.settingsBetaFeaturesNewStatsUIToggled)
 
-            let statsVersion: StatsVersion = isSwitchOn ? .v4: .v3
-            let action = AppSettingsAction.setStatsVersionPreference(siteID: siteID,
-                                                                     statsVersion: statsVersion)
+            let statsVersion: StatsVersion = isSwitchOn ? .v4 : .v3
+            let action = AppSettingsAction.setStatsVersionPreference(
+                siteID: siteID,
+                statsVersion: statsVersion)
             ServiceLocator.stores.dispatch(action)
         }
     }
 
-    func configureStatsVersionDescription(cell: BasicTableViewCell) {
+    fileprivate func configureStatsVersionDescription(cell: BasicTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .none
         cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.text = NSLocalizedString("Try the new stats available with the WooCommerce Admin plugin",
-                                                 comment: "My Store > Settings > Beta features > Stats version description")
+        cell.textLabel?.text = NSLocalizedString(
+            "Try the new stats available with the WooCommerce Admin plugin",
+            comment: "My Store > Settings > Beta features > Stats version description")
     }
 }
 
 
 // MARK: - Convenience Methods
 //
-private extension BetaFeaturesViewController {
+extension BetaFeaturesViewController {
 
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+    fileprivate func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
 }
@@ -177,7 +183,7 @@ extension BetaFeaturesViewController: UITableViewDataSource {
 
 // MARK: - Private Types
 //
-private struct Constants {
+private enum Constants {
     static let rowHeight = CGFloat(44)
 }
 

@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// ReportOrderMapper Unit Tests
 ///
@@ -26,10 +26,11 @@ class ReportOrderMapperTests: XCTestCase {
         }
 
         var reportTotals = [OrderStatusEnum: Int]()
-        results.forEach({ (orderStatus) in
-            let status = OrderStatusEnum(rawValue: orderStatus.slug)
-            reportTotals[status] = orderStatus.total
-        })
+        results.forEach(
+            { (orderStatus) in
+                let status = OrderStatusEnum(rawValue: orderStatus.slug)
+                reportTotals[status] = orderStatus.total
+            })
         let orderStatuses = results
 
         XCTAssertNotNil(reportTotals)
@@ -91,11 +92,11 @@ class ReportOrderMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension ReportOrderMapperTests {
+extension ReportOrderMapperTests {
 
     /// Returns the ReportOrderMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrderStatusResult(from filename: String) throws -> [OrderStatus] {
+    fileprivate func mapOrderStatusResult(from filename: String) throws -> [OrderStatus] {
         let response = Loader.contentsOf(filename)!
         let mapper = ReportOrderTotalsMapper(siteID: 1234)
         return try mapper.map(response: response)
@@ -103,13 +104,13 @@ private extension ReportOrderMapperTests {
 
     /// Returns the ReportOrderMapper output upon receiving data from the endpoint
     ///
-    func mapSuccessfulResponse() throws -> [OrderStatus] {
+    fileprivate func mapSuccessfulResponse() throws -> [OrderStatus] {
         return try mapOrderStatusResult(from: "report-orders")
     }
 
     /// Returns the ReportOrderMapper output upon receiving a broken response.
     ///
-    func mapLoadBrokenResponse() throws -> [OrderStatus] {
+    fileprivate func mapLoadBrokenResponse() throws -> [OrderStatus] {
         return try mapOrderStatusResult(from: "generic_error")
     }
 }

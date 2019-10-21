@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Represents a collection of Remote Endpoints
 ///
@@ -88,11 +87,11 @@ public class Remote {
 
 // MARK: - Private Methods
 //
-private extension Remote {
+extension Remote {
 
     /// Handles *all* of the DotcomError(s) that are successfully parsed.
     ///
-    func dotcomErrorWasReceived(error: Error, for request: URLRequestConvertible) {
+    fileprivate func dotcomErrorWasReceived(error: Error, for request: URLRequestConvertible) {
         guard let dotcomError = error as? DotcomError else {
             return
         }
@@ -124,13 +123,13 @@ private extension Remote {
 
 // MARK: - Remote Notifications
 //
-public extension NSNotification.Name {
+extension NSNotification.Name {
 
     /// Posted whenever an Invalid Token Error is received.
     ///
-    static let RemoteDidReceiveInvalidTokenError = NSNotification.Name(rawValue: "RemoteDidReceiveInvalidTokenError")
+    public static let RemoteDidReceiveInvalidTokenError = NSNotification.Name(rawValue: "RemoteDidReceiveInvalidTokenError")
 
     /// Posted whenever a Jetpack Timeout is received.
     ///
-    static let RemoteDidReceiveJetpackTimeoutError = NSNotification.Name(rawValue: "RemoteDidReceiveJetpackTimeoutError")
+    public static let RemoteDidReceiveJetpackTimeoutError = NSNotification.Name(rawValue: "RemoteDidReceiveJetpackTimeoutError")
 }

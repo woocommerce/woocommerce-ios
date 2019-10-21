@@ -1,6 +1,5 @@
 import UIKit
 
-
 final class BadgeLabel: UILabel {
     @IBInspectable var horizontalPadding: CGFloat = 0 {
         didSet {
@@ -32,10 +31,11 @@ final class BadgeLabel: UILabel {
     // MARK: Padding
 
     override func drawText(in rect: CGRect) {
-        let roundedRect = CGRect(x: rect.origin.x + borderWidth,
-                                 y: rect.origin.y + borderWidth,
-                                 width: rect.size.width - borderWidth * 2,
-                                 height: rect.size.height - borderWidth * 2)
+        let roundedRect = CGRect(
+            x: rect.origin.x + borderWidth,
+            y: rect.origin.y + borderWidth,
+            width: rect.size.width - borderWidth * 2,
+            height: rect.size.height - borderWidth * 2)
 
         let path = UIBezierPath(roundedRect: roundedRect, cornerRadius: layer.cornerRadius)
         fillColor.setFill()

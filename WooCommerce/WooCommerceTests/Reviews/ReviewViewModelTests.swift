@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -14,9 +15,10 @@ final class ReviewViewModelTests: XCTestCase {
         review = mocks.review()
         product = mocks.product()
         notification = mocks.emptyNotification()
-        subject = ReviewViewModel(review: review,
-                                  product: product,
-                                  notification: notification)
+        subject = ReviewViewModel(
+            review: review,
+            product: product,
+            notification: notification)
     }
 
     override func tearDown() {
@@ -65,7 +67,7 @@ final class ReviewViewModelTests: XCTestCase {
 }
 
 
-private extension ReviewViewModelTests {
+extension ReviewViewModelTests {
     private func reviewWithoutProduct() -> String {
         return String(format: Strings.subjectFormat, mocks.reviewer, "")
     }
@@ -74,7 +76,7 @@ private extension ReviewViewModelTests {
         return String(format: Strings.subjectFormat, mocks.reviewer, mocks.productName)
     }
 
-    enum Strings {
+    fileprivate enum Strings {
         static let subjectFormat = NSLocalizedString(
             "%@ left a review on %@",
             comment: "Review title. Reads as {Review author} left a review on {Product}.")

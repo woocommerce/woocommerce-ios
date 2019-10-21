@@ -1,6 +1,6 @@
 import XCTest
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// MockupSupportManager: SupportManagerAdapter Mockup
 ///
@@ -28,9 +28,9 @@ class MockupSupportManager: SupportManagerAdapter {
 
     /// Executed whenever the app receives a Remote Notification.
     ///
-    func pushNotificationReceived() { }
+    func pushNotificationReceived() {}
 
     /// Executed whenever the a user has tapped on a Remote Notification.
     ///
-    func displaySupportRequest(using userInfo: [AnyHashable: Any]) { }
+    func displaySupportRequest(using userInfo: [AnyHashable: Any]) {}
 }

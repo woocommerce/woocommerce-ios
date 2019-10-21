@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// NSAttributedString: Helper Methods
 ///
 extension NSAttributedString {

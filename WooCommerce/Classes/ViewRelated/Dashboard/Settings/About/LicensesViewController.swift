@@ -1,7 +1,6 @@
+import SafariServices
 import UIKit
 import WebKit
-import SafariServices
-
 
 class LicensesViewController: UIViewController {
 
@@ -29,30 +28,31 @@ class LicensesViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension LicensesViewController {
+extension LicensesViewController {
 
     /// Set the title and back button.
     ///
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         title = NSLocalizedString("Licenses", comment: "Licenses (information page title)")
         // Don't show the About title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
+        let backButton = UIBarButtonItem(
+            title: String(),
+            style: .plain,
+            target: nil,
+            action: nil)
 
         navigationItem.backBarButtonItem = backButton
     }
 
     /// Setup the main view
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup the web view
     ///
-    func configureWebView() {
+    fileprivate func configureWebView() {
         webView.navigationDelegate = self
         webView.loadFileURL(licenseURL, allowingReadAccessTo: licenseURL)
     }

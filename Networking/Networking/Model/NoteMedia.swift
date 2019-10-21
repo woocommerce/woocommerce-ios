@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - NoteMedia
 //
 public struct NoteMedia: Equatable {
@@ -24,7 +23,6 @@ public struct NoteMedia: Equatable {
     /// Media URL.
     ///
     public let url: URL
-
 
 
     /// Designated Initializer.
@@ -54,8 +52,9 @@ extension NoteMedia: Decodable {
 
         let size: CGSize? = {
             guard let width = container.failsafeDecodeIfPresent(integerForKey: .width),
-                let height = container.failsafeDecodeIfPresent(integerForKey: .height) else {
-                    return nil
+                let height = container.failsafeDecodeIfPresent(integerForKey: .height)
+            else {
+                return nil
             }
 
             return CGSize(width: width, height: height)
@@ -92,9 +91,6 @@ extension NoteMedia {
 
 // MARK: - Equatable Conformance
 //
-public func ==(lhs: NoteMedia, rhs: NoteMedia) -> Bool {
-    return lhs.type == rhs.type &&
-            lhs.range == rhs.range &&
-            lhs.size == rhs.size &&
-            lhs.url == rhs.url
+public func == (lhs: NoteMedia, rhs: NoteMedia) -> Bool {
+    return lhs.type == rhs.type && lhs.range == rhs.range && lhs.size == rhs.size && lhs.url == rhs.url
 }

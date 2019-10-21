@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: SiteAPI
 ///
 struct SiteAPIMapper: Mapper {
@@ -16,7 +15,7 @@ struct SiteAPIMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
-            .siteID: siteID
+            .siteID: siteID,
         ]
 
         return try decoder.decode(SiteAPIEnvelope.self, from: response).siteAPI

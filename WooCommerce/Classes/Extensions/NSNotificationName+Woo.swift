@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - WooCommerce Notifications
 //
 extension NSNotification.Name {

@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// OrderStatsMapper Unit Tests
 ///
@@ -278,11 +278,11 @@ class OrderStatsMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension OrderStatsMapperTests {
+extension OrderStatsMapperTests {
 
     /// Returns the OrderNotesMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapStatItems(from filename: String) -> OrderStats? {
+    fileprivate func mapStatItems(from filename: String) -> OrderStats? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
@@ -292,25 +292,25 @@ private extension OrderStatsMapperTests {
 
     /// Returns the OrderStatsMapper output upon receiving `order-stats-day`
     ///
-    func mapOrderStatsWithDayUnitResponse() -> OrderStats? {
+    fileprivate func mapOrderStatsWithDayUnitResponse() -> OrderStats? {
         return mapStatItems(from: "order-stats-day")
     }
 
     /// Returns the OrderStatsMapper output upon receiving `order-stats-week`
     ///
-    func mapOrderStatsWithWeekUnitResponse() -> OrderStats? {
+    fileprivate func mapOrderStatsWithWeekUnitResponse() -> OrderStats? {
         return mapStatItems(from: "order-stats-week")
     }
 
     /// Returns the OrderStatsMapper output upon receiving `order-stats-month`
     ///
-    func mapOrderStatsWithMonthUnitResponse() -> OrderStats? {
+    fileprivate func mapOrderStatsWithMonthUnitResponse() -> OrderStats? {
         return mapStatItems(from: "order-stats-month")
     }
 
     /// Returns the OrderStatsMapper output upon receiving `order-stats-year`
     ///
-    func mapOrderStatsWithYearUnitResponse() -> OrderStats? {
+    fileprivate func mapOrderStatsWithYearUnitResponse() -> OrderStats? {
         return mapStatItems(from: "order-stats-year")
     }
 }

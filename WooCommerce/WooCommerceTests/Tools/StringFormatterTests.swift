@@ -1,7 +1,7 @@
 import XCTest
-@testable import WooCommerce
-@testable import Networking
 
+@testable import Networking
+@testable import WooCommerce
 
 /// StringFormatter Unit Tests
 ///
@@ -17,7 +17,8 @@ class StringFormatterTests: XCTestCase {
 
     /// Sample Long Text
     ///
-    private let sampleLongText = """
+    private let sampleLongText
+        = """
                                  Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry’s \
                                  standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make \
                                  a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, \
@@ -49,7 +50,6 @@ class StringFormatterTests: XCTestCase {
         let value = "REPLACEMENT!"
         return NoteRange(type: nil, range: range, url: nil, identifier: nil, postID: nil, siteID: nil, value: value)
     }()
-
 
 
     /// Verifies that Quoted Text gets the Italics attributes.
@@ -134,11 +134,11 @@ class StringFormatterTests: XCTestCase {
 
 // MARK: - Private
 //
-private extension NSAttributedString {
+extension NSAttributedString {
 
     /// Indicates if the specified atribute (Key / Value) is contained *EXCLUSIVELY* in the specified range.
     ///
-    func isAttributeContainedExclusively(in range: NSRange, key: Key, value: NSObject) -> Bool {
+    fileprivate func isAttributeContainedExclusively(in range: NSRange, key: Key, value: NSObject) -> Bool {
         for index in 0 ..< length {
             let retrievedValue = attribute(key, at: index, effectiveRange: nil) as? NSObject
             let shouldContainWatermark = NSLocationInRange(index, range)

@@ -52,7 +52,7 @@ class TwoColumnLabelView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        mode = .body // trigger the property observer
+        mode = .body  // trigger the property observer
     }
 
     class func makeFromNib() -> TwoColumnLabelView {

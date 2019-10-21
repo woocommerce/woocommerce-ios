@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Product: Remote Endpoints
 ///
@@ -18,15 +17,17 @@ public class ProductsRemote: Remote {
     ///     - pageSize: Number of products to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllProducts(for siteID: Int,
-                                context: String? = nil,
-                                pageNumber: Int = Default.pageNumber,
-                                pageSize: Int = Default.pageSize,
-                                completion: @escaping ([Product]?, Error?) -> Void) {
+    public func loadAllProducts(
+        for siteID: Int,
+        context: String? = nil,
+        pageNumber: Int = Default.pageNumber,
+        pageSize: Int = Default.pageSize,
+        completion: @escaping ([Product]?, Error?) -> Void
+    ) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.contextKey: context ?? Default.context
+            ParameterKey.contextKey: context ?? Default.context,
         ]
 
         let path = Path.products
@@ -48,9 +49,10 @@ public class ProductsRemote: Remote {
     ///
     public func loadProducts(for siteID: Int, by productIDs: [Int], completion: @escaping ([Product]?, Error?) -> Void) {
         let stringOfProductIDs = productIDs.map { String($0) }
-            .filter { !$0.isEmpty }
+            .filter
+        { !$0.isEmpty }
             .joined(separator: ",")
-        let parameters = [ ParameterKey.include: stringOfProductIDs ]
+        let parameters = [ParameterKey.include: stringOfProductIDs]
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductListMapper(siteID: siteID)
@@ -83,15 +85,17 @@ public class ProductsRemote: Remote {
     ///     - pageSize: Number of products to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func searchProducts(for siteID: Int,
-                               keyword: String,
-                               pageNumber: Int,
-                               pageSize: Int,
-                               completion: @escaping ([Product]?, Error?) -> Void) {
+    public func searchProducts(
+        for siteID: Int,
+        keyword: String,
+        pageNumber: Int,
+        pageSize: Int,
+        completion: @escaping ([Product]?, Error?) -> Void
+    ) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.search: keyword
+            ParameterKey.search: keyword,
         ]
 
         let path = Path.products
@@ -105,22 +109,22 @@ public class ProductsRemote: Remote {
 
 // MARK: - Constants
 //
-public extension ProductsRemote {
-    enum Default {
-        public static let pageSize: Int   = 25
+extension ProductsRemote {
+    public enum Default {
+        public static let pageSize: Int = 25
         public static let pageNumber: Int = 1
         public static let context: String = "view"
     }
 
     private enum Path {
-        static let products   = "products"
+        static let products = "products"
     }
 
     private enum ParameterKey {
-        static let page: String       = "page"
-        static let perPage: String    = "per_page"
+        static let page: String = "page"
+        static let perPage: String = "per_page"
         static let contextKey: String = "context"
-        static let include: String    = "include"
-        static let search: String     = "search"
+        static let include: String = "include"
+        static let search: String = "search"
     }
 }

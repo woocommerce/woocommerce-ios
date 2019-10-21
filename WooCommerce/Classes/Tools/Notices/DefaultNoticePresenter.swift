@@ -3,7 +3,6 @@ import UIKit
 import UserNotifications
 import WordPressUI
 
-
 /// NoticePresenter: Coordinates Notice rendering, in both, FG and BG execution modes.
 ///
 class DefaultNoticePresenter: NoticePresenter {
@@ -36,9 +35,9 @@ class DefaultNoticePresenter: NoticePresenter {
 
 // MARK: - Private Methods
 //
-private extension DefaultNoticePresenter {
+extension DefaultNoticePresenter {
 
-    func presentNextNoticeIfPossible() {
+    fileprivate func presentNextNoticeIfPossible() {
         guard noticeOnScreen == nil, let next = notices.popFirst() else {
             return
         }
@@ -47,7 +46,7 @@ private extension DefaultNoticePresenter {
         noticeOnScreen = next
     }
 
-    func present(_ notice: Notice) {
+    fileprivate func present(_ notice: Notice) {
         if shouldPresentInForeground(notice) {
             presentNoticeInForeground(notice)
             return
@@ -63,11 +62,11 @@ private extension DefaultNoticePresenter {
         }
     }
 
-    func shouldPresentInForeground(_ notice: Notice) -> Bool {
+    fileprivate func shouldPresentInForeground(_ notice: Notice) -> Bool {
         return UIApplication.shared.applicationState != .background || notice.notificationInfo == nil
     }
 
-    func presentNoticeInBackground(_ notice: Notice) {
+    fileprivate func presentNoticeInBackground(_ notice: Notice) {
         guard let notificationInfo = notice.notificationInfo else {
             return
         }
@@ -82,7 +81,7 @@ private extension DefaultNoticePresenter {
         }
     }
 
-    func presentNoticeInForeground(_ notice: Notice) {
+    fileprivate func presentNoticeInForeground(_ notice: Notice) {
         guard let view = presentingViewController?.view else {
             return
         }
@@ -95,11 +94,12 @@ private extension DefaultNoticePresenter {
         let noticeContainerView = NoticeContainerView(noticeView: noticeView)
         addNoticeContainerToPresentingViewController(noticeContainerView)
 
-        NSLayoutConstraint.activate([
-            noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            makeBottomConstraintForNoticeContainer(noticeContainerView)
-        ])
+        NSLayoutConstraint.activate(
+            [
+                noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+                makeBottomConstraintForNoticeContainer(noticeContainerView),
+            ])
 
         let offScreenState = {
             noticeView.alpha = UIKitConstants.alphaZero
@@ -124,10 +124,12 @@ private extension DefaultNoticePresenter {
                 return
             }
 
-            self.animatePresentation(fromState: {}, toState: hiddenState, completion: {
-                noticeContainerView.removeFromSuperview()
-                self.dismiss()
-            })
+            self.animatePresentation(
+                fromState: {}, toState: hiddenState,
+                completion: {
+                    noticeContainerView.removeFromSuperview()
+                    self.dismiss()
+                })
         }
 
         noticeView.dismissHandler = dismiss
@@ -136,17 +138,19 @@ private extension DefaultNoticePresenter {
             generator.notificationOccurred(feedbackType)
         }
 
-        animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
-        })
+        animatePresentation(
+            fromState: offScreenState, toState: onScreenState,
+            completion: {
+                DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
+            })
     }
 
-    func dismiss() {
+    fileprivate func dismiss() {
         noticeOnScreen = nil
         presentNextNoticeIfPossible()
     }
 
-    func addNoticeContainerToPresentingViewController(_ noticeContainer: UIView) {
+    fileprivate func addNoticeContainerToPresentingViewController(_ noticeContainer: UIView) {
         if let tabBarController = presentingViewController as? UITabBarController {
             tabBarController.view.insertSubview(noticeContainer, belowSubview: tabBarController.tabBar)
         } else {
@@ -154,7 +158,7 @@ private extension DefaultNoticePresenter {
         }
     }
 
-    func makeBottomConstraintForNoticeContainer(_ container: UIView) -> NSLayoutConstraint {
+    fileprivate func makeBottomConstraintForNoticeContainer(_ container: UIView) -> NSLayoutConstraint {
         guard let presentingViewController = presentingViewController else {
             fatalError("NoticePresenter requires a presentingViewController!")
         }
@@ -166,7 +170,7 @@ private extension DefaultNoticePresenter {
         return container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor)
     }
 
-    var offscreenBottomOffset: CGFloat {
+    fileprivate var offscreenBottomOffset: CGFloat {
         if let tabBarController = presentingViewController as? UITabBarController {
             return tabBarController.tabBar.bounds.height
         }
@@ -174,18 +178,19 @@ private extension DefaultNoticePresenter {
         return 0
     }
 
-    func animatePresentation(fromState: () -> Void, toState: @escaping () -> Void, completion: @escaping () -> Void) {
+    fileprivate func animatePresentation(fromState: () -> Void, toState: @escaping () -> Void, completion: @escaping () -> Void) {
         fromState()
 
-        UIView.animate(withDuration: Animations.appearanceDuration,
-                       delay: 0,
-                       usingSpringWithDamping: Animations.appearanceSpringDamping,
-                       initialSpringVelocity: Animations.appearanceSpringVelocity,
-                       options: [],
-                       animations: toState,
-                       completion: { _ in
-                        completion()
-        })
+        UIView.animate(
+            withDuration: Animations.appearanceDuration,
+            delay: 0,
+            usingSpringWithDamping: Animations.appearanceSpringDamping,
+            initialSpringVelocity: Animations.appearanceSpringVelocity,
+            options: [],
+            animations: toState,
+            completion: { _ in
+                completion()
+            })
     }
 
     private enum Animations {
@@ -255,31 +260,34 @@ private class NoticeContainerView: UIView {
 
         /// LayoutContraints: ContentView
         ///
-        NSLayoutConstraint.activate([
-            contentView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
-            contentView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
-            contentView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor)
-        ])
+        NSLayoutConstraint.activate(
+            [
+                contentView.leadingAnchor.constraint(equalTo: layoutMarginsGuide.leadingAnchor),
+                contentView.trailingAnchor.constraint(equalTo: layoutMarginsGuide.trailingAnchor),
+                contentView.topAnchor.constraint(equalTo: layoutMarginsGuide.topAnchor),
+                contentView.bottomAnchor.constraint(equalTo: layoutMarginsGuide.bottomAnchor),
+            ])
 
         /// LayoutContraints: StackView
         ///
-        NSLayoutConstraint.activate([
-            stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
-            noticeBottomConstraint
-        ])
+        NSLayoutConstraint.activate(
+            [
+                stackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+                stackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+                stackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+                noticeBottomConstraint,
+            ])
 
         /// LayoutContraints: Padding
         ///
         let paddingWidthConstraint = leftPaddingView.widthAnchor.constraint(equalToConstant: 0)
         paddingWidthConstraint.priority = .defaultLow
 
-        NSLayoutConstraint.activate([
-            paddingWidthConstraint,
-            leftPaddingView.widthAnchor.constraint(equalTo: rightPaddingView.widthAnchor)
-        ])
+        NSLayoutConstraint.activate(
+            [
+                paddingWidthConstraint,
+                leftPaddingView.widthAnchor.constraint(equalTo: rightPaddingView.widthAnchor),
+            ])
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -304,8 +312,8 @@ private class NoticeContainerView: UIView {
 
 // MARK: - UNMutableNotificationContent Notice Methods
 //
-private extension UNMutableNotificationContent {
-    convenience init(notice: Notice) {
+extension UNMutableNotificationContent {
+    fileprivate convenience init(notice: Notice) {
         self.init()
 
         title = notice.notificationInfo?.title ?? notice.title

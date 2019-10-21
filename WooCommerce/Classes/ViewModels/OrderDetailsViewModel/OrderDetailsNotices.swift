@@ -25,11 +25,13 @@ final class OrderDetailsNotices {
             comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
         )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) {
-                                onAction()
+        let notice = Notice(
+            title: title,
+            message: nil,
+            feedbackType: .error,
+            actionTitle: actionTitle
+        ) {
+            onAction()
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

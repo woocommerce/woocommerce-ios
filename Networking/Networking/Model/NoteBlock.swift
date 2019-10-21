@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - NotificationBlock Implementation
 //
 public struct NoteBlock: Equatable {
@@ -28,7 +27,6 @@ public struct NoteBlock: Equatable {
     /// Raw Type, expressed as a string.
     ///
     private let type: String?
-
 
 
     /// Designated Initializer.
@@ -122,12 +120,12 @@ extension NoteBlock {
     /// Known kinds of Actions
     ///
     public enum Action: String {
-        case approve    = "approve-comment"
-        case follow     = "follow"
-        case like       = "like-comment"
-        case reply      = "replyto-comment"
-        case spam       = "spam-comment"
-        case trash      = "trash-comment"
+        case approve = "approve-comment"
+        case follow = "follow"
+        case like = "like-comment"
+        case reply = "replyto-comment"
+        case spam = "spam-comment"
+        case trash = "trash-comment"
     }
 
     /// Coding Keys
@@ -146,8 +144,9 @@ extension NoteBlock {
     ///
     public enum Kind: String {
         case text
-        case image      // Includes Badges and Images
+        case image  // Includes Badges and Images
         case user
+
         case comment
     }
 }
@@ -155,9 +154,6 @@ extension NoteBlock {
 
 // MARK: - Equatable Conformance
 //
-public func ==(lhs: NoteBlock, rhs: NoteBlock) -> Bool {
-    return lhs.media == rhs.media &&
-            lhs.ranges == rhs.ranges &&
-            lhs.text == rhs.text &&
-            lhs.kind == rhs.kind
+public func == (lhs: NoteBlock, rhs: NoteBlock) -> Bool {
+    return lhs.media == rhs.media && lhs.ranges == rhs.ranges && lhs.text == rhs.text && lhs.kind == rhs.kind
 }

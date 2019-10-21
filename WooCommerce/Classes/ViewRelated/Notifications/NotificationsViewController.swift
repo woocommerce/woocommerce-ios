@@ -1,11 +1,10 @@
-import UIKit
 import Gridicons
-import Yosemite
-import WordPressUI
+import Gridicons
 import SafariServices
-import Gridicons
 import StoreKit
-
+import UIKit
+import WordPressUI
+import Yosemite
 
 // MARK: - NotificationsViewController
 //
@@ -18,10 +17,11 @@ class NotificationsViewController: UIViewController {
     /// Mark all as read nav bar button
     ///
     private lazy var leftBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: .checkmarkImage,
-                               style: .plain,
-                               target: self,
-                               action: #selector(markAllAsRead))
+        return UIBarButtonItem(
+            image: .checkmarkImage,
+            style: .plain,
+            target: self,
+            action: #selector(markAllAsRead))
     }()
 
     /// Haptic Feedback!
@@ -34,10 +34,11 @@ class NotificationsViewController: UIViewController {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageNote.timestamp, ascending: false)
 
-        return ResultsController<StorageNote>(storageManager: storageManager,
-                                              sectionNameKeyPath: "normalizedAgeAsString",
-                                              matching: self.filterPredicate(),
-                                              sortedBy: [descriptor])
+        return ResultsController<StorageNote>(
+            storageManager: storageManager,
+            sectionNameKeyPath: "normalizedAgeAsString",
+            matching: self.filterPredicate(),
+            sortedBy: [descriptor])
     }()
 
     /// Pull To Refresh Support.
@@ -145,7 +146,7 @@ class NotificationsViewController: UIViewController {
 
         resetApplicationBadge()
         transitionToResultsUpdatedState()
-        synchronizeNotifications() {
+        synchronizeNotifications {
             // FIXME: This is being disabled temporarily because of a race condition caused with WPiOS.
             // We should consider updating and re-enabling this logic (when updates happen on the server) at a later time.
             // See this issue for more deets: https://github.com/woocommerce/woocommerce-ios/issues/469
@@ -162,36 +163,37 @@ class NotificationsViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Setup: TabBar
     ///
-    func configureTabBarItem() {
+    fileprivate func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
         tabBarItem.image = .commentImage
     }
 
     /// Setup: Navigation
     ///
-    func configureNavigationItem() {
+    fileprivate func configureNavigationItem() {
         // Don't show the Settings title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: NavigationBar Buttons
     ///
-    func configureNavigationBarButtons() {
+    fileprivate func configureNavigationBarButtons() {
         leftBarButton.tintColor = .white
         leftBarButton.accessibilityTraits = .button
         leftBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Notifications as Read Button")
-        leftBarButton.accessibilityHint = NSLocalizedString("Marks Every Notification as Read",
-                                                            comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
+        leftBarButton.accessibilityHint = NSLocalizedString(
+            "Marks Every Notification as Read",
+            comment: "VoiceOver accessibility hint for the Mark All Notifications as Read Action")
         navigationItem.leftBarButtonItem = leftBarButton
     }
 
     /// Setup: TableView
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
@@ -199,14 +201,14 @@ private extension NotificationsViewController {
 
     /// Setup: ResultsController
     ///
-    func configureResultsController() {
+    fileprivate func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
     }
 
     /// Setup: TableViewCells
     ///
-    func configureTableViewCells() {
+    fileprivate func configureTableViewCells() {
         let cells = [NoteTableViewCell.self]
 
         for cell in cells {
@@ -214,7 +216,7 @@ private extension NotificationsViewController {
         }
     }
 
-    func refreshTitle() {
+    fileprivate func refreshTitle() {
         transitionToResultsUpdatedState()
         navigationItem.title = NSLocalizedString(
             "Reviews",
@@ -226,16 +228,19 @@ private extension NotificationsViewController {
 
 // MARK: - Actions
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
+    @IBAction
 
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+    fileprivate func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
         synchronizeNotifications {
             sender.endRefreshing()
         }
     }
 
-    @IBAction func markAllAsRead() {
+    @IBAction
+
+    fileprivate func markAllAsRead() {
         ServiceLocator.analytics.track(.notificationsListReadAllTapped)
         if unreadNotes.isEmpty {
             DDLogVerbose("# Every single notification is already marked as Read!")
@@ -249,17 +254,17 @@ private extension NotificationsViewController {
 
 // MARK: - Yosemite Wrappers
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Nukes the BadgeCount
     ///
-    func resetApplicationBadge() {
+    fileprivate func resetApplicationBadge() {
         ServiceLocator.pushNotesManager.resetBadgeCount()
     }
 
     /// Update the last seen time for notifications
     ///
-    func updateLastSeenTime() {
+    fileprivate func updateLastSeenTime() {
         guard let firstNote = resultsController.fetchedObjects.first else {
             return
         }
@@ -281,7 +286,7 @@ private extension NotificationsViewController {
 
     /// Marks a specific Notification as read.
     ///
-    func markAsReadIfNeeded(note: Note) {
+    fileprivate func markAsReadIfNeeded(note: Note) {
         guard note.read == false else {
             return
         }
@@ -296,7 +301,7 @@ private extension NotificationsViewController {
 
     /// Marks the specified collection of Notifications as Read.
     ///
-    func markAsRead(notes: [Note]) {
+    fileprivate func markAsRead(notes: [Note]) {
         let identifiers = notes.map { $0.noteId }
         let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true) { [weak self] error in
             if let error = error {
@@ -314,7 +319,7 @@ private extension NotificationsViewController {
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    func synchronizeNotifications(onCompletion: (() -> Void)? = nil) {
+    fileprivate func synchronizeNotifications(onCompletion: (() -> Void)? = nil) {
         let action = NotificationAction.synchronizeNotifications { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
@@ -335,11 +340,11 @@ private extension NotificationsViewController {
 
 // MARK: - ResultsController
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
-    func reloadResultsController() {
+    fileprivate func reloadResultsController() {
         refreshResultsPredicate()
 
         tableView.setContentOffset(.zero, animated: false)
@@ -347,18 +352,21 @@ private extension NotificationsViewController {
         transitionToSyncingState()
     }
 
-    func refreshResultsPredicate() {
+    fileprivate func refreshResultsPredicate() {
         resultsController.predicate = filterPredicate()
     }
 
-    func filterPredicate() -> NSPredicate {
+    fileprivate func filterPredicate() -> NSPredicate {
         let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
         let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-        let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
+        let typeReviewPredicate = NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
 
-        return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
-                                                                   sitePredicate,
-                                                                   notDeletedPredicate])
+        return NSCompoundPredicate(
+            andPredicateWithSubpredicates: [
+                typeReviewPredicate,
+                sitePredicate,
+                notDeletedPredicate,
+            ])
     }
 
 
@@ -458,8 +466,12 @@ extension NotificationsViewController {
             presentNotificationDetails(for: note)
         }
 
-        ServiceLocator.analytics.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
-                                                                         "already_read": note.read ])
+        ServiceLocator.analytics.track(
+            .notificationOpened,
+            withProperties: [
+                "type": note.kind.rawValue,
+                "already_read": note.read,
+            ])
 
         markAsReadIfNeeded(note: note)
     }
@@ -468,11 +480,11 @@ extension NotificationsViewController {
 
 // MARK: - Details Rendering
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Pushes the Order Details associated to a given Note (if possible).
     ///
-    func presentOrderDetails(for note: Note) {
+    fileprivate func presentOrderDetails(for note: Note) {
         guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
             DDLogError("## Notification with [\(note.noteId)] lacks its OrderID!")
             return
@@ -484,7 +496,7 @@ private extension NotificationsViewController {
 
     /// Pushes the Notification Details associated to a given Note.
     ///
-    func presentNotificationDetails(for note: Note) {
+    fileprivate func presentNotificationDetails(for note: Note) {
         let detailsViewController = NotificationDetailsViewController(note: note)
         navigationController?.pushViewController(detailsViewController, animated: true)
     }
@@ -493,11 +505,11 @@ private extension NotificationsViewController {
 
 // MARK: - Cell Setup
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Initializes the Notifications Cell at the specified indexPath
     ///
-    func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
+    fileprivate func configure(_ cell: NoteTableViewCell, at indexPath: IndexPath) {
         let note = resultsController.object(at: indexPath)
 
         cell.read = note.read
@@ -512,11 +524,11 @@ private extension NotificationsViewController {
 
 // MARK: - Formatting
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Returns the formatted Subject (if any). For performance reasons, we'll cache the result.
     ///
-    func renderSubject(note: Note) -> NSAttributedString? {
+    fileprivate func renderSubject(note: Note) -> NSAttributedString? {
         if let cached = subjectStorage[note.hash] {
             return cached
         }
@@ -529,7 +541,7 @@ private extension NotificationsViewController {
 
     /// Returns the formatted Snippet (if any). For performance reasons, we'll cache the result.
     ///
-    func renderSnippet(note: Note) -> NSAttributedString? {
+    fileprivate func renderSnippet(note: Note) -> NSAttributedString? {
         if let cached = snippetStorage[note.hash] {
             return cached
         }
@@ -544,11 +556,11 @@ private extension NotificationsViewController {
 
 // MARK: - Placeholders
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Renders Placeholder Notes: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
-    func displayPlaceholderNotes() {
+    fileprivate func displayPlaceholderNotes() {
         let options = GhostOptions(reuseIdentifier: NoteTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
@@ -557,14 +569,14 @@ private extension NotificationsViewController {
 
     /// Removes Placeholder Notes (and restores the ResultsController <> UITableView link).
     ///
-    func removePlaceholderNotes() {
+    fileprivate func removePlaceholderNotes() {
         tableView.removeGhostContent()
         resultsController.startForwardingEvents(to: self.tableView)
     }
 
     /// Displays the Empty State Overlay.
     ///
-    func displayEmptyUnfilteredOverlay() {
+    fileprivate func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("No Reviews Yet!", comment: "Empty Reviews List Message")
@@ -589,7 +601,7 @@ private extension NotificationsViewController {
 
     /// Removes all of the the OverlayMessageView instances in the view hierarchy.
     ///
-    func removeAllOverlays() {
+    fileprivate func removeAllOverlays() {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
@@ -599,11 +611,11 @@ private extension NotificationsViewController {
 
 // MARK: - Notifications
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Setup: Notification Hooks
     ///
-    func startListeningToNotifications() {
+    fileprivate func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
         nc.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
@@ -611,19 +623,23 @@ private extension NotificationsViewController {
 
     /// Tear down the Notifications Hooks
     ///
-    func stopListeningToNotifications() {
+    fileprivate func stopListeningToNotifications() {
         NotificationCenter.default.removeObserver(self)
     }
 
+    @objc
+
     /// Default Site Updated Handler
     ///
-    @objc func defaultSiteWasUpdated() {
+    fileprivate func defaultSiteWasUpdated() {
         reloadResultsController()
     }
 
+    @objc
+
     /// Application became Active Again (while the Notes Tab was onscreen)
     ///
-    @objc func applicationDidBecomeActive() {
+    fileprivate func applicationDidBecomeActive() {
         guard isViewLoaded == true && view.window != nil else {
             return
         }
@@ -635,19 +651,19 @@ private extension NotificationsViewController {
 
 // MARK: - Finite State Machine Management
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Runs prior to the FSM entering a new state.
     ///
     /// Note: Just because this func runs does not guarantee `didEnter()` or `didLeave()` will run as well.
     ///
-    func willEnter(state: State) {
+    fileprivate func willEnter(state: State) {
         updateNavBarButtonsState()
     }
 
     /// Runs whenever the FSM enters a State.
     ///
-    func didEnter(state: State) {
+    fileprivate func didEnter(state: State) {
         switch state {
         case .emptyUnfiltered:
             if isEmpty == true {
@@ -662,7 +678,7 @@ private extension NotificationsViewController {
 
     /// Runs whenever the FSM leaves a State.
     ///
-    func didLeave(state: State) {
+    fileprivate func didLeave(state: State) {
         switch state {
         case .emptyUnfiltered:
             removeAllOverlays()
@@ -675,14 +691,14 @@ private extension NotificationsViewController {
 
     /// Should be called before Sync'ing Starts: Transitions to .results / .syncing
     ///
-    func transitionToSyncingState() {
+    fileprivate func transitionToSyncingState() {
         state = isEmpty ? .syncing : .results
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
     /// Transitions to `.results` / `.emptyFiltered` / `.emptyUnfiltered` accordingly.
     ///
-    func transitionToResultsUpdatedState() {
+    fileprivate func transitionToResultsUpdatedState() {
         if isEmpty == false {
             state = .results
             return
@@ -695,24 +711,24 @@ private extension NotificationsViewController {
 
 // MARK: - Private Helpers
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
     /// Enables/disables the navbar buttons if needed
     ///
     /// - Parameter filterEnabled: If true, the filter navbar buttons is enabled; if false, it's disabled
     ///
-    func updateNavBarButtonsState() {
+    fileprivate func updateNavBarButtonsState() {
         updateMarkAllReadButtonState()
     }
 
-    func updateMarkAllReadButtonState() {
+    fileprivate func updateMarkAllReadButtonState() {
         leftBarButton.isEnabled = !unreadNotes.isEmpty
     }
 
     /// Displays the `Mark all as read` Notice if the number of times it was previously displayed is lower than the
     /// `Settings.markAllAsReadNoticeMaxViews` value.
     ///
-    func displayMarkAllAsReadNoticeIfNeeded() {
+    fileprivate func displayMarkAllAsReadNoticeIfNeeded() {
         guard markAsReadCount < Settings.markAllAsReadNoticeMaxViews else {
             return
         }
@@ -727,9 +743,9 @@ private extension NotificationsViewController {
 
 // MARK: - Nested Types
 //
-private extension NotificationsViewController {
+extension NotificationsViewController {
 
-    enum NoteTypeFilter: String {
+    fileprivate enum NoteTypeFilter: String {
         case all
         case orders = "store_order"
         case reviews = "store_review"
@@ -743,36 +759,39 @@ private extension NotificationsViewController {
         var description: String {
             switch self {
             case .all:
-                return NSLocalizedString("All",
-                                         comment: "Name of the All filter on the Notifications screen - it means all notifications will be displayed."
+                return NSLocalizedString(
+                    "All",
+                    comment: "Name of the All filter on the Notifications screen - it means all notifications will be displayed."
                 )
             case .orders:
-                return NSLocalizedString("Orders",
-                                         comment: "Name of the Orders filter on the Notifications screen - " +
-                    "it means only order notifications will be displayed. Plural form of the word Order."
+                return NSLocalizedString(
+                    "Orders",
+                    comment: "Name of the Orders filter on the Notifications screen - "
+                        + "it means only order notifications will be displayed. Plural form of the word Order."
                 )
             case .reviews:
-                return NSLocalizedString("Reviews",
-                                         comment: "Name of the Reviews filter on the Notifications screen - " +
-                    "it means only review notifications will be displayed. Plural form of the word Review."
+                return NSLocalizedString(
+                    "Reviews",
+                    comment: "Name of the Reviews filter on the Notifications screen - "
+                        + "it means only review notifications will be displayed. Plural form of the word Review."
                 )
             }
         }
     }
 
-    enum Settings {
-        static let estimatedRowHeight             = CGFloat(88)
-        static let placeholderRowsPerSection      = [3]
-        static let markAllAsReadNoticeMaxViews    = 2
+    fileprivate enum Settings {
+        static let estimatedRowHeight = CGFloat(88)
+        static let placeholderRowsPerSection = [3]
+        static let markAllAsReadNoticeMaxViews = 2
     }
 
-    enum State {
+    fileprivate enum State {
         case emptyUnfiltered
         case results
         case syncing
     }
 
-    struct Constants {
+    fileprivate enum Constants {
         static let section = "notifications"
     }
 }

@@ -18,8 +18,8 @@ class BasicTableViewCell: UITableViewCell {
 }
 
 
-private extension BasicTableViewCell {
-    func configureBackground() {
+extension BasicTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 }

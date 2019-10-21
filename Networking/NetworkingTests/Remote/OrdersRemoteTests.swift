@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// OrdersRemoteTests:
 ///
@@ -242,17 +242,19 @@ final class OrdersRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "reports/orders/totals", filename: "orders-count")
 
-        remote.countOrders(for: sampleSiteID,
-                           statusKey: "processing") { orderCount, error in
-                            XCTAssertNil(error)
-                            XCTAssertNotNil(orderCount)
+        remote.countOrders(
+            for: sampleSiteID,
+            statusKey: "processing"
+        ) { orderCount, error in
+            XCTAssertNil(error)
+            XCTAssertNotNil(orderCount)
 
-                            // Take the opportunity to test the custom subscript works
-                            let numberOfProcessingOrders = orderCount!["processing"]?.total
+            // Take the opportunity to test the custom subscript works
+            let numberOfProcessingOrders = orderCount!["processing"]?.total
 
-                            XCTAssertEqual(numberOfProcessingOrders, 6)
+            XCTAssertEqual(numberOfProcessingOrders, 6)
 
-                            expectation.fulfill()
+            expectation.fulfill()
 
         }
 
@@ -265,11 +267,13 @@ final class OrdersRemoteTests: XCTestCase {
         let remote = OrdersRemote(network: network)
         let expectation = self.expectation(description: "Count Orders")
 
-        remote.countOrders(for: sampleSiteID,
-                           statusKey: "processing") { orderCount, error in
-                            XCTAssertNil(orderCount)
-                            XCTAssertNotNil(error)
-                            expectation.fulfill()
+        remote.countOrders(
+            for: sampleSiteID,
+            statusKey: "processing"
+        ) { orderCount, error in
+            XCTAssertNil(orderCount)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
 
         }
 

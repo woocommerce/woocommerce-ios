@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - Data Extensions
 //
 extension Data {

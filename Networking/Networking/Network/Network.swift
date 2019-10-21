@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Defines all of the Network Operations we'll be performing. This allows us to swap the actual Wrapper in our
 /// Unit Testing target, and inject mocked up responses.

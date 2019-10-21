@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Yosemite
 
-
 /// ProductLoaderViewController: Loads asynchronously a Product (given it's ProductID + SiteID).
 /// On Success the ProductDetailsViewController will be rendered "in place".
 ///
@@ -64,17 +63,17 @@ final class ProductLoaderViewController: UIViewController {
 
 // MARK: - Configuration
 //
-private extension ProductLoaderViewController {
+extension ProductLoaderViewController {
 
     /// Setup: Navigation Title
     ///
-    func configureNavigationTitle() {
+    fileprivate func configureNavigationTitle() {
         title = NSLocalizedString("Loading Product", comment: "Displayed when an Product is being retrieved")
     }
 
     /// Setup: Main View
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         view.addSubview(activityIndicator)
         view.pinSubviewAtCenter(activityIndicator)
@@ -82,19 +81,20 @@ private extension ProductLoaderViewController {
 
     /// Setup: Spinner
     ///
-    func configureSpinner() {
+    fileprivate func configureSpinner() {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
     }
 
     /// Setup: Dismiss Button
     ///
-    func configureDismissButton() {
+    fileprivate func configureDismissButton() {
         let dismissButtonTitle = NSLocalizedString("Dismiss", comment: "Product details screen - button title for closing the view")
-        let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(dismissButtonTapped))
+        let leftBarButton = UIBarButtonItem(
+            title: dismissButtonTitle,
+            style: .plain,
+            target: self,
+            action: #selector(dismissButtonTapped))
         leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
@@ -103,11 +103,11 @@ private extension ProductLoaderViewController {
 
 // MARK: - Actions
 //
-private extension ProductLoaderViewController {
+extension ProductLoaderViewController {
 
     /// Loads (and displays) the specified Product.
     ///
-    func loadProduct() {
+    fileprivate func loadProduct() {
         let action = ProductAction.retrieveProduct(siteID: siteID, productID: productID) { [weak self] (product, error) in
             guard let self = self else {
                 return
@@ -126,7 +126,9 @@ private extension ProductLoaderViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    @objc func dismissButtonTapped() {
+    @objc
+
+    fileprivate func dismissButtonTapped() {
         dismiss(animated: true, completion: nil)
     }
 }
@@ -134,23 +136,23 @@ private extension ProductLoaderViewController {
 
 // MARK: - Overlays
 //
-private extension ProductLoaderViewController {
+extension ProductLoaderViewController {
 
     /// Starts the Spinner
     ///
-    func startSpinner() {
+    fileprivate func startSpinner() {
         activityIndicator.startAnimating()
     }
 
     /// Stops the Spinner
     ///
-    func stopSpinner() {
+    fileprivate func stopSpinner() {
         activityIndicator.stopAnimating()
     }
 
     /// Displays the Loading Overlay.
     ///
-    func displayFailureOverlay() {
+    fileprivate func displayFailureOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("This product couldn't be loaded", comment: "Message displayed when loading a specific product fails")
@@ -164,7 +166,7 @@ private extension ProductLoaderViewController {
 
     /// Removes all of the the OverlayMessageView instances in the view hierarchy.
     ///
-    func removeAllOverlays() {
+    fileprivate func removeAllOverlays() {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
@@ -172,7 +174,7 @@ private extension ProductLoaderViewController {
 
     /// Presents the ProductDetailsViewController, as a childViewController, for a given Product.
     ///
-    func presentProductDetails(for product: Product) {
+    fileprivate func presentProductDetails(for product: Product) {
         let detailsViewModel = ProductDetailsViewModel(product: product, currency: currency)
         let detailsViewController = ProductDetailsViewController(viewModel: detailsViewModel)
 
@@ -187,7 +189,7 @@ private extension ProductLoaderViewController {
 
     /// Removes all of the children UIViewControllers
     ///
-    func detachChildrenViewControllers() {
+    fileprivate func detachChildrenViewControllers() {
         for child in children {
             child.view.removeFromSuperview()
             child.removeFromParent()
@@ -199,11 +201,11 @@ private extension ProductLoaderViewController {
 
 // MARK: - UI Methods
 //
-private extension ProductLoaderViewController {
+extension ProductLoaderViewController {
 
     /// Attaches a given Subview, and ensures it's pinned to all the edges
     ///
-    func attachSubview(_ subview: UIView) {
+    fileprivate func attachSubview(_ subview: UIView) {
         subview.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(subview)
         view.pinSubviewToAllEdges(subview)
@@ -213,11 +215,11 @@ private extension ProductLoaderViewController {
 
 // MARK: - Finite State Machine Management
 //
-private extension ProductLoaderViewController {
+extension ProductLoaderViewController {
 
     /// Runs whenever the FSM enters a State.
     ///
-    func didEnter(state: State) {
+    fileprivate func didEnter(state: State) {
         switch state {
         case .loading:
             startSpinner()
@@ -230,7 +232,7 @@ private extension ProductLoaderViewController {
 
     /// Runs whenever the FSM leaves a State.
     ///
-    func didLeave(state: State) {
+    fileprivate func didLeave(state: State) {
         switch state {
         case .loading:
             stopSpinner()

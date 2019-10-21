@@ -1,6 +1,5 @@
-import UIKit
 import Gridicons
-
+import UIKit
 
 // MARK: - ProductReviewsTableViewCell
 //
@@ -31,17 +30,17 @@ final class ProductReviewsTableViewCell: UITableViewCell {
 }
 
 
-private extension ProductReviewsTableViewCell {
-    func configureBackground() {
+extension ProductReviewsTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureLabels() {
+    fileprivate func configureLabels() {
         reviewLabel.applyBodyStyle()
         reviewTotalsLabel.applyBodyStyle()
     }
 
-    func configureStarView() {
+    fileprivate func configureStarView() {
         starRatingView.starImage = Star.filledImage
         starRatingView.emptyStarImage = Star.emptyImage
     }
@@ -50,12 +49,16 @@ private extension ProductReviewsTableViewCell {
 
 // MARK: - Constants
 //
-private extension ProductReviewsTableViewCell {
-    enum Star {
+extension ProductReviewsTableViewCell {
+    fileprivate enum Star {
         static let size = Double(20)
-        static let filledImage = UIImage.starImage(size: Star.size,
-                                                   tintColor: StyleManager.grayStarColor)
-        static let emptyImage = UIImage.starOutlineImage(size: Star.size,
-                                                         tintColor: StyleManager.grayStarColor)
+
+        static let filledImage = UIImage.starImage(
+            size: Star.size,
+            tintColor: StyleManager.grayStarColor)
+
+        static let emptyImage = UIImage.starOutlineImage(
+            size: Star.size,
+            tintColor: StyleManager.grayStarColor)
     }
 }

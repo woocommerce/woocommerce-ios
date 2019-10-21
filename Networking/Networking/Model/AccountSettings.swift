@@ -38,11 +38,11 @@ public struct AccountSettings: Decodable {
 
 /// Defines all of the AccountSettings CodingKeys
 ///
-private extension AccountSettings {
+extension AccountSettings {
 
-    enum CodingKeys: String, CodingKey {
-        case userID         = "UserID"
-        case tracksOptOut   = "tracks_opt_out"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case userID = "UserID"
+        case tracksOptOut = "tracks_opt_out"
     }
 }
 
@@ -52,8 +52,7 @@ private extension AccountSettings {
 extension AccountSettings: Equatable {
 
     public static func == (lhs: AccountSettings, rhs: AccountSettings) -> Bool {
-        return lhs.userID == rhs.userID &&
-            lhs.tracksOptOut == rhs.tracksOptOut
+        return lhs.userID == rhs.userID && lhs.tracksOptOut == rhs.tracksOptOut
     }
 }
 

@@ -1,6 +1,5 @@
-import UIKit
 import CocoaLumberjack
-
+import UIKit
 
 // MARK: - ApplicationLogViewController
 //
@@ -112,7 +111,7 @@ class ApplicationLogViewController: UIViewController {
 
         sections = [
             Section(title: logFileTitle, footer: logFileFooter, rows: logFileRows),
-            Section(title: nil, footer: nil, rows: [.clearLogs])
+            Section(title: nil, footer: nil, rows: [.clearLogs]),
         ]
     }
 
@@ -180,16 +179,16 @@ extension ApplicationLogViewController: UITableViewDelegate {
 
 // MARK: - View Configuration
 //
-private extension ApplicationLogViewController {
+extension ApplicationLogViewController {
     /// Convenience method returns a single row's data
     ///
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+    fileprivate func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
 
     /// Cells currently configured in the order they appear on screen
     ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    fileprivate func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as BasicTableViewCell where row == .logFile:
             configureLogFile(cell: cell, indexPath: indexPath)
@@ -202,17 +201,17 @@ private extension ApplicationLogViewController {
 
     /// Application Log cell.
     ///
-    func configureLogFile(cell: BasicTableViewCell, indexPath: IndexPath) {
+    fileprivate func configureLogFile(cell: BasicTableViewCell, indexPath: IndexPath) {
         let logFileInfo: DDLogFileInfo = logFiles[indexPath.row]
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = indexPath.row == 0 ?
-            NSLocalizedString("Current", comment: "Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate)
+        cell.textLabel?.text = indexPath.row == 0
+            ? NSLocalizedString("Current", comment: "Cell title: the current date.") : dateFormatter.string(from: logFileInfo.creationDate)
     }
 
     /// Clear application logs cell.
     ///
-    func configureClearLogs(cell: BasicTableViewCell) {
+    fileprivate func configureClearLogs(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
@@ -222,18 +221,18 @@ private extension ApplicationLogViewController {
 
 // MARK: - Actions
 //
-private extension ApplicationLogViewController {
+extension ApplicationLogViewController {
 
     /// View log file action
     ///
-    func logFileWasPressed(in row: Int) {
+    fileprivate func logFileWasPressed(in row: Int) {
         let logFileInfo = logFiles[row]
         performSegue(withIdentifier: Segues.detailSegue, sender: logFileInfo)
     }
 
     /// Clear old logs action
     ///
-    func clearLogsWasPressed() {
+    fileprivate func clearLogsWasPressed() {
         for logFileInfo in logFiles where logFileInfo.isArchived {
             try? FileManager.default.removeItem(atPath: logFileInfo.filePath)
         }
@@ -249,7 +248,7 @@ private extension ApplicationLogViewController {
 
 // MARK: - Private types
 //
-private struct Constants {
+private enum Constants {
     static let rowHeight = CGFloat(44)
 }
 
@@ -277,6 +276,6 @@ private enum Row: CaseIterable {
     }
 }
 
-private struct Segues {
+private enum Segues {
     static let detailSegue = "ShowApplicationLogDetailViewController"
 }

@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// OrderStats: Remote Endpoints
 ///
@@ -18,16 +17,20 @@ public class OrderStatsRemote: Remote {
     ///
     /// Note: by limiting the return values with the `_fields` param, we shrink the response size by over 90%! (~40kb to ~3kb)
     ///
-    public func loadOrderStats(for siteID: Int,
-                               unit: StatGranularity,
-                               latestDateToInclude: String,
-                               quantity: Int,
-                               completion: @escaping (OrderStats?, Error?) -> Void) {
+    public func loadOrderStats(
+        for siteID: Int,
+        unit: StatGranularity,
+        latestDateToInclude: String,
+        quantity: Int,
+        completion: @escaping (OrderStats?, Error?) -> Void
+    ) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.orderStatsPath)/"
-        let parameters = [ParameterKeys.unit: unit.rawValue,
-                          ParameterKeys.date: latestDateToInclude,
-                          ParameterKeys.quantity: String(quantity),
-                          ParameterKeys.fields: ParameterValues.fieldValues]
+        let parameters = [
+            ParameterKeys.unit: unit.rawValue,
+            ParameterKeys.date: latestDateToInclude,
+            ParameterKeys.quantity: String(quantity),
+            ParameterKeys.fields: ParameterValues.fieldValues,
+        ]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = OrderStatsMapper()
         enqueue(request, mapper: mapper, completion: completion)
@@ -37,21 +40,22 @@ public class OrderStatsRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension OrderStatsRemote {
-    enum Constants {
-        static let sitesPath: String      = "sites"
+extension OrderStatsRemote {
+    fileprivate enum Constants {
+        static let sitesPath: String = "sites"
         static let orderStatsPath: String = "stats/orders"
     }
 
-    enum ParameterKeys {
-        static let unit: String     = "unit"
-        static let date: String     = "date"
+    fileprivate enum ParameterKeys {
+        static let unit: String = "unit"
+        static let date: String = "date"
         static let quantity: String = "quantity"
-        static let fields: String   = "_fields"
+        static let fields: String = "_fields"
     }
 
-    enum ParameterValues {
-        static let fieldValues: String = """
+    fileprivate enum ParameterValues {
+        static let fieldValues: String
+            = """
             date,unit,quantity,fields,data,total_gross_sales,total_net_sales,total_orders,total_products,avg_gross_sales,avg_net_sales,avg_orders,avg_products
             """
     }

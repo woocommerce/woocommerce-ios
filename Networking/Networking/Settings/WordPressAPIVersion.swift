@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Defines the supported WordPress API Versions.
 ///
 enum WordPressAPIVersion: String {

@@ -1,8 +1,6 @@
 import Foundation
-import UIKit
 import Gridicons
-
-
+import UIKit
 
 /// Displays a WooCommerce Store Row
 ///
@@ -92,16 +90,16 @@ class StoreTableViewCell: UITableViewCell {
 }
 
 
-private extension StoreTableViewCell {
-    func configureBackground() {
+extension StoreTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureNameLabel() {
+    fileprivate func configureNameLabel() {
         nameLabel.textColor = StyleManager.wooSecondary
     }
 
-    func configureUrlLabel() {
+    fileprivate func configureUrlLabel() {
         urlLabel.textColor = StyleManager.wooSecondary
     }
 }

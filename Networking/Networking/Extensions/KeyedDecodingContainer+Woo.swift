@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - KeyedDecodingContainer: Bulletproof JSON Decoding.
 //
 extension KeyedDecodingContainer {

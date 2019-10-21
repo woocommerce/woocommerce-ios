@@ -1,6 +1,6 @@
+import Storage
 import UIKit
 import Yosemite
-import Storage
 
 /// Presents a tracking provider, tracking number and shipment date
 ///
@@ -50,74 +50,78 @@ final class ManualTrackingViewController: UIViewController {
 
 // MARK: - Styles
 ///
-private extension ManualTrackingViewController {
-    func configureBackground() {
+extension ManualTrackingViewController {
+    fileprivate func configureBackground() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         configureTitle()
         configureDismissButton()
         configureBackButton()
         configureAddButton()
     }
 
-    func configureTitle() {
+    fileprivate func configureTitle() {
         title = viewModel.title
     }
 
-    func configureDismissButton() {
-        let dismissButtonTitle = NSLocalizedString("Dismiss",
-                                                   comment: "Add a note screen - button title for closing the view")
-        let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(dismissButtonTapped))
+    fileprivate func configureDismissButton() {
+        let dismissButtonTitle = NSLocalizedString(
+            "Dismiss",
+            comment: "Add a note screen - button title for closing the view")
+        let leftBarButton = UIBarButtonItem(
+            title: dismissButtonTitle,
+            style: .plain,
+            target: self,
+            action: #selector(dismissButtonTapped))
         leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 
-    func configureBackButton() {
+    fileprivate func configureBackButton() {
         // Don't show the title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
+        let backButton = UIBarButtonItem(
+            title: String(),
+            style: .plain,
+            target: nil,
+            action: nil)
 
         navigationItem.backBarButtonItem = backButton
     }
 
-    func removeProgressIndicator() {
+    fileprivate func removeProgressIndicator() {
         navigationItem.rightBarButtonItem = nil
     }
 
-    func configureAddButton() {
+    fileprivate func configureAddButton() {
         guard viewModel.isAdding else {
             return
         }
 
-        let rightBarButton = UIBarButtonItem(title: viewModel.primaryActionTitle,
-                                             style: .done,
-                                             target: self,
-                                             action: #selector(primaryButtonTapped))
+        let rightBarButton = UIBarButtonItem(
+            title: viewModel.primaryActionTitle,
+            style: .done,
+            target: self,
+            action: #selector(primaryButtonTapped))
         rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
-    func configureForCommittingTracking() {
+    fileprivate func configureForCommittingTracking() {
         hideKeyboard()
         configureRightButtonItemAsSpinner()
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
 
-    func configureForEditingTracking() {
+    fileprivate func configureForEditingTracking() {
         removeProgressIndicator()
         configureAddButton()
         navigationItem.rightBarButtonItem?.isEnabled = true
     }
 
-    func configureRightButtonItemAsSpinner() {
+    fileprivate func configureRightButtonItemAsSpinner() {
         let activityIndicator = UIActivityIndicatorView(style: .white)
         activityIndicator.hidesWhenStopped = true
         activityIndicator.startAnimating()
@@ -127,19 +131,23 @@ private extension ManualTrackingViewController {
         navigationItem.setRightBarButton(rightBarButton, animated: true)
     }
 
-    func showKeyboard() {
+    fileprivate func showKeyboard() {
         table.firstSubview(ofType: UITextField.self)?.becomeFirstResponder()
     }
 
-    func hideKeyboard() {
+    fileprivate func hideKeyboard() {
         table.firstSubview(ofType: UITextField.self)?.resignFirstResponder()
     }
 
-    @objc func dismissButtonTapped() {
+    @objc
+
+    fileprivate func dismissButtonTapped() {
         dismiss()
     }
 
-    @objc func primaryButtonTapped() {
+    @objc
+
+    fileprivate func primaryButtonTapped() {
         ServiceLocator.analytics.track(.orderShipmentTrackingAddButtonTapped)
         viewModel.isCustom ? addCustomTracking() : addTracking()
     }
@@ -148,8 +156,8 @@ private extension ManualTrackingViewController {
 
 // MARK: - Table configuration
 //
-private extension ManualTrackingViewController {
-    func configureTable() {
+extension ManualTrackingViewController {
+    fileprivate func configureTable() {
         registerTableViewCells()
 
         table.estimatedRowHeight = Constants.rowHeight
@@ -159,7 +167,7 @@ private extension ManualTrackingViewController {
         table.delegate = self
     }
 
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         viewModel.registerCells(for: table)
     }
 }
@@ -245,8 +253,9 @@ extension ManualTrackingViewController: UITableViewDataSource {
     private func configureTrackingNumber(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Tracking number", comment: "Add / Edit shipping provider. Title of cell presenting tracking number")
 
-        cell.value.placeholder = NSLocalizedString("Enter tracking number",
-                                                   comment: "Add custom shipping provider. Placeholder of cell presenting tracking number")
+        cell.value.placeholder = NSLocalizedString(
+            "Enter tracking number",
+            comment: "Add custom shipping provider. Placeholder of cell presenting tracking number")
         cell.value.text = viewModel.trackingNumber
         cell.value.isEnabled = true
 
@@ -348,8 +357,8 @@ extension ManualTrackingViewController: UITableViewDelegate {
 
 // MARK: - Actions associated to taps in cells
 //
-private extension ManualTrackingViewController {
-    func executeAction(for indexPath: IndexPath) {
+extension ManualTrackingViewController {
+    fileprivate func executeAction(for indexPath: IndexPath) {
         let row = rowAtIndexPath(indexPath)
 
         if row == .dateShipped && viewModel.isAdding {
@@ -357,32 +366,30 @@ private extension ManualTrackingViewController {
             return
         }
 
-        if row == .shippingProvider &&
-            viewModel.isAdding &&
-            !viewModel.isCustom {
+        if row == .shippingProvider && viewModel.isAdding && !viewModel.isCustom {
             showAllShipmentProviders()
         }
     }
 
-    func displayDatePicker(at indexPath: IndexPath) {
+    fileprivate func displayDatePicker(at indexPath: IndexPath) {
         datePickerVisible = true
 
         reloadDatePicker(at: indexPath)
     }
 
-    func showAllShipmentProviders() {
+    fileprivate func showAllShipmentProviders() {
         let shippingProviders = ShippingProvidersViewModel(order: viewModel.order)
         let shippingList = ShipmentProvidersViewController(viewModel: shippingProviders, delegate: self)
         navigationController?.pushViewController(shippingList, animated: true)
     }
 
-    func reloadDatePicker(at indexPath: IndexPath) {
+    fileprivate func reloadDatePicker(at indexPath: IndexPath) {
         table.beginUpdates()
         table.reloadRows(at: [indexPath], with: .fade)
         table.endUpdates()
     }
 
-    func reloadDate() {
+    fileprivate func reloadDate() {
         guard let dateRowIndex = indexPathForRow(.dateShipped, inSection: 0) else {
             return
         }
@@ -398,8 +405,9 @@ private extension ManualTrackingViewController {
 //
 extension ManualTrackingViewController: ShipmentProviderListDelegate {
     func shipmentProviderList(_ list: ShipmentProvidersViewController, didSelect: Yosemite.ShipmentTrackingProvider, groupName: String) {
-        ServiceLocator.analytics.track(.orderShipmentTrackingCarrierSelected,
-                                  withProperties: ["option": didSelect.name])
+        ServiceLocator.analytics.track(
+            .orderShipmentTrackingCarrierSelected,
+            withProperties: ["option": didSelect.name])
 
         viewModel.shipmentProvider = didSelect
         viewModel.shipmentProviderGroupName = groupName
@@ -409,8 +417,9 @@ extension ManualTrackingViewController: ShipmentProviderListDelegate {
 
 // MARK: - Tracking number textfield
 //
-private extension ManualTrackingViewController {
-    @objc func didChangeProviderName(sender: UITextField) {
+extension ManualTrackingViewController {
+    @objc
+    fileprivate func didChangeProviderName(sender: UITextField) {
         guard let newProviderName = sender.text else {
             return
         }
@@ -419,7 +428,9 @@ private extension ManualTrackingViewController {
         activateActionButtonIfNecessary()
     }
 
-    @objc func didChangeTrackingNumber(sender: UITextField) {
+    @objc
+
+    fileprivate func didChangeTrackingNumber(sender: UITextField) {
         guard let newTrackingNumber = sender.text else {
             return
         }
@@ -428,7 +439,9 @@ private extension ManualTrackingViewController {
         activateActionButtonIfNecessary()
     }
 
-    @objc func didChangeTrackingLink(sender: UITextField) {
+    @objc
+
+    fileprivate func didChangeTrackingLink(sender: UITextField) {
         guard let newTrackingLink = sender.text else {
             return
         }
@@ -442,7 +455,7 @@ private extension ManualTrackingViewController {
 // MARK: - Navigation bar management
 //
 /// Activates the action button (Add/Edit) if there is anough data to add or edit a shipment tracking
-private extension ManualTrackingViewController {
+extension ManualTrackingViewController {
     private func activateActionButtonIfNecessary() {
         navigationItem.rightBarButtonItem?.isEnabled = viewModel.canCommit
     }
@@ -451,13 +464,14 @@ private extension ManualTrackingViewController {
 
 // MARK: - Actions!
 //
-private extension ManualTrackingViewController {
-    func addTracking() {
+extension ManualTrackingViewController {
+    fileprivate func addTracking() {
         configureForCommittingTracking()
         guard let groupName = viewModel.shipmentProviderGroupName,
             let providerName = viewModel.shipmentProvider?.name,
-            let trackingNumber = viewModel.trackingNumber else {
-                return
+            let trackingNumber = viewModel.trackingNumber
+        else {
+            return
         }
 
 
@@ -469,41 +483,49 @@ private extension ManualTrackingViewController {
             .yearMonthDayDateFormatter
             .string(from: viewModel.shipmentDate)
 
-        ServiceLocator.analytics.track(.orderTrackingAdd, withProperties: ["id": orderID,
-                                                                      "status": statusKey,
-                                                                      "carrier": providerName])
+        ServiceLocator.analytics.track(
+            .orderTrackingAdd,
+            withProperties: [
+                "id": orderID,
+                "status": statusKey,
+                "carrier": providerName,
+            ])
 
-        let addTrackingAction = ShipmentAction.addTracking(siteID: siteID,
-                                                           orderID: orderID,
-                                                           providerGroupName: groupName,
-                                                           providerName: providerName,
-                                                           dateShipped: dateShipped,
-                                                           trackingNumber: trackingNumber) { [weak self] error in
+        let addTrackingAction = ShipmentAction.addTracking(
+            siteID: siteID,
+            orderID: orderID,
+            providerGroupName: groupName,
+            providerName: providerName,
+            dateShipped: dateShipped,
+            trackingNumber: trackingNumber
+        ) { [weak self] error in
 
-                                                            if let error = error {
-                                                                DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
+            if let error = error {
+                DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                                ServiceLocator.analytics.track(.orderTrackingAddFailed,
-                                                                                          withError: error)
+                ServiceLocator.analytics.track(
+                    .orderTrackingAddFailed,
+                    withError: error)
 
-                                                                self?.configureForEditingTracking()
+                self?.configureForEditingTracking()
 
-                                                                self?.displayAddErrorNotice(orderID: orderID)
-                                                                return
-                                                            }
+                self?.displayAddErrorNotice(orderID: orderID)
+                return
+            }
 
-                                                        ServiceLocator.analytics.track(.orderTrackingAddSuccess)
+            ServiceLocator.analytics.track(.orderTrackingAddSuccess)
 
-                                                            self?.dismiss()
+            self?.dismiss()
         }
 
         ServiceLocator.stores.dispatch(addTrackingAction)
     }
 
-    func addCustomTracking() {
+    fileprivate func addCustomTracking() {
         guard let providerName = viewModel.providerName,
-            let trackingNumber = viewModel.trackingNumber else {
-                //TODO. Present notice
+            let trackingNumber = viewModel.trackingNumber
+        else {
+            //TODO. Present notice
             return
         }
         configureForCommittingTracking()
@@ -517,38 +539,45 @@ private extension ManualTrackingViewController {
             .yearMonthDayDateFormatter
             .string(from: viewModel.shipmentDate)
 
-        ServiceLocator.analytics.track(.orderTrackingAdd, withProperties: ["id": orderID,
-                                                                      "status": statusKey,
-                                                                      "carrier": providerName])
+        ServiceLocator.analytics.track(
+            .orderTrackingAdd,
+            withProperties: [
+                "id": orderID,
+                "status": statusKey,
+                "carrier": providerName,
+            ])
 
-        let action = ShipmentAction.addCustomTracking(siteID: siteID,
-                                                      orderID: orderID,
-                                                      trackingProvider: providerName,
-                                                      trackingNumber: trackingNumber,
-                                                      trackingURL: trackingLink,
-                                                      dateShipped: dateShipped) { [weak self] error in
-                                                        if let error = error {
-                                                            DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
+        let action = ShipmentAction.addCustomTracking(
+            siteID: siteID,
+            orderID: orderID,
+            trackingProvider: providerName,
+            trackingNumber: trackingNumber,
+            trackingURL: trackingLink,
+            dateShipped: dateShipped
+        ) { [weak self] error in
+            if let error = error {
+                DDLogError("⛔️ Add Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                            ServiceLocator.analytics.track(.orderTrackingAddFailed,
-                                                                                      withError: error)
+                ServiceLocator.analytics.track(
+                    .orderTrackingAddFailed,
+                    withError: error)
 
-                                                            self?.configureForEditingTracking()
+                self?.configureForEditingTracking()
 
-                                                            self?.displayAddErrorNotice(orderID: orderID)
-                                                            return
-                                                        }
+                self?.displayAddErrorNotice(orderID: orderID)
+                return
+            }
 
-                                                        ServiceLocator.analytics.track(.orderTrackingAddSuccess)
+            ServiceLocator.analytics.track(.orderTrackingAddSuccess)
 
-                                                        self?.dismiss()
+            self?.dismiss()
         }
 
         ServiceLocator.stores.dispatch(action)
 
     }
 
-    func dismiss() {
+    fileprivate func dismiss() {
         dismiss(animated: true, completion: nil)
     }
 
@@ -557,19 +586,21 @@ private extension ManualTrackingViewController {
 
 // MARK: - Error handling
 //
-private extension ManualTrackingViewController {
+extension ManualTrackingViewController {
     /// Displays the `Unable to Add tracking` Notice.
     ///
-    func displayAddErrorNotice(orderID: Int) {
+    fileprivate func displayAddErrorNotice(orderID: Int) {
         let title = NSLocalizedString(
             "Unable to add tracking to order #\(orderID)",
             comment: "Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}"
         )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) { [weak self] in
+        let notice = Notice(
+            title: title,
+            message: nil,
+            feedbackType: .error,
+            actionTitle: actionTitle
+        ) { [weak self] in
             self?.primaryButtonTapped()
         }
 
@@ -577,7 +608,7 @@ private extension ManualTrackingViewController {
     }
 }
 
-private struct Constants {
+private enum Constants {
     static let rowHeight = CGFloat(74)
     static let pickerRowHeight = CGFloat(216)
     static let disabledAlpha = CGFloat(0.7)

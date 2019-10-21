@@ -1,7 +1,7 @@
 import Foundation
 import UserNotifications
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// MockupUserNotificationsCenterAdapter: UNUserNotificationCenter Mockup
 ///

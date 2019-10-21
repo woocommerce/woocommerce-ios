@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Encapsulates API Information for a given site
 ///
 public struct SiteAPI: Decodable {
@@ -53,9 +52,7 @@ public struct SiteAPI: Decodable {
 //
 extension SiteAPI: Comparable {
     public static func == (lhs: SiteAPI, rhs: SiteAPI) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.namespaces == rhs.namespaces &&
-            lhs.highestWooVersion == rhs.highestWooVersion
+        return lhs.siteID == rhs.siteID && lhs.namespaces == rhs.namespaces && lhs.highestWooVersion == rhs.highestWooVersion
 
     }
 
@@ -71,9 +68,9 @@ extension SiteAPI: Comparable {
 
 /// Defines all of the SiteAPI CodingKeys.
 ///
-private extension SiteAPI {
+extension SiteAPI {
 
-    enum SiteAPIKeys: String, CodingKey {
+    fileprivate enum SiteAPIKeys: String, CodingKey {
         case namespaces = "namespaces"
     }
 }

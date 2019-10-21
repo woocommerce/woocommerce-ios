@@ -69,8 +69,9 @@ final class OrderPaymentDetailsViewModel {
 
         guard let datePaid = order.datePaid else {
             return String.localizedStringWithFormat(
-                NSLocalizedString("Awaiting payment via %@",
-                                  comment: "Awaiting payment via (payment method title)"),
+                NSLocalizedString(
+                    "Awaiting payment via %@",
+                    comment: "Awaiting payment via (payment method title)"),
                 order.paymentMethodTitle)
         }
 

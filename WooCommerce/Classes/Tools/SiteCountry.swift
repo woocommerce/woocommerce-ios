@@ -13,10 +13,11 @@ final class SiteCountry {
 
         let siteIDKeyPath = #keyPath(StorageSiteSetting.siteID)
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteSetting.siteID, ascending: false)
-        return ResultsController<StorageSiteSetting>(storageManager: storageManager,
-                                                     sectionNameKeyPath: siteIDKeyPath,
-                                                     matching: compoundPredicate,
-                                                     sortedBy: [descriptor])
+        return ResultsController<StorageSiteSetting>(
+            storageManager: storageManager,
+            sectionNameKeyPath: siteIDKeyPath,
+            matching: compoundPredicate,
+            sortedBy: [descriptor])
     }()
 
     init() {
@@ -34,8 +35,9 @@ final class SiteCountry {
     var siteCountryName: String? {
         guard let siteCountryCode = siteCountry,
             let code = siteCountryCode.components(separatedBy: ":").first,
-            let countryCode = CountryCode(rawValue: code) else {
-                return nil
+            let countryCode = CountryCode(rawValue: code)
+        else {
+            return nil
         }
 
         return countryCode.readableCountry
@@ -661,9 +663,9 @@ extension SiteCountry {
 
 // MARK: - Constants.
 //
-private extension SiteCountry {
+extension SiteCountry {
     /// The key of the SiteSetting containing the store country
-    enum Constants {
+    fileprivate enum Constants {
         static let countryKey = "woocommerce_default_country"
     }
 }

@@ -32,13 +32,16 @@ final class DashboardUIFactory {
         self.stateCoordinator = StatsVersionStateCoordinator(siteID: siteID)
     }
 
-    func reloadDashboardUI(isFeatureFlagOn: Bool,
-                           onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
+    func reloadDashboardUI(
+        isFeatureFlagOn: Bool,
+        onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void
+    ) {
         if isFeatureFlagOn {
             stateCoordinator.onStateChange = { [weak self] (previousState, currentState) in
-                self?.onStatsVersionStateChange(previousState: previousState,
-                                                currentState: currentState,
-                                                onUIUpdate: onUIUpdate)
+                self?.onStatsVersionStateChange(
+                    previousState: previousState,
+                    currentState: currentState,
+                    onUIUpdate: onUIUpdate)
             }
             stateCoordinator.loadLastShownVersionAndCheckV4Eligibility()
         } else {
@@ -79,10 +82,12 @@ final class DashboardUIFactory {
     }
 }
 
-private extension DashboardUIFactory {
-    func onStatsVersionStateChange(previousState: StatsVersionState?,
-                                   currentState: StatsVersionState,
-                                   onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void) {
+extension DashboardUIFactory {
+    fileprivate func onStatsVersionStateChange(
+        previousState: StatsVersionState?,
+        currentState: StatsVersionState,
+        onUIUpdate: @escaping (_ dashboardUI: DashboardUI) -> Void
+    ) {
         switch currentState {
         case .initial(let statsVersion), .eligible(let statsVersion):
             saveLastShownStatsVersion(statsVersion)
@@ -101,13 +106,15 @@ private extension DashboardUIFactory {
                 return
             }
 
-            let topBannerView = DashboardTopBannerFactory.v3ToV4BannerView(actionHandler: { [weak self] in
-                ServiceLocator.analytics.track(.dashboardNewStatsAvailabilityBannerTryTapped)
-                self?.stateCoordinator.statsV4ButtonPressed()
-                }, dismissHandler: { [weak self] in
+            let topBannerView = DashboardTopBannerFactory.v3ToV4BannerView(
+                actionHandler: { [weak self] in
+                    ServiceLocator.analytics.track(.dashboardNewStatsAvailabilityBannerTryTapped)
+                    self?.stateCoordinator.statsV4ButtonPressed()
+                },
+                dismissHandler: { [weak self] in
                     ServiceLocator.analytics.track(.dashboardNewStatsAvailabilityBannerCancelTapped)
                     self?.stateCoordinator.dismissV3ToV4Banner()
-            })
+                })
             updatedDashboardUI.hideTopBanner(animated: false)
             updatedDashboardUI.showTopBanner(topBannerView)
         case .v4RevertedToV3:
@@ -120,16 +127,18 @@ private extension DashboardUIFactory {
                 return
             }
 
-            let topBannerView = DashboardTopBannerFactory.v4ToV3BannerView(actionHandler: {
-                guard let url = URL(string: "https://wordpress.org/plugins/woocommerce-admin/") else {
-                    return
-                }
-                ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerLearnMoreTapped)
-                WebviewHelper.launch(url, with: updatedDashboardUI)
-            }, dismissHandler: { [weak self] in
-                ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerDismissTapped)
-                self?.stateCoordinator.dismissV4ToV3Banner()
-            })
+            let topBannerView = DashboardTopBannerFactory.v4ToV3BannerView(
+                actionHandler: {
+                    guard let url = URL(string: "https://wordpress.org/plugins/woocommerce-admin/") else {
+                        return
+                    }
+                    ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerLearnMoreTapped)
+                    WebviewHelper.launch(url, with: updatedDashboardUI)
+                },
+                dismissHandler: { [weak self] in
+                    ServiceLocator.analytics.track(.dashboardNewStatsRevertedBannerDismissTapped)
+                    self?.stateCoordinator.dismissV4ToV3Banner()
+                })
             updatedDashboardUI.hideTopBanner(animated: false)
             updatedDashboardUI.showTopBanner(topBannerView)
         }

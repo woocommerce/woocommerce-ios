@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// SiteSettingsMapper Unit Tests
 ///
@@ -28,8 +28,9 @@ class SiteSettingsMapperTests: XCTestCase {
         XCTAssertNotNil(currencySetting)
         XCTAssertEqual(currencySetting.siteID, dummySiteID)
         XCTAssertEqual(currencySetting.settingID, "woocommerce_currency")
-        XCTAssertEqual(currencySetting.settingDescription,
-                       "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.")
+        XCTAssertEqual(
+            currencySetting.settingDescription,
+            "This controls what currency prices are listed at in the catalog and which currency gateways will take payments in.")
         XCTAssertEqual(currencySetting.label, "Currency")
         XCTAssertEqual(currencySetting.value, "USD")
 
@@ -61,11 +62,11 @@ class SiteSettingsMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension SiteSettingsMapperTests {
+extension SiteSettingsMapperTests {
 
     /// Returns the OrderNotesMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapGeneralSettings(from filename: String) -> [SiteSetting] {
+    fileprivate func mapGeneralSettings(from filename: String) -> [SiteSetting] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
@@ -75,13 +76,13 @@ private extension SiteSettingsMapperTests {
 
     /// Returns the OrderNotesMapper output upon receiving `settings-general`
     ///
-    func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
+    fileprivate func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
         return mapGeneralSettings(from: "settings-general")
     }
 
     /// Returns the OrderNotesMapper output upon receiving `broken-settings-general`
     ///
-    func mapLoadBrokenGeneralSiteSettingsResponse() -> [SiteSetting] {
+    fileprivate func mapLoadBrokenGeneralSiteSettingsResponse() -> [SiteSetting] {
         return mapGeneralSettings(from: "broken-settings-general")
     }
 }

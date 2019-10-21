@@ -1,24 +1,24 @@
 import Foundation
-import WordPressUI
 import SafariServices
+import WordPressUI
 
-
-public extension FancyAlertViewController {
+extension FancyAlertViewController {
 
     /// Create the fancy alert controller for displaying the full Purchase Note in Product Details.
     ///
     /// - Returns: FancyAlertViewController of the alert
     ///
-    static func makePurchaseNoteAlertController(with bodyText: String?) -> FancyAlertViewController {
+    public static func makePurchaseNoteAlertController(with bodyText: String?) -> FancyAlertViewController {
         let dismissButton = makeDismissButtonConfig()
-        let config = FancyAlertViewController.Config(titleText: Strings.titleText,
-                                                     bodyText: bodyText,
-                                                     headerImage: nil,
-                                                     dividerPosition: .bottom,
-                                                     defaultButton: dismissButton,
-                                                     cancelButton: nil,
-                                                     moreInfoButton: nil,
-                                                     dismissAction: {})
+        let config = FancyAlertViewController.Config(
+            titleText: Strings.titleText,
+            bodyText: bodyText,
+            headerImage: nil,
+            dividerPosition: .bottom,
+            defaultButton: dismissButton,
+            cancelButton: nil,
+            moreInfoButton: nil,
+            dismissAction: {})
 
         let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)
         return controller
@@ -28,9 +28,9 @@ public extension FancyAlertViewController {
 
 // MARK: - Private Helpers
 //
-private extension FancyAlertViewController {
+extension FancyAlertViewController {
 
-    static func makeDismissButtonConfig() -> FancyAlertViewController.Config.ButtonConfig {
+    fileprivate static func makeDismissButtonConfig() -> FancyAlertViewController.Config.ButtonConfig {
         return FancyAlertViewController.Config.ButtonConfig(Strings.dismissButtonText) { controller, _ in
             controller.dismiss(animated: true)
         }
@@ -40,9 +40,9 @@ private extension FancyAlertViewController {
 
 // MARK: - Constants
 //
-private extension FancyAlertViewController {
+extension FancyAlertViewController {
 
-    struct Strings {
+    fileprivate enum Strings {
         // Titles
         static let titleText = NSLocalizedString(
             "Purchase note",

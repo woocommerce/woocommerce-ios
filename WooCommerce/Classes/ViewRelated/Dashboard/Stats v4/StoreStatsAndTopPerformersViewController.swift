@@ -89,8 +89,8 @@ extension StoreStatsAndTopPerformersViewController: DashboardUI {
 
 // MARK: - Syncing Data
 //
-private extension StoreStatsAndTopPerformersViewController {
-    func syncAllStats(onCompletion: ((Error?) -> Void)? = nil) {
+extension StoreStatsAndTopPerformersViewController {
+    fileprivate func syncAllStats(onCompletion: ((Error?) -> Void)? = nil) {
         let group = DispatchGroup()
 
         var syncError: Error? = nil
@@ -132,10 +132,12 @@ private extension StoreStatsAndTopPerformersViewController {
                 let latestDateToInclude = vc.timeRange.latestDate(currentDate: currentDate, siteTimezone: siteTimezone)
 
                 group.enter()
-                self.syncStats(for: siteID,
-                               siteTimezone: siteTimezone,
-                               timeRange: vc.timeRange,
-                               latestDateToInclude: latestDateToInclude) { [weak self] error in
+                self.syncStats(
+                    for: siteID,
+                    siteTimezone: siteTimezone,
+                    timeRange: vc.timeRange,
+                    latestDateToInclude: latestDateToInclude
+                ) { [weak self] error in
                     if let error = error {
                         DDLogError("⛔️ Error synchronizing order stats: \(error)")
                         syncError = error
@@ -146,10 +148,12 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
 
                 group.enter()
-                self.syncSiteVisitStats(for: siteID,
-                                        siteTimezone: siteTimezone,
-                                        timeRange: vc.timeRange,
-                                        latestDateToInclude: latestDateToInclude) { error in
+                self.syncSiteVisitStats(
+                    for: siteID,
+                    siteTimezone: siteTimezone,
+                    timeRange: vc.timeRange,
+                    latestDateToInclude: latestDateToInclude
+                ) { error in
                     if let error = error {
                         DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
                         syncError = error
@@ -158,9 +162,11 @@ private extension StoreStatsAndTopPerformersViewController {
                 }
 
                 group.enter()
-                self.syncTopEarnersStats(for: siteID,
-                                         timeRange: vc.timeRange,
-                                         latestDateToInclude: latestDateToInclude) { error in
+                self.syncTopEarnersStats(
+                    for: siteID,
+                    timeRange: vc.timeRange,
+                    latestDateToInclude: latestDateToInclude
+                ) { error in
                     if let error = error {
                         DDLogError("⛔️ Error synchronizing top earners stats: \(error)")
                         syncError = error
@@ -172,7 +178,7 @@ private extension StoreStatsAndTopPerformersViewController {
         ServiceLocator.stores.dispatch(loadSiteAction)
     }
 
-    func showSpinner(shouldShowSpinner: Bool) {
+    fileprivate func showSpinner(shouldShowSpinner: Bool) {
         periodVCs.forEach { (vc) in
             if shouldShowSpinner {
                 vc.refreshControl.beginRefreshing()
@@ -185,11 +191,11 @@ private extension StoreStatsAndTopPerformersViewController {
 
 // MARK: - Placeholders
 //
-private extension StoreStatsAndTopPerformersViewController {
+extension StoreStatsAndTopPerformersViewController {
 
     /// Displays the Ghost Placeholder whenever there is no visible data.
     ///
-    func ensureGhostContentIsDisplayed() {
+    fileprivate func ensureGhostContentIsDisplayed() {
         guard visibleChildViewController.shouldDisplayStoreStatsGhostContent else {
             return
         }
@@ -199,7 +205,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
     /// Locks UI Interaction and displays Ghost Placeholder animations.
     ///
-    func displayGhostContent() {
+    fileprivate func displayGhostContent() {
         view.isUserInteractionEnabled = false
         buttonBarView.startGhostAnimation()
         visibleChildViewController.displayGhostContent()
@@ -207,7 +213,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
     /// Unlocks the and removes the Placeholder Content
     ///
-    func removeGhostContent() {
+    fileprivate func removeGhostContent() {
         view.isUserInteractionEnabled = true
         buttonBarView.stopGhostAnimation()
         visibleChildViewController.removeGhostContent()
@@ -215,7 +221,7 @@ private extension StoreStatsAndTopPerformersViewController {
 
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
     ///
-    func ensureGhostContentIsAnimated() {
+    fileprivate func ensureGhostContentIsAnimated() {
         view.restartGhostAnimation()
     }
 }
@@ -223,27 +229,29 @@ private extension StoreStatsAndTopPerformersViewController {
 
 // MARK: - User Interface Configuration
 //
-private extension StoreStatsAndTopPerformersViewController {
-    func createBorderView() -> UIView {
+extension StoreStatsAndTopPerformersViewController {
+    fileprivate func createBorderView() -> UIView {
         let view = UIView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = StyleManager.wooGreyBorder
-        NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalToConstant: 1)
+        NSLayoutConstraint.activate(
+            [
+                view.heightAnchor.constraint(equalToConstant: 1),
             ])
         return view
     }
 
-    func configureButtonBarBottomBorder() {
+    fileprivate func configureButtonBarBottomBorder() {
         view.addSubview(buttonBarBottomBorder)
-        NSLayoutConstraint.activate([
-            buttonBarBottomBorder.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
-            buttonBarBottomBorder.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            buttonBarBottomBorder.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        NSLayoutConstraint.activate(
+            [
+                buttonBarBottomBorder.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
+                buttonBarBottomBorder.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+                buttonBarBottomBorder.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             ])
     }
 
-    func configureView() {
+    fileprivate func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         configureButtonBarBottomBorder()
 
@@ -251,7 +259,7 @@ private extension StoreStatsAndTopPerformersViewController {
         containerView.contentInsetAdjustmentBehavior = .never
     }
 
-    func configurePeriodViewControllers() {
+    fileprivate func configurePeriodViewControllers() {
         let currentDate = Date()
         let dayVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .today, currentDate: currentDate)
         let weekVC = StoreStatsAndTopPerformersPeriodViewController(timeRange: .thisWeek, currentDate: currentDate)
@@ -270,7 +278,7 @@ private extension StoreStatsAndTopPerformersViewController {
         }
     }
 
-    func configureTabStrip() {
+    fileprivate func configureTabStrip() {
         settings.style.buttonBarBackgroundColor = StyleManager.wooWhite
         settings.style.buttonBarItemBackgroundColor = StyleManager.wooWhite
         settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
@@ -281,94 +289,106 @@ private extension StoreStatsAndTopPerformersViewController {
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
 
         changeCurrentIndexProgressive = {
-            (oldCell: ButtonBarViewCell?,
-            newCell: ButtonBarViewCell?,
-            progressPercentage: CGFloat,
-            changeCurrentIndex: Bool,
-            animated: Bool) -> Void in
+                (
+                    oldCell: ButtonBarViewCell?,
+                    newCell: ButtonBarViewCell?,
+                    progressPercentage: CGFloat,
+                    changeCurrentIndex: Bool,
+                    animated: Bool
+                ) -> Void in
 
-            guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = StyleManager.defaultTextColor
-            newCell?.label.textColor = StyleManager.wooCommerceBrandColor
-        }
+                guard changeCurrentIndex == true else { return }
+                oldCell?.label.textColor = StyleManager.defaultTextColor
+                newCell?.label.textColor = StyleManager.wooCommerceBrandColor
+            }
     }
 }
 
 // MARK: - Sync'ing Helpers
 //
-private extension StoreStatsAndTopPerformersViewController {
-    func syncStats(for siteID: Int,
-                   siteTimezone: TimeZone,
-                   timeRange: StatsTimeRangeV4,
-                   latestDateToInclude: Date,
-                   onCompletion: ((Error?) -> Void)? = nil) {
+extension StoreStatsAndTopPerformersViewController {
+    fileprivate func syncStats(
+        for siteID: Int,
+        siteTimezone: TimeZone,
+        timeRange: StatsTimeRangeV4,
+        latestDateToInclude: Date,
+        onCompletion: ((Error?) -> Void)? = nil
+    ) {
         let earliestDateToInclude = timeRange.earliestDate(latestDate: latestDateToInclude, siteTimezone: siteTimezone)
-        let action = StatsActionV4.retrieveStats(siteID: siteID,
-                                                 timeRange: timeRange,
-                                                 earliestDateToInclude: earliestDateToInclude,
-                                                 latestDateToInclude: latestDateToInclude,
-                                                 quantity: timeRange.maxNumberOfIntervals,
-                                                 onCompletion: { error in
-                                                    if let error = error {
-                                                        DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
-                                                    }
-                                                    onCompletion?(error)
-        })
+        let action = StatsActionV4.retrieveStats(
+            siteID: siteID,
+            timeRange: timeRange,
+            earliestDateToInclude: earliestDateToInclude,
+            latestDateToInclude: latestDateToInclude,
+            quantity: timeRange.maxNumberOfIntervals,
+            onCompletion: { error in
+                if let error = error {
+                    DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats v4: \(error)")
+                }
+                onCompletion?(error)
+            })
 
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncSiteVisitStats(for siteID: Int,
-                            siteTimezone: TimeZone,
-                            timeRange: StatsTimeRangeV4,
-                            latestDateToInclude: Date,
-                            onCompletion: ((Error?) -> Void)? = nil) {
-        let action = StatsActionV4.retrieveSiteVisitStats(siteID: siteID,
-                                                          siteTimezone: siteTimezone,
-                                                          timeRange: timeRange,
-                                                          latestDateToInclude: latestDateToInclude) { error in
-                                                            if let error = error {
-                                                                DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
-                                                            }
-                                                            onCompletion?(error)
+    fileprivate func syncSiteVisitStats(
+        for siteID: Int,
+        siteTimezone: TimeZone,
+        timeRange: StatsTimeRangeV4,
+        latestDateToInclude: Date,
+        onCompletion: ((Error?) -> Void)? = nil
+    ) {
+        let action = StatsActionV4.retrieveSiteVisitStats(
+            siteID: siteID,
+            siteTimezone: siteTimezone,
+            timeRange: timeRange,
+            latestDateToInclude: latestDateToInclude
+        ) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing visitor stats: \(error)")
+            }
+            onCompletion?(error)
         }
 
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncTopEarnersStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
-        let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
-                                                          timeRange: timeRange,
-                                                          latestDateToInclude: Date()) { error in
-                                                            if let error = error {
-                                                                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
-                                                            } else {
-                                                                ServiceLocator.analytics.track(.dashboardTopPerformersLoaded,
-                                                                                          withProperties: [
-                                                                                            "granularity": timeRange.topEarnerStatsGranularity.rawValue
-                                                                    ])
-                                                            }
-                                                            onCompletion?(error)
+    fileprivate func syncTopEarnersStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
+        let action = StatsActionV4.retrieveTopEarnerStats(
+            siteID: siteID,
+            timeRange: timeRange,
+            latestDateToInclude: Date()
+        ) { error in
+            if let error = error {
+                DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
+            } else {
+                ServiceLocator.analytics.track(
+                    .dashboardTopPerformersLoaded,
+                    withProperties: [
+                        "granularity": timeRange.topEarnerStatsGranularity.rawValue,
+                    ])
+            }
+            onCompletion?(error)
         }
 
         ServiceLocator.stores.dispatch(action)
     }
 }
 
-private extension StoreStatsAndTopPerformersViewController {
-    func clearAllFields() {
+extension StoreStatsAndTopPerformersViewController {
+    fileprivate func clearAllFields() {
         periodVCs.forEach { (vc) in
             vc.clearAllFields()
         }
     }
 
-    func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
+    fileprivate func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
         periodVCs.forEach { vc in
             vc.shouldShowSiteVisitStats = shouldShowSiteVisitors
         }
     }
 
-    func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
+    fileprivate func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
         switch error {
         case .statsModuleDisabled, .noPermission:
             showSiteVisitors(false)
@@ -389,8 +409,8 @@ private extension StoreStatsAndTopPerformersViewController {
 
 // MARK: - Private Helpers
 //
-private extension StoreStatsAndTopPerformersViewController {
-    func trackStatsLoaded(for granularity: StatsGranularityV4) {
+extension StoreStatsAndTopPerformersViewController {
+    fileprivate func trackStatsLoaded(for granularity: StatsGranularityV4) {
         guard ServiceLocator.stores.isAuthenticated else {
             return
         }
@@ -401,9 +421,9 @@ private extension StoreStatsAndTopPerformersViewController {
 
 // MARK: - Constants!
 //
-private extension StoreStatsAndTopPerformersViewController {
-    enum TabStrip {
-        static let buttonLeftRightMargin: CGFloat   = 14.0
-        static let selectedBarHeight: CGFloat       = 3.0
+extension StoreStatsAndTopPerformersViewController {
+    fileprivate enum TabStrip {
+        static let buttonLeftRightMargin: CGFloat = 14.0
+        static let selectedBarHeight: CGFloat = 3.0
     }
 }

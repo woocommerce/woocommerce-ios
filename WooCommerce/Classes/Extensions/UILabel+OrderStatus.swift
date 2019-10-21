@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Yosemite
 
-
 // MARK: - UILabel + OrderStatus Methods
 //
 extension UILabel {
@@ -27,25 +26,15 @@ extension UILabel {
     ///
     private func applyBackground(for statusEnum: OrderStatusEnum) {
         switch statusEnum {
-        case .processing:
-            fallthrough
-        case .pending:
+        case .processing, .pending:
             backgroundColor = StyleManager.statusSuccessColor
             layer.borderColor = StyleManager.statusSuccessBoldColor.cgColor
-        case .failed:
-            fallthrough
-        case .refunded:
+        case .failed, .refunded:
             backgroundColor = StyleManager.statusDangerColor
             layer.borderColor = StyleManager.statusDangerBoldColor.cgColor
         case .completed:
             backgroundColor = StyleManager.statusPrimaryColor
             layer.borderColor = StyleManager.statusPrimaryBoldColor.cgColor
-        case .onHold:
-            fallthrough
-        case .cancelled:
-            fallthrough
-        case .custom:
-            fallthrough
         default:
             backgroundColor = StyleManager.statusNotIdentifiedColor
             layer.borderColor = StyleManager.statusNotIdentifiedBoldColor.cgColor
@@ -56,9 +45,9 @@ extension UILabel {
 
 // MARK: - Private
 //
-private extension UILabel {
+extension UILabel {
 
-    enum OrderStatusSettings {
+    fileprivate enum OrderStatusSettings {
         static let borderWidth = CGFloat(1.0)
         static let cornerRadius = CGFloat(4.0)
     }

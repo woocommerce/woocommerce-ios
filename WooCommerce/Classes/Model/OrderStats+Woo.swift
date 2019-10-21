@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 // MARK: - OrderStats Helper Methods
 //
 extension OrderStats {

@@ -73,10 +73,10 @@ final class ShipmentProvidersViewController: UIViewController {
 
 // MARK: - Fetch data
 //
-private extension ShipmentProvidersViewController {
+extension ShipmentProvidersViewController {
     /// Loads shipment tracking groups
     ///
-    func fetchGroups() {
+    fileprivate func fetchGroups() {
         footerSpinnerView.startAnimating()
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
@@ -84,13 +84,15 @@ private extension ShipmentProvidersViewController {
 
         let orderID = viewModel.order.orderID
 
-        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(siteID: siteID,
-                                                                                   orderID: orderID) { [weak self] error in
-                                                                                    if let error = error {
-                                                                                        self?.presentNotice(error)
-                                                                                    }
-                                                                                    ServiceLocator.analytics.track(.orderTrackingProvidersLoaded)
-                                                                                    self?.footerSpinnerView.stopAnimating()
+        let loadGroupsAction = ShipmentAction.synchronizeShipmentTrackingProviders(
+            siteID: siteID,
+            orderID: orderID
+        ) { [weak self] error in
+            if let error = error {
+                self?.presentNotice(error)
+            }
+            ServiceLocator.analytics.track(.orderTrackingProvidersLoaded)
+            self?.footerSpinnerView.stopAnimating()
         }
 
         ServiceLocator.stores.dispatch(loadGroupsAction)
@@ -100,20 +102,20 @@ private extension ShipmentProvidersViewController {
 
 // MARK: - Configure UI
 //
-private extension ShipmentProvidersViewController {
-    func configureBackground() {
+extension ShipmentProvidersViewController {
+    fileprivate func configureBackground() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         configureTitle()
     }
 
-    func configureTitle() {
+    fileprivate func configureTitle() {
         title = viewModel.title
     }
 
-    func configureSearchController() {
+    fileprivate func configureSearchController() {
         searchController.searchBar.textField?.backgroundColor = StyleManager.tableViewBackgroundColor
 
         guard table.tableHeaderView == nil else {
@@ -122,7 +124,7 @@ private extension ShipmentProvidersViewController {
         table.tableHeaderView = searchController.searchBar
     }
 
-    func configureTable() {
+    fileprivate func configureTable() {
         registerTableViewCells()
         styleTableView()
 
@@ -136,7 +138,7 @@ private extension ShipmentProvidersViewController {
 
     /// Registers all of the available TableViewCells
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         let cells = [StatusListTableViewCell.self]
 
         for cell in cells {
@@ -144,7 +146,7 @@ private extension ShipmentProvidersViewController {
         }
     }
 
-    func styleTableView() {
+    fileprivate func styleTableView() {
         table.estimatedRowHeight = Constants.rowHeight
         table.rowHeight = UITableView.automaticDimension
         table.backgroundColor = StyleManager.tableViewBackgroundColor
@@ -154,10 +156,10 @@ private extension ShipmentProvidersViewController {
 
 // MARK: - Keyboard management
 //
-private extension ShipmentProvidersViewController {
+extension ShipmentProvidersViewController {
     /// Registers for all of the related Notifications
     ///
-    func startListeningToNotifications() {
+    fileprivate func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         nc.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
@@ -165,29 +167,33 @@ private extension ShipmentProvidersViewController {
 
     /// Unregisters from the Notification Center
     ///
-    func stopListeningToNotifications() {
+    fileprivate func stopListeningToNotifications() {
         NotificationCenter.default.removeObserver(self)
     }
 
+    @objc
+
     /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted
     ///
-    @objc func keyboardWillShow(_ note: Notification) {
+    fileprivate func keyboardWillShow(_ note: Notification) {
         let bottomInset = keyboardHeight(from: note)
 
         table.contentInset.bottom = bottomInset
         table.scrollIndicatorInsets.bottom = bottomInset
     }
 
+    @objc
+
     /// Executed whenever `UIResponder.keyboardWillhideNotification` note is posted
     ///
-    @objc func keyboardWillHide(_ note: Notification) {
+    fileprivate func keyboardWillHide(_ note: Notification) {
         table.contentInset.bottom = .zero
         table.scrollIndicatorInsets.bottom = .zero
     }
 
     /// Returns the Keyboard Height from a (hopefully) Keyboard Notification.
     ///
-    func keyboardHeight(from note: Notification) -> CGFloat {
+    fileprivate func keyboardHeight(from note: Notification) -> CGFloat {
         let wrappedRect = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
         let keyboardRect = wrappedRect?.cgRectValue ?? .zero
 
@@ -197,8 +203,8 @@ private extension ShipmentProvidersViewController {
 
 // MARK: - View model configuration and binding
 //
-private extension ShipmentProvidersViewController {
-    func configureViewModel() {
+extension ShipmentProvidersViewController {
+    fileprivate func configureViewModel() {
         viewModel.onDataLoaded = { [weak self] in
             self?.table.reloadData()
         }
@@ -220,9 +226,12 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StatusListTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? StatusListTableViewCell else {
-                                                        fatalError()
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: StatusListTableViewCell.reuseIdentifier,
+                for: indexPath) as? StatusListTableViewCell
+        else {
+            fatalError()
         }
 
         cell.textLabel?.text = viewModel.titleForCellAt(indexPath)
@@ -246,8 +255,9 @@ extension ShipmentProvidersViewController: UITableViewDelegate {
         }
 
         guard let provider = viewModel.provider(at: indexPath),
-            let groupName = viewModel.groupName(at: indexPath) else {
-                return
+            let groupName = viewModel.groupName(at: indexPath)
+        else {
+            return
         }
 
         delegate?.shipmentProviderList(self, didSelect: provider, groupName: groupName)
@@ -275,18 +285,20 @@ extension ShipmentProvidersViewController: UISearchControllerDelegate {
 
 // MARK: - Error handling
 //
-private extension ShipmentProvidersViewController {
-    func presentNotice(_ error: Error) {
+extension ShipmentProvidersViewController {
+    fileprivate func presentNotice(_ error: Error) {
         let title = NSLocalizedString(
             "Unable to load Shipment Providers",
             comment: "Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers"
         )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) { [weak self] in
-                                self?.fetchGroups()
+        let notice = Notice(
+            title: title,
+            message: nil,
+            feedbackType: .error,
+            actionTitle: actionTitle
+        ) { [weak self] in
+            self?.fetchGroups()
         }
 
         noticePresenter.enqueue(notice: notice)
@@ -295,14 +307,15 @@ private extension ShipmentProvidersViewController {
 
 // MARK: - Empty state
 //
-private extension ShipmentProvidersViewController {
-    func resetUIState(searchTerm: String?) {
+extension ShipmentProvidersViewController {
+    fileprivate func resetUIState(searchTerm: String?) {
         guard let searchTerm = searchTerm,
-            searchTerm.isEmpty == false else {
-                viewModel.clearFilters()
-                table.reloadData()
-                presentEmptyStateIfNecessary()
-                return
+            searchTerm.isEmpty == false
+        else {
+            viewModel.clearFilters()
+            table.reloadData()
+            presentEmptyStateIfNecessary()
+            return
         }
 
         viewModel.filter(by: searchTerm)
@@ -310,17 +323,19 @@ private extension ShipmentProvidersViewController {
         presentEmptyStateIfNecessary(term: searchTerm)
     }
 
-    func presentEmptyStateIfNecessary(term: String = "") {
+    fileprivate func presentEmptyStateIfNecessary(term: String = "") {
         guard viewModel.isListEmpty else {
             removeEmptyState()
             return
         }
 
         let emptyState: EmptyListMessageWithActionView = EmptyListMessageWithActionView.instantiateFromNib()
-        emptyState.messageText = NSLocalizedString("No results found for \(term)\nAdd a custom provider",
+        emptyState.messageText = NSLocalizedString(
+            "No results found for \(term)\nAdd a custom provider",
             comment: "Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider'")
-        emptyState.actionText = NSLocalizedString("Custom Provider",
-                                                  comment: "Title of button to add a custom tracking provider if filtering the list yields no results."
+        emptyState.actionText = NSLocalizedString(
+            "Custom Provider",
+            comment: "Title of button to add a custom tracking provider if filtering the list yields no results."
         )
 
         emptyState.onAction = { [weak self] in
@@ -330,18 +345,19 @@ private extension ShipmentProvidersViewController {
         emptyState.attach(to: view)
     }
 
-    func removeEmptyState() {
+    fileprivate func removeEmptyState() {
         for subview in view.subviews where subview is EmptyListMessageWithActionView {
             subview.removeFromSuperview()
         }
     }
 
-    func addCustomProvider() {
+    fileprivate func addCustomProvider() {
         ServiceLocator.analytics.track(.orderShipmentTrackingCustomProviderSelected)
 
         let initialCustomProviderName = searchController.searchBar.text
-        let addCustomTrackingViewModel = AddCustomTrackingViewModel(order: viewModel.order,
-                                                                    initialName: initialCustomProviderName)
+        let addCustomTrackingViewModel = AddCustomTrackingViewModel(
+            order: viewModel.order,
+            initialName: initialCustomProviderName)
         let addCustomTrackingViewController = ManualTrackingViewController(viewModel: addCustomTrackingViewModel)
         navigationController?.pushViewController(addCustomTrackingViewController, animated: true)
     }
@@ -350,6 +366,6 @@ private extension ShipmentProvidersViewController {
 
 // MARK: - Private constants
 //
-private struct Constants {
+private enum Constants {
     static let rowHeight = CGFloat(48)
 }

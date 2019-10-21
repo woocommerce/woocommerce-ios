@@ -1,8 +1,8 @@
+import CoreData
 import Foundation
 import XCTest
-import CoreData
-@testable import Storage
 
+@testable import Storage
 
 /// NSManagedObject+Storage Unit Tests
 ///

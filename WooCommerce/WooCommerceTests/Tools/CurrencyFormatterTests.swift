@@ -1,6 +1,6 @@
 import XCTest
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// Currency Formatter Tests - Decimals
 ///
@@ -168,10 +168,11 @@ class CurrencyFormatterTests: XCTestCase {
             return
         }
 
-        let formattedAmount = CurrencyFormatter().localize(convertedDecimal,
-                                                           with: separator,
-                                                           in: position,
-                                                           including: separator)
+        let formattedAmount = CurrencyFormatter().localize(
+            convertedDecimal,
+            with: separator,
+            in: position,
+            including: separator)
 
         guard let actualResult = formattedAmount else {
             XCTFail()
@@ -203,10 +204,11 @@ class CurrencyFormatterTests: XCTestCase {
             return
         }
 
-        let amount = CurrencyFormatter().localize(decimalAmount,
-                                                  with: decimalSeparator,
-                                                  in: decimalPosition,
-                                                  including: thousandSeparator)
+        let amount = CurrencyFormatter().localize(
+            decimalAmount,
+            with: decimalSeparator,
+            in: decimalPosition,
+            including: thousandSeparator)
 
         guard let localizedAmount = amount else {
             XCTFail()
@@ -214,9 +216,10 @@ class CurrencyFormatterTests: XCTestCase {
         }
 
         let symbol = CurrencySettings.shared.symbol(from: currencyCode)
-        let actualResult = CurrencyFormatter().formatCurrency(using: localizedAmount,
-                                                              at: currencyPosition,
-                                                              with: symbol)
+        let actualResult = CurrencyFormatter().formatCurrency(
+            using: localizedAmount,
+            at: currencyPosition,
+            with: symbol)
 
         XCTAssertEqual(expectedResult, actualResult)
     }
@@ -232,10 +235,11 @@ class CurrencyFormatterTests: XCTestCase {
         let decimalAmount = NSDecimalNumber(floatLiteral: -7867818684.64)
         let expectedResult = "-7.867.818.684,640 £"
 
-        let amount = CurrencyFormatter().localize(decimalAmount,
-                                                  with: decimalSeparator,
-                                                  in: decimalPosition,
-                                                  including: thousandSeparator)
+        let amount = CurrencyFormatter().localize(
+            decimalAmount,
+            with: decimalSeparator,
+            in: decimalPosition,
+            including: thousandSeparator)
 
         guard let localizedAmount = amount else {
             XCTFail()
@@ -243,9 +247,10 @@ class CurrencyFormatterTests: XCTestCase {
         }
 
         let symbol = CurrencySettings.shared.symbol(from: currencyCode)
-        let actualResult = CurrencyFormatter().formatCurrency(using: localizedAmount,
-                                                              at: currencyPosition,
-                                                              with: symbol)
+        let actualResult = CurrencyFormatter().formatCurrency(
+            using: localizedAmount,
+            at: currencyPosition,
+            with: symbol)
 
         XCTAssertEqual(expectedResult, actualResult)
     }

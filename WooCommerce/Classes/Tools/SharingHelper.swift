@@ -2,14 +2,9 @@ import Foundation
 import UIKit
 import WordPressUI
 
-
 /// Helper that makes sharing on iOS slightly easier
 ///
-class SharingHelper {
-
-    /// Private: NO-OP
-    ///
-    private init() { }
+enum SharingHelper {
 
 
     /// Share a URL using the iOS share sheet
@@ -45,31 +40,33 @@ class SharingHelper {
     /// UIActivity.ActivityType is not CaseIterable. :sadface:
     ///
     static func allActivityTypes() -> [UIActivity.ActivityType] {
-        return [.postToFacebook,
-                .postToTwitter,
-                .postToWeibo,
-                .message,
-                .mail,
-                .print,
-                .copyToPasteboard,
-                .assignToContact,
-                .saveToCameraRoll,
-                .addToReadingList,
-                .postToFlickr,
-                .postToVimeo,
-                .postToTencentWeibo,
-                .airDrop,
-                .openInIBooks,
-                .markupAsPDF]
+        return [
+            .postToFacebook,
+            .postToTwitter,
+            .postToWeibo,
+            .message,
+            .mail,
+            .print,
+            .copyToPasteboard,
+            .assignToContact,
+            .saveToCameraRoll,
+            .addToReadingList,
+            .postToFlickr,
+            .postToVimeo,
+            .postToTencentWeibo,
+            .airDrop,
+            .openInIBooks,
+            .markupAsPDF,
+        ]
     }
 }
 
 
 // MARK: - Private Helpers
 //
-private extension SharingHelper {
+extension SharingHelper {
 
-    static func createActivityVC(title: String? = nil, url: URL? = nil) -> UIActivityViewController? {
+    fileprivate static func createActivityVC(title: String? = nil, url: URL? = nil) -> UIActivityViewController? {
         guard title != nil || url != nil else {
             DDLogWarn("⚠ Cannot create sharing activity — both title AND URL are nil.")
             return nil

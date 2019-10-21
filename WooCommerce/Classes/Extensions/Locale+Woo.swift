@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Locale: Woo Methods
 ///
 extension Locale {

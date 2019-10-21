@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 // MARK: - NoteDetailsRow: Map to different UITableView Cells.
 //
 enum NoteDetailsRow {
@@ -9,11 +8,11 @@ enum NoteDetailsRow {
     case headerPlain(title: String, url: URL)
     case comment(comment: NoteBlock, user: NoteBlock, footer: NoteBlock?)
 
-// Note: As of Mark 1, we only support Comment Rows. Uncomment when the time comes!
-//
-//    case image(image: NoteBlock)
-//    case text(text: NoteBlock)
-//    case user(user: NoteBlock)
+    // Note: As of Mark 1, we only support Comment Rows. Uncomment when the time comes!
+    //
+    //    case image(image: NoteBlock)
+    //    case text(text: NoteBlock)
+    //    case user(user: NoteBlock)
 }
 
 
@@ -47,7 +46,7 @@ extension NoteDetailsRow {
         return [
             headerDetailRows(from: note.header),
             headerDetailRowsForStoreReview(for: note),
-            commentDetailRows(from: note.body) ?? regularDetailRows(from: note.body)
+            commentDetailRows(from: note.body) ?? regularDetailRows(from: note.body),
         ].flatMap { $0 }
     }
 
@@ -61,7 +60,7 @@ extension NoteDetailsRow {
 
         // Note: Snippet Block is actually optional!
         return [
-            .header(gravatar: gravatar, snippet: blocks.first(ofKind: .text))
+            .header(gravatar: gravatar, snippet: blocks.first(ofKind: .text)),
         ]
     }
 
@@ -78,7 +77,7 @@ extension NoteDetailsRow {
         }
 
         return [
-            .headerPlain(title: product.name, url: product.url)
+            .headerPlain(title: product.name, url: product.url),
         ]
     }
 
@@ -95,7 +94,7 @@ extension NoteDetailsRow {
 
         // Note: Footer Block is actually optional!
         return [
-            .comment(comment: comment, user: user, footer: blocks.first(ofKind: .text))
+            .comment(comment: comment, user: user, footer: blocks.first(ofKind: .text)),
         ]
     }
 
@@ -109,19 +108,19 @@ extension NoteDetailsRow {
     private static func regularDetailRows(from blocks: [NoteBlock]) -> [NoteDetailsRow] {
         return []
 
-// Note: As of Mark 1, we only support Comment Rows. Uncomment when the time comes!
-//
-//        return blocks.compactMap { block -> NoteDetailsRow? in
-//            switch block.kind {
-//            case .image:
-//                return .image(image: block)
-//            case .text:
-//                return .text(text: block)
-//            case .user:
-//                return .user(user: block)
-//            default:
-//                return nil
-//            }
-//        }
+        // Note: As of Mark 1, we only support Comment Rows. Uncomment when the time comes!
+        //
+        //        return blocks.compactMap { block -> NoteDetailsRow? in
+        //            switch block.kind {
+        //            case .image:
+        //                return .image(image: block)
+        //            case .text:
+        //                return .text(text: block)
+        //            case .user:
+        //                return .user(user: block)
+        //            default:
+        //                return nil
+        //            }
+        //        }
     }
 }

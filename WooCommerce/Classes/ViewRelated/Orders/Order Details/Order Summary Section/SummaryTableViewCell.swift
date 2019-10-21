@@ -1,6 +1,6 @@
+import Gridicons
 import UIKit
 import Yosemite
-import Gridicons
 
 struct SummaryTableViewCellPresentation {
     let status: OrderStatusEnum
@@ -92,11 +92,11 @@ final class SummaryTableViewCell: UITableViewCell {
 
 // MARK: - Private
 //
-private extension SummaryTableViewCell {
+extension SummaryTableViewCell {
 
     /// Preserves the current Payment BG Color
     ///
-    func preserveLabelColors(action: () -> Void) {
+    fileprivate func preserveLabelColors(action: () -> Void) {
         let paymentColor = paymentStatusLabel.backgroundColor
         let borderColor = paymentStatusLabel.layer.borderColor
 
@@ -106,19 +106,19 @@ private extension SummaryTableViewCell {
         paymentStatusLabel.layer.borderColor = borderColor
     }
 
-    func configureBackground() {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
     /// Setup: Labels
     ///
-    func configureLabels() {
+    fileprivate func configureLabels() {
         titleLabel.applyHeadlineStyle()
         createdLabel.applyFootnoteStyle()
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
     }
 
-    func configureIcon() {
+    fileprivate func configureIcon() {
         updateStatusButton.setImage(.pencilImage, for: .normal)
 
         updateStatusButton.addTarget(self, action: #selector(editWasTapped), for: .touchUpInside)
@@ -126,7 +126,9 @@ private extension SummaryTableViewCell {
         configureIconForVoiceOver()
     }
 
-    @objc func editWasTapped() {
+    @objc
+
+    fileprivate func editWasTapped() {
         onEditTouchUp?()
     }
 }
@@ -134,13 +136,15 @@ private extension SummaryTableViewCell {
 
 /// MARK: - VoiceOver
 ///
-private extension SummaryTableViewCell {
-    func configureIconForVoiceOver() {
-        updateStatusButton.accessibilityLabel = NSLocalizedString("Update Order Status",
-                                                                  comment: "Accessibility label for the button to update the order status in Order Details")
+extension SummaryTableViewCell {
+    fileprivate func configureIconForVoiceOver() {
+        updateStatusButton.accessibilityLabel = NSLocalizedString(
+            "Update Order Status",
+            comment: "Accessibility label for the button to update the order status in Order Details")
         updateStatusButton.accessibilityTraits = .button
-        updateStatusButton.accessibilityHint = NSLocalizedString("Opens a list of available statuses.",
-                                                                 comment: "Accessibility hint for the button to update the order status")
+        updateStatusButton.accessibilityHint = NSLocalizedString(
+            "Opens a list of available statuses.",
+            comment: "Accessibility hint for the button to update the order status")
     }
 }
 

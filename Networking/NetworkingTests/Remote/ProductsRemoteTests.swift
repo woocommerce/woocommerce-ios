@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// ProductsRemoteTests
 ///
@@ -106,14 +106,16 @@ class ProductsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
 
-        remote.searchProducts(for: sampleSiteID,
-                              keyword: "photo",
-                              pageNumber: 0,
-                              pageSize: 100) { (products, error) in
-                                XCTAssertNil(error)
-                                XCTAssertNotNil(products)
-                                XCTAssertEqual(products?.count, 2)
-                                expectation.fulfill()
+        remote.searchProducts(
+            for: sampleSiteID,
+            keyword: "photo",
+            pageNumber: 0,
+            pageSize: 100
+        ) { (products, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(products)
+            XCTAssertEqual(products?.count, 2)
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -125,13 +127,15 @@ class ProductsRemoteTests: XCTestCase {
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Wait for product search results")
 
-        remote.searchProducts(for: sampleSiteID,
-                              keyword: String(),
-                              pageNumber: 0,
-                              pageSize: 100) { (products, error) in
-                                XCTAssertNil(products)
-                                XCTAssertNotNil(error)
-                                expectation.fulfill()
+        remote.searchProducts(
+            for: sampleSiteID,
+            keyword: String(),
+            pageNumber: 0,
+            pageSize: 100
+        ) { (products, error) in
+            XCTAssertNil(products)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)

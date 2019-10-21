@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: OrderList
 ///
 struct OrderListMapper: Mapper {
@@ -18,7 +17,7 @@ struct OrderListMapper: Mapper {
         let decoder = JSONDecoder()
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         decoder.userInfo = [
-            .siteID: siteID
+            .siteID: siteID,
         ]
 
         return try decoder.decode(OrderListEnvelope.self, from: response).orders

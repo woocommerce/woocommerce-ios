@@ -1,13 +1,14 @@
-import UIKit
-import Yosemite
-import WordPressUI
 import Gridicons
+import UIKit
+import WordPressUI
+import Yosemite
 
 class ProductTableViewCell: UITableViewCell {
 
     // MARK: - Properties
 
     @IBOutlet private weak var productImage: UIImageView!
+
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var detailLabel: UILabel!
     @IBOutlet private var priceLabel: UILabel!
@@ -54,8 +55,9 @@ extension ProductTableViewCell {
     func configure(_ statsItem: TopEarnerStatsItem?) {
         nameText = statsItem?.productName
         detailText = String.localizedStringWithFormat(
-            NSLocalizedString("Total orders: %ld",
-                              comment: "Top performers — label for the total number of products ordered"),
+            NSLocalizedString(
+                "Total orders: %ld",
+                comment: "Top performers — label for the total number of products ordered"),
             statsItem?.quantity ?? 0
         )
         priceText = statsItem?.formattedTotalString

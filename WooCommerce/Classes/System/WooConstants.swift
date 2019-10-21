@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// WooCommerce Constants
 ///
 enum WooConstants {
@@ -15,11 +14,11 @@ enum WooConstants {
 
     /// Push Notifications ApplicationID
     ///
-#if DEBUG
-    static let pushApplicationID = "com.automattic.woocommerce:dev"
-#else
-    static let pushApplicationID = "com.automattic.woocommerce"
-#endif
+    #if DEBUG
+        static let pushApplicationID = "com.automattic.woocommerce:dev"
+    #else
+        static let pushApplicationID = "com.automattic.woocommerce"
+    #endif
 
     /// Jetpack Setup URL
     ///

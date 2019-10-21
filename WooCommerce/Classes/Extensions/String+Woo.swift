@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// String: Constant Helpers
 ///
 extension String {

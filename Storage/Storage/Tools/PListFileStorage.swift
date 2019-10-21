@@ -4,7 +4,7 @@ import Foundation
 /// from and to a plist file at a given URL
 ///
 public final class PListFileStorage: FileStorage {
-    public init() { }
+    public init() {}
 
     public func data(for fileURL: URL) throws -> Data {
         do {

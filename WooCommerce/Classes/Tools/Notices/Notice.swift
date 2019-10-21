@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// Notice represents a small notification that that can be displayed within the app, much like Android toasts or snackbars.
 /// Once you've created a Notice, you can dispatch a `NoticeAction` to display it.
 ///
@@ -34,12 +33,14 @@ struct Notice {
 
     /// Designated Initializer
     ///
-    init(title: String,
-         message: String? = nil,
-         feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil,
-         notificationInfo: NoticeNotificationInfo? = nil,
-         actionTitle: String? = nil,
-         actionHandler: ((() -> Void))? = nil) {
+    init(
+        title: String,
+        message: String? = nil,
+        feedbackType: UINotificationFeedbackGenerator.FeedbackType? = nil,
+        notificationInfo: NoticeNotificationInfo? = nil,
+        actionTitle: String? = nil,
+        actionHandler: ((() -> Void))? = nil
+    ) {
         self.title = title
         self.message = message
         self.feedbackType = feedbackType

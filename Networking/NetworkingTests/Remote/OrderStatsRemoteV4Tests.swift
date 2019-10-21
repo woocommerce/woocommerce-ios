@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import Networking
 
 /// OrderStatsRemote Unit Tests
@@ -28,15 +29,17 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "order-stats-v4-hour")
 
-        remote.loadOrderStats(for: sampleSiteID,
-                              unit: .hourly,
-                              earliestDateToInclude: "1955-11-05",
-                              latestDateToInclude: "1955-11-05",
-                              quantity: 24) { (orderStatsV4, error) in
-                                XCTAssertNil(error)
-                                XCTAssertNotNil(orderStatsV4)
-                                XCTAssertEqual(orderStatsV4?.intervals.count, 24)
-                                expectation.fulfill()
+        remote.loadOrderStats(
+            for: sampleSiteID,
+            unit: .hourly,
+            earliestDateToInclude: "1955-11-05",
+            latestDateToInclude: "1955-11-05",
+            quantity: 24
+        ) { (orderStatsV4, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(orderStatsV4)
+            XCTAssertEqual(orderStatsV4?.intervals.count, 24)
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -51,15 +54,17 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "reports/revenue/stats", filename: "order-stats-v4-defaults")
 
-        remote.loadOrderStats(for: sampleSiteID,
-                              unit: .weekly,
-                              earliestDateToInclude: "1955-11-05",
-                              latestDateToInclude: "1955-11-05",
-                              quantity: 2) { (orderStatsV4, error) in
-                                XCTAssertNil(error)
-                                XCTAssertNotNil(orderStatsV4)
-                                XCTAssertEqual(orderStatsV4?.intervals.count, 2)
-                                expectation.fulfill()
+        remote.loadOrderStats(
+            for: sampleSiteID,
+            unit: .weekly,
+            earliestDateToInclude: "1955-11-05",
+            latestDateToInclude: "1955-11-05",
+            quantity: 2
+        ) { (orderStatsV4, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(orderStatsV4)
+            XCTAssertEqual(orderStatsV4?.intervals.count, 2)
+            expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
@@ -71,11 +76,13 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
         let remote = OrderStatsRemoteV4(network: network)
         let expectation = self.expectation(description: "Load order stats contains errors")
 
-        remote.loadOrderStats(for: sampleSiteID,
-                              unit: .daily,
-                              earliestDateToInclude: "1955-11-05",
-                              latestDateToInclude: "1955-11-05",
-                              quantity: 31) { (orderStats, error) in
+        remote.loadOrderStats(
+            for: sampleSiteID,
+            unit: .daily,
+            earliestDateToInclude: "1955-11-05",
+            latestDateToInclude: "1955-11-05",
+            quantity: 31
+        ) { (orderStats, error) in
             XCTAssertNil(orderStats)
             XCTAssertNotNil(error)
             expectation.fulfill()

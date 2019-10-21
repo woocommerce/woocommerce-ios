@@ -14,20 +14,20 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
 }
 
 
-private extension TitleAndEditableValueTableViewCell {
-    func configureBackground() {
+extension TitleAndEditableValueTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureAsNonSelectable() {
+    fileprivate func configureAsNonSelectable() {
         selectionStyle = .none
     }
 
-    func styleTitle() {
+    fileprivate func styleTitle() {
         title.applyFootnoteStyle()
     }
 
-    func styleValue() {
+    fileprivate func styleValue() {
         value.applyBodyStyle()
     }
 }

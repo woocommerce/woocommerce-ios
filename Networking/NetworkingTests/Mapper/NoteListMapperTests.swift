@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// NoteListMapperTests Unit Tests
 ///
@@ -18,7 +18,6 @@ class NoteListMapperTests: XCTestCase {
     private lazy var brokenNotes: [Note] = {
         return try! mapLoadBrokenNotificationsResponse()
     }()
-
 
 
     /// Verifies that all of the Sample Notifications are properly parsed.
@@ -264,24 +263,24 @@ class NoteListMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension NoteListMapperTests {
+extension NoteListMapperTests {
 
     /// Returns the NoteListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapNotes(from filename: String) throws -> [Note] {
+    fileprivate func mapNotes(from filename: String) throws -> [Note] {
         let response = Loader.contentsOf(filename)!
         return try NoteListMapper().map(response: response)
     }
 
     /// Returns the NoteListMapper output upon receiving `notifications` endpoint's response.
     ///
-    func mapLoadAllNotificationsResponse() throws -> [Note] {
+    fileprivate func mapLoadAllNotificationsResponse() throws -> [Note] {
         return try mapNotes(from: "notifications-load-all")
     }
 
     /// Returns the NoteListMapper output upon receiving `notifications` endpoint's response.
     ///
-    func mapLoadBrokenNotificationsResponse() throws -> [Note] {
+    fileprivate func mapLoadBrokenNotificationsResponse() throws -> [Note] {
         return try mapNotes(from: "broken-notifications")
     }
 }

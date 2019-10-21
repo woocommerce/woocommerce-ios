@@ -37,13 +37,16 @@ final class ReviewViewModel {
         let accentColor = StyleManager.highlightTextColor
         let textColor = StyleManager.wooGreyTextMin
 
-        let pendingReviewLiteral = NSAttributedString(string: Strings.pendingReviews,
-                                                      attributes: [.foregroundColor: accentColor])
+        let pendingReviewLiteral = NSAttributedString(
+            string: Strings.pendingReviews,
+            attributes: [.foregroundColor: accentColor])
 
-        let dot = NSAttributedString(string: " ∙ ",
-                                     attributes: [.foregroundColor: textColor])
-        let reviewText = NSAttributedString(string: review.review.strippedHTML,
-                                            attributes: [.foregroundColor: textColor])
+        let dot = NSAttributedString(
+            string: " ∙ ",
+            attributes: [.foregroundColor: textColor])
+        let reviewText = NSAttributedString(
+            string: review.review.strippedHTML,
+            attributes: [.foregroundColor: textColor])
         let returnValue = NSMutableAttributedString(attributedString: pendingReviewLiteral)
         returnValue.append(dot)
         returnValue.append(reviewText)
@@ -79,11 +82,14 @@ final class ReviewViewModel {
 }
 
 
-private extension ReviewViewModel {
-    enum Strings {
-        static let pendingReviews = NSLocalizedString("Pending Review",
-                                                      comment: "Indicates a review is pending approval. It reads { Pending Review · Content of the review}")
-        static let someone = NSLocalizedString("Someone",
-                                               comment: "Indicates the reviewer does not have a name. It reads { Someone left a review}")
+extension ReviewViewModel {
+    fileprivate enum Strings {
+        static let pendingReviews = NSLocalizedString(
+            "Pending Review",
+            comment: "Indicates a review is pending approval. It reads { Pending Review · Content of the review}")
+
+        static let someone = NSLocalizedString(
+            "Someone",
+            comment: "Indicates the reviewer does not have a name. It reads { Someone left a review}")
     }
 }

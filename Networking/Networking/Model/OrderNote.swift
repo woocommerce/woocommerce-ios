@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents an Order's Note Entity.
 ///
 public struct OrderNote: Decodable {
@@ -30,21 +29,21 @@ public struct OrderNote: Decodable {
         let isCustomerNote = try container.decode(Bool.self, forKey: .isCustomerNote)
         let author = try container.decode(String.self, forKey: .author)
 
-        self.init(noteId: noteId, dateCreated: dateCreated, note: note, isCustomerNote: isCustomerNote, author: author) // initialize the struct
+        self.init(noteId: noteId, dateCreated: dateCreated, note: note, isCustomerNote: isCustomerNote, author: author)  // initialize the struct
     }
 }
 
 
 /// Defines all of the OrderNote's CodingKeys.
 ///
-private extension OrderNote {
+extension OrderNote {
 
-    enum CodingKeys: String, CodingKey {
-        case noteId         = "id"
-        case dateCreated    = "date_created_gmt"
-        case note           = "note"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case noteId = "id"
+        case dateCreated = "date_created_gmt"
+        case note = "note"
         case isCustomerNote = "customer_note"
-        case author         = "author"
+        case author = "author"
     }
 }
 
@@ -53,16 +52,13 @@ private extension OrderNote {
 //
 extension OrderNote: Comparable {
     public static func == (lhs: OrderNote, rhs: OrderNote) -> Bool {
-        return lhs.noteID == rhs.noteID &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.note == rhs.note &&
-            lhs.isCustomerNote == rhs.isCustomerNote &&
-            lhs.author == rhs.author
+        return lhs.noteID == rhs.noteID && lhs.dateCreated == rhs.dateCreated && lhs.note == rhs.note && lhs.isCustomerNote == rhs.isCustomerNote && lhs.author
+            == rhs.author
     }
 
     public static func < (lhs: OrderNote, rhs: OrderNote) -> Bool {
-        return lhs.noteID < rhs.noteID ||
-            (lhs.noteID == rhs.noteID && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.noteID == rhs.noteID && lhs.dateCreated == rhs.dateCreated && lhs.note < rhs.note)
+        return lhs.noteID < rhs.noteID || (lhs.noteID == rhs.noteID && lhs.dateCreated < rhs.dateCreated) || (
+            lhs.noteID == rhs.noteID && lhs.dateCreated == rhs.dateCreated && lhs.note < rhs.note
+        )
     }
 }

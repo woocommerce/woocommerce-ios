@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// WooCommerce UIButton Style Helpers
 ///
 extension UIButton {
@@ -68,9 +67,9 @@ extension UIButton {
 
 // MARK: - Private Structures
 //
-private extension UIButton {
+extension UIButton {
 
-    struct Style {
+    fileprivate enum Style {
         static let defaultCornerRadius = CGFloat(8.0)
         static let defaultBorderWidth = CGFloat(1.0)
         static let defaultEdgeInsets = UIEdgeInsets(top: 12, left: 22, bottom: 12, right: 22)

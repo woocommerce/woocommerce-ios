@@ -1,11 +1,12 @@
 import Foundation
-import UIKit
 import Gridicons
-import Yosemite
 import MessageUI
+import UIKit
+import Yosemite
 
 final class OrderDetailsViewModel {
     private(set) var order: Order
+
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
@@ -126,7 +127,7 @@ extension OrderDetailsViewModel {
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,
-            FulfillButtonTableViewCell.self
+            FulfillButtonTableViewCell.self,
         ]
 
         for cell in cells {
@@ -138,7 +139,7 @@ extension OrderDetailsViewModel {
     ///
     func registerTableViewHeaderFooters(_ tableView: UITableView) {
         let headersAndFooters = [
-            TwoColumnSectionHeaderView.self
+            TwoColumnSectionHeaderView.self,
         ]
 
         for kind in headersAndFooters {
@@ -156,9 +157,11 @@ extension OrderDetailsViewModel {
 
 
 extension OrderDetailsViewModel {
-    func tableView(_ tableView: UITableView,
-                   in viewController: UIViewController,
-                   didSelectRowAt indexPath: IndexPath) {
+    func tableView(
+        _ tableView: UITableView,
+        in viewController: UIViewController,
+        didSelectRowAt indexPath: IndexPath
+    ) {
         switch dataSource.sections[indexPath.section].rows[indexPath.row] {
 
         case .addOrderNote:
@@ -179,9 +182,10 @@ extension OrderDetailsViewModel {
         case .orderItem:
             let item = order.items[indexPath.row]
             let productID = item.variationID == 0 ? item.productID : item.variationID
-            let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                   siteID: order.siteID,
-                                                                   currency: order.currency)
+            let loaderViewController = ProductLoaderViewController(
+                productID: productID,
+                siteID: order.siteID,
+                currency: order.currency)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
         case .billingDetail:
@@ -200,7 +204,7 @@ extension OrderDetailsViewModel {
 
 // MARK: - Syncing data. Yosemite related stuff
 extension OrderDetailsViewModel {
-    func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
+    func syncOrder(onCompletion: ((Order?, Error?) -> Void)? = nil) {
         let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { (order, error) in
             guard let _ = order else {
                 DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
@@ -217,23 +221,25 @@ extension OrderDetailsViewModel {
     func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
         let orderID = order.orderID
         let siteID = order.siteID
-        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
-                                                                    orderID: orderID) { error in
-                                                                        if let error = error {
-                                                                            DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
-                                                                            onCompletion?(error)
-                                                                            return
-                                                                        }
+        let action = ShipmentAction.synchronizeShipmentTrackingData(
+            siteID: siteID,
+            orderID: orderID
+        ) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                onCompletion?(error)
+                return
+            }
 
-                                                                        ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+            ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
 
-                                                                        onCompletion?(nil)
+            onCompletion?(nil)
         }
 
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
+    func syncNotes(onCompletion: ((Error?) -> Void)? = nil) {
         let action = OrderNoteAction.retrieveOrderNotes(siteID: order.siteID, orderID: order.orderID) { [weak self] (orderNotes, error) in
             guard let orderNotes = orderNotes else {
                 DDLogError("⛔️ Error synchronizing Order Notes: \(error.debugDescription)")
@@ -251,7 +257,7 @@ extension OrderDetailsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
+    func syncProducts(onCompletion: ((Error?) -> Void)? = nil) {
         let action = ProductAction.requestMissingProducts(for: order) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
@@ -274,25 +280,32 @@ extension OrderDetailsViewModel {
         let statusKey = order.statusKey
         let providerName = tracking.trackingProvider ?? ""
 
-        ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
-                                                                         "status": statusKey,
-                                                                         "carrier": providerName,
-                                                                         "source": "order_detail"])
+        ServiceLocator.analytics.track(
+            .orderTrackingDelete,
+            withProperties: [
+                "id": orderID,
+                "status": statusKey,
+                "carrier": providerName,
+                "source": "order_detail",
+            ])
 
-        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
-                                                                 orderID: orderID,
-                                                                 trackingID: trackingID) { error in
-                                                                    if let error = error {
-                                                                        DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
+        let deleteTrackingAction = ShipmentAction.deleteTracking(
+            siteID: siteID,
+            orderID: orderID,
+            trackingID: trackingID
+        ) { error in
+            if let error = error {
+                DDLogError("⛔️ Order Details - Delete Tracking: orderID \(orderID). Error: \(error)")
 
-                                                                        ServiceLocator.analytics.track(.orderTrackingDeleteFailed,
-                                                                                                  withError: error)
-                                                                        onCompletion(error)
-                                                                        return
-                                                                    }
+                ServiceLocator.analytics.track(
+                    .orderTrackingDeleteFailed,
+                    withError: error)
+                onCompletion(error)
+                return
+            }
 
-                                                                    ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
-                                                                    onCompletion(nil)
+            ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
+            onCompletion(nil)
 
         }
 
@@ -300,9 +313,9 @@ extension OrderDetailsViewModel {
     }
 }
 
-private extension OrderDetailsViewModel {
+extension OrderDetailsViewModel {
 
-    enum Constants {
+    fileprivate enum Constants {
         static let productDetailsSegue = "ShowProductListViewController"
         static let orderStatusListSegue = "ShowOrderStatusListViewController"
     }

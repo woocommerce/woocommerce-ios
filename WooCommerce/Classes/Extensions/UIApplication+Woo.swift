@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 // MARK: - UIApplication.State Woo Methods
 //
 extension UIApplication.State {

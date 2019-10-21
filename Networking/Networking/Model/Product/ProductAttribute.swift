@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a ProductAttribute entity.
 ///
 public struct ProductAttribute: Decodable {
@@ -19,12 +18,14 @@ public struct ProductAttribute: Decodable {
 
     /// ProductAttribute initializer.
     ///
-    public init(attributeID: Int,
-                name: String,
-                position: Int,
-                visible: Bool,
-                variation: Bool,
-                options: [String]) {
+    public init(
+        attributeID: Int,
+        name: String,
+        position: Int,
+        visible: Bool,
+        variation: Bool,
+        options: [String]
+    ) {
         self.attributeID = attributeID
         self.name = name
         self.position = position
@@ -53,27 +54,28 @@ public struct ProductAttribute: Decodable {
             }
         }
 
-        self.init(attributeID: attributeID,
-                  name: name,
-                  position: position,
-                  visible: visible,
-                  variation: variation,
-                  options: options)
+        self.init(
+            attributeID: attributeID,
+            name: name,
+            position: position,
+            visible: visible,
+            variation: variation,
+            options: options)
     }
 }
 
 
 /// Defines all the ProductAttribute CodingKeys.
 ///
-private extension ProductAttribute {
-    enum CodingKeys: String, CodingKey {
-        case attributeID    = "id"
-        case name           = "name"
-        case position       = "position"
-        case visible        = "visible"
-        case variation      = "variation"
-        case options        = "options"
-        case option         = "option"  // Exists because of variation type products only
+extension ProductAttribute {
+    fileprivate enum CodingKeys: String, CodingKey {
+        case attributeID = "id"
+        case name = "name"
+        case position = "position"
+        case visible = "visible"
+        case variation = "variation"
+        case options = "options"
+        case option = "option"  // Exists because of variation type products only
     }
 }
 
@@ -82,17 +84,13 @@ private extension ProductAttribute {
 //
 extension ProductAttribute: Comparable {
     public static func == (lhs: ProductAttribute, rhs: ProductAttribute) -> Bool {
-        return lhs.attributeID == rhs.attributeID &&
-            lhs.name == rhs.name &&
-            lhs.position == rhs.position &&
-            lhs.visible == rhs.visible &&
-            lhs.variation == rhs.variation &&
-            lhs.options == rhs.options
+        return lhs.attributeID == rhs.attributeID && lhs.name == rhs.name && lhs.position == rhs.position && lhs.visible == rhs.visible && lhs.variation == rhs
+            .variation && lhs.options == rhs.options
     }
 
     public static func < (lhs: ProductAttribute, rhs: ProductAttribute) -> Bool {
-        return lhs.attributeID < rhs.attributeID ||
-            (lhs.attributeID == rhs.attributeID && lhs.name < rhs.name) ||
-            (lhs.attributeID == rhs.attributeID && lhs.name == rhs.name && lhs.position < rhs.position)
+        return lhs.attributeID < rhs.attributeID || (lhs.attributeID == rhs.attributeID && lhs.name < rhs.name) || (
+            lhs.attributeID == rhs.attributeID && lhs.name == rhs.name && lhs.position < rhs.position
+        )
     }
 }

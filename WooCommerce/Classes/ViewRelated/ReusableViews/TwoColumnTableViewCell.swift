@@ -19,16 +19,16 @@ final class TwoColumnTableViewCell: UITableViewCell {
 }
 
 
-private extension TwoColumnTableViewCell {
-    func configureBackground() {
+extension TwoColumnTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureLeftLabel() {
+    fileprivate func configureLeftLabel() {
         leftLabel.applyBodyStyle()
     }
 
-    func configureRightLabel() {
+    fileprivate func configureRightLabel() {
         rightLabel.applyBodyStyle()
     }
 }

@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// Displayed whenever there is no top performer data for a given period (granularity)
 ///
 class NoPeriodDataTableViewCell: UITableViewCell {

@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: NoteHashes Collection
 ///
 struct NoteHashListMapper: Mapper {

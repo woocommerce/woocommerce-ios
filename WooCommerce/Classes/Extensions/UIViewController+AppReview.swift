@@ -1,5 +1,5 @@
-import UIKit
 import StoreKit
+import UIKit
 
 extension UIViewController {
     // MARK: - App Store Review Prompt

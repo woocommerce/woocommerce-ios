@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 // MARK: - Manual currency formatting
 //
 public class CurrencyFormatter {
@@ -29,10 +28,12 @@ public class CurrencyFormatter {
     ///       *Assumes thousands grouped by 3, because a user can't indicate a preference and it's a majority default.
     ///       Note this assumption will be wrong for India.
     ///
-    func localize(_ decimalAmount: NSDecimalNumber,
-                  with decimalSeparator: String? = ".",
-                  in decimalPosition: Int = 2,
-                  including thousandSeparator: String? = ",") -> String? {
+    func localize(
+        _ decimalAmount: NSDecimalNumber,
+        with decimalSeparator: String? = ".",
+        in decimalPosition: Int = 2,
+        including thousandSeparator: String? = ","
+    ) -> String? {
 
         let numberFormatter = NumberFormatter()
         numberFormatter.usesGroupingSeparator = true
@@ -55,7 +56,7 @@ public class CurrencyFormatter {
     ///     - symbol: the currency symbol as a string, to be used with the amount.
     ///
     func formatCurrency(using amount: String, at position: CurrencySettings.CurrencyPosition, with symbol: String) -> String {
-        let space = "\u{00a0}" // unicode equivalent of &nbsp;
+        let space = "\u{00a0}"  // unicode equivalent of &nbsp;
         switch position {
         case .left:
             return symbol + amount
@@ -113,9 +114,11 @@ public class CurrencyFormatter {
     ///  - 1000 becomes "$1.0k"
     ///  - 5800199.56 becomes "$5.8m"
     ///
-    func formatHumanReadableAmount(_ amount: String,
-                                   with currency: String = CurrencySettings.shared.currencyCode.rawValue,
-                                   roundSmallNumbers: Bool = true) -> String? {
+    func formatHumanReadableAmount(
+        _ amount: String,
+        with currency: String = CurrencySettings.shared.currencyCode.rawValue,
+        roundSmallNumbers: Bool = true
+    ) -> String? {
         guard let decimalAmount = convertToDecimal(from: amount) else {
             return nil
         }

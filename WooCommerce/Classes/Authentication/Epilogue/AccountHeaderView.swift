@@ -1,8 +1,6 @@
 import Foundation
 import UIKit
 
-
-
 /// AccountHeaderView: Displays an Account's Details: [Gravatar + Name + Username]
 ///
 class AccountHeaderView: UIView {
@@ -94,9 +92,9 @@ extension AccountHeaderView {
 
 // MARK: - Private Methods
 //
-private extension AccountHeaderView {
+extension AccountHeaderView {
 
-    func setupHelpButton() {
+    fileprivate func setupHelpButton() {
         helpButton.setTitle(Strings.helpButtonTitle, for: .normal)
         helpButton.setTitle(Strings.helpButtonTitle, for: .highlighted)
         helpButton.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
@@ -109,7 +107,7 @@ private extension AccountHeaderView {
 
     /// Handle the help button being tapped
     ///
-    func handleHelpButtonTapped(_ sender: AnyObject) {
+    fileprivate func handleHelpButtonTapped(_ sender: AnyObject) {
         onHelpRequested?()
     }
 }
@@ -117,9 +115,9 @@ private extension AccountHeaderView {
 
 // MARK: - Constants!
 //
-private extension AccountHeaderView {
+extension AccountHeaderView {
 
-    enum Strings {
+    fileprivate enum Strings {
         static let helpButtonTitle = NSLocalizedString("Help", comment: "Help button on store picker screen.")
     }
 }

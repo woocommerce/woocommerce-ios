@@ -1,12 +1,11 @@
-import Foundation
-import ZendeskSDK
-import ZendeskCoreSDK
-import CommonUISDK// Zendesk UI SDK
-import WordPressShared
+import CommonUISDK  // Zendesk UI SDK
 import CoreTelephony
+import Foundation
 import SafariServices
+import WordPressShared
 import Yosemite
-
+import ZendeskCoreSDK
+import ZendeskSDK
 
 extension NSNotification.Name {
     static let ZDPNReceived = NSNotification.Name(rawValue: "ZDPNReceived")
@@ -27,7 +26,7 @@ class ZendeskManager: NSObject {
 
     /// Indicates if Zendesk is Enabled (or not)
     ///
-    private (set) var zendeskEnabled = false {
+    private(set) var zendeskEnabled = false {
         didSet {
             DDLogInfo("Zendesk Enabled: \(zendeskEnabled)")
         }
@@ -43,6 +42,7 @@ class ZendeskManager: NSObject {
     // MARK: - Private Properties
     //
     private var deviceToken: String?
+
     private var userName: String?
     private var userEmail: String?
     private var haveUserIdentity = false
@@ -86,9 +86,10 @@ class ZendeskManager: NSObject {
             return
         }
 
-        Zendesk.initialize(appId: ApiCredentials.zendeskAppId,
-                           clientId: ApiCredentials.zendeskClientId,
-                           zendeskUrl: ApiCredentials.zendeskUrl)
+        Zendesk.initialize(
+            appId: ApiCredentials.zendeskAppId,
+            clientId: ApiCredentials.zendeskClientId,
+            zendeskUrl: ApiCredentials.zendeskUrl)
         SupportUI.initialize(withZendesk: Zendesk.instance)
         CommonTheme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
 
@@ -244,7 +245,7 @@ extension ZendeskManager {
     func postNotificationReceived() {
         // Updating unread indicators should trigger UI updates, so send notification in main thread.
         DispatchQueue.main.async {
-           NotificationCenter.default.post(name: .ZDPNReceived, object: nil)
+            NotificationCenter.default.post(name: .ZDPNReceived, object: nil)
         }
     }
 
@@ -277,9 +278,10 @@ extension ZendeskManager: SupportManagerAdapter {
     ///
     func displaySupportRequest(using userInfo: [AnyHashable: Any]) {
         guard zendeskEnabled == true,
-            let requestId = userInfo[PushKey.requestID] as? String else {
-                DDLogInfo("Zendesk push notification payload is invalid.")
-                return
+            let requestId = userInfo[PushKey.requestID] as? String
+        else {
+            DDLogInfo("Zendesk push notification payload is invalid.")
+            return
         }
 
         // grab the tab bar
@@ -322,9 +324,9 @@ extension ZendeskManager: SupportManagerAdapter {
 
 // MARK: - Private Extension
 //
-private extension ZendeskManager {
+extension ZendeskManager {
 
-    func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
+    fileprivate func createIdentity(presentIn viewController: UIViewController, completion: @escaping (Bool) -> Void) {
 
         // If we already have an identity, do nothing.
         guard haveUserIdentity == false else {
@@ -334,12 +336,10 @@ private extension ZendeskManager {
             return
         }
 
-        /*
-         1. Attempt to get user information from User Defaults.
-         2. If we don't have the user's information yet, attempt to get it from the account/site.
-         3. Prompt the user for email & name, pre-populating with user information obtained in step 1.
-         4. Create Zendesk identity with user information.
-         */
+        // 1. Attempt to get user information from User Defaults.
+        //         2. If we don't have the user's information yet, attempt to get it from the account/site.
+        //         3. Prompt the user for email & name, pre-populating with user information obtained in step 1.
+        //         4. Create Zendesk identity with user information.
 
         if getUserProfile() {
             createZendeskIdentity { success in
@@ -365,7 +365,7 @@ private extension ZendeskManager {
         }
     }
 
-    func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
+    fileprivate func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
         getUserInformationIfAvailable()
         promptUserForInformation(withName: withName, from: viewController) { (success, email) in
             guard success else {
@@ -389,17 +389,18 @@ private extension ZendeskManager {
         }
     }
 
-    func getUserInformationIfAvailable() {
+    fileprivate func getUserInformationIfAvailable() {
         userEmail = ServiceLocator.stores.sessionManager.defaultAccount?.email
         userName = ServiceLocator.stores.sessionManager.defaultAccount?.username
 
         if let displayName = ServiceLocator.stores.sessionManager.defaultAccount?.displayName,
-            !displayName.isEmpty {
+            !displayName.isEmpty
+        {
             userName = displayName
         }
     }
 
-    func createZendeskIdentity(completion: @escaping (Bool) -> Void) {
+    fileprivate func createZendeskIdentity(completion: @escaping (Bool) -> Void) {
 
         guard let userEmail = userEmail else {
             DDLogInfo("No user email to create Zendesk identity with.")
@@ -423,7 +424,7 @@ private extension ZendeskManager {
     /// Important: Any time a new request controller is created, these configurations should be attached.
     /// Without it, the tickets won't appear in the correct view(s) in the web portal and they won't contain all the metadata needed to solve a ticket.
     ///
-    func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
+    fileprivate func createRequest(supportSourceTag: String?) -> RequestUiConfiguration {
 
         let requestConfig = RequestUiConfiguration()
 
@@ -439,7 +440,7 @@ private extension ZendeskManager {
             ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()),
             ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform),
             ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: Locale.preferredLanguage),
-            ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory)
+            ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory),
         ].compactMap { $0 }
 
         requestConfig.fields = ticketFields
@@ -457,7 +458,7 @@ private extension ZendeskManager {
 
     // MARK: - View
     //
-    func showZendeskView(_ zendeskView: UIViewController, from controller: UIViewController) {
+    fileprivate func showZendeskView(_ zendeskView: UIViewController, from controller: UIViewController) {
         // Got some duck typing going on in here. Sorry.
 
         // If the controller is a UIViewController, set the modal display for iPad.
@@ -487,7 +488,7 @@ private extension ZendeskManager {
 
     // MARK: - User Defaults
     //
-    func saveUserProfile() {
+    fileprivate func saveUserProfile() {
         var userProfile = [String: String]()
         userProfile[Constants.profileEmailKey] = userEmail
         userProfile[Constants.profileNameKey] = userName
@@ -496,7 +497,7 @@ private extension ZendeskManager {
         UserDefaults.standard.synchronize()
     }
 
-    func getUserProfile() -> Bool {
+    fileprivate func getUserProfile() -> Bool {
         guard let userProfile = UserDefaults.standard.dictionary(forKey: Constants.zendeskProfileUDKey) else {
             return false
         }
@@ -506,26 +507,27 @@ private extension ZendeskManager {
         return true
     }
 
-    func saveUnreadCount() {
+    fileprivate func saveUnreadCount() {
         UserDefaults.standard.set(unreadNotificationsCount, forKey: Constants.unreadNotificationsKey)
     }
 
-    func removeUserProfile() {
+    fileprivate func removeUserProfile() {
         UserDefaults.standard.removeObject(forKey: Constants.zendeskProfileUDKey)
     }
 
-    func removeUnreadCount() {
+    fileprivate func removeUnreadCount() {
         UserDefaults.standard.removeObject(forKey: Constants.unreadNotificationsKey)
     }
 
 
     // MARK: - Data Helpers
     //
-    func getDeviceFreeSpace() -> String {
+    fileprivate func getDeviceFreeSpace() -> String {
 
         guard let resourceValues = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
-            let capacityBytes = resourceValues.volumeAvailableCapacity else {
-                return Constants.unknownValue
+            let capacityBytes = resourceValues.volumeAvailableCapacity
+        else {
+            return Constants.unknownValue
         }
 
         // format string using human readable units. ex: 1.5 GB
@@ -545,18 +547,19 @@ private extension ZendeskManager {
         return "\(formattedCapacity) \(sizeAbbreviation)"
     }
 
-    func getLogFile() -> String {
+    fileprivate func getLogFile() -> String {
 
         guard let logFileInformation = ServiceLocator.fileLogger.logFileManager.sortedLogFileInfos.first,
             let logData = try? Data(contentsOf: URL(fileURLWithPath: logFileInformation.filePath)),
-            let logText = String(data: logData, encoding: .utf8) else {
-                return ""
+            let logText = String(data: logData, encoding: .utf8)
+        else {
+            return ""
         }
 
         return logText
     }
 
-    func getCurrentSiteDescription() -> String {
+    fileprivate func getCurrentSiteDescription() -> String {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return String()
         }
@@ -565,7 +568,7 @@ private extension ZendeskManager {
     }
 
 
-    func getNetworkInformation() -> String {
+    fileprivate func getNetworkInformation() -> String {
         let networkType: String = {
             let reachibilityStatus = ZDKReachability.forInternetConnection().currentReachabilityStatus()
             switch reachibilityStatus {
@@ -585,7 +588,7 @@ private extension ZendeskManager {
         let networkInformation = [
             "\(Constants.networkTypeLabel) \(networkType)",
             "\(Constants.networkCarrierLabel) \(carrierName)",
-            "\(Constants.networkCountryCodeLabel) \(carrierCountryCode)"
+            "\(Constants.networkCountryCodeLabel) \(carrierCountryCode)",
         ]
 
         return networkInformation.joined(separator: "\n")
@@ -594,7 +597,7 @@ private extension ZendeskManager {
 
     // MARK: - User Information Prompt
     //
-    func promptUserForInformation(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
+    fileprivate func promptUserForInformation(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
 
         let alertMessage = withName ? LocalizedText.alertMessageWithName : LocalizedText.alertMessage
         let alertController = UIAlertController(title: nil, message: alertMessage, preferredStyle: .alert)
@@ -636,9 +639,10 @@ private extension ZendeskManager {
             textField.placeholder = LocalizedText.emailPlaceholder
             textField.text = self.userEmail
 
-            textField.addTarget(self,
-                                action: #selector(self.emailTextFieldDidChange),
-                                for: UIControl.Event.editingChanged)
+            textField.addTarget(
+                self,
+                action: #selector(self.emailTextFieldDidChange),
+                for: UIControl.Event.editingChanged)
         }
 
         // Name Text Field
@@ -656,25 +660,29 @@ private extension ZendeskManager {
         viewController.present(alertController, animated: true, completion: nil)
     }
 
+    @objc
+
     /// Uses `@objc` because this method is used in a `#selector()` call
     ///
-    @objc func emailTextFieldDidChange(_ textField: UITextField) {
+    fileprivate func emailTextFieldDidChange(_ textField: UITextField) {
         guard let alertController = presentInController?.presentedViewController as? UIAlertController,
             let email = alertController.textFields?.first?.text,
-            let submitAction = alertController.actions.last else {
-                return
+            let submitAction = alertController.actions.last
+        else {
+            return
         }
 
         submitAction.isEnabled = EmailFormatValidator.validate(string: email)
         updateNameFieldForEmail(email)
     }
 
-    func updateNameFieldForEmail(_ email: String) {
+    fileprivate func updateNameFieldForEmail(_ email: String) {
         guard let alertController = presentInController?.presentedViewController as? UIAlertController,
             let totalTextFields = alertController.textFields?.count,
             totalTextFields > 1,
-            let nameField = alertController.textFields?.last else {
-                return
+            let nameField = alertController.textFields?.last
+        else {
+            return
         }
 
         guard !email.isEmpty else {
@@ -687,7 +695,7 @@ private extension ZendeskManager {
         }
     }
 
-    func generateDisplayName(from rawEmail: String) -> String {
+    fileprivate func generateDisplayName(from rawEmail: String) -> String {
         guard rawEmail.isEmpty == false else {
             return ""
         }
@@ -712,54 +720,66 @@ private extension ZendeskManager {
 
 // MARK: - Notifications
 //
-private extension ZendeskManager {
+extension ZendeskManager {
 
     /// Listens to Zendesk Notifications
     ///
-    func observeZendeskNotifications() {
+    fileprivate func observeZendeskNotifications() {
         // Ticket Attachments
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentError), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentSuccess), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZDKAPI_UploadAttachmentError), object: nil)
 
         // New Ticket Creation
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionError), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionSuccess), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZDKAPI_RequestSubmissionError), object: nil)
 
         // Ticket Reply
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionError), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionSuccess), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZDKAPI_CommentSubmissionError), object: nil)
 
         // View Ticket List
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_RequestsError), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZDKAPI_RequestsError), object: nil)
 
         // View Individual Ticket
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentListSuccess), object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZDKAPI_CommentListError), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZDKAPI_CommentListSuccess), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZDKAPI_CommentListError), object: nil)
 
         // Help Center
-        NotificationCenter.default.addObserver(self, selector: #selector(zendeskNotification(_:)),
-                                               name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(zendeskNotification(_:)),
+            name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
     }
 
 
     /// Removes all of the Notification Hooks.
     ///
-    func stopListeningToNotifications() {
+    fileprivate func stopListeningToNotifications() {
         NotificationCenter.default.removeObserver(self)
     }
 
+    @objc
+
     /// Handles (all of the) Zendesk Notifications
     ///
-    @objc func zendeskNotification(_ notification: Notification) {
+    fileprivate func zendeskNotification(_ notification: Notification) {
         switch notification.name.rawValue {
         case ZDKAPI_RequestSubmissionSuccess:
             ServiceLocator.analytics.track(.supportNewRequestCreated)
@@ -790,21 +810,23 @@ private extension ZendeskManager {
 
 // MARK: - Nested Types
 //
-private extension ZendeskManager {
+extension ZendeskManager {
 
     // MARK: - Constants
     //
-    struct Constants {
+    fileprivate enum Constants {
         static let unknownValue = "unknown"
         static let noValue = "none"
-        static let mobileCategoryID: UInt64 = 360000041586
+        static let mobileCategoryID: UInt64 = 360_000_041_586
         static let articleLabel = "iOS"
         static let platformTag = "iOS"
         static let sdkTag = "woo-mobile-sdk"
+
         static let ticketSubject = NSLocalizedString(
             "WooCommerce for iOS Support",
             comment: "Subject of new Zendesk ticket."
         )
+
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
@@ -824,47 +846,52 @@ private extension ZendeskManager {
 
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).
     // Which means they then have to be converted to NSNumber when sending to Zendesk.
-    struct TicketFieldIDs {
-        static let form: UInt64 = 360000010286
-        static let appVersion: UInt64 = 360000086866
-        static let allBlogs: UInt64 = 360000087183
-        static let deviceFreeSpace: UInt64 = 360000089123
-        static let networkInformation: UInt64 = 360000086966
-        static let logs: UInt64 = 22871957
-        static let currentSite: UInt64 = 360000103103
-        static let sourcePlatform: UInt64 = 360009311651
-        static let appLanguage: UInt64 = 360008583691
-        static let subcategory: UInt64 = 25176023
+    fileprivate enum TicketFieldIDs {
+        static let form: UInt64 = 360_000_010_286
+        static let appVersion: UInt64 = 360_000_086_866
+        static let allBlogs: UInt64 = 360_000_087_183
+        static let deviceFreeSpace: UInt64 = 360_000_089_123
+        static let networkInformation: UInt64 = 360_000_086_966
+        static let logs: UInt64 = 22_871_957
+        static let currentSite: UInt64 = 360_000_103_103
+        static let sourcePlatform: UInt64 = 360_009_311_651
+        static let appLanguage: UInt64 = 360_008_583_691
+        static let subcategory: UInt64 = 25_176_023
     }
 
-    struct LocalizedText {
+    fileprivate enum LocalizedText {
         static let alertMessageWithName = NSLocalizedString(
             "Please enter your email address and username:",
             comment: "Instructions for alert asking for email and name."
         )
+
         static let alertMessage = NSLocalizedString(
             "Please enter your email address:",
             comment: "Instructions for alert asking for email."
         )
+
         static let alertSubmit = NSLocalizedString(
             "OK",
             comment: "Submit button on prompt for user information."
         )
+
         static let alertCancel = NSLocalizedString(
             "Cancel",
             comment: "Cancel prompt for user information."
         )
+
         static let emailPlaceholder = NSLocalizedString(
             "Email",
             comment: "Email address text field placeholder"
         )
+
         static let namePlaceholder = NSLocalizedString(
             "Name",
             comment: "Name text field placeholder"
         )
     }
 
-    struct PushKey {
+    fileprivate enum PushKey {
         static let requestID = "zendesk_sdk_request_id"
     }
 }
@@ -876,8 +903,9 @@ extension ZendeskManager: UITextFieldDelegate {
 
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         guard textField == alertNameField,
-            let text = textField.text else {
-                return true
+            let text = textField.text
+        else {
+            return true
         }
 
         let newLength = text.count + string.count - range.length

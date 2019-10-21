@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents all of the possible Order Statuses in enum form
 ///
 public enum OrderStatusEnum: Decodable, Hashable {
@@ -46,14 +45,14 @@ extension OrderStatusEnum: RawRepresentable {
     ///
     public var rawValue: String {
         switch self {
-        case .pending:              return Keys.pending
-        case .processing:           return Keys.processing
-        case .onHold:               return Keys.onHold
-        case .failed:               return Keys.failed
-        case .cancelled:            return Keys.cancelled
-        case .completed:            return Keys.completed
-        case .refunded:             return Keys.refunded
-        case .custom(let payload):  return payload
+        case .pending: return Keys.pending
+        case .processing: return Keys.processing
+        case .onHold: return Keys.onHold
+        case .failed: return Keys.failed
+        case .cancelled: return Keys.cancelled
+        case .completed: return Keys.completed
+        case .refunded: return Keys.refunded
+        case .custom(let payload): return payload
         }
     }
 }
@@ -62,11 +61,11 @@ extension OrderStatusEnum: RawRepresentable {
 /// Enum containing the 'Known' OrderStatus Keys
 ///
 private enum Keys {
-    static let pending      = "pending"
-    static let processing   = "processing"
-    static let onHold       = "on-hold"
-    static let failed       = "failed"
-    static let cancelled    = "cancelled"
-    static let completed    = "completed"
-    static let refunded     = "refunded"
+    static let pending = "pending"
+    static let processing = "processing"
+    static let onHold = "on-hold"
+    static let failed = "failed"
+    static let cancelled = "cancelled"
+    static let completed = "completed"
+    static let refunded = "refunded"
 }

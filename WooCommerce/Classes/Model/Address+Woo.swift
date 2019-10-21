@@ -1,7 +1,6 @@
-import Foundation
 import Contacts
+import Foundation
 import Yosemite
-
 
 // Yosemite.Address Helper Methods
 //
@@ -80,12 +79,12 @@ extension Address {
 
 // MARK: - Private Methods
 //
-private extension Address {
+extension Address {
 
     /// Returns the two Address Lines combined (if there are, effectively, two lines).
     /// Per US Post Office standardized rules for address lines. Ref. https://pe.usps.com/text/pub28/28c2_001.htm
     ///
-    var combinedAddress: String {
+    fileprivate var combinedAddress: String {
         guard let address2 = address2, address2.isEmpty == false else {
             return address1
         }
@@ -95,7 +94,7 @@ private extension Address {
 
     /// Returns a CNPostalAddress with the receiver's properties
     ///
-    var postalAddress: CNPostalAddress {
+    fileprivate var postalAddress: CNPostalAddress {
         let address = CNMutablePostalAddress()
         address.street = combinedAddress
         address.city = city

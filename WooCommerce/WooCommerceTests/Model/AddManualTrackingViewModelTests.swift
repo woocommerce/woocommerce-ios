@@ -1,7 +1,8 @@
+import UIKit
 import XCTest
+
 @testable import WooCommerce
 @testable import Yosemite
-import UIKit
 
 final class AddManualTrackingViewModelTests: XCTestCase {
     private var subject: AddTrackingViewModel?
@@ -11,13 +12,19 @@ final class AddManualTrackingViewModelTests: XCTestCase {
         static let title = "Add Tracking"
         static let primaryActionTitle = "Add"
         static let sectionCount = 1
-        static let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
-                                                         .trackingNumber,
-                                                         .dateShipped,
-                                                         .datePicker]
-        static let provider = ShipmentTrackingProvider(siteID: 1234,
-                                                       name: "A mock provider",
-                                                       url: "http://somewhere.internet.com")
+
+        static let trackingRows: [AddEditTrackingRow] = [
+            .shippingProvider,
+            .trackingNumber,
+            .dateShipped,
+            .datePicker,
+        ]
+
+        static let provider = ShipmentTrackingProvider(
+            siteID: 1234,
+            name: "A mock provider",
+            url: "http://somewhere.internet.com")
+
         static let accessoryType = UITableViewCell.AccessoryType.disclosureIndicator
     }
 

@@ -40,11 +40,11 @@ extension ProductReviewStatus: RawRepresentable {
     public var rawValue: String {
         switch self {
         case .approved: return Keys.approved
-        case .hold:     return Keys.hold
-        case .spam:     return Keys.spam
-        case .unspam:   return Keys.unspam
-        case .trash:    return Keys.trash
-        case .untrash:  return Keys.untrash
+        case .hold: return Keys.hold
+        case .spam: return Keys.spam
+        case .unspam: return Keys.unspam
+        case .trash: return Keys.trash
+        case .untrash: return Keys.untrash
         }
     }
 
@@ -73,9 +73,9 @@ extension ProductReviewStatus: RawRepresentable {
 ///
 private enum Keys {
     static let approved = "approved"
-    static let hold     = "hold"
-    static let spam     = "spam"
-    static let unspam   = "unspam"
-    static let trash    = "trash"
-    static let untrash  = "untrash"
+    static let hold = "hold"
+    static let spam = "spam"
+    static let unspam = "unspam"
+    static let trash = "trash"
+    static let untrash = "untrash"
 }

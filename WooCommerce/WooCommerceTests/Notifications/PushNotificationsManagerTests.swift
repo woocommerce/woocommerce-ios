@@ -1,8 +1,8 @@
-import XCTest
 import UserNotifications
+import XCTest
 import Yosemite
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// PushNotificationsManager Tests
 ///
@@ -11,11 +11,12 @@ class PushNotificationsManagerTests: XCTestCase {
     /// PushNotifications Manager
     ///
     private lazy var manager: PushNotificationsManager = {
-        let configuration = PushNotificationsConfiguration(application: self.application,
-                                                           defaults: self.defaults,
-                                                           storesManager: self.storesManager,
-                                                           supportManager: self.supportManager,
-                                                           userNotificationsCenter: self.userNotificationCenter)
+        let configuration = PushNotificationsConfiguration(
+            application: self.application,
+            defaults: self.defaults,
+            storesManager: self.storesManager,
+            supportManager: self.supportManager,
+            userNotificationsCenter: self.userNotificationCenter)
 
         return PushNotificationsManager(configuration: configuration)
     }()
@@ -39,7 +40,6 @@ class PushNotificationsManagerTests: XCTestCase {
     /// Mockup: UserNotificationCenter
     ///
     private let userNotificationCenter = MockupUserNotificationsCenterAdapter()
-
 
 
     // MARK: - Overridden Methods
@@ -326,17 +326,17 @@ class PushNotificationsManagerTests: XCTestCase {
 
 // MARK: - Private Methods
 //
-private extension PushNotificationsManagerTests {
+extension PushNotificationsManagerTests {
 
     /// Returns a Sample Notification Payload
     ///
-    func notificationPayload(badgeCount: Int = 0, noteID: Int = 1234) -> [String: Any] {
+    fileprivate func notificationPayload(badgeCount: Int = 0, noteID: Int = 1234) -> [String: Any] {
         return [
             "aps": [
                 "badge": badgeCount,
                 "alert": Sample.defaultMessage
             ],
-            "note_id": noteID
+            "note_id": noteID,
         ]
     }
 }
@@ -344,7 +344,7 @@ private extension PushNotificationsManagerTests {
 
 // MARK: - Testing Constants
 //
-private struct Sample {
+private enum Sample {
 
     /// Sample DeviceID
     ///

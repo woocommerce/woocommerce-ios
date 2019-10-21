@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// Represents a cell with a two-column title "row"
 /// and a footnote "row" below the titles
 ///

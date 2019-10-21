@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// DotcomValidator Unit Tests
 ///
@@ -11,9 +11,9 @@ class DotcomValidatorTests: XCTestCase {
     func testGenericErrorIsProperlyExtractedFromData() {
         guard let payloadAsData = Loader.contentsOf("generic_error", extension: "json"),
             let dotcomError = DotcomValidator.error(from: payloadAsData) as? DotcomError
-            else {
-                XCTFail()
-                return
+        else {
+            XCTFail()
+            return
         }
 
         XCTAssert(dotcomError == .unauthorized)
@@ -24,9 +24,9 @@ class DotcomValidatorTests: XCTestCase {
     func testRestNoRouteErrorIsProperlyExtractedFromData() {
         guard let payloadAsData = Loader.contentsOf("restnoroute_error", extension: "json"),
             let dotcomError = DotcomValidator.error(from: payloadAsData) as? DotcomError
-            else {
-                XCTFail()
-                return
+        else {
+            XCTFail()
+            return
         }
 
         XCTAssert(dotcomError == .noRestRoute)
@@ -37,9 +37,9 @@ class DotcomValidatorTests: XCTestCase {
     func testNoStatsPermissionErrorIsProperlyExtractedFromData() {
         guard let payloadAsData = Loader.contentsOf("no_stats_permission_error", extension: "json"),
             let dotcomError = DotcomValidator.error(from: payloadAsData) as? DotcomError
-            else {
-                XCTFail()
-                return
+        else {
+            XCTFail()
+            return
         }
 
         XCTAssert(dotcomError == .noStatsPermission)
@@ -50,9 +50,9 @@ class DotcomValidatorTests: XCTestCase {
     func testStatsModuleDisabledErrorIsProperlyExtractedFromData() {
         guard let payloadAsData = Loader.contentsOf("stats_module_disabled_error", extension: "json"),
             let dotcomError = DotcomValidator.error(from: payloadAsData) as? DotcomError
-            else {
-                XCTFail()
-                return
+        else {
+            XCTFail()
+            return
         }
 
         XCTAssert(dotcomError == .statsModuleDisabled)

@@ -1,6 +1,6 @@
 import XCTest
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// Scanner+Woo Unit Tests
 ///

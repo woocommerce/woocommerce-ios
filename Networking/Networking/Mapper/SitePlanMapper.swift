@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: SitePlan
 ///
 class SitePlanMapper: Mapper {

@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents Top Earner (aka top performer) stats over a specific period.
 ///
 public struct TopEarnerStats: Decodable {
@@ -37,8 +36,8 @@ public struct TopEarnerStats: Decodable {
 
 /// Defines all of the TopEarnerStats CodingKeys.
 ///
-private extension TopEarnerStats {
-    enum CodingKeys: String, CodingKey {
+extension TopEarnerStats {
+    fileprivate enum CodingKeys: String, CodingKey {
         case date = "date"
         case unit = "unit"
         case limit = "limit"
@@ -51,15 +50,11 @@ private extension TopEarnerStats {
 //
 extension TopEarnerStats: Comparable {
     public static func == (lhs: TopEarnerStats, rhs: TopEarnerStats) -> Bool {
-        return lhs.date == rhs.date &&
-            lhs.granularity == rhs.granularity &&
-            lhs.limit == rhs.limit &&
-            lhs.items?.count == rhs.items?.count &&
-            lhs.items?.sorted() == rhs.items?.sorted()
+        return lhs.date == rhs.date && lhs.granularity == rhs.granularity && lhs.limit == rhs.limit && lhs.items?.count == rhs.items?.count && lhs.items?
+            .sorted() == rhs.items?.sorted()
     }
 
     public static func < (lhs: TopEarnerStats, rhs: TopEarnerStats) -> Bool {
-        return lhs.date < rhs.date ||
-            (lhs.date == rhs.date && lhs.limit < rhs.limit)
+        return lhs.date < rhs.date || (lhs.date == rhs.date && lhs.limit < rhs.limit)
     }
 }

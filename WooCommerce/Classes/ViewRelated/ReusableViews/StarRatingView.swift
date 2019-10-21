@@ -1,8 +1,6 @@
 import Foundation
 import UIKit
 
-
-
 /// Simple custom star rating UIView control (0 to 5 stars).
 ///
 class RatingView: UIView {
@@ -15,7 +13,7 @@ class RatingView: UIView {
         get {
             return _rating
         }
-        set (newRating) {
+        set(newRating) {
             guard newRating >= Defaults.minRating else {
                 _rating = Defaults.minRating
                 return
@@ -90,49 +88,54 @@ class RatingView: UIView {
 
             if lastStarView != nil {
                 let relationalConstraints = [
-                    NSLayoutConstraint(item: starView,
-                                       attribute: .left,
-                                       relatedBy: .equal,
-                                       toItem: lastStarView,
-                                       attribute: .right,
-                                       multiplier: 1.0,
-                                       constant: Defaults.padding),
+                    NSLayoutConstraint(
+                        item: starView,
+                        attribute: .left,
+                        relatedBy: .equal,
+                        toItem: lastStarView,
+                        attribute: .right,
+                        multiplier: 1.0,
+                        constant: Defaults.padding),
 
-                    NSLayoutConstraint(item: starView,
-                                       attribute: .top,
-                                       relatedBy: .equal,
-                                       toItem: lastStarView,
-                                       attribute: .top,
-                                       multiplier: 1.0,
-                                       constant: 0.0),
+                    NSLayoutConstraint(
+                        item: starView,
+                        attribute: .top,
+                        relatedBy: .equal,
+                        toItem: lastStarView,
+                        attribute: .top,
+                        multiplier: 1.0,
+                        constant: 0.0),
 
-                    NSLayoutConstraint(item: starView,
-                                       attribute: .width,
-                                       relatedBy: .equal,
-                                       toItem: lastStarView,
-                                       attribute: .width,
-                                       multiplier: 1.0,
-                                       constant: 0.0),
-                    ]
+                    NSLayoutConstraint(
+                        item: starView,
+                        attribute: .width,
+                        relatedBy: .equal,
+                        toItem: lastStarView,
+                        attribute: .width,
+                        multiplier: 1.0,
+                        constant: 0.0),
+                ]
                 NSLayoutConstraint.activate(relationalConstraints)
             } else {
                 let leftEdgeConstraints = [
-                    NSLayoutConstraint(item: starView,
-                                       attribute: .left,
-                                       relatedBy: .equal,
-                                       toItem: self,
-                                       attribute: .left,
-                                       multiplier: 1.0,
-                                       constant: 0.0),
+                    NSLayoutConstraint(
+                        item: starView,
+                        attribute: .left,
+                        relatedBy: .equal,
+                        toItem: self,
+                        attribute: .left,
+                        multiplier: 1.0,
+                        constant: 0.0),
 
-                    NSLayoutConstraint(item: starView,
-                                       attribute: .top,
-                                       relatedBy: .equal,
-                                       toItem: self,
-                                       attribute: .top,
-                                       multiplier: 1.0,
-                                       constant: 0.0),
-                    ]
+                    NSLayoutConstraint(
+                        item: starView,
+                        attribute: .top,
+                        relatedBy: .equal,
+                        toItem: self,
+                        attribute: .top,
+                        multiplier: 1.0,
+                        constant: 0.0),
+                ]
                 NSLayoutConstraint.activate(leftEdgeConstraints)
             }
 
@@ -217,6 +220,6 @@ private class StarView: UIView {
 fileprivate enum Defaults {
     static let minRating = CGFloat(0.0)
     static let maxStars = CGFloat(5.0)
-    static let padding  = CGFloat(0.0)
+    static let padding = CGFloat(0.0)
     static let height = CGFloat(10.0)
 }

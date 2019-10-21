@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Yosemite
 
-
 /// Simplifies and decouples the store picker from the caller
 ///
 final class StorePickerCoordinator: Coordinator {
@@ -67,9 +66,9 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
 // MARK: - Private Helpers
 //
-private extension StorePickerCoordinator {
+extension StorePickerCoordinator {
 
-    func showStorePicker() {
+    fileprivate func showStorePicker() {
         switch selectedConfiguration {
         case .standard:
             let wrapper = UINavigationController(rootViewController: storePicker)
@@ -82,7 +81,7 @@ private extension StorePickerCoordinator {
         }
     }
 
-    func presentStoreSwitchedNotice() {
+    fileprivate func presentStoreSwitchedNotice() {
         guard selectedConfiguration == .switchingStores else {
             return
         }
@@ -90,7 +89,8 @@ private extension StorePickerCoordinator {
             return
         }
 
-        let message = NSLocalizedString("Switched to \(newStoreName). You will only receive notifications from this store.",
+        let message = NSLocalizedString(
+            "Switched to \(newStoreName). You will only receive notifications from this store.",
             comment: "Message presented after users switch to a new store. "
                 + "Reads like: Switched to {store name}. You will only receive notifications from this store.")
         let notice = Notice(title: message, feedbackType: .success)
@@ -98,7 +98,7 @@ private extension StorePickerCoordinator {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
-    func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
+    fileprivate func logOutOfCurrentStore(onCompletion: @escaping () -> Void) {
         ServiceLocator.stores.removeDefaultStore()
 
         // Note: We are not deleting products here because products from multiple sites
@@ -136,14 +136,15 @@ private extension StorePickerCoordinator {
         }
     }
 
-    func finalizeStoreSelection(_ storeID: Int) {
+    fileprivate func finalizeStoreSelection(_ storeID: Int) {
         ServiceLocator.stores.updateDefaultStore(storeID: storeID)
 
         // We need to call refreshUserData() here because the user selected
         // their default store and tracks should to know about it.
         ServiceLocator.analytics.refreshUserData()
-        ServiceLocator.analytics.track(.sitePickerContinueTapped,
-                                  withProperties: ["selected_store_id": ServiceLocator.stores.sessionManager.defaultStoreID ?? String()])
+        ServiceLocator.analytics.track(
+            .sitePickerContinueTapped,
+            withProperties: ["selected_store_id": ServiceLocator.stores.sessionManager.defaultStoreID ?? String()])
 
         AppDelegate.shared.authenticatorWasDismissed()
         if selectedConfiguration == .login {

@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Reports: Remote Endpoints
 ///
@@ -18,10 +17,11 @@ public class ReportRemote: Remote {
     public func loadOrderTotals(for siteID: Int, completion: @escaping ([OrderStatusEnum: Int]?, Error?) -> Void) {
         loadReportOrderTotals(for: siteID) { (orderStatuses, error) in
             var returnDict = [OrderStatusEnum: Int]()
-            orderStatuses?.forEach({ (orderStatus) in
-                let status = OrderStatusEnum(rawValue: orderStatus.slug)
-                returnDict[status] = orderStatus.total
-            })
+            orderStatuses?.forEach(
+                { (orderStatus) in
+                    let status = OrderStatusEnum(rawValue: orderStatus.slug)
+                    returnDict[status] = orderStatus.total
+                })
             completion(returnDict, error)
         }
     }
@@ -47,8 +47,8 @@ public class ReportRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension ReportRemote {
-    enum Constants {
+extension ReportRemote {
+    fileprivate enum Constants {
         static let orderTotalsPath = "reports/orders/totals"
     }
 }

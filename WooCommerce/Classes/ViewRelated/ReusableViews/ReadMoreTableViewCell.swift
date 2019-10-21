@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// Represents a cell with a Title label, body label, and call-to-action button
 ///
 final class ReadMoreTableViewCell: UITableViewCell {

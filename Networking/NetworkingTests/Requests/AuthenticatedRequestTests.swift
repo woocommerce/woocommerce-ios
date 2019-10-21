@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// AuthenticatedRequest Unit Tests
 ///

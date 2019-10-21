@@ -1,9 +1,8 @@
 import Foundation
 
-
 /// Unit Tests Constants
 ///
-struct Constants {
+enum Constants {
 
     /// Default Expectation Timeout
     ///

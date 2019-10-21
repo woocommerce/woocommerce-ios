@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - NoteRange
 //
 public struct NoteRange: Equatable {
@@ -40,7 +39,6 @@ public struct NoteRange: Equatable {
     /// String Payload, if any.
     ///
     private(set) public var value: String?
-
 
 
     /// Designated Initializer.
@@ -98,11 +96,11 @@ extension NoteRange: Decodable {
 
 // MARK: - Parsing Helpers
 //
-private extension NoteRange {
+extension NoteRange {
 
     /// Parses the NoteRange.Type field into a Swift Native enum. Returns .unknown on failure.
     ///
-    static func kind(forType type: String?, siteID: Int?, url: URL?) -> Kind {
+    fileprivate static func kind(forType type: String?, siteID: Int?, url: URL?) -> Kind {
         if let type = type, let kind = Kind(rawValue: type) {
             return kind
         }
@@ -156,13 +154,7 @@ extension NoteRange {
 
 // MARK: - Equatable Conformance
 //
-public func ==(lhs: NoteRange, rhs: NoteRange) -> Bool {
-    return lhs.type == rhs.type &&
-            lhs.range == rhs.range &&
-            lhs.url == rhs.url &&
-            lhs.commentID == rhs.commentID &&
-            lhs.postID == rhs.postID &&
-            lhs.siteID == rhs.siteID &&
-            lhs.userID == rhs.userID &&
-            lhs.value == rhs.value
+public func == (lhs: NoteRange, rhs: NoteRange) -> Bool {
+    return lhs.type == rhs.type && lhs.range == rhs.range && lhs.url == rhs.url && lhs.commentID == rhs.commentID && lhs.postID == rhs.postID && lhs.siteID
+        == rhs.siteID && lhs.userID == rhs.userID && lhs.value == rhs.value
 }

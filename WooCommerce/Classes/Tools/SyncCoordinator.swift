@@ -1,7 +1,5 @@
 import Foundation
 
-
-
 /// SyncingCoordinatorDelegate: Delegate that's expected to provide Sync'ing Services per Page.
 ///
 protocol SyncingCoordinatorDelegate: class {
@@ -61,9 +59,11 @@ class SyncingCoordinator {
 
     /// Designated Initializer
     ///
-    init(pageFirstIndex: Int = Defaults.pageFirstIndex,
-         pageSize: Int = Defaults.pageSize,
-         pageTTLInSeconds: TimeInterval = Defaults.pageTTLInSeconds) {
+    init(
+        pageFirstIndex: Int = Defaults.pageFirstIndex,
+        pageSize: Int = Defaults.pageSize,
+        pageTTLInSeconds: TimeInterval = Defaults.pageTTLInSeconds
+    ) {
 
         self.pageFirstIndex = pageFirstIndex
         self.pageSize = pageSize
@@ -107,11 +107,11 @@ class SyncingCoordinator {
 
 // MARK: - Sync'ing Core
 //
-private extension SyncingCoordinator {
+extension SyncingCoordinator {
 
     /// Synchronizes a given Page Number
     ///
-    func synchronize(pageNumber: Int, onCompletion: (() -> Void)? = nil) {
+    fileprivate func synchronize(pageNumber: Int, onCompletion: (() -> Void)? = nil) {
         guard let delegate = delegate else {
             fatalError()
         }
@@ -173,23 +173,23 @@ extension SyncingCoordinator {
 
 // MARK: - Private Methods
 //
-private extension SyncingCoordinator {
+extension SyncingCoordinator {
 
     /// Marks the specified PageNumber as just Updated
     ///
-    func markAsUpdated(pageNumber: Int) {
+    fileprivate func markAsUpdated(pageNumber: Int) {
         refreshDatePerPage[pageNumber] = Date()
     }
 
     /// Marks the specified PageNumber as "In Sync"
     ///
-    func markAsBeingSynced(pageNumber: Int) {
+    fileprivate func markAsBeingSynced(pageNumber: Int) {
         pagesBeingSynced.insert(pageNumber)
     }
 
     /// Removes the specified PageNumber from the "In Sync" collection
     ///
-    func unmarkAsBeingSynced(pageNumber: Int) {
+    fileprivate func unmarkAsBeingSynced(pageNumber: Int) {
         pagesBeingSynced.remove(pageNumber)
     }
 }

@@ -35,6 +35,7 @@ extension StatsVersionState: Equatable {
 ///
 final class StatsVersionStateCoordinator {
     typealias StateChangeCallback = (_ previousState: StatsVersionState?, _ currentState: StatsVersionState) -> Void
+
     /// Called when stats version UI state is set.
     var onStateChange: StateChangeCallback?
 
@@ -69,20 +70,22 @@ final class StatsVersionStateCoordinator {
                 guard let self = self else {
                     return
                 }
-                let statsVersion: StatsVersion = isStatsV4Available ? .v4: .v3
+                let statsVersion: StatsVersion = isStatsV4Available ? .v4 : .v3
 
                 // Sets eligible stats version to app settings.
                 let setEligibleStatsVersionAction = AppSettingsAction.setStatsVersionEligible(siteID: self.siteID, statsVersion: statsVersion)
                 ServiceLocator.stores.dispatch(setEligibleStatsVersionAction)
 
-                self.nextState(eligibleStatsVersion: statsVersion, onNextState: { [weak self] nextState in
-                    guard let self = self else {
-                        return
-                    }
-                    if nextState != self.state {
-                        self.state = nextState
-                    }
-                })
+                self.nextState(
+                    eligibleStatsVersion: statsVersion,
+                    onNextState: { [weak self] nextState in
+                        guard let self = self else {
+                            return
+                        }
+                        if nextState != self.state {
+                            self.state = nextState
+                        }
+                    })
             }
             ServiceLocator.stores.dispatch(action)
         }
@@ -90,8 +93,10 @@ final class StatsVersionStateCoordinator {
     }
 
     /// Calculates the next state when the eligible stats version is set.
-    private func nextState(eligibleStatsVersion: StatsVersion,
-                           onNextState: @escaping (_ nextState: StatsVersionState) -> Void) {
+    private func nextState(
+        eligibleStatsVersion: StatsVersion,
+        onNextState: @escaping (_ nextState: StatsVersionState) -> Void
+    ) {
         guard let currentState = state else {
             let nextState = StatsVersionState.eligible(statsVersion: eligibleStatsVersion)
             onNextState(nextState)
@@ -108,23 +113,23 @@ final class StatsVersionStateCoordinator {
             case .v3:
                 // V3 to V4
                 let visibilityAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v3ToV4) { shouldShowBanner in
-                    let nextState: StatsVersionState = shouldShowBanner ? .v3ShownV4Eligible: currentState
+                    let nextState: StatsVersionState = shouldShowBanner ? .v3ShownV4Eligible : currentState
                     onNextState(nextState)
                 }
                 ServiceLocator.stores.dispatch(visibilityAction)
             case .v4:
                 // V4 to V3
                 let visibilityAction = AppSettingsAction.loadStatsVersionBannerVisibility(banner: .v4ToV3) { shouldShowBanner in
-                    let nextState: StatsVersionState = shouldShowBanner ? .v4RevertedToV3: .eligible(statsVersion: eligibleStatsVersion)
+                    let nextState: StatsVersionState = shouldShowBanner ? .v4RevertedToV3 : .eligible(statsVersion: eligibleStatsVersion)
                     onNextState(nextState)
                 }
                 ServiceLocator.stores.dispatch(visibilityAction)
             }
         case .v4RevertedToV3:
-            let nextState: StatsVersionState = eligibleStatsVersion == .v4 ? .v3ShownV4Eligible: currentState
+            let nextState: StatsVersionState = eligibleStatsVersion == .v4 ? .v3ShownV4Eligible : currentState
             onNextState(nextState)
         case .v3ShownV4Eligible:
-            let nextState: StatsVersionState = eligibleStatsVersion == .v4 ? currentState: .v4RevertedToV3
+            let nextState: StatsVersionState = eligibleStatsVersion == .v4 ? currentState : .v4RevertedToV3
             onNextState(nextState)
         default:
             let nextState = StatsVersionState.eligible(statsVersion: eligibleStatsVersion)

@@ -1,8 +1,7 @@
 import Foundation
+import Gridicons
 import UIKit
 import Yosemite
-import Gridicons
-
 
 /// Renders the Order Fulfillment Interface
 ///
@@ -36,9 +35,10 @@ final class FulfillViewController: UIViewController {
     ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
-                                    self.order.siteID,
-                                    self.order.orderID)
+        let predicate = NSPredicate(
+            format: "siteID = %ld AND orderID = %ld",
+            self.order.siteID,
+            self.order.orderID)
         let descriptor = NSSortDescriptor(keyPath: \StorageShipmentTracking.dateShipped, ascending: true)
 
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -109,24 +109,24 @@ final class FulfillViewController: UIViewController {
 
 // MARK: - Interface Initialization
 //
-private extension FulfillViewController {
+extension FulfillViewController {
 
     /// Setup: Navigation Item
     ///
-    func setupNavigationItem() {
+    fileprivate func setupNavigationItem() {
         title = NSLocalizedString("Fulfill Order #\(order.number)", comment: "Order Fulfillment Title")
     }
 
     /// Setup: Main View
     ///
-    func setupMainView() {
+    fileprivate func setupMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup: TableView
     ///
-    func setupTableView() {
+    fileprivate func setupTableView() {
         let container = UIView(frame: CGRect(origin: .zero, size: CGSize(width: tableView.frame.width, height: 0)))
         container.addSubview(actionView)
         actionView.translatesAutoresizingMaskIntoConstraints = false
@@ -136,7 +136,7 @@ private extension FulfillViewController {
 
     ///Setup: Action Button!
     ///
-    func setupActionButton() {
+    fileprivate func setupActionButton() {
         let title = NSLocalizedString("Mark Order Complete", comment: "Fulfill Order Action Button")
         actionButton.setTitle(title, for: .normal)
         actionButton.applyPrimaryButtonStyle()
@@ -145,12 +145,12 @@ private extension FulfillViewController {
 
     /// Registers all of the available TableViewCells
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         let cells = [
             CustomerInfoTableViewCell.self,
             LeftImageTableViewCell.self,
             EditableOrderTrackingTableViewCell.self,
-            PickListTableViewCell.self
+            PickListTableViewCell.self,
         ]
 
         for cell in cells {
@@ -160,8 +160,8 @@ private extension FulfillViewController {
 
     /// Registers all of the available TableViewHeaderFooters
     ///
-    func registerTableViewHeaderFooters() {
-        let headersAndFooters = [ TwoColumnSectionHeaderView.self ]
+    fileprivate func registerTableViewHeaderFooters() {
+        let headersAndFooters = [TwoColumnSectionHeaderView.self]
 
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
@@ -172,11 +172,12 @@ private extension FulfillViewController {
 
 // MARK: - Action Handlers
 //
-private extension FulfillViewController {
+extension FulfillViewController {
+    @IBAction
 
     /// Whenever the Fulfillment Action is pressed, we'll mark the order as Completed, and pull back to the previous screen.
     ///
-    @IBAction func fulfillWasPressed() {
+    fileprivate func fulfillWasPressed() {
         // Capture these values for the undo closure
         let orderID = order.orderID
         let doneStatus = OrderStatusEnum.completed.rawValue
@@ -186,17 +187,25 @@ private extension FulfillViewController {
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
         ServiceLocator.analytics.track(.orderFulfillmentCompleteButtonTapped)
-        ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": order.orderID,
-                                                                       "from": order.statusKey,
-                                                                       "to": OrderStatusEnum.completed.rawValue])
+        ServiceLocator.analytics.track(
+            .orderStatusChange,
+            withProperties: [
+                "id": order.orderID,
+                "from": order.statusKey,
+                "to": OrderStatusEnum.completed.rawValue,
+            ])
         ServiceLocator.stores.dispatch(done)
 
         displayOrderCompleteNotice {
             ServiceLocator.analytics.track(.orderMarkedCompleteUndoButtonTapped)
             ServiceLocator.analytics.track(.orderStatusChangeUndo, withProperties: ["id": orderID])
-            ServiceLocator.analytics.track(.orderStatusChange, withProperties: ["id": orderID,
-                                                                           "from": doneStatus,
-                                                                           "to": undoStatus])
+            ServiceLocator.analytics.track(
+                .orderStatusChange,
+                withProperties: [
+                    "id": orderID,
+                    "from": doneStatus,
+                    "to": undoStatus,
+                ])
             ServiceLocator.stores.dispatch(undo)
         }
 
@@ -206,24 +215,26 @@ private extension FulfillViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
-        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
-            guard let error = error else {
-                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-                ServiceLocator.analytics.track(.orderStatusChangeSuccess)
-                return
-            }
+    fileprivate func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
+        return OrderAction.updateOrder(
+            siteID: siteID, orderID: orderID, statusKey: statusKey,
+            onCompletion: { error in
+                guard let error = error else {
+                    NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+                    ServiceLocator.analytics.track(.orderStatusChangeSuccess)
+                    return
+                }
 
-            ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
-            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
+                ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
+                DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
 
-            self.displayErrorNotice(orderID: orderID)
-        })
+                self.displayErrorNotice(orderID: orderID)
+            })
     }
 
     /// Displays the `Order Fulfilled` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    func displayOrderCompleteNotice(onUndoAction: @escaping () -> Void) {
+    fileprivate func displayOrderCompleteNotice(onUndoAction: @escaping () -> Void) {
         let message = NSLocalizedString("Order marked as fulfilled", comment: "Order fulfillment success notice")
         let actionTitle = NSLocalizedString("Undo", comment: "Undo Action")
         let notice = Notice(title: message, feedbackType: .success, actionTitle: actionTitle, actionHandler: onUndoAction)
@@ -233,7 +244,7 @@ private extension FulfillViewController {
 
     /// Displays the `Unable to Fulfill Order` Notice.
     ///
-    func displayErrorNotice(orderID: Int) {
+    fileprivate func displayErrorNotice(orderID: Int) {
         let title = NSLocalizedString(
             "Unable to fulfill order #\(orderID)",
             comment: "Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}"
@@ -248,10 +259,11 @@ private extension FulfillViewController {
 
     /// Displays the product detail screen for the provided ProductID
     ///
-    func productWasPressed(for productID: Int) {
-        let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                               siteID: order.siteID,
-                                                               currency: order.currency)
+    fileprivate func productWasPressed(for productID: Int) {
+        let loaderViewController = ProductLoaderViewController(
+            productID: productID,
+            siteID: order.siteID,
+            currency: order.currency)
         let navController = WooNavigationController(rootViewController: loaderViewController)
         present(navController, animated: true, completion: nil)
     }
@@ -283,7 +295,8 @@ extension FulfillViewController: UITableViewDataSource {
         let section = sections[section]
 
         guard let leftTitle = section.title,
-            leftTitle.isEmpty != true  else {
+            leftTitle.isEmpty != true
+        else {
             return nil
         }
 
@@ -302,11 +315,11 @@ extension FulfillViewController: UITableViewDataSource {
 
 // MARK: - Cell Configuration
 //
-private extension FulfillViewController {
+extension FulfillViewController {
 
     /// Setup a given UITableViewCell instance to actually display the specified Row's Payload.
     ///
-    func setup(cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    fileprivate func setup(cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch row {
         case .product(let item):
             setupProductCell(cell, with: item)
@@ -365,16 +378,15 @@ private extension FulfillViewController {
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         cell.name = shippingAddress?.fullNameWithCompany
-        cell.address = shippingAddress?.formattedPostalAddress ??
-            NSLocalizedString(
-                "No address specified.",
-                comment: "Order details > customer info > shipping details. This is where the address would normally display."
+        cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString(
+            "No address specified.",
+            comment: "Order details > customer info > shipping details. This is where the address would normally display."
         )
     }
 
     /// Setup: Shipment Tracking Cell
     ///
-    func setupTrackingCell(_ cell: UITableViewCell, at indexPath: IndexPath) {
+    fileprivate func setupTrackingCell(_ cell: UITableViewCell, at indexPath: IndexPath) {
         guard let cell = cell as? EditableOrderTrackingTableViewCell else {
             fatalError()
         }
@@ -391,19 +403,20 @@ private extension FulfillViewController {
 
         if let dateShipped = tracking.dateShipped?.toString(dateStyle: .medium, timeStyle: .none) {
             cell.bottomText = String.localizedStringWithFormat(
-                NSLocalizedString("Shipped %@",
-                                  comment: "Date an item was shipped"),
+                NSLocalizedString(
+                    "Shipped %@",
+                    comment: "Date an item was shipped"),
                 dateShipped)
         } else {
-            cell.bottomText = NSLocalizedString("Not shipped yet",
-                                                comment: "Order details > tracking. " +
-                " This is where the shipping date would normally display.")
+            cell.bottomText = NSLocalizedString(
+                "Not shipped yet",
+                comment: "Order details > tracking. " + " This is where the shipping date would normally display.")
         }
     }
 
     /// Setup: Add Tracking Cell
     ///
-    func setupTrackingAddCell(_ cell: UITableViewCell) {
+    fileprivate func setupTrackingAddCell(_ cell: UITableViewCell) {
         guard let cell = cell as? LeftImageTableViewCell else {
             fatalError()
         }
@@ -457,10 +470,11 @@ extension FulfillViewController: UITableViewDelegate {
 
 // MARK: - Shipment Tracking deletion
 //
-private extension FulfillViewController {
-    func presentDeleteAlert(at indexPath: IndexPath) {
+extension FulfillViewController {
+    fileprivate func presentDeleteAlert(at indexPath: IndexPath) {
         guard let shipmentTracking = orderTracking(at: indexPath),
-        let cell = tableView.cellForRow(at: indexPath) as? EditableOrderTrackingTableViewCell else {
+            let cell = tableView.cellForRow(at: indexPath) as? EditableOrderTrackingTableViewCell
+        else {
             return
         }
 
@@ -482,7 +496,7 @@ private extension FulfillViewController {
         present(actionSheet, animated: true)
     }
 
-    func deleteTracking(_ tracking: ShipmentTracking) {
+    fileprivate func deleteTracking(_ tracking: ShipmentTracking) {
 
         let siteID = order.siteID
         let orderID = order.orderID
@@ -491,25 +505,32 @@ private extension FulfillViewController {
         let statusKey = order.statusKey
         let providerName = tracking.trackingProvider ?? ""
 
-        ServiceLocator.analytics.track(.orderTrackingDelete, withProperties: ["id": orderID,
-                                                                         "status": statusKey,
-                                                                         "carrier": providerName,
-                                                                         "source": "order_fulfill"])
+        ServiceLocator.analytics.track(
+            .orderTrackingDelete,
+            withProperties: [
+                "id": orderID,
+                "status": statusKey,
+                "carrier": providerName,
+                "source": "order_fulfill",
+            ])
 
-        let deleteTrackingAction = ShipmentAction.deleteTracking(siteID: siteID,
-                                                                 orderID: orderID,
-                                                                 trackingID: trackingID) { [weak self] error in
-                                                                    if let error = error {
-                                                                        DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
+        let deleteTrackingAction = ShipmentAction.deleteTracking(
+            siteID: siteID,
+            orderID: orderID,
+            trackingID: trackingID
+        ) { [weak self] error in
+            if let error = error {
+                DDLogError("⛔️ Delete Tracking Failure: orderID \(orderID). Error: \(error)")
 
-                                                                        ServiceLocator.analytics.track(.orderTrackingDeleteFailed,
-                                                                                                  withError: error)
-                                                                        self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
-                                                                        return
-                                                                    }
+                ServiceLocator.analytics.track(
+                    .orderTrackingDeleteFailed,
+                    withError: error)
+                self?.displayDeleteErrorNotice(orderID: orderID, tracking: tracking)
+                return
+            }
 
-                                                                    ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
-                                                                    self?.syncTrackingsHiddingAddButtonIfNecessary()
+            ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
+            self?.syncTrackingsHiddingAddButtonIfNecessary()
         }
 
         ServiceLocator.stores.dispatch(deleteTrackingAction)
@@ -517,17 +538,19 @@ private extension FulfillViewController {
 
     /// Displays the `Unable to delete tracking` Notice.
     ///
-    func displayDeleteErrorNotice(orderID: Int, tracking: ShipmentTracking) {
+    fileprivate func displayDeleteErrorNotice(orderID: Int, tracking: ShipmentTracking) {
         let title = NSLocalizedString(
             "Unable to delete tracking for order #\(orderID)",
             comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
         )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
-        let notice = Notice(title: title,
-                            message: nil,
-                            feedbackType: .error,
-                            actionTitle: actionTitle) { [weak self] in
-                                self?.deleteTracking(tracking)
+        let notice = Notice(
+            title: title,
+            message: nil,
+            feedbackType: .error,
+            actionTitle: actionTitle
+        ) { [weak self] in
+            self?.deleteTracking(tracking)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
@@ -538,27 +561,29 @@ private extension FulfillViewController {
 
 // MARK: - Data fetch
 //
-private extension FulfillViewController {
-    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
+extension FulfillViewController {
+    fileprivate func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
         let orderID = order.orderID
         let siteID = order.siteID
-        let action = ShipmentAction.synchronizeShipmentTrackingData(siteID: siteID,
-                                                                    orderID: orderID) { error in
-                                                                        if let error = error {
-                                                                            DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
-                                                                            onCompletion?(error)
-                                                                            return
-                                                                        }
+        let action = ShipmentAction.synchronizeShipmentTrackingData(
+            siteID: siteID,
+            orderID: orderID
+        ) { error in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing tracking: \(error.localizedDescription)")
+                onCompletion?(error)
+                return
+            }
 
-                                                                        ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
+            ServiceLocator.analytics.track(.orderTrackingLoaded, withProperties: ["id": orderID])
 
-                                                                        onCompletion?(nil)
+            onCompletion?(nil)
         }
 
         ServiceLocator.stores.dispatch(action)
     }
 
-    func configureTrackingResultsController() {
+    fileprivate func configureTrackingResultsController() {
         trackingResultsController.onDidChangeContent = { [weak self] in
             self?.reloadSections()
         }
@@ -570,7 +595,7 @@ private extension FulfillViewController {
         try? trackingResultsController.performFetch()
     }
 
-    func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
+    fileprivate func orderTracking(at indexPath: IndexPath) -> ShipmentTracking? {
         let orderIndex = indexPath.row
         guard orderTracking.indices.contains(orderIndex) else {
             return nil
@@ -579,7 +604,7 @@ private extension FulfillViewController {
         return orderTracking[orderIndex]
     }
 
-    func lookUpProduct(by productID: Int) -> Product? {
+    fileprivate func lookUpProduct(by productID: Int) -> Product? {
         return products?.filter({ $0.productID == productID }).first
     }
 }
@@ -587,8 +612,8 @@ private extension FulfillViewController {
 
 // MARK: - Table view sections
 //
-private extension FulfillViewController {
-    func reloadSections() {
+extension FulfillViewController {
+    fileprivate func reloadSections() {
         let products: Section = {
             let title = NSLocalizedString("Product", comment: "Section header title for the product")
             let secondaryTitle = NSLocalizedString("Qty", comment: "Section header title - abbreviation for quantity")
@@ -644,10 +669,9 @@ private extension FulfillViewController {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
+        sections = [products, note, address, tracking, addTracking].compactMap { $0 }
     }
 }
-
 
 
 // MARK: - Row: Represents a TableView Row
@@ -720,8 +744,11 @@ private struct Section {
 
 // MARK: - Alerts
 private enum DeleteAction {
-    static let cancel = NSLocalizedString("Cancel",
-                                          comment: "Cancel the action sheet")
-    static let delete = NSLocalizedString("Delete Tracking",
-                                          comment: "Delete a Shipment Tracking")
+    static let cancel = NSLocalizedString(
+        "Cancel",
+        comment: "Cancel the action sheet")
+
+    static let delete = NSLocalizedString(
+        "Delete Tracking",
+        comment: "Delete a Shipment Tracking")
 }

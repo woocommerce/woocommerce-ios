@@ -1,7 +1,6 @@
 import UIKit
 import Yosemite
 
-
 extension UILabel {
     func applyHeadlineStyle() {
         adjustsFontForContentSizeCategory = true

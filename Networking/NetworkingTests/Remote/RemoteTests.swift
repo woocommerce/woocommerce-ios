@@ -1,7 +1,7 @@
-import XCTest
 import Alamofire
-@testable import Networking
+import XCTest
 
+@testable import Networking
 
 /// Remote UnitTests
 ///
@@ -24,9 +24,9 @@ class RemoteTests: XCTestCase {
         remote.enqueue(request, mapper: mapper) { (payload, error) in
             guard case NetworkError.notFound? = error,
                 let receivedRequest = network.requestsForResponseData.first as? JetpackRequest
-                else {
-                    XCTFail()
-                    return
+            else {
+                XCTFail()
+                return
             }
 
             XCTAssertNil(payload)

@@ -1,10 +1,9 @@
 import XCTest
-@testable import WooCommerce
-
-
 /// UIURL+Woo: Unit Tests
 ///
 import XCTest
+
+@testable import WooCommerce
 
 final class StringWooTests: XCTestCase {
     func testURLsWithSchemeRemainUnchanged() {

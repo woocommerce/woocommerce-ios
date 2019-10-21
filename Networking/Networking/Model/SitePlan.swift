@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a WordPress.com default Site's plan.
 ///
 public struct SitePlan: Decodable {
@@ -23,8 +22,9 @@ public struct SitePlan: Decodable {
         let planContainer = try sitePlanContainer.nestedContainer(keyedBy: PlanKeys.self, forKey: .plan)
         let shortName = try planContainer.decode(String.self, forKey: .shortName)
 
-        self.init(siteID: siteID,
-                  shortName: shortName)
+        self.init(
+            siteID: siteID,
+            shortName: shortName)
     }
 
     /// Designated Initializer.
@@ -44,19 +44,18 @@ extension SitePlan: Comparable {
     }
 
     public static func == (lhs: SitePlan, rhs: SitePlan) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.shortName == rhs.shortName
+        return lhs.siteID == rhs.siteID && lhs.shortName == rhs.shortName
     }
 }
 
 
 /// Defines all of the SitePlan CodingKeys.
 ///
-private extension SitePlan {
+extension SitePlan {
 
-    enum PlanKeys: String, CodingKey {
-        case siteID         = "ID"
-        case plan           = "plan"
-        case shortName      = "product_name_short"
+    fileprivate enum PlanKeys: String, CodingKey {
+        case siteID = "ID"
+        case plan = "plan"
+        case shortName = "product_name_short"
     }
 }

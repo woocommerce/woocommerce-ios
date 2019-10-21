@@ -22,8 +22,8 @@ class StatsTimeRangeBarView: UIView {
     }
 }
 
-private extension StatsTimeRangeBarView {
-    func configureLabel() {
+extension StatsTimeRangeBarView {
+    fileprivate func configureLabel() {
         addSubview(label)
         label.translatesAutoresizingMaskIntoConstraints = false
         label.setContentCompressionResistancePriority(.required, for: .vertical)
@@ -34,8 +34,8 @@ private extension StatsTimeRangeBarView {
     }
 }
 
-private extension StatsTimeRangeBarView {
-    enum Constants {
+extension StatsTimeRangeBarView {
+    fileprivate enum Constants {
         static let labelInsets = UIEdgeInsets(top: 12, left: 16, bottom: 12, right: 16)
     }
 }

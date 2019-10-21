@@ -1,6 +1,7 @@
 import XCTest
-@testable import WooCommerce
+
 @testable import Networking
+@testable import WooCommerce
 
 final class OrderPaymentDetailsViewModelTests: XCTestCase {
     private var order: Order!
@@ -47,14 +48,16 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func testTotalValueMatchedExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(order.total,
-                                                             with: order.currency)
+        let expectedValue = CurrencyFormatter().formatAmount(
+            order.total,
+            with: order.currency)
         XCTAssertEqual(subject.totalValue, expectedValue)
     }
 
     func testPaymentTotalMatchedExpectation() {
-        let expectedValue = CurrencyFormatter().formatAmount(order.total,
-                                                             with: order.currency)
+        let expectedValue = CurrencyFormatter().formatAmount(
+            order.total,
+            with: order.currency)
         XCTAssertEqual(subject.totalValue, expectedValue)
     }
 

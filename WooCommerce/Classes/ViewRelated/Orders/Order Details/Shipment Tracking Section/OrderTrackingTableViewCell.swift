@@ -43,7 +43,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         configureBackground()
         configureTopLine()
         configureMiddleLine()
@@ -85,8 +85,9 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 
 
 /// MARK: - Actions
-private extension OrderTrackingTableViewCell {
-    @objc func iconTapped() {
+extension OrderTrackingTableViewCell {
+    @objc
+    fileprivate func iconTapped() {
         onEllipsisTouchUp?()
     }
 }
@@ -94,36 +95,40 @@ private extension OrderTrackingTableViewCell {
 
 /// MARK: - Accessibility
 ///
-private extension OrderTrackingTableViewCell {
-    func configureTopLineForVoiceOver() {
+extension OrderTrackingTableViewCell {
+    fileprivate func configureTopLineForVoiceOver() {
         topLine.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Shipment Company %@",
-                              comment: "Accessibility label for Shipment tracking company in Order details screen." +
-                " Reads like: Shipment Company USPS"),
+            NSLocalizedString(
+                "Shipment Company %@",
+                comment: "Accessibility label for Shipment tracking company in Order details screen." + " Reads like: Shipment Company USPS"),
             topText ?? "")
     }
 
-    func configureMiddleLineForVoiceOver() {
+    fileprivate func configureMiddleLineForVoiceOver() {
         middleLine.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Tracking number %@",
-                              comment: "Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890"),
+            NSLocalizedString(
+                "Tracking number %@",
+                comment: "Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890"),
             middleText ?? "")
     }
 
-    func configureBottonLineForVoiceOver() {
+    fileprivate func configureBottonLineForVoiceOver() {
         bottomLine.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Shipped %@",
-                              comment: "Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018."),
+            NSLocalizedString(
+                "Shipped %@",
+                comment: "Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018."),
             bottomText ?? "")
     }
 
-    func configureActionButtonForVoiceOver() {
-        ellipsisButton.accessibilityLabel = NSLocalizedString("More",
-                                                            comment:
-            "Accessibility hint for more button in an individual Shipment Tracking in the order details screen")
-        ellipsisButton.accessibilityHint = NSLocalizedString("Shows more options.",
-                                                           comment:
-            "Accessibility hint for Delete Shipment button in Order details screen")
+    fileprivate func configureActionButtonForVoiceOver() {
+        ellipsisButton.accessibilityLabel = NSLocalizedString(
+            "More",
+            comment:
+                "Accessibility hint for more button in an individual Shipment Tracking in the order details screen")
+        ellipsisButton.accessibilityHint = NSLocalizedString(
+            "Shows more options.",
+            comment:
+                "Accessibility hint for Delete Shipment button in Order details screen")
     }
 }
 

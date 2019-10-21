@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a Product Entity.
 ///
 public struct Product: Decodable {
@@ -10,15 +9,18 @@ public struct Product: Decodable {
     public let slug: String
     public let permalink: String
 
-    public let dateCreated: Date        // gmt
-    public let dateModified: Date?      // gmt
+    public let dateCreated: Date  // gmt
+    public let dateModified: Date?  // gmt
 
     public let productTypeKey: String
-    public let statusKey: String        // draft, pending, private, published
+
+    public let statusKey: String  // draft, pending, private, published
     public let featured: Bool
-    public let catalogVisibilityKey: String // visible, catalog, search, hidden
+
+    public let catalogVisibilityKey: String  // visible, catalog, search, hidden
 
     public let fullDescription: String?
+
     public let briefDescription: String?
     public let sku: String?
 
@@ -33,19 +35,21 @@ public struct Product: Decodable {
 
     public let downloadable: Bool
     public let downloads: [ProductDownload]
-    public let downloadLimit: Int       // defaults to -1
-    public let downloadExpiry: Int      // defaults to -1
+    public let downloadLimit: Int  // defaults to -1
+    public let downloadExpiry: Int  // defaults to -1
 
     public let externalURL: String?
-    public let taxStatusKey: String     // taxable, shipping, none
+
+    public let taxStatusKey: String  // taxable, shipping, none
     public let taxClass: String?
 
     public let manageStock: Bool
-    public let stockQuantity: Int?      // API reports Int or null
-    public let stockStatusKey: String   // instock, outofstock, backorder
+    public let stockQuantity: Int?  // API reports Int or null
+    public let stockStatusKey: String  // instock, outofstock, backorder
 
-    public let backordersKey: String    // no, notify, yes
+    public let backordersKey: String  // no, notify, yes
     public let backordersAllowed: Bool
+
     public let backordered: Bool
 
     public let soldIndividually: Bool
@@ -94,63 +98,65 @@ public struct Product: Decodable {
 
     /// Product struct initializer.
     ///
-    public init(siteID: Int,
-                productID: Int,
-                name: String,
-                slug: String,
-                permalink: String,
-                dateCreated: Date,
-                dateModified: Date?,
-                productTypeKey: String,
-                statusKey: String,
-                featured: Bool,
-                catalogVisibilityKey: String,
-                fullDescription: String?,
-                briefDescription: String?,
-                sku: String?,
-                price: String,
-                regularPrice: String?,
-                salePrice: String?,
-                onSale: Bool,
-                purchasable: Bool,
-                totalSales: Int,
-                virtual: Bool,
-                downloadable: Bool,
-                downloads: [ProductDownload],
-                downloadLimit: Int,
-                downloadExpiry: Int,
-                externalURL: String?,
-                taxStatusKey: String,
-                taxClass: String?,
-                manageStock: Bool,
-                stockQuantity: Int?,
-                stockStatusKey: String,
-                backordersKey: String,
-                backordersAllowed: Bool,
-                backordered: Bool,
-                soldIndividually: Bool,
-                weight: String?,
-                dimensions: ProductDimensions,
-                shippingRequired: Bool,
-                shippingTaxable: Bool,
-                shippingClass: String?,
-                shippingClassID: Int,
-                reviewsAllowed: Bool,
-                averageRating: String,
-                ratingCount: Int,
-                relatedIDs: [Int],
-                upsellIDs: [Int],
-                crossSellIDs: [Int],
-                parentID: Int,
-                purchaseNote: String?,
-                categories: [ProductCategory],
-                tags: [ProductTag],
-                images: [ProductImage],
-                attributes: [ProductAttribute],
-                defaultAttributes: [ProductDefaultAttribute],
-                variations: [Int],
-                groupedProducts: [Int],
-                menuOrder: Int) {
+    public init(
+        siteID: Int,
+        productID: Int,
+        name: String,
+        slug: String,
+        permalink: String,
+        dateCreated: Date,
+        dateModified: Date?,
+        productTypeKey: String,
+        statusKey: String,
+        featured: Bool,
+        catalogVisibilityKey: String,
+        fullDescription: String?,
+        briefDescription: String?,
+        sku: String?,
+        price: String,
+        regularPrice: String?,
+        salePrice: String?,
+        onSale: Bool,
+        purchasable: Bool,
+        totalSales: Int,
+        virtual: Bool,
+        downloadable: Bool,
+        downloads: [ProductDownload],
+        downloadLimit: Int,
+        downloadExpiry: Int,
+        externalURL: String?,
+        taxStatusKey: String,
+        taxClass: String?,
+        manageStock: Bool,
+        stockQuantity: Int?,
+        stockStatusKey: String,
+        backordersKey: String,
+        backordersAllowed: Bool,
+        backordered: Bool,
+        soldIndividually: Bool,
+        weight: String?,
+        dimensions: ProductDimensions,
+        shippingRequired: Bool,
+        shippingTaxable: Bool,
+        shippingClass: String?,
+        shippingClassID: Int,
+        reviewsAllowed: Bool,
+        averageRating: String,
+        ratingCount: Int,
+        relatedIDs: [Int],
+        upsellIDs: [Int],
+        crossSellIDs: [Int],
+        parentID: Int,
+        purchaseNote: String?,
+        categories: [ProductCategory],
+        tags: [ProductTag],
+        images: [ProductImage],
+        attributes: [ProductAttribute],
+        defaultAttributes: [ProductDefaultAttribute],
+        variations: [Int],
+        groupedProducts: [Int],
+        menuOrder: Int
+    ) {
         self.siteID = siteID
         self.productID = productID
         self.name = name
@@ -321,143 +327,144 @@ public struct Product: Decodable {
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
-        self.init(siteID: siteID,
-                  productID: productID,
-                  name: name,
-                  slug: slug,
-                  permalink: permalink,
-                  dateCreated: dateCreated,
-                  dateModified: dateModified,
-                  productTypeKey: productTypeKey,
-                  statusKey: statusKey,
-                  featured: featured,
-                  catalogVisibilityKey: catalogVisibilityKey,
-                  fullDescription: fullDescription,
-                  briefDescription: briefDescription,
-                  sku: sku,
-                  price: price,
-                  regularPrice: regularPrice,
-                  salePrice: salePrice,
-                  onSale: onSale,
-                  purchasable: purchasable,
-                  totalSales: totalSales,
-                  virtual: virtual,
-                  downloadable: downloadable,
-                  downloads: downloads,
-                  downloadLimit: downloadLimit,
-                  downloadExpiry: downloadExpiry,
-                  externalURL: externalURL,
-                  taxStatusKey: taxStatusKey,
-                  taxClass: taxClass,
-                  manageStock: manageStock,
-                  stockQuantity: stockQuantity,
-                  stockStatusKey: stockStatusKey,
-                  backordersKey: backordersKey,
-                  backordersAllowed: backordersAllowed,
-                  backordered: backordered,
-                  soldIndividually: soldIndividuallly,
-                  weight: weight,
-                  dimensions: dimensions,
-                  shippingRequired: shippingRequired,
-                  shippingTaxable: shippingTaxable,
-                  shippingClass: shippingClass,
-                  shippingClassID: shippingClassID,
-                  reviewsAllowed: reviewsAllowed,
-                  averageRating: averageRating,
-                  ratingCount: ratingCount,
-                  relatedIDs: relatedIDs,
-                  upsellIDs: upsellIDs,
-                  crossSellIDs: crossSellIDs,
-                  parentID: parentID,
-                  purchaseNote: purchaseNote,
-                  categories: categories,
-                  tags: tags,
-                  images: images,
-                  attributes: attributes,
-                  defaultAttributes: defaultAttributes,
-                  variations: variations,
-                  groupedProducts: groupedProducts,
-                  menuOrder: menuOrder)
+        self.init(
+            siteID: siteID,
+            productID: productID,
+            name: name,
+            slug: slug,
+            permalink: permalink,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            productTypeKey: productTypeKey,
+            statusKey: statusKey,
+            featured: featured,
+            catalogVisibilityKey: catalogVisibilityKey,
+            fullDescription: fullDescription,
+            briefDescription: briefDescription,
+            sku: sku,
+            price: price,
+            regularPrice: regularPrice,
+            salePrice: salePrice,
+            onSale: onSale,
+            purchasable: purchasable,
+            totalSales: totalSales,
+            virtual: virtual,
+            downloadable: downloadable,
+            downloads: downloads,
+            downloadLimit: downloadLimit,
+            downloadExpiry: downloadExpiry,
+            externalURL: externalURL,
+            taxStatusKey: taxStatusKey,
+            taxClass: taxClass,
+            manageStock: manageStock,
+            stockQuantity: stockQuantity,
+            stockStatusKey: stockStatusKey,
+            backordersKey: backordersKey,
+            backordersAllowed: backordersAllowed,
+            backordered: backordered,
+            soldIndividually: soldIndividuallly,
+            weight: weight,
+            dimensions: dimensions,
+            shippingRequired: shippingRequired,
+            shippingTaxable: shippingTaxable,
+            shippingClass: shippingClass,
+            shippingClassID: shippingClassID,
+            reviewsAllowed: reviewsAllowed,
+            averageRating: averageRating,
+            ratingCount: ratingCount,
+            relatedIDs: relatedIDs,
+            upsellIDs: upsellIDs,
+            crossSellIDs: crossSellIDs,
+            parentID: parentID,
+            purchaseNote: purchaseNote,
+            categories: categories,
+            tags: tags,
+            images: images,
+            attributes: attributes,
+            defaultAttributes: defaultAttributes,
+            variations: variations,
+            groupedProducts: groupedProducts,
+            menuOrder: menuOrder)
     }
 }
 
 
 /// Defines all of the Product CodingKeys
 ///
-private extension Product {
+extension Product {
 
-    enum CodingKeys: String, CodingKey {
-        case productID  = "id"
-        case name       = "name"
-        case slug       = "slug"
-        case permalink  = "permalink"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case productID = "id"
+        case name = "name"
+        case slug = "slug"
+        case permalink = "permalink"
 
-        case dateCreated  = "date_created_gmt"
+        case dateCreated = "date_created_gmt"
         case dateModified = "date_modified_gmt"
 
-        case productTypeKey         = "type"
-        case statusKey              = "status"
-        case featured               = "featured"
-        case catalogVisibilityKey   = "catalog_visibility"
+        case productTypeKey = "type"
+        case statusKey = "status"
+        case featured = "featured"
+        case catalogVisibilityKey = "catalog_visibility"
 
-        case fullDescription        = "description"
-        case briefDescription       = "short_description"
+        case fullDescription = "description"
+        case briefDescription = "short_description"
 
-        case sku            = "sku"
-        case price          = "price"
-        case regularPrice   = "regular_price"
-        case salePrice      = "sale_price"
-        case onSale         = "on_sale"
+        case sku = "sku"
+        case price = "price"
+        case regularPrice = "regular_price"
+        case salePrice = "sale_price"
+        case onSale = "on_sale"
 
-        case purchasable    = "purchasable"
-        case totalSales     = "total_sales"
-        case virtual        = "virtual"
+        case purchasable = "purchasable"
+        case totalSales = "total_sales"
+        case virtual = "virtual"
 
-        case downloadable   = "downloadable"
-        case downloads      = "downloads"
-        case downloadLimit  = "download_limit"
+        case downloadable = "downloadable"
+        case downloads = "downloads"
+        case downloadLimit = "download_limit"
         case downloadExpiry = "download_expiry"
 
-        case externalURL    = "external_url"
-        case taxStatusKey   = "tax_status"
-        case taxClass       = "tax_class"
+        case externalURL = "external_url"
+        case taxStatusKey = "tax_status"
+        case taxClass = "tax_class"
 
-        case manageStock    = "manage_stock"
-        case stockQuantity  = "stock_quantity"
+        case manageStock = "manage_stock"
+        case stockQuantity = "stock_quantity"
         case stockStatusKey = "stock_status"
 
-        case backordersKey      = "backorders"
-        case backordersAllowed  = "backorders_allowed"
-        case backordered        = "backordered"
+        case backordersKey = "backorders"
+        case backordersAllowed = "backorders_allowed"
+        case backordered = "backordered"
 
-        case soldIndividually   = "sold_individually"
-        case weight             = "weight"
-        case dimensions         = "dimensions"
+        case soldIndividually = "sold_individually"
+        case weight = "weight"
+        case dimensions = "dimensions"
 
-        case shippingRequired   = "shipping_required"
-        case shippingTaxable    = "shipping_taxable"
-        case shippingClass      = "shipping_class"
-        case shippingClassID    = "shipping_class_id"
+        case shippingRequired = "shipping_required"
+        case shippingTaxable = "shipping_taxable"
+        case shippingClass = "shipping_class"
+        case shippingClassID = "shipping_class_id"
 
         case reviewsAllowed = "reviews_allowed"
-        case averageRating  = "average_rating"
-        case ratingCount    = "rating_count"
+        case averageRating = "average_rating"
+        case ratingCount = "rating_count"
 
-        case relatedIDs     = "related_ids"
-        case upsellIDs      = "upsell_ids"
-        case crossSellIDs   = "cross_sell_ids"
-        case parentID       = "parent_id"
+        case relatedIDs = "related_ids"
+        case upsellIDs = "upsell_ids"
+        case crossSellIDs = "cross_sell_ids"
+        case parentID = "parent_id"
 
-        case purchaseNote   = "purchase_note"
-        case categories     = "categories"
-        case tags           = "tags"
-        case images         = "images"
+        case purchaseNote = "purchase_note"
+        case categories = "categories"
+        case tags = "tags"
+        case images = "images"
 
-        case attributes         = "attributes"
-        case defaultAttributes  = "default_attributes"
-        case variations         = "variations"
-        case groupedProducts    = "grouped_products"
-        case menuOrder          = "menu_order"
+        case attributes = "attributes"
+        case defaultAttributes = "default_attributes"
+        case variations = "variations"
+        case groupedProducts = "grouped_products"
+        case menuOrder = "menu_order"
     }
 }
 
@@ -466,120 +473,62 @@ private extension Product {
 //
 extension Product: Comparable {
     public static func == (lhs: Product, rhs: Product) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.productID == rhs.productID &&
-            lhs.name == rhs.name &&
-            lhs.slug == rhs.slug &&
-            lhs.permalink == rhs.permalink &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.dateModified == rhs.dateModified &&
-            lhs.productTypeKey == rhs.productTypeKey &&
-            lhs.statusKey == rhs.statusKey &&
-            lhs.featured == rhs.featured &&
-            lhs.catalogVisibilityKey == rhs.catalogVisibilityKey &&
-            lhs.fullDescription == rhs.fullDescription &&
-            lhs.briefDescription == rhs.briefDescription &&
-            lhs.sku == rhs.sku &&
-            // lhs.price == rhs.price &&    // can't compare because object type unknown
-            lhs.regularPrice == rhs.regularPrice &&
-            // lhs.salePrice == rhs.salePrice && // can't compare because object type unknown
-            lhs.onSale == rhs.onSale &&
-            lhs.purchasable == rhs.purchasable &&
-            lhs.totalSales == rhs.totalSales &&
-            lhs.virtual == rhs.virtual &&
-            lhs.downloadable == rhs.downloadable &&
-            lhs.downloadLimit == rhs.downloadLimit &&
-            lhs.downloadExpiry == rhs.downloadExpiry &&
-            lhs.externalURL == rhs.externalURL &&
-            lhs.taxStatusKey == rhs.taxStatusKey &&
-            lhs.taxClass == rhs.taxClass &&
-            lhs.manageStock == rhs.manageStock &&
-            lhs.stockQuantity == rhs.stockQuantity &&
-            lhs.stockStatusKey == rhs.stockStatusKey &&
-            lhs.backordersKey == rhs.backordersKey &&
-            lhs.backordersAllowed == rhs.backordersAllowed &&
-            lhs.backordered == rhs.backordered &&
-            lhs.soldIndividually == rhs.soldIndividually &&
-            lhs.weight == rhs.weight &&
-            lhs.dimensions == rhs.dimensions &&
-            lhs.shippingRequired == rhs.shippingRequired &&
-            lhs.shippingTaxable == rhs.shippingTaxable &&
-            lhs.shippingClass == rhs.shippingClass &&
-            lhs.shippingClassID == rhs.shippingClassID &&
-            lhs.reviewsAllowed == rhs.reviewsAllowed &&
-            lhs.averageRating == rhs.averageRating &&
-            lhs.ratingCount == rhs.ratingCount &&
-            lhs.relatedIDs == rhs.relatedIDs &&
-            lhs.upsellIDs == rhs.upsellIDs &&
-            lhs.parentID == rhs.parentID &&
-            lhs.purchaseNote == rhs.purchaseNote &&
-            lhs.categories.count == rhs.categories.count &&
-            lhs.categories.sorted() == rhs.categories.sorted() &&
-            lhs.tags.count == rhs.tags.count &&
-            lhs.tags.sorted() == rhs.tags.sorted() &&
-            lhs.images.count == rhs.images.count &&
-            lhs.images.sorted() == rhs.images.sorted() &&
-            lhs.attributes.count == rhs.attributes.count &&
-            lhs.attributes.sorted() == rhs.attributes.sorted() &&
-            lhs.defaultAttributes.count == rhs.defaultAttributes.count &&
-            lhs.defaultAttributes.sorted() == rhs.defaultAttributes.sorted() &&
-            lhs.variations == rhs.variations &&
-            lhs.groupedProducts == rhs.groupedProducts &&
-            lhs.menuOrder == rhs.menuOrder
+        return lhs.siteID == rhs.siteID && lhs.productID == rhs.productID && lhs.name == rhs.name && lhs.slug == rhs.slug && lhs.permalink == rhs.permalink
+            && lhs.dateCreated == rhs.dateCreated && lhs.dateModified == rhs.dateModified && lhs.productTypeKey == rhs.productTypeKey && lhs.statusKey == rhs
+            .statusKey && lhs.featured == rhs.featured && lhs.catalogVisibilityKey == rhs.catalogVisibilityKey && lhs.fullDescription == rhs.fullDescription
+            && lhs.briefDescription == rhs.briefDescription && lhs.sku == rhs.sku
+            &&  // lhs.price == rhs.price &&    // can't compare because object type unknown
+            lhs.regularPrice == rhs.regularPrice &&  // lhs.salePrice == rhs.salePrice && // can't compare because object type unknown
+            lhs.onSale == rhs.onSale && lhs.purchasable == rhs.purchasable && lhs.totalSales == rhs.totalSales && lhs.virtual == rhs.virtual && lhs.downloadable
+            == rhs.downloadable && lhs.downloadLimit == rhs.downloadLimit && lhs.downloadExpiry == rhs.downloadExpiry && lhs.externalURL == rhs.externalURL
+            && lhs.taxStatusKey == rhs.taxStatusKey && lhs.taxClass == rhs.taxClass && lhs.manageStock == rhs.manageStock && lhs.stockQuantity == rhs
+            .stockQuantity && lhs.stockStatusKey == rhs.stockStatusKey && lhs.backordersKey == rhs.backordersKey && lhs.backordersAllowed == rhs
+            .backordersAllowed && lhs.backordered == rhs.backordered && lhs.soldIndividually == rhs.soldIndividually && lhs.weight == rhs.weight && lhs
+            .dimensions == rhs.dimensions && lhs.shippingRequired == rhs.shippingRequired && lhs.shippingTaxable == rhs.shippingTaxable && lhs.shippingClass
+            == rhs.shippingClass && lhs.shippingClassID == rhs.shippingClassID && lhs.reviewsAllowed == rhs.reviewsAllowed && lhs.averageRating == rhs
+            .averageRating && lhs.ratingCount == rhs.ratingCount && lhs.relatedIDs == rhs.relatedIDs && lhs.upsellIDs == rhs.upsellIDs && lhs.parentID == rhs
+            .parentID && lhs.purchaseNote == rhs.purchaseNote && lhs.categories.count == rhs.categories.count && lhs.categories.sorted() == rhs.categories
+            .sorted() && lhs.tags.count == rhs.tags.count && lhs.tags.sorted() == rhs.tags.sorted() && lhs.images.count == rhs.images.count && lhs.images
+            .sorted() == rhs.images.sorted() && lhs.attributes.count == rhs.attributes.count && lhs.attributes.sorted() == rhs.attributes.sorted() && lhs
+            .defaultAttributes.count == rhs.defaultAttributes.count && lhs.defaultAttributes.sorted() == rhs.defaultAttributes.sorted() && lhs.variations == rhs
+            .variations && lhs.groupedProducts == rhs.groupedProducts && lhs.menuOrder == rhs.menuOrder
     }
 
     public static func < (lhs: Product, rhs: Product) -> Bool {
         /// Note: stockQuantity can be `null` in the API,
         /// which is why we are unable to sort by it here.
         ///
-        return lhs.siteID < rhs.siteID ||
-            (lhs.siteID == rhs.siteID && lhs.productID < rhs.productID) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name < rhs.name) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug < rhs.slug) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey < rhs.productTypeKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey < rhs.statusKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey < rhs.stockStatusKey) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey == rhs.stockStatusKey &&
-                lhs.averageRating < rhs.averageRating) ||
-            (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID &&
-                lhs.name == rhs.name && lhs.slug == rhs.slug &&
-                lhs.dateCreated == rhs.dateCreated &&
-                lhs.productTypeKey == rhs.productTypeKey &&
-                lhs.statusKey == rhs.statusKey &&
-                lhs.stockStatusKey == rhs.stockStatusKey &&
-                lhs.averageRating == rhs.averageRating &&
-                lhs.ratingCount < rhs.ratingCount)
+        return lhs.siteID < rhs.siteID || (lhs.siteID == rhs.siteID && lhs.productID < rhs.productID) || (
+            lhs.siteID == rhs.siteID && lhs.productID == rhs.productID && lhs.name < rhs.name
+        ) || (lhs.siteID == rhs.siteID && lhs.productID == rhs.productID && lhs.name == rhs.name && lhs.slug < rhs.slug) || (
+            lhs.siteID == rhs.siteID && lhs.productID == rhs.productID && lhs.name == rhs.name && lhs.slug == rhs.slug && lhs.dateCreated < rhs.dateCreated
+        ) || (
+            lhs.siteID == rhs.siteID && lhs.productID == rhs.productID && lhs.name == rhs.name && lhs.slug == rhs.slug && lhs.dateCreated == rhs.dateCreated
+                && lhs.productTypeKey < rhs.productTypeKey
+        ) || (
+            lhs.siteID == rhs.siteID && lhs.productID == rhs.productID && lhs.name == rhs.name && lhs.slug == rhs.slug && lhs.dateCreated == rhs.dateCreated
+                && lhs.productTypeKey == rhs.productTypeKey && lhs.statusKey < rhs.statusKey
+        ) || (
+            lhs.siteID == rhs.siteID && lhs.productID == rhs.productID && lhs.name == rhs.name && lhs.slug == rhs.slug && lhs.dateCreated == rhs.dateCreated
+                && lhs.productTypeKey == rhs.productTypeKey && lhs.statusKey == rhs.statusKey && lhs.stockStatusKey < rhs.stockStatusKey
+        ) || (
+            lhs.siteID == rhs.siteID && lhs.productID == rhs.productID && lhs.name == rhs.name && lhs.slug == rhs.slug && lhs.dateCreated == rhs.dateCreated
+                && lhs.productTypeKey == rhs.productTypeKey && lhs.statusKey == rhs.statusKey && lhs.stockStatusKey == rhs.stockStatusKey && lhs.averageRating
+                < rhs.averageRating
+        ) || (
+            lhs.siteID == rhs.siteID && lhs.productID == rhs.productID && lhs.name == rhs.name && lhs.slug == rhs.slug && lhs.dateCreated == rhs.dateCreated
+                && lhs.productTypeKey == rhs.productTypeKey && lhs.statusKey == rhs.statusKey && lhs.stockStatusKey == rhs.stockStatusKey && lhs.averageRating
+                == rhs.averageRating && lhs.ratingCount < rhs.ratingCount
+        )
     }
 }
 
 
 // MARK: - Constants!
 //
-private extension Product {
+extension Product {
 
-    enum Values {
+    fileprivate enum Values {
         static let manageStockParent = "parent"
     }
 }

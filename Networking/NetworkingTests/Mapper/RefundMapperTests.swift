@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// RefundMapper Unit Tests
 ///
@@ -8,7 +8,7 @@ final class RefundMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 33334444
+    private let dummySiteID = 33_334_444
 
     /// Order ID.
     ///
@@ -66,11 +66,11 @@ final class RefundMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension RefundMapperTests {
+extension RefundMapperTests {
 
     /// Returns the RefundMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapRefund(from filename: String) -> Refund? {
+    fileprivate func mapRefund(from filename: String) -> Refund? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
@@ -80,7 +80,7 @@ private extension RefundMapperTests {
 
     /// Returns the RefundsMapper output upon receiving `refund-single`
     ///
-    func mapLoadRefundResponse() -> Refund? {
+    fileprivate func mapLoadRefundResponse() -> Refund? {
         return mapRefund(from: "refund-single")
     }
 }

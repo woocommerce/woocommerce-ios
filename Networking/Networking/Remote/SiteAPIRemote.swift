@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Site API: Remote Endpoints
 ///
@@ -26,13 +25,13 @@ public class SiteAPIRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension SiteAPIRemote {
+extension SiteAPIRemote {
 
-    enum ParameterKeys {
+    fileprivate enum ParameterKeys {
         static let fields: String = "_fields"
     }
 
-    enum ParameterValues {
+    fileprivate enum ParameterValues {
         static let fieldValues: String = "authentication,namespaces"
     }
 }

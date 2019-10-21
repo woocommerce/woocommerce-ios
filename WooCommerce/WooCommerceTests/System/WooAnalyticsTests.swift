@@ -1,6 +1,6 @@
 import XCTest
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// WooAnalytics Unit Tests
 ///
@@ -60,6 +60,7 @@ class WooAnalyticsTests: XCTestCase {
             XCTFail()
         }
     }
+
     /// Verifies an event with an error is received by the AnalyticsProvider
     ///
     func testEventsWithErrorReceived() {
@@ -109,15 +110,15 @@ class WooAnalyticsTests: XCTestCase {
 
 // MARK: - Testing Constants
 //
-private extension WooAnalyticsTests {
-    enum Constants {
-        static let testProperty1                                = ["prop-key1": "prop-value1"]
-        static let testProperty2                                = ["prop-key2": "prop-value2"]
+extension WooAnalyticsTests {
+    fileprivate enum Constants {
+        static let testProperty1 = ["prop-key1": "prop-value1"]
+        static let testProperty2 = ["prop-key2": "prop-value2"]
 
-        static let testErrorDomain: String                      = "domain"
-        static let testErrorCode: Int                           = 999
-        static let testErrorDescriptionKey                      = "error_description"
-        static let testErrorUserInfo: [String: String]          = ["userinfo-key1": "Here is the value!", "userinfo-key2": "Here is the second value!"]
-        static let testErrorReceivedProperty: [String: String]  = ["error_code": "999", "error_domain": "domain"]
+        static let testErrorDomain: String = "domain"
+        static let testErrorCode: Int = 999
+        static let testErrorDescriptionKey = "error_description"
+        static let testErrorUserInfo: [String: String] = ["userinfo-key1": "Here is the value!", "userinfo-key2": "Here is the second value!"]
+        static let testErrorReceivedProperty: [String: String] = ["error_code": "999", "error_domain": "domain"]
     }
 }

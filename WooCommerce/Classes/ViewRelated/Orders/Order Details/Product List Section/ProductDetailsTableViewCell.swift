@@ -1,7 +1,6 @@
-import UIKit
 import Gridicons
+import UIKit
 import Yosemite
-
 
 /// Product Details: Renders a row that displays a single Product.
 ///
@@ -96,37 +95,37 @@ class ProductDetailsTableViewCell: UITableViewCell {
 }
 
 
-private extension ProductDetailsTableViewCell {
-    func configureBackground() {
+extension ProductDetailsTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureProductImageView() {
+    fileprivate func configureProductImageView() {
         productImageView.image = .productPlaceholderImage
         productImageView.tintColor = StyleManager.wooGreyBorder
     }
 
-    func configureNameLabel() {
+    fileprivate func configureNameLabel() {
         nameLabel.applyBodyStyle()
         nameLabel?.text = ""
     }
 
-    func configureQuantityLabel() {
+    fileprivate func configureQuantityLabel() {
         quantityLabel.applyBodyStyle()
         quantityLabel?.text = ""
     }
 
-    func configurePriceLabel() {
+    fileprivate func configurePriceLabel() {
         priceLabel.applySecondaryFootnoteStyle()
         priceLabel?.text = ""
     }
 
-    func configureSKULabel() {
+    fileprivate func configureSKULabel() {
         skuLabel.applySecondaryFootnoteStyle()
         skuLabel?.text = ""
     }
 
-    func configureSelectionStyle() {
+    fileprivate func configureSelectionStyle() {
         selectionStyle = .none
     }
 }
@@ -138,8 +137,9 @@ extension ProductDetailsTableViewCell {
     func configure(item: OrderItemViewModel) {
         if item.productHasImage {
             if let imageURL = item.imageURL {
-                productImageView.downloadImage(from: imageURL,
-                                               placeholderImage: UIImage.productPlaceholderImage)
+                productImageView.downloadImage(
+                    from: imageURL,
+                    placeholderImage: UIImage.productPlaceholderImage)
             }
         } else {
             productImageView.image = .productPlaceholderImage

@@ -7,23 +7,24 @@ enum BuildConfiguration: String {
 
     static var current: BuildConfiguration {
         #if DEBUG
-        return testingOverride ?? .localDeveloper
+            return testingOverride ?? .localDeveloper
         #else
-        return .appStore
+            return .appStore
         #endif
     }
 
-    static func ~=(a: BuildConfiguration, b: Set<BuildConfiguration>) -> Bool {
+    static func ~= (a: BuildConfiguration, b: Set<BuildConfiguration>) -> Bool {
         return b.contains(a)
     }
 
     #if DEBUG
-    private static var testingOverride: BuildConfiguration?
+        private static var testingOverride: BuildConfiguration?
 
-    func test(_ closure: () -> ()) {
-        BuildConfiguration.testingOverride = self
-        closure()
-        BuildConfiguration.testingOverride = nil
-    }
+            func test(_ closure: () -> Void)
+        {
+            BuildConfiguration.testingOverride = self
+            closure()
+            BuildConfiguration.testingOverride = nil
+        }
     #endif
 }

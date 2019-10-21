@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 // MARK: - UITableView Mockup
 //
 class MockupTableView: UITableView {
@@ -33,7 +32,6 @@ class MockupTableView: UITableView {
     /// Closure to be executed whenever `insertSections` is called.
     ///
     var onInsertedSections: ((IndexSet) -> Void)?
-
 
 
     // MARK: - Overridden Methods

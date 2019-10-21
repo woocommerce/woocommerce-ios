@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Defines the basic properties of any persisted entity.
 ///
 public protocol Object: class {

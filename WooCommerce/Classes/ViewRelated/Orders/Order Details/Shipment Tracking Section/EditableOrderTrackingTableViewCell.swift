@@ -84,44 +84,49 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
 
 
 /// MARK: - Actions
-private extension EditableOrderTrackingTableViewCell {
-    @objc func iconTapped() {
+extension EditableOrderTrackingTableViewCell {
+    @objc
+    fileprivate func iconTapped() {
         onDeleteTouchUp?()
     }
 }
 
 /// MARK: - Accessibility
 ///
-private extension EditableOrderTrackingTableViewCell {
-    func configureTopLineForVoiceOver() {
+extension EditableOrderTrackingTableViewCell {
+    fileprivate func configureTopLineForVoiceOver() {
         topLine.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Shipment Company %@",
-                              comment: "Accessibility label for Shipment tracking company in Order details screen." +
-                " Reads like: Shipment Company USPS"),
+            NSLocalizedString(
+                "Shipment Company %@",
+                comment: "Accessibility label for Shipment tracking company in Order details screen." + " Reads like: Shipment Company USPS"),
             topText ?? "")
     }
 
-    func configureMiddleLineForVoiceOver() {
+    fileprivate func configureMiddleLineForVoiceOver() {
         middleLine.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Tracking number %@",
-                              comment: "Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890"),
+            NSLocalizedString(
+                "Tracking number %@",
+                comment: "Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890"),
             middleText ?? "")
     }
 
-    func configureBottonLineForVoiceOver() {
+    fileprivate func configureBottonLineForVoiceOver() {
         bottomLine.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Shipped %@",
-                              comment: "Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018."),
+            NSLocalizedString(
+                "Shipped %@",
+                comment: "Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018."),
             bottomText ?? "")
     }
 
-    func configureActionButtonForVoiceOver() {
-        deleteButton.accessibilityLabel = NSLocalizedString("Delete",
-                                                             comment:
-            "Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen")
-        deleteButton.accessibilityHint = NSLocalizedString("Deletes a shipment's tracking information.",
-                                                            comment:
-            "Accessibility hint for Delete Shipment button in Order fulfillment screen")
+    fileprivate func configureActionButtonForVoiceOver() {
+        deleteButton.accessibilityLabel = NSLocalizedString(
+            "Delete",
+            comment:
+                "Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen")
+        deleteButton.accessibilityHint = NSLocalizedString(
+            "Deletes a shipment's tracking information.",
+            comment:
+                "Accessibility hint for Delete Shipment button in Order fulfillment screen")
     }
 }
 

@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// ShipmentTrackingListMapper Unit Tests
 ///
@@ -12,7 +12,7 @@ class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Dummy Order ID.
     ///
-    private let dummyOrderID = 99999999
+    private let dummyOrderID = 99_999_999
 
     /// Verifies that all of the ShipmentTracking Fields are parsed correctly for multiple tracking JSON objects.
     ///
@@ -68,11 +68,11 @@ class ShipmentTrackingListMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension ShipmentTrackingListMapperTests {
+extension ShipmentTrackingListMapperTests {
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapShipmentTrackings(from filename: String) -> [ShipmentTracking] {
+    fileprivate func mapShipmentTrackings(from filename: String) -> [ShipmentTracking] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
@@ -82,19 +82,19 @@ private extension ShipmentTrackingListMapperTests {
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_single`
     ///
-    func mapLoadSingleTrackingsResponse() -> [ShipmentTracking] {
+    fileprivate func mapLoadSingleTrackingsResponse() -> [ShipmentTracking] {
         return mapShipmentTrackings(from: "shipment_tracking_single")
     }
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_multiple`
     ///
-    func mapLoadMultipleTrackingsResponse() -> [ShipmentTracking] {
+    fileprivate func mapLoadMultipleTrackingsResponse() -> [ShipmentTracking] {
         return mapShipmentTrackings(from: "shipment_tracking_multiple")
     }
 
     /// Returns the ShipmentTrackingsMapper output upon receiving `shipment_tracking_empty`
     ///
-    func mapLoadEmptyTrackingsResponse() -> [ShipmentTracking] {
+    fileprivate func mapLoadEmptyTrackingsResponse() -> [ShipmentTracking] {
         return mapShipmentTrackings(from: "shipment_tracking_empty")
     }
 }

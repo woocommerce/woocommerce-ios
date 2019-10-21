@@ -1,7 +1,6 @@
 import Foundation
-import UIKit
 import Gridicons
-
+import UIKit
 
 // MARK: - NoteTableViewCell
 //
@@ -118,16 +117,16 @@ class NoteTableViewCell: UITableViewCell {
 
 // MARK: - Private
 //
-private extension NoteTableViewCell {
+extension NoteTableViewCell {
 
     /// Refreshes the Cell's Colors.
     ///
-    func refreshColors() {
+    fileprivate func refreshColors() {
         backgroundColor = StyleManager.wooWhite
         sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
     }
 
-    func configureStarView() {
+    fileprivate func configureStarView() {
         starRatingView.starImage = Star.filledImage
         starRatingView.emptyStarImage = Star.emptyImage
         starRatingView.isHidden = (starRating == nil)
@@ -137,9 +136,9 @@ private extension NoteTableViewCell {
 
 // MARK: - Constants!
 //
-private extension NoteTableViewCell {
+extension NoteTableViewCell {
 
-    enum Star {
+    fileprivate enum Star {
         static let size = Double(13)
         static let filledImage = UIImage.starImage(size: Star.size, tintColor: StyleManager.defaultTextColor)
         static let emptyImage = UIImage.starImage(size: Star.size, tintColor: .clear)

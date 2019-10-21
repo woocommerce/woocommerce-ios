@@ -1,7 +1,6 @@
-import UIKit
 import Gridicons
+import UIKit
 import Yosemite
-
 
 /// Pick List: Renders a row that displays a single Product.
 ///
@@ -106,9 +105,11 @@ final class PickListTableViewCell: UITableViewCell {
 extension PickListTableViewCell {
     func configure(item: OrderItemViewModel) {
         if item.productHasImage,
-        let imageURL = item.imageURL {
-                productImageView.downloadImage(from: imageURL,
-                                               placeholderImage: UIImage.productPlaceholderImage)
+            let imageURL = item.imageURL
+        {
+            productImageView.downloadImage(
+                from: imageURL,
+                placeholderImage: UIImage.productPlaceholderImage)
         } else {
             productImageView.image = .productPlaceholderImage
         }

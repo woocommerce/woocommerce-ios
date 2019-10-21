@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// SupportManagerAdapter: Wraps the ZendeskManager API. Meant for Unit Testing Purposes.
 ///
 protocol SupportManagerAdapter {

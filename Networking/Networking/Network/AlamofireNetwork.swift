@@ -1,7 +1,5 @@
-import Foundation
 import Alamofire
-
-
+import Foundation
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
@@ -37,16 +35,17 @@ public class AlamofireNetwork: Network {
         let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
 
         Alamofire.request(authenticated)
-            .responseData { response in
-                completion(response.value, response.networkingError)
-            }
+            .responseData
+        { response in
+            completion(response.value, response.networkingError)
+        }
     }
 }
 
 
 /// MARK: - Alamofire.DataResponse: Private Methods
 ///
-private extension Alamofire.DataResponse {
+extension Alamofire.DataResponse {
 
     /// Returns the Networking Layer Error (if any):
     ///
@@ -59,7 +58,7 @@ private extension Alamofire.DataResponse {
     ///
     /// Precisely: Request Timeout should be a 408, but we just get a 400, with the details in the response's body.
     ///
-    var networkingError: Error? {
+    fileprivate var networkingError: Error? {
 
         // Passthru URL Errors: These are right there, even without calling Alamofire's validation.
         if let error = error as NSError?, error.domain == NSURLErrorDomain {

@@ -1,6 +1,5 @@
 import UIKit
 
-
 // MARK: - WooBasicTableViewCell
 
 /// A UITableViewCell with bonus purple Woo styling.

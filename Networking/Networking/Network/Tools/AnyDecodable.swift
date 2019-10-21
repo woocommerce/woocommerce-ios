@@ -5,34 +5,32 @@
 //
 import Foundation
 
-/**
- A type-erased `Decodable` value.
- 
- The `AnyDecodable` type forwards decoding responsibilities
- to an underlying value, hiding its specific underlying type.
- 
- You can decode mixed-type values in dictionaries
- and other collections that require `Decodable` conformance
- by declaring their contained type to be `AnyDecodable`:
- 
-     let json = """
-     {
-         "boolean": true,
-         "integer": 1,
-         "double": 3.14159265358979323846,
-         "string": "string",
-         "array": [1, 2, 3],
-         "nested": {
-             "a": "alpha",
-             "b": "bravo",
-             "c": "charlie"
-         }
-     }
-     """.data(using: .utf8)!
- 
-     let decoder = JSONDecoder()
-     let dictionary = try! decoder.decode([String: AnyCodable].self, from: json)
- */
+/// A type-erased `Decodable` value.
+/// 
+/// The `AnyDecodable` type forwards decoding responsibilities
+/// to an underlying value, hiding its specific underlying type.
+/// 
+/// You can decode mixed-type values in dictionaries
+/// and other collections that require `Decodable` conformance
+/// by declaring their contained type to be `AnyDecodable`:
+/// 
+///     let json = """
+///     {
+///         "boolean": true,
+///         "integer": 1,
+///         "double": 3.14159265358979323846,
+///         "string": "string",
+///         "array": [1, 2, 3],
+///         "nested": {
+///             "a": "alpha",
+///             "b": "bravo",
+///             "c": "charlie"
+///         }
+///     }
+///     """.data(using: .utf8)!
+/// 
+///     let decoder = JSONDecoder()
+///     let dictionary = try! decoder.decode([String: AnyCodable].self, from: json)
 public struct AnyDecodable: Decodable {
     public let value: Any
 
@@ -75,7 +73,7 @@ extension _AnyDecodable {
 }
 
 extension AnyDecodable: Equatable {
-    public static func ==(lhs: AnyDecodable, rhs: AnyDecodable) -> Bool {
+    public static func == (lhs: AnyDecodable, rhs: AnyDecodable) -> Bool {
         switch (lhs.value, rhs.value) {
         case is (Void, Void):
             return true

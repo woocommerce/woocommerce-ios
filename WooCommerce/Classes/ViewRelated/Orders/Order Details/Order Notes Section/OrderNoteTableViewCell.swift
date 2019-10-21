@@ -1,6 +1,5 @@
-import UIKit
 import Gridicons
-
+import UIKit
 
 // MARK: - OrderNoteTableViewCell
 //
@@ -72,41 +71,41 @@ class OrderNoteTableViewCell: UITableViewCell {
 
 // MARK: - Private Methods
 //
-private extension OrderNoteTableViewCell {
+extension OrderNoteTableViewCell {
 
     /// Updates the Status Label + Icon's Color
     ///
-    func noteTypeWasUpdated() {
+    fileprivate func noteTypeWasUpdated() {
         let theAuthor = author ?? ""
         let dateOfCreation = dateCreated ?? ""
         if isCustomerNote {
             iconButton.backgroundColor = StyleManager.statusPrimaryBoldColor
-            let template =
-                NSLocalizedString("%1$@ - %@$@ (To Customer)",
-                                  comment: "Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer)")
+            let template = NSLocalizedString(
+                "%1$@ - %@$@ (To Customer)",
+                comment: "Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer)")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else if isSystemAuthor {
             iconButton.backgroundColor = StyleManager.wooCommerceBrandColor
-            let template =
-                NSLocalizedString("%1$@ - %2$@ (System)",
-                                  comment: "Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System)")
+            let template = NSLocalizedString(
+                "%1$@ - %2$@ (System)",
+                comment: "Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System)")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else {
             iconButton.backgroundColor = StyleManager.wooGreyMid
-            let template =
-                NSLocalizedString("%1$@ - %2$@ (Private)",
-                                  comment: "Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private)")
+            let template = NSLocalizedString(
+                "%1$@ - %2$@ (Private)",
+                comment: "Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private)")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         }
     }
 
-    func configureBackground() {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
     /// Setup: Labels
     ///
-    func configureLabels() {
+    fileprivate func configureLabels() {
         statusLabel.applyBodyStyle()
         statusLabel.textColor = StyleManager.wooGreyMid
         noteLabel.applyBodyStyle()
@@ -114,7 +113,7 @@ private extension OrderNoteTableViewCell {
 
     /// Setup: Icon Button
     ///
-    func configureIconButton() {
+    fileprivate func configureIconButton() {
         iconButton.setImage(.asideImage, for: .normal)
         iconButton.layer.cornerRadius = iconButton.frame.width / 2
         iconButton.tintColor = .white

@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: AccountSettings
 ///
 struct AccountSettingsMapper: Mapper {
@@ -16,7 +15,7 @@ struct AccountSettingsMapper: Mapper {
     func map(response: Data) throws -> AccountSettings {
         let decoder = JSONDecoder()
         decoder.userInfo = [
-            .userID: userID
+            .userID: userID,
         ]
 
         return try decoder.decode(AccountSettings.self, from: response)

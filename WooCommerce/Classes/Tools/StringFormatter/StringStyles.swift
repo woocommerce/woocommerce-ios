@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// StringStyles: Defines a collection of Text Attributes
 ///
 struct StringStyles {
@@ -60,11 +59,11 @@ extension StringStyles {
     /// Styles: Notifications List / Subject Block
     ///
     static var subject: StringStyles {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
-        let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold]
-        let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
-        let italics: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
-        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: StyleManager.wooGreyMid]
+        let regular: Style = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
+        let bold: Style = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold]
+        let blockquote: Style = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
+        let italics: Style = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
+        let noticon: Style = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: StyleManager.wooGreyMid]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, italics: italics, match: nil, noticon: noticon)
     }
@@ -81,9 +80,9 @@ extension StringStyles {
     /// Styles: Notification Defailts / Header Block
     ///
     static let header: StringStyles = {
-        let regular: Style      = [.font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
-        let bold: Style         = [.font: UIFont.body.bold, .foregroundColor: StyleManager.defaultTextColor]
-        let italics: Style      = [.font: UIFont.body.italics, .foregroundColor: StyleManager.defaultTextColor]
+        let regular: Style = [.font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
+        let bold: Style = [.font: UIFont.body.bold, .foregroundColor: StyleManager.defaultTextColor]
+        let italics: Style = [.font: UIFont.body.italics, .foregroundColor: StyleManager.defaultTextColor]
 
         return StringStyles(regular: regular, bold: bold, italics: italics)
     }()
@@ -92,7 +91,7 @@ extension StringStyles {
     /// Styles: Notification Defailts / Footer Block
     ///
     static let footer: StringStyles = {
-        let regular: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
+        let regular: Style = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body, .foregroundColor: StyleManager.defaultTextColor]
 
         return StringStyles(regular: regular, noticon: body.noticon)
     }()
@@ -101,29 +100,41 @@ extension StringStyles {
     /// Styles: Notification Defailts / Body Blocks
     ///
     static let body: StringStyles = {
-        let regular: Style = [.paragraphStyle: NSParagraphStyle.body,
-                              .font: UIFont.body,
-                              .foregroundColor: StyleManager.defaultTextColor]
+        let regular: Style = [
+            .paragraphStyle: NSParagraphStyle.body,
+            .font: UIFont.body,
+            .foregroundColor: StyleManager.defaultTextColor,
+        ]
 
-        let bold: Style = [.paragraphStyle: NSParagraphStyle.body,
-                           .font: UIFont.body.bold,
-                           .foregroundColor: StyleManager.defaultTextColor]
+        let bold: Style = [
+            .paragraphStyle: NSParagraphStyle.body,
+            .font: UIFont.body.bold,
+            .foregroundColor: StyleManager.defaultTextColor,
+        ]
 
-        let blockquote: Style = [.paragraphStyle: NSParagraphStyle.body,
-                                 .font: UIFont.body.italics,
-                                 .foregroundColor: StyleManager.defaultTextColor]
+        let blockquote: Style = [
+            .paragraphStyle: NSParagraphStyle.body,
+            .font: UIFont.body.italics,
+            .foregroundColor: StyleManager.defaultTextColor,
+        ]
 
-        let match: Style = [.paragraphStyle: NSParagraphStyle.body,
-                            .font: UIFont.body.bold,
-                            .foregroundColor: StyleManager.defaultTextColor]
+        let match: Style = [
+            .paragraphStyle: NSParagraphStyle.body,
+            .font: UIFont.body.bold,
+            .foregroundColor: StyleManager.defaultTextColor,
+        ]
 
-        let noticon: Style = [.paragraphStyle: NSParagraphStyle.body,
-                              .font: UIFont.noticon(forStyle: .body),
-                              .foregroundColor: StyleManager.defaultTextColor]
+        let noticon: Style = [
+            .paragraphStyle: NSParagraphStyle.body,
+            .font: UIFont.noticon(forStyle: .body),
+            .foregroundColor: StyleManager.defaultTextColor,
+        ]
 
-        let italic: Style = [.paragraphStyle: NSParagraphStyle.body,
-                             .font: UIFont.body.italics,
-                             .foregroundColor: StyleManager.defaultTextColor]
+        let italic: Style = [
+            .paragraphStyle: NSParagraphStyle.body,
+            .font: UIFont.body.italics,
+            .foregroundColor: StyleManager.defaultTextColor,
+        ]
 
         let link: Style = [.foregroundColor: StyleManager.wooCommerceBrandColor]
 

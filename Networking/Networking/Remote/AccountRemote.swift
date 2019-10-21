@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Account: Remote Endpoints
 ///
@@ -24,7 +23,7 @@ public class AccountRemote: Remote {
     public func loadAccountSettings(for userID: Int, completion: @escaping (AccountSettings?, Error?) -> Void) {
         let path = "me/settings"
         let parameters = [
-            "fields": "tracks_opt_out"
+            "fields": "tracks_opt_out",
         ]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
         let mapper = AccountSettingsMapper(userID: userID)
@@ -40,7 +39,7 @@ public class AccountRemote: Remote {
         let path = "me/settings"
         let parameters = [
             "fields": "tracks_opt_out",
-            "tracks_opt_out": String(tracksOptOut)
+            "tracks_opt_out": String(tracksOptOut),
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
@@ -56,7 +55,7 @@ public class AccountRemote: Remote {
         let path = "me/sites"
         let parameters = [
             "fields": "ID,name,description,URL,options",
-            "options": "timezone,is_wpcom_store,woocommerce_is_active"
+            "options": "timezone,is_wpcom_store,woocommerce_is_active",
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)
@@ -70,7 +69,7 @@ public class AccountRemote: Remote {
     public func loadSitePlan(for siteID: Int, completion: @escaping (SitePlan?, Error?) -> Void) {
         let path = "sites/\(siteID)"
         let parameters = [
-            "fields": "ID,plan"
+            "fields": "ID,plan",
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)

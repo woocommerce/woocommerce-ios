@@ -1,8 +1,6 @@
 import Foundation
-import Yosemite
 import KeychainAccess
-
-
+import Yosemite
 
 // MARK: - SessionManager Notifications
 //
@@ -90,14 +88,12 @@ struct SessionManager {
     /// Anonymous UserID.
     ///
     var anonymousUserID: String? {
-        get {
-            if let anonID = defaults[.defaultAnonymousID] as? String, !anonID.isEmpty {
-                return anonID
-            } else {
-                let newValue = UUID().uuidString
-                defaults[.defaultAnonymousID] = newValue
-                return newValue
-            }
+        if let anonID = defaults[.defaultAnonymousID] as? String, !anonID.isEmpty {
+            return anonID
+        } else {
+            let newValue = UUID().uuidString
+            defaults[.defaultAnonymousID] = newValue
+            return newValue
         }
     }
 
@@ -125,14 +121,15 @@ struct SessionManager {
 
 // MARK: - Private Methods
 //
-private extension SessionManager {
+extension SessionManager {
 
     /// Returns the Default Credentials, if any.
     ///
-    func loadCredentials() -> Credentials? {
+    fileprivate func loadCredentials() -> Credentials? {
         guard let username = defaults[.defaultUsername] as? String,
             let authToken = keychain[username],
-            let siteAddress = defaults[.defaultSiteAddress] as? String else {
+            let siteAddress = defaults[.defaultSiteAddress] as? String
+        else {
             return nil
         }
 
@@ -141,7 +138,7 @@ private extension SessionManager {
 
     /// Persists the Credentials's authToken in the keychain, and username in User Settings.
     ///
-    func saveCredentials(_ credentials: Credentials) {
+    fileprivate func saveCredentials(_ credentials: Credentials) {
         defaults[.defaultUsername] = credentials.username
         defaults[.defaultSiteAddress] = credentials.siteAddress
         keychain[credentials.username] = credentials.authToken
@@ -149,7 +146,7 @@ private extension SessionManager {
 
     /// Nukes both, the AuthToken and Default Username.
     ///
-    func removeCredentials() {
+    fileprivate func removeCredentials() {
         guard let username = defaults[.defaultUsername] as? String else {
             return
         }

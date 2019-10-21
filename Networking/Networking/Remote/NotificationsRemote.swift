@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Notifications: Remote Endpoints
 ///
@@ -60,7 +59,7 @@ public class NotificationsRemote: Remote {
         // Parameters: [.counts: [Payload]]
         //
         let parameters: [String: Any] = [
-            ParameterKeys.counts: payload
+            ParameterKeys.counts: payload,
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.read, parameters: parameters)
@@ -85,7 +84,7 @@ public class NotificationsRemote: Remote {
     ///
     public func updateLastSeen(_ timestamp: String, completion: @escaping (Error?) -> Void) {
         let parameters = [
-            ParameterKeys.time: timestamp
+            ParameterKeys.time: timestamp,
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: Paths.seen, parameters: parameters)
@@ -105,7 +104,7 @@ public class NotificationsRemote: Remote {
 
 // MARK: - Private Methods
 //
-private extension NotificationsRemote {
+extension NotificationsRemote {
 
     /// Retrieves the Notification for the specified pageSize (OR collection of NoteID's, when present).
     /// Note that only the specified fields will be retrieved.
@@ -116,7 +115,7 @@ private extension NotificationsRemote {
     ///     - pageSize: Number of notifications to load.
     ///     - completion: Callback to be executed on completion.
     ///
-    func requestForNotifications(fields: Fields? = nil, noteIds: [Int64]? = nil, pageSize: Int?) -> DotcomRequest {
+    fileprivate func requestForNotifications(fields: Fields? = nil, noteIds: [Int64]? = nil, pageSize: Int?) -> DotcomRequest {
         var parameters = [ParameterKeys.locale: Locale.current.description]
         if let fields = fields {
             parameters[ParameterKeys.fields] = fields.rawValue
@@ -138,25 +137,25 @@ private extension NotificationsRemote {
 
 // MARK: - Constants!
 //
-private extension NotificationsRemote {
+extension NotificationsRemote {
 
-    enum Constants {
+    fileprivate enum Constants {
         static let readAsInteger = 9999
         static let unreadAsInteger = -9999
     }
 
-    enum Fields: String {
+    fileprivate enum Fields: String {
         case all = "id,note_hash,type,unread,body,subject,timestamp,meta"
         case hashes = "id,note_hash"
     }
 
-    enum Paths {
+    fileprivate enum Paths {
         static let notes = "notifications"
         static let read = "notifications/read"
         static let seen = "notifications/seen"
     }
 
-    enum ParameterKeys {
+    fileprivate enum ParameterKeys {
         static let counts = "counts"
         static let fields = "fields"
         static let identifiers = "ids"

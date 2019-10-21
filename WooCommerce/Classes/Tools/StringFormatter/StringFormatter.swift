@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// StringFormatter: Helper tool that allows us to format an Input String, based on the associated Descriptors.
 ///
 struct StringFormatter {
@@ -21,14 +20,14 @@ struct StringFormatter {
         var lengthShift = 0
 
         for descriptor in descriptors {
-            var shiftedRange        = descriptor.range
-            shiftedRange.location   += lengthShift
+            var shiftedRange = descriptor.range
+            shiftedRange.location += lengthShift
 
             // Apply Values
             if let rangeValue = descriptor.value {
-                let replacement     = rangeValue + " "
+                let replacement = rangeValue + " "
                 output.replaceCharacters(in: shiftedRange, with: replacement)
-                lengthShift         += replacement.count
+                lengthShift += replacement.count
                 shiftedRange.length += replacement.count
             }
 
@@ -51,7 +50,7 @@ struct StringFormatter {
 
 // MARK: - Private
 //
-private extension StringFormatter {
+extension StringFormatter {
 
     /// Replaces some common extra whitespace with hairline spaces so that comments display better
     ///
@@ -59,7 +58,7 @@ private extension StringFormatter {
     /// - Returns: string of same length
     /// - Note: the length must be maintained or the formatting will break
     ///
-    func replaceCommonWhitespaceIssues(in baseString: String) -> String {
+    fileprivate func replaceCommonWhitespaceIssues(in baseString: String) -> String {
         /// \u{200A} = hairline space (very skinny space).
         /// we use these so that the ranges are still in the right position, but the extra space basically disappears
         ///

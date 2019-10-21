@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 // MARK: - UIButton Animations
 //
 extension UIButton {

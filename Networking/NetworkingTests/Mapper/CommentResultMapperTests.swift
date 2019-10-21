@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// CommentResultMapper Unit Tests
 ///
@@ -55,11 +55,11 @@ class CommentResultMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension CommentResultMapperTests {
+extension CommentResultMapperTests {
 
     /// Returns the CommentResultMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapCommentResult(from filename: String) throws -> CommentStatus {
+    fileprivate func mapCommentResult(from filename: String) throws -> CommentStatus {
         let response = Loader.contentsOf(filename)!
         let mapper = CommentResultMapper()
 
@@ -68,31 +68,31 @@ private extension CommentResultMapperTests {
 
     /// Returns the CommentResultMapper output upon receiving an 'approved' status from the endpoint
     ///
-    func mapApprovedResponse() throws -> CommentStatus {
+    fileprivate func mapApprovedResponse() throws -> CommentStatus {
         return try mapCommentResult(from: "comment-moderate-approved")
     }
 
     /// Returns the CommentResultMapper output upon receiving an 'unapproved' status from the endpoint
     ///
-    func mapUnapprovedResponse() throws -> CommentStatus {
+    fileprivate func mapUnapprovedResponse() throws -> CommentStatus {
         return try mapCommentResult(from: "comment-moderate-unapproved")
     }
 
     /// Returns the CommentResultMapper output upon receiving an 'spam' status from the endpoint
     ///
-    func mapSpamResponse() throws -> CommentStatus {
+    fileprivate func mapSpamResponse() throws -> CommentStatus {
         return try mapCommentResult(from: "comment-moderate-spam")
     }
 
     /// Returns the CommentResultMapper output upon receiving an 'trash' status from the endpoint
     ///
-    func mapTrashResponse() throws -> CommentStatus {
+    fileprivate func mapTrashResponse() throws -> CommentStatus {
         return try mapCommentResult(from: "comment-moderate-trash")
     }
 
     /// Returns the CommentResultMapper output upon receiving a broken response.
     ///
-    func mapLoadBrokenResponse() throws -> CommentStatus {
+    fileprivate func mapLoadBrokenResponse() throws -> CommentStatus {
         return try mapCommentResult(from: "generic_error")
     }
 }

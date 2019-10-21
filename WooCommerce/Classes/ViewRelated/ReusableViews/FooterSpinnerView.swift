@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// Activity Indicator, meant for UITableView.footerView usage.
 ///
 class FooterSpinnerView: UIView {
@@ -33,17 +32,19 @@ class FooterSpinnerView: UIView {
 
         switch tableViewStyle {
         case .plain:
-            NSLayoutConstraint.activate([
-                leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
-                trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
-                topAnchor.constraint(equalTo: activityIndicatorView.topAnchor, constant: 10),
-                centerYAnchor.constraint(equalTo: activityIndicatorView.centerYAnchor)
+            NSLayoutConstraint.activate(
+                [
+                    leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
+                    trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
+                    topAnchor.constraint(equalTo: activityIndicatorView.topAnchor, constant: 10),
+                    centerYAnchor.constraint(equalTo: activityIndicatorView.centerYAnchor),
                 ])
         default:
-            NSLayoutConstraint.activate([
-                leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
-                trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
-                topAnchor.constraint(equalTo: activityIndicatorView.topAnchor)
+            NSLayoutConstraint.activate(
+                [
+                    leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
+                    trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
+                    topAnchor.constraint(equalTo: activityIndicatorView.topAnchor),
                 ])
         }
     }
@@ -64,9 +65,9 @@ class FooterSpinnerView: UIView {
 
 // MARK: - Nested Types
 //
-private extension FooterSpinnerView {
+extension FooterSpinnerView {
 
-    enum Settings {
+    fileprivate enum Settings {
         static let defaultFrame = CGRect(x: 0, y: 0, width: 320, height: 45)
     }
 }

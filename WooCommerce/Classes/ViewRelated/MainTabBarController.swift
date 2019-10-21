@@ -1,7 +1,6 @@
 import UIKit
-import Yosemite
 import WordPressUI
-
+import Yosemite
 
 /// Enum representing the individual tabs
 ///
@@ -30,8 +29,10 @@ extension WooTab {
     /// - Parameters:
     ///   - visibleIndex: the index of visible tabs on the tab bar
     ///   - isProductListFeatureOn: whether the product list feature is enabled
-    init(visibleIndex: Int,
-         isProductListFeatureOn: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList)) {
+    init(
+        visibleIndex: Int,
+        isProductListFeatureOn: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList)
+    ) {
         let tabs = WooTab.visibleTabs(isProductListFeatureOn: isProductListFeatureOn)
         self = tabs[visibleIndex]
     }
@@ -95,7 +96,7 @@ final class MainTabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
+        setNeedsStatusBarAppearanceUpdate()  // call this to refresh status bar changes happening at runtime
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) {
             configureProductsTab()
@@ -116,7 +117,7 @@ final class MainTabBarController: UITabBarController {
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         let currentlySelectedTab = WooTab(visibleIndex: selectedIndex)
         guard let userSelectedIndex = tabBar.items?.firstIndex(of: item) else {
-                return
+            return
         }
         let userSelectedTab = WooTab(visibleIndex: userSelectedIndex)
 
@@ -155,9 +156,11 @@ final class MainTabBarController: UITabBarController {
 // MARK: - UIViewControllerTransitioningDelegate
 //
 extension MainTabBarController: UIViewControllerTransitioningDelegate {
-    func presentationController(forPresented presented: UIViewController,
-                                presenting: UIViewController?,
-                                source: UIViewController) -> UIPresentationController? {
+    func presentationController(
+        forPresented presented: UIViewController,
+        presenting: UIViewController?,
+        source: UIViewController
+    ) -> UIPresentationController? {
         guard presented is FancyAlertViewController else {
             return nil
         }
@@ -168,17 +171,19 @@ extension MainTabBarController: UIViewControllerTransitioningDelegate {
 
 // MARK: - Products tab
 //
-private extension MainTabBarController {
-    func configureProductsTab() {
+extension MainTabBarController {
+    fileprivate func configureProductsTab() {
         var tabViewControllers = viewControllers
 
         let productsViewController = ProductsViewController(nibName: nil, bundle: nil)
 
         let navController = WooNavigationController(rootViewController: productsViewController)
-        navController.tabBarItem = UITabBarItem(title: NSLocalizedString("Products",
-                                                                         comment: "Title of the Products tab — plural form of Product"),
-                                                image: UIImage.productImage,
-                                                tag: 0)
+        navController.tabBarItem = UITabBarItem(
+            title: NSLocalizedString(
+                "Products",
+                comment: "Title of the Products tab — plural form of Product"),
+            image: UIImage.productImage,
+            tag: 0)
         tabViewControllers?.insert(navController, at: WooTab.products.visibleIndex())
         viewControllers = tabViewControllers
     }
@@ -187,11 +192,11 @@ private extension MainTabBarController {
 
 // MARK: - Static navigation helpers
 //
-private extension MainTabBarController {
+extension MainTabBarController {
 
     /// *When applicable* this method will scroll the visible content to top.
     ///
-    func scrollContentToTop() {
+    fileprivate func scrollContentToTop() {
         guard let navController = selectedViewController as? UINavigationController else {
             return
         }
@@ -201,7 +206,7 @@ private extension MainTabBarController {
 
     /// Tracks "Tab Selected" Events.
     ///
-    func trackTabSelected(newTab: WooTab) {
+    fileprivate func trackTabSelected(newTab: WooTab) {
         switch newTab {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardSelected)
@@ -217,7 +222,7 @@ private extension MainTabBarController {
 
     /// Tracks "Tab Re Selected" Events.
     ///
-    func trackTabReselected(tab: WooTab) {
+    fileprivate func trackTabReselected(tab: WooTab) {
         switch tab {
         case .myStore:
             ServiceLocator.analytics.track(.dashboardReselected)
@@ -301,13 +306,12 @@ extension MainTabBarController {
 
         if FeatureFlag.reviews.enabled {
             guard let reviewsViewController: ReviewsViewController = childViewController() else {
-            return
+                return
             }
 
             //TODO. What to do when receiving a notification?
             reviewsViewController.presentDetails(for: noteID)
-        }
-        else {
+        } else {
             guard let notificationsViewController: NotificationsViewController = childViewController() else {
                 return
             }
@@ -332,29 +336,29 @@ extension MainTabBarController {
 
 // MARK: - Tab dot madness!
 //
-private extension MainTabBarController {
+extension MainTabBarController {
 
     /// Setup: KVO Hooks.
     ///
-    func startListeningToBadgeUpdatesIfNeeded() {
+    fileprivate func startListeningToBadgeUpdatesIfNeeded() {
         guard observationToken == nil else {
             return
         }
 
-        observationToken = UIApplication.shared.observe(\.applicationIconBadgeNumber, options: [.initial, .new]) {  (application, _) in
+        observationToken = UIApplication.shared.observe(\.applicationIconBadgeNumber, options: [.initial, .new]) { (application, _) in
             self.badgeCountWasUpdated(newValue: application.applicationIconBadgeNumber)
         }
     }
 
     /// Displays or Hides the Dot, depending on the new Badge Value
     ///
-    func badgeCountWasUpdated(newValue: Int) {
+    fileprivate func badgeCountWasUpdated(newValue: Int) {
         notificationsBadge.badgeCountWasUpdated(newValue: newValue, in: tabBar)
     }
 }
 
-private extension MainTabBarController {
-    func startListeningToOrdersBadge() {
+extension MainTabBarController {
+    fileprivate func startListeningToOrdersBadge() {
         viewModel.onBadgeReload = { [weak self] countReadableString in
             guard let self = self else {
                 return
@@ -365,9 +369,10 @@ private extension MainTabBarController {
                 return
             }
 
-            self.ordersBadge.showBadgeOn(.orders,
-                                         in: self.tabBar,
-                                         withValue: badgeText)
+            self.ordersBadge.showBadgeOn(
+                .orders,
+                in: self.tabBar,
+                withValue: badgeText)
         }
 
         viewModel.startObservingOrdersCount()

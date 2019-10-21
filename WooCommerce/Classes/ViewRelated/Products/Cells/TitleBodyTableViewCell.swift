@@ -15,16 +15,16 @@ final class TitleBodyTableViewCell: UITableViewCell {
 }
 
 
-private extension TitleBodyTableViewCell {
-    func configureBackground() {
+extension TitleBodyTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureTitleLabel() {
+    fileprivate func configureTitleLabel() {
         titleLabel?.applyHeadlineStyle()
     }
 
-    func configureBodyLabel() {
+    fileprivate func configureBodyLabel() {
         bodyLabel?.applySecondaryBodyStyle()
     }
 }

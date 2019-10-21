@@ -5,19 +5,17 @@
 //
 import Foundation
 
-/**
- A type-erased `Codable` value.
- 
- The `AnyCodable` type forwards encoding and decoding responsibilities
- to an underlying value, hiding its specific underlying type.
- 
- You can encode or decode mixed-type values in dictionaries
- and other collections that require `Encodable` or `Decodable` conformance
- by declaring their contained type to be `AnyCodable`.
- 
- - SeeAlso: `AnyEncodable`
- - SeeAlso: `AnyDecodable`
- */
+/// A type-erased `Codable` value.
+/// 
+/// The `AnyCodable` type forwards encoding and decoding responsibilities
+/// to an underlying value, hiding its specific underlying type.
+/// 
+/// You can encode or decode mixed-type values in dictionaries
+/// and other collections that require `Encodable` or `Decodable` conformance
+/// by declaring their contained type to be `AnyCodable`.
+/// 
+/// - SeeAlso: `AnyEncodable`
+/// - SeeAlso: `AnyDecodable`
 public struct AnyCodable: Codable {
     public let value: Any
 
@@ -29,7 +27,7 @@ public struct AnyCodable: Codable {
 extension AnyCodable: _AnyEncodable, _AnyDecodable {}
 
 extension AnyCodable: Equatable {
-    public static func ==(lhs: AnyCodable, rhs: AnyCodable) -> Bool {
+    public static func == (lhs: AnyCodable, rhs: AnyCodable) -> Bool {
         switch (lhs.value, rhs.value) {
         case is (Void, Void):
             return true
@@ -96,9 +94,10 @@ extension AnyCodable: CustomDebugStringConvertible {
 }
 
 extension AnyCodable: ExpressibleByNilLiteral,
-                      ExpressibleByBooleanLiteral,
-                      ExpressibleByIntegerLiteral,
-                      ExpressibleByFloatLiteral,
-                      ExpressibleByStringLiteral,
-                      ExpressibleByArrayLiteral,
-                      ExpressibleByDictionaryLiteral {}
+    ExpressibleByBooleanLiteral,
+    ExpressibleByIntegerLiteral,
+    ExpressibleByFloatLiteral,
+    ExpressibleByStringLiteral,
+    ExpressibleByArrayLiteral,
+    ExpressibleByDictionaryLiteral
+{}

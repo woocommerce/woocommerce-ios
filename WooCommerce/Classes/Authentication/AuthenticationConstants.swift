@@ -1,6 +1,6 @@
 import Foundation
 
-struct AuthenticationConstants {
+enum AuthenticationConstants {
     // MARK: - WordPress Authenticator display text customizations
     //
 

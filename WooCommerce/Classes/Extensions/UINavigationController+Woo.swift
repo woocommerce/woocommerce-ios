@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 // MARK: - UINavigationController: Woo Extensions
 //
 extension UINavigationController {
@@ -12,8 +11,8 @@ extension UINavigationController {
     func scrollContentToTop(animated: Bool) {
         guard viewControllers.count == 1,
             let scrollView = visibleViewController?.view?.subviews.first as? UIScrollView
-            else {
-                return
+        else {
+            return
         }
 
         scrollView.setContentOffset(.zero, animated: animated)

@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import Networking
 
 final class WooAPIVersionTests: XCTestCase {

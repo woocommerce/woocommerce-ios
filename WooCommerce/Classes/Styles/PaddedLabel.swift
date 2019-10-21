@@ -1,6 +1,5 @@
 import UIKit
 
-
 // MARK: - PaddedLabel: UILabel subclass that allows for Text Insets.
 //
 class PaddedLabel: UILabel {
@@ -27,9 +26,9 @@ class PaddedLabel: UILabel {
 
 // MARK: - Constants!
 //
-private extension PaddedLabel {
+extension PaddedLabel {
 
-    enum Constants {
+    fileprivate enum Constants {
         static let defaultInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
     }
 }

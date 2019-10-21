@@ -7,7 +7,7 @@ public struct ProductReview: Decodable {
     public let reviewID: Int
     public let productID: Int
 
-    public let dateCreated: Date        // gmt
+    public let dateCreated: Date  // gmt
 
     public let statusKey: String
 
@@ -26,17 +26,19 @@ public struct ProductReview: Decodable {
 
     /// ProductReview struct initializer.
     ///
-    public init(siteID: Int,
-                reviewID: Int,
-                productID: Int,
-                dateCreated: Date,
-                statusKey: String,
-                reviewer: String,
-                reviewerEmail: String,
-                reviewerAvatarURL: String,
-                review: String,
-                rating: Int,
-                verified: Bool) {
+    public init(
+        siteID: Int,
+        reviewID: Int,
+        productID: Int,
+        dateCreated: Date,
+        statusKey: String,
+        reviewer: String,
+        reviewerEmail: String,
+        reviewerAvatarURL: String,
+        review: String,
+        rating: Int,
+        verified: Bool
+    ) {
         self.siteID = siteID
         self.reviewID = reviewID
         self.productID = productID
@@ -71,39 +73,42 @@ public struct ProductReview: Decodable {
         let rating = try container.decode(Int.self, forKey: .rating)
         let verified = try container.decode(Bool.self, forKey: .verified)
 
-        self.init(siteID: siteID,
-                  reviewID: reviewID,
-                  productID: productID,
-                  dateCreated: dateCreated,
-                  statusKey: statusKey,
-                  reviewer: reviewer,
-                  reviewerEmail: reviewerEmail,
-                  reviewerAvatarURL: reviewerAvatarURL,
-                  review: review,
-                  rating: rating,
-                  verified: verified)
+        self.init(
+            siteID: siteID,
+            reviewID: reviewID,
+            productID: productID,
+            dateCreated: dateCreated,
+            statusKey: statusKey,
+            reviewer: reviewer,
+            reviewerEmail: reviewerEmail,
+            reviewerAvatarURL: reviewerAvatarURL,
+            review: review,
+            rating: rating,
+            verified: verified)
     }
 }
 
 
 /// Defines all of the ProductReview CodingKeys
 ///
-private extension ProductReview {
+extension ProductReview {
 
-    enum CodingKeys: String, CodingKey {
-        case reviewID       = "id"
-        case productID      = "product_id"
-        case dateCreated    = "date_created_gmt"
-        case status         = "status"
-        case reviewer       = "reviewer"
-        case reviewerEmail  = "reviewer_email"
-        case avatarURLs     = "reviewer_avatar_urls"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case reviewID = "id"
+        case productID = "product_id"
+        case dateCreated = "date_created_gmt"
+        case status = "status"
+        case reviewer = "reviewer"
+        case reviewerEmail = "reviewer_email"
+        case avatarURLs = "reviewer_avatar_urls"
+
         /// We are ignoring all avatars except the one marked as 96
         /// to avoid adding an unecessary intermediate object
-        case avatar96       = "96"
-        case review         = "review"
-        case rating         = "rating"
-        case verified       = "verified"
+        case avatar96 = "96"
+
+        case review = "review"
+        case rating = "rating"
+        case verified = "verified"
     }
 }
 
@@ -112,9 +117,7 @@ private extension ProductReview {
 //
 extension ProductReview: Equatable {
     public static func == (lhs: ProductReview, rhs: ProductReview) -> Bool {
-        return lhs.siteID == rhs.siteID &&
-            lhs.reviewID == rhs.reviewID &&
-            lhs.productID == rhs.productID
+        return lhs.siteID == rhs.siteID && lhs.reviewID == rhs.reviewID && lhs.productID == rhs.productID
     }
 }
 

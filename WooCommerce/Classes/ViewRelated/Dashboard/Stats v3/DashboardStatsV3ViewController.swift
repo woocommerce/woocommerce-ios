@@ -58,8 +58,9 @@ class DashboardStatsV3ViewController: UIViewController {
 
 // MARK: Actions
 //
-private extension DashboardStatsV3ViewController {
-    @objc func pullToRefresh() {
+extension DashboardStatsV3ViewController {
+    @objc
+    fileprivate func pullToRefresh() {
         onPullToRefresh()
     }
 }
@@ -77,7 +78,7 @@ extension DashboardStatsV3ViewController: DashboardUI {
         var reloadError: Error? = nil
 
         group.enter()
-        storeStatsViewController.syncAllStats() { error in
+        storeStatsViewController.syncAllStats { error in
             if let error = error {
                 reloadError = error
             }
@@ -85,7 +86,7 @@ extension DashboardStatsV3ViewController: DashboardUI {
         }
 
         group.enter()
-        topPerformersViewController.syncTopPerformers() { error in
+        topPerformersViewController.syncTopPerformers { error in
             if let error = error {
                 reloadError = error
             }
@@ -124,15 +125,17 @@ extension DashboardStatsV3ViewController: TopBannerPresenter {
             removeTopBanner(banner)
             return
         }
-        UIView.animate(withDuration: 0.1,
-                       animations: {
-                        banner.isHidden = true
-        }, completion: { [weak self] isCompleted in
-            guard isCompleted else {
-                return
-            }
-            self?.removeTopBanner(banner)
-        })
+        UIView.animate(
+            withDuration: 0.1,
+            animations: {
+                banner.isHidden = true
+            },
+            completion: { [weak self] isCompleted in
+                guard isCompleted else {
+                    return
+                }
+                self?.removeTopBanner(banner)
+            })
     }
 
     func removeTopBanner(_ topBanner: UIView) {
@@ -141,12 +144,12 @@ extension DashboardStatsV3ViewController: TopBannerPresenter {
     }
 }
 
-private extension DashboardStatsV3ViewController {
-    func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
+extension DashboardStatsV3ViewController {
+    fileprivate func showSiteVisitors(_ shouldShowSiteVisitors: Bool) {
         storeStatsViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitors)
     }
 
-    func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
+    fileprivate func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
         switch error {
         case .statsModuleDisabled, .noPermission:
             showSiteVisitors(false)
@@ -164,34 +167,39 @@ private extension DashboardStatsV3ViewController {
         }
     }
 
-    func applyUnhideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.showAnimationDuration,
-                       delay: 0,
-                       usingSpringWithDamping: Constants.showSpringDamping,
-                       initialSpringVelocity: Constants.showSpringVelocity,
-                       options: .curveEaseOut,
-                       animations: {
-                        view.isHidden = false
-                        view.alpha = UIKitConstants.alphaFull
-        }) { _ in
+    fileprivate func applyUnhideAnimation(for view: UIView) {
+        UIView.animate(
+            withDuration: Constants.showAnimationDuration,
+            delay: 0,
+            usingSpringWithDamping: Constants.showSpringDamping,
+            initialSpringVelocity: Constants.showSpringVelocity,
+            options: .curveEaseOut,
+            animations: {
+                view.isHidden = false
+                view.alpha = UIKitConstants.alphaFull
+            }
+        ) { _ in
             view.isHidden = false
             view.alpha = UIKitConstants.alphaFull
         }
     }
 
-    func applyHideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
-            view.isHidden = true
-            view.alpha = UIKitConstants.alphaZero
-        }, completion: { _ in
-            view.isHidden = true
-            view.alpha = UIKitConstants.alphaZero
-        })
+    fileprivate func applyHideAnimation(for view: UIView) {
+        UIView.animate(
+            withDuration: Constants.hideAnimationDuration,
+            animations: {
+                view.isHidden = true
+                view.alpha = UIKitConstants.alphaZero
+            },
+            completion: { _ in
+                view.isHidden = true
+                view.alpha = UIKitConstants.alphaZero
+            })
     }
 }
 
-private extension DashboardStatsV3ViewController {
-    func configureContainerViews() {
+extension DashboardStatsV3ViewController {
+    fileprivate func configureContainerViews() {
         view.addSubview(scrollView)
         view.pinSubviewToAllEdges(scrollView)
 
@@ -199,29 +207,33 @@ private extension DashboardStatsV3ViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         stackView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.pinSubviewToAllEdges(stackView)
-        NSLayoutConstraint.activate([
-            stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor)
+        NSLayoutConstraint.activate(
+            [
+                stackView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
             ])
     }
 
-    func configureChildViewControllerContainerViews() {
+    fileprivate func configureChildViewControllerContainerViews() {
         // Top spacer view.
         let topSpacerView = UIView(frame: .zero)
-        NSLayoutConstraint.activate([
-            topSpacerView.heightAnchor.constraint(equalToConstant: 18),
+        NSLayoutConstraint.activate(
+            [
+                topSpacerView.heightAnchor.constraint(equalToConstant: 18),
             ])
 
         // Store stats.
         let storeStatsView = storeStatsViewController.view!
-        NSLayoutConstraint.activate([
-            storeStatsView.heightAnchor.constraint(equalToConstant: 380),
+        NSLayoutConstraint.activate(
+            [
+                storeStatsView.heightAnchor.constraint(equalToConstant: 380),
             ])
 
         // Top performers.
         let topPerformersView = topPerformersViewController.view!
-        NSLayoutConstraint.activate([
-            topPerformersView.heightAnchor.constraint(equalToConstant: 465),
-            topPerformersView.heightAnchor.constraint(greaterThanOrEqualToConstant: 465)
+        NSLayoutConstraint.activate(
+            [
+                topPerformersView.heightAnchor.constraint(equalToConstant: 465),
+                topPerformersView.heightAnchor.constraint(greaterThanOrEqualToConstant: 465),
             ])
 
         // Add all child view controllers and their container/view to stack view's arranged subviews.
@@ -234,7 +246,7 @@ private extension DashboardStatsV3ViewController {
         let arrangedSubviews = [
             topSpacerView,
             storeStatsView,
-            topPerformersView
+            topPerformersView,
         ]
         arrangedSubviews.forEach { subview in
             subview.translatesAutoresizingMaskIntoConstraints = false
@@ -249,11 +261,11 @@ private extension DashboardStatsV3ViewController {
 
 // MARK: - Constants
 //
-private extension DashboardStatsV3ViewController {
-    struct Constants {
-        static let hideAnimationDuration: TimeInterval  = 0.25
-        static let showAnimationDuration: TimeInterval  = 0.50
-        static let showSpringDamping: CGFloat           = 0.7
-        static let showSpringVelocity: CGFloat          = 0.0
+extension DashboardStatsV3ViewController {
+    fileprivate enum Constants {
+        static let hideAnimationDuration: TimeInterval = 0.25
+        static let showAnimationDuration: TimeInterval = 0.50
+        static let showSpringDamping: CGFloat = 0.7
+        static let showSpringVelocity: CGFloat = 0.0
     }
 }

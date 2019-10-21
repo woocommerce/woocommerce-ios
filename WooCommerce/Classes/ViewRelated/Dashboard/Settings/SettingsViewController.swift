@@ -1,10 +1,9 @@
-import UIKit
-import Yosemite
-import MessageUI
 import Gridicons
+import MessageUI
 import SafariServices
+import UIKit
 import WordPressAuthenticator
-
+import Yosemite
 
 // MARK: - SettingsViewController
 //
@@ -77,35 +76,36 @@ class SettingsViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension SettingsViewController {
+extension SettingsViewController {
 
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         title = NSLocalizedString("Settings", comment: "Settings navigation title")
         // Don't show the Settings title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
+        let backButton = UIBarButtonItem(
+            title: String(),
+            style: .plain,
+            target: nil,
+            action: nil)
 
         navigationItem.backBarButtonItem = backButton
     }
 
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func configureTableView() {
+    fileprivate func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func refreshResultsController() {
+    fileprivate func refreshResultsController() {
         try? resultsController.performFetch()
         sites = resultsController.fetchedObjects
     }
 
-    func configureTableViewFooter() {
+    fileprivate func configureTableViewFooter() {
         // `tableView.tableFooterView` can't handle a footerView that uses autolayout only.
         // Hence the container view with a defined frame.
         //
@@ -121,18 +121,17 @@ private extension SettingsViewController {
         footerContainer.addSubview(footerView)
     }
 
-    func configureSections() {
+    fileprivate func configureSections() {
         let selectedStoreTitle = NSLocalizedString(
             "Selected Store",
-            comment: "My Store > Settings > Selected Store information section. " +
-            "This is the heading listed above the information row that displays the store website and their username."
-            ).uppercased()
+            comment: "My Store > Settings > Selected Store information section. "
+                + "This is the heading listed above the information row that displays the store website and their username."
+        ).uppercased()
         let improveTheAppTitle = NSLocalizedString("Help Improve The App", comment: "My Store > Settings > Privacy settings section").uppercased()
         let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
         let otherTitle = NSLocalizedString("Other", comment: "My Store > Settings > Other app section").uppercased()
 
-        let storeRows: [Row] = sites.count > 1 ?
-            [.selectedStore, .switchStore] : [.selectedStore]
+        let storeRows: [Row] = sites.count > 1 ? [.selectedStore, .switchStore] : [.selectedStore]
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stats) {
             rowsForImproveTheAppSection { [weak self] improveTheAppRows in
@@ -142,7 +141,7 @@ private extension SettingsViewController {
                     Section(title: improveTheAppTitle, rows: improveTheAppRows, footerHeight: UITableView.automaticDimension),
                     Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
                     Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
-                    Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+                    Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude),
                 ]
             }
         } else {
@@ -152,12 +151,12 @@ private extension SettingsViewController {
                 Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
                 Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
                 Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
-                Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+                Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude),
             ]
         }
     }
 
-    func rowsForImproveTheAppSection(onCompletion: @escaping (_ rows: [Row]) -> Void) {
+    fileprivate func rowsForImproveTheAppSection(onCompletion: @escaping (_ rows: [Row]) -> Void) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             assertionFailure("Cannot find store ID")
             return
@@ -172,7 +171,7 @@ private extension SettingsViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
@@ -180,7 +179,7 @@ private extension SettingsViewController {
 
     /// Cells currently configured in the order they appear on screen
     ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    fileprivate func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as HeadlineLabelTableViewCell where row == .selectedStore:
             configureSelectedStore(cell: cell)
@@ -207,13 +206,13 @@ private extension SettingsViewController {
         }
     }
 
-    func configureSelectedStore(cell: HeadlineLabelTableViewCell) {
+    fileprivate func configureSelectedStore(cell: HeadlineLabelTableViewCell) {
         cell.headline = siteUrl
         cell.body = accountName
         cell.selectionStyle = .none
     }
 
-    func configureSwitchStore(cell: BasicTableViewCell) {
+    fileprivate func configureSwitchStore(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString(
             "Switch Store",
@@ -221,49 +220,49 @@ private extension SettingsViewController {
         )
     }
 
-    func configureSupport(cell: BasicTableViewCell) {
+    fileprivate func configureSupport(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Help & Support", comment: "Contact Support Action")
     }
 
-    func configurePrivacy(cell: BasicTableViewCell) {
+    fileprivate func configurePrivacy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
     }
 
-    func configureBetaFeatures(cell: BasicTableViewCell) {
+    fileprivate func configureBetaFeatures(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Beta Features", comment: "Navigates to Beta features screen")
     }
 
-    func configureFeatureSuggestions(cell: BasicTableViewCell) {
+    fileprivate func configureFeatureSuggestions(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Feature Request", comment: "Navigates to the feature request screen")
     }
 
-    func configureAbout(cell: BasicTableViewCell) {
+    fileprivate func configureAbout(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("WooCommerce", comment: "Navigates to about WooCommerce app screen")
     }
 
-    func configureLicenses(cell: BasicTableViewCell) {
+    fileprivate func configureLicenses(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Open Source Licenses", comment: "Navigates to screen about open source licenses")
     }
 
-    func configureAppSettings(cell: BasicTableViewCell) {
+    fileprivate func configureAppSettings(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Open Device Settings", comment: "Opens iOS's Device Settings for the app")
     }
 
-    func configureLogout(cell: BasicTableViewCell) {
+    fileprivate func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = StyleManager.destructiveActionColor
@@ -274,9 +273,9 @@ private extension SettingsViewController {
 
 // MARK: - Convenience Methods
 //
-private extension SettingsViewController {
+extension SettingsViewController {
 
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+    fileprivate func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
 }
@@ -284,9 +283,9 @@ private extension SettingsViewController {
 
 // MARK: - Actions
 //
-private extension SettingsViewController {
+extension SettingsViewController {
 
-    func logoutWasPressed() {
+    fileprivate func logoutWasPressed() {
         ServiceLocator.analytics.track(.settingsLogoutTapped)
         let messageUnformatted = NSLocalizedString(
             "Are you sure you want to log out of the account %@?",
@@ -309,7 +308,7 @@ private extension SettingsViewController {
         present(alertController, animated: true)
     }
 
-    func switchStoreWasPressed() {
+    fileprivate func switchStoreWasPressed() {
         ServiceLocator.analytics.track(.settingsSelectedStoreTapped)
         if let navigationController = navigationController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
@@ -317,27 +316,27 @@ private extension SettingsViewController {
         }
     }
 
-    func supportWasPressed() {
+    fileprivate func supportWasPressed() {
         ServiceLocator.analytics.track(.settingsContactSupportTapped)
         performSegue(withIdentifier: Segues.helpSupportSegue, sender: nil)
     }
 
-    func privacyWasPressed() {
+    fileprivate func privacyWasPressed() {
         ServiceLocator.analytics.track(.settingsPrivacySettingsTapped)
         performSegue(withIdentifier: Segues.privacySegue, sender: nil)
     }
 
-    func aboutWasPressed() {
+    fileprivate func aboutWasPressed() {
         ServiceLocator.analytics.track(.settingsAboutLinkTapped)
         performSegue(withIdentifier: Segues.aboutSegue, sender: nil)
     }
 
-    func licensesWasPressed() {
+    fileprivate func licensesWasPressed() {
         ServiceLocator.analytics.track(.settingsLicensesLinkTapped)
         performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
     }
 
-    func betaFeaturesWasPressed() {
+    fileprivate func betaFeaturesWasPressed() {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             assertionFailure("Cannot find store ID")
             return
@@ -347,24 +346,24 @@ private extension SettingsViewController {
         navigationController?.pushViewController(betaFeaturesViewController, animated: true)
     }
 
-    func featureRequestWasPressed() {
+    fileprivate func featureRequestWasPressed() {
         let safariViewController = SFSafariViewController(url: WooConstants.featureRequestURL)
         present(safariViewController, animated: true, completion: nil)
     }
 
-    func appSettingsWasPressed() {
+    fileprivate func appSettingsWasPressed() {
         guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
             return
         }
         UIApplication.shared.open(targetURL)
     }
 
-    func logOutUser() {
+    fileprivate func logOutUser() {
         ServiceLocator.stores.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
     }
 
-    func weAreHiringWasPressed(url: URL) {
+    fileprivate func weAreHiringWasPressed(url: URL) {
         ServiceLocator.analytics.track(.settingsWereHiringTapped)
 
         WebviewHelper.launch(url, with: self)
@@ -376,8 +375,10 @@ private extension SettingsViewController {
 //
 extension SettingsViewController: UITextViewDelegate {
 
-    func textView(_ textView: UITextView, shouldInteractWith URL: URL,
-                  in characterRange: NSRange, interaction: UITextItemInteraction) -> Bool {
+    func textView(
+        _ textView: UITextView, shouldInteractWith URL: URL,
+        in characterRange: NSRange, interaction: UITextItemInteraction
+    ) -> Bool {
         weAreHiringWasPressed(url: URL)
         return false
     }
@@ -467,7 +468,7 @@ extension SettingsViewController: UITableViewDelegate {
 
 // MARK: - Private Types
 //
-private struct Constants {
+private enum Constants {
     static let rowHeight = CGFloat(44)
     static let footerHeight = 90
 }
@@ -520,28 +521,29 @@ private enum Row: CaseIterable {
     }
 }
 
-private struct Segues {
-    static let privacySegue     = "ShowPrivacySettingsViewController"
+private enum Segues {
+    static let privacySegue = "ShowPrivacySettingsViewController"
     static let helpSupportSegue = "ShowHelpAndSupportViewController"
-    static let aboutSegue       = "ShowAboutViewController"
-    static let licensesSegue    = "ShowLicensesViewController"
+    static let aboutSegue = "ShowAboutViewController"
+    static let licensesSegue = "ShowLicensesViewController"
 }
 
 
 // MARK: - Footer
 //
-private extension SettingsViewController {
+extension SettingsViewController {
 
     /// Returns the Settings Footer Attributed Text
     /// (which contains a link to the "Work with us" URL)
     ///
-    var hiringAttributedText: NSAttributedString {
-        let hiringText = NSLocalizedString("Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
-                                           comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
+    fileprivate var hiringAttributedText: NSAttributedString {
+        let hiringText = NSLocalizedString(
+            "Made with love by Automattic. <a href=\"https://automattic.com/work-with-us/\">We’re hiring!</a>",
+            comment: "It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>`"
         )
         let hiringAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,
-            .foregroundColor: StyleManager.wooGreyMid
+            .foregroundColor: StyleManager.wooGreyMid,
         ]
 
         let hiringAttrText = NSMutableAttributedString()

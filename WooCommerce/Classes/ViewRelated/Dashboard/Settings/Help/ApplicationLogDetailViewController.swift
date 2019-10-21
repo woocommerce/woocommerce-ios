@@ -78,13 +78,12 @@ class ApplicationLogDetailViewController: UIViewController {
     func assembleExcludedSupportTypes() -> [UIActivity.ActivityType] {
         let activityTypes = NSMutableSet(array: SharingHelper.allActivityTypes())
 
-        /*
-         * Don't use Set(arrayLiteral:) here, because it will convert the enums to the raw string value,
-         * which would be wrong, because the allActivityTypes listed above are stored as enum types.
-         */
-        let supportedTypes = NSSet(objects: UIActivity.ActivityType.copyToPasteboard,
-                                            UIActivity.ActivityType.mail,
-                                            UIActivity.ActivityType.airDrop)
+        // * Don't use Set(arrayLiteral:) here, because it will convert the enums to the raw string value,
+        //         * which would be wrong, because the allActivityTypes listed above are stored as enum types.
+        let supportedTypes = NSSet(
+            objects: UIActivity.ActivityType.copyToPasteboard,
+            UIActivity.ActivityType.mail,
+            UIActivity.ActivityType.airDrop)
 
         // Now you can downcast to Set, because the type was preserved on init of the NSSet.
         activityTypes.minus(supportedTypes as! Set<AnyHashable>)

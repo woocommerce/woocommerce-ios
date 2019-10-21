@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - Date Extensions
 //
 extension Date {
@@ -39,9 +38,10 @@ extension Date {
         guard let years = components.year, years < 1,
             let months = components.month, months < 1,
             let weeks = components.weekOfYear, weeks < 1,
-            let days = components.day, days < 1 else {
-                let longFormDate = self.toString(dateStyle: .medium, timeStyle: .short)
-                return String.localizedStringWithFormat(Strings.longFormUpdateStatement, longFormDate)
+            let days = components.day, days < 1
+        else {
+            let longFormDate = self.toString(dateStyle: .medium, timeStyle: .short)
+            return String.localizedStringWithFormat(Strings.longFormUpdateStatement, longFormDate)
         }
 
         if let hours = components.hour, hours > 0 {
@@ -71,33 +71,38 @@ extension Date {
 
 // MARK: - Constants!
 //
-private extension Date {
+extension Date {
 
-    enum Strings {
+    fileprivate enum Strings {
         static let presentDeicticExpression = NSLocalizedString(
             "Updated moments ago",
             comment: "Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now'"
         )
+
         static let singularMinuteUpdateStatment = NSLocalizedString(
             "Updated %ld minute ago",
-            comment: "Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. " +
-            "Usage example: Updated 1 minute ago"
+            comment: "Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. "
+                + "Usage example: Updated 1 minute ago"
         )
+
         static let pluralMinuteUpdateStatment = NSLocalizedString(
             "Updated %ld minutes ago",
-            comment: "Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. " +
-            "Usage example: Updated 55 minutes ago"
+            comment: "Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. "
+                + "Usage example: Updated 55 minutes ago"
         )
+
         static let singularHourUpdateStatment = NSLocalizedString(
             "Updated %ld hour ago",
-            comment: "Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. " +
-            "Usage example: Updated 1 hour ago"
+            comment: "Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. "
+                + "Usage example: Updated 1 hour ago"
         )
+
         static let pluralHourUpdateStatment = NSLocalizedString(
             "Updated %ld hours ago",
-            comment: "Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. " +
-            "Usage example: Updated 14 hours ago"
+            comment: "Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. "
+                + "Usage example: Updated 14 hours ago"
         )
+
         static let longFormUpdateStatement = NSLocalizedString(
             "Updated on %@",
             comment: "A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM"

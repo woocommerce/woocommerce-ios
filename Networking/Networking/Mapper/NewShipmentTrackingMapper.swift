@@ -20,7 +20,7 @@ struct NewShipmentTrackingMapper: Mapper {
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.yearMonthDayDateFormatter)
         decoder.userInfo = [
             .siteID: siteID,
-            .orderID: orderID
+            .orderID: orderID,
         ]
         return try decoder.decode(NewShipmentTrackingMapperEnvelope.self, from: response).shipmentTracking
     }

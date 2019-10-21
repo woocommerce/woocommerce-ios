@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// WooCommerce UIFont Constants
 ///
 extension UIFont {

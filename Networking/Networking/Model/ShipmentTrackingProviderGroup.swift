@@ -28,13 +28,11 @@ public struct ShipmentTrackingProviderGroup {
 }
 
 extension ShipmentTrackingProviderGroup: Comparable {
-    public static func ==(lhs: ShipmentTrackingProviderGroup, rhs: ShipmentTrackingProviderGroup) -> Bool {
-        return lhs.name == rhs.name &&
-            lhs.siteID == rhs.siteID &&
-            lhs.providers.sorted() == rhs.providers.sorted()
+    public static func == (lhs: ShipmentTrackingProviderGroup, rhs: ShipmentTrackingProviderGroup) -> Bool {
+        return lhs.name == rhs.name && lhs.siteID == rhs.siteID && lhs.providers.sorted() == rhs.providers.sorted()
     }
 
-    public static func <(lhs: ShipmentTrackingProviderGroup, rhs: ShipmentTrackingProviderGroup) -> Bool {
+    public static func < (lhs: ShipmentTrackingProviderGroup, rhs: ShipmentTrackingProviderGroup) -> Bool {
         return lhs.name < rhs.name
     }
 }

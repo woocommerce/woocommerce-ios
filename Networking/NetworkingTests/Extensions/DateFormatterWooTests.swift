@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// DateFormatter+Woo Unit Tests
 ///

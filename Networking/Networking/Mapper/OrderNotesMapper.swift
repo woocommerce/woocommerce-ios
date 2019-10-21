@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: OrderNotes
 ///
 class OrderNotesMapper: Mapper {

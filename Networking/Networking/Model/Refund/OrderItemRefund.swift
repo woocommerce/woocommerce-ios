@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents an Order Item to be Refunded
 ///
 public struct OrderItemRefund: Codable {
@@ -16,6 +15,7 @@ public struct OrderItemRefund: Codable {
     /// `Decimal` doesn't yet have all of the `NSDecimalNumber` APIs.
     ///
     public let price: NSDecimalNumber
+
     public let sku: String?
     public let subtotal: String
     public let subtotalTax: String
@@ -26,19 +26,21 @@ public struct OrderItemRefund: Codable {
 
     /// OrderItemRefund struct initializer.
     ///
-    public init(itemID: Int,
-                name: String,
-                productID: Int,
-                variationID: Int,
-                quantity: Decimal,
-                price: NSDecimalNumber,
-                sku: String?,
-                subtotal: String,
-                subtotalTax: String,
-                taxClass: String,
-                taxes: [OrderItemTaxRefund],
-                total: String,
-                totalTax: String) {
+    public init(
+        itemID: Int,
+        name: String,
+        productID: Int,
+        variationID: Int,
+        quantity: Decimal,
+        price: NSDecimalNumber,
+        sku: String?,
+        subtotal: String,
+        subtotalTax: String,
+        taxClass: String,
+        taxes: [OrderItemTaxRefund],
+        total: String,
+        totalTax: String
+    ) {
         self.itemID = itemID
         self.name = name
         self.productID = productID
@@ -77,7 +79,9 @@ public struct OrderItemRefund: Codable {
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
         // initialize the struct
-        self.init(itemID: itemID, name: name, productID: productID, variationID: variationID, quantity: quantity, price: price, sku: sku, subtotal: subtotal, subtotalTax: subtotalTax, taxClass: taxClass, taxes: taxes, total: total, totalTax: totalTax)
+        self.init(
+            itemID: itemID, name: name, productID: productID, variationID: variationID, quantity: quantity, price: price, sku: sku, subtotal: subtotal,
+            subtotalTax: subtotalTax, taxClass: taxClass, taxes: taxes, total: total, totalTax: totalTax)
     }
 
     /// The public encoder for OrderItemRefund.
@@ -110,21 +114,21 @@ public struct OrderItemRefund: Codable {
 
 /// Defines all of the OrderItemRefund CodingKeys.
 ///
-private extension OrderItemRefund {
+extension OrderItemRefund {
 
-    enum CodingKeys: String, CodingKey {
-        case itemID         = "id"
-        case variationID    = "variation_id"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case itemID = "id"
+        case variationID = "variation_id"
         case name
-        case productID      = "product_id"
+        case productID = "product_id"
         case quantity
         case price
         case sku
         case subtotal
-        case subtotalTax    = "subtotal_tax"
-        case taxClass       = "tax_class"
+        case subtotalTax = "subtotal_tax"
+        case taxClass = "tax_class"
         case total
-        case totalTax       = "total_tax"
+        case totalTax = "total_tax"
         case taxes
     }
 }
@@ -134,14 +138,12 @@ private extension OrderItemRefund {
 //
 extension OrderItemRefund: Comparable {
     public static func == (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
-        return lhs.itemID == rhs.itemID &&
-            lhs.productID == rhs.productID &&
-            lhs.variationID == rhs.variationID
+        return lhs.itemID == rhs.itemID && lhs.productID == rhs.productID && lhs.variationID == rhs.variationID
     }
 
     public static func < (lhs: OrderItemRefund, rhs: OrderItemRefund) -> Bool {
-        return lhs.itemID < rhs.itemID ||
-            (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) ||
-            (lhs.itemID == rhs.itemID && lhs.productID == rhs.productID && lhs.name < rhs.name)
+        return lhs.itemID < rhs.itemID || (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) || (
+            lhs.itemID == rhs.itemID && lhs.productID == rhs.productID && lhs.name < rhs.name
+        )
     }
 }

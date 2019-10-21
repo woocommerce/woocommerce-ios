@@ -12,16 +12,18 @@ public struct OrderStatsV4Totals: Decodable {
     public let netRevenue: Decimal
     public let totalProducts: Int?
 
-    public init(totalOrders: Int,
-                totalItemsSold: Int,
-                grossRevenue: Decimal,
-                couponDiscount: Decimal,
-                totalCoupons: Int,
-                refunds: Decimal,
-                taxes: Decimal,
-                shipping: Decimal,
-                netRevenue: Decimal,
-                totalProducts: Int?) {
+    public init(
+        totalOrders: Int,
+        totalItemsSold: Int,
+        grossRevenue: Decimal,
+        couponDiscount: Decimal,
+        totalCoupons: Int,
+        refunds: Decimal,
+        taxes: Decimal,
+        shipping: Decimal,
+        netRevenue: Decimal,
+        totalProducts: Int?
+    ) {
         self.totalOrders = totalOrders
         self.totalItemsSold = totalItemsSold
         self.grossRevenue = grossRevenue
@@ -47,16 +49,17 @@ public struct OrderStatsV4Totals: Decodable {
         let netRevenue = try container.decode(Decimal.self, forKey: .netRevenue)
         let totalProducts = try container.decodeIfPresent(Int.self, forKey: .products)
 
-        self.init(totalOrders: totalOrders,
-                  totalItemsSold: totalItemsSold,
-                  grossRevenue: grossRevenue,
-                  couponDiscount: couponDiscount,
-                  totalCoupons: totalCoupons,
-                  refunds: refunds,
-                  taxes: taxes,
-                  shipping: shipping,
-                  netRevenue: netRevenue,
-                  totalProducts: totalProducts)
+        self.init(
+            totalOrders: totalOrders,
+            totalItemsSold: totalItemsSold,
+            grossRevenue: grossRevenue,
+            couponDiscount: couponDiscount,
+            totalCoupons: totalCoupons,
+            refunds: refunds,
+            taxes: taxes,
+            shipping: shipping,
+            netRevenue: netRevenue,
+            totalProducts: totalProducts)
     }
 }
 
@@ -65,29 +68,21 @@ public struct OrderStatsV4Totals: Decodable {
 //
 extension OrderStatsV4Totals: Equatable {
     public static func == (lhs: OrderStatsV4Totals, rhs: OrderStatsV4Totals) -> Bool {
-        return lhs.totalOrders == rhs.totalOrders &&
-            lhs.totalItemsSold == rhs.totalItemsSold &&
-            lhs.grossRevenue == rhs.grossRevenue &&
-            lhs.couponDiscount == rhs.couponDiscount &&
-            lhs.totalCoupons == rhs.totalCoupons &&
-            lhs.refunds == rhs.refunds &&
-            lhs.taxes == rhs.taxes &&
-            lhs.shipping == rhs.shipping &&
-            lhs.netRevenue == rhs.netRevenue &&
-            lhs.totalProducts == rhs.totalProducts
+        return lhs.totalOrders == rhs.totalOrders && lhs.totalItemsSold == rhs.totalItemsSold && lhs.grossRevenue == rhs.grossRevenue && lhs.couponDiscount
+            == rhs.couponDiscount && lhs.totalCoupons == rhs.totalCoupons && lhs.refunds == rhs.refunds && lhs.taxes == rhs.taxes && lhs.shipping == rhs
+            .shipping && lhs.netRevenue == rhs.netRevenue && lhs.totalProducts == rhs.totalProducts
     }
 
     public static func < (lhs: OrderStatsV4Totals, rhs: OrderStatsV4Totals) -> Bool {
-        return lhs.grossRevenue < rhs.grossRevenue ||
-            (lhs.grossRevenue == rhs.grossRevenue && lhs.totalOrders < rhs.totalOrders)
+        return lhs.grossRevenue < rhs.grossRevenue || (lhs.grossRevenue == rhs.grossRevenue && lhs.totalOrders < rhs.totalOrders)
     }
 }
 
 
 // MARK: - Constants!
 //
-private extension OrderStatsV4Totals {
-    enum CodingKeys: String, CodingKey {
+extension OrderStatsV4Totals {
+    fileprivate enum CodingKeys: String, CodingKey {
         case ordersCount = "orders_count"
         case itemsSold = "num_items_sold"
         case grossRevenue = "gross_revenue"

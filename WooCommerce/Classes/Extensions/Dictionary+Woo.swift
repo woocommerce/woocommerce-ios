@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - Dictionary Helper Methods
 //
 extension Dictionary {

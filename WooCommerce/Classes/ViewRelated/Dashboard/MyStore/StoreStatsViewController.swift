@@ -1,13 +1,13 @@
 import UIKit
-import Yosemite
 import XLPagerTabStrip
-
+import Yosemite
 
 class StoreStatsViewController: ButtonBarPagerTabStripViewController {
 
     // MARK: - Properties
 
     @IBOutlet private weak var topBorder: UIView!
+
     @IBOutlet private weak var middleBorder: UIView!
     @IBOutlet private weak var bottomBorder: UIView!
 
@@ -133,11 +133,11 @@ extension StoreStatsViewController {
 
 // MARK: - Placeholders
 //
-private extension StoreStatsViewController {
+extension StoreStatsViewController {
 
     /// Displays the Ghost Placeholder whenever there is no visible data.
     ///
-    func ensureGhostContentIsDisplayed() {
+    fileprivate func ensureGhostContentIsDisplayed() {
         guard visibleChildViewController.shouldDisplayGhostContent else {
             return
         }
@@ -147,7 +147,7 @@ private extension StoreStatsViewController {
 
     /// Locks UI Interaction and displays Ghost Placeholder animations.
     ///
-    func displayGhostContent() {
+    fileprivate func displayGhostContent() {
         view.isUserInteractionEnabled = false
         buttonBarView.startGhostAnimation()
         visibleChildViewController.displayGhostContent()
@@ -155,7 +155,7 @@ private extension StoreStatsViewController {
 
     /// Unlocks the and removes the Placeholder Content
     ///
-    func removeGhostContent() {
+    fileprivate func removeGhostContent() {
         view.isUserInteractionEnabled = true
         buttonBarView.stopGhostAnimation()
         visibleChildViewController.removeGhostContent()
@@ -163,7 +163,7 @@ private extension StoreStatsViewController {
 
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
     ///
-    func ensureGhostContentIsAnimated() {
+    fileprivate func ensureGhostContentIsAnimated() {
         view.restartGhostAnimation()
     }
 }
@@ -171,16 +171,16 @@ private extension StoreStatsViewController {
 
 // MARK: - User Interface Configuration
 //
-private extension StoreStatsViewController {
+extension StoreStatsViewController {
 
-    func configureView() {
+    fileprivate func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         middleBorder.backgroundColor = StyleManager.wooGreyBorder
         bottomBorder.backgroundColor = StyleManager.wooGreyBorder
     }
 
-    func configurePeriodViewControllers() {
+    fileprivate func configurePeriodViewControllers() {
         let dayVC = PeriodDataViewController(granularity: .day)
         let weekVC = PeriodDataViewController(granularity: .week)
         let monthVC = PeriodDataViewController(granularity: .month)
@@ -192,7 +192,7 @@ private extension StoreStatsViewController {
         periodVCs.append(yearVC)
     }
 
-    func configureTabStrip() {
+    fileprivate func configureTabStrip() {
         settings.style.buttonBarBackgroundColor = StyleManager.wooWhite
         settings.style.buttonBarItemBackgroundColor = StyleManager.wooWhite
         settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
@@ -203,34 +203,38 @@ private extension StoreStatsViewController {
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
 
         changeCurrentIndexProgressive = {
-            (oldCell: ButtonBarViewCell?,
-            newCell: ButtonBarViewCell?,
-            progressPercentage: CGFloat,
-            changeCurrentIndex: Bool,
-            animated: Bool) -> Void in
+                (
+                    oldCell: ButtonBarViewCell?,
+                    newCell: ButtonBarViewCell?,
+                    progressPercentage: CGFloat,
+                    changeCurrentIndex: Bool,
+                    animated: Bool
+                ) -> Void in
 
-            guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = StyleManager.defaultTextColor
-            newCell?.label.textColor = StyleManager.wooCommerceBrandColor
-        }
+                guard changeCurrentIndex == true else { return }
+                oldCell?.label.textColor = StyleManager.defaultTextColor
+                newCell?.label.textColor = StyleManager.wooCommerceBrandColor
+            }
     }
 }
 
 
 // MARK: - Sync'ing Helpers
 //
-private extension StoreStatsViewController {
+extension StoreStatsViewController {
 
-    func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
+    fileprivate func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
 
-        let action = StatsAction.retrieveSiteVisitStats(siteID: siteID,
-                                                        granularity: granularity,
-                                                        latestDateToInclude: Date(),
-                                                        quantity: quantity(for: granularity)) { (error) in
+        let action = StatsAction.retrieveSiteVisitStats(
+            siteID: siteID,
+            granularity: granularity,
+            latestDateToInclude: Date(),
+            quantity: quantity(for: granularity)
+        ) { (error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (Site Stats) — Error synchronizing site visit stats: \(error)")
             }
@@ -239,16 +243,18 @@ private extension StoreStatsViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
+    fileprivate func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
 
-        let action = StatsAction.retrieveOrderStats(siteID: siteID,
-                                                    granularity: granularity,
-                                                    latestDateToInclude: Date(),
-                                                    quantity: quantity(for: granularity)) { (error) in
+        let action = StatsAction.retrieveOrderStats(
+            siteID: siteID,
+            granularity: granularity,
+            latestDateToInclude: Date(),
+            quantity: quantity(for: granularity)
+        ) { (error) in
             if let error = error {
                 DDLogError("⛔️ Dashboard (Order Stats) — Error synchronizing order stats: \(error)")
             }
@@ -261,8 +267,8 @@ private extension StoreStatsViewController {
 
 // MARK: - Private Helpers
 //
-private extension StoreStatsViewController {
-    func quantity(for granularity: StatGranularity) -> Int {
+extension StoreStatsViewController {
+    fileprivate func quantity(for granularity: StatGranularity) -> Int {
         switch granularity {
         case .day:
             return Constants.quantityDefaultForDay
@@ -275,7 +281,7 @@ private extension StoreStatsViewController {
         }
     }
 
-    func trackStatsLoaded(for granularity: StatGranularity) {
+    fileprivate func trackStatsLoaded(for granularity: StatGranularity) {
         guard ServiceLocator.stores.isAuthenticated else {
             return
         }
@@ -287,16 +293,16 @@ private extension StoreStatsViewController {
 
 // MARK: - Constants!
 //
-private extension StoreStatsViewController {
-    enum Constants {
+extension StoreStatsViewController {
+    fileprivate enum Constants {
         static let quantityDefaultForDay = 30
         static let quantityDefaultForWeek = 13
         static let quantityDefaultForMonth = 12
         static let quantityDefaultForYear = 5
     }
 
-    enum TabStrip {
-        static let buttonLeftRightMargin: CGFloat   = 14.0
-        static let selectedBarHeight: CGFloat       = 3.0
+    fileprivate enum TabStrip {
+        static let buttonLeftRightMargin: CGFloat = 14.0
+        static let selectedBarHeight: CGFloat = 3.0
     }
 }

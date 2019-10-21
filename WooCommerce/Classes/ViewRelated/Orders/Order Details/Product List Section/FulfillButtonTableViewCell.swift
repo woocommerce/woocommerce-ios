@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// Displays the list of Products associated to an Order.
 ///
 final class FulfillButtonTableViewCell: UITableViewCell {
@@ -23,12 +22,12 @@ extension FulfillButtonTableViewCell {
 }
 
 
-private extension FulfillButtonTableViewCell {
-    func configureBackground() {
+extension FulfillButtonTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureFulfillButton() {
+    fileprivate func configureFulfillButton() {
         fulfillButton.applyPrimaryButtonStyle()
     }
 }

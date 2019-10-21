@@ -1,7 +1,5 @@
 import Foundation
 
-
-
 // MARK: - WooCommerce UserDefaults Keys
 //
 extension UserDefaults {

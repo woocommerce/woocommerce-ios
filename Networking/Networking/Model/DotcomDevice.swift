@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// WordPress.com Device
 ///
 public struct DotcomDevice: Decodable {

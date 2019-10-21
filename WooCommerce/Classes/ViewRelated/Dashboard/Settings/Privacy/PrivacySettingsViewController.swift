@@ -1,9 +1,8 @@
-import UIKit
+import AutomatticTracks
 import Gridicons
 import SafariServices
+import UIKit
 import Yosemite
-import AutomatticTracks
-
 
 class PrivacySettingsViewController: UIViewController {
 
@@ -66,9 +65,9 @@ class PrivacySettingsViewController: UIViewController {
 
 
 // MARK: - Fetching Account & AccountSettings
-private extension PrivacySettingsViewController {
+extension PrivacySettingsViewController {
 
-    func loadAccountSettings(completion: (()-> Void)? = nil) {
+    fileprivate func loadAccountSettings(completion: (() -> Void)? = nil) {
         guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
             return
         }
@@ -77,8 +76,9 @@ private extension PrivacySettingsViewController {
 
         let action = AccountAction.synchronizeAccountSettings(userID: userID) { [weak self] (accountSettings, error) in
             guard let self = self,
-                let accountSettings = accountSettings else {
-                    return
+                let accountSettings = accountSettings
+            else {
+                return
             }
 
             // Switch is off when opting out of Tracks
@@ -93,25 +93,26 @@ private extension PrivacySettingsViewController {
 
 // MARK: - View Configuration
 //
-private extension PrivacySettingsViewController {
+extension PrivacySettingsViewController {
 
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         title = NSLocalizedString("Privacy Settings", comment: "Privacy settings screen title")
 
         // Don't show the Settings title in the next-view's back button
-        let backButton = UIBarButtonItem(title: String(),
-                                         style: .plain,
-                                         target: nil,
-                                         action: nil)
+        let backButton = UIBarButtonItem(
+            title: String(),
+            style: .plain,
+            target: nil,
+            action: nil)
 
         navigationItem.backBarButtonItem = backButton
     }
 
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func configureTableView() {
+    fileprivate func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
@@ -119,14 +120,14 @@ private extension PrivacySettingsViewController {
         tableView.refreshControl = refreshControl
     }
 
-    func configureSections() {
+    fileprivate func configureSections() {
         sections = [
             Section(title: nil, rows: [.collectInfo, .shareInfo, .shareInfoPolicy, .privacyInfo, .privacyPolicy, .thirdPartyInfo, .thirdPartyPolicy]),
-            Section(title: nil, rows: [.reportCrashes, .crashInfo])
+            Section(title: nil, rows: [.reportCrashes, .crashInfo]),
         ]
     }
 
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
@@ -134,7 +135,7 @@ private extension PrivacySettingsViewController {
 
     /// Cells currently configured in the order they appear on screen.
     ///
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+    fileprivate func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as SwitchTableViewCell where row == .collectInfo:
             configureCollectInfo(cell: cell)
@@ -159,7 +160,7 @@ private extension PrivacySettingsViewController {
         }
     }
 
-    func configureCollectInfo(cell: SwitchTableViewCell) {
+    fileprivate func configureCollectInfo(cell: SwitchTableViewCell) {
         // image
         cell.imageView?.image = .statsImage
         cell.imageView?.tintColor = StyleManager.defaultTextColor
@@ -177,7 +178,7 @@ private extension PrivacySettingsViewController {
         }
     }
 
-    func configureShareInfo(cell: TopLeftImageTableViewCell) {
+    fileprivate func configureShareInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
@@ -187,7 +188,7 @@ private extension PrivacySettingsViewController {
         )
     }
 
-    func configureCookiePolicy(cell: BasicTableViewCell) {
+    fileprivate func configureCookiePolicy(cell: BasicTableViewCell) {
         // To align the 'Learn more' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
@@ -195,18 +196,18 @@ private extension PrivacySettingsViewController {
         cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
     }
 
-    func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
+    fileprivate func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString(
-            "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, " +
-            "and more as detailed in our privacy policy.",
+            "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, "
+                + "and more as detailed in our privacy policy.",
             comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect."
         )
     }
 
-    func configurePrivacyPolicy(cell: BasicTableViewCell) {
+    fileprivate func configurePrivacyPolicy(cell: BasicTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
@@ -217,7 +218,7 @@ private extension PrivacySettingsViewController {
         cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
     }
 
-    func configureCookieInfo(cell: TopLeftImageTableViewCell) {
+    fileprivate func configureCookieInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
@@ -227,7 +228,7 @@ private extension PrivacySettingsViewController {
         )
     }
 
-    func configureReportCrashes(cell: SwitchTableViewCell) {
+    fileprivate func configureReportCrashes(cell: SwitchTableViewCell) {
         // image
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = StyleManager.defaultTextColor
@@ -245,7 +246,7 @@ private extension PrivacySettingsViewController {
         }
     }
 
-    func configureCrashInfo(cell: TopLeftImageTableViewCell) {
+    fileprivate func configureCrashInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
@@ -258,7 +259,7 @@ private extension PrivacySettingsViewController {
 
     // MARK: Actions
     //
-    func collectInfoWasUpdated(newValue: Bool) {
+    fileprivate func collectInfoWasUpdated(newValue: Bool) {
         let userOptedOut = !newValue
 
         guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
@@ -281,14 +282,14 @@ private extension PrivacySettingsViewController {
         ServiceLocator.analytics.track(.settingsCollectInfoToggled)
     }
 
-    func reportCrashesWasUpdated(newValue: Bool) {
+    fileprivate func reportCrashesWasUpdated(newValue: Bool) {
         // This event will only report if the user has Analytics currently on
         ServiceLocator.analytics.track(.settingsReportCrashesToggled)
     }
 
     /// Display Automattic's Cookie Policy web page
     ///
-    func presentCookiePolicyWebView() {
+    fileprivate func presentCookiePolicyWebView() {
         let safariViewController = SFSafariViewController(url: WooConstants.cookieURL)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
@@ -296,7 +297,7 @@ private extension PrivacySettingsViewController {
 
     /// Display Automattic's Privacy Policy web page
     ///
-    func presentPrivacyPolicyWebView() {
+    fileprivate func presentPrivacyPolicyWebView() {
         let safariViewController = SFSafariViewController(url: WooConstants.privacyURL)
         safariViewController.modalPresentationStyle = .pageSheet
         present(safariViewController, animated: true, completion: nil)
@@ -305,8 +306,8 @@ private extension PrivacySettingsViewController {
 
 // MARK: - Convenience Methods
 //
-private extension PrivacySettingsViewController {
-    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+extension PrivacySettingsViewController {
+    fileprivate func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
 }
@@ -378,7 +379,7 @@ extension PrivacySettingsViewController: UITableViewDelegate {
 
 // MARK: - Private Types
 //
-private struct Constants {
+private enum Constants {
     static let rowHeight = CGFloat(44)
     static let separatorInset = CGFloat(16)
     static let sectionHeight = CGFloat(18)

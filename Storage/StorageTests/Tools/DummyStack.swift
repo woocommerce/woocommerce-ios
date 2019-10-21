@@ -1,8 +1,7 @@
-import Foundation
 import CoreData
+import Foundation
+
 @testable import Storage
-
-
 
 /// Dummy Sample Entity
 ///

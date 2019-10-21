@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import WooCommerce
 
 class AsyncDictionaryTests: XCTestCase {

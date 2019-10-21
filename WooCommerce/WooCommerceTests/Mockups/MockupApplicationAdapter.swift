@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// MockupApplicationAdapter: UIApplication Mockup!
 ///
@@ -26,7 +26,6 @@ class MockupApplicationAdapter: ApplicationAdapter {
     /// Notification Identifiers received via the `presentNotificationDetails` method.
     ///
     var presentDetailsNoteIDs = [Int]()
-
 
 
     /// Innocuous `registerForRemoteNotifications`

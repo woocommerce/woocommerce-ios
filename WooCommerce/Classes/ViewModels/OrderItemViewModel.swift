@@ -1,7 +1,6 @@
 import Foundation
 import Yosemite
 
-
 // MARK: - OrderItem ViewModel
 //
 struct OrderItemViewModel {
@@ -84,9 +83,11 @@ struct OrderItemViewModel {
         return imageURL != nil
     }
 
-    init(item: OrderItem, currency: String,
-         formatter: CurrencyFormatter = CurrencyFormatter(),
-         product: Product? = nil) {
+    init(
+        item: OrderItem, currency: String,
+        formatter: CurrencyFormatter = CurrencyFormatter(),
+        product: Product? = nil
+    ) {
         self.item = item
         self.currency = currency
         self.currencyFormatter = formatter

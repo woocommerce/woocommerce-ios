@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Enum containing the available moderation statuses
 ///
@@ -37,13 +36,13 @@ public enum CommentStatus: String {
 
     public var description: String {
         switch self {
-        case .approved:     return NSLocalizedString("approved", comment: "Notification status description for 'approved'")
-        case .unapproved:   return NSLocalizedString("unapproved", comment: "Notification status description for 'unapproved'")
-        case .spam:         return NSLocalizedString("spam", comment: "Notification status description for 'spam'")
-        case .unspam:       return NSLocalizedString("not spam", comment: "Notification status description for 'unspam' (opposite of spam)")
-        case .trash:        return NSLocalizedString("trash", comment: "Notification status description for 'trash'")
-        case .untrash:      return NSLocalizedString("not trash", comment: "Notification status description for 'untrash' (opposite of trash)")
-        default:            return self.rawValue
+        case .approved: return NSLocalizedString("approved", comment: "Notification status description for 'approved'")
+        case .unapproved: return NSLocalizedString("unapproved", comment: "Notification status description for 'unapproved'")
+        case .spam: return NSLocalizedString("spam", comment: "Notification status description for 'spam'")
+        case .unspam: return NSLocalizedString("not spam", comment: "Notification status description for 'unspam' (opposite of spam)")
+        case .trash: return NSLocalizedString("trash", comment: "Notification status description for 'trash'")
+        case .untrash: return NSLocalizedString("not trash", comment: "Notification status description for 'untrash' (opposite of trash)")
+        default: return self.rawValue
         }
     }
 }
@@ -64,7 +63,7 @@ public class CommentRemote: Remote {
         let path = "\(Paths.sites)/" + String(siteID) + "/" + "\(Paths.comments)/" + String(commentID)
         let parameters = [
             ParameterKeys.status: status.rawValue,
-            ParameterKeys.context: ParameterValues.edit
+            ParameterKeys.context: ParameterValues.edit,
         ]
         let mapper = CommentResultMapper()
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: path, parameters: parameters)
@@ -75,18 +74,18 @@ public class CommentRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension CommentRemote {
-    enum Paths {
-        static let sites: String        = "sites"
-        static let comments: String     = "comments"
+extension CommentRemote {
+    fileprivate enum Paths {
+        static let sites: String = "sites"
+        static let comments: String = "comments"
     }
 
-    enum ParameterKeys {
-        static let status: String       = "status"
-        static let context: String      = "context"
+    fileprivate enum ParameterKeys {
+        static let status: String = "status"
+        static let context: String = "context"
     }
 
-    enum ParameterValues {
-        static let edit: String       = "edit"
+    fileprivate enum ParameterValues {
+        static let edit: String = "edit"
     }
 }

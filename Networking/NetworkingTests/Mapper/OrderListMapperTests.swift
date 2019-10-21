@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// OrderListMapper Unit Tests
 ///
@@ -138,11 +138,11 @@ class OrderListMapperTests: XCTestCase {
 
 /// Private Methods.
 ///
-private extension OrderListMapperTests {
+extension OrderListMapperTests {
 
     /// Returns the OrderListMapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapOrders(from filename: String) -> [Order] {
+    fileprivate func mapOrders(from filename: String) -> [Order] {
         guard let response = Loader.contentsOf(filename) else {
             return []
         }
@@ -152,19 +152,19 @@ private extension OrderListMapperTests {
 
     /// Returns the OrderListMapper output upon receiving `orders-load-all`
     ///
-    func mapLoadAllOrdersResponse() -> [Order] {
+    fileprivate func mapLoadAllOrdersResponse() -> [Order] {
         return mapOrders(from: "orders-load-all")
     }
 
     /// Returns the OrderListMapper output upon receiving `broken-order`
     ///
-    func mapLoadBrokenOrderResponse() -> [Order] {
+    fileprivate func mapLoadBrokenOrderResponse() -> [Order] {
         return mapOrders(from: "broken-orders")
     }
 
     /// Returns the OrderListMapper output upon receiving `broken-orders-mark-2`
     ///
-    func mapLoadBrokenOrdersResponseMarkII() -> [Order] {
+    fileprivate func mapLoadBrokenOrdersResponseMarkII() -> [Order] {
         return mapOrders(from: "broken-orders-mark-2")
     }
 }

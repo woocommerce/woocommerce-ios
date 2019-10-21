@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents an single site visit stat for a specific period.
 ///
 public struct SiteVisitStatsItem {
@@ -20,17 +19,14 @@ public struct SiteVisitStatsItem {
 //
 extension SiteVisitStatsItem: Comparable {
     public static func == (lhs: SiteVisitStatsItem, rhs: SiteVisitStatsItem) -> Bool {
-        return lhs.period == rhs.period &&
-            lhs.visitors == rhs.visitors
+        return lhs.period == rhs.period && lhs.visitors == rhs.visitors
     }
 
     public static func < (lhs: SiteVisitStatsItem, rhs: SiteVisitStatsItem) -> Bool {
-        return lhs.period < rhs.period ||
-            (lhs.period == rhs.period && lhs.visitors < rhs.visitors)
+        return lhs.period < rhs.period || (lhs.period == rhs.period && lhs.visitors < rhs.visitors)
     }
 
     public static func > (lhs: SiteVisitStatsItem, rhs: SiteVisitStatsItem) -> Bool {
-        return lhs.period > rhs.period ||
-            (lhs.period == rhs.period && lhs.visitors > rhs.visitors)
+        return lhs.period > rhs.period || (lhs.period == rhs.period && lhs.visitors > rhs.visitors)
     }
 }

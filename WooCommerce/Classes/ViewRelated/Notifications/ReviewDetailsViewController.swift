@@ -1,9 +1,8 @@
 import Foundation
-import UIKit
-import Yosemite
 import Gridicons
 import SafariServices
-
+import UIKit
+import Yosemite
 
 // MARK: - ReviewDetailsViewController
 //
@@ -86,24 +85,24 @@ final class ReviewDetailsViewController: UIViewController {
 
 // MARK: - User Interface Initialization
 //
-private extension ReviewDetailsViewController {
+extension ReviewDetailsViewController {
 
     /// Setup: Navigation
     ///
-    func configureNavigationItem() {
+    fileprivate func configureNavigationItem() {
         // Don't show the Notifications title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: Main View
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup: TableView
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         // Hide "Empty Rows"
         tableView.tableFooterView = UIView()
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
@@ -113,7 +112,7 @@ private extension ReviewDetailsViewController {
 
     /// Setup: EntityListener
     ///
-    func configureEntityListener() {
+    fileprivate func configureEntityListener() {
         entityListener.onUpsert = { [weak self] productReview in
             self?.productReview = productReview
         }
@@ -126,16 +125,16 @@ private extension ReviewDetailsViewController {
 
     /// Reports a significant event to the App Rating Manager
     ///
-    func configureAppRatingEvent() {
+    fileprivate func configureAppRatingEvent() {
         AppRatingManager.shared.incrementSignificantEvent(section: Constants.section)
     }
 
     /// Registers all of the available TableViewCells.
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         let cells = [
             NoteDetailsHeaderPlainTableViewCell.self,
-            NoteDetailsCommentTableViewCell.self
+            NoteDetailsCommentTableViewCell.self,
         ]
 
         for cell in cells {
@@ -143,7 +142,7 @@ private extension ReviewDetailsViewController {
         }
     }
 
-    func reloadRows() {
+    fileprivate func reloadRows() {
         rows = [.header, .content]
     }
 }
@@ -151,11 +150,12 @@ private extension ReviewDetailsViewController {
 
 // MARK: - Sync
 //
-private extension ReviewDetailsViewController {
+extension ReviewDetailsViewController {
+    @IBAction
 
     /// Refresh Control's Callback.
     ///
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+    fileprivate func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
 
         synchronizeReview(reviewID: productReview.reviewID) {
@@ -165,7 +165,7 @@ private extension ReviewDetailsViewController {
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    func synchronizeReview(reviewID: Int, onCompletion: @escaping () -> Void) {
+    fileprivate func synchronizeReview(reviewID: Int, onCompletion: @escaping () -> Void) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
@@ -185,11 +185,11 @@ private extension ReviewDetailsViewController {
 
 // MARK: - Display Notices
 //
-private extension ReviewDetailsViewController {
+extension ReviewDetailsViewController {
 
     /// Displays a Notice onScreen, indicating that the current Review has been deleted from the Store.
     ///
-    func displayNoteDeletedNotice() {
+    fileprivate func displayNoteDeletedNotice() {
         let title = NSLocalizedString("The review has been removed", comment: "Displayed whenever a review that was onscreen got deleted.")
         let notice = Notice(title: title, feedbackType: .error)
 
@@ -198,7 +198,7 @@ private extension ReviewDetailsViewController {
 
     /// Displays the Error Notice.
     ///
-    static func displayModerationErrorNotice(failedStatus: ProductReviewStatus) {
+    fileprivate static func displayModerationErrorNotice(failedStatus: ProductReviewStatus) {
         let message = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Unable to mark review as %@",
@@ -213,7 +213,7 @@ private extension ReviewDetailsViewController {
 
     /// Displays the `Comment moderated` Notice. Whenever the `Undo` button gets pressed, we'll execute the `onUndoAction` closure.
     ///
-    static func displayModerationCompleteNotice(newStatus: ProductReviewStatus, onUndoAction: @escaping () -> Void) {
+    fileprivate static func displayModerationCompleteNotice(newStatus: ProductReviewStatus, onUndoAction: @escaping () -> Void) {
 
         let message = String.localizedStringWithFormat(
             NSLocalizedString(
@@ -232,11 +232,11 @@ private extension ReviewDetailsViewController {
 
 // MARK: - Private Methods
 //
-private extension ReviewDetailsViewController {
+extension ReviewDetailsViewController {
 
     /// Reloads all of the Details Interface
     ///
-    func reloadInterface() {
+    fileprivate func reloadInterface() {
         title = Constants.title
         reloadRows()
         tableView.reloadData()
@@ -244,7 +244,7 @@ private extension ReviewDetailsViewController {
 
     /// Returns the Row at a given IndexPath.
     ///
-    func detailsForRow(at indexPath: IndexPath) -> Row {
+    fileprivate func detailsForRow(at indexPath: IndexPath) -> Row {
         return rows[indexPath.row]
     }
 }
@@ -287,11 +287,11 @@ extension ReviewDetailsViewController: UITableViewDelegate {
 
 // MARK: - Cell Setup
 //
-private extension ReviewDetailsViewController {
+extension ReviewDetailsViewController {
 
     /// Main Cell Setup Method
     ///
-    func setup(cell: UITableViewCell, at row: Row) {
+    fileprivate func setup(cell: UITableViewCell, at row: Row) {
         switch row {
         case .header:
             setupHeaderPlainCell(cell)
@@ -303,32 +303,35 @@ private extension ReviewDetailsViewController {
 
     /// Setup: Header Cell (Plain)
     ///
-    func setupHeaderPlainCell(_ cell: UITableViewCell) {
+    fileprivate func setupHeaderPlainCell(_ cell: UITableViewCell) {
         guard let headerCell = cell as? NoteDetailsHeaderPlainTableViewCell else {
             return
         }
 
         headerCell.leftImage = .productImage
         headerCell.rightImage = .externalImage
-        headerCell.plainText = product?.name ?? NSLocalizedString("Unknown",
-                                                                  comment: "Unknown product name, displayed in a review")
+        headerCell.plainText = product?.name ?? NSLocalizedString(
+            "Unknown",
+            comment: "Unknown product name, displayed in a review")
     }
 
 
     /// Setup: Comment Cell
     ///
-    func setupCommentCell(_ cell: UITableViewCell) {
+    fileprivate func setupCommentCell(_ cell: UITableViewCell) {
         guard let commentCell = cell as? NoteDetailsCommentTableViewCell else {
-                return
+            return
         }
 
         // Setup: Properties
         commentCell.titleText = productReview.reviewer
         commentCell.detailsText = ReviewAge.from(startDate: productReview.dateCreated, toDate: Date()).description
 
-        let attributes: [NSAttributedString.Key: Any] = [.paragraphStyle: NSParagraphStyle.body,
-                                                         .font: UIFont.body,
-                                                         .foregroundColor: StyleManager.defaultTextColor]
+        let attributes: [NSAttributedString.Key: Any] = [
+            .paragraphStyle: NSParagraphStyle.body,
+            .font: UIFont.body,
+            .foregroundColor: StyleManager.defaultTextColor,
+        ]
         commentCell.commentAttributedText = NSAttributedString(string: productReview.review.strippedHTML, attributes: attributes).trimNewlines()
 
         commentCell.starRating = productReview.rating
@@ -337,9 +340,9 @@ private extension ReviewDetailsViewController {
         let gravatarURL = URL(string: gravatar)
         commentCell.downloadGravatar(with: gravatarURL)
 
-        commentCell.isApproveEnabled  = true
-        commentCell.isTrashEnabled    = true
-        commentCell.isSpamEnabled     = true
+        commentCell.isApproveEnabled = true
+        commentCell.isTrashEnabled = true
+        commentCell.isSpamEnabled = true
         commentCell.isApproveSelected = productReview.status == .approved
 
         let reviewID = productReview.reviewID
@@ -393,11 +396,11 @@ private extension ReviewDetailsViewController {
 
 // MARK: - Private Methods
 //
-private extension ReviewDetailsViewController {
+extension ReviewDetailsViewController {
 
     /// Presents a WebView at the product URL
     ///
-    func openProductURL() {
+    fileprivate func openProductURL() {
         let productURL = product?.permalink
         WebviewHelper.launch(productURL, with: self)
     }
@@ -406,35 +409,45 @@ private extension ReviewDetailsViewController {
 
 // MARK: - Moderation actions
 //
-private extension ReviewDetailsViewController {
-    func moderateReview(siteID: Int, reviewID: Int, doneStatus: ProductReviewStatus, undoStatus: ProductReviewStatus) {
-        guard let undo = moderateReviewAction(siteID: siteID, reviewID: reviewID, status: undoStatus, onCompletion: { error in
-            guard let error = error else {
-                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
-                return
-            }
+extension ReviewDetailsViewController {
+    fileprivate func moderateReview(siteID: Int, reviewID: Int, doneStatus: ProductReviewStatus, undoStatus: ProductReviewStatus) {
+        guard
+            let undo = moderateReviewAction(
+                siteID: siteID, reviewID: reviewID, status: undoStatus,
+                onCompletion: { error in
+                    guard let error = error else {
+                        ServiceLocator.analytics.track(.notificationReviewActionSuccess)
+                        return
+                    }
 
-            DDLogError("⛔️ Review (UNDO) moderation failure for ID: \(reviewID) attempting \(doneStatus.description) status. Error: \(error)")
-            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
-            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
-        }) else {
+                    DDLogError("⛔️ Review (UNDO) moderation failure for ID: \(reviewID) attempting \(doneStatus.description) status. Error: \(error)")
+                    ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
+                    ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: undoStatus)
+                })
+        else {
             return
         }
 
-        guard let done = moderateReviewAction(siteID: siteID, reviewID: reviewID, status: doneStatus, onCompletion: { error in
-            guard let error = error else {
-                ServiceLocator.analytics.track(.notificationReviewActionSuccess)
-                ReviewDetailsViewController.displayModerationCompleteNotice(newStatus: doneStatus, onUndoAction: {
-                    ServiceLocator.analytics.track(.notificationReviewActionUndo)
-                    ServiceLocator.stores.dispatch(undo)
-                })
-                return
-            }
+        guard
+            let done = moderateReviewAction(
+                siteID: siteID, reviewID: reviewID, status: doneStatus,
+                onCompletion: { error in
+                    guard let error = error else {
+                        ServiceLocator.analytics.track(.notificationReviewActionSuccess)
+                        ReviewDetailsViewController.displayModerationCompleteNotice(
+                            newStatus: doneStatus,
+                            onUndoAction: {
+                                ServiceLocator.analytics.track(.notificationReviewActionUndo)
+                                ServiceLocator.stores.dispatch(undo)
+                            })
+                        return
+                    }
 
-            DDLogError("⛔️ Review moderation failure for ID: \(reviewID) attempting \(doneStatus.description) status. Error: \(error)")
-            ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
-            ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
-        }) else {
+                    DDLogError("⛔️ Review moderation failure for ID: \(reviewID) attempting \(doneStatus.description) status. Error: \(error)")
+                    ServiceLocator.analytics.track(.notificationReviewActionFailed, withError: error)
+                    ReviewDetailsViewController.displayModerationErrorNotice(failedStatus: doneStatus)
+                })
+        else {
             return
         }
 
@@ -444,45 +457,75 @@ private extension ReviewDetailsViewController {
 
     /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
     ///
-    func moderateReviewAction(siteID: Int, reviewID: Int, status: ProductReviewStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
+    fileprivate func moderateReviewAction(siteID: Int, reviewID: Int, status: ProductReviewStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
 
         switch status {
         case .approved:
-            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
-                                                             reviewID: reviewID,
-                                                             isApproved: true,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+            return [
+                ProductReviewAction.updateApprovalStatus(
+                    siteID: siteID,
+                    reviewID: reviewID,
+                    isApproved: true,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .hold:
-            return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
-                                                             reviewID: reviewID,
-                                                             isApproved: false,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+            return [
+                ProductReviewAction.updateApprovalStatus(
+                    siteID: siteID,
+                    reviewID: reviewID,
+                    isApproved: false,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .spam:
-            return [ProductReviewAction.updateSpamStatus(siteID: siteID,
-                                                             reviewID: reviewID,
-                                                             isSpam: true,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+            return [
+                ProductReviewAction.updateSpamStatus(
+                    siteID: siteID,
+                    reviewID: reviewID,
+                    isSpam: true,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .unspam:
-            return [ProductReviewAction.updateSpamStatus(siteID: siteID,
-                                                             reviewID: reviewID,
-                                                             isSpam: false,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+            return [
+                ProductReviewAction.updateSpamStatus(
+                    siteID: siteID,
+                    reviewID: reviewID,
+                    isSpam: false,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .trash:
-            return [ProductReviewAction.updateTrashStatus(siteID: siteID,
-                                                             reviewID: reviewID,
-                                                             isTrashed: true,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+            return [
+                ProductReviewAction.updateTrashStatus(
+                    siteID: siteID,
+                    reviewID: reviewID,
+                    isTrashed: true,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         case .untrash:
-            return [ProductReviewAction.updateTrashStatus(siteID: siteID,
-                                                             reviewID: reviewID,
-                                                             isTrashed: false,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+            return [
+                ProductReviewAction.updateTrashStatus(
+                    siteID: siteID,
+                    reviewID: reviewID,
+                    isTrashed: false,
+                    onCompletion: { (_, error) in
+                        onCompletion(error)
+                    }),
+            ]
         }
     }
 
     /// Marks a specific Notification as read.
     ///
-    func markAsReadIfNeeded(_ note: Note?) {
+    fileprivate func markAsReadIfNeeded(_ note: Note?) {
         guard let note = note, note.read == false else {
             return
         }
@@ -499,17 +542,19 @@ private extension ReviewDetailsViewController {
 
 // MARK: - Nested Types
 //
-private extension ReviewDetailsViewController {
-    struct Constants {
+extension ReviewDetailsViewController {
+    fileprivate enum Constants {
         static let section = "notifications"
-        static let title = NSLocalizedString("Product Review",
-                                             comment: "Title of the view containing a single Product Review")
+
+        static let title = NSLocalizedString(
+            "Product Review",
+            comment: "Title of the view containing a single Product Review")
     }
 }
 
 
-private extension ReviewDetailsViewController {
-    enum Row {
+extension ReviewDetailsViewController {
+    fileprivate enum Row {
         case header
         case content
 

@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// Network Mockup: Allows us to simulate HTTP Responses.
 ///
@@ -29,7 +28,7 @@ class MockupNetwork: Network {
 
     /// Public Initializer
     ///
-    required init(credentials: Credentials) { }
+    required init(credentials: Credentials) {}
 
     /// Dummy convenience initializer. Remember: Real Network wrappers will allways need credentials!
     ///
@@ -101,7 +100,7 @@ extension MockupNetwork {
 
 // MARK: - Private Helpers
 //
-private extension MockupNetwork {
+extension MockupNetwork {
 
     /// Adds the URL suffix and response JSON Filename to the response queue
     ///
@@ -123,7 +122,7 @@ private extension MockupNetwork {
     ///   * the FIFO response queue (where the response is removed from the queue when this func returns)
     ///   * the responseMap (array)
     ///
-    func filename(for request: URLRequestConvertible) -> String? {
+    fileprivate func filename(for request: URLRequestConvertible) -> String? {
         let searchPath = path(for: request)
         if useResponseQueue {
             if var queue = responseQueue.filter({ searchPath.hasSuffix($0.key) }).first?.value {

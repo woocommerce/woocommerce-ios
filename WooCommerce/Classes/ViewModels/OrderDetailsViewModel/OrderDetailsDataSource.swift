@@ -146,8 +146,8 @@ extension OrderDetailsDataSource {
 }
 
 // MARK: - Support for UITableViewDataSource
-private extension OrderDetailsDataSource {
-    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+extension OrderDetailsDataSource {
+    fileprivate func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as WooBasicTableViewCell where row == .details:
             configureDetails(cell: cell)
@@ -182,17 +182,18 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    func configureCustomerNote(cell: CustomerNoteTableViewCell) {
+    fileprivate func configureCustomerNote(cell: CustomerNoteTableViewCell) {
         cell.headline = Title.customerNote
         let localizedBody = String.localizedStringWithFormat(
-            NSLocalizedString("“%@”",
-                              comment: "Customer note, wrapped in quotes"),
+            NSLocalizedString(
+                "“%@”",
+                comment: "Customer note, wrapped in quotes"),
             customerNote)
         cell.body = localizedBody
         cell.selectionStyle = .none
     }
 
-    func configureBillingDetail(cell: WooBasicTableViewCell) {
+    fileprivate func configureBillingDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showBilling
         cell.bodyLabel?.applyBodyStyle()
         cell.accessoryType = .disclosureIndicator
@@ -210,7 +211,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    func configureNewNote(cell: LeftImageTableViewCell) {
+    fileprivate func configureNewNote(cell: LeftImageTableViewCell) {
         cell.leftImage = Icons.addNoteIcon
         cell.labelText = Titles.addNoteText
 
@@ -226,7 +227,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
+    fileprivate func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
         guard let noteHeader = noteHeader(at: indexPath) else {
             return
         }
@@ -234,7 +235,7 @@ private extension OrderDetailsDataSource {
         cell.dateCreated = noteHeader.toString(dateStyle: .medium, timeStyle: .none)
     }
 
-    func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
+    fileprivate func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
         guard let note = note(at: indexPath) else {
             return
         }
@@ -246,19 +247,19 @@ private extension OrderDetailsDataSource {
         cell.contents = orderNoteAsyncDictionary.value(forKey: note.noteID)
     }
 
-    func configurePayment(cell: PaymentTableViewCell) {
+    fileprivate func configurePayment(cell: PaymentTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.configure(with: paymentViewModel)
     }
 
-    func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+    fileprivate func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
         cell.rightText = paymentViewModel.paymentTotal
         cell.footnoteText = paymentViewModel.paymentSummary
     }
 
-    func configureDetails(cell: WooBasicTableViewCell) {
+    fileprivate func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Titles.productDetails
         cell.bodyLabel?.applyBodyStyle()
         cell.accessoryImage = nil
@@ -266,7 +267,7 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .default
     }
 
-    func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+    fileprivate func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let item = items[indexPath.row]
         let product = lookUpProduct(by: item.productID)
         let itemViewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
@@ -274,14 +275,14 @@ private extension OrderDetailsDataSource {
         cell.configure(item: itemViewModel)
     }
 
-    func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
+    fileprivate func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
         cell.fulfillButton.setTitle(Titles.fulfillTitle, for: .normal)
         cell.onFullfillTouchUp = { [weak self] in
             self?.onCellAction?(.fulfill, nil)
         }
     }
 
-    func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
+    fileprivate func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
         guard let tracking = orderTracking(at: indexPath) else {
             return
         }
@@ -295,17 +296,18 @@ private extension OrderDetailsDataSource {
 
         if let dateShipped = tracking.dateShipped?.toString(dateStyle: .long, timeStyle: .none) {
             cell.bottomText = String.localizedStringWithFormat(
-                NSLocalizedString("Shipped %@",
-                                  comment: "Date an item was shipped"),
+                NSLocalizedString(
+                    "Shipped %@",
+                    comment: "Date an item was shipped"),
                 dateShipped)
         } else {
-            cell.bottomText = NSLocalizedString("Not shipped yet",
-                                                comment: "Order details > tracking. " +
-                " This is where the shipping date would normally display.")
+            cell.bottomText = NSLocalizedString(
+                "Not shipped yet",
+                comment: "Order details > tracking. " + " This is where the shipping date would normally display.")
         }
     }
 
-    func configureNewTracking(cell: LeftImageTableViewCell) {
+    fileprivate func configureNewTracking(cell: LeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
         cell.leftImage = .addOutlineImage
         cell.labelText = cellTextContent
@@ -322,19 +324,18 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    func configureShippingAddress(cell: CustomerInfoTableViewCell) {
+    fileprivate func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
         cell.name = shippingAddress?.fullNameWithCompany
-        cell.address = shippingAddress?.formattedPostalAddress ??
-            NSLocalizedString(
-                "No address specified.",
-                comment: "Order details > customer info > shipping details. This is where the address would normally display."
+        cell.address = shippingAddress?.formattedPostalAddress ?? NSLocalizedString(
+            "No address specified.",
+            comment: "Order details > customer info > shipping details. This is where the address would normally display."
         )
     }
 
-    func configureSummary(cell: SummaryTableViewCell) {
+    fileprivate func configureSummary(cell: SummaryTableViewCell) {
         cell.title = summaryTitle
         cell.dateCreated = summaryDateCreated
         cell.onEditTouchUp = { [weak self] in
@@ -354,7 +355,7 @@ private extension OrderDetailsDataSource {
 // MARK: - Lookup orders and statuses
 extension OrderDetailsDataSource {
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
-        return currentSiteStatuses.filter({$0.slug == order.statusKey}).first
+        return currentSiteStatuses.filter({ $0.slug == order.statusKey }).first
     }
 
     func lookUpProduct(by productID: Int) -> Product? {
@@ -429,7 +430,7 @@ extension OrderDetailsDataSource {
         }()
 
         let notes: Section = {
-            let rows = [.addOrderNote] + orderNotesSections.map {$0.row}
+            let rows = [.addOrderNote] + orderNotesSections.map { $0.row }
             return Section(title: Title.notes, rows: rows)
         }()
 
@@ -449,9 +450,10 @@ extension OrderDetailsDataSource {
                 }
                 self?.onUIReloadRequired?()
             }
-            orderNoteAsyncDictionary.calculate(forKey: orderNote.noteID,
-                                               operation: calculation,
-                                               onCompletion: onSet)
+            orderNoteAsyncDictionary.calculate(
+                forKey: orderNote.noteID,
+                operation: calculation,
+                onCompletion: onSet)
         }
     }
 
@@ -466,8 +468,9 @@ extension OrderDetailsDataSource {
     }
 
     private enum Footer {
-        static let showBilling = NSLocalizedString("View Billing Information",
-                                                   comment: "Button on bottom of Customer's information to show the billing details")
+        static let showBilling = NSLocalizedString(
+            "View Billing Information",
+            comment: "Button on bottom of Customer's information to show the billing details")
     }
 
     struct Section {
@@ -604,7 +607,7 @@ extension OrderDetailsDataSource {
         case .tracking:
             sendToPasteboard(orderTracking(at: indexPath)?.trackingNumber, includeTrailingNewline: false)
         default:
-            break // We only send text to the pasteboard from the address rows right meow
+            break  // We only send text to the pasteboard from the address rows right meow
         }
     }
 
@@ -655,13 +658,14 @@ extension OrderDetailsDataSource {
         var sections: [NoteSection] = []
 
         for order in orderNotes {
-            if sections.contains(where: { (section) -> Bool in
-                return Calendar.current.isDate(section.date, inSameDayAs: order.dateCreated) && section.row == .orderNoteHeader
-            }) {
+            if sections.contains(
+                where: { (section) -> Bool in
+                    return Calendar.current.isDate(section.date, inSameDayAs: order.dateCreated) && section.row == .orderNoteHeader
+                })
+            {
                 let orderToAppend = NoteSection(row: .orderNote, date: order.dateCreated, orderNote: order)
                 sections.append(orderToAppend)
-            }
-            else {
+            } else {
                 let sectionToAppend = NoteSection(row: .orderNoteHeader, date: order.dateCreated, orderNote: order)
                 let orderToAppend = NoteSection(row: .orderNote, date: order.dateCreated, orderNote: order)
                 sections.append(contentsOf: [sectionToAppend, orderToAppend])
@@ -674,19 +678,26 @@ extension OrderDetailsDataSource {
 
 
 // MARK: - Constants
-private extension OrderDetailsDataSource {
-    enum Titles {
-        static let productDetails = NSLocalizedString("Details",
-                                                      comment: "The row label to tap for a detailed product list")
-        static let fulfillTitle = NSLocalizedString("Begin Fulfillment",
-                                                    comment: "Begin fulfill order button title")
-        static let addNoteText = NSLocalizedString("Add a note",
-                                                   comment: "Button text for adding a new order note")
-        static let paidByCustomer = NSLocalizedString("Paid By Customer",
-                                                      comment: "The title for the customer payment cell")
+extension OrderDetailsDataSource {
+    fileprivate enum Titles {
+        static let productDetails = NSLocalizedString(
+            "Details",
+            comment: "The row label to tap for a detailed product list")
+
+        static let fulfillTitle = NSLocalizedString(
+            "Begin Fulfillment",
+            comment: "Begin fulfill order button title")
+
+        static let addNoteText = NSLocalizedString(
+            "Add a note",
+            comment: "Button text for adding a new order note")
+
+        static let paidByCustomer = NSLocalizedString(
+            "Paid By Customer",
+            comment: "The title for the customer payment cell")
     }
 
-    enum Icons {
+    fileprivate enum Icons {
         static let addNoteIcon = UIImage.addOutlineImage
     }
 }

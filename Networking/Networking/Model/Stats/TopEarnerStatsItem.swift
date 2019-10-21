@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a single top earner stat for a specific period.
 ///
 public struct TopEarnerStatsItem: Decodable {
@@ -50,8 +49,8 @@ public struct TopEarnerStatsItem: Decodable {
 
 /// Defines all of the TopEarnerStatsItem CodingKeys.
 ///
-private extension TopEarnerStatsItem {
-    enum CodingKeys: String, CodingKey {
+extension TopEarnerStatsItem {
+    fileprivate enum CodingKeys: String, CodingKey {
         case productID = "ID"
         case productName = "name"
         case total = "total"
@@ -67,22 +66,15 @@ private extension TopEarnerStatsItem {
 //
 extension TopEarnerStatsItem: Comparable {
     public static func == (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
-        return lhs.productID == rhs.productID &&
-            lhs.productName == rhs.productName &&
-            lhs.quantity == rhs.quantity &&
-            lhs.price == rhs.price &&
-            lhs.total == rhs.total &&
-            lhs.currency == rhs.currency &&
-            lhs.imageUrl == rhs.imageUrl
+        return lhs.productID == rhs.productID && lhs.productName == rhs.productName && lhs.quantity == rhs.quantity && lhs.price == rhs.price && lhs.total
+            == rhs.total && lhs.currency == rhs.currency && lhs.imageUrl == rhs.imageUrl
     }
 
     public static func < (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
-        return lhs.total < rhs.total ||
-            (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
+        return lhs.total < rhs.total || (lhs.total == rhs.total && lhs.quantity < rhs.quantity)
     }
 
     public static func > (lhs: TopEarnerStatsItem, rhs: TopEarnerStatsItem) -> Bool {
-        return lhs.total > rhs.total ||
-            (lhs.total == rhs.total && lhs.quantity > rhs.quantity)
+        return lhs.total > rhs.total || (lhs.total == rhs.total && lhs.quantity > rhs.quantity)
     }
 }

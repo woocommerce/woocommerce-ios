@@ -1,6 +1,5 @@
 import UIKit
 
-
 /// NoticeView: Renders a Notice onScreen!
 ///
 class NoticeView: UIView {
@@ -52,9 +51,9 @@ class NoticeView: UIView {
 
 // MARK: - Setup Methods
 //
-private extension NoticeView {
+extension NoticeView {
 
-    func configureBackgroundViews() {
+    fileprivate func configureBackgroundViews() {
         addSubview(backgroundContainerView)
         backgroundContainerView.translatesAutoresizingMaskIntoConstraints = false
         pinSubviewToAllEdges(backgroundContainerView)
@@ -67,7 +66,7 @@ private extension NoticeView {
         backgroundContainerView.layer.masksToBounds = true
     }
 
-    func configureShadow() {
+    fileprivate func configureShadow() {
         shadowLayer.shadowPath = UIBezierPath(roundedRect: layer.bounds, cornerRadius: Metrics.cornerRadius).cgPath
         shadowLayer.shadowColor = Appearance.shadowColor.cgColor
         shadowLayer.shadowOpacity = Appearance.shadowOpacity
@@ -81,7 +80,7 @@ private extension NoticeView {
         updateShadowPath()
     }
 
-    func updateShadowPath() {
+    fileprivate func updateShadowPath() {
         let shadowPath = UIBezierPath(roundedRect: bounds, cornerRadius: Metrics.cornerRadius).cgPath
         shadowLayer.shadowPath = shadowPath
 
@@ -97,14 +96,14 @@ private extension NoticeView {
         shadowMaskLayer.path = maskPath
     }
 
-    func configureContentStackView() {
+    fileprivate func configureContentStackView() {
         contentStackView.axis = .horizontal
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         backgroundView.contentView.addSubview(contentStackView)
         backgroundView.contentView.pinSubviewToAllEdges(contentStackView)
     }
 
-    func configureLabels() {
+    fileprivate func configureLabels() {
         let labelStackView = UIStackView()
         labelStackView.translatesAutoresizingMaskIntoConstraints = false
         labelStackView.alignment = .leading
@@ -119,9 +118,10 @@ private extension NoticeView {
 
         contentStackView.addArrangedSubview(labelStackView)
 
-        NSLayoutConstraint.activate([
-            labelStackView.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
-            labelStackView.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor)
+        NSLayoutConstraint.activate(
+            [
+                labelStackView.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
+                labelStackView.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor),
             ])
 
         titleLabel.font = Fonts.titleLabelFont
@@ -131,7 +131,7 @@ private extension NoticeView {
         messageLabel.textColor = Appearance.titleColor
     }
 
-    func configureActionButton() {
+    fileprivate func configureActionButton() {
         contentStackView.addArrangedSubview(actionBackgroundView)
         actionBackgroundView.translatesAutoresizingMaskIntoConstraints = false
 
@@ -141,9 +141,10 @@ private extension NoticeView {
         actionBackgroundView.addSubview(actionButton)
         actionButton.translatesAutoresizingMaskIntoConstraints = false
 
-        NSLayoutConstraint.activate([
-            actionBackgroundView.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
-            actionBackgroundView.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor),
+        NSLayoutConstraint.activate(
+            [
+                actionBackgroundView.topAnchor.constraint(equalTo: backgroundView.contentView.topAnchor),
+                actionBackgroundView.bottomAnchor.constraint(equalTo: backgroundView.contentView.bottomAnchor),
             ])
 
         actionBackgroundView.pinSubviewToAllEdgeMargins(actionButton)
@@ -154,12 +155,12 @@ private extension NoticeView {
         actionButton.setContentCompressionResistancePriority(.required, for: .horizontal)
     }
 
-    func configureDismissRecognizer() {
+    fileprivate func configureDismissRecognizer() {
         let recognizer = UITapGestureRecognizer(target: self, action: #selector(viewTapped))
         addGestureRecognizer(recognizer)
     }
 
-    func configureForNotice() {
+    fileprivate func configureForNotice() {
         titleLabel.text = notice.title
 
         if let message = notice.message {
@@ -179,7 +180,7 @@ private extension NoticeView {
 
 // MARK: - Action handlers
 //
-private extension NoticeView {
+extension NoticeView {
 
     @objc private func viewTapped() {
         dismissHandler?()
@@ -194,21 +195,21 @@ private extension NoticeView {
 
 // MARK: - Nested Types
 //
-private extension NoticeView {
+extension NoticeView {
 
-    enum Metrics {
+    fileprivate enum Metrics {
         static let cornerRadius: CGFloat = 13.0
         static let layoutMargins = UIEdgeInsets(top: 16.0, left: 16.0, bottom: 16.0, right: 16.0)
         static let labelLineSpacing: CGFloat = 18.0
     }
 
-    enum Fonts {
+    fileprivate enum Fonts {
         static let actionButtonFont = UIFont.systemFont(ofSize: 14.0)
         static let titleLabelFont = UIFont.boldSystemFont(ofSize: 14.0)
         static let messageLabelFont = UIFont.systemFont(ofSize: 14.0)
     }
 
-    enum Appearance {
+    fileprivate enum Appearance {
         static let actionBackgroundColor = UIColor.white.withAlphaComponent(0.5)
         static let actionColor = StyleManager.buttonPrimaryColor
         static let shadowColor: UIColor = .black

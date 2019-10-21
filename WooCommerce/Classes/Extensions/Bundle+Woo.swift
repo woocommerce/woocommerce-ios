@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// Bundle: Woo Methods
 ///
 extension Bundle {

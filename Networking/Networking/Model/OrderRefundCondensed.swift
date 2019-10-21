@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents an Order Refund Entity.
 ///
 public struct OrderRefundCondensed: Decodable {
@@ -33,12 +32,12 @@ public struct OrderRefundCondensed: Decodable {
 
 /// Defines all of the OrderRefundCondensed CodingKeys.
 ///
-private extension OrderRefundCondensed {
+extension OrderRefundCondensed {
 
-    enum CodingKeys: String, CodingKey {
-        case refundID   = "id"
-        case reason     = "reason"
-        case total      = "total"
+    fileprivate enum CodingKeys: String, CodingKey {
+        case refundID = "id"
+        case reason = "reason"
+        case total = "total"
     }
 }
 
@@ -46,13 +45,10 @@ private extension OrderRefundCondensed {
 //
 extension OrderRefundCondensed: Comparable {
     public static func == (lhs: OrderRefundCondensed, rhs: OrderRefundCondensed) -> Bool {
-        return lhs.refundID == rhs.refundID &&
-            lhs.reason == rhs.reason &&
-            lhs.total == rhs.total
+        return lhs.refundID == rhs.refundID && lhs.reason == rhs.reason && lhs.total == rhs.total
     }
 
     public static func < (lhs: OrderRefundCondensed, rhs: OrderRefundCondensed) -> Bool {
-        return lhs.refundID < rhs.refundID ||
-            (lhs.refundID == rhs.refundID && lhs.total < rhs.total)
+        return lhs.refundID < rhs.refundID || (lhs.refundID == rhs.refundID && lhs.total < rhs.total)
     }
 }

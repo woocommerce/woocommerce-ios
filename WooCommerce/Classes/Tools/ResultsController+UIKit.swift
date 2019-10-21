@@ -1,8 +1,6 @@
 import Foundation
-import Yosemite
 import UIKit
-
-
+import Yosemite
 
 // MARK: - ResultsTableAnimations: Defines the Animations to be applied during Table Update(s)
 //
@@ -57,11 +55,11 @@ extension ResultsController {
 
 // MARK: - Private Event Forwarding Methods
 //
-private extension ResultsController {
+extension ResultsController {
 
     /// Sets up all of the Content Events from the inner NSFetchedResultsController (FRC) over to the specified TableView.
     ///
-    func startForwardingContentEvents(to tableView: UITableView, with animations: ResultsTableAnimations) {
+    fileprivate func startForwardingContentEvents(to tableView: UITableView, with animations: ResultsTableAnimations) {
         onWillChangeContent = { [weak tableView] in
             tableView?.beginUpdates()
         }
@@ -73,7 +71,7 @@ private extension ResultsController {
 
     /// Sets up all of the Object Events from the inner FRC over to the specified TableView.
     ///
-    func startForwardingObjectEvents(to tableView: UITableView, with animations: ResultsTableAnimations) {
+    fileprivate func startForwardingObjectEvents(to tableView: UITableView, with animations: ResultsTableAnimations) {
         onDidChangeObject = { [weak tableView] (object, indexPath, type, newIndexPath) in
             guard let `tableView` = tableView else {
                 return
@@ -119,7 +117,7 @@ private extension ResultsController {
 
     /// Sets up all of the Section Events from the inner FRC over to the specified TableView.
     ///
-    func startForwardingSectionEvents(to tableView: UITableView, with animations: ResultsTableAnimations) {
+    fileprivate func startForwardingSectionEvents(to tableView: UITableView, with animations: ResultsTableAnimations) {
         onDidChangeSection = { [weak tableView] (sectionInfo, sectionIndex, type) in
             guard let `tableView` = tableView else {
                 return
@@ -140,7 +138,7 @@ private extension ResultsController {
 
     /// Sets up all of the Reset Events from the inner FRC over to the specified TableView.
     ///
-    func startForwardingResetEvents(to tableView: UITableView) {
+    fileprivate func startForwardingResetEvents(to tableView: UITableView) {
         onDidResetContent = { [weak tableView] in
             tableView?.reloadData()
         }

@@ -24,7 +24,7 @@ final class EmptyListMessageWithActionView: UIView {
         }
     }
 
-    var onAction: (()-> Void)?
+    var onAction: (() -> Void)?
 
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -51,27 +51,27 @@ final class EmptyListMessageWithActionView: UIView {
 
 // MARK: - Styles
 //
-private extension EmptyListMessageWithActionView {
-    func applyBackgroundStyle() {
+extension EmptyListMessageWithActionView {
+    fileprivate func applyBackgroundStyle() {
         backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func applyMessageLabelStyle() {
+    fileprivate func applyMessageLabelStyle() {
         messageLabel.textAlignment = .center
         messageLabel.applyEmptyStateTitleStyle()
     }
 
-    func applyActionButtonStyle() {
+    fileprivate func applyActionButtonStyle() {
         actionButton.backgroundColor = .white
         actionButton.topVisible = true
         actionButton.bottomVisible = true
     }
 
-    func applyActionLabelStyle() {
+    fileprivate func applyActionLabelStyle() {
         actionButtonLabel.applyBodyStyle()
     }
 
-    func configureActionButtonGesture() {
+    fileprivate func configureActionButtonGesture() {
         let gesture = UITapGestureRecognizer(target: self, action: #selector(buttonTapped))
         actionButton.addGestureRecognizer(gesture)
     }
@@ -80,8 +80,9 @@ private extension EmptyListMessageWithActionView {
 
 // MARK: - Button action
 //
-private extension EmptyListMessageWithActionView {
-    @objc func buttonTapped() {
+extension EmptyListMessageWithActionView {
+    @objc
+    fileprivate func buttonTapped() {
         onAction?()
     }
 }
@@ -89,8 +90,8 @@ private extension EmptyListMessageWithActionView {
 
 // MARK: - Accessibility
 //
-private extension EmptyListMessageWithActionView {
-    func configureActionButtonForVoiceOver() {
+extension EmptyListMessageWithActionView {
+    fileprivate func configureActionButtonForVoiceOver() {
         actionButton.isAccessibilityElement = true
         actionButton.accessibilityLabel = actionButtonLabel.text
         actionButton.accessibilityTraits = .button

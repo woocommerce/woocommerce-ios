@@ -31,28 +31,34 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Private Properties
     private let timeRange: StatsTimeRangeV4
+
     private var orderStatsIntervals: [OrderStatsV4Interval] = [] {
         didSet {
             let helper = StoreStatsV4ChartAxisHelper()
             let intervalDates = orderStatsIntervals.map({ $0.dateStart() })
-            orderStatsIntervalLabels = helper.generateLabelText(for: intervalDates,
-                                                                timeRange: timeRange,
-                                                                siteTimezone: siteTimezone)
+            orderStatsIntervalLabels = helper.generateLabelText(
+                for: intervalDates,
+                timeRange: timeRange,
+                siteTimezone: siteTimezone)
         }
     }
+
     private var orderStatsIntervalLabels: [String] = []
 
     private var orderStats: OrderStatsV4? {
         return orderStatsResultsController.fetchedObjects.first
     }
+
     private var siteStats: SiteVisitStats? {
         return siteStatsResultsController.fetchedObjects.first
     }
+
     private var siteStatsItems: [SiteVisitStatsItem] = []
 
     // MARK: - Subviews
 
     @IBOutlet private weak var visitorsStackView: UIStackView!
+
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsData: UILabel!
     @IBOutlet private weak var ordersTitle: UILabel!
@@ -216,9 +222,9 @@ extension StoreStatsV4PeriodViewController {
 
 // MARK: - Configuration
 //
-private extension StoreStatsV4PeriodViewController {
+extension StoreStatsV4PeriodViewController {
 
-    func configureResultsControllers() {
+    fileprivate func configureResultsControllers() {
         configureSiteStatsResultsController()
 
         // Order Stats
@@ -231,7 +237,7 @@ private extension StoreStatsV4PeriodViewController {
         try? orderStatsResultsController.performFetch()
     }
 
-    func configureSiteStatsResultsController() {
+    fileprivate func configureSiteStatsResultsController() {
         siteStatsResultsController.onDidChangeContent = { [weak self] in
             self?.updateSiteVisitDataIfNeeded()
         }
@@ -241,7 +247,7 @@ private extension StoreStatsV4PeriodViewController {
         try? siteStatsResultsController.performFetch()
     }
 
-    func configureView() {
+    fileprivate func configureView() {
         view.backgroundColor = StyleManager.wooWhite
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
@@ -271,32 +277,37 @@ private extension StoreStatsV4PeriodViewController {
         // Accessibility elements
         xAxisAccessibilityView.isAccessibilityElement = true
         xAxisAccessibilityView.accessibilityTraits = .staticText
-        xAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: X Axis",
-                                                                      comment: "VoiceOver accessibility label for the store revenue chart's X-axis.")
+        xAxisAccessibilityView.accessibilityLabel = NSLocalizedString(
+            "Store revenue chart: X Axis",
+            comment: "VoiceOver accessibility label for the store revenue chart's X-axis.")
         yAxisAccessibilityView.isAccessibilityElement = true
         yAxisAccessibilityView.accessibilityTraits = .staticText
-        yAxisAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart: Y Axis",
-                                                                      comment: "VoiceOver accessibility label for the store revenue chart's Y-axis.")
+        yAxisAccessibilityView.accessibilityLabel = NSLocalizedString(
+            "Store revenue chart: Y Axis",
+            comment: "VoiceOver accessibility label for the store revenue chart's Y-axis.")
         chartAccessibilityView.isAccessibilityElement = true
         chartAccessibilityView.accessibilityTraits = .image
-        chartAccessibilityView.accessibilityLabel = NSLocalizedString("Store revenue chart",
-                                                                      comment: "VoiceOver accessibility label for the store revenue chart.")
+        chartAccessibilityView.accessibilityLabel = NSLocalizedString(
+            "Store revenue chart",
+            comment: "VoiceOver accessibility label for the store revenue chart.")
         chartAccessibilityView.accessibilityLabel = String.localizedStringWithFormat(
-            NSLocalizedString("Store revenue chart %@",
-                              comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."),
+            NSLocalizedString(
+                "Store revenue chart %@",
+                comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."),
             timeRange.tabTitle
         )
     }
 
-    func configureNoRevenueView() {
+    fileprivate func configureNoRevenueView() {
         noRevenueView.isHidden = true
-        noRevenueLabel.text = NSLocalizedString("No revenue this period",
-                                                comment: "Text displayed when no order data are available for the selected time range.")
+        noRevenueLabel.text = NSLocalizedString(
+            "No revenue this period",
+            comment: "Text displayed when no order data are available for the selected time range.")
         noRevenueLabel.font = StyleManager.subheadlineFont
         noRevenueLabel.textColor = StyleManager.defaultTextColor
     }
 
-    func configureBarChart() {
+    fileprivate func configureBarChart() {
         barChartView.chartDescription?.enabled = false
         barChartView.dragEnabled = true
         barChartView.setScaleEnabled(false)
@@ -342,31 +353,32 @@ private extension StoreStatsV4PeriodViewController {
 }
 
 // MARK: - Internal Updates
-private extension StoreStatsV4PeriodViewController {
-    func updateSiteVisitStatsResultsController(currentDate: Date) -> ResultsController<StorageSiteVisitStats> {
+extension StoreStatsV4PeriodViewController {
+    fileprivate func updateSiteVisitStatsResultsController(currentDate: Date) -> ResultsController<StorageSiteVisitStats> {
         let storageManager = ServiceLocator.storageManager
         let dateFormatter = DateFormatter.Stats.statsDayFormatter
         dateFormatter.timeZone = siteTimezone
-        let predicate = NSPredicate(format: "granularity ==[c] %@ AND date == %@",
-                                    timeRange.siteVisitStatsGranularity.rawValue,
-                                    dateFormatter.string(from: currentDate))
+        let predicate = NSPredicate(
+            format: "granularity ==[c] %@ AND date == %@",
+            timeRange.siteVisitStatsGranularity.rawValue,
+            dateFormatter.string(from: currentDate))
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 
-    func updateChartXAxisLabelCount(xAxis: XAxis, timeRange: StatsTimeRangeV4) {
+    fileprivate func updateChartXAxisLabelCount(xAxis: XAxis, timeRange: StatsTimeRangeV4) {
         let helper = StoreStatsV4ChartAxisHelper()
         let labelCount = helper.labelCount(timeRange: timeRange)
         xAxis.setLabelCount(labelCount, force: false)
     }
 
-    func updateUI(hasRevenue: Bool) {
+    fileprivate func updateUI(hasRevenue: Bool) {
         noRevenueView.isHidden = hasRevenue
         updateBarChartAxisUI(hasRevenue: hasRevenue)
     }
 
-    func updateBarChartAxisUI(hasRevenue: Bool) {
-        let labelTextColor = hasRevenue ? StyleManager.wooSecondary: StyleManager.wooGreyMid
+    fileprivate func updateBarChartAxisUI(hasRevenue: Bool) {
+        let labelTextColor = hasRevenue ? StyleManager.wooSecondary : StyleManager.wooGreyMid
 
         let xAxis = barChartView.xAxis
         xAxis.labelTextColor = labelTextColor
@@ -401,11 +413,11 @@ extension StoreStatsV4PeriodViewController: ChartViewDelegate {
     }
 }
 
-private extension StoreStatsV4PeriodViewController {
+extension StoreStatsV4PeriodViewController {
     /// Updates all stats and time range bar text based on the selected bar index.
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
-    func updateUI(selectedBarIndex selectedIndex: Int?) {
+    fileprivate func updateUI(selectedBarIndex selectedIndex: Int?) {
         updateSiteVisitStats(selectedIndex: selectedIndex)
         updateOrderStats(selectedIndex: selectedIndex)
         updateTimeRangeBar(selectedIndex: selectedIndex)
@@ -414,7 +426,7 @@ private extension StoreStatsV4PeriodViewController {
     /// Updates order stats based on the selected bar index.
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
-    func updateOrderStats(selectedIndex: Int?) {
+    fileprivate func updateOrderStats(selectedIndex: Int?) {
         guard let selectedIndex = selectedIndex else {
             reloadOrderFields()
             return
@@ -437,7 +449,7 @@ private extension StoreStatsV4PeriodViewController {
     /// Updates stats based on the selected bar index.
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
-    func updateSiteVisitStats(selectedIndex: Int?) {
+    fileprivate func updateSiteVisitStats(selectedIndex: Int?) {
         guard shouldShowSiteVisitStats else {
             return
         }
@@ -467,25 +479,28 @@ private extension StoreStatsV4PeriodViewController {
     /// Updates date bar based on the selected bar index.
     ///
     /// - Parameter selectedIndex: the index of interval data for the bar chart. Nil if no bar is selected.
-    func updateTimeRangeBar(selectedIndex: Int?) {
+    fileprivate func updateTimeRangeBar(selectedIndex: Int?) {
         guard let startDate = orderStatsIntervals.first?.dateStart(),
-            let endDate = orderStatsIntervals.last?.dateStart() else {
-                return
+            let endDate = orderStatsIntervals.last?.dateStart()
+        else {
+            return
         }
         guard let selectedIndex = selectedIndex else {
-            let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
-                                                                   endDate: endDate,
-                                                                   timeRange: timeRange,
-                                                                   timezone: siteTimezone)
+            let timeRangeBarViewModel = StatsTimeRangeBarViewModel(
+                startDate: startDate,
+                endDate: endDate,
+                timeRange: timeRange,
+                timezone: siteTimezone)
             timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
             return
         }
         let date = orderStatsIntervals[selectedIndex].dateStart()
-        let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
-                                                               endDate: endDate,
-                                                               selectedDate: date,
-                                                               timeRange: timeRange,
-                                                               timezone: siteTimezone)
+        let timeRangeBarViewModel = StatsTimeRangeBarViewModel(
+            startDate: startDate,
+            endDate: endDate,
+            selectedDate: date,
+            timeRange: timeRange,
+            timezone: siteTimezone)
         timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
     }
 }
@@ -506,9 +521,10 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
                 return ""
             } else {
                 yAxisMaximum = value.humanReadableString()
-                return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
-                                                          at: CurrencySettings.shared.currencyPosition,
-                                                          with: currencySymbol)
+                return CurrencyFormatter().formatCurrency(
+                    using: yAxisMaximum,
+                    at: CurrencySettings.shared.currencyPosition,
+                    with: currencySymbol)
             }
         }
     }
@@ -517,9 +533,9 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
 
 // MARK: - Accessibility Helpers
 //
-private extension StoreStatsV4PeriodViewController {
+extension StoreStatsV4PeriodViewController {
 
-    func updateChartAccessibilityValues() {
+    fileprivate func updateChartAccessibilityValues() {
         let format = NSLocalizedString(
             "Minimum value %@, maximum value %@",
             comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."
@@ -543,7 +559,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
 
-    func chartSummaryString() -> String {
+    fileprivate func chartSummaryString() -> String {
         guard let dataSet = barChartView.barData?.dataSets.first as? BarChartDataSet, dataSet.count > 0 else {
             return barChartView.noDataText
         }
@@ -573,31 +589,35 @@ private extension StoreStatsV4PeriodViewController {
 
 // MARK: - Private Helpers
 //
-private extension StoreStatsV4PeriodViewController {
+extension StoreStatsV4PeriodViewController {
 
-    func updateSiteVisitDataIfNeeded() {
+    fileprivate func updateSiteVisitDataIfNeeded() {
         if siteStats != nil {
             lastUpdatedDate = Date()
         } else {
             lastUpdatedDate = nil
         }
-        siteStatsItems = siteStats?.items?.sorted(by: { (lhs, rhs) -> Bool in
-            return lhs.period < rhs.period
-        }) ?? []
+        siteStatsItems = siteStats?.items?.sorted(
+            by: { (lhs, rhs) -> Bool in
+                return lhs.period < rhs.period
+            }) ?? []
         reloadSiteFields()
         reloadLastUpdatedField()
     }
 
-    func updateOrderDataIfNeeded() {
-        orderStatsIntervals = orderStats?.intervals.sorted(by: { (lhs, rhs) -> Bool in
-            return lhs.dateStart() < rhs.dateStart()
-        }) ?? []
+    fileprivate func updateOrderDataIfNeeded() {
+        orderStatsIntervals = orderStats?.intervals.sorted(
+            by: { (lhs, rhs) -> Bool in
+                return lhs.dateStart() < rhs.dateStart()
+            }) ?? []
         if let startDate = orderStatsIntervals.first?.dateStart(),
-            let endDate = orderStatsIntervals.last?.dateStart() {
-            let timeRangeBarViewModel = StatsTimeRangeBarViewModel(startDate: startDate,
-                                                                   endDate: endDate,
-                                                                   timeRange: timeRange,
-                                                                   timezone: siteTimezone)
+            let endDate = orderStatsIntervals.last?.dateStart()
+        {
+            let timeRangeBarViewModel = StatsTimeRangeBarViewModel(
+                startDate: startDate,
+                endDate: endDate,
+                timeRange: timeRange,
+                timezone: siteTimezone)
             timeRangeBarView.updateUI(viewModel: timeRangeBarViewModel)
         }
 
@@ -614,7 +634,7 @@ private extension StoreStatsV4PeriodViewController {
         reloadLastUpdatedField()
     }
 
-    func trackChangedTabIfNeeded() {
+    fileprivate func trackChangedTabIfNeeded() {
         // This is a little bit of a workaround to prevent the "tab tapped" tracks event from firing when launching the app.
         if granularity == .hourly && isInitialLoad {
             isInitialLoad = false
@@ -624,24 +644,29 @@ private extension StoreStatsV4PeriodViewController {
         isInitialLoad = false
     }
 
-    func reloadAllFields(animateChart: Bool = true) {
+    fileprivate func reloadAllFields(animateChart: Bool = true) {
         reloadOrderFields()
         reloadSiteFields()
         reloadChart(animateChart: animateChart)
         reloadLastUpdatedField()
-        let visitStatsElements = shouldShowSiteVisitStats ? [visitorsTitle as Any,
-                                                             visitorsData as Any]: []
-        view.accessibilityElements = visitStatsElements + [ordersTitle as Any,
-                                                           ordersData as Any,
-                                                           revenueTitle as Any,
-                                                           revenueData as Any,
-                                                           lastUpdated as Any,
-                                                           yAxisAccessibilityView as Any,
-                                                           xAxisAccessibilityView as Any,
-                                                           chartAccessibilityView as Any]
+        let visitStatsElements = shouldShowSiteVisitStats
+            ? [
+                visitorsTitle as Any,
+                visitorsData as Any,
+            ] : []
+        view.accessibilityElements = visitStatsElements + [
+            ordersTitle as Any,
+            ordersData as Any,
+            revenueTitle as Any,
+            revenueData as Any,
+            lastUpdated as Any,
+            yAxisAccessibilityView as Any,
+            xAxisAccessibilityView as Any,
+            chartAccessibilityView as Any,
+        ]
     }
 
-    func reloadOrderFields() {
+    fileprivate func reloadOrderFields() {
         guard ordersData != nil, revenueData != nil else {
             return
         }
@@ -657,7 +682,7 @@ private extension StoreStatsV4PeriodViewController {
         revenueData.text = totalRevenueText
     }
 
-    func reloadSiteFields() {
+    fileprivate func reloadSiteFields() {
         guard visitorsData != nil else {
             return
         }
@@ -669,7 +694,7 @@ private extension StoreStatsV4PeriodViewController {
         visitorsData.text = visitorsText
     }
 
-    func reloadChart(animateChart: Bool = true) {
+    fileprivate func reloadChart(animateChart: Bool = true) {
         guard barChartView != nil else {
             return
         }
@@ -684,16 +709,16 @@ private extension StoreStatsV4PeriodViewController {
         updateUI(hasRevenue: hasRevenue())
     }
 
-    func hasRevenue() -> Bool {
+    fileprivate func hasRevenue() -> Bool {
         let totalRevenue = orderStatsIntervals.map({ $0.revenueValue }).reduce(0, +)
         return totalRevenue > 0
     }
 
-    func reloadLastUpdatedField() {
+    fileprivate func reloadLastUpdatedField() {
         if lastUpdated != nil { lastUpdated.text = summaryDateUpdated }
     }
 
-    func generateBarDataSet() -> BarChartData? {
+    fileprivate func generateBarDataSet() -> BarChartData? {
         guard !orderStatsIntervals.isEmpty else {
             return nil
         }
@@ -704,9 +729,10 @@ private extension StoreStatsV4PeriodViewController {
         let currencyCode = CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
         orderStatsIntervals.forEach { (item) in
             let entry = BarChartDataEntry(x: Double(barCount), y: (item.revenueValue as NSDecimalNumber).doubleValue)
-            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(String("\(item.revenueValue)"),
-                                                                                with: currencyCode,
-                                                                                roundSmallNumbers: false) ?? String()
+            let formattedAmount = CurrencyFormatter().formatHumanReadableAmount(
+                String("\(item.revenueValue)"),
+                with: currencyCode,
+                roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
             barColors.append(StyleManager.wooGreyMid)
             dataEntries.append(entry)
@@ -718,16 +744,16 @@ private extension StoreStatsV4PeriodViewController {
         dataSet.highlightEnabled = true
         dataSet.highlightColor = StyleManager.wooCommerceBrandColor
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
-        dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
+        dataSet.drawValuesEnabled = false  // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)
     }
 
-    func formattedAxisPeriodString(for item: OrderStatsV4Interval) -> String {
+    fileprivate func formattedAxisPeriodString(for item: OrderStatsV4Interval) -> String {
         let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
         return chartDateFormatter.string(from: item.dateStart())
     }
 
-    func formattedChartMarkerPeriodString(for item: OrderStatsV4Interval) -> String {
+    fileprivate func formattedChartMarkerPeriodString(for item: OrderStatsV4Interval) -> String {
         let chartDateFormatter = timeRange.chartDateFormatter(siteTimezone: siteTimezone)
         return chartDateFormatter.string(from: item.dateStart())
     }
@@ -736,20 +762,20 @@ private extension StoreStatsV4PeriodViewController {
 
 // MARK: - Constants!
 //
-private extension StoreStatsV4PeriodViewController {
-    enum Constants {
-        static let placeholderText                      = "-"
+extension StoreStatsV4PeriodViewController {
+    fileprivate enum Constants {
+        static let placeholderText = "-"
 
         static let chartAnimationDuration: TimeInterval = 0.75
-        static let chartExtraRightOffset: CGFloat       = 25.0
-        static let chartExtraTopOffset: CGFloat         = 20.0
-        static let chartHighlightAlpha: CGFloat         = 1.0
+        static let chartExtraRightOffset: CGFloat = 25.0
+        static let chartExtraTopOffset: CGFloat = 20.0
+        static let chartHighlightAlpha: CGFloat = 1.0
 
-        static let chartMarkerInsets: UIEdgeInsets      = UIEdgeInsets(top: 5.0, left: 2.0, bottom: 5.0, right: 2.0)
-        static let chartMarkerMinimumSize: CGSize       = CGSize(width: 50.0, height: 30.0)
-        static let chartMarkerArrowSize: CGSize         = CGSize(width: 8, height: 6)
+        static let chartMarkerInsets: UIEdgeInsets = UIEdgeInsets(top: 5.0, left: 2.0, bottom: 5.0, right: 2.0)
+        static let chartMarkerMinimumSize: CGSize = CGSize(width: 50.0, height: 30.0)
+        static let chartMarkerArrowSize: CGSize = CGSize(width: 8, height: 6)
 
-        static let chartXAxisGranularity: Double        = 1.0
-        static let chartYAxisMinimum: Double            = 0.0
+        static let chartXAxisGranularity: Double = 1.0
+        static let chartYAxisMinimum: Double = 0.0
     }
 }

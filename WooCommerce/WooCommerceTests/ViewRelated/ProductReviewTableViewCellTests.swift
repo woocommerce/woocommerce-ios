@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import WooCommerce
 
 final class ProductReviewTableViewCellTests: XCTestCase {
@@ -45,11 +46,12 @@ final class ProductReviewTableViewCellTests: XCTestCase {
 }
 
 
-private extension ProductReviewTableViewCellTests {
-    func mockViewModel() -> ReviewViewModel {
+extension ProductReviewTableViewCellTests {
+    fileprivate func mockViewModel() -> ReviewViewModel {
         let mocks = MockReviews()
-        return ReviewViewModel(review: mocks.review(),
-                               product: mocks.product(),
-                               notification: mocks.emptyNotification())
+        return ReviewViewModel(
+            review: mocks.review(),
+            product: mocks.product(),
+            notification: mocks.emptyNotification())
     }
 }

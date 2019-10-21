@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper: SiteVisitStats
 ///
 class SiteVisitStatsMapper: Mapper {

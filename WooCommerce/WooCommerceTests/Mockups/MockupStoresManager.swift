@@ -1,7 +1,7 @@
 import Foundation
 import Yosemite
-@testable import WooCommerce
 
+@testable import WooCommerce
 
 /// MockupStoresManager: MockupStoresManager Mockup!
 ///

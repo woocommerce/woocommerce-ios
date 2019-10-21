@@ -1,9 +1,8 @@
-import UIKit
-import Gridicons
 import Contacts
-import Yosemite
+import Gridicons
 import SafariServices
-
+import UIKit
+import Yosemite
 
 // MARK: - OrderDetailsViewController: Displays the details for a given Order.
 //
@@ -71,11 +70,11 @@ final class OrderDetailsViewController: UIViewController {
 
 // MARK: - TableView Configuration
 //
-private extension OrderDetailsViewController {
+extension OrderDetailsViewController {
 
     /// Setup: TableView
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
@@ -89,7 +88,7 @@ private extension OrderDetailsViewController {
 
     /// Setup: Navigation
     ///
-    func configureNavigation() {
+    fileprivate func configureNavigation() {
         title = NSLocalizedString("Order #\(viewModel.order.number)", comment: "Order number title")
 
         // Don't show the Order details title in the next-view's back button
@@ -98,7 +97,7 @@ private extension OrderDetailsViewController {
 
     /// Setup: EntityListener
     ///
-    func configureEntityListener() {
+    fileprivate func configureEntityListener() {
         entityListener.onUpsert = { [weak self] order in
             guard let self = self else {
                 return
@@ -125,14 +124,14 @@ private extension OrderDetailsViewController {
             self?.reloadTableViewSectionsAndData()
         }
 
-        viewModel.onCellAction = {[weak self] (actionType, indexPath) in
+        viewModel.onCellAction = { [weak self] (actionType, indexPath) in
             self?.handleCellAction(actionType, at: indexPath)
         }
     }
 
     /// Reloads the tableView's data, assuming the view has been loaded.
     ///
-    func reloadTableViewDataIfPossible() {
+    fileprivate func reloadTableViewDataIfPossible() {
         guard isViewLoaded else {
             return
         }
@@ -142,20 +141,20 @@ private extension OrderDetailsViewController {
 
     /// Reloads the tableView's sections and data.
     ///
-    func reloadTableViewSectionsAndData() {
+    fileprivate func reloadTableViewSectionsAndData() {
         reloadSections()
         reloadTableViewDataIfPossible()
     }
 
     /// Registers all of the available TableViewCells
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         viewModel.registerTableViewCells(tableView)
     }
 
     /// Registers all of the available TableViewHeaderFooters
     ///
-    func registerTableViewHeaderFooters() {
+    fileprivate func registerTableViewHeaderFooters() {
         viewModel.registerTableViewHeaderFooters(tableView)
     }
 }
@@ -163,9 +162,9 @@ private extension OrderDetailsViewController {
 
 // MARK: - Sections
 //
-private extension OrderDetailsViewController {
+extension OrderDetailsViewController {
 
-    func reloadSections() {
+    fileprivate func reloadSections() {
         viewModel.reloadSections()
     }
 }
@@ -173,17 +172,17 @@ private extension OrderDetailsViewController {
 
 // MARK: - Notices
 //
-private extension OrderDetailsViewController {
+extension OrderDetailsViewController {
 
     /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
     ///
-    func displayOrderDeletedNotice(order: Order) {
+    fileprivate func displayOrderDeletedNotice(order: Order) {
         notices.displayOrderDeletedNotice(order: order)
     }
 
     /// Displays the `Unable to delete tracking` Notice.
     ///
-    func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
+    fileprivate func displayDeleteErrorNotice(order: Order, tracking: ShipmentTracking) {
         notices.displayDeleteErrorNotice(order: order, tracking: tracking) { [weak self] in
             self?.deleteTracking(tracking)
         }
@@ -228,8 +227,8 @@ extension OrderDetailsViewController {
 
 // MARK: - Sync'ing Helpers
 //
-private extension OrderDetailsViewController {
-    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
+extension OrderDetailsViewController {
+    fileprivate func syncOrder(onCompletion: ((Error?) -> Void)? = nil) {
         viewModel.syncOrder { [weak self] (order, error) in
             guard let self = self, let order = order else {
                 onCompletion?(error)
@@ -242,19 +241,19 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
+    fileprivate func syncTracking(onCompletion: ((Error?) -> Void)? = nil) {
         viewModel.syncTracking(onCompletion: onCompletion)
     }
 
-    func syncNotes(onCompletion: ((Error?) -> ())? = nil) {
+    fileprivate func syncNotes(onCompletion: ((Error?) -> Void)? = nil) {
         viewModel.syncNotes(onCompletion: onCompletion)
     }
 
-    func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
+    fileprivate func syncProducts(onCompletion: ((Error?) -> Void)? = nil) {
         viewModel.syncProducts(onCompletion: onCompletion)
     }
 
-    func deleteTracking(_ tracking: ShipmentTracking) {
+    fileprivate func deleteTracking(_ tracking: ShipmentTracking) {
         let order = viewModel.order
         viewModel.deleteTracking(tracking) { [weak self] error in
             if let _ = error {
@@ -270,9 +269,9 @@ private extension OrderDetailsViewController {
 
 // MARK: - Actions
 //
-private extension OrderDetailsViewController {
+extension OrderDetailsViewController {
 
-    func handleCellAction(_ type: OrderDetailsDataSource.CellActionType, at indexPath: IndexPath?) {
+    fileprivate func handleCellAction(_ type: OrderDetailsDataSource.CellActionType, at indexPath: IndexPath?) {
         switch type {
         case .fulfill:
             fulfillWasPressed()
@@ -286,13 +285,13 @@ private extension OrderDetailsViewController {
         }
     }
 
-    func fulfillWasPressed() {
+    fileprivate func fulfillWasPressed() {
         ServiceLocator.analytics.track(.orderDetailFulfillButtonTapped)
         let fulfillViewController = FulfillViewController(order: viewModel.order, products: viewModel.products)
         navigationController?.pushViewController(fulfillViewController, animated: true)
     }
 
-    func trackingWasPressed(at indexPath: IndexPath) {
+    fileprivate func trackingWasPressed(at indexPath: IndexPath) {
         guard let cell = tableView.cellForRow(at: indexPath) as? OrderTrackingTableViewCell else {
             return
         }
@@ -300,9 +299,10 @@ private extension OrderDetailsViewController {
         displayShipmentTrackingAlert(from: cell, indexPath: indexPath)
     }
 
-    func openTrackingDetails(_ tracking: ShipmentTracking) {
+    fileprivate func openTrackingDetails(_ tracking: ShipmentTracking) {
         guard let trackingURL = tracking.trackingURL?.addHTTPSSchemeIfNecessary(),
-            let url = URL(string: trackingURL) else {
+            let url = URL(string: trackingURL)
+        else {
             return
         }
 
@@ -310,7 +310,7 @@ private extension OrderDetailsViewController {
         displayWebView(url: url)
     }
 
-    func displayWebView(url: URL) {
+    fileprivate func displayWebView(url: URL) {
         let safariViewController = SFSafariViewController(url: url)
         present(safariViewController, animated: true, completion: nil)
     }
@@ -387,12 +387,12 @@ extension OrderDetailsViewController {
 
 // MARK: - Trackings alert
 // Track / delete tracking alert
-private extension OrderDetailsViewController {
+extension OrderDetailsViewController {
     /// Displays an alert that offers deleting a shipment tracking or opening
     /// it in a webview
     ///
 
-    func displayShipmentTrackingAlert(from sourceView: UIView, indexPath: IndexPath) {
+    fileprivate func displayShipmentTrackingAlert(from sourceView: UIView, indexPath: IndexPath) {
         guard let tracking = viewModel.dataSource.orderTracking(at: indexPath) else {
             return
         }
@@ -428,10 +428,11 @@ private extension OrderDetailsViewController {
 
 // MARK: - Present Order Status List
 //
-private extension OrderDetailsViewController {
+extension OrderDetailsViewController {
     private func displayOrderStatusList() {
-        ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
-                                  withProperties: ["status": viewModel.order.statusKey])
+        ServiceLocator.analytics.track(
+            .orderDetailOrderStatusEditButtonTapped,
+            withProperties: ["status": viewModel.order.statusKey])
         let statusList = OrderStatusListViewController(order: viewModel.order, currentStatus: viewModel.orderStatus)
         let navigationController = UINavigationController(rootViewController: statusList)
 
@@ -442,16 +443,16 @@ private extension OrderDetailsViewController {
 
 // MARK: - Constants
 //
-private extension OrderDetailsViewController {
+extension OrderDetailsViewController {
 
-    enum TrackingAction {
+    fileprivate enum TrackingAction {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the shipment tracking action sheet")
         static let copyTrackingNumber = NSLocalizedString("Copy Tracking Number", comment: "Copy tracking number button title")
         static let trackShipment = NSLocalizedString("Track Shipment", comment: "Track shipment button title")
         static let deleteTracking = NSLocalizedString("Delete Tracking", comment: "Delete tracking button title")
     }
 
-    enum Constants {
+    fileprivate enum Constants {
         static let rowHeight = CGFloat(38)
         static let sectionHeight = CGFloat(44)
     }

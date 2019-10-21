@@ -17,16 +17,18 @@ public final class ProductReviewsRemote: Remote {
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllProductReviews(for siteID: Int,
-                                context: String? = nil,
-                                pageNumber: Int = Default.pageNumber,
-                                pageSize: Int = Default.pageSize,
-                                completion: @escaping ([ProductReview]?, Error?) -> Void) {
+    public func loadAllProductReviews(
+        for siteID: Int,
+        context: String? = nil,
+        pageNumber: Int = Default.pageNumber,
+        pageSize: Int = Default.pageSize,
+        completion: @escaping ([ProductReview]?, Error?) -> Void
+    ) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.contextKey: context ?? Default.context,
-            ParameterKey.status: Default.allReviews
+            ParameterKey.status: Default.allReviews,
         ]
 
         let path = Path.reviews
@@ -72,23 +74,23 @@ public final class ProductReviewsRemote: Remote {
 
 // MARK: - Constants
 //
-public extension ProductReviewsRemote {
-    enum Default {
-        public static let pageSize: Int         = 25
-        public static let pageNumber: Int       = 1
-        public static let context: String       = "view"
-        public static let allReviews: String    = "all"
+extension ProductReviewsRemote {
+    public enum Default {
+        public static let pageSize: Int = 25
+        public static let pageNumber: Int = 1
+        public static let context: String = "view"
+        public static let allReviews: String = "all"
     }
 
     private enum Path {
-        static let reviews   = "products/reviews"
+        static let reviews = "products/reviews"
     }
 
     private enum ParameterKey {
-        static let page: String       = "page"
-        static let perPage: String    = "per_page"
+        static let page: String = "page"
+        static let perPage: String = "per_page"
         static let contextKey: String = "context"
-        static let include: String    = "include"
-        static let status: String     = "status"
+        static let include: String = "include"
+        static let status: String = "status"
     }
 }

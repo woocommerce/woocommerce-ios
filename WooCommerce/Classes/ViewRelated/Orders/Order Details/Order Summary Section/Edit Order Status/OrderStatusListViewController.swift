@@ -66,7 +66,8 @@ final class OrderStatusListViewController: UIViewController {
 
     private func preselectStatusIfPossible() {
         if let selectedStatus = selectedStatus,
-            let index = statusResultsController.fetchedObjects.firstIndex(of: selectedStatus) {
+            let index = statusResultsController.fetchedObjects.firstIndex(of: selectedStatus)
+        {
             tableView.selectRow(at: IndexPath(row: index, section: 0), animated: false, scrollPosition: .none)
         }
     }
@@ -123,23 +124,27 @@ extension OrderStatusListViewController {
     }
 
     func configureLeftButton() {
-        let dismissButtonTitle = NSLocalizedString("Cancel",
-                                                   comment: "Change order status screen - button title for closing the view")
-        let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(dismissButtonTapped))
+        let dismissButtonTitle = NSLocalizedString(
+            "Cancel",
+            comment: "Change order status screen - button title for closing the view")
+        let leftBarButton = UIBarButtonItem(
+            title: dismissButtonTitle,
+            style: .plain,
+            target: self,
+            action: #selector(dismissButtonTapped))
         leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 
     func configureRightButton() {
-        let applyButtonTitle = NSLocalizedString("Apply",
-                                               comment: "Change order status screen - button title to apply selection")
-        let rightBarButton = UIBarButtonItem(title: applyButtonTitle,
-                                             style: .done,
-                                             target: self,
-                                             action: #selector(applyButtonTapped))
+        let applyButtonTitle = NSLocalizedString(
+            "Apply",
+            comment: "Change order status screen - button title to apply selection")
+        let rightBarButton = UIBarButtonItem(
+            title: applyButtonTitle,
+            style: .done,
+            target: self,
+            action: #selector(applyButtonTapped))
         rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         deActivateApplyButton()
@@ -166,7 +171,7 @@ extension OrderStatusListViewController {
 
 // MARK: - Update the Order status
 //
-private extension OrderStatusListViewController {
+extension OrderStatusListViewController {
     /// Dispatches an Action to update the order status
     ///
     private func updateOrderStatus() {
@@ -181,35 +186,43 @@ private extension OrderStatusListViewController {
         let undo = updateOrderAction(siteID: order.siteID, orderID: orderID, statusKey: undoStatus)
 
         ServiceLocator.stores.dispatch(done)
-        ServiceLocator.analytics.track(.orderStatusChange,
-                                  withProperties: ["id": orderID,
-                                                   "from": undoStatus,
-                                                   "to": newStatus])
+        ServiceLocator.analytics.track(
+            .orderStatusChange,
+            withProperties: [
+                "id": orderID,
+                "from": undoStatus,
+                "to": newStatus,
+            ])
 
         displayOrderUpdatedNotice {
             ServiceLocator.stores.dispatch(undo)
-            ServiceLocator.analytics.track(.orderStatusChange,
-                                      withProperties: ["id": orderID,
-                                                       "from": newStatus,
-                                                       "to": undoStatus])
+            ServiceLocator.analytics.track(
+                .orderStatusChange,
+                withProperties: [
+                    "id": orderID,
+                    "from": newStatus,
+                    "to": undoStatus,
+                ])
         }
     }
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
     private func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
-        return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
-            guard let error = error else {
-                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-                ServiceLocator.analytics.track(.orderStatusChangeSuccess)
-                return
-            }
+        return OrderAction.updateOrder(
+            siteID: siteID, orderID: orderID, statusKey: statusKey,
+            onCompletion: { error in
+                guard let error = error else {
+                    NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+                    ServiceLocator.analytics.track(.orderStatusChangeSuccess)
+                    return
+                }
 
-            ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
-            DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
+                ServiceLocator.analytics.track(.orderStatusChangeFailed, withError: error)
+                DDLogError("⛔️ Order Update Failure: [\(orderID).status = \(statusKey)]. Error: \(error)")
 
-            self.displayErrorNotice(orderID: orderID)
-        })
+                self.displayErrorNotice(orderID: orderID)
+            })
     }
 }
 
@@ -226,8 +239,11 @@ extension OrderStatusListViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: StatusListTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? StatusListTableViewCell else {
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: StatusListTableViewCell.reuseIdentifier,
+                for: indexPath) as? StatusListTableViewCell
+        else {
             fatalError()
         }
 

@@ -1,24 +1,26 @@
 import Foundation
 
-
 /// Represents a ProductImage entity.
 ///
 public struct ProductImage: Decodable {
     public let imageID: Int
-    public let dateCreated: Date    // gmt
+    public let dateCreated: Date  // gmt
     public let dateModified: Date?  // gmt
     public let src: String
+
     public let name: String?
     public let alt: String?
 
     /// ProductImage initializer.
     ///
-    public init(imageID: Int,
-                dateCreated: Date,
-                dateModified: Date?,
-                src: String,
-                name: String?,
-                alt: String?) {
+    public init(
+        imageID: Int,
+        dateCreated: Date,
+        dateModified: Date?,
+        src: String,
+        name: String?,
+        alt: String?
+    ) {
         self.imageID = imageID
         self.dateCreated = dateCreated
         self.dateModified = dateModified
@@ -39,26 +41,27 @@ public struct ProductImage: Decodable {
         let name = try container.decodeIfPresent(String.self, forKey: .name)
         let alt = try container.decodeIfPresent(String.self, forKey: .alt)
 
-        self.init(imageID: imageID,
-                  dateCreated: dateCreated,
-                  dateModified: dateModified,
-                  src: src,
-                  name: name,
-                  alt: alt)
+        self.init(
+            imageID: imageID,
+            dateCreated: dateCreated,
+            dateModified: dateModified,
+            src: src,
+            name: name,
+            alt: alt)
     }
 }
 
 
 /// Defines all the ProductImage CodingKeys.
 ///
-private extension ProductImage {
-    enum CodingKeys: String, CodingKey {
-        case imageID        = "id"
-        case dateCreated    = "date_created_gmt"
-        case dateModified   = "date_modified_gmt"
-        case src            = "src"
-        case name           = "name"
-        case alt            = "alt"
+extension ProductImage {
+    fileprivate enum CodingKeys: String, CodingKey {
+        case imageID = "id"
+        case dateCreated = "date_created_gmt"
+        case dateModified = "date_modified_gmt"
+        case src = "src"
+        case name = "name"
+        case alt = "alt"
     }
 }
 
@@ -67,17 +70,13 @@ private extension ProductImage {
 //
 extension ProductImage: Comparable {
     public static func == (lhs: ProductImage, rhs: ProductImage) -> Bool {
-        return lhs.imageID == rhs.imageID &&
-            lhs.dateCreated == rhs.dateCreated &&
-            lhs.dateModified == rhs.dateModified &&
-            lhs.src == rhs.src &&
-            lhs.name == rhs.name &&
-            lhs.alt == rhs.alt
+        return lhs.imageID == rhs.imageID && lhs.dateCreated == rhs.dateCreated && lhs.dateModified == rhs.dateModified && lhs.src == rhs.src && lhs.name == rhs
+            .name && lhs.alt == rhs.alt
     }
 
     public static func < (lhs: ProductImage, rhs: ProductImage) -> Bool {
-        return lhs.imageID < rhs.imageID ||
-            (lhs.imageID == rhs.imageID && lhs.dateCreated < rhs.dateCreated) ||
-            (lhs.imageID == rhs.imageID && lhs.dateCreated == rhs.dateCreated && lhs.src < rhs.src)
+        return lhs.imageID < rhs.imageID || (lhs.imageID == rhs.imageID && lhs.dateCreated < rhs.dateCreated) || (
+            lhs.imageID == rhs.imageID && lhs.dateCreated == rhs.dateCreated && lhs.src < rhs.src
+        )
     }
 }

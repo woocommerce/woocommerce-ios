@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents an Apple Push Notifications Service Device.
 ///
 public struct APNSDevice {

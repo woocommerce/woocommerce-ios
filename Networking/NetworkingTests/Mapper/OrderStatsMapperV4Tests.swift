@@ -1,6 +1,6 @@
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// OrderStatsV4Mapper Unit Tests
 ///
@@ -215,45 +215,46 @@ final class OrderStatsV4MapperTests: XCTestCase {
     }
 }
 
-private extension OrderStatsV4MapperTests {
+extension OrderStatsV4MapperTests {
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-hour`
     ///
-    func mapOrderStatsWithHourlyUnitResponse() -> OrderStatsV4? {
+    fileprivate func mapOrderStatsWithHourlyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-hour", granularity: .hourly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
     ///
-    func mapOrderStatsWithDailyUnitResponse() -> OrderStatsV4? {
+    fileprivate func mapOrderStatsWithDailyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-daily", granularity: .daily)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-default`
     ///
-    func mapOrderStatsWithWeeklyUnitResponse() -> OrderStatsV4? {
+    fileprivate func mapOrderStatsWithWeeklyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-defaults", granularity: .weekly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-month`
     ///
-    func mapOrderStatsWithMonthlyUnitResponse() -> OrderStatsV4? {
+    fileprivate func mapOrderStatsWithMonthlyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-month", granularity: .monthly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `order-stats-v4-year`
     ///
-    func mapOrderStatsWithYearlyUnitResponse() -> OrderStatsV4? {
+    fileprivate func mapOrderStatsWithYearlyUnitResponse() -> OrderStatsV4? {
         return mapStatItems(from: "order-stats-v4-year", granularity: .yearly)
     }
 
     /// Returns the OrderStatsV4Mapper output upon receiving `filename` (Data Encoded)
     ///
-    func mapStatItems(from filename: String, granularity: StatsGranularityV4) -> OrderStatsV4? {
+    fileprivate func mapStatItems(from filename: String, granularity: StatsGranularityV4) -> OrderStatsV4? {
         guard let response = Loader.contentsOf(filename) else {
             return nil
         }
 
-        return try! OrderStatsV4Mapper(siteID: Constants.siteID,
-                                       granularity: granularity).map(response: response)
+        return try! OrderStatsV4Mapper(
+            siteID: Constants.siteID,
+            granularity: granularity).map(response: response)
     }
 }

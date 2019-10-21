@@ -17,55 +17,55 @@ public class CurrencySettings {
         // A
         case AED, AFN, ALL, AMD, ANG, AOA, ARS, AUD, AWG, AZN,
         // B
-        BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BRL, BSD, BTC, BTN, BWP, BYR, BYN, BZD,
+            BAM, BBD, BDT, BGN, BHD, BIF, BMD, BND, BOB, BRL, BSD, BTC, BTN, BWP, BYR, BYN, BZD,
         // C
-        CAD, CDF, CHF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK,
+            CAD, CDF, CHF, CLP, CNY, COP, CRC, CUC, CUP, CVE, CZK,
         // D
-        DJF, DKK, DOP, DZD,
+            DJF, DKK, DOP, DZD,
         // E
-        EGP, ERN, ETB, EUR, FJD,
+            EGP, ERN, ETB, EUR, FJD,
         // F
-        FKP,
+            FKP,
         // G
-        GBP, GEL, GGP, GHS, GIP, GMD, GNF, GTQ, GYD,
+            GBP, GEL, GGP, GHS, GIP, GMD, GNF, GTQ, GYD,
         // H
-        HKD, HNL, HRK, HTG, HUF,
+            HKD, HNL, HRK, HTG, HUF,
         // I
-        IDR, ILS, IMP, INR, IQD, IRR, IRT, ISK,
+            IDR, ILS, IMP, INR, IQD, IRR, IRT, ISK,
         // J
-        JEP, JMD, JOD, JPY,
+            JEP, JMD, JOD, JPY,
         // K
-        KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT,
+            KES, KGS, KHR, KMF, KPW, KRW, KWD, KYD, KZT,
         // L
-        LAK, LBP, LKR, LRD, LSL, LYD,
+            LAK, LBP, LKR, LRD, LSL, LYD,
         // M
-        MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN,
+            MAD, MDL, MGA, MKD, MMK, MNT, MOP, MRO, MUR, MVR, MWK, MXN, MYR, MZN,
         // N
-        NAD, NGN, NIO, NOK, NPR, NZD,
+            NAD, NGN, NIO, NOK, NPR, NZD,
         // O
-        OMR,
+            OMR,
         // P
-        PAB, PEN, PGK, PHP, PKR, PLN, PRB, PYG,
+            PAB, PEN, PGK, PHP, PKR, PLN, PRB, PYG,
         // Q
-        QAR,
+            QAR,
         // R
-        RMB, RON, RSD, RUB, RWF,
+            RMB, RON, RSD, RUB, RWF,
         // S
-        SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLL, SOS, SRD, SSP, STD, SYP, SZL,
+            SAR, SBD, SCR, SDG, SEK, SGD, SHP, SLL, SOS, SRD, SSP, STD, SYP, SZL,
         // T
-        THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS,
+            THB, TJS, TMT, TND, TOP, TRY, TTD, TWD, TZS,
         // U
-        UAH, UGX, USD, UYU, UZS,
+            UAH, UGX, USD, UYU, UZS,
         // V
-        VEF, VND, VUV,
+            VEF, VND, VUV,
         // W
-        WST,
+            WST,
         // X
-        XAF, XCD, XOF, XPF,
+            XAF, XCD, XOF, XPF,
         // Y
-        YER,
+            YER,
         // Z
-        ZAR, ZMW
+            ZAR, ZMW
     }
 
     /// Designates where the currency symbol is located on a formatted price
@@ -93,6 +93,7 @@ public class CurrencySettings {
     /// Public variables, privately set
     ///
     public private(set) var currencyCode: CurrencyCode
+
     public private(set) var currencyPosition: CurrencyPosition
     public private(set) var thousandSeparator: String
     public private(set) var decimalSeparator: String
@@ -127,11 +128,12 @@ public class CurrencySettings {
     /// Provides sane defaults for when site settings aren't available
     ///
     convenience init() {
-        self.init(currencyCode: CurrencySettings.Default.code,
-                  currencyPosition: CurrencySettings.Default.position,
-                  thousandSeparator: CurrencySettings.Default.thousandSeparator,
-                  decimalSeparator: CurrencySettings.Default.decimalSeparator,
-                  numberOfDecimals: CurrencySettings.Default.decimalPosition)
+        self.init(
+            currencyCode: CurrencySettings.Default.code,
+            currencyPosition: CurrencySettings.Default.position,
+            thousandSeparator: CurrencySettings.Default.thousandSeparator,
+            decimalSeparator: CurrencySettings.Default.decimalSeparator,
+            numberOfDecimals: CurrencySettings.Default.decimalPosition)
     }
 
     /// Convenience Initializer:
@@ -535,9 +537,9 @@ extension CurrencySettings {
 
 // MARK: - Constants!
 //
-private extension CurrencySettings {
+extension CurrencySettings {
 
-    enum Constants {
+    fileprivate enum Constants {
         static let currencyCodeKey = "woocommerce_currency"
         static let currencyPositionKey = "woocommerce_currency_pos"
         static let thousandSeparatorKey = "woocommerce_price_thousand_sep"

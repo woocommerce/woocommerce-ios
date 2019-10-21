@@ -18,8 +18,8 @@ class TopPerformersSectionHeaderView: UIView {
     }
 }
 
-private extension TopPerformersSectionHeaderView {
-    func configureLabel(title: String) {
+extension TopPerformersSectionHeaderView {
+    fileprivate func configureLabel(title: String) {
         addSubview(label)
 
         label.text = title
@@ -28,19 +28,20 @@ private extension TopPerformersSectionHeaderView {
         label.textColor = StyleManager.sectionTitleColor
 
         label.translatesAutoresizingMaskIntoConstraints = false
-        NSLayoutConstraint.activate([
-            label.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
-            label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.labelInsets.left),
-            label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.labelInsets.right),
-            label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.labelInsets.bottom)
+        NSLayoutConstraint.activate(
+            [
+                label.topAnchor.constraint(greaterThanOrEqualTo: topAnchor),
+                label.leadingAnchor.constraint(equalTo: leadingAnchor, constant: Constants.labelInsets.left),
+                label.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -Constants.labelInsets.right),
+                label.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -Constants.labelInsets.bottom),
             ])
     }
 }
 
 // MARK: - Constants!
 //
-private extension TopPerformersSectionHeaderView {
-    enum Constants {
+extension TopPerformersSectionHeaderView {
+    fileprivate enum Constants {
         static let labelInsets = UIEdgeInsets(top: 0, left: 14, bottom: 6, right: 14)
     }
 }

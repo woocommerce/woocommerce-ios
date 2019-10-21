@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import Yosemite
 
-
 // MARK: - OrderLoaderViewController: Loads asynchronously an Order (given it's OrderID + SiteID).
 //         On Success the OrderDetailsViewController will be rendered "in place".
 //
@@ -75,11 +74,11 @@ class OrderLoaderViewController: UIViewController {
 
 // MARK: - Actions
 //
-private extension OrderLoaderViewController {
+extension OrderLoaderViewController {
 
     /// Loads (and displays) the specified Order.
     ///
-    func reloadOrder() {
+    fileprivate func reloadOrder() {
         let action = OrderAction.retrieveOrder(siteID: siteID, orderID: orderID) { [weak self] (order, error) in
             guard let self = self else {
                 return
@@ -102,25 +101,25 @@ private extension OrderLoaderViewController {
 
 // MARK: - Configuration
 //
-private extension OrderLoaderViewController {
+extension OrderLoaderViewController {
 
     /// Setup: Results Controller
     ///
-    func configureResultsController() {
+    fileprivate func configureResultsController() {
         // Order status FRC
         try? statusResultsController.performFetch()
     }
 
     /// Setup: Navigation
     ///
-    func configureNavigationItem() {
+    fileprivate func configureNavigationItem() {
         title = NSLocalizedString("Loading Order", comment: "Displayed when an Order is being retrieved")
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: Main View
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         view.addSubview(activityIndicator)
         view.pinSubviewAtCenter(activityIndicator)
@@ -128,7 +127,7 @@ private extension OrderLoaderViewController {
 
     /// Setup: Spinner
     ///
-    func configureSpinner() {
+    fileprivate func configureSpinner() {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
     }
@@ -137,23 +136,23 @@ private extension OrderLoaderViewController {
 
 // MARK: - Overlays
 //
-private extension OrderLoaderViewController {
+extension OrderLoaderViewController {
 
     /// Starts the Spinner
     ///
-    func startSpinner() {
+    fileprivate func startSpinner() {
         activityIndicator.startAnimating()
     }
 
     /// Stops the Spinner
     ///
-    func stopSpinner() {
+    fileprivate func stopSpinner() {
         activityIndicator.stopAnimating()
     }
 
     /// Displays the Loading Overlay.
     ///
-    func displayFailureOverlay() {
+    fileprivate func displayFailureOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("The Order couldn't be loaded!", comment: "Fetching an Order Failed")
@@ -167,7 +166,7 @@ private extension OrderLoaderViewController {
 
     /// Removes all of the the OverlayMessageView instances in the view hierarchy.
     ///
-    func removeAllOverlays() {
+    fileprivate func removeAllOverlays() {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
@@ -175,7 +174,7 @@ private extension OrderLoaderViewController {
 
     /// Presents the OrderDetailsViewController, as a childViewController, for a given Order.
     ///
-    func presentOrderDetails(for order: Order) {
+    fileprivate func presentOrderDetails(for order: Order) {
         let identifier = OrderDetailsViewController.classNameWithoutNamespaces
         guard let detailsViewController = UIStoryboard.orders.instantiateViewController(withIdentifier: identifier) as? OrderDetailsViewController else {
             fatalError()
@@ -195,7 +194,7 @@ private extension OrderLoaderViewController {
 
     /// Removes all of the children UIViewControllers
     ///
-    func detachChildrenViewControllers() {
+    fileprivate func detachChildrenViewControllers() {
         for child in children {
             child.view.removeFromSuperview()
             child.removeFromParent()
@@ -207,11 +206,11 @@ private extension OrderLoaderViewController {
 
 // MARK: - UI Methods
 //
-private extension OrderLoaderViewController {
+extension OrderLoaderViewController {
 
     /// Attaches a given Subview, and ensures it's pinned to all the edges
     ///
-    func attachSubview(_ subview: UIView) {
+    fileprivate func attachSubview(_ subview: UIView) {
         subview.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(subview)
         view.pinSubviewToAllEdges(subview)
@@ -221,9 +220,9 @@ private extension OrderLoaderViewController {
 
 // MARK: - Private Helpers
 //
-private extension OrderLoaderViewController {
+extension OrderLoaderViewController {
 
-    func lookUpOrderStatus(for statusKey: String) -> OrderStatus? {
+    fileprivate func lookUpOrderStatus(for statusKey: String) -> OrderStatus? {
         for orderStatus in currentSiteStatuses where orderStatus.slug == statusKey {
             return orderStatus
         }
@@ -235,11 +234,11 @@ private extension OrderLoaderViewController {
 
 // MARK: - Finite State Machine Management
 //
-private extension OrderLoaderViewController {
+extension OrderLoaderViewController {
 
     /// Runs whenever the FSM enters a State.
     ///
-    func didEnter(state: State) {
+    fileprivate func didEnter(state: State) {
         switch state {
         case .loading:
             startSpinner()
@@ -252,7 +251,7 @@ private extension OrderLoaderViewController {
 
     /// Runs whenever the FSM leaves a State.
     ///
-    func didLeave(state: State) {
+    fileprivate func didLeave(state: State) {
         switch state {
         case .loading:
             stopSpinner()

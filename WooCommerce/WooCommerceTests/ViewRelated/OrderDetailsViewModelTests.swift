@@ -1,6 +1,7 @@
 import XCTest
-@testable import Yosemite
+
 @testable import WooCommerce
+@testable import Yosemite
 
 final class OrderDetailsViewModelTests: XCTestCase {
     private var order: Order!
@@ -21,13 +22,14 @@ final class OrderDetailsViewModelTests: XCTestCase {
     }
 
     func testDeleteTrackingFiresOrderTrackingDeleteTracksEvent() {
-        let mockShipmentTracking = ShipmentTracking(siteID: 1111,
-                                                    orderID: 1111,
-                                                    trackingID: "1111",
-                                                    trackingNumber: "1111",
-                                                    trackingProvider: nil,
-                                                    trackingURL: nil,
-                                                    dateShipped: nil)
+        let mockShipmentTracking = ShipmentTracking(
+            siteID: 1111,
+            orderID: 1111,
+            trackingID: "1111",
+            trackingNumber: "1111",
+            trackingProvider: nil,
+            trackingURL: nil,
+            dateShipped: nil)
 
         viewModel.deleteTracking(mockShipmentTracking) { _ in }
 

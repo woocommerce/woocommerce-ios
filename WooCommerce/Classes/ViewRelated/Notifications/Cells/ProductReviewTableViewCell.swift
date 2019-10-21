@@ -1,7 +1,6 @@
 import Foundation
-import UIKit
 import Gridicons
-
+import UIKit
 
 // MARK: - ProductReviewTableViewCell
 //
@@ -92,34 +91,34 @@ final class ProductReviewTableViewCell: UITableViewCell {
 
 // MARK: - Private
 //
-private extension ProductReviewTableViewCell {
+extension ProductReviewTableViewCell {
 
     /// Refreshes the Cell's Colors.
     ///
-    func refreshColors() {
+    fileprivate func refreshColors() {
         sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
     }
 
-    func configureSubjectLabel() {
+    fileprivate func configureSubjectLabel() {
         subjectLabel.applyBodyStyle()
     }
 
-    func configureSnippetLabel() {
+    fileprivate func configureSnippetLabel() {
         snippetLabel.applySecondaryFootnoteStyle()
         snippetLabel.numberOfLines = 2
     }
 
-    func configureNoticonLabel() {
+    fileprivate func configureNoticonLabel() {
         noticonLabel.font = UIFont.noticon(forStyle: .body, baseSize: 25.0)
     }
 
-    func configureStarView() {
+    fileprivate func configureStarView() {
         starRatingView.starImage = Star.filledImage
         starRatingView.emptyStarImage = Star.emptyImage
         starRatingView.isHidden = (starRating == nil)
     }
 
-    func initialiseReadStateToFalse() {
+    fileprivate func initialiseReadStateToFalse() {
         read = false
     }
 }
@@ -127,15 +126,15 @@ private extension ProductReviewTableViewCell {
 
 // MARK: - Constants!
 //
-private extension ProductReviewTableViewCell {
+extension ProductReviewTableViewCell {
 
-    enum Star {
+    fileprivate enum Star {
         static let size = Double(13)
         static let filledImage = UIImage.starImage(size: Star.size, tintColor: StyleManager.yellowStarColor)
         static let emptyImage = UIImage.starImage(size: Star.size, tintColor: .clear)
     }
 
-    enum Constants {
+    fileprivate enum Constants {
         static let cornerRadius = CGFloat(2.0)
     }
 }

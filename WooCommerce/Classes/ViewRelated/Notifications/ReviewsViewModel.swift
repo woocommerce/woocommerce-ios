@@ -3,7 +3,6 @@ import UIKit
 import WordPressUI
 import Yosemite
 
-
 final class ReviewsViewModel {
     private let data: ReviewsDataSource
 
@@ -154,10 +153,10 @@ extension ReviewsViewModel {
     }
 }
 
-private extension ReviewsViewModel {
+extension ReviewsViewModel {
     /// Marks a specific Notification as read.
     ///
-    func markAsReadIfNeeded(note: Note) {
+    fileprivate func markAsReadIfNeeded(note: Note) {
         guard note.read == false else {
             return
         }
@@ -172,7 +171,7 @@ private extension ReviewsViewModel {
 
     /// Marks the specified collection of Notifications as Read.
     ///
-    func markAsRead(notes: [Note], onCompletion: @escaping (Error?) -> Void) {
+    fileprivate func markAsRead(notes: [Note], onCompletion: @escaping (Error?) -> Void) {
         let identifiers = notes.map { $0.noteId }
         let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true, onCompletion: onCompletion)
 
@@ -180,8 +179,8 @@ private extension ReviewsViewModel {
     }
 }
 
-private extension ReviewsViewModel {
-    enum Settings {
+extension ReviewsViewModel {
+    fileprivate enum Settings {
         static let placeholderRowsPerSection = [3]
     }
 }

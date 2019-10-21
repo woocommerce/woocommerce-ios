@@ -1,7 +1,7 @@
-import XCTest
 import Networking
-@testable import WooCommerce
+import XCTest
 
+@testable import WooCommerce
 
 /// StoresManager Unit Tests
 ///

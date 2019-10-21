@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// SiteSettings: Remote Endpoints
 ///
@@ -38,10 +37,10 @@ public class SiteSettingsRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension SiteSettingsRemote {
-    enum Constants {
-        static let siteSettingsPath: String       = "settings/"
-        static let generalSettingsGroup: String   = "general"
-        static let productSettingsGroup: String   = "products"
+extension SiteSettingsRemote {
+    fileprivate enum Constants {
+        static let siteSettingsPath: String = "settings/"
+        static let generalSettingsGroup: String = "general"
+        static let productSettingsGroup: String = "products"
     }
 }

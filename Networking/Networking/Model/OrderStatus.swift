@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents an OrderStatus Entity.
 ///
 public struct OrderStatus: Decodable {
@@ -34,16 +33,16 @@ public struct OrderStatus: Decodable {
         let slug = try container.decode(String.self, forKey: .slug)
         let total = try container.decode(Int.self, forKey: .total)
 
-        self.init(name: name, siteID: siteID, slug: slug, total: total) // initialize the struct
+        self.init(name: name, siteID: siteID, slug: slug, total: total)  // initialize the struct
     }
 }
 
 
 /// Defines all of the OrderStatus's CodingKeys.
 ///
-private extension OrderStatus {
+extension OrderStatus {
 
-    enum CodingKeys: String, CodingKey {
+    fileprivate enum CodingKeys: String, CodingKey {
         case name
         case slug
         case total
@@ -55,14 +54,11 @@ private extension OrderStatus {
 //
 extension OrderStatus: Comparable {
     public static func == (lhs: OrderStatus, rhs: OrderStatus) -> Bool {
-        return lhs.name == rhs.name &&
-            lhs.slug == rhs.slug &&
-            lhs.total == rhs.total
+        return lhs.name == rhs.name && lhs.slug == rhs.slug && lhs.total == rhs.total
     }
 
     public static func < (lhs: OrderStatus, rhs: OrderStatus) -> Bool {
-        return lhs.total < rhs.total ||
-            (lhs.total == rhs.total && lhs.slug < rhs.slug)
+        return lhs.total < rhs.total || (lhs.total == rhs.total && lhs.slug < rhs.slug)
     }
 }
 

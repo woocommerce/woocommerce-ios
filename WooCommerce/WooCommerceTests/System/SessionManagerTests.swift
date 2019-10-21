@@ -1,7 +1,7 @@
 import XCTest
-@testable import WooCommerce
 import Yosemite
 
+@testable import WooCommerce
 
 /// SessionManager Unit Tests
 ///

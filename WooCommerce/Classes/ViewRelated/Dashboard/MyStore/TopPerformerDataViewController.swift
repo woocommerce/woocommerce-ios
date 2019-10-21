@@ -1,9 +1,8 @@
-import UIKit
-import Yosemite
 import Charts
-import XLPagerTabStrip
+import UIKit
 import WordPressUI
-
+import XLPagerTabStrip
+import Yosemite
 
 class TopPerformerDataViewController: UIViewController {
 
@@ -92,9 +91,11 @@ extension TopPerformerDataViewController {
             return
         }
 
-        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID,
-                                                        granularity: granularity,
-                                                        latestDateToInclude: Date()) { [weak self] error in
+        let action = StatsAction.retrieveTopEarnerStats(
+            siteID: siteID,
+            granularity: granularity,
+            latestDateToInclude: Date()
+        ) { [weak self] error in
 
             guard let `self` = self else {
                 return
@@ -116,9 +117,10 @@ extension TopPerformerDataViewController {
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func displayGhostContent() {
-        let options = GhostOptions(displaysSectionHeader: false,
-                                   reuseIdentifier: ProductTableViewCell.reuseIdentifier,
-                                   rowsPerSection: Constants.placeholderRowsPerSection)
+        let options = GhostOptions(
+            displaysSectionHeader: false,
+            reuseIdentifier: ProductTableViewCell.reuseIdentifier,
+            rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
     }
 
@@ -134,13 +136,13 @@ extension TopPerformerDataViewController {
 
 // MARK: - Configuration
 //
-private extension TopPerformerDataViewController {
+extension TopPerformerDataViewController {
 
-    func configureView() {
+    fileprivate func configureView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
-    func configureTableView() {
+    fileprivate func configureTableView() {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.separatorColor = StyleManager.cellSeparatorColor
         tableView.allowsSelection = false
@@ -149,7 +151,7 @@ private extension TopPerformerDataViewController {
         tableView.tableFooterView = Constants.emptyView
     }
 
-    func configureResultsController() {
+    fileprivate func configureResultsController() {
         resultsController.onDidChangeContent = { [weak self] in
             self?.tableView.reloadData()
         }
@@ -159,7 +161,7 @@ private extension TopPerformerDataViewController {
         try? resultsController.performFetch()
     }
 
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         let cells = [ProductTableViewCell.self, NoPeriodDataTableViewCell.self]
 
         for cell in cells {
@@ -167,7 +169,7 @@ private extension TopPerformerDataViewController {
         }
     }
 
-    func registerTableViewHeaderFooters() {
+    fileprivate func registerTableViewHeaderFooters() {
         let headersAndFooters = [TopPerformersHeaderView.self]
 
         for kind in headersAndFooters {
@@ -203,9 +205,10 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             fatalError()
         }
 
-        cell.configure(descriptionText: Text.sectionDescription,
-                       leftText: Text.sectionLeftColumn.uppercased(),
-                       rightText: Text.sectionRightColumn.uppercased())
+        cell.configure(
+            descriptionText: Text.sectionDescription,
+            leftText: Text.sectionLeftColumn.uppercased(),
+            rightText: Text.sectionRightColumn.uppercased())
         return cell
     }
 
@@ -214,8 +217,11 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             return tableView.dequeueReusableCell(withIdentifier: NoPeriodDataTableViewCell.reuseIdentifier, for: indexPath)
         }
 
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: ProductTableViewCell.reuseIdentifier,
-                                                       for: indexPath) as? ProductTableViewCell else {
+        guard
+            let cell = tableView.dequeueReusableCell(
+                withIdentifier: ProductTableViewCell.reuseIdentifier,
+                for: indexPath) as? ProductTableViewCell
+        else {
             fatalError()
         }
 
@@ -245,9 +251,9 @@ extension TopPerformerDataViewController: UITableViewDelegate {
 
 // MARK: - Private Helpers
 //
-private extension TopPerformerDataViewController {
+extension TopPerformerDataViewController {
 
-    func trackChangedTabIfNeeded() {
+    fileprivate func trackChangedTabIfNeeded() {
         // This is a little bit of a workaround to prevent the "tab tapped" tracks event from firing when launching the app.
         if granularity == .day && isInitialLoad {
             isInitialLoad = false
@@ -257,7 +263,7 @@ private extension TopPerformerDataViewController {
         isInitialLoad = false
     }
 
-    func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
+    fileprivate func statsItem(at indexPath: IndexPath) -> TopEarnerStatsItem? {
         guard let topEarnerStatsItem = topEarnerStats?.items?.sorted(by: >)[safe: indexPath.row] else {
             return nil
         }
@@ -265,7 +271,7 @@ private extension TopPerformerDataViewController {
         return topEarnerStatsItem
     }
 
-    func numberOfRows() -> Int {
+    fileprivate func numberOfRows() -> Int {
         guard hasTopEarnerStatsItems, let itemCount = topEarnerStats?.items?.count else {
             return Constants.emptyStateRowCount
         }
@@ -276,20 +282,22 @@ private extension TopPerformerDataViewController {
 
 // MARK: - Constants!
 //
-private extension TopPerformerDataViewController {
-    enum Text {
-        static let sectionDescription = NSLocalizedString("Gain insights into how products are performing on your store",
-                                                          comment: "Description for Top Performers section of My Store tab.")
+extension TopPerformerDataViewController {
+    fileprivate enum Text {
+        static let sectionDescription = NSLocalizedString(
+            "Gain insights into how products are performing on your store",
+            comment: "Description for Top Performers section of My Store tab.")
+
         static let sectionLeftColumn = NSLocalizedString("Product", comment: "Description for Top Performers left column header")
         static let sectionRightColumn = NSLocalizedString("Total Spend", comment: "Description for Top Performers right column header")
     }
 
-    enum Constants {
-        static let estimatedRowHeight           = CGFloat(80)
-        static let estimatedSectionHeight       = CGFloat(125)
-        static let numberOfSections             = 1
-        static let emptyStateRowCount           = 1
-        static let emptyView                    = UIView(frame: .zero)
-        static let placeholderRowsPerSection    = [3]
+    fileprivate enum Constants {
+        static let estimatedRowHeight = CGFloat(80)
+        static let estimatedSectionHeight = CGFloat(125)
+        static let numberOfSections = 1
+        static let emptyStateRowCount = 1
+        static let emptyView = UIView(frame: .zero)
+        static let placeholderRowsPerSection = [3]
     }
 }

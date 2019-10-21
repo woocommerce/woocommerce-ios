@@ -51,8 +51,8 @@ final class TopBannerView: UIView {
     }
 }
 
-private extension TopBannerView {
-    func configureSubviews() {
+extension TopBannerView {
+    fileprivate func configureSubviews() {
         configureBackground()
 
         let contentView = createContentView()
@@ -75,7 +75,7 @@ private extension TopBannerView {
         actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
     }
 
-    func configureSubviews(viewModel: TopBannerViewModel) {
+    fileprivate func configureSubviews(viewModel: TopBannerViewModel) {
         if let title = viewModel.title, !title.isEmpty {
             titleLabel.text = title
         } else {
@@ -95,11 +95,11 @@ private extension TopBannerView {
         actionButton.setTitle(viewModel.actionButtonTitle, for: .normal)
     }
 
-    func configureBackground() {
+    fileprivate func configureBackground() {
         backgroundColor = .white
     }
 
-    func createContentView() -> UIView {
+    fileprivate func createContentView() -> UIView {
         let textStackView = UIStackView(arrangedSubviews: [titleLabel, infoLabel])
         textStackView.translatesAutoresizingMaskIntoConstraints = false
         textStackView.axis = .vertical
@@ -118,7 +118,7 @@ private extension TopBannerView {
         return contentStackView
     }
 
-    func createContentContainerView(contentView: UIView) -> UIView {
+    fileprivate func createContentContainerView(contentView: UIView) -> UIView {
         let contentContainerView = UIView(frame: .zero)
         contentContainerView.translatesAutoresizingMaskIntoConstraints = false
         contentContainerView.addSubview(contentView)
@@ -126,25 +126,26 @@ private extension TopBannerView {
         return contentContainerView
     }
 
-    func createTopLevelView(contentContainerView: UIView) -> UIView {
+    fileprivate func createTopLevelView(contentContainerView: UIView) -> UIView {
         let stackView = UIStackView(arrangedSubviews: [contentContainerView, createBorderView(), actionButton, createBorderView()])
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
 
-    func createBorderView() -> UIView {
+    fileprivate func createBorderView() -> UIView {
         let view = UIView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = StyleManager.wooGreyBorder
-        NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalToConstant: 1)
+        NSLayoutConstraint.activate(
+            [
+                view.heightAnchor.constraint(equalToConstant: 1),
             ])
         return view
     }
 }
 
-private extension TopBannerView {
+extension TopBannerView {
     @objc private func onDismissButtonTapped() {
         onDismiss()
     }

@@ -1,13 +1,12 @@
 import Foundation
 
-
 /// Represents a ProductStockStatus Entity.
 ///
 public enum ProductStockStatus: Decodable, Hashable {
     case inStock
     case outOfStock
     case onBackOrder
-    case custom(String) // in case there are extensions modifying product stock statuses
+    case custom(String)  // in case there are extensions modifying product stock statuses
 }
 
 
@@ -34,10 +33,10 @@ extension ProductStockStatus: RawRepresentable {
     ///
     public var rawValue: String {
         switch self {
-        case .inStock:              return Keys.inStock
-        case .outOfStock:           return Keys.outOfStock
-        case .onBackOrder:          return Keys.onBackOrder
-        case .custom(let payload):  return payload
+        case .inStock: return Keys.inStock
+        case .outOfStock: return Keys.outOfStock
+        case .onBackOrder: return Keys.onBackOrder
+        case .custom(let payload): return payload
         }
     }
 
@@ -52,7 +51,7 @@ extension ProductStockStatus: RawRepresentable {
         case .onBackOrder:
             return NSLocalizedString("On back order", comment: "Display label for the product's inventory stock status")
         case .custom(let payload):
-            return payload // unable to localize at runtime.
+            return payload  // unable to localize at runtime.
         }
     }
 }
@@ -61,7 +60,7 @@ extension ProductStockStatus: RawRepresentable {
 /// Enum containing the 'Known' Product Stock Status Keys
 ///
 private enum Keys {
-    static let inStock     = "instock"
-    static let outOfStock  = "outofstock"
+    static let inStock = "instock"
+    static let outOfStock = "outofstock"
     static let onBackOrder = "onbackorder"
 }

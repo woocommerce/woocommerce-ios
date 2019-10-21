@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 
-
 /// UIImageView with a circular shape.
 ///
 class CircularImageView: UIImageView {

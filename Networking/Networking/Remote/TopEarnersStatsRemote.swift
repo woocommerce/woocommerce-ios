@@ -1,6 +1,5 @@
-import Foundation
 import Alamofire
-
+import Foundation
 
 /// TopEarnersStats: Remote Endpoints
 ///
@@ -18,15 +17,19 @@ public class TopEarnersStatsRemote: Remote {
     ///
     /// Note: `latestDateToInclude` string must be formatted appropriately given the `unit` param. See: `DateFormatter.Stats` extension for some helper funcs.
     ///
-    public func loadTopEarnersStats(for siteID: Int,
-                                    unit: StatGranularity,
-                                    latestDateToInclude: String,
-                                    limit: Int,
-                                    completion: @escaping (TopEarnerStats?, Error?) -> Void) {
+    public func loadTopEarnersStats(
+        for siteID: Int,
+        unit: StatGranularity,
+        latestDateToInclude: String,
+        limit: Int,
+        completion: @escaping (TopEarnerStats?, Error?) -> Void
+    ) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.topEarnersStatsPath)/"
-        let parameters = [ParameterKeys.unit: unit.rawValue,
-                          ParameterKeys.date: latestDateToInclude,
-                          ParameterKeys.limit: String(limit)]
+        let parameters = [
+            ParameterKeys.unit: unit.rawValue,
+            ParameterKeys.date: latestDateToInclude,
+            ParameterKeys.limit: String(limit),
+        ]
         let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path, parameters: parameters)
         let mapper = TopEarnerStatsMapper()
         enqueue(request, mapper: mapper, completion: completion)
@@ -36,15 +39,15 @@ public class TopEarnersStatsRemote: Remote {
 
 // MARK: - Constants!
 //
-private extension TopEarnersStatsRemote {
-    enum Constants {
-        static let sitesPath: String            = "sites"
-        static let topEarnersStatsPath: String  = "stats/top-earners"
+extension TopEarnersStatsRemote {
+    fileprivate enum Constants {
+        static let sitesPath: String = "sites"
+        static let topEarnersStatsPath: String = "stats/top-earners"
     }
 
-    enum ParameterKeys {
-        static let unit: String     = "unit"
-        static let date: String     = "date"
-        static let limit: String    = "limit"
+    fileprivate enum ParameterKeys {
+        static let unit: String = "unit"
+        static let date: String = "date"
+        static let limit: String = "limit"
     }
 }

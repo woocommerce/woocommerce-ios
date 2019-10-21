@@ -1,5 +1,5 @@
-import UIKit
 import Gridicons
+import UIKit
 
 class TextViewTableViewCell: UITableViewCell {
 
@@ -46,12 +46,12 @@ extension TextViewTableViewCell: UITextViewDelegate {
     }
 }
 
-private extension TextViewTableViewCell {
-    func configureBackground() {
+extension TextViewTableViewCell {
+    fileprivate func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    func configureTextView() {
+    fileprivate func configureTextView() {
         noteTextView.delegate = self
         // Overriding the textview user interface style until Dark Mode
         // is fully supported

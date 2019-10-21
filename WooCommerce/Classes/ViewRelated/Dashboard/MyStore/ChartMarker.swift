@@ -1,6 +1,5 @@
-import Foundation
 import Charts
-
+import Foundation
 
 /// This class is a custom view which is displayed over a chart element (e.g. a Bar) when it is highlighted.
 ///
@@ -14,7 +13,7 @@ class ChartMarker: MarkerImage {
     @objc open var insets: UIEdgeInsets
     @objc open var minimumSize = CGSize()
 
-    private  var label: String?
+    private var label: String?
     private var _labelSize: CGSize = CGSize()
     private var _paragraphStyle: NSMutableParagraphStyle?
     private var _drawAttributes = [NSAttributedString.Key: AnyObject]()
@@ -88,61 +87,77 @@ class ChartMarker: MarkerImage {
 
         if offset.y > 0 {
             context.beginPath()
-            context.move(to: CGPoint(
-                x: rect.origin.x,
-                y: rect.origin.y + arrowSize.height))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
-                y: rect.origin.y + arrowSize.height))
+            context.move(
+                to: CGPoint(
+                    x: rect.origin.x,
+                    y: rect.origin.y + arrowSize.height))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
+                    y: rect.origin.y + arrowSize.height))
 
             // Arrow vertex
-            context.addLine(to: CGPoint(
-                x: point.x,
-                y: point.y))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
-                y: rect.origin.y + arrowSize.height))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x + rect.size.width,
-                y: rect.origin.y + arrowSize.height))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x + rect.size.width,
-                y: rect.origin.y + rect.size.height))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x,
-                y: rect.origin.y + rect.size.height))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x,
-                y: rect.origin.y + arrowSize.height))
+            context.addLine(
+                to: CGPoint(
+                    x: point.x,
+                    y: point.y))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
+                    y: rect.origin.y + arrowSize.height))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x + rect.size.width,
+                    y: rect.origin.y + arrowSize.height))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x + rect.size.width,
+                    y: rect.origin.y + rect.size.height))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x,
+                    y: rect.origin.y + rect.size.height))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x,
+                    y: rect.origin.y + arrowSize.height))
             context.fillPath()
         } else {
             context.beginPath()
-            context.move(to: CGPoint(
-                x: rect.origin.x,
-                y: rect.origin.y))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x + rect.size.width,
-                y: rect.origin.y))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x + rect.size.width,
-                y: rect.origin.y + rect.size.height - arrowSize.height))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
-                y: rect.origin.y + rect.size.height - arrowSize.height))
+            context.move(
+                to: CGPoint(
+                    x: rect.origin.x,
+                    y: rect.origin.y))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x + rect.size.width,
+                    y: rect.origin.y))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x + rect.size.width,
+                    y: rect.origin.y + rect.size.height - arrowSize.height))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
+                    y: rect.origin.y + rect.size.height - arrowSize.height))
 
             //Arrow vertex
-            context.addLine(to: CGPoint(
-                x: point.x,
-                y: point.y))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
-                y: rect.origin.y + rect.size.height - arrowSize.height))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x,
-                y: rect.origin.y + rect.size.height - arrowSize.height))
-            context.addLine(to: CGPoint(
-                x: rect.origin.x,
-                y: rect.origin.y))
+            context.addLine(
+                to: CGPoint(
+                    x: point.x,
+                    y: point.y))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
+                    y: rect.origin.y + rect.size.height - arrowSize.height))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x,
+                    y: rect.origin.y + rect.size.height - arrowSize.height))
+            context.addLine(
+                to: CGPoint(
+                    x: rect.origin.x,
+                    y: rect.origin.y))
             context.fillPath()
         }
 
@@ -185,9 +200,9 @@ class ChartMarker: MarkerImage {
 
 // MARK: - Constants!
 //
-private extension ChartMarker {
-    enum Constants {
-        static let arrowSize                = CGSize(width: 20, height: 14)
-        static let offsetPadding: CGFloat   = 4.0
+extension ChartMarker {
+    fileprivate enum Constants {
+        static let arrowSize = CGSize(width: 20, height: 14)
+        static let offsetPadding: CGFloat = 4.0
     }
 }

@@ -1,12 +1,11 @@
 import Foundation
 
-
 /// Represents a SiteSettingGroup Entity.
 ///
 public enum SiteSettingGroup: Decodable, Hashable {
     case general
     case product
-    case custom(String) // catch-all
+    case custom(String)  // catch-all
 }
 
 
@@ -33,7 +32,7 @@ extension SiteSettingGroup: RawRepresentable {
         switch self {
         case .general: return Keys.general
         case .product: return Keys.product
-        case .custom(let payload):  return payload
+        case .custom(let payload): return payload
         }
     }
 }

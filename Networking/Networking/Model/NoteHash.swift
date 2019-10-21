@@ -1,6 +1,5 @@
 import Foundation
 
-
 // MARK: - NoteHash: [ID + Hash] for a given Notification.
 //
 public struct NoteHash: Decodable {

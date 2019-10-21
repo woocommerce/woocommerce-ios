@@ -1,8 +1,7 @@
 import Foundation
 import UIKit
-import Yosemite
 import WordPressUI
-
+import Yosemite
 
 /// SearchViewController: Displays the Search Interface for A Generic Model
 ///
@@ -76,9 +75,11 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// Designated Initializer
     ///
-    init(storeID: Int,
-         command: Command,
-         cellType: Cell.Type) {
+    init(
+        storeID: Int,
+        command: Command,
+        cellType: Cell.Type
+    ) {
         self.resultsController = command.createResultsController()
         self.searchUICommand = command
         self.storeID = storeID
@@ -203,17 +204,17 @@ where Cell.SearchModel == Command.CellViewModel {
 
 // MARK: - User Interface Initialization
 //
-private extension SearchViewController {
+extension SearchViewController {
 
     /// Setup: Main View
     ///
-    func configureMainView() {
+    fileprivate func configureMainView() {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Setup: TableView
     ///
-    func configureTableView() {
+    fileprivate func configureTableView() {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
@@ -222,14 +223,14 @@ private extension SearchViewController {
 
     /// Setup: Search Bar
     ///
-    func configureSearchBar() {
+    fileprivate func configureSearchBar() {
         searchBar.placeholder = searchUICommand.searchBarPlaceholder
         searchBar.tintColor = .black
     }
 
     /// Setup: Actions
     ///
-    func configureActions() {
+    fileprivate func configureActions() {
         let title = NSLocalizedString("Cancel", comment: "")
         cancelButton.setTitle(title, for: .normal)
         cancelButton.titleLabel?.font = UIFont.body
@@ -237,7 +238,7 @@ private extension SearchViewController {
 
     /// Setup: No Results
     ///
-    func configureEmptyStateLabel() {
+    fileprivate func configureEmptyStateLabel() {
         emptyStateLabel.text = searchUICommand.emptyStateText
         emptyStateLabel.textColor = StyleManager.wooGreyMid
         emptyStateLabel.font = .headline
@@ -247,33 +248,33 @@ private extension SearchViewController {
 
     /// Setup: Results Controller
     ///
-    func configureResultsController() {
+    fileprivate func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
     }
 
     /// Setup: Sync'ing Coordinator
     ///
-    func configureSyncingCoordinator() {
+    fileprivate func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
     }
 
     /// Registers all of the available TableViewCells
     ///
-    func registerTableViewCells() {
+    fileprivate func registerTableViewCells() {
         Cell.register(for: tableView)
     }
 
     /// Registers for all of the related Notifications
     ///
-    func startListeningToNotifications() {
+    fileprivate func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
     }
 
     /// Unregisters from the Notification Center
     ///
-    func stopListeningToNotifications() {
+    fileprivate func stopListeningToNotifications() {
         NotificationCenter.default.removeObserver(self)
     }
 }
@@ -287,17 +288,18 @@ extension SearchViewController: SyncingCoordinatorDelegate {
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
         let keyword = self.keyword
-        searchUICommand.synchronizeModels(siteID: storeID,
-                                        keyword: keyword,
-                                        pageNumber: pageNumber,
-                                        pageSize: pageSize,
-                                        onCompletion: { [weak self] isCompleted in
-                                            // Disregard OPs that don't really match the latest keyword
-                                            if keyword == self?.keyword {
-                                                self?.transitionToResultsUpdatedState()
-                                            }
-                                            onCompletion?(isCompleted)
-        })
+        searchUICommand.synchronizeModels(
+            siteID: storeID,
+            keyword: keyword,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            onCompletion: { [weak self] isCompleted in
+                // Disregard OPs that don't really match the latest keyword
+                if keyword == self?.keyword {
+                    self?.transitionToResultsUpdatedState()
+                }
+                onCompletion?(isCompleted)
+            })
         transitionToSyncingState()
     }
 }
@@ -305,11 +307,11 @@ extension SearchViewController: SyncingCoordinatorDelegate {
 
 // MARK: - Actions
 //
-private extension SearchViewController {
+extension SearchViewController {
 
     /// Updates the Predicate + Triggers a Sync Event
     ///
-    func synchronizeSearchResults(with keyword: String) {
+    fileprivate func synchronizeSearchResults(with keyword: String) {
         resultsController.predicate = NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
 
         tableView.setContentOffset(.zero, animated: false)
@@ -354,17 +356,17 @@ extension SearchViewController {
 
 // MARK: - Placeholders
 //
-private extension SearchViewController {
+extension SearchViewController {
 
     /// Displays the Empty State Legend.
     ///
-    func displayEmptyState() {
+    fileprivate func displayEmptyState() {
         emptyStateLabel.isHidden = false
     }
 
     /// Removes the Empty State Legend.
     ///
-    func removeEmptyState() {
+    fileprivate func removeEmptyState() {
         emptyStateLabel.isHidden = true
     }
 }
@@ -372,9 +374,9 @@ private extension SearchViewController {
 
 // MARK: - FSM
 //
-private extension SearchViewController {
+extension SearchViewController {
 
-    func didEnter(state: State) {
+    fileprivate func didEnter(state: State) {
         switch state {
         case .empty:
             displayEmptyState()
@@ -385,7 +387,7 @@ private extension SearchViewController {
         }
     }
 
-    func didLeave(state: State) {
+    fileprivate func didLeave(state: State) {
         switch state {
         case .empty:
             removeEmptyState()
@@ -398,13 +400,13 @@ private extension SearchViewController {
 
     /// Should be called before Sync'ing. Transitions to either `results` state.
     ///
-    func transitionToSyncingState() {
+    fileprivate func transitionToSyncingState() {
         state = .syncing
     }
 
     /// Should be called whenever new results have been retrieved. Transitions to `.results` / `.empty` accordingly.
     ///
-    func transitionToResultsUpdatedState() {
+    fileprivate func transitionToResultsUpdatedState() {
         state = isEmpty ? .empty : .results
     }
 }

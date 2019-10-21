@@ -1,4 +1,5 @@
 import XCTest
+
 @testable import WooCommerce
 
 final class AddManualCustomTrackingViewModelTests: XCTestCase {
@@ -9,12 +10,15 @@ final class AddManualCustomTrackingViewModelTests: XCTestCase {
         static let title = "Add Tracking"
         static let primaryActionTitle = "Add"
         static let sectionCount = 1
-        static let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
-                                                         .providerName,
-                                                         .trackingNumber,
-                                                         .trackingLink,
-                                                         .dateShipped,
-                                                         .datePicker]
+
+        static let trackingRows: [AddEditTrackingRow] = [
+            .shippingProvider,
+            .providerName,
+            .trackingNumber,
+            .trackingLink,
+            .dateShipped,
+            .datePicker,
+        ]
 
         static let accessoryType = UITableViewCell.AccessoryType.none
         static let initialName = "Hogsmeade"
@@ -49,6 +53,7 @@ final class AddManualCustomTrackingViewModelTests: XCTestCase {
     func testSecondaryActionTitleIsNil() {
         XCTAssertNil(subject?.secondaryActionTitle)
     }
+
     func testInitialTrackingNumberIsNil() {
         XCTAssertNil(subject?.trackingNumber)
     }

@@ -20,7 +20,7 @@ final class OrdersBadgeController {
         let tag = badgeTag(for: tab)
         if let subviews = tabBar.subviews[tab.visibleIndex()].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
-                subview.fadeOut() { _ in
+                subview.fadeOut { _ in
                     subview.removeFromSuperview()
                 }
             }
@@ -42,19 +42,19 @@ final class OrdersBadgeController {
 
         switch tabAxis {
         case .horizontal:
-            xOffset = showsNinePlusText ? Constants.xOffsetForNinePlusLandscape: Constants.xOffsetLandscape
-            yOffset = showsNinePlusText ? Constants.yOffsetForNinePlusLandscape: Constants.yOffsetLandscape
+            xOffset = showsNinePlusText ? Constants.xOffsetForNinePlusLandscape : Constants.xOffsetLandscape
+            yOffset = showsNinePlusText ? Constants.yOffsetForNinePlusLandscape : Constants.yOffsetLandscape
         case .vertical:
-            xOffset = showsNinePlusText ? Constants.xOffsetForNinePlus: Constants.xOffset
-            yOffset = showsNinePlusText ? Constants.yOffsetForNinePlus: Constants.yOffset
+            xOffset = showsNinePlusText ? Constants.xOffsetForNinePlus : Constants.xOffset
+            yOffset = showsNinePlusText ? Constants.yOffsetForNinePlus : Constants.yOffset
         }
 
         badgeLabel.frame.origin = CGPoint(x: xOffset, y: yOffset)
     }
 }
 
-private extension OrdersBadgeController {
-    func badgeView(tab: WooTab, in tabBar: UITabBar) -> UIView? {
+extension OrdersBadgeController {
+    fileprivate func badgeView(tab: WooTab, in tabBar: UITabBar) -> UIView? {
         let tag = badgeTag(for: tab)
         let subviews = tabBar.subviews[tab.visibleIndex()].subviews.first?.subviews
             .filter({ $0.tag == tag })
@@ -69,17 +69,17 @@ private extension OrdersBadgeController {
     /// If the two subviews assumption does not hold anymore with UIKit changes, `vertical` is returned.
     ///   1. The tab view (`UITabBarButton`) has two subviews - one for image and the other for text label
     ///   2. The tab layout is vertical if the subview with a larger min y has its min y larger than the max y of the other subview.
-    func tabLayoutAxis(tab: WooTab, in tabBar: UITabBar) -> UIView.Axis {
+    fileprivate func tabLayoutAxis(tab: WooTab, in tabBar: UITabBar) -> UIView.Axis {
         return tabBar.subviews[tab.visibleIndex()].axisOfTwoSubviews() ?? .vertical
     }
 }
 
 // MARK: - Constants!
 //
-private extension OrdersBadgeController {
+extension OrdersBadgeController {
 
-    enum Constants {
-        static let borderWidth  = CGFloat(1)
+    fileprivate enum Constants {
+        static let borderWidth = CGFloat(1)
         static let cornerRadius = CGFloat(8)
 
         static let width = CGFloat(18)
@@ -91,6 +91,7 @@ private extension OrdersBadgeController {
 
         // "9+" layout to account for longer text
         static let widthForNinePlus = CGFloat(24)
+
         static let xOffsetForNinePlus = CGFloat(10)
         static let yOffsetForNinePlus = CGFloat(-1)
         static let xOffsetForNinePlusLandscape = CGFloat(8)
@@ -104,9 +105,9 @@ private extension OrdersBadgeController {
         static let ninePlus = NSLocalizedString("9+", comment: "A badge with the number of orders. More than nine new orders.")
     }
 
-    func badge(for tab: WooTab, with text: String) -> BadgeLabel {
+    fileprivate func badge(for tab: WooTab, with text: String) -> BadgeLabel {
         let width: CGFloat
-        let horizontalPadding: CGFloat // Badge inset
+        let horizontalPadding: CGFloat  // Badge inset
 
         if text == Constants.ninePlus {
             width = Constants.widthForNinePlus
@@ -116,10 +117,12 @@ private extension OrdersBadgeController {
             horizontalPadding = Constants.horizontalPadding
         }
 
-        let returnValue = BadgeLabel(frame: CGRect(x: Constants.xOffset,
-                                                   y: Constants.yOffset,
-                                                   width: width,
-                                                   height: Constants.height))
+        let returnValue = BadgeLabel(
+            frame: CGRect(
+                x: Constants.xOffset,
+                y: Constants.yOffset,
+                width: width,
+                height: Constants.height))
 
         returnValue.tag = badgeTag(for: tab)
         returnValue.text = text
@@ -141,7 +144,7 @@ private extension OrdersBadgeController {
         return returnValue
     }
 
-    func badgeTag(for tab: WooTab) -> Int {
+    fileprivate func badgeTag(for tab: WooTab) -> Int {
         return tab.visibleIndex() + Constants.tagOffset
     }
 }

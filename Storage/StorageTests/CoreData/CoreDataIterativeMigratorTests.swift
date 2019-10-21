@@ -1,6 +1,7 @@
-import XCTest
 import CocoaLumberjack
 import CoreData
+import XCTest
+
 @testable import Storage
 
 class CoreDataIterativeMigratorTests: XCTestCase {
@@ -78,7 +79,8 @@ extension CoreDataIterativeMigratorTests {
 
         let bundle = Bundle(for: CoreDataManager.self)
         guard let path = bundle.paths(forResourcesOfType: "momd", inDirectory: nil).first,
-            let url = bundle.url(forResource: name, withExtension: "mom", subdirectory: URL(fileURLWithPath: path).lastPathComponent) else {
+            let url = bundle.url(forResource: name, withExtension: "mom", subdirectory: URL(fileURLWithPath: path).lastPathComponent)
+        else {
             fatalError("Missing Model Resource")
         }
 

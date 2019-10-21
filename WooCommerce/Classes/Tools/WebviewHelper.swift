@@ -1,8 +1,8 @@
 import Foundation
-import UIKit
 import SafariServices
+import UIKit
 
-final class WebviewHelper {
+enum WebviewHelper {
 
     /// Launch webview URLs using a common style.
     ///
@@ -12,9 +12,10 @@ final class WebviewHelper {
     ///
     static func launch(_ stringURL: String?, with sender: UIViewController) {
         guard let urlString = stringURL,
-            let url = URL(string: urlString) else {
-                DDLogError("Webview Helper Error - could not convert string to URL: \(String(describing: stringURL)).")
-                return
+            let url = URL(string: urlString)
+        else {
+            DDLogError("Webview Helper Error - could not convert string to URL: \(String(describing: stringURL)).")
+            return
         }
 
         launch(url, with: sender)

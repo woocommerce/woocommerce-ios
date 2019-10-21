@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
-@testable import Networking
 
+@testable import Networking
 
 /// WordPress.com Requests Unit Tests
 ///
@@ -26,7 +26,6 @@ class DotcomRequestTests: XCTestCase {
     private var sampleParametersForBody: String {
         return encodeAsBodyString(parameters: sampleParameters)
     }
-
 
 
     /// Verifies that the DotcomRequest's generated URL contains the `BaseURL + API Version + RPC Name`.
@@ -96,11 +95,11 @@ class DotcomRequestTests: XCTestCase {
 
 /// Parameter Encoding Helpers
 ///
-private extension DotcomRequestTests {
+extension DotcomRequestTests {
 
     /// Encodes the specified collection of Parameters for the URLRequest's httpBody
     ///
-    func encodeAsBodyString(parameters: [String: String]) -> String {
+    fileprivate func encodeAsBodyString(parameters: [String: String]) -> String {
         return parameters.reduce("") { (output, parameter) in
             let prefix = output.isEmpty ? "" : "&"
             return output + prefix + parameter.key + "=" + parameter.value

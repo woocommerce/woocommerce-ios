@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Mapper for an array of `ShipmentTracking` JSON objects
 ///
 struct ShipmentTrackingListMapper: Mapper {
@@ -24,7 +23,7 @@ struct ShipmentTrackingListMapper: Mapper {
         decoder.dateDecodingStrategy = .formatted(DateFormatter.Defaults.yearMonthDayDateFormatter)
         decoder.userInfo = [
             .siteID: siteID,
-            .orderID: orderID
+            .orderID: orderID,
         ]
 
         return try decoder.decode(ShipmentTrackingListEnvelope.self, from: response).shipmentTrackings

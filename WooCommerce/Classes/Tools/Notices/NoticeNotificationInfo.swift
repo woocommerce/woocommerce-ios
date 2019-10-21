@@ -1,6 +1,5 @@
 import Foundation
 
-
 /// Represents a Notice, for UNNotificationCenter Usage
 ///
 struct NoticeNotificationInfo {

@@ -1,6 +1,7 @@
 import XCTest
-@testable import WooCommerce
+
 @testable import Networking
+@testable import WooCommerce
 @testable import Yosemite
 
 final class ReviewsViewModelTests: XCTestCase {
@@ -96,7 +97,8 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
 
     var reviewsProductsIDs: [Int] {
         return reviews
-            .map { return $0.productID }
+            .map
+        { return $0.productID }
             .uniqued()
     }
 
@@ -169,7 +171,7 @@ final class MockReviewsStoresManager: DefaultStoresManager {
 
     private func onProductAction(_ action: ProductAction) {
         switch action {
-        case .retrieveProducts(_, _, onCompletion: let onCompletion):
+        case .retrieveProducts(_, _, let onCompletion):
             retrieveProductsIsHit = true
             onCompletion(nil)
         default:

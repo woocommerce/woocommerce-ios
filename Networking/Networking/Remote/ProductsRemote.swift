@@ -44,7 +44,7 @@ public class ProductsRemote: Remote {
     /// - Parameters:
     ///     - siteID: We are fetching remote products for this site.
     ///     - productIDs: The array of product IDs that are requested.
-    ///     - comletion: Closure to be executed upon completion.
+    ///     - completion: Closure to be executed upon completion.
     ///
     public func loadProducts(for siteID: Int, by productIDs: [Int], completion: @escaping ([Product]?, Error?) -> Void) {
         let stringOfProductIDs = productIDs.map { String($0) }

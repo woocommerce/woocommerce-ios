@@ -320,7 +320,7 @@ private extension OrderStore {
             }
         }
 
-        // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
+        // Now, remove any objects that exist in storageOrderItem.taxes but not in readOnlyOrderItem.taxes
         storageItem.taxes?.forEach { storageTax in
             if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
                 storageItem.removeFromTaxes(storageTax)

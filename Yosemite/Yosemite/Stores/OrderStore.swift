@@ -306,6 +306,29 @@ private extension OrderStore {
         }
     }
 
+    /// Updates, inserts, or prunes the provided StorageOrderItem's taxes using the provided read-only OrderItem
+    ///
+    private func handleOrderItemTaxes(_ readOnlyItem: Networking.OrderItem, _ storageItem: Storage.OrderItem, _ storage: StorageType) {
+        // Upsert the taxes from the read-only orderItem
+        for readOnlyTax in readOnlyItem.taxes {
+            if let existingStorageTax = storage.loadOrderItemTax(taxID: readOnlyTax.taxID) {
+                existingStorageTax.update(with: readOnlyTax)
+            } else {
+                let newStorageTax = storage.insertNewObject(ofType: Storage.OrderItemTax.self)
+                newStorageTax.update(with: readOnlyTax)
+                storageItem.addToTaxes(newStorageTax)
+            }
+        }
+
+        // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
+        storageItem.taxes?.forEach { storageTax in
+            if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+                storageItem.removeFromTaxes(storageTax)
+                storage.deleteObject(storageTax)
+            }
+        }
+    }
+
     /// Updates, inserts, or prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
     ///
     private func handleOrderCoupons(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {

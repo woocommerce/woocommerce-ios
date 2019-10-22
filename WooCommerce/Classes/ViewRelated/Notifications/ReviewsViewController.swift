@@ -120,7 +120,13 @@ final class ReviewsViewController: UIViewController {
     }
 
     func presentDetails(for noteId: Int) {
-        // TO BE IMPLEMENTED
+        viewModel.loadReview(for: noteId) { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.viewModel.delegate.presentReviewDetails(for: noteId, in: self)
+        }
     }
 }
 

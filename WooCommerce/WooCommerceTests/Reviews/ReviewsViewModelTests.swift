@@ -129,6 +129,9 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
     }
 
     func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {}
+
+    func presentReviewDetails(for noteId: Int, in viewController: UIViewController) {}
+
 }
 
 final class MockReviewsStoresManager: DefaultStoresManager {

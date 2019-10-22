@@ -129,6 +129,16 @@ final class MainTabBarController: UITabBarController {
         }
     }
 
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            guard let self = self else {
+                return
+            }
+            self.ordersBadge.updateBadgePosition(.orders, in: self.tabBar)
+        }
+    }
+
     // MARK: - Public Methods
 
     /// Switches the TabBarcController to the specified Tab
@@ -294,7 +304,6 @@ extension MainTabBarController {
             return
             }
 
-            //TODO. What to do when receiving a notification?
             reviewsViewController.presentDetails(for: noteID)
         }
         else {

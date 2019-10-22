@@ -207,14 +207,35 @@ public enum WooAnalyticsStat: String {
     case notificationReviewSpamTapped           = "review_detail_spam_button_tapped"
     case notificationShareStoreButtonTapped     = "notifications_share_your_store_button_tapped"
 
+    // Review View Events
+    //
+    case reviewsListPulledToRefresh             = "reviews_list_pulled_to_refresh"
+    case reviewsListReadAllTapped               = "reviews_list_menu_mark_read_button_tapped"
+    case reviewsShareStoreButtonTapped          = "reviews_share_your_store_button_tapped"
+
     // Notification Data/Action Events
     //
     case notificationListLoaded                 = "notifications_loaded"
+    case notificationsLoadFailed                = "notifications_load_failed"
     case notificationListFilter                 = "notifications_filter"
     case notificationReviewAction               = "review_action"
     case notificationReviewActionSuccess        = "review_action_success"
     case notificationReviewActionFailed         = "review_action_failed"
     case notificationReviewActionUndo           = "review_action_undo"
+
+    // Review Data/Action Events
+    case reviewLoaded                           = "review_loaded"
+    case reviewLoadFailed                       = "review_load_failed"
+    case reviewMarkRead                         = "review_mark_read"
+    case reviewMarkReadSuccess                  = "review_mark_read_success"
+    case reviewMarkReadFailed                   = "review_mark_read_failed"
+    case reviewsListLoaded                      = "reviews_loaded"
+    case reviewsListLoadFailed                  = "reviews_load_failed"
+    case reviewsMarkAllRead                     = "reviews_mark_all_read"
+    case reviewsMarkAllReadSuccess              = "reviews_mark_all_read_success"
+    case reviewsMarkAllReadFailed               = "reviews_mark_all_read_failed"
+    case reviewsProductsLoaded                  = "reviews_products_loaded"
+    case reviewsProductsLoadFailed              = "reviews_products_load_failed"
 
     // Jetpack Tunnel Events
     //

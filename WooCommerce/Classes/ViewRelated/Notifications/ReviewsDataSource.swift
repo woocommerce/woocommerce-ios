@@ -5,7 +5,13 @@ import Yosemite
 /// Adds a method to UITableViewDelegate so that we can
 /// trigger navigation from its implementation
 protocol ReviewsInteractionDelegate: UITableViewDelegate {
+    /// Called when users pick a review from the list
+    ///
     func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController)
+
+    /// Called when we want to present a review after receiving a push notification
+    ///
+    func presentReviewDetails(for noteId: Int, in viewController: UIViewController)
 }
 
 

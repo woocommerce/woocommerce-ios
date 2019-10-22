@@ -196,14 +196,19 @@ private extension ReviewsViewController {
 private extension ReviewsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
+        ServiceLocator.analytics.track(.reviewsListPulledToRefresh)
         synchronizeReviews {
             sender.endRefreshing()
         }
     }
 
     @IBAction func markAllAsRead() {
+        ServiceLocator.analytics.track(.reviewsListReadAllTapped)
+
         viewModel.markAllAsRead { [weak self] error in
+            let tracks = ServiceLocator.analytics
+            tracks.track(.reviewsMarkAllRead)
+
             guard let self = self else {
                 return
             }
@@ -211,10 +216,15 @@ private extension ReviewsViewController {
             if let error = error {
                 DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
                 self.hapticGenerator.notificationOccurred(.error)
+
+                tracks.track(.reviewsMarkAllReadFailed, withError: error)
             } else {
                 self.hapticGenerator.notificationOccurred(.success)
                 self.displayMarkAllAsReadNoticeIfNeeded()
+
+                tracks.track(.reviewsMarkAllReadSuccess)
             }
+            
             self.updateMarkAllReadButtonState()
             self.tableView.reloadData()
         }
@@ -317,7 +327,7 @@ private extension ReviewsViewController {
                 return
             }
 
-            ServiceLocator.analytics.track(.notificationShareStoreButtonTapped)
+            ServiceLocator.analytics.track(.reviewsShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 

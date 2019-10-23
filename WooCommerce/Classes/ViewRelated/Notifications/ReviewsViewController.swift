@@ -500,7 +500,6 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
-        print("==== sync page ", pageNumber)
         transitionToSyncingState()
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
             self?.transitionToResultsUpdatedState()

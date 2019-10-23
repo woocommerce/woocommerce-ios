@@ -84,6 +84,12 @@ final class ReviewsViewController: UIViewController {
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
+    /// Footer "Loading More" Spinner.
+    ///
+    private lazy var footerSpinnerView = {
+        return FooterSpinnerView(tableViewStyle: tableView.style)
+    }()
+
     // MARK: - View Lifecycle
 
     deinit {
@@ -181,6 +187,7 @@ private extension ReviewsViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
         tableView.dataSource = viewModel.dataSource
+        tableView.tableFooterView = footerSpinnerView
 
         // We decorate the delegate informally, because we want to intercept
         // didSelectItem:at: but delegate the rest of the implementation of
@@ -272,7 +279,7 @@ extension ReviewsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        viewModel.delegate.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+        viewModel.delegate.tableView(tableView, willDisplay: cell, forRowAt: indexPath, with: syncingCoordinator)
     }
 }
 
@@ -375,6 +382,7 @@ private extension ReviewsViewController {
     ///
     @objc func defaultSiteWasUpdated() {
         reloadResultsController()
+        syncingCoordinator.resetInternalState()
     }
 
     /// Application became Active Again (while the Notes Tab was onscreen)
@@ -411,8 +419,10 @@ private extension ReviewsViewController {
             }
         case .results:
             break
-        case .syncing:
+        case .placeholder:
             displayPlaceholderReviews()
+        case .syncing:
+            ensureFooterSpinnerIsStarted()
         }
     }
 
@@ -424,15 +434,17 @@ private extension ReviewsViewController {
             removeAllOverlays()
         case .results:
             break
-        case .syncing:
+        case .placeholder:
             removePlaceholderReviews()
+        case .syncing:
+            ensureFooterSpinnerIsStopped()
         }
     }
 
     /// Should be called before Sync'ing Starts: Transitions to .results / .syncing
     ///
     func transitionToSyncingState() {
-        state = isEmpty ? .syncing : .results
+        state = isEmpty ? .placeholder : .syncing
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
@@ -488,12 +500,43 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+        print("==== sync page ", pageNumber)
         transitionToSyncingState()
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
             self?.transitionToResultsUpdatedState()
-            self?.tableView.reloadData()
             onCompletion?(true)
         }
+    }
+}
+
+// MARK: - Spinner Helpers
+//
+extension ReviewsViewController {
+
+    /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
+    ///
+    private func ensureFooterSpinnerIsStarted() {
+        guard mustStartFooterSpinner() else {
+            return
+        }
+
+        footerSpinnerView.startAnimating()
+    }
+
+    /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
+    ///
+    private func mustStartFooterSpinner() -> Bool {
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+            return false
+        }
+
+        return viewModel.containsMorePages(highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize)
+    }
+
+    /// Stops animating the Footer Spinner.
+    ///
+    private func ensureFooterSpinnerIsStopped() {
+        footerSpinnerView.stopAnimating()
     }
 }
 
@@ -509,6 +552,7 @@ private extension ReviewsViewController {
     }
 
     enum State {
+        case placeholder
         case emptyUnfiltered
         case results
         case syncing

@@ -69,6 +69,10 @@ final class ReviewsViewModel {
             onCompletion()
         }
     }
+
+    func containsMorePages(_ highestVisibleReview: Int) -> Bool {
+        return highestVisibleReview > data.reviewCount
+    }
 }
 
 

@@ -80,6 +80,10 @@ final class ReviewsViewController: UIViewController {
         }
     }
 
+    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
+    ///
+    private let syncingCoordinator = SyncingCoordinator()
+
     // MARK: - View Lifecycle
 
     deinit {

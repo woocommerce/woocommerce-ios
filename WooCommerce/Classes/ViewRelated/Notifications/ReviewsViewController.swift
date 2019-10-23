@@ -102,6 +102,8 @@ final class ReviewsViewController: UIViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
         refreshTitle()
+
+        configureSyncingCoordinator()
         configureNavigationItem()
         configureNavigationBarButtons()
         configureTableView()
@@ -116,7 +118,8 @@ final class ReviewsViewController: UIViewController {
 
         resetApplicationBadge()
         transitionToResultsUpdatedState()
-        synchronizeReviews()
+
+        syncingCoordinator.synchronizeFirstPage()
 
         if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
             displayRatingPrompt()
@@ -124,6 +127,7 @@ final class ReviewsViewController: UIViewController {
     }
 
     func presentDetails(for noteId: Int) {
+        syncingCoordinator.synchronizeFirstPage()
         viewModel.loadReview(for: noteId) { [weak self] in
             guard let self = self else {
                 return
@@ -138,6 +142,12 @@ final class ReviewsViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension ReviewsViewController {
+
+    /// Setup: Sync'ing Coordinator
+    ///
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
+    }
 
     /// Setup: TabBar
     ///
@@ -207,7 +217,7 @@ private extension ReviewsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.reviewsListPulledToRefresh)
-        synchronizeReviews {
+        syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
     }
@@ -274,17 +284,6 @@ private extension ReviewsViewController {
     ///
     func resetApplicationBadge() {
         ServiceLocator.pushNotesManager.resetBadgeCount()
-    }
-
-    /// Synchronizes the Notifications associated to the active WordPress.com account.
-    ///
-    func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
-        transitionToSyncingState()
-        viewModel.synchronizeReviews { [weak self] in
-            self?.transitionToResultsUpdatedState()
-            self?.tableView.reloadData()
-            onCompletion?()
-        }
     }
 }
 
@@ -478,6 +477,23 @@ private extension ReviewsViewController {
         let message = NSLocalizedString("All reviews marked as read", comment: "Mark all reviews as read notice")
         let notice = Notice(title: message, feedbackType: .success)
         ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+}
+
+
+// MARK: - Sync'ing Helpers
+//
+extension ReviewsViewController: SyncingCoordinatorDelegate {
+
+    /// Synchronizes the Orders for the Default Store (if any).
+    ///
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+        transitionToSyncingState()
+        viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
+            self?.transitionToResultsUpdatedState()
+            self?.tableView.reloadData()
+            onCompletion?(true)
+        }
     }
 }
 

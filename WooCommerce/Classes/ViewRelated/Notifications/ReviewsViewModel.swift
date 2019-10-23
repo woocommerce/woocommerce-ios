@@ -76,11 +76,13 @@ final class ReviewsViewModel {
 extension ReviewsViewModel {
     /// Prepares data necessary to render the reviews tab.
     ///
-    func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
+    func synchronizeReviews(pageNumber: Int = Settings.firstPage,
+                            pageSize: Int = Settings.pageSize,
+                            onCompletion: (() -> Void)? = nil) {
         let group = DispatchGroup()
 
         group.enter()
-        synchronizeAllReviews {
+        synchronizeAllReviews(pageNumber: pageNumber, pageSize: pageSize) {
             group.leave()
         }
 
@@ -103,19 +105,22 @@ extension ReviewsViewModel {
 
     /// Synchronizes the Reviews associated to the current store.
     ///
-    private func synchronizeAllReviews(onCompletion: (() -> Void)? = nil) {
+    private func synchronizeAllReviews(pageNumber: Int,
+                                       pageSize: Int,
+                                       onCompletion: (() -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
-        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: 1, pageSize: 25) { error in
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing reviews: \(error)")
                 ServiceLocator.analytics.track(.reviewsListLoadFailed,
                                                withError: error)
             } else {
+                let loadingMore = pageNumber != 1
                 ServiceLocator.analytics.track(.reviewsListLoaded,
-                                               withProperties: ["is_loading_more": false])
+                                               withProperties: ["is_loading_more": loadingMore])
             }
 
             onCompletion?()
@@ -194,5 +199,7 @@ private extension ReviewsViewModel {
 private extension ReviewsViewModel {
     enum Settings {
         static let placeholderRowsPerSection = [3]
+        static let firstPage = 1
+        static let pageSize = 25
     }
 }

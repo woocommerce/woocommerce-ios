@@ -144,7 +144,8 @@ private extension ProductsViewController {
             return
         }
 
-        // TODO-1263: analytics
+        ServiceLocator.analytics.track(.productListMenuSearchTapped)
+
         let searchViewController = SearchViewController(storeID: storeID,
                                                         command: ProductSearchUICommand(siteID: storeID),
                                                         cellType: ProductsTabProductTableViewCell.self)
@@ -298,6 +299,8 @@ extension ProductsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
+        ServiceLocator.analytics.track(.productListProductTapped)
+
         let product = resultsController.object(at: indexPath)
         let currencyCode = CurrencySettings.shared.currencyCode
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
@@ -321,7 +324,8 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
-        // TODO-1263: analytics
+        ServiceLocator.analytics.track(.productListPulledToRefresh)
+
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
@@ -407,7 +411,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                         DDLogError("⛔️ Error synchronizing products: \(error)")
                                         self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
                                     } else {
-                                        // TODO-1263: analytics
+                                        ServiceLocator.analytics.track(.productListLoaded)
                                     }
 
                                     self.transitionToResultsUpdatedState()

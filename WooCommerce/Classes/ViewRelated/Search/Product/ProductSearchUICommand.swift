@@ -43,7 +43,8 @@ final class ProductSearchUICommand: SearchUICommand {
         }
 
         ServiceLocator.stores.dispatch(action)
-        // TODO-1263: analytics
+
+        ServiceLocator.analytics.track(.productListSearched)
     }
 
     func didSelectSearchResult(model: Product, from viewController: UIViewController) {

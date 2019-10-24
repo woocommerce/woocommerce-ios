@@ -237,6 +237,16 @@ public enum WooAnalyticsStat: String {
     case reviewsProductsLoaded                  = "reviews_products_loaded"
     case reviewsProductsLoadFailed              = "reviews_products_load_failed"
 
+    // Product List Events
+    //
+    case productListSelected                    = "main_tab_products_selected"
+    case productListReselected                  = "main_tab_products_reselected"
+    case productListLoaded                      = "product_list_loaded"
+    case productListProductTapped               = "product_list_product_tapped"
+    case productListPulledToRefresh             = "product_list_pulled_to_refresh"
+    case productListSearched                    = "product_list_searched"
+    case productListMenuSearchTapped            = "product_list_menu_search_tapped"
+
     // Jetpack Tunnel Events
     //
     case jetpackTunnelTimeout                   = "jetpack_tunnel_timeout"

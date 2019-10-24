@@ -523,37 +523,8 @@ extension AztecEditorViewController {
         alertController.addActionWithTitle(NSLocalizedString("Cancel", comment: ""), style: .cancel)
         present(alertController, animated: true, completion: nil)
 
-//        let linkSettings = LinkSettings(url: urlToUse?.absoluteString ?? "", text: title ?? "", openInNewWindow: target != nil, isNewLink: isInsertingNewLink)
-//        let linkController = LinkSettingsViewController(settings: linkSettings, callback: { [weak self](action, settings) in
-//            guard let strongSelf = self else {
-//                return
-//            }
-//            strongSelf.dismiss(animated: true, completion: {
-//                strongSelf.richTextView.becomeFirstResponder()
-//                switch action {
-//                case .insert, .update:
-//                    strongSelf.insertLink(url: settings.url, text: settings.text, target: settings.openInNewWindow ? "_blank" : nil, range: range)
-//                case .remove:
-//                    strongSelf.removeLink(in: range)
-//                case .cancel:
-//                    break
-//                }
-//            })
-//        })
-//        linkController.blog = self.post.blog
-//
-//        let navigationController = UINavigationController(rootViewController: linkController)
-//        navigationController.modalPresentationStyle = .popover
-//        navigationController.popoverPresentationController?.permittedArrowDirections = [.any]
-//        navigationController.popoverPresentationController?.sourceView = richTextView
-//        navigationController.popoverPresentationController?.backgroundColor = WPStyleGuide.aztecFormatPickerBackgroundColor
-//        if richTextView.selectedRange.length > 0, let textRange = richTextView.selectedTextRange, let selectionRect = richTextView.selectionRects(for: textRange).first {
-//            navigationController.popoverPresentationController?.sourceRect = selectionRect.rect
-//        } else if let textRange = richTextView.selectedTextRange {
-//            let caretRect = richTextView.caretRect(for: textRange.start)
-//            navigationController.popoverPresentationController?.sourceRect = caretRect
-//        }
-//        present(navigationController, animated: true)
+        // TODO: replace the alert implementation with something nicer like `LinkSettingsViewController` on WPiOS.
+
         richTextView.resignFirstResponder()
     }
 
@@ -588,7 +559,6 @@ extension AztecEditorViewController {
         let headerOptions = Constants.headers.map { headerType -> OptionsTableViewOption in
             let attributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.systemFont(ofSize: CGFloat(headerType.fontSize)),
-//                .foregroundColor: UIColor.neutral(shade: .shade70)
             ]
 
             let title = NSAttributedString(string: headerType.description, attributes: attributes)

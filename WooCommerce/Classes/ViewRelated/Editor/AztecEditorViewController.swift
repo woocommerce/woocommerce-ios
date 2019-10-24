@@ -165,7 +165,7 @@ private extension AztecEditorViewController {
         navigationController?.navigationBar.isTranslucent = false
         navigationController?.navigationBar.accessibilityIdentifier = "Aztec Editor Navigation Bar"
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(cancelButtonTapped))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(saveButtonTapped))
     }
 
     func configureView() {
@@ -210,7 +210,6 @@ private extension AztecEditorViewController {
 //        textView.formattingDelegate = self
         textView.textAttachmentDelegate = self
         textView.backgroundColor = StyleManager.wooWhite
-//            Colors.aztecBackground
         textView.linkTextAttributes = linkAttributes
 
         // We need this false to be able to set negative `scrollInset` values.
@@ -267,17 +266,14 @@ private extension AztecEditorViewController {
         let toolbar = Aztec.FormatBar()
 
         toolbar.tintColor = StyleManager.wooCommerceBrandColor
-        toolbar.highlightedTintColor = StyleManager.wooCommerceBrandColor
-        toolbar.selectedTintColor = .red
+        toolbar.highlightedTintColor = StyleManager.wooCommerceBrandColor.withAlphaComponent(0.5)
+        toolbar.selectedTintColor = StyleManager.wooSecondary
         toolbar.disabledTintColor = StyleManager.buttonDisabledColor
-        toolbar.dividerTintColor = .orange
+        toolbar.dividerTintColor = StyleManager.cellSeparatorColor
         toolbar.overflowToggleIcon = Gridicon.iconOfType(.ellipsis)
 
         updateToolbar(toolbar)
-//
-//        toolbar.frame = CGRect(x: 0, y: 0, width: view.frame.width, height: Constants.toolbarHeight)
-//        toolbar.formatter = self
-//
+
         toolbar.barItemHandler = { [weak self] item in
             self?.handleAction(for: item)
         }
@@ -372,12 +368,10 @@ extension AztecEditorViewController {
         richTextView.toggleItalic(range: richTextView.selectedRange)
     }
 
-
     @objc func toggleUnderline() {
 //        trackFormatBarAnalytics(stat: .editorTappedUnderline)
         richTextView.toggleUnderline(range: richTextView.selectedRange)
     }
-
 
     @objc func toggleStrikethrough() {
 //        trackFormatBarAnalytics(stat: .editorTappedStrikethrough)
@@ -408,11 +402,7 @@ extension AztecEditorViewController {
         }
 
         let optionsTableViewController = OptionsTableViewController(options: listOptions)
-
-//        optionsTableViewController.cellDeselectedTintColor = WPStyleGuide.aztecFormatBarInactiveColor
-//        optionsTableViewController.cellBackgroundColor = WPStyleGuide.aztecFormatPickerBackgroundColor
-//        optionsTableViewController.cellSelectedBackgroundColor = WPStyleGuide.aztecFormatPickerSelectedCellBackgroundColor
-//        optionsTableViewController.view.tintColor = WPStyleGuide.aztecFormatBarActiveColor
+        optionsTableViewController.applyDefaultStyles()
 
         optionsTablePresenter.present(
             optionsTableViewController,
@@ -609,11 +599,7 @@ extension AztecEditorViewController {
         let selectedIndex = Constants.headers.firstIndex(of: self.headerLevelForSelectedText())
 
         let optionsTableViewController = OptionsTableViewController(options: headerOptions)
-
-//        optionsTableViewController.cellDeselectedTintColor = WPStyleGuide.aztecFormatBarInactiveColor
-//        optionsTableViewController.cellBackgroundColor = WPStyleGuide.aztecFormatPickerBackgroundColor
-//        optionsTableViewController.cellSelectedBackgroundColor = WPStyleGuide.aztecFormatPickerSelectedCellBackgroundColor
-//        optionsTableViewController.view.tintColor = WPStyleGuide.aztecFormatBarActiveColor
+        optionsTableViewController.applyDefaultStyles()
 
         optionsTablePresenter.present(
             optionsTableViewController,
@@ -664,10 +650,10 @@ extension AztecEditorViewController {
     }
 }
 
-private extension AztecEditorViewController {
+extension AztecEditorViewController {
     // MARK: - Keyboard Handling
 
-    override internal var keyCommands: [UIKeyCommand] {
+    override var keyCommands: [UIKeyCommand] {
 
         if richTextView.isFirstResponder {
             return [
@@ -691,6 +677,9 @@ private extension AztecEditorViewController {
 
         return []
     }
+}
+
+private extension AztecEditorViewController {
 
     @objc func keyboardWillShow(_ notification: Foundation.Notification) {
         guard
@@ -764,7 +753,10 @@ private extension AztecEditorViewController {
     }
 
     @objc func saveButtonTapped() {
-        // TODO
+        let content = getHTML()
+        onContentSave?(content)
+
+        navigationController?.popViewController(animated: true)
     }
 }
 
@@ -780,7 +772,7 @@ extension AztecEditorViewController: TextViewAttachmentDelegate {
     }
 
     func textView(_ textView: TextView, placeholderFor attachment: NSTextAttachment) -> UIImage {
-        return UIImage.productPlaceholderImage.imageWithTintColor(StyleManager.wooGreyMid)!
+        return UIImage.cameraImage
     }
 
     func textView(_ textView: TextView, deletedAttachment attachment: MediaAttachment) {

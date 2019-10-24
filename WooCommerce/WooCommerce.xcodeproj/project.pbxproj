@@ -45,6 +45,7 @@
 		025330072360124100E6A5D4 /* Header+AztecFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025330062360124100E6A5D4 /* Header+AztecFormatting.swift */; };
 		025330092360125F00E6A5D4 /* TextList+AztecFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025330082360125F00E6A5D4 /* TextList+AztecFormatting.swift */; };
 		0253300B2360142C00E6A5D4 /* URL+LinkNormalization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0253300A2360142C00E6A5D4 /* URL+LinkNormalization.swift */; };
+		025434B3236150160091E28B /* OptionsTableViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025434B2236150160091E28B /* OptionsTableViewController+Styles.swift */; };
 		0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */; };
 		0260F40123224E8100EDA10A /* ProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0260F40023224E8100EDA10A /* ProductsViewController.swift */; };
 		02691780232600A6002AFC20 /* ProductsTabProductViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */; };
@@ -507,6 +508,7 @@
 		025330062360124100E6A5D4 /* Header+AztecFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Header+AztecFormatting.swift"; sourceTree = "<group>"; };
 		025330082360125F00E6A5D4 /* TextList+AztecFormatting.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TextList+AztecFormatting.swift"; sourceTree = "<group>"; };
 		0253300A2360142C00E6A5D4 /* URL+LinkNormalization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+LinkNormalization.swift"; sourceTree = "<group>"; };
+		025434B2236150160091E28B /* OptionsTableViewController+Styles.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OptionsTableViewController+Styles.swift"; sourceTree = "<group>"; };
 		0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4ChartAxisHelperTests.swift; sourceTree = "<group>"; };
 		0260F40023224E8100EDA10A /* ProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsViewController.swift; sourceTree = "<group>"; };
 		0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTabProductViewModelTests.swift; sourceTree = "<group>"; };
@@ -974,6 +976,7 @@
 				025330062360124100E6A5D4 /* Header+AztecFormatting.swift */,
 				025330082360125F00E6A5D4 /* TextList+AztecFormatting.swift */,
 				0253300A2360142C00E6A5D4 /* URL+LinkNormalization.swift */,
+				025434B2236150160091E28B /* OptionsTableViewController+Styles.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -2746,6 +2749,7 @@
 				B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */,
 				D8C62471227AE0030011A7D6 /* SiteCountry.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
+				025434B3236150160091E28B /* OptionsTableViewController+Styles.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
 				B5D1AFBA20BC515600DB0E8C /* UIColor+Woo.swift in Sources */,
 				CEEC9B5E21E79C330055EEF0 /* BuildConfiguration.swift in Sources */,

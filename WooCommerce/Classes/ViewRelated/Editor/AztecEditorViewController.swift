@@ -204,10 +204,9 @@ private extension AztecEditorViewController {
         self.configureDefaultProperties(for: textView, accessibilityLabel: accessibilityLabel)
 
         let linkAttributes: [NSAttributedString.Key: Any] = [.underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                             .foregroundColor: UIColor.red]
+                                                             .foregroundColor: StyleManager.wooCommerceBrandColor]
 
         textView.delegate = self
-//        textView.formattingDelegate = self
         textView.textAttachmentDelegate = self
         textView.backgroundColor = StyleManager.wooWhite
         textView.linkTextAttributes = linkAttributes

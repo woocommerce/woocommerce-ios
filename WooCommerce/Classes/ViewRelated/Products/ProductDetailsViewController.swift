@@ -108,6 +108,25 @@ private extension ProductDetailsViewController {
         viewModel.onPurchaseNoteTapped = { [weak self] in
             self?.presentPurchaseNoteIfPossible()
         }
+        viewModel.onProductDescriptionTapped = { [weak self] in
+            guard let product = self?.viewModel.product else {
+                return
+            }
+            let editorViewController = EditorFactory().instantiateEditor(for: product, onContentSave: { content in
+                let action = ProductAction.updateProduct(siteID: product.siteID, productID: product.productID, description: content) { (product, error) in
+                    guard error == nil else {
+                        DDLogError("⛔️ Error updating Product: \(error.debugDescription)")
+                        return
+                    }
+                    guard let product = product else {
+                        return
+                    }
+                    self?.viewModel.product = product
+                }
+                ServiceLocator.stores.dispatch(action)
+            })
+            self?.navigationController?.pushViewController(editorViewController, animated: true)
+        }
     }
 
     /// Configure view model errors

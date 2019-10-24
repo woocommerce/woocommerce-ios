@@ -15,6 +15,7 @@ final class ProductDetailsViewModel {
     ///
     var onError: (() -> Void)?
     var onReload: (() -> Void)?
+    var onProductDescriptionTapped: (() -> Void)?
     var onPurchaseNoteTapped: (() -> Void)?
 
     /// Yosemite.Product
@@ -728,6 +729,11 @@ extension ProductDetailsViewModel {
             WebviewHelper.launch(product.permalink, with: sender)
         case .affiliateLink:
             WebviewHelper.launch(product.externalURL, with: sender)
+        case .productName:
+            // A temporary entry point to edit Product description.
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) {
+                onProductDescriptionTapped?()
+            }
         default:
             break
         }

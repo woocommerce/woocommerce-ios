@@ -495,6 +495,40 @@ extension AztecEditorViewController {
             }
         }
 
+        let alertController = UIAlertController(title: NSLocalizedString("Link Settings", comment: ""), message: nil, preferredStyle: .alert)
+        let removeLinkAction = UIAlertAction(title: NSLocalizedString("Remove link", comment: ""), style: .destructive, handler: { [weak self] _ in
+            self?.removeLink(in: range)
+        })
+        let addLinkAction = UIAlertAction(title: NSLocalizedString("Add link", comment: ""), style: .default) { [weak self] _ in
+            guard let urlTextField = alertController.textFields?[0],
+                let url = urlTextField.text else {
+                return
+            }
+            self?.insertLink(url: url, text: title, target: nil, range: range)
+        }
+        let addLinkToNewWindowAction = UIAlertAction(title: NSLocalizedString("Add link to a new window", comment: ""), style: .default) { [weak self] _ in
+            guard let urlTextField = alertController.textFields?[0],
+                let url = urlTextField.text else {
+                return
+            }
+            self?.insertLink(url: url, text: title, target: "_blank", range: range)
+        }
+
+        alertController.addTextField(configurationHandler: { textField in
+            textField.placeholder = NSLocalizedString("Enter link URL", comment: "")
+            textField.text = urlToUse?.absoluteString ?? ""
+        })
+
+        alertController.addAction(addLinkAction)
+        alertController.addAction(addLinkToNewWindowAction)
+
+        if urlToUse != nil {
+            alertController.addAction(removeLinkAction)
+        }
+
+        alertController.addActionWithTitle(NSLocalizedString("Cancel", comment: ""), style: .cancel)
+        present(alertController, animated: true, completion: nil)
+
 //        let linkSettings = LinkSettings(url: urlToUse?.absoluteString ?? "", text: title ?? "", openInNewWindow: target != nil, isNewLink: isInsertingNewLink)
 //        let linkController = LinkSettingsViewController(settings: linkSettings, callback: { [weak self](action, settings) in
 //            guard let strongSelf = self else {

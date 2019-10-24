@@ -10,12 +10,14 @@ import AutomatticTracks
 
 // MARK: - Aztec's Native Editor!
 //
-class AztecEditorViewController: UIViewController {
+class AztecEditorViewController: UIViewController, Editor {
+    var onContentSave: OnContentSave?
+
     private let content: String
 
     /// The editor view.
     ///
-    fileprivate(set) lazy var editorView: Aztec.EditorView = {
+    private(set) lazy var editorView: Aztec.EditorView = {
 
         let paragraphStyle = ParagraphStyle.default
 
@@ -121,7 +123,7 @@ class AztecEditorViewController: UIViewController {
     ///
     fileprivate var currentKeyboardFrame: CGRect = .zero
 
-    init(content: String?) {
+    required init(content: String?) {
         self.content = content ?? ""
         super.init(nibName: nil, bundle: nil)
     }

@@ -108,8 +108,8 @@ class AztecEditorViewController: UIViewController, Editor {
     ///
     fileprivate(set) lazy var placeholderLabel: UILabel = {
         let label = UILabel()
-        label.text = NSLocalizedString("Share your story here...", comment: "Aztec's Text Placeholder")
-        label.textColor = StyleManager.cellSeparatorColor
+        label.text = NSLocalizedString("Start writing...", comment: "Aztec's Text Placeholder")
+        label.textColor = StyleManager.wooGreyMid
         label.font = StyleManager.subheadlineFont
         label.isUserInteractionEnabled = false
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -241,11 +241,13 @@ private extension AztecEditorViewController {
             htmlTextView.bottomAnchor.constraint(equalTo: richTextView.bottomAnchor)
             ])
 
+        let insets = richTextView.textContainerInset
+
         NSLayoutConstraint.activate([
-            placeholderLabel.leftAnchor.constraint(equalTo: richTextView.leftAnchor, constant: 0),
-            placeholderLabel.rightAnchor.constraint(equalTo: richTextView.rightAnchor, constant: 0),
-            placeholderLabel.topAnchor.constraint(equalTo: richTextView.topAnchor, constant: 0),
-            placeholderLabel.bottomAnchor.constraint(lessThanOrEqualTo: richTextView.bottomAnchor, constant: 0)
+            placeholderLabel.leftAnchor.constraint(equalTo: richTextView.leftAnchor, constant: insets.left + richTextView.textContainer.lineFragmentPadding),
+            placeholderLabel.rightAnchor.constraint(equalTo: richTextView.rightAnchor, constant: -insets.right - richTextView.textContainer.lineFragmentPadding),
+            placeholderLabel.topAnchor.constraint(equalTo: richTextView.topAnchor, constant: insets.top),
+            placeholderLabel.bottomAnchor.constraint(lessThanOrEqualTo: richTextView.bottomAnchor, constant: insets.bottom)
             ])
     }
 
@@ -726,6 +728,8 @@ private extension AztecEditorViewController {
     }
 }
 
+// MARK: - Notifications
+//
 private extension AztecEditorViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
@@ -747,6 +751,8 @@ private extension AztecEditorViewController {
     }
 }
 
+// MARK: - Navigation actions
+//
 private extension AztecEditorViewController {
     @objc func cancelButtonTapped() {
         navigationController?.popViewController(animated: true)

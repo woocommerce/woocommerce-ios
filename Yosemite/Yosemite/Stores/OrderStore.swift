@@ -286,15 +286,20 @@ private extension OrderStore {
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
     ///
     private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        var storageItem: Storage.OrderItem
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
             if let existingStorageItem = storage.loadOrderItem(itemID: readOnlyItem.itemID) {
                 existingStorageItem.update(with: readOnlyItem)
+                storageItem = existingStorageItem
             } else {
                 let newStorageItem = storage.insertNewObject(ofType: Storage.OrderItem.self)
                 newStorageItem.update(with: readOnlyItem)
                 storageOrder.addToItems(newStorageItem)
+                storageItem = newStorageItem
             }
+            
+            handleOrderItemTaxes(readOnlyItem, storageItem, storage)
         }
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items

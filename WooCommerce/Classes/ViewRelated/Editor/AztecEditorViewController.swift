@@ -778,7 +778,7 @@ extension AztecEditorViewController: TextViewAttachmentDelegate {
     }
 
     func textView(_ textView: TextView, placeholderFor attachment: NSTextAttachment) -> UIImage {
-        return UIImage.productPlaceholderImage
+        return UIImage.productPlaceholderImage.imageWithTintColor(StyleManager.wooGreyMid)!
     }
 
     func textView(_ textView: TextView, deletedAttachment attachment: MediaAttachment) {

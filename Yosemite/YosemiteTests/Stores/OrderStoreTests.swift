@@ -338,7 +338,7 @@ class OrderStoreTests: XCTestCase {
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
@@ -898,6 +898,6 @@ private extension OrderStoreTests {
 
     func taxesMutated() -> [Networking.OrderItemTax] {
         return [Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45"),
-                Networking.OrderItemTax(taxID: 75, subtotal: "0.9", total: "0.9")]
+                Networking.OrderItemTax(taxID: 73, subtotal: "0.9", total: "0.9")]
     }
 }

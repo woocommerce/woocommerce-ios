@@ -158,7 +158,6 @@ pre_install do |installer|
     end
   end
 
-
   puts "Installing #{static.count} pods as static frameworks"
   puts "Installing #{dynamic.count} pods as dynamic frameworks"
 

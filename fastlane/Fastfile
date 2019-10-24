@@ -211,7 +211,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true) unless (options[:skip_prechecks])
     ios_build_preflight() unless (options[:skip_prechecks])
 
-    code_signing
+    appstore_code_signing
 
     gym(scheme: "WooCommerce", workspace: "./WooCommerce.xcworkspace",
       clean: true, export_team_id: get_required_env("EXT_EXPORT_TEAM_ID"), 
@@ -230,6 +230,71 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       dsym_path: "./WooCommerce.app.dSYM.zip",
     )
     sh("cd .. && rm WooCommerce.app.dSYM.zip")
+  end
+
+  #####################################################################################
+  # build_and_upload_installable_build
+  # -----------------------------------------------------------------------------------
+  # This lane builds the app and upload it for adhoc testing 
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane build_and_upload_installable_build [version_long:<version_long>]
+  #
+  # Example:
+  # bundle exec fastlane build_and_upload_installable_build 
+  # bundle exec fastlane build_and_upload_installable_build build_number:123 
+  #####################################################################################
+  desc "Builds and uploads an installable build"
+  lane :build_and_upload_installable_build do | options |
+    alpha_code_signing
+
+    # Get the current build version, and update it if needed
+    version_config_path = "../config/Version.Public.xcconfig"
+    versions = Xcodeproj::Config.new(File.new(version_config_path)).to_hash
+    build_number = versions["VERSION_LONG"]
+
+    if options.key?(:build_number)
+      build_number = options[:build_number]
+
+      UI.message("Updating build version to #{build_number}")
+
+      versions["VERSION_LONG"] = build_number
+      new_config = Xcodeproj::Config.new(versions)
+      new_config.save_as(Pathname.new(version_config_path))
+    end
+
+    gym(
+      scheme: "WooCommerce Alpha",
+      workspace: "WooCommerce.xcworkspace",
+      export_method: "enterprise",
+      clean: true,
+      output_directory: "build",
+      export_team_id: ENV["INT_EXPORT_TEAM_ID"],
+      export_options: { method: "enterprise", iCloudContainerEnvironment: 'Production' })
+
+    sh("mv ../build/WooCommerce.ipa \"../build/WooCommerce Alpha.ipa\"")
+    
+    hockey(
+      api_token: get_required_env("HOCKEY_API_TOKEN"),        
+      public_identifier: get_required_env("HOCKEY_INSTALLABLE_BUILDS_PUBLIC_ID"),
+      notify: "0",
+      status: "2",
+      ipa: "build/WooCommerce Alpha.ipa",
+      dsym: "build/WooCommerce.app.dSYM.zip",
+    )
+
+    # Getting the download link from the HockeyApp Api, since `hockey(..)` only gives us the app link
+    # See documentation here: https://support.hockeyapp.net/kb/api/api-versions
+    url = "https://rink.hockeyapp.net/api/2/apps/#{get_required_env("HOCKEY_INSTALLABLE_BUILDS_PUBLIC_ID")}/app_versions"
+    result = open(url, {"X-HockeyAppToken" => get_required_env("HOCKEY_API_TOKEN")}).read
+    versions = JSON.parse(result)
+
+    download_url = versions["app_versions"].find {|v| v["version"] == build_number}["download_url"]
+    UI.message("Successfully built and uploaded installable build here: #{download_url}")
+
+    # Create a comment.json file so that Peril to comment with the build details, if this is running on CI
+    comment_body = "You can test the changes on this Pull Request by downloading it from HockeyApp [here](#{download_url}). If you need access to this, you can ask a maintainer to add you."
+    File.write("comment.json", { body: comment_body }.to_json)
   end
 
   ########################################################################
@@ -343,8 +408,16 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
   ########################################################################
   # Fastlane match code signing
-  ########################################################################  
-  private_lane :code_signing do |options|
+  ########################################################################
+  private_lane :alpha_code_signing do |options|
+    match(
+      type: "enterprise",
+      team_id: get_required_env("INT_EXPORT_TEAM_ID"),
+      readonly: options[:readonly] || is_ci,
+      app_identifier: ["com.automattic.alpha.woocommerce"])
+  end
+
+  private_lane :appstore_code_signing do |options|
     match(
       type: "appstore",
       team_id: get_required_env("EXT_EXPORT_TEAM_ID"),

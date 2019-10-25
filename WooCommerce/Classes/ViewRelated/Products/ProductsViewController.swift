@@ -408,6 +408,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                     }
 
                                     if let error = error {
+                                        ServiceLocator.analytics.track(.productListLoadError, withError: error)
                                         DDLogError("⛔️ Error synchronizing products: \(error)")
                                         self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
                                     } else {

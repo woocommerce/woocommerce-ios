@@ -242,6 +242,7 @@ public enum WooAnalyticsStat: String {
     case productListSelected                    = "main_tab_products_selected"
     case productListReselected                  = "main_tab_products_reselected"
     case productListLoaded                      = "product_list_loaded"
+    case productListLoadError                   = "product_list_load_error"
     case productListProductTapped               = "product_list_product_tapped"
     case productListPulledToRefresh             = "product_list_pulled_to_refresh"
     case productListSearched                    = "product_list_searched"

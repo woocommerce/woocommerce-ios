@@ -37,6 +37,10 @@ public struct Site: Decodable {
     ///
     public let timezone: String
 
+    /// Frame nonce.
+    ///
+    public let frameNonce: String?
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
@@ -51,6 +55,7 @@ public struct Site: Decodable {
         let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
+        let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
 
         self.init(siteID: siteID,
                   name: name,
@@ -59,7 +64,8 @@ public struct Site: Decodable {
                   plan: String(), // Not created on init. Added in supplementary API request.
                   isWooCommerceActive: isWooCommerceActive,
                   isWordPressStore: isWordPressStore,
-                  timezone: timezone)
+                  timezone: timezone,
+                  frameNonce: frameNonce)
     }
 
     /// Designated Initializer.
@@ -71,7 +77,8 @@ public struct Site: Decodable {
                 plan: String,
                 isWooCommerceActive: Bool,
                 isWordPressStore: Bool,
-                timezone: String) {
+                timezone: String,
+                frameNonce: String?) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -80,6 +87,7 @@ public struct Site: Decodable {
         self.isWordPressStore = isWordPressStore
         self.isWooCommerceActive = isWooCommerceActive
         self.timezone = timezone
+        self.frameNonce = frameNonce
     }
 }
 
@@ -122,6 +130,7 @@ private extension Site {
         case isWordPressStore = "is_wpcom_store"
         case isWooCommerceActive = "woocommerce_is_active"
         case timezone = "timezone"
+        case frameNonce = "frame_nonce"
     }
 
     enum PlanKeys: String, CodingKey {

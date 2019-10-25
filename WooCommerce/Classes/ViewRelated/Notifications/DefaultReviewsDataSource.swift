@@ -232,6 +232,24 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
         let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct, notification: note)
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
+
+    func presentReviewDetails(for noteId: Int, in viewController: UIViewController) {
+        let notificationMaybe = notificationsResultsController.fetchedObjects.first { $0.noteId == noteId }
+        guard let note = notificationMaybe,
+            let reviewID = note.meta.identifier(forKey: .comment) else {
+            return
+        }
+
+        guard let review = reviewsResultsController.fetchedObjects.first(where: { $0.reviewID == reviewID
+        }) else {
+            return
+        }
+
+        let reviewedProduct = product(id: review.productID)
+
+        let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct, notification: note)
+        viewController.navigationController?.pushViewController(detailsViewController, animated: true)
+    }
 }
 
 

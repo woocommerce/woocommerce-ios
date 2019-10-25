@@ -541,6 +541,8 @@
 		02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests+ProductListFeatureFlag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "MainTabBarControllerTests+ProductListFeatureFlag.swift"; sourceTree = "<group>"; };
 		02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeatureFlagService.swift; sourceTree = "<group>"; };
 		02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultFeatureFlagService.swift; sourceTree = "<group>"; };
+		25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
 		45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderNoteHeaderTableViewCell.xib; sourceTree = "<group>"; };
@@ -2116,6 +2118,8 @@
 				33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */,
 				9D2992FEF3D1246B8CCC2EBB /* Pods-WooCommerceTests.debug.xcconfig */,
 				8A659E65308A3D9DD79A95F9 /* Pods-WooCommerceTests.release.xcconfig */,
+				25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */,
+				2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -2918,6 +2922,119 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		1A9690332359CF720061E383 /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 8CA4F6DE220B257000A47B5D /* WooCommerce.release.xcconfig */;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_LOCALIZABILITY_NONLOCALIZED = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OBJC_BRIDGING_HEADER = "Classes/System/WooCommerce-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+				VALID_ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+			};
+			name = "Release-Alpha";
+		};
+		1A9690342359CF720061E383 /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = "Resources/Woo-Release.entitlements";
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				CODE_SIGN_STYLE = Manual;
+				DEVELOPMENT_TEAM = 99KV9Z6BKV;
+				ENABLE_BITCODE = NO;
+				INFOPLIST_FILE = "$(SRCROOT)/Resources/Info.plist";
+				INFOPLIST_PREFIX_HEADER = DerivedSources/InfoPlist.h;
+				INFOPLIST_PREPROCESS = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				OTHER_SWIFT_FLAGS = "$(inherited)";
+				PRODUCT_BUNDLE_IDENTIFIER = com.automattic.alpha.woocommerce;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "match InHouse com.automattic.alpha.woocommerce";
+				SECRETS_PATH = "$(SRCROOT)/../.configure-files/woo_app_credentials.json";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				USER_HEADER_SEARCH_PATHS = "";
+			};
+			name = "Release-Alpha";
+		};
+		1A9690352359CF720061E383 /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = "$(inherited)";
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CLANG_ENABLE_MODULES = "$(inherited)";
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = PZYM8XX95Q;
+				INFOPLIST_FILE = WooCommerceTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.woocommerce.WooCommerceTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WooCommerce.app/WooCommerce";
+				VALID_ARCHS = "$(inherited)";
+			};
+			name = "Release-Alpha";
+		};
+		1A9690362359CF720061E383 /* Release-Alpha */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_PREFIX_HEADER = InfoPlist.h;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SECRETS_PATH = "$(SRCROOT)/../.configure-files/woo_app_credentials.json";
+				VALID_ARCHS = "$(inherited)";
+			};
+			name = "Release-Alpha";
+		};
 		B55D4C1120B612F300D7A50F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -3160,6 +3277,7 @@
 			buildConfigurations = (
 				B55D4C1120B612F300D7A50F /* Debug */,
 				B55D4C1220B612F300D7A50F /* Release */,
+				1A9690362359CF720061E383 /* Release-Alpha */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3169,6 +3287,7 @@
 			buildConfigurations = (
 				B56DB3E42049BFAA00D4AA8E /* Debug */,
 				B56DB3E52049BFAA00D4AA8E /* Release */,
+				1A9690332359CF720061E383 /* Release-Alpha */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3178,6 +3297,7 @@
 			buildConfigurations = (
 				B56DB3E72049BFAA00D4AA8E /* Debug */,
 				B56DB3E82049BFAA00D4AA8E /* Release */,
+				1A9690342359CF720061E383 /* Release-Alpha */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
@@ -3187,6 +3307,7 @@
 			buildConfigurations = (
 				B56DB3EA2049BFAA00D4AA8E /* Debug */,
 				B56DB3EB2049BFAA00D4AA8E /* Release */,
+				1A9690352359CF720061E383 /* Release-Alpha */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

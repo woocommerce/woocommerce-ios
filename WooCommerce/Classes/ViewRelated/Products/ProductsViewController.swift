@@ -2,6 +2,9 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+// TODO: Remove after testing previewing a product
+import Networking
+
 /// Shows a list of products with pull to refresh and infinite scroll
 ///
 final class ProductsViewController: UIViewController {
@@ -302,11 +305,31 @@ extension ProductsViewController: UITableViewDelegate {
         ServiceLocator.analytics.track(.productListProductTapped)
 
         let product = resultsController.object(at: indexPath)
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-        let productViewController = ProductDetailsViewController(viewModel: viewModel)
-        navigationController?.pushViewController(productViewController, animated: true)
+
+        // TODO: Remove after testing previewing a product
+
+        guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
+            let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            fatalError()
+        }
+
+        let previewGenerator = ProductPreviewGenerator(product: product, frameNonce: site.frameNonce, credentials: credentials)
+        previewGenerator.onFailure = { message in
+            DDLogError("⛔️ Unable to preview product (\(product.name)): \(message)")
+        }
+        previewGenerator.onAttemptURLRequest = { [weak self] request in
+            guard let self = self else {
+                return
+            }
+            WebviewHelper.launch(request.url?.absoluteString, with: self)
+        }
+        previewGenerator.generate()
+
+//        let currencyCode = CurrencySettings.shared.currencyCode
+//        let currency = CurrencySettings.shared.symbol(from: currencyCode)
+//        let viewModel = ProductDetailsViewModel(product: product, currency: currency)
+//        let productViewController = ProductDetailsViewController(viewModel: viewModel)
+//        navigationController?.pushViewController(productViewController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

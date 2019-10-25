@@ -1,5 +1,8 @@
 import Yosemite
 
+// TODO: remove after testing
+import Networking
+
 /// Implementation of `SearchUICommand` for Product search.
 final class ProductSearchUICommand: SearchUICommand {
     typealias Model = Product
@@ -48,6 +51,23 @@ final class ProductSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Product, from viewController: UIViewController) {
+        // TODO: Remove after testing previewing a product
+
+        guard let credentials = ServiceLocator.stores.sessionManager.defaultCredentials,
+            let site = ServiceLocator.stores.sessionManager.defaultSite else {
+            fatalError()
+        }
+
+        let previewGenerator = ProductPreviewGenerator(product: model, frameNonce: site.frameNonce, credentials: credentials)
+        previewGenerator.onFailure = { message in
+            DDLogError("⛔️ Unable to preview product (\(model.name)): \(message)")
+        }
+        previewGenerator.onAttemptURLRequest = { request in
+            WebviewHelper.launch(request.url?.absoluteString, with: viewController)
+        }
+        previewGenerator.generate()
+        return
+
         let currencyCode = CurrencySettings.shared.currencyCode
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
         let viewModel = ProductDetailsViewModel(product: model, currency: currency)

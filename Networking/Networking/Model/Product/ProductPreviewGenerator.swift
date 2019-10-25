@@ -18,16 +18,9 @@ extension URL {
     }
 }
 
-@objc
-public protocol PostPreviewGeneratorDelegate {
-    func preview(_ generator: ProductPreviewGenerator, attemptRequest request: URLRequest)
-    func previewFailed(_ generator: ProductPreviewGenerator, message: String)
-}
-
 public final class ProductPreviewGenerator: NSObject {
     let product: Product
     private let frameNonce: String?
-    @objc weak var delegate: PostPreviewGeneratorDelegate?
     fileprivate let authenticator: WebViewAuthenticator?
 
     public var onAttemptURLRequest: ((URLRequest) -> Void)?
@@ -53,8 +46,7 @@ public final class ProductPreviewGenerator: NSObject {
 //        let properties = ["reason": reason]
 //        CrashLogging.logMessage(message, properties: properties)
         let message = NSLocalizedString("There has been an error while trying to reach your site.", comment: "An error message.")
-        onFailure?(reason)
-        delegate?.previewFailed(self, message: NSLocalizedString("There has been an error while trying to reach your site.", comment: "An error message."))
+        onFailure?(message)
     }
 
     @objc func interceptRedirect(request: URLRequest) -> URLRequest? {
@@ -113,7 +105,6 @@ private extension ProductPreviewGenerator {
         let request = URLRequest(url: url)
 
         onAttemptURLRequest?(request)
-        delegate?.preview(self, attemptRequest: request)
     }
 
     func attemptNonceAuthenticatedRequest(url: URL) {
@@ -125,7 +116,6 @@ private extension ProductPreviewGenerator {
         let request = URLRequest(url: authenticatedUrl)
 
         onAttemptURLRequest?(request)
-        delegate?.preview(self, attemptRequest: request)
     }
 
     func attemptCookieAuthenticatedRequest(url: URL) {
@@ -133,10 +123,9 @@ private extension ProductPreviewGenerator {
             previewRequestFailed(reason: "preview failed because authenticator is unexpectedly nil")
             return
         }
-        authenticator.request(url: url, cookieJar: HTTPCookieStorage.shared, completion: { [weak delegate] request in
+        authenticator.request(url: url, cookieJar: HTTPCookieStorage.shared, completion: { [weak self] request in
 
-            self.onAttemptURLRequest?(request)
-            delegate?.preview(self, attemptRequest: request)
+            self?.onAttemptURLRequest?(request)
         })
     }
 }

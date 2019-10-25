@@ -1,5 +1,1 @@
-- Ada halaman statistik baru (dengan analitik yang lebih mendetail) untuk Anda yang menggunakan plugin Admin WooCommerce! Anda dapat memilih untuk menggunakannya dari halaman Pengaturan.
-- Kami memperbaiki bug yang menyebabkan harga ditampilkan dalam mata uang yang salah di halaman Detail Produk.
-- Setelah mendapati bahwa log aplikasi dapat disunting, kami telah memastikan bahwa selanjutnya log hanya akan dapat disalin.
-- Karena sekarang tab Pesanan menampilkan semua informasi pesanan Anda, kami menyederhanakan tab Toko Saya dan menghapus kartu Pesanan Baru dari bagian ini.
-- Anda mungkin ingin Ulasan dilokalkan, dan sekarang keinginan itu terkabul (sempat ada bug, sudah kami perbaiki).
+Kami telah menyusun ulang beberapa bagian Detail Pesanan agar lebih mudah dibaca dan digunakan: Tampilan detail pembayaran pelanggan kini lebih mencolok, dan Catatan Pesanan dikelompokkan dengan judul tanggal agar pemindaian lebih mudah. Dan tidak ada lagi animasi menyebalkan yang memenuhi tampilan saat Anda melihat Detail Tagihan!

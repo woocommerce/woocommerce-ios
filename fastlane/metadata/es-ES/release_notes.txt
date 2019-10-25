@@ -1,0 +1,1 @@
+Hemos reorganizado algunas partes de la sección Información del pedido para mejorar su legibilidad y usabilidad: Los datos de pago de los clientes se ven mejor y las notas del pedido se agrupan mediante encabezados de fecha para facilitar el análisis. Hemos quitado esas animaciones incómodas que se expanden al consultar la sección Información de facturación.

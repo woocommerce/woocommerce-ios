@@ -63,6 +63,12 @@ final class ReviewsViewModel {
     func markAllAsRead(onCompletion: @escaping (Error?) -> Void) {
         markAsRead(notes: unreadNotifications, onCompletion: onCompletion)
     }
+
+    func loadReview(for noteId: Int, onCompletion: @escaping () -> Void) {
+        synchronizeReviews() {
+            onCompletion()
+        }
+    }
 }
 
 
@@ -105,9 +111,11 @@ extension ReviewsViewModel {
         let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: 1, pageSize: 25) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing reviews: \(error)")
+                ServiceLocator.analytics.track(.reviewsListLoadFailed,
+                                               withError: error)
             } else {
-                //TODO. What event must be sent here?
-                //ServiceLocator.analytics.track(.notificationListLoaded)
+                ServiceLocator.analytics.track(.reviewsListLoaded,
+                                               withProperties: ["is_loading_more": false])
             }
 
             onCompletion?()
@@ -126,9 +134,10 @@ extension ReviewsViewModel {
         let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: reviewsProductIDs) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing products: \(error)")
+                ServiceLocator.analytics.track(.reviewsProductsLoadFailed,
+                                               withError: error)
             } else {
-                //TODO. What event must be sent here?
-                //ServiceLocator.analytics.track(.notificationListLoaded)
+                ServiceLocator.analytics.track(.reviewsProductsLoaded)
             }
 
             onCompletion()
@@ -143,6 +152,8 @@ extension ReviewsViewModel {
         let action = NotificationAction.synchronizeNotifications { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
+                ServiceLocator.analytics.track(.notificationsLoadFailed,
+                                               withError: error)
             } else {
                 ServiceLocator.analytics.track(.notificationListLoaded)
             }

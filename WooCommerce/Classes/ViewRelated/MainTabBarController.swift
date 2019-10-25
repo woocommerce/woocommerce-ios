@@ -208,8 +208,7 @@ private extension MainTabBarController {
         case .orders:
             ServiceLocator.analytics.track(.ordersSelected)
         case .products:
-            // TODO-1263: analytics for product list
-            return
+            ServiceLocator.analytics.track(.productListSelected)
         case .reviews:
             ServiceLocator.analytics.track(.notificationsSelected)
         }
@@ -224,8 +223,7 @@ private extension MainTabBarController {
         case .orders:
             ServiceLocator.analytics.track(.ordersReselected)
         case .products:
-            // TODO-1263: analytics for product list
-            return
+            ServiceLocator.analytics.track(.productListReselected)
         case .reviews:
             ServiceLocator.analytics.track(.notificationsReselected)
         }
@@ -304,7 +302,6 @@ extension MainTabBarController {
             return
             }
 
-            //TODO. What to do when receiving a notification?
             reviewsViewController.presentDetails(for: noteID)
         }
         else {

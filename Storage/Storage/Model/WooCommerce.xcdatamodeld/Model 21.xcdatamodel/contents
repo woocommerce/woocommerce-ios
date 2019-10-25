@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15400" systemVersion="19A583" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="14903" systemVersion="18F132" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -383,6 +383,7 @@
         <relationship name="providers" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ShipmentTrackingProvider" inverseName="group" inverseEntity="ShipmentTrackingProvider"/>
     </entity>
     <entity name="Site" representedClassName="Site" syncable="YES">
+        <attribute name="frameNonce" optional="YES" attributeType="String"/>
         <attribute name="isWooCommerceActive" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="isWordPressStore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>
@@ -461,7 +462,7 @@
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
-        <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="165"/>
+        <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="178"/>
         <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="135"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>

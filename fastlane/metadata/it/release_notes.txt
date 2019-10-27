@@ -1,5 +1,1 @@
-- Nuova pagina delle statistiche (con analisi più granulari) per coloro che usano il plugin WooCommerce Admin. Puoi decidere di usarla dalla pagina Impostazioni.
-- È stato corretto un bug a causa del quale i prezzi venivano mostrati nella valuta errata nella pagina dei dettagli prodotto.
-- Dopo aver scoperto che i registri dell'app potevano essere modificati, ci siamo accertati che d'ora in poi possano soltanto essere copiati.
-- Ora che la scheda Ordini mostra tutte le informazioni sugli ordini, abbiamo semplificato la scheda Il mio negozio rimuovendo la sezione Nuovi ordini.
-- Probabilmente desideri che le recensioni siano localizzate: adesso lo sono (c'era un bug, lo abbiamo risolto).
+Abbiamo riorganizzato alcune parti dei dettagli dell'ordine per migliorarne la leggibilità e l'usabilità: i dettagli di pagamento dei clienti ora sono più evidenti e le note degli ordini sono raggruppate con intestazioni contenenti la data per una più semplice scansione. Inoltre, niente più strane animazioni che si espandono durante la visualizzazione dei dettagli di fatturazione.

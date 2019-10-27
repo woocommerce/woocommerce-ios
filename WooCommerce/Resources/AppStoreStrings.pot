@@ -47,9 +47,12 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v2.8-whats-new"
+msgctxt "v2.9-whats-new"
 msgid ""
-"We’ve rearranged some parts of Order Details for better readability and usability: Customer payment details are more prominent, and Order Notes are grouped with date headings for easier scanning. And no more awkward expanding animation when you view the Billing Details!\n"
+"* New! You can now preselect the current Order status when editing a list of order statuses.\n"
+"* Improved! The "9+" badge on the Orders tab got a makeover. It no longer overlaps the tab label on iPhone SE/8 in landscape mode.\n"
+"* Improved! The Top Performers list on the new stats page no longer has a dark header bar in Dark mode.\n"
+"* Improved! On the Orders tab, the order status filter now sticks after changing an Order status.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

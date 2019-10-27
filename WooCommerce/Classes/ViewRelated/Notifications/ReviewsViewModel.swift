@@ -122,7 +122,7 @@ extension ReviewsViewModel {
                 ServiceLocator.analytics.track(.reviewsListLoadFailed,
                                                withError: error)
             } else {
-                let loadingMore = pageNumber != 1
+                let loadingMore = pageNumber != Settings.firstPage
                 ServiceLocator.analytics.track(.reviewsListLoaded,
                                                withProperties: ["is_loading_more": loadingMore])
             }

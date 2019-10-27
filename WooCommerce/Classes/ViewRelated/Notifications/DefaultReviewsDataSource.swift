@@ -231,16 +231,6 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
         estimatedRowHeights[indexPath] = cell.frame.height
     }
 
-//    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-//
-//        // Preserve the Cell Height
-//        // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
-//        // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
-//        // the actual value. AKA no flicker!
-//        //
-//        estimatedRowHeights[indexPath] = cell.frame.height
-//    }
-
     func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewedProduct = product(id: review.productID)

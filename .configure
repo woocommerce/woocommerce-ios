@@ -1,7 +1,7 @@
 {
   "project_name": "woocommerce-ios",
   "branch": "master",
-  "pinned_hash": "35258311d8ab579d5c4fddf34487d54ebb278ae0",
+  "pinned_hash": "5d9d2dfed3af27c7c686486a7665b50a65a4ddc2",
   "files_to_copy": [
     {
       "file": "shared/google_cloud_keys.json",

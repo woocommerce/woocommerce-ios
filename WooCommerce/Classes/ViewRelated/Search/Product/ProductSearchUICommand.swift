@@ -59,13 +59,13 @@ final class ProductSearchUICommand: SearchUICommand {
         }
 
         let previewGenerator = ProductPreviewGenerator(product: model, frameNonce: site.frameNonce, credentials: credentials)
-        previewGenerator.onFailure = { message in
-            DDLogError("⛔️ Unable to preview product (\(model.name)): \(message)")
-        }
-        previewGenerator.onAttemptURLRequest = { request in
+        previewGenerator.generate { (request, errorMessage) in
+            guard let request = request else {
+                DDLogError("⛔️ Unable to preview product (\(model.name)): \(errorMessage ?? "Unknown")")
+                return
+            }
             WebviewHelper.launch(request.url?.absoluteString, with: viewController)
         }
-        previewGenerator.generate()
         return
 
         let currencyCode = CurrencySettings.shared.currencyCode

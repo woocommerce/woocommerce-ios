@@ -314,16 +314,16 @@ extension ProductsViewController: UITableViewDelegate {
         }
 
         let previewGenerator = ProductPreviewGenerator(product: product, frameNonce: site.frameNonce, credentials: credentials)
-        previewGenerator.onFailure = { message in
-            DDLogError("⛔️ Unable to preview product (\(product.name)): \(message)")
-        }
-        previewGenerator.onAttemptURLRequest = { [weak self] request in
+        previewGenerator.generate { [weak self] (request, errorMessage) in
+            guard let request = request else {
+                DDLogError("⛔️ Unable to preview product (\(product.name)): \(errorMessage ?? "Unknown")")
+                return
+            }
             guard let self = self else {
                 return
             }
             WebviewHelper.launch(request.url?.absoluteString, with: self)
         }
-        previewGenerator.generate()
 
 //        let currencyCode = CurrencySettings.shared.currencyCode
 //        let currency = CurrencySettings.shared.symbol(from: currencyCode)

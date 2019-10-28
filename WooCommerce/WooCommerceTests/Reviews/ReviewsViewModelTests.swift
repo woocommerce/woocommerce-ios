@@ -142,6 +142,8 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
                    forRowAt indexPath: IndexPath,
                    with syncingCoordinator: SyncingCoordinator) {}
 
+    func refreshDataObservers() {}
+
 }
 
 final class MockReviewsStoresManager: DefaultStoresManager {

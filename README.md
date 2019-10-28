@@ -27,7 +27,7 @@ In order to login to WordPress.com using the app:
 7. Fill in the dotcomSecret with the Client Secret
 8. Recompile and run the app on a device or inside simulator.
 
-Please, remember to not push these information on your commit and PRs.
+Please, remember to not add these information on your commits and PRs.
   
 #### SwiftLint
 

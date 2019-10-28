@@ -230,3 +230,14 @@ private extension RefundStore {
         }
     }
 }
+
+// MARK: - Unit Testing Helpers
+//
+extension RefundStore {
+
+    /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Refund in a given Storage Layer.
+    ///
+    func upsertStoredRefund(readOnlyRefund: Networking.Refund, in storage: StorageType) {
+        upsertStoredRefunds(readOnlyRefunds: [readOnlyRefund], in: storage)
+    }
+}

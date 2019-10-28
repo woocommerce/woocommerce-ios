@@ -18,6 +18,8 @@
 		02FA32CE2366BF1E0071588D /* CookieJarTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FA32CD2366BF1E0071588D /* CookieJarTests.swift */; };
 		02FA32D02366BF540071588D /* MockCookieJar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FA32CF2366BF540071588D /* MockCookieJar.swift */; };
 		02FA32D22366BFF20071588D /* WebViewAuthenticatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FA32D12366BFF20071588D /* WebViewAuthenticatorTests.swift */; };
+		02FA32D62366C5760071588D /* URL+Preview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FA32D52366C5760071588D /* URL+Preview.swift */; };
+		02FA32D82366C5EC0071588D /* URL+PreviewTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FA32D72366C5EC0071588D /* URL+PreviewTests.swift */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		6647C0161DAC6AB6570C53A7 /* Pods_Networking.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3F25DC15EC1D7C631169CB5 /* Pods_Networking.framework */; };
 		74002D6A2118B26100A63C19 /* SiteVisitStatsMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */; };
@@ -296,6 +298,8 @@
 		02FA32CD2366BF1E0071588D /* CookieJarTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CookieJarTests.swift; sourceTree = "<group>"; };
 		02FA32CF2366BF540071588D /* MockCookieJar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockCookieJar.swift; sourceTree = "<group>"; };
 		02FA32D12366BFF20071588D /* WebViewAuthenticatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WebViewAuthenticatorTests.swift; sourceTree = "<group>"; };
+		02FA32D52366C5760071588D /* URL+Preview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+Preview.swift"; sourceTree = "<group>"; };
+		02FA32D72366C5EC0071588D /* URL+PreviewTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+PreviewTests.swift"; sourceTree = "<group>"; };
 		69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_NetworkingTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74002D692118B26000A63C19 /* SiteVisitStatsMapperTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsMapperTests.swift; sourceTree = "<group>"; };
 		74002D6B2118B88200A63C19 /* SiteVisitStatsRemoteTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SiteVisitStatsRemoteTests.swift; sourceTree = "<group>"; };
@@ -1011,6 +1015,7 @@
 				B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */,
 				B5C151BA217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift */,
 				B53EF5312180F21C003E146F /* Dictionary+Woo.swift */,
+				02FA32D52366C5760071588D /* URL+Preview.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1019,6 +1024,7 @@
 			isa = PBXGroup;
 			children = (
 				B5C6FCC720A32E4800A4F8E4 /* DateFormatterWooTests.swift */,
+				02FA32D72366C5EC0071588D /* URL+PreviewTests.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1342,6 +1348,7 @@
 				CE430670234B99F50073CBFF /* RefundsRemote.swift in Sources */,
 				B56C1EB620EA757B00D749F9 /* SiteListMapper.swift in Sources */,
 				B50A583921AD861700617455 /* APNSDevice.swift in Sources */,
+				02FA32D62366C5760071588D /* URL+Preview.swift in Sources */,
 				7426CA0D21AF27B9004E9FFC /* SiteAPIRemote.swift in Sources */,
 				D88D5A45230BC6F9007B6E01 /* ProductReviewsRemote.swift in Sources */,
 				B59325D4217E4206000B0E8E /* NoteBlock.swift in Sources */,
@@ -1476,6 +1483,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				74CF5E8421402C04000CED0A /* TopEarnerStatsRemoteTests.swift in Sources */,
+				02FA32D82366C5EC0071588D /* URL+PreviewTests.swift in Sources */,
 				74749B9522413119005C4CF2 /* ProductsRemoteTests.swift in Sources */,
 				B524194321AC622500D6FC0A /* DotcomDeviceMapperTests.swift in Sources */,
 				74D5BECE217E0F98007B0348 /* SiteSettingsRemoteTests.swift in Sources */,

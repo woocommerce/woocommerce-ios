@@ -38,6 +38,8 @@ private extension ProductPreviewGenerator {
 
 private extension ProductPreviewGenerator {
     func attemptPreview(url: URL, completion: @escaping PreviewGenerationCompletion) {
+        let url = url.appendingProductPreviewParameters() ?? url
+
         switch authenticationRequired {
         case .nonce(let frameNonce):
             attemptNonceAuthenticatedRequest(url: url, nonce: frameNonce, completion: completion)
@@ -102,7 +104,6 @@ private extension ProductPreviewGenerator {
             return nil
         }
         var queryItems = components.queryItems ?? []
-        queryItems.append(URLQueryItem(name: "preview", value: "true"))
         queryItems.append(URLQueryItem(name: "frame-nonce", value: nonce))
         components.queryItems = queryItems
         return components.url

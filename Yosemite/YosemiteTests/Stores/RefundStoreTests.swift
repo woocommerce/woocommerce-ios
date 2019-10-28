@@ -168,6 +168,34 @@ class RefundStoreTests: XCTestCase {
         refundStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that `RefundAction.retrieveRefund` effectively persists all of the remote product fields
+    /// correctly across all of the related `Refund` entities (such as OrderItemRefund).
+    ///
+    func testRetrieveSingleRefundEffectivelyPersistsRefundFieldsAndRelatedObjects() {
+        let expectation = self.expectation(description: "Persist single refund")
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteRefund = sampleRefund2()
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(refundID)", filename: "refund-single")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 0)
+
+        let action = RefundAction.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: refundID) { (refund, error) in
+            XCTAssertNotNil(refund)
+            XCTAssertNil(error)
+
+            let storedRefund = self.viewStorage.loadRefund(siteID: self.sampleSiteID, orderID: self.sampleOrderID, refundID: self.refundID)
+            let readOnlyStoredRefund = storedRefund?.toReadOnly()
+            XCTAssertNotNil(storedRefund)
+            XCTAssertNotNil(readOnlyStoredRefund)
+            XCTAssertEqual(readOnlyStoredRefund, remoteRefund)
+
+            expectation.fulfill()
+        }
+
+        refundStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

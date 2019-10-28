@@ -64,7 +64,7 @@ class RefundStoreTests: XCTestCase {
 
     // MARK: - RefundAction.synchronizeRefunds
 
-    /// Verifies that RefundAction.synchronizeRefunds effectively persists any retrieved refunds.
+    /// Verifies that `RefundAction.synchronizeRefunds` effectively persists any retrieved refunds.
     ///
     func testRetrieveRefundsEffectivelyPersistsRetrievedRefunds() {
         let expectation = self.expectation(description: "Retrieve refunds")
@@ -104,6 +104,37 @@ class RefundStoreTests: XCTestCase {
             XCTAssertNotNil(readOnlyStoredRefund)
             XCTAssertEqual(readOnlyStoredRefund, remoteRefund)
 
+            expectation.fulfill()
+        }
+
+        refundStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `RefundAction.synchronizeRefunds` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveRefundsReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve refunds error response")
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "generic_error")
+        let action = RefundAction.synchronizeRefunds(siteID: sampleSiteID, orderID: sampleOrderID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        refundStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `RefundAction.synchronizeRefunds` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveProductsReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve refunds empty response")
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = RefundAction.synchronizeRefunds(siteID: sampleSiteID, orderID: sampleOrderID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNotNil(error)
             expectation.fulfill()
         }
 

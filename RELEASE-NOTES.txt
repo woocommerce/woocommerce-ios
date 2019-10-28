@@ -1,3 +1,6 @@
+3.0
+-----
+ 
 2.9
 -----
 - bugfix: the badge "9+" on the Orders tab doesn't overlap with the tab label on iPhone SE/8 landscape now, and polished based on design spec.

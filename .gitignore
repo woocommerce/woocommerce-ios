@@ -74,7 +74,7 @@ fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
 fastlane/test_output
-fastlane/README.md 
+fastlane/README.md
 Preview.html
 
 \.DS_Store
@@ -87,3 +87,6 @@ Preview.html
 # Everything without a .enc extension is ignored
 .configure-files/*
 !.configure-files/*.enc
+
+# Can't imagine ever needing to commit one of these
+*.bak

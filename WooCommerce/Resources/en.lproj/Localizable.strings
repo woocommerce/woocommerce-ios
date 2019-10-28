@@ -235,6 +235,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continue reading";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "Continue with Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "Continue with WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "Continuing with Apple";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copy";
 
@@ -549,7 +558,7 @@
 "Log in to the WordPress.com account you used to connect Jetpack." = "Log in to the WordPress.com account you used to connect Jetpack.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "Log in to WordPress.com using an email address to manage all your WordPress sites.";
+"Log in to your WordPress.com account with your email address." = "Log in to your WordPress.com account with your email address.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Log in with Jetpack";
@@ -732,6 +741,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optional Tracking Information";
 
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #\(viewModel.order.number)" = "Order #\(viewModel.order.number)";
@@ -801,6 +813,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "Please enter a valid email address.";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Please enter the password for your WordPress.com account to log in with your Apple ID.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Please enter your credentials";

@@ -1,2 +1,0 @@
-Shopdaten nach Woche,
-Monat und Jahr anzeigen

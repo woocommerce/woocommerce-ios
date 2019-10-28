@@ -90,7 +90,7 @@ private extension OrdersBadgeController {
         static let horizontalPadding = CGFloat(2)
 
         // "9+" layout to account for longer text
-        static let widthForNinePlus = CGFloat(24)
+        static let widthForNinePlus = CGFloat(25)
         static let xOffsetForNinePlus = CGFloat(10)
         static let yOffsetForNinePlus = CGFloat(-1)
         static let xOffsetForNinePlusLandscape = CGFloat(8)

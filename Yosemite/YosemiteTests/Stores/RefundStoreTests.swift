@@ -251,6 +251,26 @@ class RefundStoreTests: XCTestCase {
         refundStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    // MARK: - RefundAction.resetStoredRefunds
+
+    /// Verifies that `RefundAction.resetStoredRefunds` deletes the Refunds from Storage
+    ///
+    func testResetStoredRefundsEffectivelyNukesTheRefundsCache() {
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let expectation = self.expectation(description: "Reset stored refunds")
+        let action = RefundAction.resetStoredRefunds() {
+            refundStore.upsertStoredRefund(readOnlyRefund: self.sampleRefund(), in: self.viewStorage)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Refund.self), 1)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 1)
+
+            expectation.fulfill()
+        }
+
+        refundStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

@@ -18,15 +18,16 @@ A Jetpack-powered companion app for WooCommerce.
 
 #### Credentials for external contributors
 In order to login to WordPress.com using the app:
-1. Create a WordPress.com account at https://wordpress.com/start/user (if you don't already have one).
-2. Create an application at https://developer.wordpress.com/apps/.
-Set "Redirect URLs"= https://localhost and "Type" = Native and click "Create" then "Update".
-3. Copy the Client ID and Client Secret from the OAuth Information.
-Build the app
-4. Navigate to WooCommerce/DerivedSources/ApiCredentials.swift
-5. fill in the dotcomAppId with the Client ID
-6. fill in the dotcomSecret with the Client Secret
-7. run the app
+1. Create a [WordPress.com account](https://wordpress.com/start/user) (if you don't already have one).
+2. Create a new developer application [here](https://developer.wordpress.com/apps/).
+3. Set **"Redirect URLs"** = `https://localhost` and **"Type"** = `Native` and click **Create** then **Update**.
+4. Copy the *Client ID* and *Client Secret* from the OAuth Information. Build the app.
+5. Navigate to *WooCommerce/DerivedSources/ApiCredentials.swift*
+6. Fill in the dotcomAppId with the Client ID
+7. Fill in the dotcomSecret with the Client Secret
+8. Recompile and run the app on a device or inside simulator.
+
+Please, remember to not push these information on your commit and PRs.
   
 #### SwiftLint
 

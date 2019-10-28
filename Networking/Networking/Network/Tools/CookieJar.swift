@@ -4,7 +4,7 @@ import WebKit
 /// Provides a common interface to look for a logged-in WordPress cookie in different
 /// cookie storage systems, to aid with the transition from UIWebView to WebKit.
 ///
-@objc protocol CookieJar {
+protocol CookieJar: class {
     func getCookies(url: URL, completion: @escaping ([HTTPCookie]) -> Void)
     func getCookies(completion: @escaping ([HTTPCookie]) -> Void)
     func hasCookie(url: URL, username: String, completion: @escaping (Bool) -> Void)
@@ -12,21 +12,7 @@ import WebKit
     func removeWordPressComCookies(completion: @escaping () -> Void)
 }
 
-// As long as CookieJar is @objc, we can't have shared methods in protocol
-// extensions, as it needs to be accessible to Obj-C.
-// Whenever we migrate enough code so this doesn't need to be called from Swift,
-// a regular CookieJar protocol with shared implementation on an extension would suffice.
-//
-// Also, although you're not supposed to use this outside this file, it can't be private
-// since we're subclassing HTTPCookieStorage (which conforms to this) in MockCookieJar in
-// the test target, and the swift compiler will crash when doing that ¯\_(ツ)_/¯
-//
-// https://bugs.swift.org/browse/SR-2370
-//
-protocol CookieJarSharedImplementation: CookieJar {
-}
-
-extension CookieJarSharedImplementation {
+extension CookieJar {
     func _hasCookie(url: URL, username: String, completion: @escaping (Bool) -> Void) {
         getCookies(url: url) { (cookies) in
             let cookie = cookies
@@ -45,7 +31,7 @@ extension CookieJarSharedImplementation {
     }
 }
 
-extension HTTPCookieStorage: CookieJarSharedImplementation {
+extension HTTPCookieStorage: CookieJar {
     func getCookies(url: URL, completion: @escaping ([HTTPCookie]) -> Void) {
         completion(cookies(for: url) ?? [])
     }
@@ -68,7 +54,7 @@ extension HTTPCookieStorage: CookieJarSharedImplementation {
     }
 }
 
-extension WKHTTPCookieStore: CookieJarSharedImplementation {
+extension WKHTTPCookieStore: CookieJar {
     func getCookies(url: URL, completion: @escaping ([HTTPCookie]) -> Void) {
 
         var urlCookies: [HTTPCookie] = []
@@ -123,7 +109,7 @@ extension WKHTTPCookieStore: CookieJarSharedImplementation {
 
 #if DEBUG
     func __removeAllWordPressComCookies() {
-        var jars = [CookieJarSharedImplementation]()
+        var jars = [CookieJar]()
         jars.append(HTTPCookieStorage.shared)
         jars.append(WKWebsiteDataStore.default().httpCookieStore)
 

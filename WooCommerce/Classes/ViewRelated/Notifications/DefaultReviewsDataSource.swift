@@ -139,7 +139,8 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     }
 
     func refreshDataObservers() {
-        reviewsResultsController.predicate = self.filterPredicate()
+        reviewsResultsController.predicate = filterPredicate()
+        productsResultsController.predicate = sitePredicate()
     }
 }
 

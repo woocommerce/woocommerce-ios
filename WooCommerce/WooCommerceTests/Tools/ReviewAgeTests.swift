@@ -76,7 +76,7 @@ final class ReviewAgeTests: XCTestCase {
     func testAgeCalculationsReturnLastOlderForMoreThanSevenFullDays() {
         let initialDate = Date()
         // Let's move the clock a tad longer than seven full days ahead
-        let finalDate = Date(timeInterval: 604900, since: initialDate)
+        let finalDate = Date(timeInterval: 691300, since: initialDate)
 
         let age = ReviewAge.from(startDate: initialDate, toDate: finalDate)
 

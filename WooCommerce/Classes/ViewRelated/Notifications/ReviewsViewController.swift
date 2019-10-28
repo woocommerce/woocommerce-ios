@@ -209,7 +209,6 @@ private extension ReviewsViewController {
     }
 
     func refreshTitle() {
-        transitionToResultsUpdatedState()
         navigationItem.title = NSLocalizedString(
             "Reviews",
             comment: "Title that appears on top of the main Reviews screen (plural form of the word Review)."
@@ -302,6 +301,8 @@ private extension ReviewsViewController {
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
     func reloadResultsController() {
+        viewModel.refreshResults()
+        
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
         transitionToSyncingState()
@@ -502,6 +503,9 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState()
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
+            print("==== synchronisync is completed ====")
+            print("is empty ", self?.isEmpty)
+            print("//// synchronisync is completed ====")
             self?.transitionToResultsUpdatedState()
             onCompletion?(true)
         }

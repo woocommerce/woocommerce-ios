@@ -50,6 +50,10 @@ final class ReviewsViewModel {
         try? data.observeReviews()
     }
 
+    func refreshResults() {
+        data.refreshDataObservers()
+    }
+
     /// Setup: TableViewCells
     ///
     func configureTableViewCells(tableView: UITableView) {

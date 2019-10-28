@@ -49,6 +49,10 @@ protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
     ///
     func startForwardingEvents(to tableView: UITableView)
 
+    /// Force a refresh of entities obeserving data collections
+    ///
+    func refreshDataObservers()
+
     /// Cancels forwarding events to any previously registered table view
     ///
     func stopForwardingEvents()

@@ -137,6 +137,11 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     func startForwardingEvents(to tableView: UITableView) {
         reviewsResultsController.startForwardingEvents(to: tableView)
     }
+
+    func refreshDataObservers() {
+        print("==== resetting the filter predicate ===")
+        reviewsResultsController.predicate = self.filterPredicate
+    }
 }
 
 

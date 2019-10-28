@@ -503,9 +503,6 @@ extension ReviewsViewController: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState()
         viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
-            print("==== synchronisync is completed ====")
-            print("is empty ", self?.isEmpty)
-            print("//// synchronisync is completed ====")
             self?.transitionToResultsUpdatedState()
             onCompletion?(true)
         }

@@ -121,6 +121,7 @@
 		CE4FD4542350FC0100A16B31 /* OrderItemRefund+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4532350FC0100A16B31 /* OrderItemRefund+ReadOnlyConvertible.swift */; };
 		CE4FD4562350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE4FD4552350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift */; };
 		CE5F9A7A22B2D455001755E8 /* Array+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F9A7922B2D455001755E8 /* Array+Helpers.swift */; };
+		CECC504023675DF4004540EA /* RefundStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC503F23675DF4004540EA /* RefundStoreTests.swift */; };
 		D80F758A223F72AA002F4A3B /* ShipmentTrackingProviderGroup+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80F7589223F72AA002F4A3B /* ShipmentTrackingProviderGroup+ReadOnlyConvertible.swift */; };
 		D80F758C223F74B6002F4A3B /* ShipmentTrackingProvider+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = D80F758B223F74B6002F4A3B /* ShipmentTrackingProvider+ReadOnlyConvertible.swift */; };
 		D831E2E2230E3513000037D0 /* ProductReviewStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2E1230E3513000037D0 /* ProductReviewStore.swift */; };
@@ -278,6 +279,7 @@
 		CE4FD4532350FC0100A16B31 /* OrderItemRefund+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemRefund+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CE4FD4552350FD4800A16B31 /* Refund+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Refund+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		CE5F9A7922B2D455001755E8 /* Array+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Array+Helpers.swift"; sourceTree = "<group>"; };
+		CECC503F23675DF4004540EA /* RefundStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundStoreTests.swift; sourceTree = "<group>"; };
 		D80F7589223F72AA002F4A3B /* ShipmentTrackingProviderGroup+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProviderGroup+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D80F758B223F74B6002F4A3B /* ShipmentTrackingProvider+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShipmentTrackingProvider+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		D831E2E1230E3513000037D0 /* ProductReviewStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewStore.swift; sourceTree = "<group>"; };
@@ -489,7 +491,6 @@
 		B5BC736620D1AA8F00B5B6FA /* Stores */ = {
 			isa = PBXGroup;
 			children = (
-				D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */,
 				D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */,
 				02DA641A2313D6D200284168 /* AppSettingsStoreTests+StatsVersion.swift */,
 				B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */,
@@ -500,10 +501,12 @@
 				7455262F22305F88003F8932 /* OrderStatusStoreTests.swift */,
 				744914F6224AD2AF00546DE4 /* ProductStoreTests.swift */,
 				D831E2E7230E74EF000037D0 /* ProductReviewStoreTests.swift */,
+				CECC503F23675DF4004540EA /* RefundStoreTests.swift */,
 				7492FAE0217FB87100ED2C69 /* SettingStoreTests.swift */,
 				7499A9EC2220527500D8FDFA /* ShipmentStoreTests.swift */,
-				7495C5282114979D00CDD33B /* StatsStoreTests.swift */,
 				028BCE2322DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift */,
+				7495C5282114979D00CDD33B /* StatsStoreTests.swift */,
+				D8C11A5922DFC21600D4A88D /* StatsStoreV4Tests.swift */,
 				02BA23C522EEF092009539E7 /* StatsV4AvailabilityStoreTests.swift */,
 			);
 			path = Stores;
@@ -961,6 +964,7 @@
 				B5C9DE252087FF20006B910A /* MockupProcessor.swift in Sources */,
 				D8C11A5A22DFC21600D4A88D /* StatsStoreV4Tests.swift in Sources */,
 				B54EAF2121188C470029C35E /* EntityListenerTests.swift in Sources */,
+				CECC504023675DF4004540EA /* RefundStoreTests.swift in Sources */,
 				D831E2E8230E74EF000037D0 /* ProductReviewStoreTests.swift in Sources */,
 				741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */,
 				B5C9DE282087FF20006B910A /* MockupSite.swift in Sources */,

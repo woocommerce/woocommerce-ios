@@ -1,6 +1,6 @@
 import Foundation
 
-public final class ProductPreviewGenerator: NSObject {
+public final class ProductPreviewGenerator {
     private let product: Product
     private let frameNonce: String?
     private let authenticator: WebViewAuthenticator
@@ -11,7 +11,6 @@ public final class ProductPreviewGenerator: NSObject {
         self.product = product
         self.frameNonce = frameNonce
         authenticator = WebViewAuthenticator(credentials: credentials)
-        super.init()
     }
 
     public func generate(completion: @escaping PreviewGenerationCompletion) {

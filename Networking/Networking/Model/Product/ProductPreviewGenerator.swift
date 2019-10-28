@@ -90,9 +90,9 @@ private extension ProductPreviewGenerator {
     }
 
     func attemptCookieAuthenticatedRequest(url: URL, completion: @escaping PreviewGenerationCompletion) {
-        authenticator.request(url: url, cookieJar: HTTPCookieStorage.shared, completion: { request in
+        authenticator.request(url: url, cookieJar: HTTPCookieStorage.shared) { request in
             completion(request, nil)
-        })
+        }
     }
 }
 

@@ -621,6 +621,8 @@
 				7452387021124B7700A973CD /* AnyCodable.swift */,
 				7452387121124B7700A973CD /* AnyDecodable.swift */,
 				7452386F21124B7700A973CD /* AnyEncodable.swift */,
+				025434B92361A6A40091E28B /* CookieJar.swift */,
+				025434B723619E0A0091E28B /* WebViewAuthenticator.swift */,
 			);
 			name = Tools;
 			path = Network/Tools;
@@ -1064,8 +1066,6 @@
 				D88D5A46230BC838007B6E01 /* ProductReview.swift */,
 				D88D5A48230BC8C7007B6E01 /* ProductReviewStatus.swift */,
 				025434B523619DAF0091E28B /* ProductPreviewGenerator.swift */,
-				025434B723619E0A0091E28B /* WebViewAuthenticator.swift */,
-				025434B92361A6A40091E28B /* CookieJar.swift */,
 			);
 			path = Product;
 			sourceTree = "<group>";

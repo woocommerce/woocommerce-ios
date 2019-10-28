@@ -203,7 +203,7 @@ class RefundStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve a single refund's error response")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        network.simulateResponse(requestUrlSuffix: "refunds/\(refundID)", filename: "generic_error")
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(refundID)", filename: "generic_error")
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: refundID) { (refund, error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -221,6 +221,30 @@ class RefundStoreTests: XCTestCase {
 
         let action = RefundAction.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: refundID) { (refund, error) in
             XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        refundStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that whenever a `RefundAction.retrieveRefund` action results in a response with statusCode = 404, the local entity
+    /// is obliterated from existence.
+    ///
+    func testRetrieveSingleRefundResultingInStatusCode404CausesTheStoredRefundToGetDeleted() {
+        let expectation = self.expectation(description: "Delete single refund when response is 404 not found")
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 0)
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
+
+        network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(sampleRefundID)", error: NetworkError.notFound)
+        let action = RefundAction.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID) { (refund, error) in
+            XCTAssertNotNil(error)
+            XCTAssertNil(refund)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Refund.self), 0)
+
             expectation.fulfill()
         }
 

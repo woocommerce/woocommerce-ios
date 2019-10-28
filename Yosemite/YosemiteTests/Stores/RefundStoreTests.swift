@@ -196,6 +196,37 @@ class RefundStoreTests: XCTestCase {
         refundStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that `RefundAction.retrieveRefund` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveSingleRefundReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve a single refund's error response")
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "refunds/\(refundID)", filename: "generic_error")
+        let action = RefundAction.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: refundID) { (refund, error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        refundStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `RefundAction.retrieveRefund` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveSingleRefundReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve a single refund's empty response")
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = RefundAction.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: refundID) { (refund, error) in
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        refundStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

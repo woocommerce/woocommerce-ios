@@ -38,6 +38,10 @@ class RefundStoreTests: XCTestCase {
     ///
     private let sampleRefundID = 590
 
+    /// RefundID for a single refund
+    ///
+    private let refundID = 562
+
     /// Testing Page Number
     ///
     private let defaultPageNumber = 1
@@ -141,6 +145,29 @@ class RefundStoreTests: XCTestCase {
         refundStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+
+    // MARK: - RefundAction.retrieveRefund
+
+    /// Verifies that `RefundAction.retrieveRefund` returns the expected `Refund`.
+    ///
+    func testRetrieveSingleRefundReturnsExpectedFields() {
+        let expectation = self.expectation(description: "Retrieve single refund")
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteRefund = sampleRefund2()
+
+        network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/refunds/\(refundID)", filename: "refund-single")
+        let action = RefundAction.retrieveRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: refundID) { (refund, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(refund)
+            XCTAssertEqual(refund, remoteRefund)
+
+            expectation.fulfill()
+        }
+
+        refundStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 
@@ -165,6 +192,23 @@ private extension RefundStoreTests {
                       items: [sampleOrderItem()])
     }
 
+    /// Generate a single Refund
+    ///
+    func sampleRefund2(_ siteID: Int? = nil) -> Networking.Refund {
+        let testSiteID = siteID ?? sampleSiteID
+        let testDate = date(with: "2019-10-01T19:33:46")
+        return Refund(refundID: refundID,
+                      orderID: sampleOrderID,
+                      siteID: testSiteID,
+                      dateCreated: testDate,
+                      amount: "27.00",
+                      reason: "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.",
+                      refundedByUserID: 1,
+                      isAutomated: true,
+                      createAutomated: false,
+                      items: [sampleOrderItem2()])
+    }
+
     /// Generate a sample OrderItem
     ///
     func sampleOrderItem() -> Networking.OrderItemRefund {
@@ -180,6 +224,24 @@ private extension RefundStoreTests {
                                taxClass: "",
                                taxes: [],
                                total: "-18.00",
+                               totalTax: "0.00")
+    }
+
+    /// Generate another sample OrderItem
+    ///
+    func sampleOrderItem2() -> Networking.OrderItemRefund {
+        return OrderItemRefund(itemID: 67,
+                               name: "Ship Your Idea - Blue, XL",
+                               productID: 21,
+                               variationID: 70,
+                               quantity: -1,
+                               price: 27,
+                               sku: "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
+                               subtotal: "-27.00",
+                               subtotalTax: "0.00",
+                               taxClass: "",
+                               taxes: [],
+                               total: "-27.00",
                                totalTax: "0.00")
     }
 

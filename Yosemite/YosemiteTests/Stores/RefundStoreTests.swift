@@ -271,6 +271,28 @@ class RefundStoreTests: XCTestCase {
         refundStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+
+    // MARK: - RefundStore.upsertStoredRefund
+
+    /// Verifies that `RefundStore.upsertStoredRefund` does not produce duplicate entries.
+    ///
+    func testUpdateStoredRefundEffectivelyUpdatesPreexistantRefund() {
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Refund.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 0)
+
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 1)
+
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefundMutated(), in: viewStorage)
+        let storageRefund1 = viewStorage.loadRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID)
+        XCTAssertEqual(storageRefund1?.toReadOnly(), sampleRefundMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 2)
+    }
 }
 
 
@@ -293,6 +315,23 @@ private extension RefundStoreTests {
                       isAutomated: true,
                       createAutomated: false,
                       items: [sampleOrderItem()])
+    }
+
+    /// Generate a mutated Refund
+    ///
+    func sampleRefundMutated(_ siteID: Int? = nil) -> Networking.Refund {
+        let testSiteID = siteID ?? sampleSiteID
+        let testDate = date(with: "2019-10-09T16:18:23")
+        return Refund(refundID: sampleRefundID,
+                      orderID: sampleOrderID,
+                      siteID: testSiteID,
+                      dateCreated: testDate,
+                      amount: "18.00",
+                      reason: "Only 1 black hoodie left. Inventory count was off. My bad!",
+                      refundedByUserID: 3,
+                      isAutomated: true,
+                      createAutomated: false,
+                      items: [sampleOrderItem(), sampleOrderItem2()])
     }
 
     /// Generate a single Refund

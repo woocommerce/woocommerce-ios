@@ -287,9 +287,12 @@ private extension OrderStore {
     ///
     private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         var storageItem: Storage.OrderItem
+        let siteID = readOnlyOrder.siteID
+        let orderID = readOnlyOrder.orderID
+
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
-            if let existingStorageItem = storage.loadOrderItem(itemID: readOnlyItem.itemID) {
+            if let existingStorageItem = storage.loadOrderItem(siteID: siteID, orderID: orderID, itemID: readOnlyItem.itemID) {
                 existingStorageItem.update(with: readOnlyItem)
                 storageItem = existingStorageItem
             } else {

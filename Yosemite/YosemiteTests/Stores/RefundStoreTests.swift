@@ -323,6 +323,24 @@ class RefundStoreTests: XCTestCase {
         let storageRefund2 = viewStorage.loadRefund(siteID: sampleSiteID2, orderID: sampleOrderID, refundID: sampleRefundID)
         XCTAssertEqual(storageRefund2?.toReadOnly(), sampleRefund(sampleSiteID2))
     }
+
+    /// Verifies that `RefundStore.upsertStoredRefund` effectively inserts a new Refund, with the specified payload.
+    ///
+    func testUpdateStoredRefundEffectivelyPersistsNewRefund() {
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let remoteRefund = sampleRefund()
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Refund.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItemTaxRefund.self), 0)
+        refundStore.upsertStoredRefund(readOnlyRefund: remoteRefund, in: viewStorage)
+
+        let storageRefund = viewStorage.loadRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID)
+        XCTAssertEqual(storageRefund?.toReadOnly(), remoteRefund)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTaxRefund.self), 0)
+    }
 }
 
 

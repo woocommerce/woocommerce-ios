@@ -1,6 +1,7 @@
 3.0
 -----
 - bugfix: for sites with empty site time zone in the API (usually with UTC specified in wp-admin settings) and when the site time zone is not GMT+0, the stats v4 data no longer has the wrong boundaries (example in #1357).
+- bugfix: fixed a UI appearance problem on mail composer on iOS 13.
  
 2.9
 -----

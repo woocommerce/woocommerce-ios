@@ -82,8 +82,9 @@ public extension StatsStoreV4 {
                        latestDateToInclude: Date,
                        quantity: Int,
                        onCompletion: @escaping (Error?) -> Void) {
-        let earliestDate = DateFormatter.Defaults.iso8601.string(from: earliestDateToInclude)
-        let latestDate = DateFormatter.Defaults.iso8601.string(from: latestDateToInclude)
+        let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
+        let earliestDate = dateFormatter.string(from: earliestDateToInclude)
+        let latestDate = dateFormatter.string(from: latestDateToInclude)
         let remote = OrderStatsRemoteV4(network: network)
 
         remote.loadOrderStats(for: siteID,

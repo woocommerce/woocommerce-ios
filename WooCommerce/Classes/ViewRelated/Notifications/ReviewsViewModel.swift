@@ -50,6 +50,10 @@ final class ReviewsViewModel {
         try? data.observeReviews()
     }
 
+    func refreshResults() {
+        data.refreshDataObservers()
+    }
+
     /// Setup: TableViewCells
     ///
     func configureTableViewCells(tableView: UITableView) {
@@ -63,6 +67,16 @@ final class ReviewsViewModel {
     func markAllAsRead(onCompletion: @escaping (Error?) -> Void) {
         markAsRead(notes: unreadNotifications, onCompletion: onCompletion)
     }
+
+    func loadReview(for noteId: Int, onCompletion: @escaping () -> Void) {
+        synchronizeReviews() {
+            onCompletion()
+        }
+    }
+
+    func containsMorePages(_ highestVisibleReview: Int) -> Bool {
+        return highestVisibleReview > data.reviewCount
+    }
 }
 
 
@@ -70,11 +84,13 @@ final class ReviewsViewModel {
 extension ReviewsViewModel {
     /// Prepares data necessary to render the reviews tab.
     ///
-    func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
+    func synchronizeReviews(pageNumber: Int = Settings.firstPage,
+                            pageSize: Int = Settings.pageSize,
+                            onCompletion: (() -> Void)? = nil) {
         let group = DispatchGroup()
 
         group.enter()
-        synchronizeAllReviews {
+        synchronizeAllReviews(pageNumber: pageNumber, pageSize: pageSize) {
             group.leave()
         }
 
@@ -97,17 +113,22 @@ extension ReviewsViewModel {
 
     /// Synchronizes the Reviews associated to the current store.
     ///
-    private func synchronizeAllReviews(onCompletion: (() -> Void)? = nil) {
+    private func synchronizeAllReviews(pageNumber: Int,
+                                       pageSize: Int,
+                                       onCompletion: (() -> Void)? = nil) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
-        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: 1, pageSize: 25) { error in
+        let action = ProductReviewAction.synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing reviews: \(error)")
+                ServiceLocator.analytics.track(.reviewsListLoadFailed,
+                                               withError: error)
             } else {
-                //TODO. What event must be sent here?
-                //ServiceLocator.analytics.track(.notificationListLoaded)
+                let loadingMore = pageNumber != Settings.firstPage
+                ServiceLocator.analytics.track(.reviewsListLoaded,
+                                               withProperties: ["is_loading_more": loadingMore])
             }
 
             onCompletion?()
@@ -126,9 +147,10 @@ extension ReviewsViewModel {
         let action = ProductAction.retrieveProducts(siteID: siteID, productIDs: reviewsProductIDs) { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing products: \(error)")
+                ServiceLocator.analytics.track(.reviewsProductsLoadFailed,
+                                               withError: error)
             } else {
-                //TODO. What event must be sent here?
-                //ServiceLocator.analytics.track(.notificationListLoaded)
+                ServiceLocator.analytics.track(.reviewsProductsLoaded)
             }
 
             onCompletion()
@@ -143,6 +165,8 @@ extension ReviewsViewModel {
         let action = NotificationAction.synchronizeNotifications { error in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing notifications: \(error)")
+                ServiceLocator.analytics.track(.notificationsLoadFailed,
+                                               withError: error)
             } else {
                 ServiceLocator.analytics.track(.notificationListLoaded)
             }
@@ -183,5 +207,7 @@ private extension ReviewsViewModel {
 private extension ReviewsViewModel {
     enum Settings {
         static let placeholderRowsPerSection = [3]
+        static let firstPage = 1
+        static let pageSize = 25
     }
 }

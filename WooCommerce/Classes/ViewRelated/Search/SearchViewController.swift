@@ -288,9 +288,9 @@ extension SearchViewController: SyncingCoordinatorDelegate {
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
         let keyword = self.keyword
         searchUICommand.synchronizeModels(siteID: storeID,
-                                        keyword: keyword,
-                                        pageNumber: pageNumber,
-                                        pageSize: pageSize,
+                                          keyword: keyword,
+                                          pageNumber: pageNumber,
+                                          pageSize: pageSize,
                                         onCompletion: { [weak self] isCompleted in
                                             // Disregard OPs that don't really match the latest keyword
                                             if keyword == self?.keyword {

@@ -84,6 +84,7 @@ final class ReviewsViewModelTests: XCTestCase {
 // MARK: - Mocks
 
 final class MockReviewsDataSource: NSObject, ReviewsDataSource {
+
     private lazy var reviews: [ProductReview] = {
         let mocks = MockReviews()
         let mockReview = mocks.review()
@@ -92,6 +93,10 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
 
     var isEmpty: Bool {
         return reviews.isEmpty
+    }
+
+    var reviewCount: Int {
+        return reviews.count
     }
 
     var reviewsProductsIDs: [Int] {
@@ -129,6 +134,16 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
     }
 
     func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {}
+
+    func presentReviewDetails(for noteId: Int, in viewController: UIViewController) {}
+
+    func tableView(_ tableView: UITableView,
+                   willDisplay cell: UITableViewCell,
+                   forRowAt indexPath: IndexPath,
+                   with syncingCoordinator: SyncingCoordinator) {}
+
+    func refreshDataObservers() {}
+
 }
 
 final class MockReviewsStoresManager: DefaultStoresManager {

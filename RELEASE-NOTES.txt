@@ -1,5 +1,6 @@
 3.0
 -----
+- bugfix: for sites with empty site time zone in the API (usually with UTC specified in wp-admin settings) and when the site time zone is not GMT+0, the stats v4 data no longer has the wrong boundaries (example in #1357).
  
 2.9
 -----
@@ -7,7 +8,6 @@
 - bugfix: the Top Performers in the new stats page should not have a dark header bar when launching the app in Dark mode.
 - Enhancement: preselect current Order status when editing the status with a list of order statuses.
 - bugfix: on Orders tab, the order status filter now stays after changing an Order status.
-- bugfix: for sites with empty site time zone in the API (usually with UTC specified in wp-admin settings) and when the site time zone is not GMT+0, the stats v4 data no longer has the wrong boundaries (example in #1357).
  
 2.8
 -----

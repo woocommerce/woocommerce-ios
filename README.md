@@ -15,6 +15,19 @@ A Jetpack-powered companion app for WooCommerce.
   - We use a few tools to help with development. To install or update the required dependencies, run the follow command on the command line: `bundle exec pod install`
   - In some cases, you may also have to: `bundle install`
 - Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
+
+#### Credentials for external contributors
+In order to login to WordPress.com using the app:
+1. Create a [WordPress.com account](https://wordpress.com/start/user) (if you don't already have one).
+2. Create a new developer application [here](https://developer.wordpress.com/apps/).
+3. Set **"Redirect URLs"** = `https://localhost` and **"Type"** = `Native` and click **Create** then **Update**.
+4. Copy the *Client ID* and *Client Secret* from the OAuth Information. Build the app.
+5. Navigate to *WooCommerce/DerivedSources/ApiCredentials.swift*
+6. Fill in the dotcomAppId with the Client ID
+7. Fill in the dotcomSecret with the Client Secret
+8. Recompile and run the app on a device or inside simulator.
+
+Please, remember to not add this information on your commits and PRs.
   
 #### SwiftLint
 

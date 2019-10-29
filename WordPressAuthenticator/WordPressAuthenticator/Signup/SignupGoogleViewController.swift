@@ -21,7 +21,7 @@ class SignupGoogleViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         titleLabel?.text = NSLocalizedString("Waiting for Google to complete…", comment: "Message shown on screen while waiting for Google to finish its signup process.")
-        WordPressAuthenticator.track(.createAccountInitiated)
+        WordPressAuthenticator.track(.createAccountInitiated, properties: ["source": "google"])
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -133,7 +133,7 @@ private extension SignupGoogleViewController {
         // This stat is part of a funnel that provides critical information.  Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         WordPressAuthenticator.track(.createdAccount, properties: ["source": "google"])
-        WordPressAuthenticator.track(.signupSocialSuccess)
+        WordPressAuthenticator.track(.signupSocialSuccess, properties: ["source": "google"])
 
         showSignupEpilogue(for: credentials)
     }
@@ -141,8 +141,8 @@ private extension SignupGoogleViewController {
     /// Social Login Successful: Analytics + Pushing the Login Epilogue.
     ///
     func wasLoggedInInstead(with credentials: AuthenticatorCredentials) {
-        WordPressAuthenticator.track(.signupSocialToLogin)
-        WordPressAuthenticator.track(.loginSocialSuccess)
+        WordPressAuthenticator.track(.signupSocialToLogin, properties: ["source": "google"])
+        WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
 
         showLoginEpilogue(for: credentials)
     }
@@ -150,7 +150,7 @@ private extension SignupGoogleViewController {
     /// Social Signup Failure: Analytics + UI Updates
     ///
     func socialSignupDidFail(with error: Error) {
-        WPAnalytics.track(.signupSocialFailure)
+        WordPressAuthenticator.track(.signupSocialFailure, error: error)
 
         if (error as? SignupError) == .unknown {
             navigationController?.popViewController(animated: true)

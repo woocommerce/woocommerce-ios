@@ -559,7 +559,7 @@ extension LoginEmailViewController {
 
         // Disconnect now that we're done with Google.
         GIDSignIn.sharedInstance().disconnect()
-        WordPressAuthenticator.track(.loginSocialSuccess)
+        WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
     }
 
 
@@ -571,7 +571,7 @@ extension LoginEmailViewController {
         loginFields.emailAddress = email
 
         performSegue(withIdentifier: .showWPComLogin, sender: self)
-        WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting)
+        WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: ["source": "google"])
         configureViewLoading(false)
     }
 

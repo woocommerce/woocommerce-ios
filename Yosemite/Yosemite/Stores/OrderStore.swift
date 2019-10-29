@@ -317,9 +317,11 @@ private extension OrderStore {
     /// Updates, inserts, or prunes the provided StorageOrderItem's taxes using the provided read-only OrderItem
     ///
     private func handleOrderItemTaxes(_ readOnlyItem: Networking.OrderItem, _ storageItem: Storage.OrderItem, _ storage: StorageType) {
+        let itemID = readOnlyItem.itemID
+
         // Upsert the taxes from the read-only orderItem
         for readOnlyTax in readOnlyItem.taxes {
-            if let existingStorageTax = storage.loadOrderItemTax(taxID: readOnlyTax.taxID) {
+            if let existingStorageTax = storage.loadOrderItemTax(itemID: itemID, taxID: readOnlyTax.taxID) {
                 existingStorageTax.update(with: readOnlyTax)
             } else {
                 let newStorageTax = storage.insertNewObject(ofType: Storage.OrderItemTax.self)

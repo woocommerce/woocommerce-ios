@@ -64,7 +64,7 @@ private extension RefundStore {
 
     /// Retrieves a single Refund by ID.
     ///
-    func retrieveRefund(siteID: Int, orderID: Int, refundID: Int, onCompletion: @escaping (Refund?, Error?) -> Void) {
+    func retrieveRefund(siteID: Int, orderID: Int, refundID: Int, onCompletion: @escaping (Networking.Refund?, Error?) -> Void) {
         let remote = RefundsRemote(network: network)
 
         remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] (refund, error) in
@@ -181,10 +181,12 @@ private extension RefundStore {
     ///
     func handleOrderItemRefunds(_ readOnlyRefund: Networking.Refund, _ storageRefund: Storage.Refund, _ storage: StorageType) {
         var storageItem: Storage.OrderItemRefund
+        let siteID = readOnlyRefund.siteID
+        let refundID = readOnlyRefund.refundID
 
         // Upsert items from the read-only refund
         for readOnlyItem in readOnlyRefund.items {
-            if let existingStorageItem = storage.loadRefundItem(itemID: readOnlyItem.itemID) {
+            if let existingStorageItem = storage.loadRefundItem(siteID: siteID, refundID: refundID, itemID: readOnlyItem.itemID) {
                 existingStorageItem.update(with: readOnlyItem)
                 storageItem = existingStorageItem
             } else {
@@ -200,7 +202,7 @@ private extension RefundStore {
 
         // Now, remove any objects that exist in storageRefund.items but not in readOnlyRefund.items
         storageRefund.items?.forEach { storageItem in
-            if readOnlyRefund.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
+            if readOnlyRefund.items.first(where: { $0.itemID == storageItem.itemID && $0.name == storageItem.name } ) == nil {
                 storageRefund.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
             }
@@ -210,9 +212,11 @@ private extension RefundStore {
     /// Updates, inserts, or prunes the provided StorageOrderItemRefund's taxes using the provided read-only OrderItemRefund
     ///
     private func handleOrderItemTaxRefunds(_ readOnlyItem: Networking.OrderItemRefund, _ storageItem: Storage.OrderItemRefund, _ storage: StorageType) {
+        let itemID = readOnlyItem.itemID
+
         // Upsert the taxes from the read-only orderItem
         for readOnlyTax in readOnlyItem.taxes {
-            if let existingStorageTax = storage.loadRefundItemTax(taxID: readOnlyTax.taxID) {
+            if let existingStorageTax = storage.loadRefundItemTax(itemID: itemID, taxID: readOnlyTax.taxID) {
                 existingStorageTax.update(with: readOnlyTax)
             } else {
                 let newStorageTax = storage.insertNewObject(ofType: Storage.OrderItemTaxRefund.self)

@@ -341,6 +341,53 @@ class RefundStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTaxRefund.self), 0)
     }
+
+    /// Verifies that Innocuous Upsert Operations (OPs) performed in Derived Contexts **DO NOT** trigger Refresh Events in the
+    /// main thread.
+    ///
+    /// This translates effectively into: Ensure that performing update OPs that don't really change anything, do not
+    /// end up causing UI refresh OPs in the main thread.
+    ///
+    func testInnocuousRefundUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
+        // Stack
+        let viewContext = storageManager.persistentContainer.viewContext
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: sampleRefund())
+
+        // Track Events: Upsert == 1 / Delete == 0
+        var numberOfUpsertEvents = 0
+        entityListener.onUpsert = { upserted in
+            numberOfUpsertEvents += 1
+        }
+
+        // We expect *never* to get a deletion event
+        entityListener.onDelete = {
+            XCTFail()
+        }
+
+        // Initial save: This should trigger *ONE* Upsert event
+        let backgroundSaveExpectation = expectation(description: "Retrieve empty response for a refund")
+        let derivedContext = storageManager.newDerivedStorage()
+
+        derivedContext.perform {
+            refundStore.upsertStoredRefund(readOnlyRefund: self.sampleRefund(), in: derivedContext)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedContext) {
+
+            // Secondary Save: Expect ZERO new Upsert Events
+            derivedContext.perform {
+                refundStore.upsertStoredRefund(readOnlyRefund: self.sampleRefund(), in: derivedContext)
+            }
+
+            self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
+                XCTAssertEqual(numberOfUpsertEvents, 1)
+                backgroundSaveExpectation.fulfill()
+            }
+        }
+
+        wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 

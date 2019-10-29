@@ -65,6 +65,7 @@ private extension AppleAuthenticator {
                 return
         }
         
+        WordPressAuthenticator.track(.createAccountInitiated, properties: ["source": "apple"])
         SVProgressHUD.show(withStatus: NSLocalizedString("Continuing with Apple", comment: "Shown while logging in with Apple and the app waits for the site creation process to complete."))
         
         let email = appleCredentials.email ?? ""
@@ -138,7 +139,7 @@ private extension AppleAuthenticator {
     
     func signupFailed(with error: Error) {
         DDLogError("Apple Authenticator: Signup failed. error: \(error.localizedDescription)")
-        WordPressAuthenticator.track(.signupSocialFailure, properties: ["source": "apple"])
+        WordPressAuthenticator.track(.signupSocialFailure, error: error)
         delegate?.authFailedWithError(message: error.localizedDescription)
     }
     

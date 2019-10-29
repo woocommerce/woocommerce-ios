@@ -30,6 +30,10 @@ class RefundStoreTests: XCTestCase {
     ///
     private let sampleSiteID = 999
 
+    /// Testing SitID #2
+    ///
+    private let sampleSiteID2 = 187634
+
     /// Testing OrderID
     ///
     private let sampleOrderID = 560
@@ -292,6 +296,32 @@ class RefundStoreTests: XCTestCase {
         XCTAssertEqual(storageRefund1?.toReadOnly(), sampleRefundMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 2)
+    }
+
+    /// Verifies that `RefundStore.upsertStoredRefund` updates the correct site's refund.
+    ///
+    func testUpdateStoredRefundEffectivelyUpdatesCorrectSitesRefund() {
+        let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Refund.self), 0)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 0)
+
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 1)
+
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefund(sampleSiteID2), in: viewStorage)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 2)
+
+        refundStore.upsertStoredRefund(readOnlyRefund: sampleRefundMutated(), in: viewStorage)
+        let storageRefund1 = viewStorage.loadRefund(siteID: sampleSiteID, orderID: sampleOrderID, refundID: sampleRefundID)
+        XCTAssertEqual(storageRefund1?.toReadOnly(), sampleRefundMutated())
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Refund.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemRefund.self), 3)
+
+        let storageRefund2 = viewStorage.loadRefund(siteID: sampleSiteID2, orderID: sampleOrderID, refundID: sampleRefundID)
+        XCTAssertEqual(storageRefund2?.toReadOnly(), sampleRefund(sampleSiteID2))
     }
 }
 

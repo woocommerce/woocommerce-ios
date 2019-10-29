@@ -5,6 +5,13 @@ import Yosemite
 /// CurrencySettings Tests
 ///
 class CurrencySettingsTests: XCTestCase {
+
+    override func setUp() {
+        ServiceLocator.stores.deauthenticate()
+
+        super.setUp()
+    }
+
     func testInitDefault() {
         let moneyFormat = CurrencySettings()
 
@@ -16,7 +23,11 @@ class CurrencySettingsTests: XCTestCase {
     }
 
     func testInitWithIndividualParameters() {
-        let moneyFormat = CurrencySettings(currencyCode: .USD, currencyPosition: .right, thousandSeparator: "M", decimalSeparator: "X", numberOfDecimals: 10)
+        let moneyFormat = CurrencySettings(currencyCode: .USD,
+                                           currencyPosition: .right,
+                                           thousandSeparator: "M",
+                                           decimalSeparator: "X",
+                                           numberOfDecimals: 10)
 
         XCTAssertEqual(.USD, moneyFormat.currencyCode)
         XCTAssertEqual(.right, moneyFormat.currencyPosition)
@@ -37,18 +48,47 @@ class CurrencySettingsTests: XCTestCase {
     }
 
     func testInitWithSiteSettings() {
-        let wooCurrencyCode = SiteSetting(siteID: 1, settingID: "woocommerce_currency", label: "", description: "",
-                                          value: "SHP", settingGroupKey: SiteSettingGroup.general.rawValue)
-        let wooCurrencyPosition = SiteSetting(siteID: 1, settingID: "woocommerce_currency_pos", label: "", description: "",
-                                              value: "right", settingGroupKey: SiteSettingGroup.general.rawValue)
-        let thousandsSeparator = SiteSetting(siteID: 1, settingID: "woocommerce_price_thousand_sep", label: "", description: "",
-                                             value: "X", settingGroupKey: SiteSettingGroup.general.rawValue)
-        let decimalSeparator = SiteSetting(siteID: 1, settingID: "woocommerce_price_decimal_sep", label: "", description: "",
-                                           value: "Y", settingGroupKey: SiteSettingGroup.general.rawValue)
-        let numberOfDecimals = SiteSetting(siteID: 1, settingID: "woocommerce_price_num_decimals", label: "", description: "",
-                                           value: "3", settingGroupKey: SiteSettingGroup.general.rawValue)
+        let wooCurrencyCode = SiteSetting(siteID: 1,
+                                          settingID: "woocommerce_currency",
+                                          label: "",
+                                          description: "",
+                                          value: "SHP",
+                                          settingGroupKey: SiteSettingGroup.general.rawValue)
 
-        let siteSettings = [wooCurrencyCode, wooCurrencyPosition, thousandsSeparator, decimalSeparator, numberOfDecimals]
+        let wooCurrencyPosition = SiteSetting(siteID: 1,
+                                              settingID: "woocommerce_currency_pos",
+                                              label: "",
+                                              description: "",
+                                              value: "right",
+                                              settingGroupKey: SiteSettingGroup.general.rawValue)
+
+        let thousandsSeparator = SiteSetting(siteID: 1,
+                                             settingID: "woocommerce_price_thousand_sep",
+                                             label: "",
+                                             description: "",
+                                             value: "X",
+                                             settingGroupKey: SiteSettingGroup.general.rawValue)
+
+        let decimalSeparator = SiteSetting(siteID: 1,
+                                           settingID: "woocommerce_price_decimal_sep",
+                                           label: "",
+                                           description: "",
+                                           value: "Y",
+                                           settingGroupKey: SiteSettingGroup.general.rawValue)
+
+        let numberOfDecimals = SiteSetting(siteID: 1,
+                                           settingID: "woocommerce_price_num_decimals",
+                                           label: "",
+                                           description: "",
+                                           value: "3",
+                                           settingGroupKey: SiteSettingGroup.general.rawValue)
+
+        let siteSettings = [wooCurrencyCode,
+                            wooCurrencyPosition,
+                            thousandsSeparator,
+                            decimalSeparator,
+                            numberOfDecimals]
+
         let moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
         XCTAssertEqual(.SHP, moneyFormat.currencyCode)
@@ -59,17 +99,41 @@ class CurrencySettingsTests: XCTestCase {
     }
 
     func testInitWithIncompleteSiteSettings() {
-        let wooCurrencyCode = SiteSetting(siteID: 1, settingID: "woocommerce_currency", label: "", description: "",
-                                          value: "SHP", settingGroupKey: SiteSettingGroup.general.rawValue)
-        let wooCurrencyPosition = SiteSetting(siteID: 1, settingID: "woocommerce_currency_pos", label: "", description: "",
-                                              value: "right", settingGroupKey: SiteSettingGroup.general.rawValue)
-        let thousandsSeparator = SiteSetting(siteID: 1, settingID: "woocommerce_price_thousand_sep", label: "", description: "",
-                                             value: "X", settingGroupKey: SiteSettingGroup.general.rawValue)
-        let decimalSeparator = SiteSetting(siteID: 1, settingID: "woocommerce_price_decimal_sep", label: "", description: "",
-                                           value: "Y", settingGroupKey: SiteSettingGroup.general.rawValue)
-        // Missing number of decimals; should default to MoneyFormatSettings()
+        let wooCurrencyCode = SiteSetting(siteID: 1,
+                                          settingID: "woocommerce_currency",
+                                          label: "",
+                                          description: "",
+                                          value: "SHP",
+                                          settingGroupKey: SiteSettingGroup.general.rawValue)
 
-        let siteSettings = [wooCurrencyCode, wooCurrencyPosition, thousandsSeparator, decimalSeparator]
+        let wooCurrencyPosition = SiteSetting(siteID: 1,
+                                              settingID: "woocommerce_currency_pos",
+                                              label: "",
+                                              description: "",
+                                              value: "right",
+                                              settingGroupKey: SiteSettingGroup.general.rawValue)
+
+        let thousandsSeparator = SiteSetting(siteID: 1,
+                                             settingID: "woocommerce_price_thousand_sep",
+                                             label: "",
+                                             description: "",
+                                             value: "X",
+                                             settingGroupKey: SiteSettingGroup.general.rawValue)
+
+        let decimalSeparator = SiteSetting(siteID: 1,
+                                           settingID: "woocommerce_price_decimal_sep",
+                                           label: "",
+                                           description: "",
+                                           value: "Y",
+                                           settingGroupKey: SiteSettingGroup.general.rawValue)
+
+        // Note that the above is missing a declaration for the number of decimals; it should default to 2.
+
+        let siteSettings = [wooCurrencyCode,
+                            wooCurrencyPosition,
+                            thousandsSeparator,
+                            decimalSeparator]
+
         let moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
         XCTAssertEqual(.SHP, moneyFormat.currencyCode)

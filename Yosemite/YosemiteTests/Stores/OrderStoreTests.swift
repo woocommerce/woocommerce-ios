@@ -346,7 +346,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder1?.toReadOnly(), sampleOrderMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 3)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
@@ -354,7 +354,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder2?.toReadOnly(), sampleOrderMutated2())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 1)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 5)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
     }
 

@@ -4,7 +4,7 @@ import UIKit
 
 // MARK: - NoteDetailsHeaderPlainTableViewCell
 //
-class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
+final class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
 
     /// Accessory's Image View
     ///

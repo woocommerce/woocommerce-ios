@@ -104,6 +104,8 @@ private extension ProductDetailsTableViewCell {
     func configureProductImageView() {
         productImageView.image = .productPlaceholderImage
         productImageView.tintColor = StyleManager.wooGreyBorder
+        productImageView.contentMode = .scaleAspectFill
+        productImageView.clipsToBounds = true
     }
 
     func configureNameLabel() {

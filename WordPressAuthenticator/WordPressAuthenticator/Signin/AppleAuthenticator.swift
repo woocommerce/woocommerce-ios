@@ -139,7 +139,12 @@ private extension AppleAuthenticator {
     
     func signupFailed(with error: Error) {
         DDLogError("Apple Authenticator: Signup failed. error: \(error.localizedDescription)")
-        WordPressAuthenticator.track(.signupSocialFailure, error: error)
+
+        let properties = [ "source": "apple",
+                           "error": error.localizedDescription
+        ]
+
+        WordPressAuthenticator.track(.signupSocialFailure, properties: properties)
         delegate?.authFailedWithError(message: error.localizedDescription)
     }
     

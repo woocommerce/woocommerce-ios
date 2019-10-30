@@ -150,7 +150,12 @@ private extension SignupGoogleViewController {
     /// Social Signup Failure: Analytics + UI Updates
     ///
     func socialSignupDidFail(with error: Error) {
-        WordPressAuthenticator.track(.signupSocialFailure, error: error)
+
+        let properties = [ "source": "google",
+                           "error": error.localizedDescription
+        ]
+
+        WordPressAuthenticator.track(.signupSocialFailure, properties: properties)
 
         if (error as? SignupError) == .unknown {
             navigationController?.popViewController(animated: true)

@@ -284,6 +284,16 @@ extension ReviewDetailsViewController: UITableViewDelegate {
             break
         }
     }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = detailsForRow(at: indexPath)
+        switch row {
+        case .header:
+            return Constants.headerHeight
+        default:
+            return UITableView.automaticDimension
+        }
+    }
 }
 
 
@@ -514,6 +524,7 @@ private extension ReviewDetailsViewController {
         static let section = "notifications"
         static let title = NSLocalizedString("Product Review",
                                              comment: "Title of the view containing a single Product Review")
+        static let headerHeight = CGFloat(48)
     }
 }
 

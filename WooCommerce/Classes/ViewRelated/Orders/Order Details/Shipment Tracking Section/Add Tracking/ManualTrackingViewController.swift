@@ -29,7 +29,7 @@ final class ManualTrackingViewController: UIViewController {
     deinit {
         stopListeningToNotifications()
     }
-    
+
     init(viewModel: ManualTrackingViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)

@@ -24,6 +24,12 @@ final class ManualTrackingViewController: UIViewController {
         return noticePresenter
     }()
 
+    /// Deinitializer
+    ///
+    deinit {
+        stopListeningToNotifications()
+    }
+    
     init(viewModel: ManualTrackingViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -38,6 +44,7 @@ final class ManualTrackingViewController: UIViewController {
         configureBackground()
         configureNavigation()
         configureTable()
+        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -554,6 +561,48 @@ private extension ManualTrackingViewController {
 
 }
 
+// MARK: - Keyboard management
+//
+private extension ManualTrackingViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        nc.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    /// Unregisters from the Notification Center
+    ///
+    func stopListeningToNotifications() {
+        NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted
+    ///
+    @objc func keyboardWillShow(_ note: Notification) {
+        let bottomInset = keyboardHeight(from: note)
+
+        table.contentInset.bottom = bottomInset
+        table.scrollIndicatorInsets.bottom = bottomInset
+    }
+
+    /// Executed whenever `UIResponder.keyboardWillhideNotification` note is posted
+    ///
+    @objc func keyboardWillHide(_ note: Notification) {
+        table.contentInset.bottom = .zero
+        table.scrollIndicatorInsets.bottom = .zero
+    }
+
+    /// Returns the Keyboard Height from a (hopefully) Keyboard Notification.
+    ///
+    func keyboardHeight(from note: Notification) -> CGFloat {
+        let wrappedRect = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+        let keyboardRect = wrappedRect?.cgRectValue ?? .zero
+
+        return keyboardRect.height
+    }
+}
 
 // MARK: - Error handling
 //

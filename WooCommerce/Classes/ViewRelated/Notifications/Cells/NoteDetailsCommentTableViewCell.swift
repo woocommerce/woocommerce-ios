@@ -6,7 +6,7 @@ import Gridicons
 
 // MARK: - NoteDetailsCommentTableViewCell
 //
-class NoteDetailsCommentTableViewCell: UITableViewCell {
+final class NoteDetailsCommentTableViewCell: UITableViewCell {
 
     /// Gravatar ImageView.
     ///

@@ -53,6 +53,7 @@ final class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
         accessoryImageView.tintColor = StyleManager.wooCommerceBrandColor
         accessoryView = accessoryImageView
         textLabel?.font = UIFont.body
+        textLabel?.textColor = StyleManager.defaultTextColor
     }
 }
 

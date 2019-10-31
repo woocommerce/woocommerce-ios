@@ -59,13 +59,7 @@ class ZendeskManager: NSObject {
 
         return ZDKPushProvider(zendesk: zendesk)
     }
-
-
-    /// Deinitializer
-    ///
-    deinit {
-        stopListeningToNotifications()
-    }
+    
 
     /// Designated Initialier
     ///
@@ -750,12 +744,6 @@ private extension ZendeskManager {
                                                name: NSNotification.Name(rawValue: ZD_HC_SearchSuccess), object: nil)
     }
 
-
-    /// Removes all of the Notification Hooks.
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
-    }
 
     /// Handles (all of the) Zendesk Notifications
     ///

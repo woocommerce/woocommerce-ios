@@ -367,8 +367,8 @@ private extension ManualTrackingViewController {
 
     func displayDatePicker(at indexPath: IndexPath) {
         datePickerVisible = true
-
         reloadDatePicker(at: indexPath)
+        table.scrollToRow(at: indexPath, at: .top, animated: true)
     }
 
     func showAllShipmentProviders() {

@@ -399,10 +399,7 @@
 		D843D5D422485009001BFA55 /* ShipmentProvidersViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D843D5D222485009001BFA55 /* ShipmentProvidersViewController.xib */; };
 		D843D5D722485B19001BFA55 /* ShippingProvidersViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */; };
 		D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */; };
-		D849A1422320DE20006CB84F /* NotificationDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D849A1402320DE1F006CB84F /* NotificationDetailsViewController.swift */; };
-		D849A1432320DE20006CB84F /* NotificationDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = D849A1412320DE20006CB84F /* NotificationDetailsViewController.xib */; };
 		D85136B9231CED5800DD0539 /* ReviewAge.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136B8231CED5800DD0539 /* ReviewAge.swift */; };
-		D85136BB231E05CF00DD0539 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136BA231E05CF00DD0539 /* NotificationsViewController.swift */; };
 		D85136BE231E064700DD0539 /* NoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136BC231E064600DD0539 /* NoteTableViewCell.swift */; };
 		D85136BF231E064700DD0539 /* NoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D85136BD231E064700DD0539 /* NoteTableViewCell.xib */; };
 		D85136C1231E09C300DD0539 /* ReviewsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = D85136C0231E09C300DD0539 /* ReviewsDataSource.swift */; };
@@ -888,10 +885,7 @@
 		D843D5D222485009001BFA55 /* ShipmentProvidersViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ShipmentProvidersViewController.xib; sourceTree = "<group>"; };
 		D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingProvidersViewModel.swift; sourceTree = "<group>"; };
 		D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualTrackingViewModel.swift; sourceTree = "<group>"; };
-		D849A1402320DE1F006CB84F /* NotificationDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationDetailsViewController.swift; sourceTree = "<group>"; };
-		D849A1412320DE20006CB84F /* NotificationDetailsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NotificationDetailsViewController.xib; sourceTree = "<group>"; };
 		D85136B8231CED5800DD0539 /* ReviewAge.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewAge.swift; sourceTree = "<group>"; };
-		D85136BA231E05CF00DD0539 /* NotificationsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
 		D85136BC231E064600DD0539 /* NoteTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteTableViewCell.swift; sourceTree = "<group>"; };
 		D85136BD231E064700DD0539 /* NoteTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NoteTableViewCell.xib; sourceTree = "<group>"; };
 		D85136C0231E09C300DD0539 /* ReviewsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsDataSource.swift; sourceTree = "<group>"; };
@@ -1517,9 +1511,6 @@
 				B5F04D962194F2D500501EE1 /* Adapters */,
 				B59D1EDD219072B8009D1978 /* Cells */,
 				B59C09DB2188D70200AB41D6 /* Notifications.storyboard */,
-				D85136BA231E05CF00DD0539 /* NotificationsViewController.swift */,
-				D849A1402320DE1F006CB84F /* NotificationDetailsViewController.swift */,
-				D849A1412320DE20006CB84F /* NotificationDetailsViewController.xib */,
 				D8C2A28A231931D100F503E9 /* ReviewViewModel.swift */,
 				D85136C0231E09C300DD0539 /* ReviewsDataSource.swift */,
 				D8C2A290231BD0FD00F503E9 /* DefaultReviewsDataSource.swift */,
@@ -2290,7 +2281,6 @@
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
 				7493BB8F2149852A003071A9 /* TopPerformersHeaderView.xib in Resources */,
 				CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */,
-				D849A1432320DE20006CB84F /* NotificationDetailsViewController.xib in Resources */,
 				CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */,
 				CE35F11C2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib in Resources */,
 				CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */,
@@ -2504,7 +2494,6 @@
 				B541B220218A007C008FE7C1 /* NSMutableParagraphStyle+Helpers.swift in Sources */,
 				45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */,
 				CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */,
-				D849A1422320DE20006CB84F /* NotificationDetailsViewController.swift in Sources */,
 				B557652B20F681E800185843 /* StoreTableViewCell.swift in Sources */,
 				D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */,
 				D8C251D9230D256F00F49782 /* NoticePresenter.swift in Sources */,
@@ -2638,7 +2627,6 @@
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
 				CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */,
-				D85136BB231E05CF00DD0539 /* NotificationsViewController.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,

@@ -4,7 +4,7 @@ import UIKit
 
 // MARK: - NoteDetailsHeaderPlainTableViewCell
 //
-class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
+final class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
 
     /// Accessory's Image View
     ///
@@ -53,6 +53,7 @@ class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
         accessoryImageView.tintColor = StyleManager.wooCommerceBrandColor
         accessoryView = accessoryImageView
         textLabel?.font = UIFont.body
+        textLabel?.textColor = StyleManager.defaultTextColor
     }
 }
 

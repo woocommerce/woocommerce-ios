@@ -24,12 +24,6 @@ final class ManualTrackingViewController: UIViewController {
         return noticePresenter
     }()
 
-    /// Deinitializer
-    ///
-    deinit {
-        stopListeningToNotifications()
-    }
-
     init(viewModel: ManualTrackingViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -570,12 +564,6 @@ private extension ManualTrackingViewController {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         nc.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-
-    /// Unregisters from the Notification Center
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted

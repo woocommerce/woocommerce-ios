@@ -1,10 +1,22 @@
-/* Translation-Revision-Date: 2019-10-01 14:54:03+0000 */
+/* Translation-Revision-Date: 2019-10-17 00:55:00+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
 
 /* No comment provided by engineer. */
+"%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (privat)";
+
+/* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
+"%1$@ - %2$@ (System)" = "%1$@ - %2$@ (System)";
+
+/* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
+"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (an Kunden)";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ hat am %2$@ eine Bewertung abgegeben";
+
+/* Payment on <date> received via (payment method title) */
+"%1$@ via %2$@" = "%1$@ per %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -14,6 +26,18 @@
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ hat am %2$@ eine Bewertung abgegeben";
+
+/* Label about product's inventory stock status shown on Products tab */
+"%ld in stock" = "%ld auf Lager";
+
+/* Label about one product variation shown on Products tab */
+"%ld variant" = "%ld Variante";
+
+/* Label about number of variations shown on Products tab */
+"%ld variants" = "%ld Varianten";
+
+/* Payment on <date> received via (payment method title) */
+"(datePaid) via (order.paymentMethodTitle)" = "(datePaid) per (order.paymentMethodTitle)";
 
 /* Title for an untitled post, should match WP core */
 "(no title)" = "(kein Titel)";
@@ -51,14 +75,12 @@
    Add tracking screen - title. */
 "Add Tracking" = "Verfolgung hinzufügen";
 
-/* Button text for adding a new order note */
+/* Accessibility label for the 'Add a note' button
+   Button text for adding a new order note */
 "Add a note" = "Hinweis hinzufügen";
 
-/* Accessibility label for the 'Add a note' button */
-"Add a note button" = "Hinweis-Button hinzufügen";
-
 /* Accessibility label for the 'Add a tracking' button */
-"Add a tracking button" = "Sendungsverfolgungs-Button hinzufügen";
+"Add a tracking" = "Sendungsverfolgung hinzufügen";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Fügt einen Hinweis zu einer Bestellung hinzu";
@@ -100,9 +122,6 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Beim Verarbeiten deiner Anforderung ist ein Fehler aufgetreten. ";
 
-/* Indicates the reviewer does not have a name. It reads { Anonymous left a review} */
-"Anonymous" = "Anonym";
-
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Anwendungsprotokolle";
 
@@ -131,6 +150,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Auf dieser Website automatisch verwaltet";
 
+/* Awaiting payment via (payment method title) */
+"Awaiting payment via %@" = "Warten auf Zahlung per %@";
+
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Zurück";
 
@@ -144,12 +166,18 @@
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Barcodenummer %1$i, %2$@, ";
 
+/* Begin fulfill order button title */
+"Begin Fulfillment" = "Auftragsabwicklung starten";
+
 /* Beta features navigation title
    Navigates to Beta features screen */
 "Beta Features" = "Betafunktionen";
 
-/* Billing title for customer info cell */
-"Billing details" = "Abrechnungsdetails";
+/* Section header title for billing address in billing information */
+"Billing Address" = "Rechnungsadresse";
+
+/* Billing Information view Title */
+"Billing Information" = "Rechnungsinformationen";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Durch die Registrierung stimmst du unseren Geschäftsbedingungen zu.";
@@ -191,6 +219,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Verbinde mit WordPress.com";
 
+/* Section header title for contact details in billing information */
+"Contact Details" = "Kontaktdetails";
+
 /* Contact Email title */
 "Contact Email" = "Kontakt-E-Mail-Adresse";
 
@@ -204,13 +235,13 @@
 "Continue reading" = "Weiterlesen";
 
 /* Button title. Tapping begins log in using Google. */
-"Continue with Google" = "Continue with Google";
+"Continue with Google" = "Weiter mit Google";
 
 /* Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "Continue with WordPress.com";
+"Continue with WordPress.com" = "Weiter mit WordPress.com";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
-"Continuing with Apple" = "Continuing with Apple";
+"Continuing with Apple" = "Weiter mit Apple";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopieren";
@@ -249,8 +280,10 @@
    Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Individueller Anbieter";
 
-/* Customer info section title
-   Section title for the customer's billing and shipping address */
+/* Customer info section title */
+"Customer" = "Kunde";
+
+/* Section title for the customer's billing and shipping address */
 "Customer Information" = "Kundeninformationen";
 
 /* Customer note section title
@@ -395,9 +428,6 @@
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "Bestellung Nr. (order.number) abschließen";
 
-/* Fulfill order button title */
-"Fulfill order" = "Bestellung abschließen";
-
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Erfahre, wie erfolgreich Produkte in deinem Shop sind";
 
@@ -426,16 +456,14 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Hilf uns, die App zu verbessern";
 
-/* Footer text to hide the billing cell */
-"Hide billing" = "Abrechnung ausblenden";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Bei Deaktivierung wird der Hinweis privat";
 
 /* My Store > Settings > Beta features > Switch stats version */
-"Improved stats" = "Improved stats";
+"Improved stats" = "Verbesserte Statistiken";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the product's inventory stock status
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "Auf Lager";
 
 /* Application's Inactive State */
@@ -527,7 +555,7 @@
 "Log in to the WordPress.com account you used to connect Jetpack." = "Melde dich bei deinem WordPress.com-Konto an, das du für die Jetpack-Verbindung verwendet hast.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to your WordPress.com account with your email address." = "Log in to your WordPress.com account with your email address.";
+"Log in to your WordPress.com account with your email address." = "Melde dich mit deiner E-Mail-Adresse bei deinem WordPress.com-Konto an.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Mit Jetpack anmelden";
@@ -628,12 +656,16 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Keine Aktivitäten in diesem Zeitraum";
 
-/* Order details > customer info > billing details. This is where the address would normally display.
+/* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Keine Adresse angegeben.";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Keine Daten verfügbar";
+
+/* Search Products (Empty State)
+   The text on the placeholder overlay when there are no products on the Products tab */
+"No products yet" = "Noch keine Produkte";
 
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Keine Ergebnisse für die ausgewählten Kriterien";
@@ -642,13 +674,12 @@
 "No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
 
 /* Text displayed when no order data are available for the selected time range. */
-"No revenue this period" = "No revenue this period";
+"No revenue this period" = "Keine Einnahmen in diesem Zeitraum";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Noch nicht versendet";
 
-/* Labels an order note to let user know it's visible to the customer
-   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Hinweis an Kunden";
 
 /* Label prefix. Example: 'Number of files: 2' */
@@ -695,7 +726,7 @@
 "Optional Tracking Information" = "Optionale Verfolgungsinformationen";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
-"Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
+"Or log in by _entering your site address_." = "Oder melde dich an, indem du _deine Website-Adresse eingibst_.";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -709,6 +740,9 @@
 
 /* Change order status screen - Screen title */
 "Order Status" = "Bestellstatus";
+
+/* Order Total label for payment view */
+"Order Total" = "Bestellung insgesamt";
 
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "Bestellung als abgeschlossen markiert";
@@ -732,18 +766,15 @@
 /* Product section title */
 "PRODUCT" = "PRODUKT";
 
+/* The title for the customer payment cell */
+"Paid By Customer" = "Vom Kunden bezahlt";
+
 /* Login dialog password placeholder
    Password placeholder */
 "Password" = "Passwort";
 
 /* Payment section title */
 "Payment" = "Zahlung";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "Zahlung in Höhe von (subject.totalValue) per (order.paymentMethodTitle) erhalten";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (totalValue) received via (order.paymentMethodTitle)" = "Bezahlung in Höhe von (totalValue) per (order.paymentMethodTitle) erhalten";
 
 /* Display label for the product's pending status
    Display label for the review's pending status */
@@ -771,7 +802,7 @@
 "Please enter a valid email address." = "Bitte gib eine gültige E-Mail-Adresse ein.";
 
 /* No comment provided by engineer. */
-"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Please enter the password for your WordPress.com account to log in with your Apple ID.";
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Bitte gib das Passwort für dein WordPress.com-Konto ein, um dich mit deiner Apple-ID anzumelden.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Bitte Zugangsdaten eingeben";
@@ -807,8 +838,7 @@
 /* Display label for the product's private status */
 "Private" = "Privat";
 
-/* Labels an order note to let the user know it's private and not seen by the customer
-   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privater Hinweis";
 
 /* Description for Top Performers left column header
@@ -818,7 +848,14 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "Das Produkt %ld wurde aus deinem Shop entfernt";
 
-/* Title of the Products tab — plural form of Product */
+/* Title of the view containing a single Product Review */
+"Product Review" = "Produktbewertung";
+
+/* Product Total label for payment view */
+"Product Total" = "Produkte insgesamt";
+
+/* Title of the Products tab — plural form of Product
+   Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produkte";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -874,6 +911,9 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Ruft eine Liste von Bestellungen mit einem bestimmten Stichwort ab";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search products. */
+"Retrieves a list of products that contain a given keyword." = "Ruft eine Liste von Produkten mit einem bestimmten Stichwort ab";
+
 /* Retry Action
    Retry the last action */
 "Retry" = "Erneut versuchen";
@@ -904,8 +944,14 @@
 /* Orders Search Placeholder */
 "Search all orders" = "Alle Bestellungen durchsuchen";
 
+/* Products Search Placeholder */
+"Search all products" = "Alle Produkte durchsuchen";
+
 /* Search Orders */
 "Search orders" = "Bestellungen durchsuchen";
+
+/* Search Products */
+"Search products" = "Produkte durchsuchen";
 
 /* Page title for the select a different store screen */
 "Select Store" = "Shop auswählen";
@@ -952,8 +998,8 @@
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Lieferanbieter";
 
-/* Footer text to show the billing cell */
-"Show billing" = "Abrechnung einblenden";
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show the billing details for this order." = "Zeigt die Abrechnungsdetails dieser Bestellung an";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Zeigt weitere Optionen an.";
@@ -978,6 +1024,9 @@
 
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "Größe:";
+
+/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
+"Someone" = "Jemand";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Bedaure, aber dein Benutzername enthält einen ungültigen Ausdruck%@.";
@@ -1049,17 +1098,11 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Umsatzdiagramm für Shop: Y-Achse";
 
-/* Subtotal label for payment view */
-"Subtotal" = "Zwischensumme";
-
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Shop wechseln";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "Geändert in (newStoreName). Du bekommst nur von diesem Shop Benachrichtigungen.";
-
-/* Labels an order note to let user know it's a system status message */
-"System status" = "Systemstatus";
 
 /* Tax label for total taxes line */
 "Tax:" = "Steuern:";
@@ -1109,6 +1152,9 @@
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "Die Benachrichtigung wurde entfernt.";
 
+/* Displayed whenever a review that was onscreen got deleted. */
+"The review has been removed" = "Die Bewertung wurde entfernt.";
+
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Der Server hat eine leere Antwort zurückgesendet. Dies bedeutet normalerweise, dass Du das Speicherlimit auf deiner Website erhöhen musst.";
 
@@ -1146,7 +1192,7 @@
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Um sich mit deinem Shop verbinden zu können, muss Jetpack vorhanden sein. <br \/> Lies dir die <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">Konfigurationsanleitung<\/a> durch.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
-"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app.";
+"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Für diese App musst du WooCommerce 3.5 auf deinem Server installieren, da sie andernfalls nicht richtig funktioniert. Nimm die Aktualisierung so bald wie möglich vor, um diese App weiterhin zu verwenden.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Diese E-Mail-Adresse ist auf WordPress.com nicht registriert.";
@@ -1178,9 +1224,6 @@
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Thema nicht gefunden für ID:";
-
-/* Total label for payment view */
-"Total" = "Gesamt";
 
 /* Product details screen - total orders descriptive label */
 "Total Orders" = "Bestellungen gesamt";
@@ -1216,14 +1259,14 @@
 /* The action of the top banner on Dashboard that indicates new stats is available */
 "Try It Now" = "Jetzt ausprobieren";
 
-/* No comment provided by engineer. */
+/* Button to trigger connection to another account in store picker */
 "Try another account" = "Mit einem anderen Konto probieren";
 
 /* The title of the top banner on Dashboard that indicates new stats is available */
 "Try our improved stats" = "Teste unsere verbesserten Statistiken";
 
 /* My Store > Settings > Beta features > Stats version description */
-"Try the new stats available with the WooCommerce Admin plugin" = "Try the new stats available with the WooCommerce Admin plugin";
+"Try the new stats available with the WooCommerce Admin plugin" = "Teste die neuen Statistiken im WooCommerce Admin-Plugin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Mit einer anderen E-Mail-Adresse versuchen";
@@ -1285,7 +1328,8 @@
 /* Undo Action */
 "Undo" = "Rückgängig";
 
-/* Unknown Application State */
+/* Unknown Application State
+   Unknown product name, displayed in a review */
 "Unknown" = "Unbekannt";
 
 /* No comment provided by engineer. */
@@ -1304,16 +1348,16 @@
 "Up to seven days՚ worth of logs are saved." = "Es werden Protokolle von bis zu sieben Tagen gespeichert.";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
-"Update %@ to WooCommerce 3.5" = "Update %@ to WooCommerce 3.5";
+"Update %@ to WooCommerce 3.5" = "%@ auf WooCommerce 3.5 aktualisieren";
 
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
-"Update Instructions" = "Update Instructions";
+"Update Instructions" = "Aktualisierungsanweisungen";
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Auftragsstatus aktualisieren";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
-"Update to WooCommerce 3.5 to keep using this app" = "Update to WooCommerce 3.5 to keep using this app";
+"Update to WooCommerce 3.5 to keep using this app" = "Auf WooCommerce 3.5 aktualisieren, um diese App weiterhin zu verwenden";
 
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Vor %ld Stunde aktualisiert";
@@ -1348,6 +1392,10 @@
 
 /* View application log cell title */
 "View Application Log" = "Anwendungsprotokoll anzeigen";
+
+/* Accessibility label for the 'View Billing Information' button
+   Button on bottom of Customer's information to show the billing details */
+"View Billing Information" = "Rechnungsinformationen anzeigen";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Affiliate-Produkt anzeigen";
@@ -1489,4 +1537,7 @@
 
 /* About View's Footer Text. The variable is the current year */
 "© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+
+/* Customer note, wrapped in quotes */
+"“%@”" = "„%@“";
 

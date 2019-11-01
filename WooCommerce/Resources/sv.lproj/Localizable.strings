@@ -1,10 +1,22 @@
-/* Translation-Revision-Date: 2019-10-01 14:54:03+0000 */
+/* Translation-Revision-Date: 2019-10-16 00:55:11+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
 
 /* No comment provided by engineer. */
+"%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (Privat)";
+
+/* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
+"%1$@ - %2$@ (System)" = "%1$@ - %2$@ (System)";
+
+/* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
+"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (Till kund)";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ lämnade en recension om %2$@";
+
+/* Payment on <date> received via (payment method title) */
+"%1$@ via %2$@" = "%1$@ via %2$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -14,6 +26,18 @@
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ lämnade en recension om %2$@";
+
+/* Label about product's inventory stock status shown on Products tab */
+"%ld in stock" = "%ld i lager";
+
+/* Label about one product variation shown on Products tab */
+"%ld variant" = "%ld variant";
+
+/* Label about number of variations shown on Products tab */
+"%ld variants" = "%ld varianter";
+
+/* Payment on <date> received via (payment method title) */
+"(datePaid) via (order.paymentMethodTitle)" = "(datePaid) via (order.paymentMethodTitle)";
 
 /* Title for an untitled post, should match WP core */
 "(no title)" = "(ingen rubrik)";
@@ -51,14 +75,12 @@
    Add tracking screen - title. */
 "Add Tracking" = "Lägg till spårning";
 
-/* Button text for adding a new order note */
+/* Accessibility label for the 'Add a note' button
+   Button text for adding a new order note */
 "Add a note" = "Lägg till en notering";
 
-/* Accessibility label for the 'Add a note' button */
-"Add a note button" = "Lägg till en noteringsknapp";
-
 /* Accessibility label for the 'Add a tracking' button */
-"Add a tracking button" = "Lägg till spårningsknapp";
+"Add a tracking" = "Lägg till en spårning";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Lägger till en notering för en order";
@@ -100,9 +122,6 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Ett fel inträffade när din begäran behandlades:";
 
-/* Indicates the reviewer does not have a name. It reads { Anonymous left a review} */
-"Anonymous" = "Anonym";
-
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Programloggar";
 
@@ -131,6 +150,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Automatiskt hanterat på denna webbplats";
 
+/* Awaiting payment via (payment method title) */
+"Awaiting payment via %@" = "Väntar på betalning via %@";
+
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Tillbaka";
 
@@ -144,12 +166,18 @@
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Fältnummer %1$i, %2$@, ";
 
+/* Begin fulfill order button title */
+"Begin Fulfillment" = "Börja uppfylla kraven";
+
 /* Beta features navigation title
    Navigates to Beta features screen */
 "Beta Features" = "Betafunktioner";
 
-/* Billing title for customer info cell */
-"Billing details" = "Faktureringsadress";
+/* Section header title for billing address in billing information */
+"Billing Address" = "Faktureringsadress";
+
+/* Billing Information view Title */
+"Billing Information" = "Faktureringsinformation";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Genom att registrera dig godkänner du våra _användarvillkor_.";
@@ -191,6 +219,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Ansluter till WordPress.com";
 
+/* Section header title for contact details in billing information */
+"Contact Details" = "Kontaktuppgifter";
+
 /* Contact Email title */
 "Contact Email" = "E-post för kontakt";
 
@@ -204,13 +235,13 @@
 "Continue reading" = "Fortsätt läsa";
 
 /* Button title. Tapping begins log in using Google. */
-"Continue with Google" = "Continue with Google";
+"Continue with Google" = "Fortsätt med Google";
 
 /* Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "Continue with WordPress.com";
+"Continue with WordPress.com" = "Fortsätt med WordPress.com";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
-"Continuing with Apple" = "Continuing with Apple";
+"Continuing with Apple" = "Fortsätter med Apple";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopiera";
@@ -249,8 +280,10 @@
    Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Anpassad leverantör";
 
-/* Customer info section title
-   Section title for the customer's billing and shipping address */
+/* Customer info section title */
+"Customer" = "Kund";
+
+/* Section title for the customer's billing and shipping address */
 "Customer Information" = "Kundinformation";
 
 /* Customer note section title
@@ -395,9 +428,6 @@
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "Fullfölj order med nummer (order.number)";
 
-/* Fulfill order button title */
-"Fulfill order" = "Fullfölj order";
-
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Få insikt i hur produkter presterar i din butik";
 
@@ -426,16 +456,14 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Hjälp till att förbättra appen";
 
-/* Footer text to hide the billing cell */
-"Hide billing" = "Dölj fakturering";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Om detta inaktiveras kommer noteringen att vara privat";
 
 /* My Store > Settings > Beta features > Switch stats version */
-"Improved stats" = "Improved stats";
+"Improved stats" = "Förbättrad statistik";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the product's inventory stock status
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "I lager";
 
 /* Application's Inactive State */
@@ -527,7 +555,7 @@
 "Log in to the WordPress.com account you used to connect Jetpack." = "Logga in till det WordPress.com-konto du använde när du anslöt Jetpack.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to your WordPress.com account with your email address." = "Log in to your WordPress.com account with your email address.";
+"Log in to your WordPress.com account with your email address." = "Logga in på ditt WordPress.com-konto med din e-postadress.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Logga in med Jetpack";
@@ -628,12 +656,16 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Ingen aktivitet den här perioden";
 
-/* Order details > customer info > billing details. This is where the address would normally display.
+/* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Ingen adress angiven.";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Inga data tillgängliga";
+
+/* Search Products (Empty State)
+   The text on the placeholder overlay when there are no products on the Products tab */
+"No products yet" = "Inga produkter ännu";
 
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Inga resultat för de valda kriterierna";
@@ -642,13 +674,12 @@
 "No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
 
 /* Text displayed when no order data are available for the selected time range. */
-"No revenue this period" = "No revenue this period";
+"No revenue this period" = "Inga inkomster för denna period";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Inte skickad ännu";
 
-/* Labels an order note to let user know it's visible to the customer
-   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Kundmeddelande";
 
 /* Label prefix. Example: 'Number of files: 2' */
@@ -695,7 +726,7 @@
 "Optional Tracking Information" = "Valfri spårningsinformation";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
-"Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
+"Or log in by _entering your site address_." = "Eller logga in genom att _ange din webbplatsadress_.";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -709,6 +740,9 @@
 
 /* Change order status screen - Screen title */
 "Order Status" = "Orderstatus";
+
+/* Order Total label for payment view */
+"Order Total" = "Totalsumma";
 
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "Ordern har markerats som genomförd";
@@ -732,18 +766,15 @@
 /* Product section title */
 "PRODUCT" = "PRODUKT";
 
+/* The title for the customer payment cell */
+"Paid By Customer" = "Betald av kund";
+
 /* Login dialog password placeholder
    Password placeholder */
 "Password" = "Lösenord";
 
 /* Payment section title */
 "Payment" = "Betalning";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "Betalning på (subject.totalValue) mottagen via (order.paymentMethodTitle)";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (totalValue) received via (order.paymentMethodTitle)" = "Betalning på (totalValue) mottagen via (order.paymentMethodTitle)";
 
 /* Display label for the product's pending status
    Display label for the review's pending status */
@@ -771,7 +802,7 @@
 "Please enter a valid email address." = "Vänligen ange en giltig e-postadress.";
 
 /* No comment provided by engineer. */
-"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Please enter the password for your WordPress.com account to log in with your Apple ID.";
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Ange lösenordet för ditt WordPress.com-konto eller logga in med ditt Apple-ID.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Fyll i dina användaruppgifter";
@@ -807,8 +838,7 @@
 /* Display label for the product's private status */
 "Private" = "Privat";
 
-/* Labels an order note to let the user know it's private and not seen by the customer
-   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privat notering";
 
 /* Description for Top Performers left column header
@@ -818,7 +848,14 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "Produkt %ld har tagits bort från din butik";
 
-/* Title of the Products tab — plural form of Product */
+/* Title of the view containing a single Product Review */
+"Product Review" = "Produktrecension";
+
+/* Product Total label for payment view */
+"Product Total" = "Produktbelopp";
+
+/* Title of the Products tab — plural form of Product
+   Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produkter";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -874,6 +911,9 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Hämtar en lista på ordrar som innehåller ett visst nyckelord.";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search products. */
+"Retrieves a list of products that contain a given keyword." = "Hämtar en lista på produkter som innehåller ett visst nyckelord.";
+
 /* Retry Action
    Retry the last action */
 "Retry" = "Försök igen";
@@ -904,8 +944,14 @@
 /* Orders Search Placeholder */
 "Search all orders" = "Sök alla ordrar";
 
+/* Products Search Placeholder */
+"Search all products" = "Sök alla produkter";
+
 /* Search Orders */
 "Search orders" = "Sök ordrar";
+
+/* Search Products */
+"Search products" = "Sök produkter";
 
 /* Page title for the select a different store screen */
 "Select Store" = "Välj butik";
@@ -952,8 +998,8 @@
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Transportleverantör";
 
-/* Footer text to show the billing cell */
-"Show billing" = "Visa fakturering";
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show the billing details for this order." = "Visa faktureringsinformationen för den här ordern.";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Visa fler alternativ.";
@@ -978,6 +1024,9 @@
 
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "Storlek:";
+
+/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
+"Someone" = "Någon";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Tyvärr innehåller ditt användarnamn en ogiltig fras %@.";
@@ -1049,17 +1098,11 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Diagram över butiksintäkter: Y-axel";
 
-/* Subtotal label for payment view */
-"Subtotal" = "Delsumma";
-
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Växla butik";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "Växlade till (newStoreName). Du kommer endast att få meddelanden från den här butiken.";
-
-/* Labels an order note to let user know it's a system status message */
-"System status" = "Systemstatus";
 
 /* Tax label for total taxes line */
 "Tax:" = "Moms:";
@@ -1109,6 +1152,9 @@
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "Meddelandet har tagits bort!";
 
+/* Displayed whenever a review that was onscreen got deleted. */
+"The review has been removed" = "Recensionen har tagits bort";
+
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Servern skickade tillbaka ett tomt svar. Detta betyder vanligtvis att du behöver öka minnesgränsen för din webbplats.";
 
@@ -1146,7 +1192,7 @@
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Den här appen kräver Jetpack för att ansluta till din butik. <br \/> Läs <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">konfigurationsanvisningarna<\/a>.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
-"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app.";
+"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Du behöver installera WooCommerce 3.5 på din server för att kunna använda den här appen, annars kommer den inte att fungera korrekt. Uppdatera så snart möjligt för att kunna fortsätta använda den här appen.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Denna e-postadress är inte registrerad på WordPress.com.";
@@ -1178,9 +1224,6 @@
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Ämnet inte funnet för ID:";
-
-/* Total label for payment view */
-"Total" = "Totalt";
 
 /* Product details screen - total orders descriptive label */
 "Total Orders" = "Totalt antal ordrar";
@@ -1216,14 +1259,14 @@
 /* The action of the top banner on Dashboard that indicates new stats is available */
 "Try It Now" = "Prova nu";
 
-/* No comment provided by engineer. */
+/* Button to trigger connection to another account in store picker */
 "Try another account" = "Prova med ett annat konto";
 
 /* The title of the top banner on Dashboard that indicates new stats is available */
 "Try our improved stats" = "Prova vår förbättrade statistik";
 
 /* My Store > Settings > Beta features > Stats version description */
-"Try the new stats available with the WooCommerce Admin plugin" = "Try the new stats available with the WooCommerce Admin plugin";
+"Try the new stats available with the WooCommerce Admin plugin" = "Prova den nya statistiken som är tillgänglig med WooCommerce Admin-tillägget";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Prova med en annan e-postadress";
@@ -1285,7 +1328,8 @@
 /* Undo Action */
 "Undo" = "Ångra";
 
-/* Unknown Application State */
+/* Unknown Application State
+   Unknown product name, displayed in a review */
 "Unknown" = "Okänd";
 
 /* No comment provided by engineer. */
@@ -1304,16 +1348,16 @@
 "Up to seven days՚ worth of logs are saved." = "Upp till sju dagar med loggar sparas.";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
-"Update %@ to WooCommerce 3.5" = "Update %@ to WooCommerce 3.5";
+"Update %@ to WooCommerce 3.5" = "Uppdatera %@ till WooCommerce 3.5";
 
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
-"Update Instructions" = "Update Instructions";
+"Update Instructions" = "Uppdatera instruktioner";
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Uppdatera orderstatus";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
-"Update to WooCommerce 3.5 to keep using this app" = "Update to WooCommerce 3.5 to keep using this app";
+"Update to WooCommerce 3.5 to keep using this app" = "Uppdatera till WooCommerce 3.5 för att fortsätta använda den här appen";
 
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Uppdaterades för %ld timme sedan";
@@ -1348,6 +1392,10 @@
 
 /* View application log cell title */
 "View Application Log" = "Visa programloggen";
+
+/* Accessibility label for the 'View Billing Information' button
+   Button on bottom of Customer's information to show the billing details */
+"View Billing Information" = "Visa faktureringsinformation";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Visa relaterad produkt";
@@ -1489,4 +1537,7 @@
 
 /* About View's Footer Text. The variable is the current year */
 "© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+
+/* Customer note, wrapped in quotes */
+"“%@”" = "\"%@\"";
 

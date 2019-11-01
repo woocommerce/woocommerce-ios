@@ -1,10 +1,22 @@
-/* Translation-Revision-Date: 2019-10-01 14:54:03+0000 */
+/* Translation-Revision-Date: 2019-10-18 00:54:56+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
 
 /* No comment provided by engineer. */
+"%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (Özel)";
+
+/* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
+"%1$@ - %2$@ (System)" = "%1$@ - %2$@ (Sistem)";
+
+/* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
+"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (Müşteriye)";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@, %2$@ ürünüyle ilgili bir yorum yazdı";
+
+/* Payment on <date> received via (payment method title) */
+"%1$@ via %2$@" = "%2$@ üzerinden %1$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -14,6 +26,18 @@
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@, %2$@ ürünüyle ilgili bir yorum yazdı";
+
+/* Label about product's inventory stock status shown on Products tab */
+"%ld in stock" = "Stokta %ld";
+
+/* Label about one product variation shown on Products tab */
+"%ld variant" = "%ld varyasyonu";
+
+/* Label about number of variations shown on Products tab */
+"%ld variants" = "%ld varyasyonları";
+
+/* Payment on <date> received via (payment method title) */
+"(datePaid) via (order.paymentMethodTitle)" = "(order.paymentMethodTitle) üzerinden (datePaid)";
 
 /* Title for an untitled post, should match WP core */
 "(no title)" = "(başlık yok)";
@@ -51,14 +75,12 @@
    Add tracking screen - title. */
 "Add Tracking" = "Takip Ekle";
 
-/* Button text for adding a new order note */
+/* Accessibility label for the 'Add a note' button
+   Button text for adding a new order note */
 "Add a note" = "Not ekleyin";
 
-/* Accessibility label for the 'Add a note' button */
-"Add a note button" = "Not düğmesi ekleyin";
-
 /* Accessibility label for the 'Add a tracking' button */
-"Add a tracking button" = "Takip düğmesi ekle";
+"Add a tracking" = "Bir takip ekle";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Siparişe not ekler";
@@ -100,9 +122,6 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "İsteğiniz işlenirken bir hata oluştu: ";
 
-/* Indicates the reviewer does not have a name. It reads { Anonymous left a review} */
-"Anonymous" = "Anonim";
-
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Uygulama Günlükleri";
 
@@ -131,6 +150,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Bu sitede otomatik yönetiliyor";
 
+/* Awaiting payment via (payment method title) */
+"Awaiting payment via %@" = "%@ üzerinden ödeme bekleniyor";
+
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Geri";
 
@@ -144,12 +166,18 @@
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Barkod numarası %1$i, %2$@, ";
 
+/* Begin fulfill order button title */
+"Begin Fulfillment" = "Yerine Getirmeye Başla";
+
 /* Beta features navigation title
    Navigates to Beta features screen */
 "Beta Features" = "Beta Özellikler";
 
-/* Billing title for customer info cell */
-"Billing details" = "Fatura Ayrıntıları";
+/* Section header title for billing address in billing information */
+"Billing Address" = "Fatura Adresi";
+
+/* Billing Information view Title */
+"Billing Information" = "Fatura Bilgileri";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Kaydolarak_Hizmet Koşullarını_ kabul etmiş olursunuz.";
@@ -191,6 +219,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com'a bağlanılıyor";
 
+/* Section header title for contact details in billing information */
+"Contact Details" = "İletişim Bilgileri";
+
 /* Contact Email title */
 "Contact Email" = "İletişim E-postası";
 
@@ -204,13 +235,13 @@
 "Continue reading" = "Okumaya devam et";
 
 /* Button title. Tapping begins log in using Google. */
-"Continue with Google" = "Continue with Google";
+"Continue with Google" = "Google ile devam et";
 
 /* Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "Continue with WordPress.com";
+"Continue with WordPress.com" = "WordPress.com ile devam et";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
-"Continuing with Apple" = "Continuing with Apple";
+"Continuing with Apple" = "Apple ile devam ediliyor";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopyala";
@@ -249,8 +280,10 @@
    Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Özel Sağlayıcı";
 
-/* Customer info section title
-   Section title for the customer's billing and shipping address */
+/* Customer info section title */
+"Customer" = "Müşteri";
+
+/* Section title for the customer's billing and shipping address */
 "Customer Information" = "Müşteri Bilgileri";
 
 /* Customer note section title
@@ -395,9 +428,6 @@
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "(order.number) Numaralı Siparişi Yerine Getir";
 
-/* Fulfill order button title */
-"Fulfill order" = "Siparişi yerine getir";
-
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Ürünlerin mağazanızdaki performansına dair içgörüler edinin";
 
@@ -426,16 +456,14 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Uygulamayı İyileştirmemize Yardımcı Olun";
 
-/* Footer text to hide the billing cell */
-"Hide billing" = "Faturayı saklayın";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Devre dışıysa not gizli olur";
 
 /* My Store > Settings > Beta features > Switch stats version */
-"Improved stats" = "Improved stats";
+"Improved stats" = "İyileştirilmiş istatistikler";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the product's inventory stock status
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "Stokta";
 
 /* Application's Inactive State */
@@ -527,7 +555,7 @@
 "Log in to the WordPress.com account you used to connect Jetpack." = "Jetpack’e bağlanmak için kullandığınız WordPress.com hesabında oturum açın.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to your WordPress.com account with your email address." = "Log in to your WordPress.com account with your email address.";
+"Log in to your WordPress.com account with your email address." = "E-posta adresinizle WordPress.com hesabınızda oturum açın.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Jetpack ile oturum açın";
@@ -628,12 +656,16 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Bu dönemde hiç etkinlik yok";
 
-/* Order details > customer info > billing details. This is where the address would normally display.
+/* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Adres belirtilmedi.";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Veri bulunmuyor";
+
+/* Search Products (Empty State)
+   The text on the placeholder overlay when there are no products on the Products tab */
+"No products yet" = "Henüz ürün yok";
 
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Seçilen kriter için sonuç yok";
@@ -642,13 +674,12 @@
 "No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
 
 /* Text displayed when no order data are available for the selected time range. */
-"No revenue this period" = "No revenue this period";
+"No revenue this period" = "Bu dönemde hiç gelir yok";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Henüz sevk edilmedi";
 
-/* Labels an order note to let user know it's visible to the customer
-   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Müşteriye not";
 
 /* Label prefix. Example: 'Number of files: 2' */
@@ -695,7 +726,7 @@
 "Optional Tracking Information" = "İsteğe Bağlı Takip Bilgileri";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
-"Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
+"Or log in by _entering your site address_." = "Veya _site adresinizi girerek_ oturum açın.";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -709,6 +740,9 @@
 
 /* Change order status screen - Screen title */
 "Order Status" = "Sipariş Durumu";
+
+/* Order Total label for payment view */
+"Order Total" = "Sipariş Toplamı";
 
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "Sipariş, yerine getirildi olarak işaretlendi";
@@ -732,18 +766,15 @@
 /* Product section title */
 "PRODUCT" = "ÜRÜN";
 
+/* The title for the customer payment cell */
+"Paid By Customer" = "Müşteri Tarafından Ödenen";
+
 /* Login dialog password placeholder
    Password placeholder */
 "Password" = "Parola";
 
 /* Payment section title */
 "Payment" = "Ödeme";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "(order.paymentMethodTitle) ile alınan (subject.totalValue) ödemesi";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (totalValue) received via (order.paymentMethodTitle)" = "(order.paymentMethodTitle) ile alınan (totalValue) ödemesi";
 
 /* Display label for the product's pending status
    Display label for the review's pending status */
@@ -771,7 +802,7 @@
 "Please enter a valid email address." = "Lütfen geçerli bir e-posta adresi girin.";
 
 /* No comment provided by engineer. */
-"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Please enter the password for your WordPress.com account to log in with your Apple ID.";
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Lütfen Apple ID’nizle oturum açmak için WordPress.com hesabınızın parolasını girin.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Lütfen giriş bilgilerinizi girin";
@@ -807,8 +838,7 @@
 /* Display label for the product's private status */
 "Private" = "Özel";
 
-/* Labels an order note to let the user know it's private and not seen by the customer
-   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Özel not";
 
 /* Description for Top Performers left column header
@@ -818,7 +848,14 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "%ld ürünü mağazanızdan kaldırıldı";
 
-/* Title of the Products tab — plural form of Product */
+/* Title of the view containing a single Product Review */
+"Product Review" = "Ürün İncelemesi";
+
+/* Product Total label for payment view */
+"Product Total" = "Ürün Toplamı";
+
+/* Title of the Products tab — plural form of Product
+   Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Ürünler";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -874,6 +911,9 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren siparişlerin bir listesini alır.";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search products. */
+"Retrieves a list of products that contain a given keyword." = "Belirli bir anahtar sözcüğü içeren ürünlerin bir listesini alır.";
+
 /* Retry Action
    Retry the last action */
 "Retry" = "Tekrar";
@@ -904,8 +944,14 @@
 /* Orders Search Placeholder */
 "Search all orders" = "Tüm siparişleri ara";
 
+/* Products Search Placeholder */
+"Search all products" = "Tüm ürünleri ara";
+
 /* Search Orders */
 "Search orders" = "Siparişleri ara";
+
+/* Search Products */
+"Search products" = "Ürünleri ara";
 
 /* Page title for the select a different store screen */
 "Select Store" = "Mağaza Seç";
@@ -952,8 +998,8 @@
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Gönderim sağlayıcısı";
 
-/* Footer text to show the billing cell */
-"Show billing" = "Faturayı gösterin";
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show the billing details for this order." = "Bu siparişin fatura bilgilerini göster.";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Diğer seçenekleri gösterir.";
@@ -978,6 +1024,9 @@
 
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "Boyut:";
+
+/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
+"Someone" = "Biri";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Üzgünüm, kullanıcı adınız geçersiz bir ifade içeriyor %@.";
@@ -1049,17 +1098,11 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Mağaza kazanç çizelgesi: Y Ekseni";
 
-/* Subtotal label for payment view */
-"Subtotal" = "Ara Toplam";
-
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Mağaza Değiştir";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "(newStoreName) adlı mağazaya geçildi. Sadece bu mağazadan bildirim alacaksınız.";
-
-/* Labels an order note to let user know it's a system status message */
-"System status" = "Sistem durumu";
 
 /* Tax label for total taxes line */
 "Tax:" = "Vergi:";
@@ -1109,6 +1152,9 @@
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "Bildirim kaldırıldı!";
 
+/* Displayed whenever a review that was onscreen got deleted. */
+"The review has been removed" = "İnceleme kaldırıldı";
+
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Sunucu boş bir yanıt döndü. Bu genellikle sitenizin hafıza limitini arttırmanız gerektiği anlamına gelir.";
 
@@ -1146,7 +1192,7 @@
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Bu uygulama, Mağazanıza bağlanmak için Jetpack gerektirir. <br \/> <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">Yapılandırma talimatlarını<\/a> okuyun.";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
-"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app.";
+"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Bu uygulama için sunucunuza WooCommerce 3.5'i yüklemeniz gerekir; bu olmadan düzgün çalışmaz. Bu uygulamayı kullanmaya devam etmek için mümkün olan en kısa süre içinde güncelleyin.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Bu e-posta adresi WordPress.com üzerinde kayıtlı değil.";
@@ -1178,9 +1224,6 @@
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Kimlik için konu bulunamadı:";
-
-/* Total label for payment view */
-"Total" = "Toplam";
 
 /* Product details screen - total orders descriptive label */
 "Total Orders" = "Toplam Sipariş";
@@ -1216,14 +1259,14 @@
 /* The action of the top banner on Dashboard that indicates new stats is available */
 "Try It Now" = "Şimdi Deneyin";
 
-/* No comment provided by engineer. */
+/* Button to trigger connection to another account in store picker */
 "Try another account" = "Farklı bir hesap deneyin";
 
 /* The title of the top banner on Dashboard that indicates new stats is available */
 "Try our improved stats" = "Geliştirilmiş istatistiklerimizi deneyin";
 
 /* My Store > Settings > Beta features > Stats version description */
-"Try the new stats available with the WooCommerce Admin plugin" = "Try the new stats available with the WooCommerce Admin plugin";
+"Try the new stats available with the WooCommerce Admin plugin" = "WooCommerce Admin eklentisiyle mevcut yeni istatistikleri deneyin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Başka bir e-posta ile deneyin";
@@ -1285,7 +1328,8 @@
 /* Undo Action */
 "Undo" = "Geri al";
 
-/* Unknown Application State */
+/* Unknown Application State
+   Unknown product name, displayed in a review */
 "Unknown" = "Bilinmiyor";
 
 /* No comment provided by engineer. */
@@ -1304,16 +1348,16 @@
 "Up to seven days՚ worth of logs are saved." = "Yedi güne kadar olan günlükler kaydedilir.";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
-"Update %@ to WooCommerce 3.5" = "Update %@ to WooCommerce 3.5";
+"Update %@ to WooCommerce 3.5" = "%@ sitesini WooCommerce 3.5’e Yükseltin";
 
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
-"Update Instructions" = "Update Instructions";
+"Update Instructions" = "Güncelleme Yönergeleri";
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Sipariş Durumunu Güncelle";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
-"Update to WooCommerce 3.5 to keep using this app" = "Update to WooCommerce 3.5 to keep using this app";
+"Update to WooCommerce 3.5 to keep using this app" = "Bu uygulamayı kullanmaya devam etmek için WooCommerce 3.5'e güncelleyin";
 
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld saat önce güncellendi";
@@ -1348,6 +1392,10 @@
 
 /* View application log cell title */
 "View Application Log" = "Uygulama Günlüğü’nü Görüntüleyin";
+
+/* Accessibility label for the 'View Billing Information' button
+   Button on bottom of Customer's information to show the billing details */
+"View Billing Information" = "Fatura Bilgilerini Görüntüle";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Satış ortağı ürününü görüntüleyin";
@@ -1489,4 +1537,7 @@
 
 /* About View's Footer Text. The variable is the current year */
 "© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+
+/* Customer note, wrapped in quotes */
+"“%@”" = "“%@”";
 

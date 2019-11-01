@@ -1,10 +1,22 @@
-/* Translation-Revision-Date: 2019-10-03 02:54:39+0000 */
+/* Translation-Revision-Date: 2019-10-17 00:54:58+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
 
 /* No comment provided by engineer. */
+"%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (プライベート)";
+
+/* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
+"%1$@ - %2$@ (System)" = "%1$@ - %2$@ (システム)";
+
+/* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
+"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (顧客向け)";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ さんが %2$@ に関するレビューを書きました";
+
+/* Payment on <date> received via (payment method title) */
+"%1$@ via %2$@" = "%2$@ 経由 %1$@";
 
 /* Displays a time range followed by a specific date/time */
 "%1$@ › %2$@" = "%1$@ › %2$@";
@@ -14,6 +26,18 @@
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ さんが %2$@ に関するレビューを書きました";
+
+/* Label about product's inventory stock status shown on Products tab */
+"%ld in stock" = "在庫%ld個";
+
+/* Label about one product variation shown on Products tab */
+"%ld variant" = "%ld個のバリエーション";
+
+/* Label about number of variations shown on Products tab */
+"%ld variants" = "%ld個のバリエーション";
+
+/* Payment on <date> received via (payment method title) */
+"(datePaid) via (order.paymentMethodTitle)" = "(order.paymentMethodTitle) によって (datePaid)";
 
 /* Title for an untitled post, should match WP core */
 "(no title)" = "(タイトルなし)";
@@ -51,14 +75,12 @@
    Add tracking screen - title. */
 "Add Tracking" = "トラッキングを追加";
 
-/* Button text for adding a new order note */
+/* Accessibility label for the 'Add a note' button
+   Button text for adding a new order note */
 "Add a note" = "メモを追加";
 
-/* Accessibility label for the 'Add a note' button */
-"Add a note button" = "メモボタンを追加";
-
 /* Accessibility label for the 'Add a tracking' button */
-"Add a tracking button" = "追跡ボタンを追加";
+"Add a tracking" = "追跡を追加";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "注文にメモを追加します";
@@ -100,9 +122,6 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "リクエストの処理中にエラーが発生しました。";
 
-/* Indicates the reviewer does not have a name. It reads { Anonymous left a review} */
-"Anonymous" = "匿名";
-
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "アプリケーションログ";
 
@@ -131,6 +150,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "このサイトで自動管理";
 
+/* Awaiting payment via (payment method title) */
+"Awaiting payment via %@" = "%@ による決済待ち";
+
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "戻る";
 
@@ -144,12 +166,18 @@
    VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "バー番号%1$i、%2$@、";
 
+/* Begin fulfill order button title */
+"Begin Fulfillment" = "フルフィルメントを開始";
+
 /* Beta features navigation title
    Navigates to Beta features screen */
 "Beta Features" = "ベータ版の機能";
 
-/* Billing title for customer info cell */
-"Billing details" = "請求詳細";
+/* Section header title for billing address in billing information */
+"Billing Address" = "請求先住所";
+
+/* Billing Information view Title */
+"Billing Information" = "お支払い情報";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "登録することで、利用規約に合意したことになります。";
@@ -191,6 +219,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "WordPress.com に接続中";
 
+/* Section header title for contact details in billing information */
+"Contact Details" = "連絡先詳細";
+
 /* Contact Email title */
 "Contact Email" = "連絡先メールアドレス";
 
@@ -204,13 +235,13 @@
 "Continue reading" = "続きを読む";
 
 /* Button title. Tapping begins log in using Google. */
-"Continue with Google" = "Continue with Google";
+"Continue with Google" = "Google で続ける";
 
 /* Button title. Tapping begins our normal log in process. */
-"Continue with WordPress.com" = "Continue with WordPress.com";
+"Continue with WordPress.com" = "WordPress.com で続ける";
 
 /* Shown while logging in with Apple and the app waits for the site creation process to complete. */
-"Continuing with Apple" = "Continuing with Apple";
+"Continuing with Apple" = "Apple 製品で続ける";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "コピー";
@@ -249,8 +280,10 @@
    Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "カスタムプロバイダー";
 
-/* Customer info section title
-   Section title for the customer's billing and shipping address */
+/* Customer info section title */
+"Customer" = "顧客";
+
+/* Section title for the customer's billing and shipping address */
 "Customer Information" = "顧客情報";
 
 /* Customer note section title
@@ -395,9 +428,6 @@
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "注文番号 (order.number) を履行";
 
-/* Fulfill order button title */
-"Fulfill order" = "注文を履行";
-
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "ストアでの商品売り上げ状況の統計概要をチェック";
 
@@ -426,16 +456,14 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "アプリの改善にご協力ください";
 
-/* Footer text to hide the billing cell */
-"Hide billing" = "請求情報を非表示";
-
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "無効の場合はメモが非公開になります";
 
 /* My Store > Settings > Beta features > Switch stats version */
-"Improved stats" = "Improved stats";
+"Improved stats" = "強化された統計機能";
 
-/* Display label for the product's inventory stock status */
+/* Display label for the product's inventory stock status
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "在庫あり";
 
 /* Application's Inactive State */
@@ -527,7 +555,7 @@
 "Log in to the WordPress.com account you used to connect Jetpack." = "Jetpack を接続するのに使用した WordPress.com アカウントにログインします。";
 
 /* Instruction text on the login's email address screen. */
-"Log in to your WordPress.com account with your email address." = "Log in to your WordPress.com account with your email address.";
+"Log in to your WordPress.com account with your email address." = "メールアドレスで WordPress.com アカウントにログインします。";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Jetpack でログイン";
@@ -628,12 +656,16 @@
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "この期間のアクティビティはありません";
 
-/* Order details > customer info > billing details. This is where the address would normally display.
+/* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "住所が指定されていません。";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "使用可能なデータがありません";
+
+/* Search Products (Empty State)
+   The text on the placeholder overlay when there are no products on the Products tab */
+"No products yet" = "まだ商品がありません";
 
 /* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "選択した基準と一致する結果はありません";
@@ -642,13 +674,12 @@
 "No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
 
 /* Text displayed when no order data are available for the selected time range. */
-"No revenue this period" = "No revenue this period";
+"No revenue this period" = "この期間には収益がありません";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "まだ出荷されていません";
 
-/* Labels an order note to let user know it's visible to the customer
-   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "お客様への通知";
 
 /* Label prefix. Example: 'Number of files: 2' */
@@ -695,7 +726,7 @@
 "Optional Tracking Information" = "オプションのトラッキング情報";
 
 /* Label for button to log in using site address. Underscores _..._ denote underline. */
-"Or log in by _entering your site address_." = "Or log in by _entering your site address_.";
+"Or log in by _entering your site address_." = "または、サイトアドレスを入力してログインしてください。";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -709,6 +740,9 @@
 
 /* Change order status screen - Screen title */
 "Order Status" = "注文ステータス";
+
+/* Order Total label for payment view */
+"Order Total" = "注文合計";
 
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "注文を処理済みにしました";
@@ -732,18 +766,15 @@
 /* Product section title */
 "PRODUCT" = "商品";
 
+/* The title for the customer payment cell */
+"Paid By Customer" = "顧客から支払われた金額";
+
 /* Login dialog password placeholder
    Password placeholder */
 "Password" = "パスワード";
 
 /* Payment section title */
 "Payment" = "決済";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "(subject.totalValue) の支払いを (order.paymentMethodTitle) から受領しました";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (totalValue) received via (order.paymentMethodTitle)" = "(totalValue) の支払いを (order.paymentMethodTitle) から受領しました";
 
 /* Display label for the product's pending status
    Display label for the review's pending status */
@@ -771,7 +802,7 @@
 "Please enter a valid email address." = "正しいメールアドレスを入力してください。";
 
 /* No comment provided by engineer. */
-"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Please enter the password for your WordPress.com account to log in with your Apple ID.";
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Apple ID でログインするには、WordPress.com のアカウントのパスワードを入力してください。";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "ログイン情報を入力してください。";
@@ -807,8 +838,7 @@
 /* Display label for the product's private status */
 "Private" = "プライベート";
 
-/* Labels an order note to let the user know it's private and not seen by the customer
-   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "プライベートメモ";
 
 /* Description for Top Performers left column header
@@ -818,7 +848,14 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "商品 %ld がストアから削除されました";
 
-/* Title of the Products tab — plural form of Product */
+/* Title of the view containing a single Product Review */
+"Product Review" = "製品のレビュー";
+
+/* Product Total label for payment view */
+"Product Total" = "商品合計";
+
+/* Title of the Products tab — plural form of Product
+   Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "商品";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -874,6 +911,9 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "特定のキーワードを含む注文一覧を取得します。";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search products. */
+"Retrieves a list of products that contain a given keyword." = "特定のキーワードを含む商品リストを検索します。";
+
 /* Retry Action
    Retry the last action */
 "Retry" = "再度試す";
@@ -904,8 +944,14 @@
 /* Orders Search Placeholder */
 "Search all orders" = "すべての注文を検索";
 
+/* Products Search Placeholder */
+"Search all products" = "すべての商品を検索";
+
 /* Search Orders */
 "Search orders" = "注文を検索";
+
+/* Search Products */
+"Search products" = "商品を検索";
 
 /* Page title for the select a different store screen */
 "Select Store" = "ストアを選択";
@@ -952,8 +998,8 @@
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "配送業者";
 
-/* Footer text to show the billing cell */
-"Show billing" = "請求情報を表示";
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show the billing details for this order." = "この注文の請求詳細を表示";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "オプションをさらに表示します。";
@@ -978,6 +1024,9 @@
 
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "寸法 :";
+
+/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
+"Someone" = "だれか";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "ユーザー名に利用できない単語%@が含まれています。";
@@ -1049,17 +1098,11 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "ストアの収益グラフ: Y 軸";
 
-/* Subtotal label for payment view */
-"Subtotal" = "小計";
-
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "ストアを切り替える";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "(newStoreName) に切り替えました。このストアの通知のみ受信します。";
-
-/* Labels an order note to let user know it's a system status message */
-"System status" = "システム状況";
 
 /* Tax label for total taxes line */
 "Tax:" = "税:";
@@ -1109,6 +1152,9 @@
 /* Displayed whenever a Notification that was onscreen got deleted. */
 "The notification has been removed" = "通知は削除済みです";
 
+/* Displayed whenever a review that was onscreen got deleted. */
+"The review has been removed" = "レビューを削除しました";
+
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "サーバーが空のレスポンスを返しました。これは通常、サイトのメモリ上限を上げる必要があることを意味しています。";
 
@@ -1146,7 +1192,7 @@
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "このアプリを使用するには、Jetpack をストアに連携させる必要があります。<br \/><a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">設定に関する指示<\/a>を参照してください。";
 
 /* Body text of alert warning users to upgrade to WC 3.5. */
-"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app.";
+"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "このアプリは、サーバーに WooCommerce 3.5をインストールしない限り、正常に機能しません。引き続きアプリを使用するには、すぐに更新する必要があります。";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "このメールアドレスは WordPress.com に登録されていません。";
@@ -1178,9 +1224,6 @@
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "次の ID に該当するトピックは見つかりませんでした:";
-
-/* Total label for payment view */
-"Total" = "合計:";
 
 /* Product details screen - total orders descriptive label */
 "Total Orders" = "注文合計";
@@ -1216,14 +1259,14 @@
 /* The action of the top banner on Dashboard that indicates new stats is available */
 "Try It Now" = "今すぐお試しください";
 
-/* No comment provided by engineer. */
+/* Button to trigger connection to another account in store picker */
 "Try another account" = "別のアカウントでお試しください";
 
 /* The title of the top banner on Dashboard that indicates new stats is available */
 "Try our improved stats" = "強化された統計機能をお試しください";
 
 /* My Store > Settings > Beta features > Stats version description */
-"Try the new stats available with the WooCommerce Admin plugin" = "Try the new stats available with the WooCommerce Admin plugin";
+"Try the new stats available with the WooCommerce Admin plugin" = "WooCommerce Admin プラグインと併用可能な新しい統計機能をお試しください";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "別のメールで試す";
@@ -1285,7 +1328,8 @@
 /* Undo Action */
 "Undo" = "元に戻す";
 
-/* Unknown Application State */
+/* Unknown Application State
+   Unknown product name, displayed in a review */
 "Unknown" = "不明";
 
 /* No comment provided by engineer. */
@@ -1304,16 +1348,16 @@
 "Up to seven days՚ worth of logs are saved." = "最大7日間分のログが保存されます。";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
-"Update %@ to WooCommerce 3.5" = "Update %@ to WooCommerce 3.5";
+"Update %@ to WooCommerce 3.5" = "%@ を WooCommerce 3.5に更新";
 
 /* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
-"Update Instructions" = "Update Instructions";
+"Update Instructions" = "手順を更新";
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "注文ステータスを更新";
 
 /* Title of alert warning users to upgrade to WC 3.5. */
-"Update to WooCommerce 3.5 to keep using this app" = "Update to WooCommerce 3.5 to keep using this app";
+"Update to WooCommerce 3.5 to keep using this app" = "WooCommerce 3.5に更新して引き続きアプリを使用";
 
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld時間前に更新";
@@ -1348,6 +1392,10 @@
 
 /* View application log cell title */
 "View Application Log" = "アプリケーションログを表示";
+
+/* Accessibility label for the 'View Billing Information' button
+   Button on bottom of Customer's information to show the billing details */
+"View Billing Information" = "お支払い情報を表示";
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "アフィリエイト向け商品を表示";
@@ -1489,4 +1537,7 @@
 
 /* About View's Footer Text. The variable is the current year */
 "© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+
+/* Customer note, wrapped in quotes */
+"“%@”" = "“%@”";
 

@@ -1,2 +1,0 @@
-Check which products<br />
-are performing best

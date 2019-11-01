@@ -1,5 +1,0 @@
-- WooCommerce Yönetici eklentisini kullananlar için yepyeni bir istatistik sayfası oluşturuldu (daha ayrıntılı analiz içeriyor)! Ayarlar sayfasından kullanmayı seçebilirsiniz.
-- Ürün Ayrıntıları sayfasında fiyatların yanlış para biriminde gösterilmesine neden olan bir hatayı düzelttik.
-- Uygulama günlüklerinin düzenlenebileceğini keşfettikten sonra, sadece kopya olarak devam etmelerini sağladık.
-- Siparişler sekmesi şimdi tüm sipariş bilgilerinizi görüntülediğinden, Mağazam sekmesini düzenledik ve Yeni Siparişler kartını kaldırdık.
-- Muhtemelen Yorumlar'ın yerelleştirilmesini istiyordunuz, şimdi bu da halledildi (bir hata vardı ve düzeltildi).

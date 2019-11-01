@@ -111,13 +111,6 @@ public class ResultsController<T: ResultsControllerMutableType> {
                   sortedBy: descriptors)
     }
 
-    /// Deinit!
-    ///
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
-
-
 
     /// Executes the fetch request on the store to get objects.
     ///

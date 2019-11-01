@@ -67,10 +67,6 @@ final class ProductsViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    deinit {
-        stopListeningToNotifications()
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 

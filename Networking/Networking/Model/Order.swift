@@ -126,7 +126,7 @@ public struct Order: Decodable {
 
         let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
-        let shippingLines = try? container.decodeIfPresent([ShippingMethod].self, forKey: .shippingLines) ?? []
+        let shippingLines = try container.decodeIfPresent([ShippingMethod].self, forKey: .shippingLines) ?? []
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 

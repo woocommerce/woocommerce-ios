@@ -45,6 +45,7 @@ extension Order {
     @NSManaged public var shippingState: String?
     @NSManaged public var shippingTax: String?
     @NSManaged public var shippingTotal: String?
+    @NSManaged public var shippingLines: Set<ShippingLine>?
     @NSManaged public var siteID: Int64
     @NSManaged public var statusKey: String
     @NSManaged public var total: String?
@@ -54,6 +55,23 @@ extension Order {
     @NSManaged public var notes: Set<OrderNote>?
     @NSManaged public var searchResults: Set<OrderSearchResults>?
     @NSManaged public var refunds: Set<OrderRefundCondensed>?
+
+}
+
+// MARK: Generated accessors for shippingLines
+extension Order {
+
+     @objc(addToShippingLinesObject:)
+     @NSManaged public func addToShippingLines(_ value: ShippingLine)
+
+     @objc(removeFromShippingLinesObject:)
+     @NSManaged public func removeFromShippingLines(_ value: ShippingLine)
+
+     @objc(addToShippingLines:)
+     @NSManaged public func addToShippingLines(_ values: NSSet)
+
+     @objc(removeFromShippingLines:)
+     @NSManaged public func removeFromShippingLines(_ values: NSSet)
 
 }
 

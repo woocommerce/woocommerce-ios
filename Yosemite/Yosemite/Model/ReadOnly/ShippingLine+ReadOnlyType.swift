@@ -1,13 +1,18 @@
-//
-//  ShippingLine+ReadOnlyType.swift
-//  Yosemite
-//
-//  Created by Paolo Musolino on 04/11/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
+import Foundation
+import Storage
 
-import UIKit
 
-class ShippingLine_ReadOnlyType: Codable {
+// MARK: - Yosemite.ShippingLine: ReadOnlyType
+//
+extension Yosemite.ShippingLine: ReadOnlyType {
 
+    /// Indicates if the receiver is a representation of a specified Storage.Entity instance.
+    ///
+    public func isReadOnlyRepresentation(of shippingLine: Any) -> Bool {
+        guard let shippingLine = shippingLine as? Storage.ShippingLine else {
+            return false
+        }
+
+        return shippingId == Int(shippingLine.shippingId)
+    }
 }

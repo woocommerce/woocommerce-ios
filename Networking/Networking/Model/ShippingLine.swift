@@ -1,9 +1,9 @@
 import Foundation
 
 
-/// Represents a Shipping Method Entity.
+/// Represents a Shipping Line Entity.
 ///
-public struct ShippingMethod: Decodable {
+public struct ShippingLine: Decodable {
     public let shippingId: Int
     public let methodTitle: String
     public let methodId: String
@@ -26,7 +26,7 @@ public struct ShippingMethod: Decodable {
     }
     
     
-    /// The public initializer for Shipping Method.
+    /// The public initializer for Shipping Line.
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
@@ -46,9 +46,9 @@ public struct ShippingMethod: Decodable {
 }
 
 
-/// Defines all of the Shipping Method CodingKeys
+/// Defines all of the Shipping Line CodingKeys
 ///
-private extension ShippingMethod {
+private extension ShippingLine {
     
     enum CodingKeys: String, CodingKey {
         case shippingId            = "id"
@@ -62,8 +62,8 @@ private extension ShippingMethod {
 
 // MARK: - Comparable Conformance
 //
-extension ShippingMethod: Comparable {
-    public static func == (lhs: ShippingMethod, rhs: ShippingMethod) -> Bool {
+extension ShippingLine: Comparable {
+    public static func == (lhs: ShippingLine, rhs: ShippingLine) -> Bool {
         return lhs.shippingId == rhs.shippingId &&
             lhs.methodTitle == rhs.methodTitle &&
             lhs.methodId == rhs.methodId &&
@@ -71,7 +71,7 @@ extension ShippingMethod: Comparable {
             lhs.totalTax == rhs.totalTax
     }
     
-    public static func < (lhs: ShippingMethod, rhs: ShippingMethod) -> Bool {
+    public static func < (lhs: ShippingLine, rhs: ShippingLine) -> Bool {
         return lhs.shippingId == rhs.shippingId &&
             lhs.methodId == rhs.methodId &&
             lhs.methodTitle < rhs.methodTitle

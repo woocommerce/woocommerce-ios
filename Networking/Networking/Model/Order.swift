@@ -29,7 +29,7 @@ public struct Order: Decodable {
     public let items: [OrderItem]
     public let billingAddress: Address?
     public let shippingAddress: Address?
-    public let shippingLines: [ShippingMethod]
+    public let shippingLines: [ShippingLine]
     public let coupons: [OrderCouponLine]
     public let refunds: [OrderRefundCondensed]
 
@@ -56,7 +56,7 @@ public struct Order: Decodable {
                 items: [OrderItem],
                 billingAddress: Address?,
                 shippingAddress: Address?,
-                shippingLines: [ShippingMethod],
+                shippingLines: [ShippingLine],
                 coupons: [OrderCouponLine],
                 refunds: [OrderRefundCondensed]) {
 
@@ -126,7 +126,7 @@ public struct Order: Decodable {
 
         let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
-        let shippingLines = try container.decodeIfPresent([ShippingMethod].self, forKey: .shippingLines) ?? []
+        let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines) ?? []
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 

@@ -38,6 +38,7 @@ final class ManualTrackingViewController: UIViewController {
         configureBackground()
         configureNavigation()
         configureTable()
+        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -366,8 +367,8 @@ private extension ManualTrackingViewController {
 
     func displayDatePicker(at indexPath: IndexPath) {
         datePickerVisible = true
-
         reloadDatePicker(at: indexPath)
+        table.scrollToRow(at: indexPath, at: .top, animated: true)
     }
 
     func showAllShipmentProviders() {
@@ -554,6 +555,42 @@ private extension ManualTrackingViewController {
 
 }
 
+// MARK: - Keyboard management
+//
+private extension ManualTrackingViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        nc.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    }
+
+    /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted
+    ///
+    @objc func keyboardWillShow(_ note: Notification) {
+        let bottomInset = keyboardHeight(from: note)
+
+        table.contentInset.bottom = bottomInset
+        table.scrollIndicatorInsets.bottom = bottomInset
+    }
+
+    /// Executed whenever `UIResponder.keyboardWillhideNotification` note is posted
+    ///
+    @objc func keyboardWillHide(_ note: Notification) {
+        table.contentInset.bottom = .zero
+        table.scrollIndicatorInsets.bottom = .zero
+    }
+
+    /// Returns the Keyboard Height from a (hopefully) Keyboard Notification.
+    ///
+    func keyboardHeight(from note: Notification) -> CGFloat {
+        let wrappedRect = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+        let keyboardRect = wrappedRect?.cgRectValue ?? .zero
+
+        return keyboardRect.height
+    }
+}
 
 // MARK: - Error handling
 //

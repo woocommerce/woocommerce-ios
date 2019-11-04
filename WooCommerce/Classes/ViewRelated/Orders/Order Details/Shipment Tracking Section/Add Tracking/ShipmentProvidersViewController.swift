@@ -38,9 +38,6 @@ final class ShipmentProvidersViewController: UIViewController {
 
     /// Deinitializer
     ///
-    deinit {
-        stopListeningToNotifications()
-    }
 
     init(viewModel: ShippingProvidersViewModel, delegate: ShipmentProviderListDelegate) {
         self.viewModel = viewModel
@@ -161,12 +158,6 @@ private extension ShipmentProvidersViewController {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         nc.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
-    }
-
-    /// Unregisters from the Notification Center
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted

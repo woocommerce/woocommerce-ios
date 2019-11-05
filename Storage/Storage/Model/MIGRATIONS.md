@@ -2,7 +2,7 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
-## Model 22 (Release 3.0.0.0)
+## Model 22 (Release 3.1.0.0)
 - @pmusolino 2019-11-4
 - New `ShippingLine` entity
 - New `Order.shippingLines` relationship

@@ -693,6 +693,7 @@ private extension OrderStoreTests {
                      items: sampleItems(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
+                     shippingLines: sampleShippingLines(),
                      coupons: sampleCoupons(),
                      refunds: [])
     }
@@ -719,6 +720,7 @@ private extension OrderStoreTests {
                      items: sampleItemsMutated(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
+                     shippingLines: sampleShippingLines(),
                      coupons: sampleCouponsMutated(),
                      refunds: [])
     }
@@ -745,6 +747,7 @@ private extension OrderStoreTests {
                      items: sampleItemsMutated2(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
+                     shippingLines: sampleShippingLines(),
                      coupons: [],
                      refunds: [])
     }
@@ -761,6 +764,14 @@ private extension OrderStoreTests {
                        country: "US",
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
+    }
+    
+    func sampleShippingLines() -> [Networking.ShippingLine] {
+        return [ShippingLine(shippingID: 123,
+        methodTitle: "International Priority Mail Express Flat Rate",
+        methodID: "usps",
+        total: "133.00",
+        totalTax: "0.00")]
     }
 
     func sampleCoupons() -> [Networking.OrderCouponLine] {

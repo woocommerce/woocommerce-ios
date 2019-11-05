@@ -1,12 +1,7 @@
-import Foundation
 import UIKit
 import Aztec
-import CocoaLumberjack
 import Gridicons
-import WordPressShared
-import MobileCoreServices
 import WordPressEditor
-import AutomatticTracks
 
 // MARK: - Aztec's Native Editor!
 //
@@ -45,43 +40,11 @@ class AztecEditorViewController: UIViewController, Editor {
     }()
 
     private var scrollableItemsForToolbar: [FormatBarItem] {
-        let headerButton = makeToolbarButton(identifier: .p)
-
-        var alternativeIcons = [String: UIImage]()
-        let headings = Constants.headers.suffix(from: 1) // Remove paragraph style
-        for heading in headings {
-            alternativeIcons[heading.formattingIdentifier.rawValue] = heading.iconImage
-        }
-
-        headerButton.alternativeIcons = alternativeIcons
-
-
-        let listButton = makeToolbarButton(identifier: .unorderedlist)
-        var listIcons = [String: UIImage]()
-        for list in Constants.lists {
-            listIcons[list.formattingIdentifier.rawValue] = list.iconImage
-        }
-
-        listButton.alternativeIcons = listIcons
-
-        return [
-            headerButton,
-            listButton,
-            makeToolbarButton(identifier: .blockquote),
-            makeToolbarButton(identifier: .bold),
-            makeToolbarButton(identifier: .italic),
-            makeToolbarButton(identifier: .link)
-        ]
+        return []
     }
 
     var overflowItemsForToolbar: [FormatBarItem] {
-        return [
-            makeToolbarButton(identifier: .underline),
-            makeToolbarButton(identifier: .strikethrough),
-            makeToolbarButton(identifier: .horizontalruler),
-            makeToolbarButton(identifier: .more),
-            makeToolbarButton(identifier: .sourcecode)
-        ]
+        return []
     }
 
     // MARK: - Styling Options
@@ -96,7 +59,7 @@ class AztecEditorViewController: UIViewController, Editor {
         }
     }
 
-    /// Raw HTML Editor
+    /// Aztec's Raw HTML Editor
     ///
     private var htmlTextView: UITextView {
         get {
@@ -114,7 +77,6 @@ class AztecEditorViewController: UIViewController, Editor {
         label.isUserInteractionEnabled = false
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.textAlignment = .natural
         label.accessibilityIdentifier = "aztec-content-placeholder"
         return label
     }()
@@ -151,10 +113,6 @@ class AztecEditorViewController: UIViewController, Editor {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         startListeningToNotifications()
-    }
-
-    deinit {
-        stopListeningToNotifications()
     }
 }
 
@@ -275,10 +233,6 @@ private extension AztecEditorViewController {
 
         updateToolbar(toolbar)
 
-        toolbar.barItemHandler = { [weak self] item in
-            self?.handleAction(for: item)
-        }
-
         return toolbar
     }
 
@@ -287,17 +241,6 @@ private extension AztecEditorViewController {
 
         toolbar.setDefaultItems(scrollableItemsForToolbar,
                                 overflowItems: overflowItemsForToolbar)
-    }
-
-    func makeToolbarButton(identifier: FormattingIdentifier) -> FormatBarItem {
-        return makeToolbarButton(identifier: identifier.rawValue, provider: identifier)
-    }
-
-    func makeToolbarButton(identifier: String, provider: FormatBarItemProvider) -> FormatBarItem {
-        let button = FormatBarItem(image: provider.iconImage, identifier: identifier)
-        button.accessibilityLabel = provider.accessibilityLabel
-        button.accessibilityIdentifier = provider.accessibilityIdentifier
-        return button
     }
 }
 
@@ -312,341 +255,6 @@ private extension AztecEditorViewController {
 
     func refreshPlaceholderVisibility() {
         placeholderLabel.isHidden = richTextView.isHidden || !richTextView.text.isEmpty
-    }
-}
-
-// MARK: FormatBar Actions
-//
-extension AztecEditorViewController {
-    func handleAction(for barItem: FormatBarItem) {
-        guard let identifier = barItem.identifier else { return }
-
-        if let formattingIdentifier = FormattingIdentifier(rawValue: identifier) {
-            switch formattingIdentifier {
-            case .bold:
-                toggleBold()
-            case .italic:
-                toggleItalic()
-            case .underline:
-                toggleUnderline()
-            case .strikethrough:
-                toggleStrikethrough()
-            case .blockquote:
-                toggleBlockquote()
-            case .unorderedlist, .orderedlist:
-                toggleList(fromItem: barItem)
-            case .link:
-                toggleLink()
-            case .sourcecode:
-                toggleEditingMode()
-            case .p, .header1, .header2, .header3, .header4, .header5, .header6:
-                toggleHeader(fromItem: barItem)
-            case .horizontalruler:
-                insertHorizontalRuler()
-            case .more:
-                insertMore()
-            case .code:
-                toggleCode()
-            default:
-                break
-            }
-
-            updateFormatBar()
-        }
-    }
-
-    @objc func toggleBold() {
-//        trackFormatBarAnalytics(stat: .editorTappedBold)
-        richTextView.toggleBold(range: richTextView.selectedRange)
-    }
-
-    @objc func toggleCode() {
-        richTextView.toggleCode(range: richTextView.selectedRange)
-    }
-
-    @objc func toggleItalic() {
-//        trackFormatBarAnalytics(stat: .editorTappedItalic)
-        richTextView.toggleItalic(range: richTextView.selectedRange)
-    }
-
-    @objc func toggleUnderline() {
-//        trackFormatBarAnalytics(stat: .editorTappedUnderline)
-        richTextView.toggleUnderline(range: richTextView.selectedRange)
-    }
-
-    @objc func toggleStrikethrough() {
-//        trackFormatBarAnalytics(stat: .editorTappedStrikethrough)
-        richTextView.toggleStrikethrough(range: richTextView.selectedRange)
-    }
-
-    @objc func toggleOrderedList() {
-//        trackFormatBarAnalytics(stat: .editorTappedOrderedList)
-        richTextView.toggleOrderedList(range: richTextView.selectedRange)
-    }
-
-    @objc func toggleUnorderedList() {
-//        trackFormatBarAnalytics(stat: .editorTappedUnorderedList)
-        richTextView.toggleUnorderedList(range: richTextView.selectedRange)
-    }
-
-    func toggleList(fromItem item: FormatBarItem) {
-        let listOptions = Constants.lists.map { listType -> OptionsTableViewOption in
-            let title = NSAttributedString(string: listType.description, attributes: [:])
-            return OptionsTableViewOption(image: listType.iconImage,
-                                          title: title,
-                                          accessibilityLabel: listType.accessibilityLabel)
-        }
-
-        var index: Int? = nil
-        if let listType = listTypeForSelectedText() {
-            index = Constants.lists.firstIndex(of: listType)
-        }
-
-        let optionsTableViewController = OptionsTableViewController(options: listOptions)
-        optionsTableViewController.applyDefaultStyles()
-
-        optionsTablePresenter.present(
-            optionsTableViewController,
-            fromBarItem: item,
-            selectedRowIndex: index,
-            onSelect: { [weak self] selected in
-                let listType = Constants.lists[selected]
-
-                switch listType {
-                case .unordered:
-                    self?.toggleUnorderedList()
-                case .ordered:
-                    self?.toggleOrderedList()
-                }
-        })
-    }
-
-
-    @objc func toggleBlockquote() {
-//        trackFormatBarAnalytics(stat: .editorTappedBlockquote)
-        richTextView.toggleBlockquote(range: richTextView.selectedRange)
-    }
-
-
-    func listTypeForSelectedText() -> TextList.Style? {
-        var identifiers = Set<FormattingIdentifier>()
-        if richTextView.selectedRange.length > 0 {
-            identifiers = richTextView.formattingIdentifiersSpanningRange(richTextView.selectedRange)
-        } else {
-            identifiers = richTextView.formattingIdentifiersForTypingAttributes()
-        }
-        let mapping: [FormattingIdentifier: TextList.Style] = [
-            .orderedlist: .ordered,
-            .unorderedlist: .unordered
-        ]
-        for (key, value) in mapping {
-            if identifiers.contains(key) {
-                return value
-            }
-        }
-
-        return nil
-    }
-
-    @objc func toggleEditingMode() {
-//        trackFormatBarAnalytics(stat: .editorTappedHTML)
-        formatBar.overflowToolbar(expand: true)
-
-        editorView.toggleEditingMode()
-//        editorSession.switch(editor: analyticsEditor)
-    }
-
-    // MARK: Link Actions
-
-    @objc func toggleLink() {
-//        trackFormatBarAnalytics(stat: .editorTappedLink)
-
-        var linkTitle = ""
-        var linkURL: URL? = nil
-        var linkTarget: String?
-        var linkRange = richTextView.selectedRange
-        // Let's check if the current range already has a link assigned to it.
-        if let expandedRange = richTextView.linkFullRange(forRange: richTextView.selectedRange) {
-            linkRange = expandedRange
-            linkURL = richTextView.linkURL(forRange: expandedRange)
-            linkTarget = richTextView.linkTarget(forRange: expandedRange)
-        }
-
-        linkTitle = richTextView.attributedText.attributedSubstring(from: linkRange).string
-        showLinkDialog(forURL: linkURL, title: linkTitle, target: linkTarget, range: linkRange)
-    }
-
-    func showLinkDialog(forURL url: URL?, title: String?, target: String?, range: NSRange) {
-
-        let isInsertingNewLink = (url == nil)
-        var urlToUse = url
-
-        if isInsertingNewLink {
-            if UIPasteboard.general.hasURLs,
-                let pastedURL = UIPasteboard.general.url {
-                urlToUse = pastedURL
-            }
-        }
-
-        let alertController = UIAlertController(title: NSLocalizedString("Link Settings", comment: ""), message: nil, preferredStyle: .alert)
-        let removeLinkAction = UIAlertAction(title: NSLocalizedString("Remove link", comment: ""), style: .destructive, handler: { [weak self] _ in
-            self?.removeLink(in: range)
-        })
-        let addLinkAction = UIAlertAction(title: NSLocalizedString("Add link", comment: ""), style: .default) { [weak self] _ in
-            guard let urlTextField = alertController.textFields?[0],
-                let url = urlTextField.text else {
-                return
-            }
-            self?.insertLink(url: url, text: title, target: nil, range: range)
-        }
-        let addLinkToNewWindowAction = UIAlertAction(title: NSLocalizedString("Add link to a new window", comment: ""), style: .default) { [weak self] _ in
-            guard let urlTextField = alertController.textFields?[0],
-                let url = urlTextField.text else {
-                return
-            }
-            self?.insertLink(url: url, text: title, target: "_blank", range: range)
-        }
-
-        alertController.addTextField(configurationHandler: { textField in
-            textField.placeholder = NSLocalizedString("Enter link URL", comment: "")
-            textField.text = urlToUse?.absoluteString ?? ""
-        })
-
-        alertController.addAction(addLinkAction)
-        alertController.addAction(addLinkToNewWindowAction)
-
-        if urlToUse != nil {
-            alertController.addAction(removeLinkAction)
-        }
-
-        alertController.addActionWithTitle(NSLocalizedString("Cancel", comment: ""), style: .cancel)
-        present(alertController, animated: true, completion: nil)
-
-        // TODO: replace the alert implementation with something nicer like `LinkSettingsViewController` on WPiOS.
-
-        richTextView.resignFirstResponder()
-    }
-
-    func insertLink(url: String, text: String?, target: String?, range: NSRange) {
-        let linkURLString = url
-        var linkText = text
-
-        if linkText == nil || linkText!.isEmpty {
-            linkText = linkURLString
-        }
-
-        guard let url = URL(string: linkURLString), let title = linkText else {
-            return
-        }
-
-        richTextView.setLink(url.normalizedURLForWordPressLink(), title: title, target: target, inRange: range)
-    }
-
-    func removeLink(in range: NSRange) {
-//        trackFormatBarAnalytics(stat: .editorTappedUnlink)
-        richTextView.removeLink(inRange: range)
-    }
-
-    func toggleHeader(fromItem item: FormatBarItem) {
-        guard !optionsTablePresenter.isOnScreen() else {
-            optionsTablePresenter.dismiss()
-            return
-        }
-
-//        trackFormatBarAnalytics(stat: .editorTappedHeader)
-
-        let headerOptions = Constants.headers.map { headerType -> OptionsTableViewOption in
-            let attributes: [NSAttributedString.Key: Any] = [
-                .font: UIFont.systemFont(ofSize: CGFloat(headerType.fontSize)),
-            ]
-
-            let title = NSAttributedString(string: headerType.description, attributes: attributes)
-
-            return OptionsTableViewOption(image: headerType.iconImage,
-                                          title: title,
-                                          accessibilityLabel: headerType.accessibilityLabel)
-        }
-
-        let selectedIndex = Constants.headers.firstIndex(of: self.headerLevelForSelectedText())
-
-        let optionsTableViewController = OptionsTableViewController(options: headerOptions)
-        optionsTableViewController.applyDefaultStyles()
-
-        optionsTablePresenter.present(
-            optionsTableViewController,
-            fromBarItem: item,
-            selectedRowIndex: selectedIndex,
-            onSelect: { [weak self] selected in
-                guard let range = self?.richTextView.selectedRange else { return }
-
-//                let selectedStyle = Analytics.headerStyleValues[selected]
-//                self?.trackFormatBarAnalytics(stat: .editorTappedHeaderSelection, headingStyle: selectedStyle)
-
-                self?.richTextView.toggleHeader(Constants.headers[selected], range: range)
-                self?.optionsTablePresenter.dismiss()
-        })
-    }
-
-    func insertHorizontalRuler() {
-//        trackFormatBarAnalytics(stat: .editorTappedHorizontalRule)
-        richTextView.replaceWithHorizontalRuler(at: richTextView.selectedRange)
-    }
-
-    func insertMore() {
-//        trackFormatBarAnalytics(stat: .editorTappedMore)
-        richTextView.replace(richTextView.selectedRange, withComment: Constants.moreAttachmentText)
-    }
-
-    func headerLevelForSelectedText() -> Header.HeaderType {
-        var identifiers = Set<FormattingIdentifier>()
-        if richTextView.selectedRange.length > 0 {
-            identifiers = richTextView.formattingIdentifiersSpanningRange(richTextView.selectedRange)
-        } else {
-            identifiers = richTextView.formattingIdentifiersForTypingAttributes()
-        }
-        let mapping: [FormattingIdentifier: Header.HeaderType] = [
-            .header1: .h1,
-            .header2: .h2,
-            .header3: .h3,
-            .header4: .h4,
-            .header5: .h5,
-            .header6: .h6,
-        ]
-        for (key, value) in mapping {
-            if identifiers.contains(key) {
-                return value
-            }
-        }
-        return .none
-    }
-}
-
-extension AztecEditorViewController {
-    // MARK: - Keyboard Handling
-
-    override var keyCommands: [UIKeyCommand] {
-
-        if richTextView.isFirstResponder {
-            return [
-                UIKeyCommand(input: "B", modifierFlags: .command, action: #selector(toggleBold), discoverabilityTitle: NSLocalizedString("Bold", comment: "Discoverability title for bold formatting keyboard shortcut.")),
-                UIKeyCommand(input: "I", modifierFlags: .command, action: #selector(toggleItalic), discoverabilityTitle: NSLocalizedString("Italic", comment: "Discoverability title for italic formatting keyboard shortcut.")),
-                UIKeyCommand(input: "S", modifierFlags: [.command], action: #selector(toggleStrikethrough), discoverabilityTitle: NSLocalizedString("Strikethrough", comment: "Discoverability title for strikethrough formatting keyboard shortcut.")),
-                UIKeyCommand(input: "U", modifierFlags: .command, action: #selector(toggleUnderline(_:)), discoverabilityTitle: NSLocalizedString("Underline", comment: "Discoverability title for underline formatting keyboard shortcut.")),
-                UIKeyCommand(input: "Q", modifierFlags: [.command, .alternate], action: #selector(toggleBlockquote), discoverabilityTitle: NSLocalizedString("Block Quote", comment: "Discoverability title for block quote keyboard shortcut.")),
-                UIKeyCommand(input: "K", modifierFlags: .command, action: #selector(toggleLink), discoverabilityTitle: NSLocalizedString("Insert Link", comment: "Discoverability title for insert link keyboard shortcut.")),
-                UIKeyCommand(input: "U", modifierFlags: [.command, .alternate], action: #selector(toggleUnorderedList), discoverabilityTitle: NSLocalizedString("Bullet List", comment: "Discoverability title for bullet list keyboard shortcut.")),
-                UIKeyCommand(input: "O", modifierFlags: [.command, .alternate], action: #selector(toggleOrderedList), discoverabilityTitle: NSLocalizedString("Numbered List", comment: "Discoverability title for numbered list keyboard shortcut.")),
-                UIKeyCommand(input: "H", modifierFlags: [.command, .shift], action: #selector(toggleEditingMode), discoverabilityTitle: NSLocalizedString("Toggle HTML Source ", comment: "Discoverability title for HTML keyboard shortcut."))
-            ]
-        }
-
-        if htmlTextView.isFirstResponder {
-            return [
-                UIKeyCommand(input: "H", modifierFlags: [.command, .shift], action: #selector(toggleEditingMode), discoverabilityTitle: NSLocalizedString("Toggle HTML Source ", comment: "Discoverability title for HTML keyboard shortcut."))
-            ]
-        }
-
-        return []
     }
 }
 
@@ -705,12 +313,6 @@ private extension AztecEditorViewController {
         nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
         nc.addObserver(self, selector: #selector(keyboardDidHide), name: UIResponder.keyboardDidHideNotification, object: nil)
         nc.addObserver(self, selector: #selector(applicationWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
-    }
-
-    /// Unregisters from the Notification Center
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     @objc func applicationWillResignActive(_ notification: Foundation.Notification) {

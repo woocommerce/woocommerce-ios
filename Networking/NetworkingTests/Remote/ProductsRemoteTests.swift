@@ -162,7 +162,7 @@ class ProductsRemoteTests: XCTestCase {
     ///
     func testUpdateProductDescriptionProperlyRelaysNetwokingErrors() {
         let remote = ProductsRemote(network: network)
-        let expectation = self.expectation(description: "Wait for product search results")
+        let expectation = self.expectation(description: "Wait for product description update")
 
         remote.updateProduct(for: sampleSiteID, productID: sampleProductID, description: "") { (product, error) in
             XCTAssertNil(product)

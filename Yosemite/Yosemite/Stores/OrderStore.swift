@@ -330,7 +330,7 @@ private extension OrderStore {
         }
     }
     
-    /// Updates, inserts, or prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
+    /// Updates, inserts, or prunes the provided StorageOrder's shipping lines using the provided read-only Order's shippingLine
     ///
     private func handleOrderShippingLines(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
         // Upsert the shipping lines from the read-only order

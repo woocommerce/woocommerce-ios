@@ -280,6 +280,7 @@ private extension OrderStore {
 
             handleOrderItems(readOnlyOrder, storageOrder, storage)
             handleOrderCoupons(readOnlyOrder, storageOrder, storage)
+            handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
         }
     }
 
@@ -325,6 +326,29 @@ private extension OrderStore {
             if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
                 storageOrder.removeFromCoupons(storageCoupon)
                 storage.deleteObject(storageCoupon)
+            }
+        }
+    }
+    
+    /// Updates, inserts, or prunes the provided StorageOrder's coupons using the provided read-only Order's coupons
+    ///
+    private func handleOrderShippingLines(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        // Upsert the shipping lines from the read-only order
+        for readOnlyShippingLine in readOnlyOrder.shippingLines {
+            if let existingStorageShippingLine = storage.loadShippingLine(shippingID: readOnlyShippingLine.shippingID) {
+                existingStorageShippingLine.update(with: readOnlyShippingLine)
+            } else {
+                let newStorageShippingLine = storage.insertNewObject(ofType: Storage.ShippingLine.self)
+                newStorageShippingLine.update(with: readOnlyShippingLine)
+                storageOrder.addToShippingLines(newStorageShippingLine)
+            }
+        }
+
+        // Now, remove any objects that exist in storageOrder.coupons but not in readOnlyOrder.coupons
+        storageOrder.shippingLines?.forEach { storageShippingLine in
+            if readOnlyOrder.shippingLines.first(where: { $0.shippingID == storageShippingLine.shippingID } ) == nil {
+                storageOrder.removeFromShippingLines(storageShippingLine)
+                storage.deleteObject(storageShippingLine)
             }
         }
     }

@@ -125,9 +125,9 @@ private extension SummaryTableViewCellTests {
     }
     
     func sampleShippingLines() -> [ShippingLine] {
-        return [ShippingLine(shippingId: 123,
+        return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",
-        methodId: "usps",
+        methodID: "usps",
         total: "133.00",
         totalTax: "0.00")]
     }

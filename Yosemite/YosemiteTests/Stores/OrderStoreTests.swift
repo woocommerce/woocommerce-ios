@@ -113,6 +113,7 @@ class OrderStoreTests: XCTestCase {
 
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
             let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
+            print("entra qui", storedOrder?.shippingLines?.first?.methodTitle)
             let readOnlyStoredOrder = storedOrder?.toReadOnly()
             XCTAssertNotNil(storedOrder)
             XCTAssertNotNil(readOnlyStoredOrder)
@@ -767,9 +768,9 @@ private extension OrderStoreTests {
     }
     
     func sampleShippingLines() -> [Networking.ShippingLine] {
-        return [ShippingLine(shippingId: 123,
+        return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",
-        methodId: "usps",
+        methodID: "usps",
         total: "133.00",
         totalTax: "0.00")]
     }

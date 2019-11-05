@@ -109,7 +109,7 @@ public class ProductsRemote: Remote {
     ///     - description: Description of the Product.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateProduct(for siteID: Int, productID: Int, description: String, completion: @escaping (Product?, Error?) -> Void) {
+    public func updateProductDescription(for siteID: Int, productID: Int, description: String, completion: @escaping (Product?, Error?) -> Void) {
         let parameters = [
             "description": description
         ]

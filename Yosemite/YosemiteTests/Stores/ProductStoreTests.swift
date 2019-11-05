@@ -613,9 +613,9 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    // MARK: - ProductAction.updateProduct
+    // MARK: - ProductAction.updateProductDescription
 
-    /// Verifies that `ProductAction.updateProduct` description returns the expected `Product`.
+    /// Verifies that `ProductAction.updateProductDescription` returns the expected `Product`.
     ///
     func testUpdatingProductDescriptionReturnsExpectedFields() {
         let expectation = self.expectation(description: "Update product description")
@@ -625,7 +625,7 @@ class ProductStoreTests: XCTestCase {
         let expectedProductDescription = "Learn something!"
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update-description")
-        let action = ProductAction.updateProduct(siteID: sampleSiteID,
+        let action = ProductAction.updateProductDescription(siteID: sampleSiteID,
                                                  productID: expectedProductID,
                                                  description: expectedProductDescription) { (product, error) in
             XCTAssertNil(error)
@@ -647,7 +647,7 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `ProductAction.updateProduct` description effectively persists all of the remote product fields
+    /// Verifies that `ProductAction.updateProductDescription` effectively persists all of the remote product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc) for `variation` product types.
     ///
     func testUpdatingProductDescriptionEffectivelyPersistsRelatedObjects() {
@@ -659,7 +659,7 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update-description")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
-        let action = ProductAction.updateProduct(siteID: sampleSiteID, productID: expectedProductID, description: "") { (product, error) in
+        let action = ProductAction.updateProductDescription(siteID: sampleSiteID, productID: expectedProductID, description: "") { (product, error) in
             XCTAssertNotNil(product)
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
@@ -682,14 +682,14 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `ProductAction.updateProduct` description returns an error whenever there is an error response from the backend.
+    /// Verifies that `ProductAction.updateProductDescription` returns an error whenever there is an error response from the backend.
     ///
     func testUpdatingProductDescriptionReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Update product description")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "generic_error")
-        let action = ProductAction.updateProduct(siteID: sampleSiteID, productID: sampleProductID, description: "") { (product, error) in
+        let action = ProductAction.updateProductDescription(siteID: sampleSiteID, productID: sampleProductID, description: "") { (product, error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -698,13 +698,13 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `ProductAction.updateProduct` description returns an error whenever there is no backend response.
+    /// Verifies that `ProductAction.updateProductDescription` returns an error whenever there is no backend response.
     ///
     func testUpdatingProductDescriptionReturnsErrorUponEmptyResponse() {
-        let expectation = self.expectation(description: "Retrieve single product empty response")
+        let expectation = self.expectation(description: "Update product description")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = ProductAction.updateProduct(siteID: sampleSiteID, productID: sampleProductID, description: "") { (product, error) in
+        let action = ProductAction.updateProductDescription(siteID: sampleSiteID, productID: sampleProductID, description: "") { (product, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(product)
             expectation.fulfill()
@@ -714,11 +714,10 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that whenever a `ProductAction.updateProduct` description action results in a response with statusCode = 404, the local entity
-    /// is obliterated from existence.
+    /// Verifies that whenever a `ProductAction.updateProductDescription` action results in a response with statusCode = 404, the local entity is not deleted.
     ///
     func testUpdatingProductDescriptionResultingInStatusCode404DoesNotCauseTheStoredProductToGetDeleted() {
-        let expectation = self.expectation(description: "Retrieve single product empty response")
+        let expectation = self.expectation(description: "Update product description")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -726,7 +725,7 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
         network.simulateError(requestUrlSuffix: "products/\(sampleProductID)", error: NetworkError.notFound)
-        let action = ProductAction.updateProduct(siteID: sampleSiteID, productID: sampleProductID, description: "") { (product, error) in
+        let action = ProductAction.updateProductDescription(siteID: sampleSiteID, productID: sampleProductID, description: "") { (product, error) in
             XCTAssertNotNil(error)
             XCTAssertNil(product)
             // The existing Product should not be deleted on 404 response.

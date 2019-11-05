@@ -139,7 +139,7 @@ class ProductsRemoteTests: XCTestCase {
 
     // MARK: - Update Product Description
 
-    /// Verifies that updateProduct description properly parses the `product-update-description` sample response.
+    /// Verifies that updateProductDescription description properly parses the `product-update-description` sample response.
     ///
     func testUpdateProductDescriptionProperlyReturnsParsedProduct() {
         let remote = ProductsRemote(network: network)
@@ -148,7 +148,7 @@ class ProductsRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update-description")
 
         let productDescription = "Learn something!"
-        remote.updateProduct(for: sampleSiteID, productID: sampleProductID, description: productDescription) { (product, error) in
+        remote.updateProductDescription(for: sampleSiteID, productID: sampleProductID, description: productDescription) { (product, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(product)
             XCTAssertEqual(product?.fullDescription, productDescription)
@@ -158,13 +158,13 @@ class ProductsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that updateProduct description properly relays Networking Layer errors.
+    /// Verifies that updateProductDescription description properly relays Networking Layer errors.
     ///
     func testUpdateProductDescriptionProperlyRelaysNetwokingErrors() {
         let remote = ProductsRemote(network: network)
         let expectation = self.expectation(description: "Wait for product description update")
 
-        remote.updateProduct(for: sampleSiteID, productID: sampleProductID, description: "") { (product, error) in
+        remote.updateProductDescription(for: sampleSiteID, productID: sampleProductID, description: "") { (product, error) in
             XCTAssertNil(product)
             XCTAssertNotNil(error)
             expectation.fulfill()

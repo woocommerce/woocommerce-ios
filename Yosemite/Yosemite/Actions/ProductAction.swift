@@ -32,5 +32,5 @@ public enum ProductAction: Action {
 
     /// Updates the description of a specified Product.
     ///
-    case updateProduct(siteID: Int, productID: Int, description: String?, onCompletion: (Product?, Error?) -> Void)
+    case updateProductDescription(siteID: Int, productID: Int, description: String?, onCompletion: (Product?, Error?) -> Void)
 }

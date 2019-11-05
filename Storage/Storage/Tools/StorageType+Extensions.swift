@@ -53,6 +53,13 @@ public extension StorageType {
         let predicate = NSPredicate(format: "couponID = %ld", couponID)
         return firstObject(ofType: OrderCoupon.self, matching: predicate)
     }
+    
+    /// Retrieves the Stored Order Shipping Line.
+    ///
+    func loadShippingLine(shippingID: Int) -> ShippingLine? {
+        let predicate = NSPredicate(format: "shippingID = %ld", shippingID)
+        return firstObject(ofType: ShippingLine.self, matching: predicate)
+    }
 
     /// Retrieves the Stored Order Note.
     ///

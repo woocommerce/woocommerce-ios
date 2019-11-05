@@ -344,7 +344,7 @@ private extension OrderStore {
             }
         }
 
-        // Now, remove any objects that exist in storageOrder.coupons but not in readOnlyOrder.coupons
+        // Now, remove any objects that exist in storageOrder.shippingLines but not in readOnlyOrder.shippingLines
         storageOrder.shippingLines?.forEach { storageShippingLine in
             if readOnlyOrder.shippingLines.first(where: { $0.shippingID == storageShippingLine.shippingID } ) == nil {
                 storageOrder.removeFromShippingLines(storageShippingLine)

@@ -113,7 +113,6 @@ class OrderStoreTests: XCTestCase {
 
             let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
             let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
-            print("entra qui", storedOrder?.shippingLines?.first?.methodTitle)
             let readOnlyStoredOrder = storedOrder?.toReadOnly()
             XCTAssertNotNil(storedOrder)
             XCTAssertNotNil(readOnlyStoredOrder)

@@ -15,6 +15,10 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
+    private var shippingLines: [ShippingLine] {
+        return order.shippingLines
+    }
+    
     private var customerNote: String {
         return order.customerNote ?? String()
     }
@@ -157,6 +161,8 @@ private extension OrderDetailsDataSource {
             configureCustomerNote(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingDetail:
             configureBillingDetail(cell: cell)
+        case let cell as LeftImageMultilineTableViewCell where row == .shippingNotice:
+            configureShippingNotice(cell: cell)
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
         case let cell as OrderNoteHeaderTableViewCell:
@@ -210,6 +216,22 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    func configureShippingNotice(cell: LeftImageMultilineTableViewCell) {
+        let cellTextContent = NSLocalizedString(
+            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
+            comment: "Shipping notice row label")
+        cell.leftImage = Icons.shippingNoticeIcon
+        cell.labelText = cellTextContent
+        cell.selectionStyle = .none
+        
+        cell.accessibilityTraits = .staticText
+        cell.accessibilityLabel = NSLocalizedString(
+            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
+            comment: "Accessibility label for the Shipping notice")
+        cell.accessibilityLabel = NSLocalizedString("Shipping notice about the order",
+                                                                      comment: "VoiceOver accessibility label for the shipping notice about the order")
+    }
+    
     func configureNewNote(cell: LeftImageTableViewCell) {
         cell.leftImage = Icons.addNoteIcon
         cell.labelText = Titles.addNoteText
@@ -361,6 +383,15 @@ extension OrderDetailsDataSource {
         return products.filter({ $0.productID == productID }).first
     }
 
+    func containOnlyVirtualProducts(for products: [Product]) -> Bool {
+        return !products.contains { (product) -> Bool in
+            product.virtual == false
+        }
+    }
+    
+    func isMultiShippingLinesAvailable(for order: Order) -> Bool {
+        return order.shippingLines.count > 1
+    }
 }
 
 
@@ -375,6 +406,15 @@ extension OrderDetailsDataSource {
     func reloadSections() {
         let summary = Section(row: .summary)
 
+        let shippingNotice: Section? = {
+            //Hide the shipping method warning if order contains only virtual products or if the order contains only one shipping method
+//            if containOnlyVirtualProducts(for: self.products) || isMultiShippingLinesAvailable(for: order) == false {
+//                return nil
+//            }
+            
+            return Section(title: nil, rightTitle: nil, footer: nil, rows: [.shippingNotice])
+        }()
+        
         let products: Section? = {
             guard items.isEmpty == false else {
                 return nil
@@ -433,7 +473,7 @@ extension OrderDetailsDataSource {
             return Section(title: Title.notes, rows: rows)
         }()
 
-        sections = [summary, products, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
+        sections = [summary, shippingNotice, products, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
 
@@ -514,6 +554,7 @@ extension OrderDetailsDataSource {
         case customerPaid
         case tracking
         case trackingAdd
+        case shippingNotice
         case addOrderNote
         case orderNoteHeader
         case orderNote
@@ -542,6 +583,8 @@ extension OrderDetailsDataSource {
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
                 return LeftImageTableViewCell.reuseIdentifier
+            case .shippingNotice:
+                return LeftImageMultilineTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:
@@ -688,5 +731,6 @@ private extension OrderDetailsDataSource {
 
     enum Icons {
         static let addNoteIcon = UIImage.addOutlineImage
+        static let shippingNoticeIcon = UIImage.noticeImage
     }
 }

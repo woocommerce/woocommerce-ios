@@ -8,6 +8,8 @@ final class AztecEditorViewController: UIViewController, Editor {
 
     private let content: String
 
+    private let viewProperties: EditorViewProperties
+
     private let aztecUIConfigurator = AztecUIConfigurator()
 
     /// The editor view.
@@ -64,9 +66,12 @@ final class AztecEditorViewController: UIViewController, Editor {
 
     private let textViewAttachmentDelegate: TextViewAttachmentDelegate
 
-    required init(content: String?, textViewAttachmentDelegate: TextViewAttachmentDelegate = AztecTextViewAttachmentHandler()) {
+    required init(content: String?,
+                  viewProperties: EditorViewProperties,
+                  textViewAttachmentDelegate: TextViewAttachmentDelegate = AztecTextViewAttachmentHandler()) {
         self.content = content ?? ""
         self.textViewAttachmentDelegate = textViewAttachmentDelegate
+        self.viewProperties = viewProperties
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -100,7 +105,7 @@ final class AztecEditorViewController: UIViewController, Editor {
 
 private extension AztecEditorViewController {
     func configureNavigationBar() {
-        title = NSLocalizedString("Description", comment: "The navigation bar title of the Aztec editor screen.")
+        title = viewProperties.navigationTitle
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(saveButtonTapped))
     }
 

@@ -408,9 +408,9 @@ extension OrderDetailsDataSource {
 
         let shippingNotice: Section? = {
             //Hide the shipping method warning if order contains only virtual products or if the order contains only one shipping method
-//            if containOnlyVirtualProducts(for: self.products) || isMultiShippingLinesAvailable(for: order) == false {
-//                return nil
-//            }
+            if containOnlyVirtualProducts(for: self.products) || isMultiShippingLinesAvailable(for: order) == false {
+                return nil
+            }
             
             return Section(title: nil, rightTitle: nil, footer: nil, rows: [.shippingNotice])
         }()

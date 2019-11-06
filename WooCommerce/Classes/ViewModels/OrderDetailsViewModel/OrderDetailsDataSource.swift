@@ -20,7 +20,7 @@ final class OrderDetailsDataSource: NSObject {
     }
     
     private var shippingMethod: String {
-        return order.shippingLines.first?.methodTitle ?? String()
+        return shippingLines.first?.methodTitle ?? String()
     }
     
     private var customerNote: String {
@@ -403,7 +403,7 @@ extension OrderDetailsDataSource {
     }
     
     func isMultiShippingLinesAvailable(for order: Order) -> Bool {
-        return order.shippingLines.count > 1
+        return shippingLines.count > 1
     }
 }
 
@@ -452,7 +452,7 @@ extension OrderDetailsDataSource {
             if order.shippingAddress != nil {
                 rows.append(.shippingAddress)
             }
-            if containOnlyVirtualProducts(for: self.products) == false && order.shippingLines.count > 0 {
+            if containOnlyVirtualProducts(for: self.products) == false && shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }
             rows.append(.billingDetail)

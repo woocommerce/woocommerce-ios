@@ -85,9 +85,9 @@ class AztecEditorViewController: UIViewController, Editor {
     ///
     fileprivate var currentKeyboardFrame: CGRect = .zero
 
-    private weak var textViewAttachmentDelegate: TextViewAttachmentDelegate?
+    private let textViewAttachmentDelegate: TextViewAttachmentDelegate
 
-    required init(content: String?, textViewAttachmentDelegate: TextViewAttachmentDelegate? = AztecTextViewAttachmentHandler()) {
+    required init(content: String?, textViewAttachmentDelegate: TextViewAttachmentDelegate = AztecTextViewAttachmentHandler()) {
         self.content = content ?? ""
         self.textViewAttachmentDelegate = textViewAttachmentDelegate
         super.init(nibName: nil, bundle: nil)
@@ -426,15 +426,5 @@ extension AztecEditorViewController: UITextViewDelegate {
         textView.inputAccessoryView = formatBar
 
         return true
-    }
-}
-
-// MARK: - Constants
-//
-extension AztecEditorViewController {
-    enum Constants {
-        static let headers = [Header.HeaderType.none, .h1, .h2, .h3, .h4, .h5, .h6]
-        static let lists = [TextList.Style.unordered, .ordered]
-        static let moreAttachmentText = "more"
     }
 }

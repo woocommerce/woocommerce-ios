@@ -16,7 +16,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         var actualFrames = [CGRect]()
 
-        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        var keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
             actualFrames.append(keyboardFrame)
             if actualFrames.count >= expectedFrames.count {
                 XCTAssertEqual(actualFrames, expectedFrames)
@@ -45,7 +45,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         var actualFrames = [CGRect]()
 
-        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        var keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
             actualFrames.append(keyboardFrame)
             if actualFrames.count >= expectedFrames.count {
                 XCTAssertEqual(actualFrames, expectedFrames)
@@ -68,7 +68,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
 
-        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        var keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
             expectationForKeyboardFrame.fulfill()
         }
         keyboardFrameObserver.startObservingKeyboardFrame()
@@ -86,7 +86,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
 
-        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        var keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
             expectationForKeyboardFrame.fulfill()
         }
         keyboardFrameObserver.startObservingKeyboardFrame()

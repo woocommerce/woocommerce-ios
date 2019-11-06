@@ -1,7 +1,7 @@
 import UIKit
 
 /// Observes the keyboard frame and notifies its subscriber.
-final class KeyboardFrameObserver {
+struct KeyboardFrameObserver {
     private let onKeyboardFrameUpdate: OnKeyboardFrameUpdate
 
     /// Notifies the closure owner about any keyboard frame change.
@@ -24,21 +24,31 @@ final class KeyboardFrameObserver {
         self.onKeyboardFrameUpdate = onKeyboardFrameUpdate
     }
 
-    func startObservingKeyboardFrame() {
-        notificationCenter.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        notificationCenter.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+    mutating func startObservingKeyboardFrame() {
+        var observer = self
+        notificationCenter.addObserver(forName: UIResponder.keyboardWillShowNotification,
+                                       object: nil,
+                                       queue: nil) { notification in
+                                        observer.keyboardWillShow(notification)
+        }
+
+        notificationCenter.addObserver(forName: UIResponder.keyboardWillHideNotification,
+                                       object: nil,
+                                       queue: nil) { notification in
+                                        observer.keyboardWillHide(notification)
+        }
     }
 }
 
 private extension KeyboardFrameObserver {
-    @objc func keyboardWillShow(_ notification: Foundation.Notification) {
+    mutating func keyboardWillShow(_ notification: Foundation.Notification) {
         guard let keyboardFrame = keyboardRect(from: notification) else {
             return
         }
         self.keyboardFrame = keyboardFrame
     }
 
-    @objc func keyboardWillHide(_ notification: Foundation.Notification) {
+    mutating func keyboardWillHide(_ notification: Foundation.Notification) {
         guard let keyboardFrame = keyboardRect(from: notification) else {
             return
         }

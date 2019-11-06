@@ -68,12 +68,6 @@ where Cell.SearchModel == Command.CellViewModel {
     private let searchUICommand: Command
 
 
-    /// Deinitializer
-    ///
-    deinit {
-        stopListeningToNotifications()
-    }
-
     /// Designated Initializer
     ///
     init(storeID: Int,
@@ -269,12 +263,6 @@ private extension SearchViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-    }
-
-    /// Unregisters from the Notification Center
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 }
 

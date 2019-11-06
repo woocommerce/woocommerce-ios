@@ -6,14 +6,16 @@ class OrderStatsV4Interval_DateTests: XCTestCase {
                                                            refunds: 0, taxes: 0, shipping: 0, netRevenue: 0, totalProducts: nil)
 
     func testDateStartAndDateEnd() {
-        let dateInGMT = "2019-08-08 10:45:00"
-        // GMT: Thursday, August 8, 2019 10:45:00 AM
-        // Adjusted by the current time zone GMT offset to have the same "time" (day/hour/minute/second) in the current time zone.
-        // (e.g. expectedDate` will be "2019-08-08 10:45:00" in the current device time zone)
-        let expectedDate = Date(timeIntervalSince1970: 1565261100)
-            .addingTimeInterval(-TimeInterval(TimeZone.current.secondsFromGMT()))
-        let interval = OrderStatsV4Interval(interval: "hour", dateStart: dateInGMT, dateEnd: dateInGMT, subtotals: mockIntervalSubtotals)
-        XCTAssertEqual(interval.dateStart(), expectedDate)
-        XCTAssertEqual(interval.dateEnd(), expectedDate)
+        let dateStringInSiteTimeZone = "2019-08-08 10:45:00"
+        let interval = OrderStatsV4Interval(interval: "hour", dateStart: dateStringInSiteTimeZone, dateEnd: dateStringInSiteTimeZone, subtotals: mockIntervalSubtotals)
+        [interval.dateStart(), interval.dateEnd()].forEach { date in
+            let dateComponents = Calendar.current.dateComponents(in: .current, from: date)
+            XCTAssertEqual(dateComponents.year, 2019)
+            XCTAssertEqual(dateComponents.month, 8)
+            XCTAssertEqual(dateComponents.day, 8)
+            XCTAssertEqual(dateComponents.hour, 10)
+            XCTAssertEqual(dateComponents.minute, 45)
+            XCTAssertEqual(dateComponents.second, 0)
+        }
     }
 }

@@ -114,10 +114,6 @@ class NotificationsViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    deinit {
-        stopListeningToNotifications()
-    }
-
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
 
@@ -607,12 +603,6 @@ private extension NotificationsViewController {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
         nc.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
-    }
-
-    /// Tear down the Notifications Hooks
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     /// Default Site Updated Handler

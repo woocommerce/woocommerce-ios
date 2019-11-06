@@ -81,9 +81,10 @@ class AztecEditorViewController: UIViewController, Editor {
         return label
     }()
 
-    /// Current keyboard rect used to help size the inline media picker
-    ///
-    fileprivate var currentKeyboardFrame: CGRect = .zero
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        return keyboardFrameObserver
+    }()
 
     private let textViewAttachmentDelegate: TextViewAttachmentDelegate
 
@@ -261,33 +262,10 @@ private extension AztecEditorViewController {
     }
 }
 
+// MARK: Keyboard frame update handling
+//
 private extension AztecEditorViewController {
-
-    @objc func keyboardWillShow(_ notification: Foundation.Notification) {
-        guard
-            let userInfo = notification.userInfo as? [String: AnyObject],
-            let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
-            else {
-                return
-        }
-        // Convert the keyboard frame from window base coordinate
-        currentKeyboardFrame = view.convert(keyboardFrame, from: nil)
-        refreshInsets(forKeyboardFrame: keyboardFrame)
-    }
-
-    @objc func keyboardDidHide(_ notification: Foundation.Notification) {
-        guard
-            let userInfo = notification.userInfo as? [String: AnyObject],
-            let keyboardFrame = (userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
-            else {
-                return
-        }
-
-        currentKeyboardFrame = .zero
-        refreshInsets(forKeyboardFrame: keyboardFrame)
-    }
-
-    func refreshInsets(forKeyboardFrame keyboardFrame: CGRect) {
+    func handleKeyboardFrameUpdate(keyboardFrame: CGRect) {
         let referenceView = editorView.activeView
 
         let contentInsets  = UIEdgeInsets(top: referenceView.contentInset.top, left: 0, bottom: view.frame.maxY - (keyboardFrame.minY + self.view.layoutMargins.bottom), right: 0)
@@ -312,9 +290,9 @@ private extension AztecEditorViewController {
 //
 private extension AztecEditorViewController {
     func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
+
         let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        nc.addObserver(self, selector: #selector(keyboardDidHide), name: UIResponder.keyboardDidHideNotification, object: nil)
         nc.addObserver(self, selector: #selector(applicationWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
     }
 

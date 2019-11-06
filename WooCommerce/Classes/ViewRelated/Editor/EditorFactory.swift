@@ -3,8 +3,6 @@ import Yosemite
 protocol Editor {
     typealias OnContentSave = (_ content: String) -> Void
     var onContentSave: OnContentSave? { get }
-
-    init(content: String?)
 }
 
 /// This class takes care of instantiating the editor.

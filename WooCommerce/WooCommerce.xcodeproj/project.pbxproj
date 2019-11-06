@@ -48,6 +48,7 @@
 		02691782232605B9002AFC20 /* ProductsViewControllerStateCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02691781232605B9002AFC20 /* ProductsViewControllerStateCoordinatorTests.swift */; };
 		0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576923726304001BA0BF /* KeyboardFrameObserver.swift */; };
 		0269576D23726401001BA0BF /* KeyboardFrameObserverTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576C23726401001BA0BF /* KeyboardFrameObserverTests.swift */; };
+		02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */; };
 		0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */; };
 		0274C25423162FB200EF1E40 /* DashboardTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0274C25323162FB200EF1E40 /* DashboardTopBannerFactory.swift */; };
 		02820F3422C257B700DE0D37 /* UITableView+FooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */; };
@@ -509,6 +510,7 @@
 		02691781232605B9002AFC20 /* ProductsViewControllerStateCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsViewControllerStateCoordinatorTests.swift; sourceTree = "<group>"; };
 		0269576923726304001BA0BF /* KeyboardFrameObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardFrameObserver.swift; sourceTree = "<group>"; };
 		0269576C23726401001BA0BF /* KeyboardFrameObserverTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardFrameObserverTests.swift; sourceTree = "<group>"; };
+		0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecTextViewAttachmentHandler.swift; sourceTree = "<group>"; };
 		0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDictionary.swift; sourceTree = "<group>"; };
 		0274C25323162FB200EF1E40 /* DashboardTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardTopBannerFactory.swift; sourceTree = "<group>"; };
 		02820F3322C257B700DE0D37 /* UITableView+FooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+FooterHelpers.swift"; sourceTree = "<group>"; };
@@ -996,6 +998,7 @@
 			children = (
 				025FDD3123717D2900824006 /* EditorFactory.swift */,
 				025FDD3323717D4900824006 /* AztecEditorViewController.swift */,
+				0269576F237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift */,
 			);
 			path = Editor;
 			sourceTree = "<group>";
@@ -2623,6 +2626,7 @@
 				B57C744720F55BC800EEFC87 /* UIView+Helpers.swift in Sources */,
 				B5A82EE221025C450053ADC8 /* FulfillViewController.swift in Sources */,
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
+				02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */,
 				B57C5C9221B80E3C00FF82B2 /* APNSDevice+Woo.swift in Sources */,
 				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,

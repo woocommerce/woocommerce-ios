@@ -85,8 +85,11 @@ class AztecEditorViewController: UIViewController, Editor {
     ///
     fileprivate var currentKeyboardFrame: CGRect = .zero
 
-    required init(content: String?) {
+    private weak var textViewAttachmentDelegate: TextViewAttachmentDelegate?
+
+    required init(content: String?, textViewAttachmentDelegate: TextViewAttachmentDelegate? = AztecTextViewAttachmentHandler()) {
         self.content = content ?? ""
+        self.textViewAttachmentDelegate = textViewAttachmentDelegate
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -165,7 +168,7 @@ private extension AztecEditorViewController {
                                                              .foregroundColor: StyleManager.wooCommerceBrandColor]
 
         textView.delegate = self
-        textView.textAttachmentDelegate = self
+        textView.textAttachmentDelegate = textViewAttachmentDelegate
         textView.backgroundColor = StyleManager.wooWhite
         textView.linkTextAttributes = linkAttributes
 
@@ -334,34 +337,6 @@ private extension AztecEditorViewController {
         onContentSave?(content)
 
         navigationController?.popViewController(animated: true)
-    }
-}
-
-// MARK: - TextViewAttachmentDelegate Conformance
-//
-extension AztecEditorViewController: TextViewAttachmentDelegate {
-    func textView(_ textView: TextView, attachment: NSTextAttachment, imageAt url: URL, onSuccess success: @escaping (UIImage) -> Void, onFailure failure: @escaping () -> Void) {
-
-    }
-
-    func textView(_ textView: TextView, urlFor imageAttachment: ImageAttachment) -> URL? {
-        return nil
-    }
-
-    func textView(_ textView: TextView, placeholderFor attachment: NSTextAttachment) -> UIImage {
-        return UIImage.cameraImage
-    }
-
-    func textView(_ textView: TextView, deletedAttachment attachment: MediaAttachment) {
-
-    }
-
-    func textView(_ textView: TextView, selected attachment: NSTextAttachment, atPosition position: CGPoint) {
-
-    }
-
-    func textView(_ textView: TextView, deselected attachment: NSTextAttachment, atPosition position: CGPoint) {
-
     }
 }
 

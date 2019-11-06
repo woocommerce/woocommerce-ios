@@ -19,6 +19,10 @@ final class OrderDetailsDataSource: NSObject {
         return order.shippingLines
     }
     
+    private var shippingMethod: String {
+        return order.shippingLines.first?.methodTitle ?? String()
+    }
+    
     private var customerNote: String {
         return order.customerNote ?? String()
     }
@@ -159,6 +163,8 @@ private extension OrderDetailsDataSource {
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell where row == .customerNote:
             configureCustomerNote(cell: cell)
+        case let cell as CustomerNoteTableViewCell where row == .shippingMethod:
+            configureShippingMethod(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingDetail:
             configureBillingDetail(cell: cell)
         case let cell as LeftImageMultilineTableViewCell where row == .shippingNotice:
@@ -355,6 +361,13 @@ private extension OrderDetailsDataSource {
                 comment: "Order details > customer info > shipping details. This is where the address would normally display."
         )
     }
+    
+    func configureShippingMethod(cell: CustomerNoteTableViewCell) {
+        cell.headline = NSLocalizedString("Shipping Method",
+        comment: "Customer method title for customer info cell")
+        cell.body = shippingMethod
+        cell.selectionStyle = .none
+    }
 
     func configureSummary(cell: SummaryTableViewCell) {
         cell.title = summaryTitle
@@ -439,8 +452,11 @@ extension OrderDetailsDataSource {
             if order.shippingAddress != nil {
                 rows.append(.shippingAddress)
             }
+            if containOnlyVirtualProducts(for: self.products) == false && order.shippingLines.count > 0 {
+                rows.append(.shippingMethod)
+            }
             rows.append(.billingDetail)
-
+            
             return Section(title: Title.information, rows: rows)
         }()
 
@@ -549,6 +565,7 @@ extension OrderDetailsDataSource {
         case details
         case customerNote
         case shippingAddress
+        case shippingMethod
         case billingDetail
         case payment
         case customerPaid
@@ -573,6 +590,8 @@ extension OrderDetailsDataSource {
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
+            case .shippingMethod:
+                return CustomerNoteTableViewCell.reuseIdentifier
             case .billingDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .payment:

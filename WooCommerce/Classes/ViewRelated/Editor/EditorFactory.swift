@@ -7,14 +7,14 @@ protocol Editor {
     init(content: String?)
 }
 
-/// This class takes care of instantiating the correct editor based on the App settings, feature flags,
-/// etc.
+/// This class takes care of instantiating the editor.
 ///
 final class EditorFactory {
 
     // MARK: - Editor: Instantiation
 
-    func instantiateEditor(for product: Product, onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
+    func productDescriptionEditor(product: Product,
+                                  onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let editor = AztecEditorViewController(content: product.fullDescription)
         editor.onContentSave = onContentSave
         return editor

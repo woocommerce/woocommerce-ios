@@ -162,11 +162,11 @@ private extension ShipmentProvidersViewController {
     func startListeningToNotifications() {
         keyboardFrameObserver.startObservingKeyboardFrame()
     }
+}
 
-    func handleKeyboardFrameUpdate(keyboardFrame: CGRect) {
-        let keyboardHeight = keyboardFrame.height
-        table.contentInset.bottom = keyboardHeight
-        table.scrollIndicatorInsets.bottom = keyboardHeight
+extension ShipmentProvidersViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return table
     }
 }
 

@@ -169,17 +169,6 @@ where Cell.SearchModel == Command.CellViewModel {
         return true
     }
 
-    // MARK: - Notifications
-    //
-
-    /// Executed whenever keyboard frame changes
-    ///
-    private func handleKeyboardFrameUpdate(keyboardFrame: CGRect) {
-        let keyboardHeight = keyboardFrame.height
-        tableView.contentInset.bottom = keyboardHeight
-        tableView.scrollIndicatorInsets.bottom = keyboardHeight
-    }
-
     // MARK: - Actions
     //
 
@@ -189,6 +178,11 @@ where Cell.SearchModel == Command.CellViewModel {
     }
 }
 
+extension SearchViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
+    }
+}
 
 // MARK: - User Interface Initialization
 //

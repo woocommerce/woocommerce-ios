@@ -1,23 +1,22 @@
 import UIKit
 import Aztec
-import Gridicons
 import WordPressEditor
 
-// MARK: - Aztec's Native Editor!
-//
-class AztecEditorViewController: UIViewController, Editor {
+/// Aztec's Native Editor!
+final class AztecEditorViewController: UIViewController, Editor {
     var onContentSave: OnContentSave?
 
     private let content: String
+
+    private let aztecUIConfigurator = AztecUIConfigurator()
 
     /// The editor view.
     ///
     private(set) lazy var editorView: Aztec.EditorView = {
 
         let paragraphStyle = ParagraphStyle.default
-
-        // Paragraph style customizations will go here.
         paragraphStyle.lineSpacing = 4
+
         let missingIcon = UIImage.errorStateImage
 
         let editorView = Aztec.EditorView(
@@ -26,50 +25,28 @@ class AztecEditorViewController: UIViewController, Editor {
             defaultParagraphStyle: paragraphStyle,
             defaultMissingImage: missingIcon)
 
-        editorView.clipsToBounds = false
-        setupHTMLTextView(editorView.htmlTextView)
-        setupRichTextView(editorView.richTextView)
+        aztecUIConfigurator.configureEditorView(editorView,
+                                                textViewDelegate: self,
+                                                textViewAttachmentDelegate: textViewAttachmentDelegate)
 
         return editorView
     }()
 
-    /// Format Bar
-    ///
-    fileprivate(set) lazy var formatBar: Aztec.FormatBar = {
-        return createToolbar()
-    }()
-
-    private var scrollableItemsForToolbar: [FormatBarItem] {
-        return []
-    }
-
-    var overflowItemsForToolbar: [FormatBarItem] {
-        return []
-    }
-
-    // MARK: - Styling Options
-
-    private lazy var optionsTablePresenter = OptionsTablePresenter(presentingViewController: self, presentingTextView: editorView.richTextView)
-
     /// Aztec's Awesomeness
     ///
     private var richTextView: Aztec.TextView {
-        get {
-            return editorView.richTextView
-        }
+        return editorView.richTextView
     }
 
     /// Aztec's Raw HTML Editor
     ///
     private var htmlTextView: UITextView {
-        get {
-            return editorView.htmlTextView
-        }
+        return editorView.htmlTextView
     }
 
     /// Aztec's Text Placeholder
     ///
-    fileprivate(set) lazy var placeholderLabel: UILabel = {
+    private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("Start writing...", comment: "Aztec's Text Placeholder")
         label.textColor = StyleManager.wooGreyMid
@@ -77,7 +54,6 @@ class AztecEditorViewController: UIViewController, Editor {
         label.isUserInteractionEnabled = false
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
-        label.accessibilityIdentifier = "aztec-content-placeholder"
         return label
     }()
 
@@ -107,7 +83,9 @@ class AztecEditorViewController: UIViewController, Editor {
         configureView()
         configureSubviews()
 
-        configureConstraints()
+        aztecUIConfigurator.configureConstraints(editorView: editorView,
+                                                 editorContainerView: view,
+                                                 placeholderView: placeholderLabel)
 
         setHTML(content)
 
@@ -122,11 +100,7 @@ class AztecEditorViewController: UIViewController, Editor {
 
 private extension AztecEditorViewController {
     func configureNavigationBar() {
-        title = NSLocalizedString("Description", comment: "The navigation bar title of the Product description editor screen.")
-
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.accessibilityIdentifier = "Aztec Editor Navigation Bar"
-
+        title = NSLocalizedString("Description", comment: "The navigation bar title of the Aztec editor screen.")
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(saveButtonTapped))
     }
 
@@ -141,77 +115,6 @@ private extension AztecEditorViewController {
         view.addSubview(placeholderLabel)
     }
 
-    private func setupHTMLTextView(_ textView: UITextView) {
-        let accessibilityLabel = NSLocalizedString("HTML Content", comment: "Post HTML content")
-        configureDefaultProperties(for: textView, accessibilityLabel: accessibilityLabel)
-
-        textView.isHidden = true
-        textView.delegate = self
-        textView.accessibilityIdentifier = "HTMLContentView"
-        textView.autocorrectionType = .no
-        textView.autocapitalizationType = .none
-
-        // We need this false to be able to set negative `scrollInset` values.
-        textView.clipsToBounds = false
-
-        textView.adjustsFontForContentSizeCategory = true
-        textView.smartDashesType = .no
-        textView.smartQuotesType = .no
-    }
-
-    private func setupRichTextView(_ textView: TextView) {
-        textView.load(WordPressPlugin())
-
-        let accessibilityLabel = NSLocalizedString("Rich Content", comment: "Post Rich content")
-        self.configureDefaultProperties(for: textView, accessibilityLabel: accessibilityLabel)
-
-        let linkAttributes: [NSAttributedString.Key: Any] = [.underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                             .foregroundColor: StyleManager.wooCommerceBrandColor]
-
-        textView.delegate = self
-        textView.textAttachmentDelegate = textViewAttachmentDelegate
-        textView.backgroundColor = StyleManager.wooWhite
-        textView.linkTextAttributes = linkAttributes
-
-        // We need this false to be able to set negative `scrollInset` values.
-        textView.clipsToBounds = false
-
-        textView.smartDashesType = .no
-        textView.smartQuotesType = .no
-    }
-
-    private func configureDefaultProperties(for textView: UITextView, accessibilityLabel: String) {
-        textView.accessibilityLabel = accessibilityLabel
-        textView.keyboardDismissMode = .interactive
-        textView.textColor = UIColor.darkText
-        textView.translatesAutoresizingMaskIntoConstraints = false
-    }
-
-    func configureConstraints() {
-        NSLayoutConstraint.activate([
-            richTextView.leadingAnchor.constraint(equalTo: view.readableContentGuide.leadingAnchor),
-            richTextView.trailingAnchor.constraint(equalTo: view.readableContentGuide.trailingAnchor),
-            richTextView.topAnchor.constraint(equalTo: view.topAnchor),
-            richTextView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-            ])
-
-        NSLayoutConstraint.activate([
-            htmlTextView.leftAnchor.constraint(equalTo: richTextView.leftAnchor),
-            htmlTextView.rightAnchor.constraint(equalTo: richTextView.rightAnchor),
-            htmlTextView.topAnchor.constraint(equalTo: richTextView.topAnchor),
-            htmlTextView.bottomAnchor.constraint(equalTo: richTextView.bottomAnchor)
-            ])
-
-        let insets = richTextView.textContainerInset
-
-        NSLayoutConstraint.activate([
-            placeholderLabel.leftAnchor.constraint(equalTo: richTextView.leftAnchor, constant: insets.left + richTextView.textContainer.lineFragmentPadding),
-            placeholderLabel.rightAnchor.constraint(equalTo: richTextView.rightAnchor, constant: -insets.right - richTextView.textContainer.lineFragmentPadding),
-            placeholderLabel.topAnchor.constraint(equalTo: richTextView.topAnchor, constant: insets.top),
-            placeholderLabel.bottomAnchor.constraint(lessThanOrEqualTo: richTextView.bottomAnchor, constant: insets.bottom)
-            ])
-    }
-
     func registerAttachmentImageProviders() {
         let providers: [TextViewAttachmentImageProvider] = [
             SpecialTagAttachmentRenderer(),
@@ -223,28 +126,6 @@ private extension AztecEditorViewController {
         for provider in providers {
             richTextView.registerAttachmentImageProvider(provider)
         }
-    }
-
-    func createToolbar() -> Aztec.FormatBar {
-        let toolbar = Aztec.FormatBar()
-
-        toolbar.tintColor = StyleManager.wooCommerceBrandColor
-        toolbar.highlightedTintColor = StyleManager.wooCommerceBrandColor.withAlphaComponent(0.5)
-        toolbar.selectedTintColor = StyleManager.wooSecondary
-        toolbar.disabledTintColor = StyleManager.buttonDisabledColor
-        toolbar.dividerTintColor = StyleManager.cellSeparatorColor
-        toolbar.overflowToggleIcon = Gridicon.iconOfType(.ellipsis)
-
-        updateToolbar(toolbar)
-
-        return toolbar
-    }
-
-    func updateToolbar(_ toolbar: Aztec.FormatBar) {
-        toolbar.trailingItem = nil
-
-        toolbar.setDefaultItems(scrollableItemsForToolbar,
-                                overflowItems: overflowItemsForToolbar)
     }
 }
 
@@ -268,7 +149,10 @@ private extension AztecEditorViewController {
     func handleKeyboardFrameUpdate(keyboardFrame: CGRect) {
         let referenceView = editorView.activeView
 
-        let contentInsets  = UIEdgeInsets(top: referenceView.contentInset.top, left: 0, bottom: view.frame.maxY - (keyboardFrame.minY + self.view.layoutMargins.bottom), right: 0)
+        let contentInsets  = UIEdgeInsets(top: referenceView.contentInset.top,
+                                          left: 0,
+                                          bottom: view.frame.maxY - (keyboardFrame.minY + self.view.layoutMargins.bottom),
+                                          right: 0)
 
         htmlTextView.contentInset = contentInsets
         richTextView.contentInset = contentInsets
@@ -291,73 +175,17 @@ private extension AztecEditorViewController {
 private extension AztecEditorViewController {
     func startListeningToNotifications() {
         keyboardFrameObserver.startObservingKeyboardFrame()
-
-        let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(applicationWillResignActive(_:)), name: UIApplication.willResignActiveNotification, object: nil)
-    }
-
-    @objc func applicationWillResignActive(_ notification: Foundation.Notification) {
-
-        // [2018-03-05] Need to close the options VC on backgrounding to prevent view hierarchy inconsistency crasher.
-        optionsTablePresenter.dismiss()
     }
 }
 
 // MARK: - Navigation actions
 //
 private extension AztecEditorViewController {
-    @objc func cancelButtonTapped() {
-        navigationController?.popViewController(animated: true)
-    }
-
     @objc func saveButtonTapped() {
         let content = getHTML()
         onContentSave?(content)
 
         navigationController?.popViewController(animated: true)
-    }
-}
-
-private extension AztecEditorViewController {
-    func updateFormatBar() {
-        switch editorView.editingMode {
-        case .html:
-            updateFormatBarForHTMLMode()
-        case .richText:
-            updateFormatBarForVisualMode()
-        }
-    }
-
-    /// Updates the format bar for HTML mode.
-    ///
-    func updateFormatBarForHTMLMode() {
-        assert(editorView.editingMode == .html)
-
-        guard let toolbar = richTextView.inputAccessoryView as? Aztec.FormatBar else {
-            return
-        }
-
-        toolbar.selectItemsMatchingIdentifiers([FormattingIdentifier.sourcecode.rawValue])
-    }
-
-    /// Updates the format bar for visual mode.
-    ///
-    func updateFormatBarForVisualMode() {
-        assert(editorView.editingMode == .richText)
-
-        guard let toolbar = richTextView.inputAccessoryView as? Aztec.FormatBar else {
-            return
-        }
-
-        var identifiers = Set<FormattingIdentifier>()
-
-        if richTextView.selectedRange.length > 0 {
-            identifiers = richTextView.formattingIdentifiersSpanningRange(richTextView.selectedRange)
-        } else {
-            identifiers = richTextView.formattingIdentifiersForTypingAttributes()
-        }
-
-        toolbar.selectItemsMatchingIdentifiers(identifiers.map({ $0.rawValue }))
     }
 }
 
@@ -371,38 +199,13 @@ extension AztecEditorViewController: UITextViewDelegate {
 
     func textViewDidChangeSelection(_ textView: UITextView) {
         refreshPlaceholderVisibility()
-        updateFormatBar()
     }
 
     func textViewDidChange(_ textView: UITextView) {
         refreshPlaceholderVisibility()
-
-        switch textView {
-        case richTextView:
-            updateFormatBar()
-        default:
-            break
-        }
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        textView.textAlignment = .natural
-
-        let htmlButton = formatBar.items.first(where: { $0.identifier == FormattingIdentifier.sourcecode.rawValue })
-
-        switch textView {
-        case richTextView:
-            formatBar.enabled = true
-        case htmlTextView:
-            formatBar.enabled = false
-        default:
-            break
-        }
-
-        htmlButton?.isEnabled = true
-
-        textView.inputAccessoryView = formatBar
-
         return true
     }
 }

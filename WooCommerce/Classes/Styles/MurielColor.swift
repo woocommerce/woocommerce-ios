@@ -1,7 +1,6 @@
 /// Generates the names of the named colors in the ColorPalette.xcasset
 enum MurielColorName: String, CustomStringConvertible {
     // MARK: - Base colors
-    case wooCommercePurple
     case blue
     case celadon
     case gray
@@ -11,6 +10,7 @@ enum MurielColorName: String, CustomStringConvertible {
     case purple
     case red
     case yellow
+    case wooCommercePurple
 
     var description: String {
         // can't use .capitalized because it lowercases the P and B in "wooCommercePurple"

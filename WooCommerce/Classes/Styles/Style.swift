@@ -106,7 +106,7 @@ class DefaultStyle: Style {
 
     /// Colors!
     ///
-    let buttonPrimaryColor              = HandbookColors.wooPrimary
+    let buttonPrimaryColor              = UIColor.brand
     let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryTitleColor         = HandbookColors.wooWhite
     let buttonSecondaryColor            = HandbookColors.wooWhite

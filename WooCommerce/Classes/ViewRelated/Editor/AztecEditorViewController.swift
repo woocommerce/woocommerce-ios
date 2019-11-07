@@ -46,6 +46,26 @@ final class AztecEditorViewController: UIViewController, Editor {
         return editorView.htmlTextView
     }
 
+    /// Aztec's Format Bar (toolbar above the keyboard)
+    ///
+    private lazy var formatBar: Aztec.FormatBar = {
+        let toolbar = AztecFormatBarFactory().formatBar() { [weak self] (formattingIdentifier, formatBar) in
+            guard let self = self else {
+                return
+            }
+            self.formatBarCommandCoordinator.handleAction(formattingIdentifier: formattingIdentifier,
+                                                          editorView: self.editorView,
+                                                          formatBar: formatBar)
+        }
+        return toolbar
+    }()
+
+    /// Aztec's Format Bar Action Handling Coordinator
+    ///
+    private lazy var formatBarCommandCoordinator: AztecFormatBarCommandCoordinator = {
+        return AztecFormatBarFactory().formatBarCommandCoordinator()
+    }()
+
     /// Aztec's Text Placeholder
     ///
     private lazy var placeholderLabel: UILabel = {
@@ -212,6 +232,7 @@ extension AztecEditorViewController: UITextViewDelegate {
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
+        textView.inputAccessoryView = formatBar
         return true
     }
 }

@@ -154,9 +154,10 @@ private extension AztecEditorViewController {
     func handleKeyboardFrameUpdate(keyboardFrame: CGRect) {
         let referenceView = editorView.activeView
 
+        let bottomInset = view.frame.maxY - (keyboardFrame.minY + self.view.layoutMargins.bottom)
         let contentInsets  = UIEdgeInsets(top: referenceView.contentInset.top,
                                           left: 0,
-                                          bottom: view.frame.maxY - (keyboardFrame.minY + self.view.layoutMargins.bottom),
+                                          bottom: max(0, bottomInset),
                                           right: 0)
 
         htmlTextView.contentInset = contentInsets

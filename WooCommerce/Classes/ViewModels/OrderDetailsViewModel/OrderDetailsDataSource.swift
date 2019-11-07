@@ -402,12 +402,6 @@ extension OrderDetailsDataSource {
         return products.filter({ $0.productID == productID }).first
     }
     
-    func containOnlyVirtualProducts(for products: [Product]) -> Bool {
-        return !products.contains { (product) -> Bool in
-            product.virtual == false
-        }
-    }
-    
     func isMultiShippingLinesAvailable(for order: Order) -> Bool {
         return shippingLines.count > 1
     }
@@ -427,7 +421,7 @@ extension OrderDetailsDataSource {
         
         let shippingNotice: Section? = {
             //Hide the shipping method warning if order contains only virtual products or if the order contains only one shipping method
-            if containOnlyVirtualProducts(for: self.products) || isMultiShippingLinesAvailable(for: order) == false {
+            if isMultiShippingLinesAvailable(for: order) == false {
                 return nil
             }
             
@@ -458,7 +452,7 @@ extension OrderDetailsDataSource {
             if order.shippingAddress != nil {
                 rows.append(.shippingAddress)
             }
-            if containOnlyVirtualProducts(for: self.products) == false && shippingLines.count > 0 {
+            if shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }
             rows.append(.billingDetail)

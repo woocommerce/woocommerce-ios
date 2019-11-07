@@ -610,16 +610,6 @@ private extension FulfillViewController {
     }
 }
 
-
-// MARK: - Lookup orders and statuses
-private extension FulfillViewController {
-    func containOnlyVirtualProducts(for products: [Product]) -> Bool {
-        return !products.contains { (product) -> Bool in
-            product.virtual == false
-        }
-    }
-}
-
 // MARK: - Table view sections
 //
 private extension FulfillViewController {
@@ -647,7 +637,7 @@ private extension FulfillViewController {
             var rows: [Row] = []
             
             let productsList = self.products ?? []
-            if containOnlyVirtualProducts(for: productsList) == false && shippingLines.count > 0 {
+            if shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }
             

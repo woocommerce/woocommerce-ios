@@ -107,6 +107,14 @@ extension UIColor {
         return UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
     }
 
+    static var secondaryTextColor: UIColor {
+        if #available(iOS 13, *) {
+            return .secondaryLabel
+        }
+
+        return UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
+    }
+
     static var highlightTextColor: UIColor {
         return UIColor(light: muriel(color: .blue, .shade50) ,
                         dark: muriel(color: .blue, .shade30))

@@ -116,11 +116,11 @@ class DefaultStyle: Style {
     let buttonDisabledHighlightedColor  = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let buttonDisabledTitleColor        = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let cellSeparatorColor              = HandbookColors.wooGreyBorder
-    let defaultTextColor                = HandbookColors.wooSecondary
+    let defaultTextColor                = UIColor.defaultTextColor
     let destructiveActionColor          = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
     let highlightTextColor              = HandbookColors.murielBlue50
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
-    let sectionTitleColor               = HandbookColors.wooSecondary
+    let sectionTitleColor               = UIColor.defaultTextColor
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
@@ -134,7 +134,7 @@ class DefaultStyle: Style {
     let statusWarningColor              = HandbookColors.statusYellowDimmed
 
     let wooCommerceBrandColor           = UIColor.brand
-    let wooSecondary                    = HandbookColors.wooSecondary
+    let wooSecondary                    = UIColor.defaultTextColor
     let wooAccent                       = HandbookColors.wooAccent
     let wooGreyLight                    = HandbookColors.wooGreyLight
     let wooGreyBorder                   = HandbookColors.wooGreyBorder

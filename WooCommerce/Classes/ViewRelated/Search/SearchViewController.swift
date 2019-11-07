@@ -65,6 +65,11 @@ where Cell.SearchModel == Command.CellViewModel {
         }
     }
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        return keyboardFrameObserver
+    }()
+
     private let searchUICommand: Command
 
 
@@ -164,27 +169,6 @@ where Cell.SearchModel == Command.CellViewModel {
         return true
     }
 
-    // MARK: - Notifications
-    //
-
-    /// Executed whenever `UIResponder.keyboardWillShowNotification` note is posted
-    ///
-    @objc func keyboardWillShow(_ note: Notification) {
-        let bottomInset = keyboardHeight(from: note)
-
-        tableView.contentInset.bottom = bottomInset
-        tableView.scrollIndicatorInsets.bottom = bottomInset
-    }
-
-    /// Returns the Keyboard Height from a (hopefully) Keyboard Notification.
-    ///
-    func keyboardHeight(from note: Notification) -> CGFloat {
-        let wrappedRect = note.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
-        let keyboardRect = wrappedRect?.cgRectValue ?? .zero
-
-        return keyboardRect.height
-    }
-
     // MARK: - Actions
     //
 
@@ -194,6 +178,11 @@ where Cell.SearchModel == Command.CellViewModel {
     }
 }
 
+extension SearchViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
+    }
+}
 
 // MARK: - User Interface Initialization
 //
@@ -261,8 +250,7 @@ private extension SearchViewController {
     /// Registers for all of the related Notifications
     ///
     func startListeningToNotifications() {
-        let nc = NotificationCenter.default
-        nc.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }
 

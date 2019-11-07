@@ -35,12 +35,27 @@ class LeftImageMultilineTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
-        leftImageView?.tintColor = StyleManager.wooCommerceBrandColor
-        multilineLabel?.applyBodyStyle()
+        configureImageView()
+        configureTextLabel()
+    }
+    
+}
+
+// MARK: - Private Methods
+//
+
+private extension LeftImageMultilineTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
     }
 
-    private func configureBackground() {
-        applyDefaultBackgroundStyle()
+    func configureImageView() {
+        leftImageView?.tintColor = StyleManager.wooCommerceBrandColor
+    }
+    
+    func configureTextLabel() {
+        multilineLabel?.applyBodyStyle()
+        multilineLabel?.numberOfLines = 0
     }
 }
 

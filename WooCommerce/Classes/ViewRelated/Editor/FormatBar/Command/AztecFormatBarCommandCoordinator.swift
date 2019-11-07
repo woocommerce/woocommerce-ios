@@ -11,7 +11,11 @@ struct AztecFormatBarCommandCoordinator {
         self.commandsByFormattingIdentifier = commandsByFormattingIdentifier
     }
 
-    func handleAction(formattingIdentifier: FormattingIdentifier, editorView: EditorView, formatBar: FormatBar) {
-        commandsByFormattingIdentifier[formattingIdentifier]?.handleAction(editorView: editorView, formatBar: formatBar)
+    func handleAction(formatBarItem: FormatBarItem, editorView: EditorView, formatBar: FormatBar) {
+        guard let identifier = formatBarItem.identifier,
+            let formattingIdentifier = FormattingIdentifier(rawValue: identifier) else {
+            return
+        }
+        commandsByFormattingIdentifier[formattingIdentifier]?.handleAction(editorView: editorView, formatBarItem: formatBarItem, formatBar: formatBar)
     }
 }

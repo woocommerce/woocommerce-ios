@@ -1,7 +1,7 @@
 import Aztec
 
-/// Handles a Aztec format bar action.
+/// Handles an Aztec format bar action.
 protocol AztecFormatBarCommand {
     var formattingIdentifier: FormattingIdentifier { get }
-    func handleAction(editorView: EditorView, formatBar: FormatBar)
+    func handleAction(editorView: EditorView, formatBarItem: FormatBarItem, formatBar: FormatBar)
 }

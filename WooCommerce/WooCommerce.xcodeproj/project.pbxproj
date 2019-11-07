@@ -30,6 +30,13 @@
 		020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020F41E723176F8E00776C4D /* TopBannerPresenter.swift */; };
 		021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */; };
 		021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */; };
+		023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023053482374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift */; };
+		0230534B237452D100487A64 /* AztecOrderedListFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230534A237452D100487A64 /* AztecOrderedListFormatBarCommand.swift */; };
+		0230534D2374531700487A64 /* AztecUnorderedListFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230534C2374531700487A64 /* AztecUnorderedListFormatBarCommand.swift */; };
+		02305352237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */; };
+		02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */; };
+		02305355237456CC00487A64 /* AztecToggleListCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02305354237456CC00487A64 /* AztecToggleListCommand.swift */; };
+		023053572374586F00487A64 /* OptionsTableViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023053562374586E00487A64 /* OptionsTableViewController+Styles.swift */; };
 		02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */; };
 		02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */; };
 		02404EDC2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */; };
@@ -505,6 +512,13 @@
 		020F41E723176F8E00776C4D /* TopBannerPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TopBannerPresenter.swift; sourceTree = "<group>"; };
 		021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxisTests.swift"; sourceTree = "<group>"; };
 		021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxis.swift"; sourceTree = "<group>"; };
+		023053482374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecBlockquoteFormatBarCommand.swift; sourceTree = "<group>"; };
+		0230534A237452D100487A64 /* AztecOrderedListFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecOrderedListFormatBarCommand.swift; sourceTree = "<group>"; };
+		0230534C2374531700487A64 /* AztecUnorderedListFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecUnorderedListFormatBarCommand.swift; sourceTree = "<group>"; };
+		0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecHorizontalRulerFormatBarCommand.swift; sourceTree = "<group>"; };
+		02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecInsertMoreFormatBarCommand.swift; sourceTree = "<group>"; };
+		02305354237456CC00487A64 /* AztecToggleListCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecToggleListCommand.swift; sourceTree = "<group>"; };
+		023053562374586E00487A64 /* OptionsTableViewController+Styles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OptionsTableViewController+Styles.swift"; sourceTree = "<group>"; };
 		02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV3ToV4BannerActionHandler.swift; sourceTree = "<group>"; };
 		02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsVersionStateCoordinator.swift; sourceTree = "<group>"; };
 		02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV4ToV3BannerActionHandler.swift; sourceTree = "<group>"; };
@@ -1027,6 +1041,7 @@
 				024DF31A23742E1C006658FE /* FormatBarItemViewProperties.swift */,
 				024DF31D23743045006658FE /* Header+AztecFormatting.swift */,
 				024DF31C23743045006658FE /* TextList+AztecFormatting.swift */,
+				023053562374586E00487A64 /* OptionsTableViewController+Styles.swift */,
 			);
 			path = FormatBar;
 			sourceTree = "<group>";
@@ -1041,6 +1056,12 @@
 				024DF31123742B18006658FE /* AztecItalicFormatBarCommand.swift */,
 				024DF31323742B7A006658FE /* AztecUnderlineFormatBarCommand.swift */,
 				024DF31523742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift */,
+				023053482374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift */,
+				0230534A237452D100487A64 /* AztecOrderedListFormatBarCommand.swift */,
+				0230534C2374531700487A64 /* AztecUnorderedListFormatBarCommand.swift */,
+				0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */,
+				02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */,
+				02305354237456CC00487A64 /* AztecToggleListCommand.swift */,
 			);
 			path = Command;
 			sourceTree = "<group>";
@@ -2624,6 +2645,7 @@
 				7435E58E21C0151B00216F0F /* OrderNote+Woo.swift in Sources */,
 				D843D5CB22437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift in Sources */,
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,
+				02305352237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift in Sources */,
 				B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */,
 				02E4FD7A230688BA0049610C /* OrderStatsV4Interval+Chart.swift in Sources */,
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,
@@ -2670,6 +2692,7 @@
 				02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */,
 				D843D5D322485009001BFA55 /* ShipmentProvidersViewController.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
+				023053572374586F00487A64 /* OptionsTableViewController+Styles.swift in Sources */,
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
 				748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */,
 				D831E2DC230E0558000037D0 /* Authentication.swift in Sources */,
@@ -2702,6 +2725,7 @@
 				CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */,
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,
 				024DF31B23742E1C006658FE /* FormatBarItemViewProperties.swift in Sources */,
+				0230534B237452D100487A64 /* AztecOrderedListFormatBarCommand.swift in Sources */,
 				B560D6862195BCA90027BB7E /* NoteDetailsHeaderTableViewCell.swift in Sources */,
 				D82DFB4A225F22D400EFE2CB /* UISearchBar+Appearance.swift in Sources */,
 				7441E1D221503F77004E6ECE /* IntrinsicTableView.swift in Sources */,
@@ -2714,6 +2738,7 @@
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */,
 				02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */,
+				02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */,
 				B5D6DC54214802740003E48A /* SyncCoordinator.swift in Sources */,
 				B57C5C9421B80E4700FF82B2 /* Data+Woo.swift in Sources */,
 				CE22E3FB21714776005A6BEF /* TopLeftImageTableViewCell.swift in Sources */,
@@ -2802,6 +2827,7 @@
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
 				D817586022BB614A00289CFE /* OrderMessageComposer.swift in Sources */,
 				0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */,
+				0230534D2374531700487A64 /* AztecUnorderedListFormatBarCommand.swift in Sources */,
 				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
 				B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */,
 				020F41E623163C0100776C4D /* TopBannerView.swift in Sources */,
@@ -2831,6 +2857,7 @@
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,
 				B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */,
+				02305355237456CC00487A64 /* AztecToggleListCommand.swift in Sources */,
 				D8C62471227AE0030011A7D6 /* SiteCountry.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				CE0F17CF22A8105800964A63 /* ReadMoreTableViewCell.swift in Sources */,
@@ -2854,6 +2881,7 @@
 				B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */,
 				743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
+				023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */,
 				0282DD98233CA093006A5FDB /* OrderSearchUICommand.swift in Sources */,
 				B541B21A2189F3A2008FE7C1 /* StringFormatter.swift in Sources */,
 				D817586422BDD81600289CFE /* OrderDetailsDataSource.swift in Sources */,

@@ -1,9 +1,10 @@
 import Aztec
 import Gridicons
+import WordPressEditor
 
 /// Creates Aztec format bar & action handling coordinator for the format bar.
 struct AztecFormatBarFactory {
-    func formatBar(onAction: @escaping (_ formattingIdentifier: FormattingIdentifier, _ formatBar: FormatBar) -> Void) -> FormatBar {
+    func formatBar(onAction: @escaping (_ formatBarItem: FormatBarItem, _ formatBar: FormatBar) -> Void) -> FormatBar {
         let toolbar = Aztec.FormatBar()
 
         toolbar.tintColor = StyleManager.wooCommerceBrandColor
@@ -16,24 +17,25 @@ struct AztecFormatBarFactory {
         updateToolbar(toolbar)
 
         toolbar.barItemHandler = { barItem in
-            guard let identifier = barItem.identifier,
-                let formattingIdentifier = FormattingIdentifier(rawValue: identifier) else {
-                return
-            }
-            onAction(formattingIdentifier, toolbar)
+            onAction(barItem, toolbar)
         }
 
         return toolbar
     }
 
-    func formatBarCommandCoordinator() -> AztecFormatBarCommandCoordinator {
+    func formatBarCommandCoordinator(optionsTablePresenter: OptionsTablePresenter) -> AztecFormatBarCommandCoordinator {
         return AztecFormatBarCommandCoordinator(commands: [
             AztecBoldFormatBarCommand(),
             AztecCodeFormatBarCommand(),
             AztecItalicFormatBarCommand(),
             AztecUnderlineFormatBarCommand(),
             AztecUnderlineFormatBarCommand(),
-            AztecStrikethroughFormatBarCommand()
+            AztecStrikethroughFormatBarCommand(),
+            AztecBlockquoteFormatBarCommand(),
+            AztecHorizontalRulerFormatBarCommand(),
+            AztecInsertMoreFormatBarCommand(),
+            AztecOrderedListFormatBarCommand(optionsTablePresenter: optionsTablePresenter),
+            AztecUnorderedListFormatBarCommand(optionsTablePresenter: optionsTablePresenter)
         ])
     }
 }

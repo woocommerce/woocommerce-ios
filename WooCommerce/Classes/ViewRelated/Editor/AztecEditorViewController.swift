@@ -49,11 +49,11 @@ final class AztecEditorViewController: UIViewController, Editor {
     /// Aztec's Format Bar (toolbar above the keyboard)
     ///
     private lazy var formatBar: Aztec.FormatBar = {
-        let toolbar = AztecFormatBarFactory().formatBar() { [weak self] (formattingIdentifier, formatBar) in
+        let toolbar = AztecFormatBarFactory().formatBar() { [weak self] (formatBarItem, formatBar) in
             guard let self = self else {
                 return
             }
-            self.formatBarCommandCoordinator.handleAction(formattingIdentifier: formattingIdentifier,
+            self.formatBarCommandCoordinator.handleAction(formatBarItem: formatBarItem,
                                                           editorView: self.editorView,
                                                           formatBar: formatBar)
         }
@@ -63,8 +63,11 @@ final class AztecEditorViewController: UIViewController, Editor {
     /// Aztec's Format Bar Action Handling Coordinator
     ///
     private lazy var formatBarCommandCoordinator: AztecFormatBarCommandCoordinator = {
-        return AztecFormatBarFactory().formatBarCommandCoordinator()
+        return AztecFormatBarFactory().formatBarCommandCoordinator(optionsTablePresenter: optionsTablePresenter)
     }()
+
+    private lazy var optionsTablePresenter = OptionsTablePresenter(presentingViewController: self,
+                                                                   presentingTextView: editorView.richTextView)
 
     /// Aztec's Text Placeholder
     ///

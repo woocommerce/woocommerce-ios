@@ -231,7 +231,7 @@ private extension OrderDetailsDataSource {
     func configureShippingNotice(cell: LeftImageMultilineTableViewCell) {
         let cellTextContent = NSLocalizedString(
             "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
-            comment: "Shipping notice row label")
+            comment: "Shipping notice row label when there is more than one shipping method")
         cell.leftImage = Icons.shippingNoticeIcon
         cell.labelText = cellTextContent
         cell.selectionStyle = .none

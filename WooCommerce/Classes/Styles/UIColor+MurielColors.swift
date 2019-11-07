@@ -171,7 +171,6 @@ extension UIColor {
         return white
     }
 
-
     /// For icons that are present in a toolbar or similar view
     static var toolbarInactive: UIColor {
         if #available(iOS 13, *) {

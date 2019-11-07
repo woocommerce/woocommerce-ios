@@ -108,11 +108,11 @@ class DefaultStyle: Style {
     ///
     let buttonPrimaryColor              = UIColor.brand
     let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
-    let buttonPrimaryTitleColor         = HandbookColors.wooWhite
-    let buttonSecondaryColor            = HandbookColors.wooWhite
+    let buttonPrimaryTitleColor         = UIColor.basicBackground
+    let buttonSecondaryColor            = UIColor.basicBackground
     let buttonSecondaryHighlightedColor = HandbookColors.wooGreyMid
     let buttonSecondaryTitleColor       = HandbookColors.wooGreyMid
-    let buttonDisabledColor             = HandbookColors.wooWhite
+    let buttonDisabledColor             = UIColor.basicBackground
     let buttonDisabledHighlightedColor  = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let buttonDisabledTitleColor        = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let cellSeparatorColor              = HandbookColors.wooGreyBorder
@@ -133,19 +133,19 @@ class DefaultStyle: Style {
     let statusSuccessBoldColor          = HandbookColors.statusGreen
     let statusWarningColor              = HandbookColors.statusYellowDimmed
 
-    let wooCommerceBrandColor           = HandbookColors.wooPrimary
+    let wooCommerceBrandColor           = UIColor.brand
     let wooSecondary                    = HandbookColors.wooSecondary
     let wooAccent                       = HandbookColors.wooAccent
     let wooGreyLight                    = HandbookColors.wooGreyLight
     let wooGreyBorder                   = HandbookColors.wooGreyBorder
     let wooGreyMid                      = HandbookColors.wooGreyMid
     let wooGreyTextMin                  = HandbookColors.wooGreyTextMin
-    let wooWhite                        = HandbookColors.wooWhite
+    let wooWhite                        = UIColor.basicBackground
 
     /// Stars
     ///
     let goldStarColor                   = HandbookColors.goldStarColor
-    let grayStarColor                   = HandbookColors.grayStarColor
+    let grayStarColor                   = UIColor.defaultTextColor
     let yellowStarColor                 = HandbookColors.murielYellow30
 
     /// NavBar
@@ -178,7 +178,6 @@ private extension DefaultStyle {
         static let statusGreen           = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)
         static let statusYellowDimmed    = UIColor(red: 0.97, green: 0.88, blue: 0.68, alpha: 1.0)
 
-        static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0) // woo purple
         static let wooSecondary          = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
         static let wooAccent             = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
 

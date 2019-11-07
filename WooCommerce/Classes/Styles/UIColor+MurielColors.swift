@@ -37,16 +37,9 @@ extension UIColor {
 
 // MARK: - Basic Colors
 extension UIColor {
-    /// Muriel accent color
-    static var accent = muriel(color: .accent)
-    static var accentDark = muriel(color: .accent, .shade70)
-    class func accent(_ shade: MurielColorShade) -> UIColor {
-        return muriel(color: .accent, shade)
-    }
-
     /// Muriel brand color
-    static var brand = UIColor(light: muriel(color: .brand, .shade60),
-                               dark: muriel(color: .brand, .shade30))
+    static var brand = UIColor(light: muriel(color: .wooCommercePurple, .shade60),
+                               dark: muriel(color: .wooCommercePurple, .shade30))
 
 }
 
@@ -111,7 +104,17 @@ extension UIColor {
             return .label
         }
 
-        return muriel(color: .text)
+        return UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
+    }
+
+    static var highlightTextColor: UIColor {
+        return UIColor(light: muriel(color: .blue, .shade50) ,
+                        dark: muriel(color: .blue, .shade30))
+    }
+
+    static var announcementDotColor: UIColor {
+        return UIColor(light: muriel(color: .red, .shade50),
+                       dark: muriel(color: .red, .shade50))
     }
 
 
@@ -120,13 +123,13 @@ extension UIColor {
 
     // MARK: - Table Views
 
-    static var divider: UIColor {
-        if #available(iOS 13, *) {
-            return .separator
-        }
-
-        return muriel(color: .divider)
-    }
+//    static var divider: UIColor {
+//        if #available(iOS 13, *) {
+//            return .separator
+//        }
+//
+//        return muriel(color: .divider)
+//    }
 
     /// WP color for table foregrounds (cells, etc)
     static var listForeground: UIColor {
@@ -184,16 +187,6 @@ extension UIColor {
     static var tabUnselected: UIColor =  UIColor(light: UIColor(hexString: "999999"), dark: UIColor(hexString: "757575"))
 
 // MARK: - WP Fancy Buttons
-    static var primaryButtonBackground = accent
-    static var primaryButtonDownBackground = muriel(color: .accent, .shade80)
-
-    static var secondaryButtonBackground: UIColor {
-        if #available(iOS 13, *) {
-            return UIColor(light: .white, dark: .systemGray5)
-        }
-
-        return .white
-    }
 
     static var secondaryButtonBorder: UIColor {
         if #available(iOS 13, *) {

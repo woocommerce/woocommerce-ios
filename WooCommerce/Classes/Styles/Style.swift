@@ -52,7 +52,6 @@ protocol Style {
     var statusSuccessBoldColor: UIColor { get }
     var statusWarningColor: UIColor { get }
     var tableViewBackgroundColor: UIColor { get }
-    
     var noticeIconColor: UIColor { get }
 
     var wooCommerceBrandColor: UIColor { get }

@@ -68,7 +68,7 @@ private extension AztecUIConfigurator {
         textView.load(WordPressPlugin())
 
         let accessibilityLabel = NSLocalizedString("Rich Content", comment: "Post Rich content")
-        self.configureDefaultProperties(for: textView, accessibilityLabel: accessibilityLabel)
+        configureDefaultProperties(for: textView, accessibilityLabel: accessibilityLabel)
 
         let linkAttributes: [NSAttributedString.Key: Any] = [.underlineStyle: NSUnderlineStyle.single.rawValue,
                                                              .foregroundColor: StyleManager.wooCommerceBrandColor]

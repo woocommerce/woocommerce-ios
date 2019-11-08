@@ -56,6 +56,7 @@ final class AztecEditorViewController: UIViewController, Editor {
             self.formatBarCommandCoordinator.handleAction(formatBarItem: formatBarItem,
                                                           editorView: self.editorView,
                                                           formatBar: formatBar)
+            formatBar.update(editorView: self.editorView)
         }
         return toolbar
     }()
@@ -228,10 +229,12 @@ extension AztecEditorViewController: UITextViewDelegate {
 
     func textViewDidChangeSelection(_ textView: UITextView) {
         refreshPlaceholderVisibility()
+        formatBar.update(editorView: editorView)
     }
 
     func textViewDidChange(_ textView: UITextView) {
         refreshPlaceholderVisibility()
+        formatBar.update(editorView: editorView)
     }
 
     func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {

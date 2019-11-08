@@ -1,3 +1,7 @@
+3.1
+-----
+- bugfix: fixed UI appearance on cells of Order List when tappen with dark mode enabled.
+
 3.0
 -----
 - bugfix: for sites with empty site time zone in the API (usually with UTC specified in wp-admin settings) and when the site time zone is not GMT+0, the stats v4 data no longer has the wrong boundaries (example in #1357).

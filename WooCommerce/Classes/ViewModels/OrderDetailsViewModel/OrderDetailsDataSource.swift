@@ -240,7 +240,7 @@ private extension OrderDetailsDataSource {
         cell.accessibilityLabel = NSLocalizedString(
             "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
             comment: "Accessibility label for the Shipping notice")
-        cell.accessibilityLabel = NSLocalizedString("Shipping notice about the order",
+        cell.accessibilityHint = NSLocalizedString("Shipping notice about the order",
                                                     comment: "VoiceOver accessibility label for the shipping notice about the order")
     }
     

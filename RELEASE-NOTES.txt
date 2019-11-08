@@ -1,3 +1,7 @@
+3.1
+-----
+- bugfix: now Order Detail should not have some dark cells when launching the app in Dark mode.
+
 3.0
 -----
 - bugfix: for sites with empty site time zone in the API (usually with UTC specified in wp-admin settings) and when the site time zone is not GMT+0, the stats v4 data no longer has the wrong boundaries (example in #1357).

@@ -20,6 +20,7 @@ protocol Style {
 
     /// Colors
     ///
+    var appleLightGray: UIColor { get }
     var buttonPrimaryColor: UIColor { get }
     var buttonPrimaryHighlightedColor: UIColor { get }
     var buttonPrimaryTitleColor: UIColor { get }
@@ -106,6 +107,7 @@ class DefaultStyle: Style {
 
     /// Colors!
     ///
+    let appleLightGray                  = UIColor.lightGray
     let buttonPrimaryColor              = HandbookColors.wooPrimary
     let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryTitleColor         = HandbookColors.wooWhite
@@ -283,6 +285,10 @@ class StyleManager {
 
     // MARK: - Colors
 
+    static var appleLightGray: UIColor {
+        return active.appleLightGray
+    }
+    
     static var buttonPrimaryColor: UIColor {
         return active.buttonPrimaryColor
     }

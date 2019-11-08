@@ -20,7 +20,6 @@ protocol Style {
 
     /// Colors
     ///
-    var appleLightGray: UIColor { get }
     var buttonPrimaryColor: UIColor { get }
     var buttonPrimaryHighlightedColor: UIColor { get }
     var buttonPrimaryTitleColor: UIColor { get }
@@ -53,6 +52,7 @@ protocol Style {
     var statusSuccessBoldColor: UIColor { get }
     var statusWarningColor: UIColor { get }
     var tableViewBackgroundColor: UIColor { get }
+    var tableViewCellSelectionStyle: UIColor { get }
 
     var wooCommerceBrandColor: UIColor { get }
     var wooAccent: UIColor { get }
@@ -107,7 +107,6 @@ class DefaultStyle: Style {
 
     /// Colors!
     ///
-    let appleLightGray                  = UIColor.lightGray
     let buttonPrimaryColor              = HandbookColors.wooPrimary
     let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
     let buttonPrimaryTitleColor         = HandbookColors.wooWhite
@@ -124,6 +123,7 @@ class DefaultStyle: Style {
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
+    let tableViewCellSelectionStyle     = UIColor(red: 82/255.0, green: 82/255.0, blue: 84/255.0, alpha: 1.0)
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed
@@ -284,10 +284,6 @@ class StyleManager {
     }
 
     // MARK: - Colors
-
-    static var appleLightGray: UIColor {
-        return active.appleLightGray
-    }
     
     static var buttonPrimaryColor: UIColor {
         return active.buttonPrimaryColor
@@ -395,6 +391,10 @@ class StyleManager {
 
     static var tableViewBackgroundColor: UIColor {
         return active.tableViewBackgroundColor
+    }
+    
+    static var tableViewCellSelectionStyle: UIColor {
+        return active.tableViewCellSelectionStyle
     }
 
     static var wooCommerceBrandColor: UIColor {

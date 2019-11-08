@@ -34,10 +34,10 @@ struct AztecFormatBarFactory {
             AztecBlockquoteFormatBarCommand(),
             AztecHorizontalRulerFormatBarCommand(),
             AztecInsertMoreFormatBarCommand(),
+            AztecSourceCodeFormatBarCommand(),
             AztecOrderedListFormatBarCommand(optionsTablePresenter: optionsTablePresenter),
             AztecUnorderedListFormatBarCommand(optionsTablePresenter: optionsTablePresenter),
             AztecLinkFormatBarCommand(linkDialogPresenter: linkDialogPresenter),
-            AztecSourceCodeFormatBarCommand(),
             AztecHeaderFormatBarCommand(optionsTablePresenter: optionsTablePresenter)
         ])
     }

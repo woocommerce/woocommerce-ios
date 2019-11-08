@@ -1,3 +1,3 @@
-* If you noticed sales stats looking weird because of a timezone bug, we fixed it!
-* We fixed a weird visual bug when writing an e-mail to your customer from their order.
-* Keyboard no longer covers the date picker when entering a custom shipping provider for the Shipment Tracking extension
+* If your sales stats seemed odd because timezones were off, we found that bug and fixed it.
+* Ever email a customer from the Order Details screen and notice that the navigation bar looked different than in the rest of the app? Now it’s consistent.
+* The keyboard no longer covers the date picker in the Shipment Tracking extension, which makes it significantly easier to actually pick a date.

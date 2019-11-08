@@ -96,7 +96,6 @@ private extension AztecFormatBarFactory {
     func makeToolbarButton(identifier: String, viewProperties: FormatBarItemViewProperties) -> FormatBarItem {
         let button = FormatBarItem(image: viewProperties.iconImage, identifier: identifier)
         button.accessibilityLabel = viewProperties.accessibilityLabel
-        button.accessibilityIdentifier = viewProperties.accessibilityIdentifier
         return button
     }
 }

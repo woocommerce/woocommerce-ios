@@ -4,7 +4,6 @@ import Aztec
 
 protocol FormatBarItemViewProperties {
     var iconImage: UIImage { get }
-    var accessibilityIdentifier: String { get }
     var accessibilityLabel: String { get }
 }
 
@@ -64,53 +63,6 @@ extension FormattingIdentifier: FormatBarItemViewProperties {
 
     private var layoutDirection: UIUserInterfaceLayoutDirection {
         return UIView.userInterfaceLayoutDirection(for: .unspecified)
-    }
-
-    var accessibilityIdentifier: String {
-        switch self {
-        case .media:
-            return "format_toolbar_insert_media"
-        case .p:
-            return "format_toolbar_select_paragraph_style"
-        case .bold:
-            return "format_toolbar_toggle_bold"
-        case .italic:
-            return "format_toolbar_toggle_italic"
-        case .underline:
-            return "format_toolbar_toggle_underline"
-        case .strikethrough:
-            return "format_toolbar_toggle_strikethrough"
-        case .blockquote:
-            return "format_toolbar_toggle_blockquote"
-        case .orderedlist:
-            return "format_toolbar_toggle_list_ordered"
-        case .unorderedlist:
-            return "format_toolbar_toggle_list_unordered"
-        case .link:
-            return "format_toolbar_insert_link"
-        case .horizontalruler:
-            return "format_toolbar_insert_horizontal_ruler"
-        case .sourcecode:
-            return "format_toolbar_toggle_html_view"
-        case .more:
-            return "format_toolbar_insert_more"
-        case .header1:
-            return "format_toolbar_toggle_h1"
-        case .header2:
-            return "format_toolbar_toggle_h2"
-        case .header3:
-            return "format_toolbar_toggle_h3"
-        case .header4:
-            return "format_toolbar_toggle_h4"
-        case .header5:
-            return "format_toolbar_toggle_h5"
-        case .header6:
-            return "format_toolbar_toggle_h6"
-        case .code:
-            return "format_toolbar_toggle_code"
-        default:
-            return ""
-        }
     }
 
     var accessibilityLabel: String {

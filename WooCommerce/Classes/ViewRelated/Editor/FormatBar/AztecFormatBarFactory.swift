@@ -26,7 +26,6 @@ struct AztecFormatBarFactory {
     func formatBarCommandCoordinator() -> AztecFormatBarCommandCoordinator {
         return AztecFormatBarCommandCoordinator(commands: [
             AztecBoldFormatBarCommand(),
-            AztecCodeFormatBarCommand(),
             AztecItalicFormatBarCommand(),
             AztecUnderlineFormatBarCommand(),
             AztecStrikethroughFormatBarCommand(),

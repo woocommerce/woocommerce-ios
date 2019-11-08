@@ -49,7 +49,6 @@
 		024DF3092372CA00006658FE /* EditorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3082372CA00006658FE /* EditorViewProperties.swift */; };
 		024DF30B23742297006658FE /* AztecFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF30A23742297006658FE /* AztecFormatBarCommand.swift */; };
 		024DF30E23742A70006658FE /* AztecBoldFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF30D23742A70006658FE /* AztecBoldFormatBarCommand.swift */; };
-		024DF31023742ADF006658FE /* AztecCodeFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF30F23742ADF006658FE /* AztecCodeFormatBarCommand.swift */; };
 		024DF31223742B18006658FE /* AztecItalicFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF31123742B18006658FE /* AztecItalicFormatBarCommand.swift */; };
 		024DF31423742B7A006658FE /* AztecUnderlineFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF31323742B7A006658FE /* AztecUnderlineFormatBarCommand.swift */; };
 		024DF31623742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF31523742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift */; };
@@ -529,7 +528,6 @@
 		024DF3082372CA00006658FE /* EditorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditorViewProperties.swift; sourceTree = "<group>"; };
 		024DF30A23742297006658FE /* AztecFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecFormatBarCommand.swift; sourceTree = "<group>"; };
 		024DF30D23742A70006658FE /* AztecBoldFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecBoldFormatBarCommand.swift; sourceTree = "<group>"; };
-		024DF30F23742ADF006658FE /* AztecCodeFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecCodeFormatBarCommand.swift; sourceTree = "<group>"; };
 		024DF31123742B18006658FE /* AztecItalicFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecItalicFormatBarCommand.swift; sourceTree = "<group>"; };
 		024DF31323742B7A006658FE /* AztecUnderlineFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecUnderlineFormatBarCommand.swift; sourceTree = "<group>"; };
 		024DF31523742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecStrikethroughFormatBarCommand.swift; sourceTree = "<group>"; };
@@ -1015,7 +1013,6 @@
 			isa = PBXGroup;
 			children = (
 				024DF30D23742A70006658FE /* AztecBoldFormatBarCommand.swift */,
-				024DF30F23742ADF006658FE /* AztecCodeFormatBarCommand.swift */,
 				024DF31123742B18006658FE /* AztecItalicFormatBarCommand.swift */,
 				024DF31323742B7A006658FE /* AztecUnderlineFormatBarCommand.swift */,
 				024DF31523742BB6006658FE /* AztecStrikethroughFormatBarCommand.swift */,
@@ -2723,7 +2720,6 @@
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
 				D8736B7522F1FE1600A14A29 /* BadgeLabel.swift in Sources */,
 				B5F8B7E02194759100DAB7E2 /* ReviewDetailsViewController.swift in Sources */,
-				024DF31023742ADF006658FE /* AztecCodeFormatBarCommand.swift in Sources */,
 				02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */,
 				CE85FD5A20F7A7640080B73E /* TableFooterView.swift in Sources */,
 				74334F36214AB130006D6AC5 /* ProductTableViewCell.swift in Sources */,

@@ -6,8 +6,13 @@ struct AztecFormatBarCommandCoordinator {
 
     init(commands: [AztecFormatBarCommand]) {
         var commandsByFormattingIdentifier: [FormattingIdentifier: AztecFormatBarCommand] = [:]
-        commands.forEach { command in
-            commandsByFormattingIdentifier[command.formattingIdentifier] = command
+        for command in commands {
+            let formattingIdentifier = command.formattingIdentifier
+            guard commandsByFormattingIdentifier[formattingIdentifier] == nil else {
+                assertionFailure("Formatting command '\(formattingIdentifier.rawValue)' is already implemented by \(String(describing: commandsByFormattingIdentifier[formattingIdentifier]))")
+                continue
+            }
+            commandsByFormattingIdentifier[formattingIdentifier] = command
         }
         self.commandsByFormattingIdentifier = commandsByFormattingIdentifier
     }

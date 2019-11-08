@@ -29,7 +29,6 @@ struct AztecFormatBarFactory {
             AztecCodeFormatBarCommand(),
             AztecItalicFormatBarCommand(),
             AztecUnderlineFormatBarCommand(),
-            AztecUnderlineFormatBarCommand(),
             AztecStrikethroughFormatBarCommand(),
             AztecBlockquoteFormatBarCommand(),
             AztecHorizontalRulerFormatBarCommand(),
@@ -106,6 +105,5 @@ private extension AztecFormatBarFactory {
     enum Constants {
         static let headers = [Header.HeaderType.none, .h1, .h2, .h3, .h4, .h5, .h6]
         static let lists = [TextList.Style.unordered, .ordered]
-        static let moreAttachmentText = "more"
     }
 }

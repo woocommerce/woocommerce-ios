@@ -67,9 +67,6 @@ final class AztecEditorViewController: UIViewController, Editor {
         return AztecFormatBarFactory().formatBarCommandCoordinator()
     }()
 
-    private lazy var optionsTablePresenter = OptionsTablePresenter(presentingViewController: self,
-                                                                   presentingTextView: editorView.richTextView)
-
     /// Aztec's Text Placeholder
     ///
     private lazy var placeholderLabel: UILabel = {

@@ -123,7 +123,7 @@ class DefaultStyle: Style {
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
-    let tableViewCellSelectionStyle     = UIColor(red: 82/255.0, green: 82/255.0, blue: 84/255.0, alpha: 1.0)
+    let tableViewCellSelectionStyle     = UIColor(red: 209.0/255.0, green: 209/255.0, blue: 213/255.0, alpha: 1.0)
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed

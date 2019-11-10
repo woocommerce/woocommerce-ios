@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -19,7 +17,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="w2s-RF-ahH">
-                        <rect key="frame" x="16" y="19" width="325" height="48"/>
+                        <rect key="frame" x="15" y="19" width="326" height="48"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="wZx-1J-JYV">
                                 <rect key="frame" x="0.0" y="0.0" width="106" height="48"/>
@@ -39,7 +37,7 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" text="$75,894.63" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9oo-9a-Tey">
-                                <rect key="frame" x="236" y="0.0" width="89" height="48"/>
+                                <rect key="frame" x="237" y="0.0" width="89" height="48"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -50,7 +48,7 @@
                 <constraints>
                     <constraint firstItem="w2s-RF-ahH" firstAttribute="top" secondItem="C8B-hF-50d" secondAttribute="topMargin" constant="8" id="PYm-SD-sSv"/>
                     <constraint firstItem="w2s-RF-ahH" firstAttribute="leading" secondItem="C8B-hF-50d" secondAttribute="leadingMargin" id="Vj7-Ev-DBC"/>
-                    <constraint firstAttribute="trailing" secondItem="w2s-RF-ahH" secondAttribute="trailing" id="Wgd-sx-xWk"/>
+                    <constraint firstAttribute="trailing" secondItem="w2s-RF-ahH" secondAttribute="trailing" constant="8" id="Wgd-sx-xWk"/>
                     <constraint firstAttribute="bottomMargin" secondItem="w2s-RF-ahH" secondAttribute="bottom" constant="8" id="YAb-lm-rXp"/>
                 </constraints>
             </tableViewCellContentView>
@@ -61,6 +59,7 @@
                 <outlet property="titleLabel" destination="Nzo-QV-IP1" id="c4l-JL-JKc"/>
                 <outlet property="totalLabel" destination="9oo-9a-Tey" id="OzG-Y4-pOm"/>
             </connections>
+            <point key="canvasLocation" x="130" y="154"/>
         </tableViewCell>
     </objects>
 </document>

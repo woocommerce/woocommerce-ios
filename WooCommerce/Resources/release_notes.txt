@@ -1,4 +1,3 @@
-* New! You can now preselect the current Order status when editing a list of order statuses.
-* Improved! The "9+" badge on the Orders tab got a makeover. It no longer overlaps the tab label on iPhone SE/8 in landscape mode.
-* Improved! The Top Performers list on the new stats page no longer has a dark header bar in Dark mode.
-* Improved! On the Orders tab, the order status filter now sticks after changing an Order status.
+* If your sales stats seemed odd because timezones were off, we found that bug and fixed it.
+* Ever email a customer from the Order Details screen and notice that the navigation bar looked different than in the rest of the app? Now it’s consistent.
+* The keyboard no longer covers the date picker in the Shipment Tracking extension, which makes it significantly easier to actually pick a date.

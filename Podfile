@@ -33,6 +33,7 @@ target 'WooCommerce' do
   
   pod 'WordPressUI', '~> 1.3.5'
 
+  pod 'WordPress-Editor-iOS', '~> 1.11.0'
 
   # External Libraries
   # ==================

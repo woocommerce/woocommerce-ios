@@ -81,8 +81,8 @@ final class PickListTableViewCell: UITableViewCell {
 }
 
 
-// MARK: - Public Methods
-//
+/// MARK: - Public Methods
+///
 extension PickListTableViewCell {
     func configure(item: OrderItemViewModel) {
         if item.productHasImage,
@@ -99,11 +99,11 @@ extension PickListTableViewCell {
     }
 }
 
-// MARK: - Private Methods
-//
+/// MARK: - Private Methods
+///
 private extension PickListTableViewCell {
 
-    private func configureBackground() {
+    func configureBackground() {
         applyDefaultBackgroundStyle()
         
         //Background when selected

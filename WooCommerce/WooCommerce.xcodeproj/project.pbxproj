@@ -391,6 +391,7 @@
 		D831E2DC230E0558000037D0 /* Authentication.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2DB230E0558000037D0 /* Authentication.swift */; };
 		D831E2E0230E0BA7000037D0 /* Logs.swift in Sources */ = {isa = PBXBuildFile; fileRef = D831E2DF230E0BA7000037D0 /* Logs.swift */; };
 		D83A6A782379097A00419D48 /* MurielColorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A6A772379097A00419D48 /* MurielColorTests.swift */; };
+		D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */; };
 		D83C129F22250BF0004CA04C /* OrderTrackingTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */; };
 		D83C12A022250BF0004CA04C /* OrderTrackingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */; };
 		D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */; };
@@ -889,6 +890,7 @@
 		D831E2DB230E0558000037D0 /* Authentication.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Authentication.swift; sourceTree = "<group>"; };
 		D831E2DF230E0BA7000037D0 /* Logs.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logs.swift; sourceTree = "<group>"; };
 		D83A6A772379097A00419D48 /* MurielColorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = MurielColorTests.swift; path = WooCommerceTests/ViewRelated/MurielColorTests.swift; sourceTree = SOURCE_ROOT; };
+		D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIColor+Muriel-Tests.swift"; path = "WooCommerceTests/ViewRelated/UIColor+Muriel-Tests.swift"; sourceTree = SOURCE_ROOT; };
 		D83C129D22250BEF004CA04C /* OrderTrackingTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = OrderTrackingTableViewCell.xib; sourceTree = "<group>"; };
 		D83C129E22250BEF004CA04C /* OrderTrackingTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OrderTrackingTableViewCell.swift; sourceTree = "<group>"; };
 		D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DatePickerTableViewCell.swift; sourceTree = "<group>"; };
@@ -1279,6 +1281,7 @@
 		B53A569521123D27000776C9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */,
 				D83A6A772379097A00419D48 /* MurielColorTests.swift */,
 				D8053BCD231F98DA00CE60C2 /* ReviewAgeTests.swift */,
 				D85136DC231E613900DD0539 /* ReviewsViewModelTests.swift */,
@@ -2875,6 +2878,7 @@
 				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
 				D8C11A6222E24C4A00D4A88D /* PaymentTableViewCellTests.swift in Sources */,
+				D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
 				D88D5A3B230B5D63007B6E01 /* MockupAnalyticsProvider.swift in Sources */,
 				B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */,

@@ -41,7 +41,10 @@ enum MurielColorShade: Int, CustomStringConvertible {
     }
 }
 
+
+/// Conformance to CaseIterable will be useful for testing.
 extension MurielColorShade: CaseIterable { }
+
 
 /// A specific color and shade from the muriel palette's asset file
 struct MurielColor {

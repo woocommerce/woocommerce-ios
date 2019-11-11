@@ -10,6 +10,10 @@ enum FeatureFlag: Int {
     ///
     case productList
 
+    /// Edit products
+    ///
+    case editProducts
+
     /// Store stats
     ///
     case stats

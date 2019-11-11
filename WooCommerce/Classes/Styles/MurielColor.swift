@@ -41,6 +41,8 @@ enum MurielColorShade: Int, CustomStringConvertible {
     }
 }
 
+extension MurielColorShade: CaseIterable { }
+
 /// A specific color and shade from the muriel palette's asset file
 struct MurielColor {
     let name: MurielColorName

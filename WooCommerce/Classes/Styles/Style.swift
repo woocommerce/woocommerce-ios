@@ -106,21 +106,21 @@ class DefaultStyle: Style {
 
     /// Colors!
     ///
-    let buttonPrimaryColor              = UIColor.brand
+    let buttonPrimaryColor              = HandbookColors.wooPrimary
     let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
-    let buttonPrimaryTitleColor         = UIColor.basicBackground
-    let buttonSecondaryColor            = UIColor.basicBackground
+    let buttonPrimaryTitleColor         = HandbookColors.wooWhite
+    let buttonSecondaryColor            = HandbookColors.wooWhite
     let buttonSecondaryHighlightedColor = HandbookColors.wooGreyMid
     let buttonSecondaryTitleColor       = HandbookColors.wooGreyMid
-    let buttonDisabledColor             = UIColor.basicBackground
+    let buttonDisabledColor             = HandbookColors.wooWhite
     let buttonDisabledHighlightedColor  = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let buttonDisabledTitleColor        = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
     let cellSeparatorColor              = HandbookColors.wooGreyBorder
-    let defaultTextColor                = UIColor.defaultTextColor
+    let defaultTextColor                = HandbookColors.wooSecondary
     let destructiveActionColor          = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
     let highlightTextColor              = HandbookColors.murielBlue50
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
-    let sectionTitleColor               = UIColor.defaultTextColor
+    let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
@@ -133,19 +133,19 @@ class DefaultStyle: Style {
     let statusSuccessBoldColor          = HandbookColors.statusGreen
     let statusWarningColor              = HandbookColors.statusYellowDimmed
 
-    let wooCommerceBrandColor           = UIColor.brand
-    let wooSecondary                    = UIColor.defaultTextColor
+    let wooCommerceBrandColor           = HandbookColors.wooPrimary
+    let wooSecondary                    = HandbookColors.wooSecondary
     let wooAccent                       = HandbookColors.wooAccent
     let wooGreyLight                    = HandbookColors.wooGreyLight
     let wooGreyBorder                   = HandbookColors.wooGreyBorder
     let wooGreyMid                      = HandbookColors.wooGreyMid
     let wooGreyTextMin                  = HandbookColors.wooGreyTextMin
-    let wooWhite                        = UIColor.basicBackground
+    let wooWhite                        = HandbookColors.wooWhite
 
     /// Stars
     ///
     let goldStarColor                   = HandbookColors.goldStarColor
-    let grayStarColor                   = UIColor.defaultTextColor
+    let grayStarColor                   = HandbookColors.grayStarColor
     let yellowStarColor                 = HandbookColors.murielYellow30
 
     /// NavBar
@@ -178,6 +178,7 @@ private extension DefaultStyle {
         static let statusGreen           = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)
         static let statusYellowDimmed    = UIColor(red: 0.97, green: 0.88, blue: 0.68, alpha: 1.0)
 
+        static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0) // woo purple
         static let wooSecondary          = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
         static let wooAccent             = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
 

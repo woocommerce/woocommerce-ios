@@ -1,5 +1,7 @@
 3.1
 -----
+- Enhancement: The Reviews tab now presents all the Product Reviews
+
  
 3.0
 -----

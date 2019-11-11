@@ -112,6 +112,6 @@ final class UIColor_Muriel_Tests: XCTestCase {
             let assetColor = UIColor(named: murielColor.assetName())
 
             return color == assetColor
-        }.reduce (true, { $0 && $1 })
+        }.reduce(true, { $0 && $1 })
     }
 }

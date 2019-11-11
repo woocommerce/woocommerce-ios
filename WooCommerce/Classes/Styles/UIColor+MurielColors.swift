@@ -35,7 +35,7 @@ extension UIColor {
 }
 
 
-// MARK: - Basic Colors
+// MARK: - Domain colors. 
 extension UIColor {
     /// Muriel brand color
     static var brand = UIColor(light: muriel(color: .wooCommercePurple, .shade60),

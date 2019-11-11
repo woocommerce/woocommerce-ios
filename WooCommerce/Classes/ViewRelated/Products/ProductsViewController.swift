@@ -298,11 +298,29 @@ extension ProductsViewController: UITableViewDelegate {
         ServiceLocator.analytics.track(.productListProductTapped)
 
         let product = resultsController.object(at: indexPath)
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-        let productViewController = ProductDetailsViewController(viewModel: viewModel)
-        navigationController?.pushViewController(productViewController, animated: true)
+
+        // TODO-1420: move the Product description edit action once the Add/Edit Product UI is built.
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) {
+            let editorViewController = EditorFactory().productDescriptionEditor(product: product) { content in
+                let action = ProductAction.updateProductDescription(siteID: product.siteID,
+                                                                    productID: product.productID,
+                                                                    description: content) { (product, error) in
+                                                                        guard let product = product, error == nil else {
+                                                                            DDLogError("⛔️ Error updating Product: \(error?.localizedDescription ?? "No error specified")")
+                                                                            return
+                                                                        }
+                                                                        DDLogInfo("Product description updated: \(product.fullDescription ?? "")")
+                }
+                ServiceLocator.stores.dispatch(action)
+            }
+            navigationController?.pushViewController(editorViewController, animated: true)
+        } else {
+            let currencyCode = CurrencySettings.shared.currencyCode
+            let currency = CurrencySettings.shared.symbol(from: currencyCode)
+            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
+            let productViewController = ProductDetailsViewController(viewModel: viewModel)
+            navigationController?.pushViewController(productViewController, animated: true)
+        }
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

@@ -52,6 +52,7 @@ protocol Style {
     var statusSuccessBoldColor: UIColor { get }
     var statusWarningColor: UIColor { get }
     var tableViewBackgroundColor: UIColor { get }
+    var tableViewCellSelectionStyle: UIColor { get }
     var noticeIconColor: UIColor { get }
 
     var wooCommerceBrandColor: UIColor { get }
@@ -123,8 +124,8 @@ class DefaultStyle: Style {
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
-    
-    let noticeIconColor                     = HandbookColors.orange50
+    let tableViewCellSelectionStyle     = UIColor(red: 209.0/255.0, green: 209/255.0, blue: 213/255.0, alpha: 1.0)
+    let noticeIconColor                 = HandbookColors.orange50
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed
@@ -286,7 +287,7 @@ class StyleManager {
     }
 
     // MARK: - Colors
-
+    
     static var buttonPrimaryColor: UIColor {
         return active.buttonPrimaryColor
     }
@@ -397,6 +398,10 @@ class StyleManager {
 
     static var tableViewBackgroundColor: UIColor {
         return active.tableViewBackgroundColor
+    }
+    
+    static var tableViewCellSelectionStyle: UIColor {
+        return active.tableViewCellSelectionStyle
     }
 
     static var wooCommerceBrandColor: UIColor {

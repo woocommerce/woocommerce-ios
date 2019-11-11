@@ -9,7 +9,7 @@ final class OrderNoteHeaderTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
+        configureBackground()
         configureLabels()
     }
 
@@ -30,6 +30,12 @@ final class OrderNoteHeaderTableViewCell: UITableViewCell {
 //
 private extension OrderNoteHeaderTableViewCell {
 
+    /// Setup: Cell background
+    ///
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+    
     /// Setup: Labels
     ///
     func configureLabels() {

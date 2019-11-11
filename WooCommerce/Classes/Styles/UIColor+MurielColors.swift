@@ -131,15 +131,7 @@ extension UIColor {
 
     // MARK: - Table Views
 
-//    static var divider: UIColor {
-//        if #available(iOS 13, *) {
-//            return .separator
-//        }
-//
-//        return muriel(color: .divider)
-//    }
-
-    /// WP color for table foregrounds (cells, etc)
+    /// Color for table foregrounds (cells, etc)
     static var listForeground: UIColor {
         if #available(iOS 13, *) {
             return .secondarySystemGroupedBackground
@@ -148,6 +140,7 @@ extension UIColor {
         return .white
     }
 
+    /// Color for table backgrounds (cells, etc)
     static var listBackground: UIColor {
         if #available(iOS 13, *) {
             return .systemGroupedBackground
@@ -165,23 +158,6 @@ extension UIColor {
         return .neutral(.shade20)
     }
 
-    /// For small icons, such as the badges on notification gravatars
-    static var listSmallIcon: UIColor {
-        if #available(iOS 13, *) {
-            return .systemGray
-        }
-
-        return UIColor.neutral(.shade20)
-    }
-
-    static var filterBarBackground: UIColor {
-        if #available(iOS 13, *) {
-            return UIColor(light: white, dark: .gray(.shade100))
-        }
-
-        return white
-    }
-
     /// For icons that are present in a toolbar or similar view
     static var toolbarInactive: UIColor {
         if #available(iOS 13, *) {
@@ -194,28 +170,6 @@ extension UIColor {
     /// Note: these values are intended to match the iOS defaults
     static var tabUnselected: UIColor =  UIColor(light: UIColor(hexString: "999999"), dark: UIColor(hexString: "757575"))
 
-// MARK: - WP Fancy Buttons
-
-    static var secondaryButtonBorder: UIColor {
-        if #available(iOS 13, *) {
-            return .systemGray3
-        }
-
-        return .neutral(.shade20)
-    }
-
-    static var secondaryButtonDownBackground: UIColor {
-
-        if #available(iOS 13, *) {
-            return .systemGray3
-        }
-
-        return .neutral(.shade20)
-    }
-
-    static var secondaryButtonDownBorder: UIColor {
-        return secondaryButtonBorder
-    }
 }
 
 extension UIColor {

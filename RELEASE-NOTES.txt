@@ -2,6 +2,7 @@
 -----
 - Enhancement: The Reviews tab now presents all the Product Reviews
 - bugfix: now Order Detail should not have some dark cells when launching the app in Dark mode.
+- bugfix: fixed UI appearance on cells of Order List when tappen with dark mode enabled.
 
 3.0
 -----

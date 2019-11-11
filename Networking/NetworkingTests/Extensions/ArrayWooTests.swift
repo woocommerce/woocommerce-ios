@@ -39,9 +39,19 @@ class ArrayWooTests: XCTestCase {
     /// Verifies that an array with int values produces a valid String.
     ///
     func testArrayWithValuesReturnsSortedValuesAsString() {
-        let refundIDs = [75, 37, 259, 16, 83]
+        let exampleIDs = [75, 37, 259, 16, 83]
         let expected = "16,37,75,83,259"
-        let actual = refundIDs.intToString()
+        let actual = exampleIDs.intToString()
+
+        XCTAssertEqual(expected, actual)
+    }
+
+    /// Verifies that an array with duplicate entries produces a de-duplicated, valid String.
+    ///
+    func testArrayWithDuplicateValuesReturnsWithNoDuplicates() {
+        let exampleIDs = [123, 6, 13, 259, 3, 321, 7, 6, 87, 3, 9, 17, 85, 87]
+        let expected = "3,6,7,9,13,17,85,87,123,259,321"
+        let actual = exampleIDs.intToString()
 
         XCTAssertEqual(expected, actual)
     }

@@ -72,13 +72,45 @@ final class PickListTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         selectionStyle = .none
-
+        configureBackground()
         setupImageView()
         setupNameLabel()
         setupQuantityLabel()
         setupSkuLabel()
     }
+}
 
+
+// MARK: - Public Methods
+//
+extension PickListTableViewCell {
+    func configure(item: OrderItemViewModel) {
+        if item.productHasImage,
+        let imageURL = item.imageURL {
+                productImageView.downloadImage(from: imageURL,
+                                               placeholderImage: UIImage.productPlaceholderImage)
+        } else {
+            productImageView.image = .productPlaceholderImage
+        }
+
+        name = item.name
+        quantity = item.quantity
+        sku = item.sku
+    }
+}
+
+// MARK: - Private Methods
+//
+private extension PickListTableViewCell {
+
+    private func configureBackground() {
+        applyDefaultBackgroundStyle()
+        
+        //Background when selected
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
+    }
+    
     func setupImageView() {
         productImageView.image = .productImage
         productImageView.tintColor = StyleManager.wooGreyBorder
@@ -99,24 +131,5 @@ final class PickListTableViewCell: UITableViewCell {
     func setupSkuLabel() {
         skuLabel.applySecondaryFootnoteStyle()
         skuLabel?.text = ""
-    }
-}
-
-
-// MARK: - Public Methods
-//
-extension PickListTableViewCell {
-    func configure(item: OrderItemViewModel) {
-        if item.productHasImage,
-        let imageURL = item.imageURL {
-                productImageView.downloadImage(from: imageURL,
-                                               placeholderImage: UIImage.productPlaceholderImage)
-        } else {
-            productImageView.image = .productPlaceholderImage
-        }
-
-        name = item.name
-        quantity = item.quantity
-        sku = item.sku
     }
 }

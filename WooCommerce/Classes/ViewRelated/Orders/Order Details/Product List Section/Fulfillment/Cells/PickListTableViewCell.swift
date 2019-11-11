@@ -82,6 +82,8 @@ final class PickListTableViewCell: UITableViewCell {
     func setupImageView() {
         productImageView.image = .productImage
         productImageView.tintColor = StyleManager.wooGreyBorder
+        productImageView.contentMode = .scaleAspectFill
+        productImageView.clipsToBounds = true
     }
 
     func setupNameLabel() {

@@ -332,11 +332,13 @@ class OrderStoreTests: XCTestCase {
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
@@ -344,6 +346,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder1?.toReadOnly(), sampleOrderMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 3)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
@@ -351,6 +354,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder2?.toReadOnly(), sampleOrderMutated2())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 5)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
     }
 
@@ -807,7 +811,7 @@ private extension OrderStoreTests {
                               subtotal: "50.00",
                               subtotalTax: "2.00",
                               taxClass: "",
-                              taxes: taxes(),
+                              taxes: [],
                               total: "30.00",
                               totalTax: "1.20")
 
@@ -821,7 +825,7 @@ private extension OrderStoreTests {
                               subtotal: "10.00",
                               subtotalTax: "0.40",
                               taxClass: "",
-                              taxes: taxes(),
+                              taxes: [],
                               total: "0.00",
                               totalTax: "0.00")
 
@@ -885,7 +889,7 @@ private extension OrderStoreTests {
                               subtotal: "60.00",
                               subtotalTax: "4.00",
                               taxClass: "",
-                              taxes: taxes(),
+                              taxes: taxesMutated(),
                               total: "64.00",
                               totalTax: "4.00")
 
@@ -900,6 +904,11 @@ private extension OrderStoreTests {
     }
 
     func taxes() -> [Networking.OrderItemTax] {
-        return [Networking.OrderItemTax]()
+        return [Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
+    }
+
+    func taxesMutated() -> [Networking.OrderItemTax] {
+        return [Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45"),
+                Networking.OrderItemTax(taxID: 73, subtotal: "0.9", total: "0.9")]
     }
 }

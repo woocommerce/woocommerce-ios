@@ -47,9 +47,7 @@ public final class RefundsRemote: Remote {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadRefunds(for siteID: Int, by orderID: Int, with refundIDs: [Int], completion: @escaping ([Refund]?, Error?) -> Void) {
-        let stringOfRefundIDs = refundIDs.map { String($0) }
-            .filter { !$0.isEmpty }
-            .joined(separator: ",")
+        let stringOfRefundIDs = refundIDs.intToString()
         let parameters = [ ParameterKey.include: stringOfRefundIDs ]
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)

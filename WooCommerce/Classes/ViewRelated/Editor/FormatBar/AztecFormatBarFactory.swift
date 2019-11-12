@@ -23,7 +23,7 @@ struct AztecFormatBarFactory {
         return toolbar
     }
 
-    func formatBarCommandCoordinator(optionsTablePresenter: OptionsTablePresenter, linkDialogPresenter: UIViewController) -> AztecFormatBarCommandCoordinator {
+    func formatBarCommandCoordinator(optionsTablePresenter: OptionsTablePresenter) -> AztecFormatBarCommandCoordinator {
         return AztecFormatBarCommandCoordinator(commands: [
             AztecBoldFormatBarCommand(),
             AztecItalicFormatBarCommand(),

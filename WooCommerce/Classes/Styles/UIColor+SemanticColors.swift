@@ -278,7 +278,7 @@ extension UIColor {
 extension UIColor {
     /// Muriel gray palette
     /// - Parameter shade: a MurielColorShade of the desired shade of gray
-    class func gray(_ shade: MurielColorShade) -> UIColor {
+    class func gray(_ shade: ColorStudioShade) -> UIColor {
         return muriel(color: .gray, shade)
     }
 
@@ -287,7 +287,7 @@ extension UIColor {
     static var neutral: UIColor {
         return neutral(.shade50)
     }
-    class func neutral(_ shade: MurielColorShade) -> UIColor {
+    class func neutral(_ shade: ColorStudioShade) -> UIColor {
         switch shade {
         case .shade0:
             return UIColor(light: muriel(color: .gray, .shade0), dark: muriel(color: .gray, .shade100))

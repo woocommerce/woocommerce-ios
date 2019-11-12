@@ -19,7 +19,7 @@ extension UIColor {
     /// Get a UIColor from the Muriel color palette, adjusted to a given shade
     /// - Parameter color: an instance of a MurielColor
     /// - Parameter shade: a MurielColorShade
-    class func muriel(color: ColorStudio, _ shade: MurielColorShade) -> UIColor {
+    class func muriel(color: ColorStudio, _ shade: ColorStudioShade) -> UIColor {
         let newColor = ColorStudio(from: color, shade: shade)
         return muriel(color: newColor)
     }

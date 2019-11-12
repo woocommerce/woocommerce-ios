@@ -266,6 +266,22 @@ extension OrderDetailsViewModel {
         ServiceLocator.stores.dispatch(action)
     }
 
+    func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
+        let refundIDs = order.refunds.map { $0.refundID }
+        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing detailed Refunds: \(error)")
+                onCompletion?(error)
+
+                return
+            }
+
+            onCompletion?(nil)
+        }
+
+        ServiceLocator.stores.dispatch(action)
+    }
+
     func deleteTracking(_ tracking: ShipmentTracking, onCompletion: @escaping (Error?) -> Void) {
         let siteID = order.siteID
         let orderID = order.orderID

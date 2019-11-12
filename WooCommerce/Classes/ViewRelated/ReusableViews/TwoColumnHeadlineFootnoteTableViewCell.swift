@@ -4,6 +4,9 @@ import UIKit
 /// Represents a cell with a two-column title "row"
 /// and a footnote "row" below the titles
 ///
+/// Note that you can set plain text or attributed text
+/// in the footnote.
+///
 final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
 
     @IBOutlet private weak var leftTitleLabel: UILabel!
@@ -40,6 +43,17 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         }
         set {
             footnoteLabel?.text = newValue
+        }
+    }
+
+    /// Footnote label attributed string
+    ///
+    var footnoteAttributedText: NSAttributedString? {
+        get {
+            return footnoteLabel.attributedText
+        }
+        set {
+            footnoteLabel?.attributedText = newValue
         }
     }
 

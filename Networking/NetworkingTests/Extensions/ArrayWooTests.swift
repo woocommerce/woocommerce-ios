@@ -11,7 +11,7 @@ class ArrayWooTests: XCTestCase {
     func testArrayWithZeroValueReturnsAString() {
         let exampleIDs = [0]
         let expected = "0"
-        let actual = exampleIDs.intToString()
+        let actual = exampleIDs.sortedUniqueIntToString()
 
         XCTAssertEqual(expected, actual)
     }
@@ -21,7 +21,7 @@ class ArrayWooTests: XCTestCase {
     func testArrayWithSingleValueReturnsAString() {
         let exampleIDs = [999]
         let expected = "999"
-        let actual = exampleIDs.intToString()
+        let actual = exampleIDs.sortedUniqueIntToString()
 
         XCTAssertEqual(expected, actual)
     }
@@ -31,7 +31,7 @@ class ArrayWooTests: XCTestCase {
     func testEmptyArrayReturnsAnEmptyString() {
         let exampleIDs = [Int]()
         let expected = ""
-        let actual = exampleIDs.intToString()
+        let actual = exampleIDs.sortedUniqueIntToString()
 
         XCTAssertEqual(expected, actual)
     }
@@ -41,7 +41,7 @@ class ArrayWooTests: XCTestCase {
     func testArrayWithValuesReturnsSortedValuesAsString() {
         let exampleIDs = [75, 37, 259, 16, 83]
         let expected = "16,37,75,83,259"
-        let actual = exampleIDs.intToString()
+        let actual = exampleIDs.sortedUniqueIntToString()
 
         XCTAssertEqual(expected, actual)
     }
@@ -51,7 +51,7 @@ class ArrayWooTests: XCTestCase {
     func testArrayWithDuplicateValuesReturnsWithNoDuplicates() {
         let exampleIDs = [123, 6, 13, 259, 3, 321, 7, 6, 87, 3, 9, 17, 85, 87]
         let expected = "3,6,7,9,13,17,85,87,123,259,321"
-        let actual = exampleIDs.intToString()
+        let actual = exampleIDs.sortedUniqueIntToString()
 
         XCTAssertEqual(expected, actual)
     }

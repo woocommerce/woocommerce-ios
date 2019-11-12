@@ -62,6 +62,12 @@ final class OrderDetailsDataSource: NSObject {
     var products: [Product] {
         return resultsControllers.products
     }
+
+    /// Refunds on an Order
+    ///
+    var refunds: [Refund] {
+        return resultsControllers.refunds
+    }
     
     /// Shipping Lines from an Order
     ///
@@ -412,6 +418,10 @@ extension OrderDetailsDataSource {
     
     func lookUpProduct(by productID: Int) -> Product? {
         return products.filter({ $0.productID == productID }).first
+    }
+
+    func lookUpRefund(by refundID: Int) -> Refund? {
+        return refunds.filter({ $0.refundID == refundID }).first
     }
     
     func isMultiShippingLinesAvailable(for order: Order) -> Bool {

@@ -48,6 +48,7 @@ final class ProductDetailsViewController: UIViewController {
 
         // prepare UI
         configureNavigationTitle()
+        configureNavigationActions()
         configureMainView()
         configureTableView()
         registerTableViewCells()
@@ -68,6 +69,14 @@ private extension ProductDetailsViewController {
     ///
     func configureNavigationTitle() {
         title = viewModel.title
+    }
+
+    /// Setup: Navigation Actions
+    ///
+    func configureNavigationActions() {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editProduct))
+        }
     }
 
     /// Setup: main view
@@ -152,7 +161,7 @@ private extension ProductDetailsViewController {
 
 // MARK: - Action Handlers
 //
-extension ProductDetailsViewController {
+private extension ProductDetailsViewController {
 
     @objc func pullToRefresh() {
         DDLogInfo("♻️ Requesting product detail data be reloaded...")
@@ -162,6 +171,30 @@ extension ProductDetailsViewController {
                 self?.displaySyncingErrorNotice()
             }
             self?.refreshControl.endRefreshing()
+        }
+    }
+
+    @objc func editProduct() {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
+            let productForm = ProductFormViewController()
+            let navController = WooNavigationController(rootViewController: productForm)
+            navigationController?.present(navController, animated: true)
+        } else {
+            // TODO-1420: remove after the entry point to edit Product description is implemented.
+            let product = viewModel.product
+            let editorViewController = EditorFactory().productDescriptionEditor(product: product) { content in
+                let action = ProductAction.updateProductDescription(siteID: product.siteID,
+                                                                    productID: product.productID,
+                                                                    description: content) { (product, error) in
+                                                                        guard let product = product, error == nil else {
+                                                                            DDLogError("⛔️ Error updating Product: \(error?.localizedDescription ?? "No error specified")")
+                                                                            return
+                                                                        }
+                                                                        DDLogInfo("Product description updated: \(product.fullDescription ?? "")")
+                }
+                ServiceLocator.stores.dispatch(action)
+            }
+            navigationController?.pushViewController(editorViewController, animated: true)
         }
     }
 }

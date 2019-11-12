@@ -3,6 +3,8 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .productList:
             return BuildConfiguration.current == .localDeveloper
+        case .editProducts:
+            return BuildConfiguration.current == .localDeveloper
         case .stats:
             return true
         default:

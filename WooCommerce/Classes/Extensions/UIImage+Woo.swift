@@ -13,6 +13,13 @@ extension UIImage {
         return Gridicon.iconOfType(.addOutline)
     }
 
+    /// Notice Icon
+    ///
+    static var noticeImage: UIImage {
+        let tintColor = UIColor.listIcon
+        return Gridicon.iconOfType(.notice).imageWithTintColor(tintColor)!
+    }
+    
     /// Aside Image
     ///
     static var asideImage: UIImage {

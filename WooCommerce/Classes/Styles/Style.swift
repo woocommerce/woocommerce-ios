@@ -109,6 +109,7 @@ class DefaultStyle: Style {
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
     let tableViewCellSelectionStyle     = UIColor(red: 209.0/255.0, green: 209/255.0, blue: 213/255.0, alpha: 1.0)
+    let noticeIconColor                 = HandbookColors.orange50
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed
@@ -183,6 +184,7 @@ private extension DefaultStyle {
         static let murielRed50                 = UIColor(red: 0.84, green: 0.21, blue: 0.22, alpha: 1)
         static let murielYellow30        = UIColor(red: 0.86, green: 0.68, blue: 0.09, alpha: 1.0)
         static let murielBlue50          = UIColor(red: 0.13, green: 0.44, blue: 0.69, alpha: 1.0)
+        static let orange50              = UIColor(red:0.70, green:0.38, blue:0.00, alpha:1.0)
     }
 }
 

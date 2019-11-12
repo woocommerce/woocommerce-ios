@@ -1,23 +1,14 @@
 import UIKit
 
 extension UIColor {
-    /// Get a UIColor from the Muriel color palette
+    /// Get a UIColor from the Color Studio color palette
     ///
     /// - Parameters:
-    ///   - color: an instance of a MurielColor
+    ///   - color: an instance of a ColorStudio
     /// - Returns: UIColor. Red in cases of error
-    class func muriel(color murielColor: MurielColor) -> UIColor {
-        let assetName = murielColor.assetName()
-        let color: UIColor?
-
-        // This is temporary work around as there's a bug in the
-        // GM seed of Xcode 11 which causes loading colors from asset
-        // catalogs to fail (54325712)
-        if #available(iOS 12.0, *) {
-            color = UIColor(named: assetName)
-        } else {
-            color = MurielPalette.color(from: assetName)
-        }
+    class func withColorStudio(_ colorStudio: ColorStudio) -> UIColor {
+        let assetName = colorStudio.assetName()
+        let color = UIColor(named: assetName)
 
         guard let unwrappedColor = color else {
             return .red
@@ -25,12 +16,12 @@ extension UIColor {
 
         return unwrappedColor
     }
-    /// Get a UIColor from the Muriel color palette, adjusted to a given shade
-    /// - Parameter color: an instance of a MurielColor
-    /// - Parameter shade: a MurielColorShade
-    class func muriel(color: MurielColor, _ shade: MurielColorShade) -> UIColor {
-        let newColor = MurielColor(from: color, shade: shade)
-        return muriel(color: newColor)
+    /// Get a UIColor from the Color Studio color palette, adjusted to a given shade
+    /// - Parameter color: an instance of a ColorStudio
+    /// - Parameter shade: a ColorStudioShade
+    class func withColorStudio(_ colorStudio: ColorStudio, shade: ColorStudioShade) -> UIColor {
+        let newColor = ColorStudio(from: colorStudio, shade: shade)
+        return withColorStudio(newColor)
     }
 }
 

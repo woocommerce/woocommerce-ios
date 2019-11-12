@@ -3,99 +3,99 @@ import XCTest
 
 final class UIColor_Muriel_Tests: XCTestCase {
     func testBlueColorObtainedMatchesMurielSpec() {
-        let murielColor = MurielColor(name: .blue)
-        XCTAssertTrue(colorAssetObtainedMatchesMuriel(murielColor))
+        let color = ColorStudio(name: .blue)
+        XCTAssertTrue(colorAssetObtainedMatchesMuriel(color))
     }
 
     func testBlueColorWithShadeObtainedMatchesMurielSpec() {
-        let murielColorName = MurielColorName.blue
-        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(murielColorName))
+        let colorName = ColorStudioName.blue
+        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(colorName))
     }
 
     func testCeladonColorObtainedMatchesMurielSpec() {
-        let murielColor = MurielColor(name: .celadon)
-        XCTAssertTrue(colorAssetObtainedMatchesMuriel(murielColor))
+        let colorName = ColorStudio(name: .celadon)
+        XCTAssertTrue(colorAssetObtainedMatchesMuriel(colorName))
     }
 
     func testCeladonColorWithShadeObtainedMatchesMurielSpec() {
-        let murielColorName = MurielColorName.celadon
-        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(murielColorName))
+        let colorName = ColorStudioName.celadon
+        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(colorName))
     }
 
     func testGrayColorObtainedMatchesMurielSpec() {
-        let murielColor = MurielColor(name: .gray)
-        XCTAssertTrue(colorAssetObtainedMatchesMuriel(murielColor))
+        let colorName = ColorStudio(name: .gray)
+        XCTAssertTrue(colorAssetObtainedMatchesMuriel(colorName))
     }
 
     func testGrayColorWithShadeObtainedMatchesMurielSpec() {
-        let murielColorName = MurielColorName.gray
-        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(murielColorName))
+        let colorName = ColorStudioName.gray
+        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(colorName))
     }
 
     func testGreenColorObtainedMatchesMurielSpec() {
-        let murielColor = MurielColor(name: .green)
-        XCTAssertTrue(colorAssetObtainedMatchesMuriel(murielColor))
+        let colorName = ColorStudio(name: .green)
+        XCTAssertTrue(colorAssetObtainedMatchesMuriel(colorName))
     }
 
     func testGreenColorWithShadeObtainedMatchesMurielSpec() {
-        let murielColorName = MurielColorName.green
-        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(murielColorName))
+        let colorName = ColorStudioName.green
+        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(colorName))
     }
 
     func testOrangeColorObtainedMatchesMurielSpec() {
-        let murielColor = MurielColor(name: .orange)
-        XCTAssertTrue(colorAssetObtainedMatchesMuriel(murielColor))
+        let colorName = ColorStudio(name: .orange)
+        XCTAssertTrue(colorAssetObtainedMatchesMuriel(colorName))
     }
 
     func testOrangeColorWithShadeObtainedMatchesMurielSpec() {
-        let murielColorName = MurielColorName.orange
-        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(murielColorName))
+        let colorName = ColorStudioName.orange
+        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(colorName))
     }
 
     func testPinkColorObtainedMatchesMurielSpec() {
-        let murielColor = MurielColor(name: .pink)
-        XCTAssertTrue(colorAssetObtainedMatchesMuriel(murielColor))
+        let colorName = ColorStudio(name: .pink)
+        XCTAssertTrue(colorAssetObtainedMatchesMuriel(colorName))
     }
 
     func testPinkColorWithShadeObtainedMatchesMurielSpec() {
-        let murielColorName = MurielColorName.pink
-        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(murielColorName))
+        let colorName = ColorStudioName.pink
+        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(colorName))
     }
 
     func testPurpleColorObtainedMatchesMurielSpec() {
-        let murielColor = MurielColor(name: .purple)
-        XCTAssertTrue(colorAssetObtainedMatchesMuriel(murielColor))
+        let colorName = ColorStudio(name: .purple)
+        XCTAssertTrue(colorAssetObtainedMatchesMuriel(colorName))
     }
 
     func testPurpleColorWithShadeObtainedMatchesMurielSpec() {
-        let murielColorName = MurielColorName.purple
-        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(murielColorName))
+        let colorName = ColorStudioName.purple
+        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(colorName))
     }
 
     func testYellowColorObtainedMatchesMurielSpec() {
-        let murielColor = MurielColor(name: .yellow)
-        XCTAssertTrue(colorAssetObtainedMatchesMuriel(murielColor))
+        let colorName = ColorStudio(name: .yellow)
+        XCTAssertTrue(colorAssetObtainedMatchesMuriel(colorName))
     }
 
     func testYellowColorWithShadeObtainedMatchesMurielSpec() {
-        let murielColorName = MurielColorName.yellow
-        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(murielColorName))
+        let colorName = ColorStudioName.yellow
+        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(colorName))
     }
 
     func testWooCommercePurpleColorObtainedMatchesMurielSpec() {
-        let murielColor = MurielColor(name: .wooCommercePurple)
-        XCTAssertTrue(colorAssetObtainedMatchesMuriel(murielColor))
+        let colorName = ColorStudio(name: .wooCommercePurple)
+        XCTAssertTrue(colorAssetObtainedMatchesMuriel(colorName))
     }
 
     func testWooCommercePurpleColorWithShadeObtainedMatchesMurielSpec() {
-        let murielColorName = MurielColorName.wooCommercePurple
-        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(murielColorName))
+        let colorName = ColorStudioName.wooCommercePurple
+        XCTAssertTrue(colorAssetObtainedForColorNameMatchesMurielWithAllShades(colorName))
     }
 
     /// A somewhat indirect way to test that color assets are present in the project
     ///
-    private func colorAssetObtainedMatchesMuriel(_ murielColor: MurielColor) -> Bool {
-        let color = UIColor.muriel(color: murielColor)
+    private func colorAssetObtainedMatchesMuriel(_ murielColor: ColorStudio) -> Bool {
+        let color = UIColor.withColorStudio(murielColor)
         let assetColor = UIColor(named: murielColor.assetName())
 
         return color == assetColor
@@ -103,13 +103,13 @@ final class UIColor_Muriel_Tests: XCTestCase {
 
     /// A somewhat indirect way to test that color assets are present in the project
     /// for all shades of a given color name
-    private func colorAssetObtainedForColorNameMatchesMurielWithAllShades(_ name: MurielColorName) -> Bool {
-        let allShades = MurielColorShade.allCases
+    private func colorAssetObtainedForColorNameMatchesMurielWithAllShades(_ name: ColorStudioName) -> Bool {
+        let allShades = ColorStudioShade.allCases
 
         return allShades.map {
-            let murielColor = MurielColor(name: name, shade: $0)
-            let color = UIColor.muriel(color: murielColor)
-            let assetColor = UIColor(named: murielColor.assetName())
+            let colorStudio = ColorStudio(name: name, shade: $0)
+            let color = UIColor.withColorStudio(colorStudio)
+            let assetColor = UIColor(named: colorStudio.assetName())
 
             return color == assetColor
         }.reduce(true, { $0 && $1 })

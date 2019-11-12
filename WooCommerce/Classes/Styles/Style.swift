@@ -35,8 +35,6 @@ protocol Style {
     var grayStarColor: UIColor { get }
     var yellowStarColor: UIColor { get }
 
-    var statusDangerColor: UIColor { get }
-    var statusDangerBoldColor: UIColor { get }
     var statusNotIdentifiedColor: UIColor { get }
     var statusNotIdentifiedBoldColor: UIColor { get }
     var statusPrimaryColor: UIColor { get }
@@ -307,14 +305,6 @@ class StyleManager {
 
     static var highlightTextColor: UIColor {
         return active.highlightTextColor
-    }
-
-    static var statusDangerColor: UIColor {
-        return active.statusDangerColor
-    }
-
-    static var statusDangerBoldColor: UIColor {
-        return active.statusDangerBoldColor
     }
 
     static var statusNotIdentifiedColor: UIColor {

@@ -35,8 +35,8 @@ extension UILabel {
         case .failed:
             fallthrough
         case .refunded:
-            backgroundColor = StyleManager.statusDangerColor
-            layer.borderColor = StyleManager.statusDangerBoldColor.cgColor
+            backgroundColor = .error
+            layer.borderColor = UIColor.errorDark.cgColor
         case .completed:
             backgroundColor = StyleManager.statusPrimaryColor
             layer.borderColor = StyleManager.statusPrimaryBoldColor.cgColor

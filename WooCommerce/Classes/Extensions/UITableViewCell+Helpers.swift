@@ -15,6 +15,6 @@ extension UITableViewCell {
     /// Applies the default background color
     ///
     func applyDefaultBackgroundStyle() {
-        backgroundColor = StyleManager.wooWhite
+        backgroundColor = .listForeground
     }
 }

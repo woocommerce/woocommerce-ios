@@ -242,7 +242,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func configureView() {
-        view.backgroundColor = StyleManager.wooWhite
+        view.backgroundColor = .basicBackground
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
         // Time range bar bottom border view

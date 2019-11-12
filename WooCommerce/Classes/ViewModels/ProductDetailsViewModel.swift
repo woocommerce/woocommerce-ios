@@ -303,7 +303,7 @@ extension ProductDetailsViewModel {
         if product.productStatus != .publish {
             cell.textBadge?.applyPaddedLabelSubheadStyles()
             cell.textBadge?.layer.backgroundColor = UIColor.text.cgColor
-            cell.textBadge?.textColor = StyleManager.wooWhite
+            cell.textBadge?.textColor = .basicBackground
             cell.textBadge?.text = product.productStatus.description
         }
     }

@@ -219,7 +219,7 @@ private extension PeriodDataViewController {
     }
 
     func configureView() {
-        view.backgroundColor = StyleManager.wooWhite
+        view.backgroundColor = .basicBackground
         borderView.backgroundColor = StyleManager.wooGreyBorder
 
         // Titles
@@ -337,7 +337,7 @@ extension PeriodDataViewController: ChartViewDelegate {
         let marker = ChartMarker(chartView: chartView,
                                  color: StyleManager.wooSecondary,
                                  font: StyleManager.chartLabelFont,
-                                 textColor: StyleManager.wooWhite,
+                                 textColor: .basicBackground,
                                  insets: Constants.chartMarkerInsets)
         marker.minimumSize = Constants.chartMarkerMinimumSize
         marker.arrowSize = Constants.chartMarkerArrowSize

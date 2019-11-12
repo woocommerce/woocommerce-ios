@@ -50,7 +50,6 @@ protocol Style {
     var wooGreyTextMin: UIColor { get }
     var wooGreyBorder: UIColor { get }
     var wooSecondary: UIColor { get }
-    var wooWhite: UIColor { get }
 
     /// NavBar
     ///
@@ -371,10 +370,6 @@ class StyleManager {
 
     static var wooGreyTextMin: UIColor {
         return active.wooGreyTextMin
-    }
-
-    static var wooWhite: UIColor {
-        return active.wooWhite
     }
 
     static var grayStarColor: UIColor {

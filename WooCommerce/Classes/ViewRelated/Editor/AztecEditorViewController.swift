@@ -136,7 +136,7 @@ private extension AztecEditorViewController {
 
     func configureView() {
         edgesForExtendedLayout = UIRectEdge()
-        view.backgroundColor = StyleManager.wooWhite
+        view.backgroundColor = .basicBackground
     }
 
     func configureSubviews() {

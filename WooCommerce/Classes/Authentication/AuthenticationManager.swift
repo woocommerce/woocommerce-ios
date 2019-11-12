@@ -43,7 +43,7 @@ class AuthenticationManager: Authentication {
                                                 subheadlineColor: .brand,
                                                 placeholderColor: StyleManager.wooGreyTextMin,
                                                 viewControllerBackgroundColor: StyleManager.wooGreyLight,
-                                                textFieldBackgroundColor: StyleManager.wooWhite,
+                                                textFieldBackgroundColor: .basicBackground,
                                                 navBarImage: StyleManager.navBarImage,
                                                 navBarBadgeColor: .brand)
 

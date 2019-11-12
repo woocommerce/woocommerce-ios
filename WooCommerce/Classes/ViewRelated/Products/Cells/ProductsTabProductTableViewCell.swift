@@ -79,7 +79,7 @@ private extension ProductsTabProductTableViewCell {
     }
     
     func configureBackground() {
-        backgroundColor = StyleManager.wooWhite
+        backgroundColor = .listForeground
         
         //Background when selected
         selectedBackgroundView = UIView()

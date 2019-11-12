@@ -170,8 +170,8 @@ private extension TopPerformersViewController {
     }
 
     func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = StyleManager.wooWhite
-        settings.style.buttonBarItemBackgroundColor = StyleManager.wooWhite
+        settings.style.buttonBarBackgroundColor = .basicBackground
+        settings.style.buttonBarItemBackgroundColor = .basicBackground
         settings.style.selectedBarBackgroundColor = .brand
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight

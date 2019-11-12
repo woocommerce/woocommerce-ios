@@ -168,7 +168,6 @@ private extension ProductsViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(displaySearchProducts))
-            button.tintColor = StyleManager.wooWhite
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search products", comment: "Search Products")
             button.accessibilityHint = NSLocalizedString(

@@ -97,7 +97,7 @@ private class PurpleDotView: UIView {
         path.fill()
 
         path.lineWidth = borderWidth
-        StyleManager.wooWhite.setStroke()
+        UIColor.basicBackground.setStroke()
         path.stroke()
     }
 }

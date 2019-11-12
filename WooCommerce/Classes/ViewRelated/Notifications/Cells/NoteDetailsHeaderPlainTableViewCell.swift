@@ -54,6 +54,7 @@ final class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
     }
 }
 
+
 // MARK: - Private Methods
 //
 private extension NoteDetailsHeaderPlainTableViewCell {
@@ -79,6 +80,7 @@ private extension NoteDetailsHeaderPlainTableViewCell {
         textLabel?.textColor = StyleManager.defaultTextColor
     }
 }
+
 
 // MARK: - Settings
 //

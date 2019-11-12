@@ -38,6 +38,16 @@ final class OrderDetailsViewModel {
         return dataSource.products
     }
 
+    /// Refunds
+    ///
+    var refunds: [Refund] = [] {
+        didSet {
+            dataSource.refunds = refunds
+            dataSource.reloadSections()
+            onUIReloadRequired?()
+        }
+    }
+
     /// Indicates if we consider the shipment tracking plugin as reachable
     /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
     ///
@@ -89,6 +99,10 @@ final class OrderDetailsViewModel {
 
     func lookUpProduct(by productID: Int) -> Product? {
         return dataSource.lookUpProduct(by: productID)
+    }
+
+    func lookUpRefund(by refundID: Int) -> Refund? {
+        return dataSource.lookUpRefund(by: refundID)
     }
 }
 

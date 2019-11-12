@@ -173,7 +173,7 @@ private extension OrderDetailsDataSource {
             configureShippingMethod(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingDetail:
             configureBillingDetail(cell: cell)
-        case let cell as LeftImageMultilineTableViewCell where row == .shippingNotice:
+        case let cell as TopLeftImageTableViewCell where row == .shippingNotice:
             configureShippingNotice(cell: cell)
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
@@ -228,12 +228,12 @@ private extension OrderDetailsDataSource {
         )
     }
     
-    func configureShippingNotice(cell: LeftImageMultilineTableViewCell) {
+    func configureShippingNotice(cell: TopLeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString(
             "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
             comment: "Shipping notice row label when there is more than one shipping method")
-        cell.leftImage = Icons.shippingNoticeIcon
-        cell.labelText = cellTextContent
+        cell.imageView?.image = Icons.shippingNoticeIcon
+        cell.textLabel?.text = cellTextContent
         cell.selectionStyle = .none
         
         cell.accessibilityTraits = .staticText
@@ -603,7 +603,7 @@ extension OrderDetailsDataSource {
             case .trackingAdd:
                 return LeftImageTableViewCell.reuseIdentifier
             case .shippingNotice:
-                return LeftImageMultilineTableViewCell.reuseIdentifier
+                return TopLeftImageTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:

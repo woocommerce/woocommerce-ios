@@ -121,7 +121,7 @@ private extension OrderLoaderViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
         view.addSubview(activityIndicator)
         view.pinSubviewAtCenter(activityIndicator)
     }

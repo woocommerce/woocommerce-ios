@@ -54,7 +54,7 @@ private extension BetaFeaturesViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Configure common table properties.
@@ -69,7 +69,7 @@ private extension BetaFeaturesViewController {
         tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
     }
 
     /// Configure sections for table view.

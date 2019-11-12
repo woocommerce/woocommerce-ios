@@ -82,8 +82,8 @@ private extension NewNoteViewController {
     /// Setup: TableView
     ///
     private func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
     }

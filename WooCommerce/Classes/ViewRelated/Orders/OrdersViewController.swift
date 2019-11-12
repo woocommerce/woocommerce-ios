@@ -271,8 +271,8 @@ private extension OrdersViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
     }

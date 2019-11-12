@@ -98,7 +98,7 @@ private extension ReviewDetailsViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Setup: TableView
@@ -106,7 +106,7 @@ private extension ReviewDetailsViewController {
     func configureTableView() {
         // Hide "Empty Rows"
         tableView.tableFooterView = UIView()
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.separatorInset = .zero
     }

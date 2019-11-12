@@ -55,7 +55,7 @@ class DashboardViewController: UIViewController {
 private extension DashboardViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureNavigation() {

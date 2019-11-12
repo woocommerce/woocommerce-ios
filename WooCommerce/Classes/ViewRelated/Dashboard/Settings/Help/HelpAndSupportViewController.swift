@@ -76,7 +76,7 @@ private extension HelpAndSupportViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Configure common table properties.
@@ -84,7 +84,7 @@ private extension HelpAndSupportViewController {
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
     }
 
     /// Disable Zendesk if configuration on ZD init fails.

@@ -29,7 +29,7 @@ private extension ProductListViewController {
     ///
     func configureMainView() {
         title = NSLocalizedString("Details Order #\(viewModel.order.number)", comment: "Screen title: Details Order number (number)")
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
 
         // Don't show the Order details title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
@@ -38,7 +38,7 @@ private extension ProductListViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = Constants.rowHeight

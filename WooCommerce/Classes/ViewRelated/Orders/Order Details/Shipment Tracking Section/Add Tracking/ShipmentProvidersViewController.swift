@@ -104,7 +104,7 @@ private extension ShipmentProvidersViewController {
 //
 private extension ShipmentProvidersViewController {
     func configureBackground() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureNavigation() {
@@ -116,7 +116,7 @@ private extension ShipmentProvidersViewController {
     }
 
     func configureSearchController() {
-        searchController.searchBar.textField?.backgroundColor = StyleManager.tableViewBackgroundColor
+        searchController.searchBar.textField?.backgroundColor = .listBackground
 
         guard table.tableHeaderView == nil else {
             return
@@ -149,7 +149,7 @@ private extension ShipmentProvidersViewController {
     func styleTableView() {
         table.estimatedRowHeight = Constants.rowHeight
         table.rowHeight = UITableView.automaticDimension
-        table.backgroundColor = StyleManager.tableViewBackgroundColor
+        table.backgroundColor = .listBackground
     }
 }
 

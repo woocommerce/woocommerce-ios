@@ -58,7 +58,7 @@ final class ManualTrackingViewController: UIViewController {
 ///
 private extension ManualTrackingViewController {
     func configureBackground() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureNavigation() {
@@ -160,7 +160,7 @@ private extension ManualTrackingViewController {
 
         table.estimatedRowHeight = Constants.rowHeight
         table.rowHeight = UITableView.automaticDimension
-        table.backgroundColor = StyleManager.tableViewBackgroundColor
+        table.backgroundColor = .listBackground
         table.dataSource = self
         table.delegate = self
     }

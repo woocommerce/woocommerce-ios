@@ -137,11 +137,11 @@ extension TopPerformerDataViewController {
 private extension TopPerformerDataViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
         tableView.separatorColor = .divider
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Constants.estimatedRowHeight

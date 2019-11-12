@@ -101,7 +101,7 @@ final class ReviewsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
 
         refreshTitle()
 
@@ -179,8 +179,8 @@ private extension ReviewsViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.dataSource = viewModel.dataSource
         tableView.tableFooterView = footerSpinnerView

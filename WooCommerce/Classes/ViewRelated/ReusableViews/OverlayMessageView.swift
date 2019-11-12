@@ -80,7 +80,7 @@ class OverlayMessageView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        backgroundColor = StyleManager.tableViewBackgroundColor
+        backgroundColor = .listBackground
         messageLabel.applyBodyStyle()
         actionButton.applySecondaryButtonStyle()
     }

@@ -66,8 +66,8 @@ private extension BillingInformationViewController {
     /// Setup: Main View
     ///
     func setupMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension

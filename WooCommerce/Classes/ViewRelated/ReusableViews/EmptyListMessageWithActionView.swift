@@ -53,7 +53,7 @@ final class EmptyListMessageWithActionView: UIView {
 //
 private extension EmptyListMessageWithActionView {
     func applyBackgroundStyle() {
-        backgroundColor = StyleManager.tableViewBackgroundColor
+        backgroundColor = .listBackground
     }
 
     func applyMessageLabelStyle() {

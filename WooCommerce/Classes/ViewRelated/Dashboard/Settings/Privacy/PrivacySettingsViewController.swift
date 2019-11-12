@@ -108,13 +108,13 @@ private extension PrivacySettingsViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
 
         tableView.refreshControl = refreshControl
     }

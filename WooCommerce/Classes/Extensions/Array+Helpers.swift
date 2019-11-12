@@ -11,7 +11,6 @@ extension Array {
         guard isEmpty == false else {
             return nil
         }
-
         return removeFirst()
     }
 }

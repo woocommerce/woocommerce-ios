@@ -47,7 +47,7 @@ extension MurielColorShade: CaseIterable { }
 
 
 /// A specific color and shade from the muriel palette's asset file
-struct MurielColor {
+struct ColorStudio {
     let name: MurielColorName
     let shade: MurielColorShade
 
@@ -56,21 +56,21 @@ struct MurielColor {
         self.shade = shade
     }
 
-    init(from identifier: MurielColor, shade: MurielColorShade) {
+    init(from identifier: ColorStudio, shade: MurielColorShade) {
         self.name = identifier.name
         self.shade = shade
     }
 
     // MARK: - Muriel's semantic colors
-    static let pink = MurielColor(name: .pink)
-    static let wooCommercePurple = MurielColor(name: .wooCommercePurple)
-    static let brand = MurielColor(name: .wooCommercePurple, shade: .shade60)
-    static let red = MurielColor(name: .red)
-    static let gray = MurielColor(name: .gray)
-    static let blue = MurielColor(name: .blue)
-    static let green = MurielColor(name: .green)
-    static let yellow = MurielColor(name: .yellow)
-    static let orange = MurielColor(name: .orange)
+    static let pink = ColorStudio(name: .pink)
+    static let wooCommercePurple = ColorStudio(name: .wooCommercePurple)
+    static let brand = ColorStudio(name: .wooCommercePurple, shade: .shade60)
+    static let red = ColorStudio(name: .red)
+    static let gray = ColorStudio(name: .gray)
+    static let blue = ColorStudio(name: .blue)
+    static let green = ColorStudio(name: .green)
+    static let yellow = ColorStudio(name: .yellow)
+    static let orange = ColorStudio(name: .orange)
 
     /// The full name of the color, with required shade value
     func assetName() -> String {

@@ -6,7 +6,7 @@ extension UIColor {
     /// - Parameters:
     ///   - color: an instance of a MurielColor
     /// - Returns: UIColor. Red in cases of error
-    class func muriel(color murielColor: MurielColor) -> UIColor {
+    class func muriel(color murielColor: ColorStudio) -> UIColor {
         let assetName = murielColor.assetName()
         let color = UIColor(named: assetName)
 
@@ -19,8 +19,8 @@ extension UIColor {
     /// Get a UIColor from the Muriel color palette, adjusted to a given shade
     /// - Parameter color: an instance of a MurielColor
     /// - Parameter shade: a MurielColorShade
-    class func muriel(color: MurielColor, _ shade: MurielColorShade) -> UIColor {
-        let newColor = MurielColor(from: color, shade: shade)
+    class func muriel(color: ColorStudio, _ shade: MurielColorShade) -> UIColor {
+        let newColor = ColorStudio(from: color, shade: shade)
         return muriel(color: newColor)
     }
 }

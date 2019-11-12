@@ -31,6 +31,9 @@
 		0216271E2375044D000208D2 /* AztecFormatBar+Update.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0216271D2375044D000208D2 /* AztecFormatBar+Update.swift */; };
 		021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */; };
 		021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */; };
+		02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */; };
+		02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02279584237A50C900787C63 /* AztecHeaderFormatBarCommand.swift */; };
+		0227958D237A51F300787C63 /* OptionsTableViewController+Styles.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0227958C237A51F300787C63 /* OptionsTableViewController+Styles.swift */; };
 		023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023053482374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift */; };
 		02305352237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */; };
 		02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */; };
@@ -507,6 +510,9 @@
 		0216271D2375044D000208D2 /* AztecFormatBar+Update.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AztecFormatBar+Update.swift"; sourceTree = "<group>"; };
 		021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxisTests.swift"; sourceTree = "<group>"; };
 		021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxis.swift"; sourceTree = "<group>"; };
+		02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecUnorderedListFormatBarCommand.swift; sourceTree = "<group>"; };
+		02279584237A50C900787C63 /* AztecHeaderFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecHeaderFormatBarCommand.swift; sourceTree = "<group>"; };
+		0227958C237A51F300787C63 /* OptionsTableViewController+Styles.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "OptionsTableViewController+Styles.swift"; sourceTree = "<group>"; };
 		023053482374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecBlockquoteFormatBarCommand.swift; sourceTree = "<group>"; };
 		0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecHorizontalRulerFormatBarCommand.swift; sourceTree = "<group>"; };
 		02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecInsertMoreFormatBarCommand.swift; sourceTree = "<group>"; };
@@ -1006,6 +1012,8 @@
 		023053602374FEF000487A64 /* Implementation */ = {
 			isa = PBXGroup;
 			children = (
+				02279584237A50C900787C63 /* AztecHeaderFormatBarCommand.swift */,
+				02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */,
 				024DF30D23742A70006658FE /* AztecBoldFormatBarCommand.swift */,
 				024DF31123742B18006658FE /* AztecItalicFormatBarCommand.swift */,
 				024DF31323742B7A006658FE /* AztecUnderlineFormatBarCommand.swift */,
@@ -1045,6 +1053,7 @@
 				024DF31D23743045006658FE /* Header+AztecFormatting.swift */,
 				024DF31C23743045006658FE /* TextList+AztecFormatting.swift */,
 				0216271D2375044D000208D2 /* AztecFormatBar+Update.swift */,
+				0227958C237A51F300787C63 /* OptionsTableViewController+Styles.swift */,
 			);
 			path = FormatBar;
 			sourceTree = "<group>";
@@ -1052,9 +1061,9 @@
 		024DF31723742BFB006658FE /* Command */ = {
 			isa = PBXGroup;
 			children = (
-				023053602374FEF000487A64 /* Implementation */,
 				024DF32023744798006658FE /* AztecFormatBarCommandCoordinator.swift */,
 				024DF30A23742297006658FE /* AztecFormatBarCommand.swift */,
+				023053602374FEF000487A64 /* Implementation */,
 			);
 			path = Command;
 			sourceTree = "<group>";
@@ -2692,6 +2701,7 @@
 				CE1AFE622200B1BD00432745 /* ApplicationLogDetailViewController.swift in Sources */,
 				CE4DDB7B20DD312400D32EC8 /* DateFormatter+Helpers.swift in Sources */,
 				B50911322049E27A007D25DC /* SettingsViewController.swift in Sources */,
+				0227958D237A51F300787C63 /* OptionsTableViewController+Styles.swift in Sources */,
 				B541B226218A412C008FE7C1 /* UIFont+Woo.swift in Sources */,
 				B59D1EEC2190B08B009D1978 /* Age.swift in Sources */,
 				CE22709B228F362600C0626C /* ProductDetailsViewModel.swift in Sources */,
@@ -2721,6 +2731,7 @@
 				D83F5933225B2EB900626E75 /* ManualTrackingViewController.swift in Sources */,
 				B57C744A20F5649300EEFC87 /* EmptyStoresTableViewCell.swift in Sources */,
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
+				02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */,
 				B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */,
@@ -2829,6 +2840,7 @@
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,
+				02279587237A50C900787C63 /* AztecHeaderFormatBarCommand.swift in Sources */,
 				CE021535215BE3AB00C19555 /* LoginNavigationController+Woo.swift in Sources */,
 				D8C2A28B231931D100F503E9 /* ReviewViewModel.swift in Sources */,
 				B541B223218A29A6008FE7C1 /* NSParagraphStyle+Woo.swift in Sources */,

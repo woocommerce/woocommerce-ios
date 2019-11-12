@@ -68,8 +68,11 @@ final class AztecEditorViewController: UIViewController, Editor {
     /// Aztec's Format Bar Action Handling Coordinator
     ///
     private lazy var formatBarCommandCoordinator: AztecFormatBarCommandCoordinator = {
-        return formatBarFactory.formatBarCommandCoordinator()
+        return formatBarFactory.formatBarCommandCoordinator(optionsTablePresenter: optionsTablePresenter, linkDialogPresenter: self)
     }()
+
+    private lazy var optionsTablePresenter = OptionsTablePresenter(presentingViewController: self,
+                                                                   presentingTextView: editorView.richTextView)
 
     /// Aztec's Text Placeholder
     ///

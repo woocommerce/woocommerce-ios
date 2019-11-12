@@ -64,12 +64,13 @@ struct MurielColor {
     // MARK: - Muriel's semantic colors
     static let pink = MurielColor(name: .pink)
     static let wooCommercePurple = MurielColor(name: .wooCommercePurple)
+    static let brand = MurielColor(name: .wooCommercePurple, shade: .shade60)
     static let red = MurielColor(name: .red)
     static let gray = MurielColor(name: .gray)
     static let blue = MurielColor(name: .blue)
     static let green = MurielColor(name: .green)
-    static let warning = MurielColor(name: .yellow)
-    static let text = MurielColor(name: .gray, shade: .shade80)
+    static let yellow = MurielColor(name: .yellow)
+    static let orange = MurielColor(name: .orange)
 
     /// The full name of the color, with required shade value
     func assetName() -> String {

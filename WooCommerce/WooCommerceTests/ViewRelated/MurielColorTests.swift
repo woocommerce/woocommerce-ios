@@ -27,11 +27,7 @@ final class MurielColorTests: XCTestCase {
     }
 
     func testWarningMatchesAssetName() {
-        XCTAssertTrue(colorMatchesExpectation(color: MurielColor.warning, expectation: Expectations.warning))
-    }
-
-    func testTextMatchesAssetName() {
-        XCTAssertTrue(colorMatchesExpectation(color: MurielColor.text, expectation: Expectations.text))
+        XCTAssertTrue(colorMatchesExpectation(color: MurielColor.yellow, expectation: Expectations.yellow))
     }
 
     private func colorMatchesExpectation(color: MurielColor, expectation: String) -> Bool {
@@ -49,7 +45,6 @@ extension MurielColorTests {
         static let gray = "Gray50"
         static let blue = "Blue50"
         static let green = "Green50"
-        static let warning = "Yellow50"
-        static let text = "Gray80"
+        static let yellow = "Yellow50"
     }
 }

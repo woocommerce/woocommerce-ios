@@ -305,6 +305,8 @@ private extension OrderDetailsDataSource {
     }
 
     func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
+        let condensedRefund = order.refunds[indexPath.row]
+        let refund = lookUpRefund(by: condensedRefund.refundID)
     }
 
     func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {

@@ -56,7 +56,7 @@ final class ReviewViewModel {
     }()
 
     lazy var notIconColor: UIColor = {
-        return read ? StyleManager.wooGreyMid : StyleManager.wooAccent
+        return read ? StyleManager.wooGreyMid : UIColor.accent
     }()
 
     lazy var read: Bool = {

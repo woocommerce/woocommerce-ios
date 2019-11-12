@@ -28,7 +28,7 @@ extension Note {
         guard kind == .storeOrder else {
             return StyleManager.wooGreyMid
         }
-        return StyleManager.wooAccent
+        return .accent
     }
 
     /// Returns the number of stars for a review (or nil if the Note is not a review)

@@ -124,7 +124,7 @@ private extension NoteTableViewCell {
     ///
     func refreshColors() {
         backgroundColor = StyleManager.wooWhite
-        sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
+        sidebarView.backgroundColor = read ? UIColor.clear : UIColor.accent
     }
 
     func configureStarView() {

@@ -45,7 +45,6 @@ protocol Style {
     var statusSuccessBoldColor: UIColor { get }
     var statusWarningColor: UIColor { get }
 
-    var wooAccent: UIColor { get }
     var wooGreyLight: UIColor { get }
     var wooGreyMid: UIColor { get }
     var wooGreyTextMin: UIColor { get }
@@ -356,10 +355,6 @@ class StyleManager {
     }
     static var wooSecondary: UIColor {
         return active.wooSecondary
-    }
-
-    static var wooAccent: UIColor {
-        return active.wooAccent
     }
 
     static var wooGreyLight: UIColor {

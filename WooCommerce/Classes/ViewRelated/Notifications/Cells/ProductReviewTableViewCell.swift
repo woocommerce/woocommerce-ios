@@ -97,7 +97,7 @@ private extension ProductReviewTableViewCell {
     /// Refreshes the Cell's Colors.
     ///
     func refreshColors() {
-        sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
+        sidebarView.backgroundColor = read ? UIColor.clear : UIColor.accent
     }
 
     func configureSubjectLabel() {

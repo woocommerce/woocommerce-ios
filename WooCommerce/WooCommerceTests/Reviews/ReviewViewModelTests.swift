@@ -60,7 +60,7 @@ final class ReviewViewModelTests: XCTestCase {
     }
 
     func testIconColorMatchesExpectation() {
-        XCTAssertEqual(subject.notIconColor, StyleManager.wooAccent)
+        XCTAssertEqual(subject.notIconColor, UIColor.accent)
     }
 }
 

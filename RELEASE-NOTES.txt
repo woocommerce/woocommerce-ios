@@ -2,7 +2,7 @@
 -----
 - Enhancement: The Reviews tab now presents all the Product Reviews
 - bugfix: fixed UI appearance on cells of Order List when tappen with dark mode enabled.
-- bugfix: fixed UI appearance on Order Detail flow with dark mode enabled.
+- Updated appearance of Order Details - temporarily disabling dark mode.
 
 3.0
 -----

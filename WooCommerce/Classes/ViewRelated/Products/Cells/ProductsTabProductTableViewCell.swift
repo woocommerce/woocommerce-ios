@@ -83,7 +83,7 @@ private extension ProductsTabProductTableViewCell {
         
         //Background when selected
         selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 
     func configureNameLabel() {

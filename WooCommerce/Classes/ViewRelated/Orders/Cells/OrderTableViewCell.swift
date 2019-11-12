@@ -106,7 +106,7 @@ private extension OrderTableViewCell {
     func configureBackground() {
         backgroundColor = StyleManager.wooWhite
         selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 
     /// Setup: Labels

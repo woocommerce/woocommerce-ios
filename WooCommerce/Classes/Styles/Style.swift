@@ -44,7 +44,6 @@ protocol Style {
     var statusSuccessColor: UIColor { get }
     var statusSuccessBoldColor: UIColor { get }
     var statusWarningColor: UIColor { get }
-    var tableViewCellSelectionStyle: UIColor { get }
 
     var wooCommerceBrandColor: UIColor { get }
     var wooAccent: UIColor { get }
@@ -355,10 +354,6 @@ class StyleManager {
 
     static var yellowStarColor: UIColor {
         return active.yellowStarColor
-    }
-
-    static var tableViewCellSelectionStyle: UIColor {
-        return active.tableViewCellSelectionStyle
     }
 
     static var wooCommerceBrandColor: UIColor {

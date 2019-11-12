@@ -123,7 +123,7 @@ extension UIColor {
     /// Text Inverted. White(< iOS 13 and Light Mode) and Gray-90 (Dark Mode)
     ///
     static var textInverted: UIColor {
-        return UIColor(light: UIColor(hexString: "FFFFFF"),
+        return UIColor(light: .white,
                        dark: muriel(color: .gray, .shade90))
     }
 
@@ -138,3 +138,83 @@ extension UIColor {
     }
 }
 
+
+// MARK: - UI elements.
+extension UIColor {
+    /// Basic Background. White (< iOS 13) and `UIColor.systemBackground` (> iOS 13)
+    ///
+    static var basicBackground: UIColor {
+        if #available(iOS 13, *) {
+            return .systemBackground
+        }
+
+        return .white
+    }
+
+    /// App Bar. WooCommercePurple-60 (< iOS 13 and Light Mode) and `UIColor.systemThickMaterial` (Dark Mode)
+    ///
+    static var appBar: UIColor {
+        if #available(iOS 13, *) {
+            return UIColor(light: muriel(color: .wooCommercePurple, .shade60),
+                           dark: .systemBackground)
+        }
+
+
+        return muriel(color: .wooCommercePurple, .shade60)
+    }
+
+    /// Tab Unselected. Gray-20 (< iOS 13 and Light Mode) and Gray-60 (Dark Mode)
+    ///
+    static var tabUnselected: UIColor {
+        return UIColor(light: muriel(color: .gray, .shade20),
+                       dark: muriel(color: .gray, .shade60))
+    }
+
+    /// Divider. Gray-10 (< iOS 13) and `UIColor.separator` (> iOS 13)
+    ///
+    static var divider: UIColor {
+        if #available(iOS 13, *) {
+            return .separator
+        }
+
+        return muriel(color: .gray, .shade10)
+    }
+
+    /// Primary Button Background. Resolves to `accent`
+    ///
+    static var primaryButtonBackground = accent
+
+    /// Primary Button Border. Resolves to `accent`
+    ///
+    static var primaryButtonBorder = accent
+
+    /// Primary Button Down Background. Pink-80 (< iOS 13 and Light Mode) and Pink-50 (Dark Mode)
+    ///
+    static var primaryButtonDownBackground: UIColor {
+        return UIColor(light: muriel(color: .pink, .shade80),
+                       dark: muriel(color: .pink, .shade50))
+    }
+
+    /// Primary Button Down Border. Resolves to `primaryButtonDownBackground`
+    ///
+    static var primaryButtonDownBorder = primaryButtonDownBackground
+
+    /// Filter Bar Selected. `primary` (< iOS 13 and Light Mode) and `UIColor.label` (Dark Mode)
+    ///
+    static var filterBarSelected: UIColor {
+        if #available(iOS 13, *) {
+            return UIColor(light: .primary,
+                           dark: .label)
+        }
+
+
+        return .primary
+    }
+
+    /// Filter Bar Background. `white` (< iOS 13 and Light Mode) and Gray-90 (Dark Mode)
+    ///
+    static var filterBarSelected: UIColor {
+        return UIColor(light: .white,
+                       dark: muriel(color: .gray, .shade90))
+    }
+}

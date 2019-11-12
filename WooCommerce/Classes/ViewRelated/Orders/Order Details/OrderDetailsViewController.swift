@@ -363,13 +363,13 @@ extension OrderDetailsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         // Remove the first header
-        if section == 0{
+        if section == 0 {
             return CGFloat.leastNormalMagnitude
         }
-        
+
         return UITableView.automaticDimension
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return CGFloat.leastNormalMagnitude
     }

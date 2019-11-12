@@ -99,7 +99,7 @@ class ProductDetailsTableViewCell: UITableViewCell {
 private extension ProductDetailsTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
-        
+
         //Background when selected
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle

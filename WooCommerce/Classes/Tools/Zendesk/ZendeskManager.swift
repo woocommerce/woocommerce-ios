@@ -59,7 +59,7 @@ class ZendeskManager: NSObject {
 
         return ZDKPushProvider(zendesk: zendesk)
     }
-    
+
 
     /// Designated Initialier
     ///

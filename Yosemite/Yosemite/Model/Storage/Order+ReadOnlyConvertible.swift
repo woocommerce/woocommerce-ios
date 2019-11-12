@@ -26,7 +26,7 @@ extension Storage.Order: ReadOnlyConvertible {
         discountTax = order.discountTax
         shippingTotal = order.shippingTotal
         shippingTax = order.shippingTax
-        
+
         total = order.total
         totalTax = order.totalTax
         paymentMethodTitle = order.paymentMethodTitle
@@ -67,7 +67,7 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderCoupons = coupons?.map { $0.toReadOnly() } ?? [Yosemite.OrderCouponLine]()
         let orderRefunds = refunds?.map { $0.toReadOnly() } ?? [Yosemite.OrderRefundCondensed]()
         let orderShippingLines = shippingLines?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLine]()
-        
+
         return Order(siteID: Int(siteID),
                      orderID: Int(orderID),
                      parentID: Int(parentID),

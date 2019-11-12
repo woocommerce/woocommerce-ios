@@ -43,7 +43,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        
+
         configureBackground()
         configureTopLine()
         configureMiddleLine()

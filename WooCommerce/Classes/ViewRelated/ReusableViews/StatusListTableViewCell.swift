@@ -42,6 +42,10 @@ final class StatusListTableViewCell: UITableViewCell {
 private extension StatusListTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
+        
+        //Background when selected
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
     }
 
     func styleCheckmark() {

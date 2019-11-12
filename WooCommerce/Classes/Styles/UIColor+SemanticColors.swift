@@ -1,6 +1,6 @@
 import UIKit
 
-// MARK: - Semantic colors.
+// MARK: - Base colors.
 extension UIColor {
     /// Accent. Pink-50 (< iOS 13 and Light Mode) and Pink-30 (Dark Mode)
     ///
@@ -75,86 +75,66 @@ extension UIColor {
         return UIColor(light: muriel(color: .orange, .shade50),
                         dark: muriel(color: .orange, .shade30))
     }
+}
 
-    /// The most basic background: white in light mode, black in dark mode
-    static var basicBackground: UIColor {
-        if #available(iOS 13, *) {
-            return .systemBackground
-        }
-        return .white
-    }
 
-    /// Default text color: high contrast
-    static var defaultTextColor: UIColor {
+// MARK: - Text Colors.
+extension UIColor {
+    /// Text. Gray-80 (< iOS 13) and `UIColor.label` (> iOS 13)
+    ///
+    static var text: UIColor {
         if #available(iOS 13, *) {
             return .label
         }
 
-        return UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
+        return .gray(.shade80)
     }
 
-    static var secondaryTextColor: UIColor {
+    /// Text Subtle. Gray-50 (< iOS 13) and `UIColor.secondaryLabel` (> iOS 13)
+    ///
+    static var textSubtle: UIColor {
         if #available(iOS 13, *) {
             return .secondaryLabel
         }
 
-        return UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
+        return .gray(.shade50)
     }
 
-    static var highlightTextColor: UIColor {
-        return UIColor(light: muriel(color: .blue, .shade50) ,
-                        dark: muriel(color: .blue, .shade30))
-    }
-
-    static var announcementDotColor: UIColor {
-        return UIColor(light: muriel(color: .red, .shade50),
-                       dark: muriel(color: .red, .shade50))
-    }
-
-
-    /// Muriel/iOS navigation color
-    static var appBar = UIColor.brand
-
-    // MARK: - Table Views
-
-    /// Color for table foregrounds (cells, etc)
-    static var listForeground: UIColor {
+    /// Text Tertiary. Gray-20 (< iOS 13) and `UIColor.tertiaryLabel` (> iOS 13)
+    ///
+    static var textTertiary: UIColor {
         if #available(iOS 13, *) {
-            return .secondarySystemGroupedBackground
+            return .tertiaryLabel
         }
 
-        return .white
+        return .gray(.shade20)
     }
 
-    /// Color for table backgrounds (cells, etc)
-    static var listBackground: UIColor {
+    /// Text Quaternary. Gray-10 (< iOS 13) and `UIColor.quaternaryLabel` (> iOS 13)
+    ///
+    static var textQuaternary: UIColor {
         if #available(iOS 13, *) {
-            return .systemGroupedBackground
+            return .quaternaryLabel
         }
 
-        return muriel(color: .gray, .shade0)
+        return .gray(.shade10)
     }
 
-    /// For icons that are present in a table view, or similar list
-    static var listIcon: UIColor {
+    /// Text Inverted. White(< iOS 13 and Light Mode) and Gray-90 (Dark Mode)
+    ///
+    static var textInverted: UIColor {
+        return UIColor(light: UIColor(hexString: "FFFFFF"),
+                       dark: muriel(color: .gray, .shade90))
+    }
+
+    /// Text Placeholder. Gray-30 (< iOS 13) and `UIColor.placeholderText` (> iOS 13)
+    ///
+    static var textPlaceholder: UIColor {
         if #available(iOS 13, *) {
-            return .secondaryLabel
+            return .placeholderText
         }
 
-        return .neutral(.shade20)
+        return .gray(.shade30)
     }
-
-    /// For icons that are present in a toolbar or similar view
-    static var toolbarInactive: UIColor {
-        if #available(iOS 13, *) {
-               return .secondaryLabel
-           }
-
-        return .neutral(.shade30)
-    }
-
-    /// Note: these values are intended to match the iOS defaults
-    static var tabUnselected: UIColor =  UIColor(light: UIColor(hexString: "999999"), dark: UIColor(hexString: "757575"))
-
 }
 

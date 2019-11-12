@@ -1,13 +1,13 @@
 import UIKit
 
 extension UIColor {
-    /// Get a UIColor from the Muriel color palette
+    /// Get a UIColor from the Color Studio color palette
     ///
     /// - Parameters:
-    ///   - color: an instance of a MurielColor
+    ///   - color: an instance of a ColorStudio
     /// - Returns: UIColor. Red in cases of error
-    class func muriel(color murielColor: ColorStudio) -> UIColor {
-        let assetName = murielColor.assetName()
+    class func withColorStudio(_ colorStudio: ColorStudio) -> UIColor {
+        let assetName = colorStudio.assetName()
         let color = UIColor(named: assetName)
 
         guard let unwrappedColor = color else {
@@ -16,12 +16,12 @@ extension UIColor {
 
         return unwrappedColor
     }
-    /// Get a UIColor from the Muriel color palette, adjusted to a given shade
-    /// - Parameter color: an instance of a MurielColor
-    /// - Parameter shade: a MurielColorShade
-    class func muriel(color: ColorStudio, _ shade: ColorStudioShade) -> UIColor {
-        let newColor = ColorStudio(from: color, shade: shade)
-        return muriel(color: newColor)
+    /// Get a UIColor from the Color Studio color palette, adjusted to a given shade
+    /// - Parameter color: an instance of a ColorStudio
+    /// - Parameter shade: a ColorStudioShade
+    class func withColorStudio(_ colorStudio: ColorStudio, shade: ColorStudioShade) -> UIColor {
+        let newColor = ColorStudio(from: colorStudio, shade: shade)
+        return withColorStudio(newColor)
     }
 }
 

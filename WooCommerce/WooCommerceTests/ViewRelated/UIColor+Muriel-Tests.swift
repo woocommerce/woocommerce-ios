@@ -95,7 +95,7 @@ final class UIColor_Muriel_Tests: XCTestCase {
     /// A somewhat indirect way to test that color assets are present in the project
     ///
     private func colorAssetObtainedMatchesMuriel(_ murielColor: ColorStudio) -> Bool {
-        let color = UIColor.muriel(color: murielColor)
+        let color = UIColor.withColorStudio(murielColor)
         let assetColor = UIColor(named: murielColor.assetName())
 
         return color == assetColor
@@ -108,7 +108,7 @@ final class UIColor_Muriel_Tests: XCTestCase {
 
         return allShades.map {
             let colorStudio = ColorStudio(name: name, shade: $0)
-            let color = UIColor.muriel(color: colorStudio)
+            let color = UIColor.withColorStudio(colorStudio)
             let assetColor = UIColor(named: colorStudio.assetName())
 
             return color == assetColor

@@ -25,19 +25,19 @@ extension OrderItem {
 
 }
 
-// MARK: Generated accessors for tax
+// MARK: Generated accessors for taxes
 extension OrderItem {
 
-    @objc(addTaxObject:)
+    @objc(addTaxesObject:)
     @NSManaged public func addToTaxes(_ value: OrderItemTax)
 
-    @objc(removeTaxObject:)
+    @objc(removeTaxesObject:)
     @NSManaged public func removeFromTaxes(_ value: OrderItemTax)
 
-    @objc(addTax:)
+    @objc(addTaxes:)
     @NSManaged public func addToTaxes(_ values: NSSet)
 
-    @objc(removeTax:)
+    @objc(removeTaxes:)
     @NSManaged public func removeFromTaxes(_ values: NSSet)
 
 }

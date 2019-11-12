@@ -287,7 +287,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
     private func configureSecondaryAction(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = StyleManager.destructiveActionColor
+        cell.textLabel?.textColor = .error
         cell.textLabel?.text = viewModel.secondaryActionTitle
     }
 

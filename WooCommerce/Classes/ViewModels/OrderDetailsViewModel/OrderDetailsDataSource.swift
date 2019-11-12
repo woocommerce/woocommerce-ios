@@ -569,6 +569,8 @@ extension OrderDetailsDataSource {
         case billingDetail
         case payment
         case customerPaid
+        case refund
+        case netAmount
         case tracking
         case trackingAdd
         case shippingNotice

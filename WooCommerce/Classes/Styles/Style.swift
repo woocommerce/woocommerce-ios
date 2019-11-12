@@ -35,7 +35,6 @@ protocol Style {
     var grayStarColor: UIColor { get }
     var yellowStarColor: UIColor { get }
 
-    var sectionBackgroundColor: UIColor { get }
     var sectionTitleColor: UIColor { get }
     var statusDangerColor: UIColor { get }
     var statusDangerBoldColor: UIColor { get }
@@ -314,10 +313,6 @@ class StyleManager {
 
     static var highlightTextColor: UIColor {
         return active.highlightTextColor
-    }
-
-    static var sectionBackgroundColor: UIColor {
-        return active.sectionBackgroundColor
     }
 
     static var sectionTitleColor: UIColor {

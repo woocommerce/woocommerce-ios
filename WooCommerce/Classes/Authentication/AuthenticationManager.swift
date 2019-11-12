@@ -25,9 +25,9 @@ class AuthenticationManager: Authentication {
                                                                 userAgent: UserAgent.defaultUserAgent)
 
         let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
-                                                primaryNormalBorderColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                primaryHighlightBackgroundColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                primaryHighlightBorderColor: StyleManager.buttonPrimaryHighlightedColor,
+                                                primaryNormalBorderColor: .primaryButtonDownBackground,
+                                                primaryHighlightBackgroundColor: .primaryButtonDownBackground,
+                                                primaryHighlightBorderColor: .primaryButtonDownBorder,
                                                 secondaryNormalBackgroundColor: StyleManager.buttonSecondaryColor,
                                                 secondaryNormalBorderColor: StyleManager.buttonSecondaryHighlightedColor,
                                                 secondaryHighlightBackgroundColor: StyleManager.buttonSecondaryHighlightedColor,

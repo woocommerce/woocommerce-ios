@@ -187,9 +187,9 @@ private extension AppDelegate {
     func setupFancyButtonAppearance() {
         let appearance = FancyButton.appearance()
         appearance.primaryNormalBackgroundColor = .primaryButtonBackground
-        appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.primaryNormalBorderColor = .primaryButtonDownBorder
+        appearance.primaryHighlightBackgroundColor = .primaryButtonDownBackground
+        appearance.primaryHighlightBorderColor = .primaryButtonDownBorder
     }
 
     /// Sets up Crash Logging

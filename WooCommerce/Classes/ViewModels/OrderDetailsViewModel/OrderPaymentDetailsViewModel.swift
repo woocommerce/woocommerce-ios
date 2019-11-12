@@ -3,6 +3,7 @@ import Yosemite
 
 final class OrderPaymentDetailsViewModel {
     private let order: Order
+    private let refund: Refund?
     private let currencyFormatter = CurrencyFormatter()
 
     var subtotal: Decimal {
@@ -82,12 +83,19 @@ final class OrderPaymentDetailsViewModel {
         return String.localizedStringWithFormat(template, styleDate, order.paymentMethodTitle)
     }
 
+    /// Refund Summary
+    /// - returns: A full sentence summary of the date the refund was created, which payment gateway it was refunded to, and a link to the detailed refund.
+    ///
+    var refundSummary: NSAttributedString? {
+    }
+
     var couponLines: [OrderCouponLine] {
         return order.coupons
     }
 
-    init(order: Order) {
+    init(order: Order, refunds: [Refund]? = nil) {
         self.order = order
+        self.refunds = refunds
     }
 
     private func summarizeCoupons(from lines: [OrderCouponLine]?) -> String? {

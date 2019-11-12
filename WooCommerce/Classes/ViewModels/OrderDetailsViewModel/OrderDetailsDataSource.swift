@@ -472,7 +472,17 @@ extension OrderDetailsDataSource {
             return Section(title: Title.information, rows: rows)
         }()
         
-        let payment = Section(title: Title.payment, rows: [.payment, .customerPaid])
+        let payment:Section = {
+            var rows: [Row] = [.payment, .customerPaid]
+
+            if order.refunds.count > 0 {
+                let refunds = Array<Row>(repeating: .refunds, count: order.refunds.count)
+                rows.append(contentsOf: refunds)
+                rows.append(.netAmount)
+            }
+
+            return Section(title: Title.payment, rows: rows)
+        }()
         
         let tracking: Section? = {
             guard orderTracking.count > 0 else {
@@ -612,6 +622,10 @@ extension OrderDetailsDataSource {
                 return PaymentTableViewCell.reuseIdentifier
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .refund:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .netAmount:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .tracking:
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
@@ -689,7 +703,7 @@ extension OrderDetailsDataSource {
     ///
     /// - Parameter
     ///   - text: string value to send to the pasteboard
-    ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
+    ///   - includeTrailingNewline: If true, insert a trailing newline; defaults to true
     ///
     func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
         guard var text = text, text.isEmpty == false else {
@@ -760,6 +774,9 @@ private extension OrderDetailsDataSource {
                                                    comment: "Button text for adding a new order note")
         static let paidByCustomer = NSLocalizedString("Paid By Customer",
                                                       comment: "The title for the customer payment cell")
+        static let refunded = NSLocalizedString("Refunded",
+                                                comment: "The title for the refunded amount cell")
+        static let netAmount = NSLocalizedString("Net", comment: "The title for the net amount paid cell")
     }
     
     enum Icons {

@@ -20,7 +20,6 @@ protocol Style {
 
     /// Colors
     ///
-    var buttonPrimaryColor: UIColor { get }
     var buttonPrimaryHighlightedColor: UIColor { get }
     var buttonPrimaryTitleColor: UIColor { get }
     var buttonSecondaryColor: UIColor { get }
@@ -284,10 +283,6 @@ class StyleManager {
     }
 
     // MARK: - Colors
-    
-    static var buttonPrimaryColor: UIColor {
-        return active.buttonPrimaryColor
-    }
 
     static var buttonPrimaryHighlightedColor: UIColor {
         return active.buttonPrimaryHighlightedColor

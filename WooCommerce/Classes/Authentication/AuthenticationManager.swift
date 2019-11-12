@@ -24,7 +24,7 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent)
 
-        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: StyleManager.buttonPrimaryColor,
+        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
                                                 primaryNormalBorderColor: StyleManager.buttonPrimaryHighlightedColor,
                                                 primaryHighlightBackgroundColor: StyleManager.buttonPrimaryHighlightedColor,
                                                 primaryHighlightBorderColor: StyleManager.buttonPrimaryHighlightedColor,

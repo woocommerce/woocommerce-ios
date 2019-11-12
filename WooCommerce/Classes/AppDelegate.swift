@@ -186,7 +186,7 @@ private extension AppDelegate {
     ///
     func setupFancyButtonAppearance() {
         let appearance = FancyButton.appearance()
-        appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
+        appearance.primaryNormalBackgroundColor = .primaryButtonBackground
         appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
         appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor

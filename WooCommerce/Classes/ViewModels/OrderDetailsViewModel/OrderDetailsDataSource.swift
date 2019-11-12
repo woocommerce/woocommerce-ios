@@ -303,6 +303,12 @@ private extension OrderDetailsDataSource {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
     }
+
+    func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
+    }
+
+    func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
+    }
     
     func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let item = items[indexPath.row]

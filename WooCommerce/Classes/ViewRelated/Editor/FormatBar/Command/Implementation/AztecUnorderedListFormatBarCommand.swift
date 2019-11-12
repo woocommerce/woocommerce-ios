@@ -17,6 +17,11 @@ struct AztecUnorderedListFormatBarCommand: AztecFormatBarCommand {
 
 private extension AztecUnorderedListFormatBarCommand {
     func toggleList(formatBarItem: FormatBarItem, editorView: EditorView, optionsTablePresenter: OptionsTablePresenter) {
+        guard !optionsTablePresenter.isOnScreen() else {
+            optionsTablePresenter.dismiss()
+            return
+        }
+
         let lists = [TextList.Style.unordered, .ordered]
 
         let listOptions = lists.map { listType -> OptionsTableViewOption in
@@ -51,7 +56,7 @@ private extension AztecUnorderedListFormatBarCommand {
         })
     }
 
-    private func listTypeForSelectedText(editorView: EditorView) -> TextList.Style? {
+    func listTypeForSelectedText(editorView: EditorView) -> TextList.Style? {
         let richTextView = editorView.richTextView
         let identifiers: Set<FormattingIdentifier>
         if richTextView.selectedRange.length > 0 {

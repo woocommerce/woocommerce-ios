@@ -170,10 +170,10 @@ private extension AppDelegate {
         appearance.bottomDividerColor = StyleManager.wooGreyBorder
         appearance.topDividerColor = StyleManager.wooGreyBorder
 
-        appearance.titleTextColor = StyleManager.defaultTextColor
+        appearance.titleTextColor = .text
         appearance.titleFont = UIFont.title2
 
-        appearance.bodyTextColor = StyleManager.defaultTextColor
+        appearance.bodyTextColor = .text
         appearance.bodyFont = UIFont.body
 
         appearance.actionFont = UIFont.headline

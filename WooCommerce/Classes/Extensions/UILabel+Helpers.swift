@@ -6,19 +6,19 @@ extension UILabel {
     func applyHeadlineStyle() {
         adjustsFontForContentSizeCategory = true
         font = .headline
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
     }
 
     func applySubheadlineStyle() {
         adjustsFontForContentSizeCategory = true
         font = .subheadline
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
     }
 
     func applyBodyStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
     }
 
     func applySecondaryBodyStyle() {
@@ -30,7 +30,7 @@ extension UILabel {
     func applyFootnoteStyle() {
         adjustsFontForContentSizeCategory = true
         font = .footnote
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
     }
 
     func applySecondaryFootnoteStyle() {
@@ -42,7 +42,7 @@ extension UILabel {
     func applyTitleStyle() {
         adjustsFontForContentSizeCategory = true
         font = .title1
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
     }
 
     func applyPaddedLabelDefaultStyles() {

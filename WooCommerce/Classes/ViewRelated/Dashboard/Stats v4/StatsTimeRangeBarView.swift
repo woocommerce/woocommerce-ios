@@ -30,7 +30,7 @@ private extension StatsTimeRangeBarView {
         pinSubviewToAllEdges(label, insets: Constants.labelInsets)
 
         label.font = StyleManager.headlineSemiBold
-        label.textColor = StyleManager.defaultTextColor
+        label.textColor = .text
     }
 }
 

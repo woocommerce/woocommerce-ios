@@ -28,7 +28,6 @@ protocol Style {
     var buttonDisabledHighlightedColor: UIColor { get }
     var buttonDisabledTitleColor: UIColor { get }
 
-    var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
     var highlightTextColor: UIColor { get }
 
@@ -307,10 +306,6 @@ class StyleManager {
 
     static var buttonDisabledTitleColor: UIColor {
         return active.buttonDisabledTitleColor
-    }
-
-    static var defaultTextColor: UIColor {
-        return active.defaultTextColor
     }
 
     static var destructiveActionColor: UIColor {

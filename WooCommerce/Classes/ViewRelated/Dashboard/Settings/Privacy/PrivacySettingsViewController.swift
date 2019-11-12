@@ -162,7 +162,7 @@ private extension PrivacySettingsViewController {
     func configureCollectInfo(cell: SwitchTableViewCell) {
         // image
         cell.imageView?.image = .statsImage
-        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        cell.imageView?.tintColor = .text
 
         // text
         cell.title = NSLocalizedString(
@@ -230,7 +230,7 @@ private extension PrivacySettingsViewController {
     func configureReportCrashes(cell: SwitchTableViewCell) {
         // image
         cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        cell.imageView?.tintColor = .text
 
         // text
         cell.title = NSLocalizedString(

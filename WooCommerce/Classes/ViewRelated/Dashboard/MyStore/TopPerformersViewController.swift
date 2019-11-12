@@ -175,7 +175,7 @@ private extension TopPerformersViewController {
         settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = StyleManager.defaultTextColor
+        settings.style.buttonBarItemTitleColor = .text
         settings.style.buttonBarItemsShouldFillAvailableWidth = false
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
 
@@ -187,7 +187,7 @@ private extension TopPerformersViewController {
             animated: Bool) -> Void in
 
             guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = StyleManager.defaultTextColor
+            oldCell?.label.textColor = .text
             newCell?.label.textColor = StyleManager.wooCommerceBrandColor
         }
     }

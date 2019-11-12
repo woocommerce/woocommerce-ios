@@ -196,11 +196,11 @@ private extension NoteDetailsCommentTableViewCell {
     }
 
     func configureTitleLabel() {
-        titleLabel.textColor = StyleManager.defaultTextColor
+        titleLabel.textColor = .text
     }
 
     func configureDetailsLabel() {
-        detailsLabel.textColor = StyleManager.defaultTextColor
+        detailsLabel.textColor = .text
     }
     /// Setup: Default Action(s) Style
     ///

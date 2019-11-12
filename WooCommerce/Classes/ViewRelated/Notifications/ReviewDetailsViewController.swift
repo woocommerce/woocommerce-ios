@@ -340,7 +340,7 @@ private extension ReviewDetailsViewController {
 
         let attributes: [NSAttributedString.Key: Any] = [.paragraphStyle: NSParagraphStyle.body,
                                                          .font: UIFont.body,
-                                                         .foregroundColor: StyleManager.defaultTextColor]
+                                                         .foregroundColor: UIColor.text]
         commentCell.commentAttributedText = NSAttributedString(string: productReview.review.strippedHTML, attributes: attributes).trimNewlines()
 
         commentCell.starRating = productReview.rating

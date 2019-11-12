@@ -48,7 +48,7 @@ final class EmptyListMessageWithActionTests: XCTestCase {
         let label = subject?.getButtonLabel()
 
         XCTAssertEqual(label?.font, UIFont.body)
-        XCTAssertEqual(label?.textColor, StyleManager.defaultTextColor)
+        XCTAssertEqual(label?.textColor, .text)
     }
 
     func testActionButtonStyle() {

@@ -86,7 +86,7 @@ private extension OrderNoteTableViewCell {
                                   comment: "Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer)")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else if isSystemAuthor {
-            iconButton.backgroundColor = StyleManager.wooCommerceBrandColor
+            iconButton.backgroundColor = .brand
             let template =
                 NSLocalizedString("%1$@ - %2$@ (System)",
                                   comment: "Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System)")

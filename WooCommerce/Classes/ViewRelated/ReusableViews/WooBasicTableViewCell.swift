@@ -45,7 +45,7 @@ class WooBasicTableViewCell: UITableViewCell {
     ///
     func configureLabel() {
         bodyLabel?.applyBodyStyle()
-        bodyLabel?.textColor = StyleManager.wooCommerceBrandColor
+        bodyLabel?.textColor = .brand
     }
 
     /// Add the accessoryView image, if any

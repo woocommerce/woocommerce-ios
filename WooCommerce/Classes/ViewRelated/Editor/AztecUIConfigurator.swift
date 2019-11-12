@@ -71,7 +71,7 @@ private extension AztecUIConfigurator {
         configureDefaultProperties(for: textView, accessibilityLabel: accessibilityLabel)
 
         let linkAttributes: [NSAttributedString.Key: Any] = [.underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                             .foregroundColor: StyleManager.wooCommerceBrandColor]
+                                                             .foregroundColor: UIColor.brand]
 
         textView.delegate = textViewDelegate
         textView.textAttachmentDelegate = textViewAttachmentDelegate

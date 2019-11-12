@@ -160,7 +160,7 @@ private extension AppDelegate {
         UISearchBar.applyWooAppearance()
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
-        window?.tintColor = StyleManager.wooCommerceBrandColor
+        window?.tintColor = .brand
     }
 
     /// Sets up FancyAlert's UIAppearance.
@@ -178,7 +178,7 @@ private extension AppDelegate {
 
         appearance.actionFont = UIFont.headline
         appearance.infoFont = UIFont.subheadline
-        appearance.infoTintColor = StyleManager.wooCommerceBrandColor
+        appearance.infoTintColor = .brand
         appearance.headerBackgroundColor = StyleManager.wooGreyLight
     }
 

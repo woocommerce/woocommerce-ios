@@ -99,7 +99,7 @@ private extension AccountHeaderView {
     func setupHelpButton() {
         helpButton.setTitle(Strings.helpButtonTitle, for: .normal)
         helpButton.setTitle(Strings.helpButtonTitle, for: .highlighted)
-        helpButton.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
+        helpButton.setTitleColor(.brand, for: .normal)
         helpButton.setTitleColor(StyleManager.wooGreyMid, for: .highlighted)
         helpButton.on(.touchUpInside) { [weak self] control in
             ServiceLocator.analytics.track(.sitePickerHelpButtonTapped)

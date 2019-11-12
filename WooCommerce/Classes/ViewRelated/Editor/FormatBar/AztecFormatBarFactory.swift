@@ -7,8 +7,8 @@ struct AztecFormatBarFactory {
     func formatBar(onAction: @escaping (_ formatBarItem: FormatBarItem, _ formatBar: FormatBar) -> Void) -> FormatBar {
         let toolbar = Aztec.FormatBar()
 
-        toolbar.tintColor = StyleManager.wooCommerceBrandColor
-        toolbar.highlightedTintColor = StyleManager.wooCommerceBrandColor.withAlphaComponent(0.5)
+        toolbar.tintColor = .brand
+        toolbar.highlightedTintColor = UIColor.brand.withAlphaComponent(0.5)
         toolbar.selectedTintColor = StyleManager.wooSecondary
         toolbar.disabledTintColor = StyleManager.buttonDisabledColor
         toolbar.dividerTintColor = .divider

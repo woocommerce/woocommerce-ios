@@ -42,7 +42,7 @@ extension UIImage {
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
-        let tintColor = StyleManager.wooCommerceBrandColor
+        let tintColor = UIColor.brand
         return checkmarkImage.imageWithTintColor(tintColor)!
     }
 
@@ -80,7 +80,7 @@ extension UIImage {
     /// Delete Icon
     ///
     static var deleteImage: UIImage {
-        let tintColor = StyleManager.wooCommerceBrandColor
+        let tintColor = UIColor.brand
         return Gridicon.iconOfType(.crossCircle)
             .imageWithTintColor(tintColor)!
             .imageFlippedForRightToLeftLayoutDirection()
@@ -167,7 +167,7 @@ extension UIImage {
     /// More Icon
     ///
     static var moreImage: UIImage {
-        let tintColor = StyleManager.wooCommerceBrandColor
+        let tintColor = UIColor.brand
         return ellipsisImage.imageWithTintColor(tintColor)!
     }
 
@@ -196,7 +196,7 @@ extension UIImage {
     /// Pencil Icon
     ///
     static var pencilImage: UIImage {
-        let tintColor = StyleManager.wooCommerceBrandColor
+        let tintColor = UIColor.brand
         return Gridicon.iconOfType(.pencil)
             .imageWithTintColor(tintColor)!
             .imageFlippedForRightToLeftLayoutDirection()

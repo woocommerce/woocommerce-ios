@@ -336,7 +336,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             self?.viewModel.dataSource.copyText(at: indexPath)
             success(true)
         }
-        copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
+        copyAction.backgroundColor = .brand
 
         return UISwipeActionsConfiguration(actions: [copyAction])
     }
@@ -398,7 +398,7 @@ private extension OrderDetailsViewController {
         }
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        actionSheet.view.tintColor = .brand
 
         actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
 

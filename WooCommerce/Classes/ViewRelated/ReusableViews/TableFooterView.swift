@@ -63,7 +63,7 @@ extension TableFooterView {
         footnote.textContainerInset = .zero
         footnote.textAlignment = .center
         footnote.linkTextAttributes = [
-            .foregroundColor: StyleManager.wooCommerceBrandColor,
+            .foregroundColor: UIColor.brand,
             .underlineColor: UIColor.clear,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]

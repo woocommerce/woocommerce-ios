@@ -172,7 +172,7 @@ private extension TopPerformersViewController {
     func configureTabStrip() {
         settings.style.buttonBarBackgroundColor = StyleManager.wooWhite
         settings.style.buttonBarItemBackgroundColor = StyleManager.wooWhite
-        settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
+        settings.style.selectedBarBackgroundColor = .brand
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight
         settings.style.buttonBarItemTitleColor = .text
@@ -188,7 +188,7 @@ private extension TopPerformersViewController {
 
             guard changeCurrentIndex == true else { return }
             oldCell?.label.textColor = .text
-            newCell?.label.textColor = StyleManager.wooCommerceBrandColor
+            newCell?.label.textColor = .brand
         }
     }
 }

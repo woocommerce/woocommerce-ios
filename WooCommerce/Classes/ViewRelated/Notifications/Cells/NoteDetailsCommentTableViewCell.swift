@@ -223,8 +223,8 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Button Appearance
     ///
     func refreshAppearance(button: UIButton) {
-        let bgColor = button.isSelected ? StyleManager.wooCommerceBrandColor : StyleManager.wooGreyLight
-        let textColor = button.isSelected ? StyleManager.wooGreyLight : StyleManager.wooCommerceBrandColor
+        let bgColor = button.isSelected ? UIColor.brand : StyleManager.wooGreyLight
+        let textColor = button.isSelected ? StyleManager.wooGreyLight : UIColor.brand
 
         button.backgroundColor = bgColor
         button.tintColor = textColor

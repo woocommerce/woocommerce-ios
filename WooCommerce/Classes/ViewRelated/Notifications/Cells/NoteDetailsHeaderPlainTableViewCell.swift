@@ -50,7 +50,7 @@ final class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         imageView?.tintColor = StyleManager.wooGreyTextMin
-        accessoryImageView.tintColor = StyleManager.wooCommerceBrandColor
+        accessoryImageView.tintColor = .brand
         accessoryView = accessoryImageView
         textLabel?.font = UIFont.body
         textLabel?.textColor = .text

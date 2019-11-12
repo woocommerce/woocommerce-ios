@@ -75,18 +75,18 @@ private extension LoginPrologueViewController {
     }
 
     func setupBackgroundView() {
-        backgroundView.backgroundColor = StyleManager.wooCommerceBrandColor
+        backgroundView.backgroundColor = .brand
     }
 
     func setupContainerView() {
-        containerView.backgroundColor = StyleManager.wooCommerceBrandColor
+        containerView.backgroundColor = .brand
     }
 
     func setupUpperLabel() {
         upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
         upperLabel.adjustsFontForContentSizeCategory = true
         upperLabel.font = StyleManager.subheadlineBoldFont
-        upperLabel.textColor = StyleManager.wooCommerceBrandColor
+        upperLabel.textColor = .brand
     }
 
     func setupJetpackImage() {

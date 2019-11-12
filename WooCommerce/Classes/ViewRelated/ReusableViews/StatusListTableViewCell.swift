@@ -45,6 +45,6 @@ private extension StatusListTableViewCell {
     }
 
     func styleCheckmark() {
-        tintColor = StyleManager.wooCommerceBrandColor
+        tintColor = .brand
     }
 }

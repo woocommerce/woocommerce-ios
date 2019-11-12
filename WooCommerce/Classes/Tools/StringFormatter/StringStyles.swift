@@ -125,7 +125,7 @@ extension StringStyles {
                              .font: UIFont.body.italics,
                              .foregroundColor: UIColor.text]
 
-        let link: Style = [.foregroundColor: StyleManager.wooCommerceBrandColor]
+        let link: Style = [.foregroundColor: UIColor.brand]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, match: match, noticon: noticon, link: link)
     }()

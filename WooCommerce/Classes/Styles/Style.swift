@@ -45,7 +45,6 @@ protocol Style {
     var statusSuccessBoldColor: UIColor { get }
     var statusWarningColor: UIColor { get }
 
-    var wooCommerceBrandColor: UIColor { get }
     var wooAccent: UIColor { get }
     var wooGreyLight: UIColor { get }
     var wooGreyMid: UIColor { get }
@@ -355,11 +354,6 @@ class StyleManager {
     static var yellowStarColor: UIColor {
         return active.yellowStarColor
     }
-
-    static var wooCommerceBrandColor: UIColor {
-        return active.wooCommerceBrandColor
-    }
-
     static var wooSecondary: UIColor {
         return active.wooSecondary
     }

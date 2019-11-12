@@ -14,7 +14,7 @@ extension UISearchBar {
         appearance.layer.borderColor = StyleManager.wooGreyBorder.cgColor
         appearance.layer.borderWidth = 1.0
 
-        let brandColor = StyleManager.wooCommerceBrandColor
+        let brandColor = UIColor.brand
         appearance.tintColor = brandColor
 
         let cancelButtonAttributes = [NSAttributedString.Key.foregroundColor: brandColor]

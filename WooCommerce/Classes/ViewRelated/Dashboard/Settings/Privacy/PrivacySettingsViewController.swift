@@ -192,7 +192,7 @@ private extension PrivacySettingsViewController {
         cell.imageView?.image = .invisibleImage
         cell.imageView?.tintColor = .white
         cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Settings > Privacy Settings. A text link to the cookie policy.")
-        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+        cell.textLabel?.textColor = .brand
     }
 
     func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
@@ -214,7 +214,7 @@ private extension PrivacySettingsViewController {
             "Read privacy policy",
             comment: "Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy."
         )
-        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+        cell.textLabel?.textColor = .brand
     }
 
     func configureCookieInfo(cell: TopLeftImageTableViewCell) {

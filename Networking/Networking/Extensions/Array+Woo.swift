@@ -5,9 +5,9 @@ import Foundation
 //
 extension Array where Element == Int {
 
-    /// Returns a de-duplicated array of integer values as a comma-separated String.
+    /// Returns a sorted, de-duplicated array of integer values as a comma-separated String.
     ///
-    func intToString() -> String {
+    func sortedUniqueIntToString() -> String {
         let uniqued: Array = Array(Set<Int>(self))
 
         let items = uniqued.sorted()

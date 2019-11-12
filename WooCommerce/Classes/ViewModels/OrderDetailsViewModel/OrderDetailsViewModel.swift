@@ -98,7 +98,6 @@ final class OrderDetailsViewModel {
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         dataSource.configureResultsControllers(onReload: onReload)
-        //configureOrderListener()
     }
 
     func updateOrderStatus(order: Order) {

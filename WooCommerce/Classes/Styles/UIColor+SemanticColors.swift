@@ -213,8 +213,62 @@ extension UIColor {
 
     /// Filter Bar Background. `white` (< iOS 13 and Light Mode) and Gray-90 (Dark Mode)
     ///
-    static var filterBarSelected: UIColor {
+    static var filterBarBackground: UIColor {
         return UIColor(light: .white,
                        dark: muriel(color: .gray, .shade90))
+    }
+}
+
+
+// MARK: - Table Views.
+extension UIColor {
+    /// List Icon. Gray-20 (< iOS 13) and `UIColor.secondaryLabel` (> iOS 13)
+    ///
+    static var listIcon: UIColor {
+        if #available(iOS 13, *) {
+            return .secondaryLabel
+        }
+
+        return muriel(color: .gray, .shade20)
+    }
+
+    /// List Small Icon. Gray-20 (< iOS 13) and `UIColor.systemGray` (> iOS 13)
+    ///
+    static var listSmallIcon: UIColor {
+        if #available(iOS 13, *) {
+            return .systemGray
+        }
+
+        return muriel(color: .gray, .shade20)
+    }
+
+    /// List BackGround. Gray-0 (< iOS 13) and `UIColor.systemGroupedBackground` (> iOS 13)
+    ///
+    static var listBackground: UIColor {
+        if #available(iOS 13, *) {
+            return .systemGroupedBackground
+        }
+
+        return muriel(color: .gray, .shade0)
+    }
+
+    /// List ForeGround. `UIColor.white` (< iOS 13) and `UIColor.secondarySystemGroupedBackground` (> iOS 13)
+    ///
+    static var listForeground: UIColor {
+        if #available(iOS 13, *) {
+            return .secondarySystemGroupedBackground
+        }
+
+        return .white
+    }
+
+    /// List ForeGround Unread. Blue-0 (< iOS 13) and `UIColor.tertiarySystemGroupedBackground` (> iOS 13)
+    ///
+    static var listForegroundUnread: UIColor {
+        if #available(iOS 13, *) {
+            return .tertiarySystemGroupedBackground
+        }
+
+        return muriel(color: .blue, .shade0)
     }
 }

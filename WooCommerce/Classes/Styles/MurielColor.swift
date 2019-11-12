@@ -13,7 +13,7 @@ enum MurielColorName: String, CustomStringConvertible {
     case wooCommercePurple
 
     var description: String {
-        // can't use .capitalized because it lowercases the P and B in "wooCommercePurple"
+        // can't use .capitalized because it lowercases the C and P in "wooCommercePurple"
         return rawValue.prefix(1).uppercased() + rawValue.dropFirst()
     }
 }

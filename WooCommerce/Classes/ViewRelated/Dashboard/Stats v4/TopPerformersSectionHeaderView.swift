@@ -25,7 +25,7 @@ private extension TopPerformersSectionHeaderView {
         label.text = title
 
         label.applyFootnoteStyle()
-        label.textColor = StyleManager.sectionTitleColor
+        label.textColor = .listIcon
 
         label.translatesAutoresizingMaskIntoConstraints = false
         NSLayoutConstraint.activate([

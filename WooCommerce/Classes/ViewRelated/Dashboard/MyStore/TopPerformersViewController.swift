@@ -152,7 +152,7 @@ private extension TopPerformersViewController {
         topBorder.backgroundColor = StyleManager.wooGreyBorder
         middleBorder.backgroundColor = StyleManager.wooGreyBorder
         headingLabel.applyFootnoteStyle()
-        headingLabel.textColor = StyleManager.sectionTitleColor
+        headingLabel.textColor = .listIcon
         headingLabel.textInsets = Constants.headerLabelInsets
         headingLabel.text =  NSLocalizedString("Top Performers", comment: "Header label for Top Performers section of My Store tab.").uppercased()
     }

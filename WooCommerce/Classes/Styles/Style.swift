@@ -28,8 +28,6 @@ protocol Style {
     var buttonDisabledHighlightedColor: UIColor { get }
     var buttonDisabledTitleColor: UIColor { get }
 
-    var cellSeparatorColor: UIColor { get }
-
     var defaultTextColor: UIColor { get }
     var destructiveActionColor: UIColor { get }
     var highlightTextColor: UIColor { get }
@@ -309,10 +307,6 @@ class StyleManager {
 
     static var buttonDisabledTitleColor: UIColor {
         return active.buttonDisabledTitleColor
-    }
-
-    static var cellSeparatorColor: UIColor {
-        return active.cellSeparatorColor
     }
 
     static var defaultTextColor: UIColor {

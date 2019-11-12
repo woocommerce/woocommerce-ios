@@ -11,7 +11,7 @@ struct AztecFormatBarFactory {
         toolbar.highlightedTintColor = StyleManager.wooCommerceBrandColor.withAlphaComponent(0.5)
         toolbar.selectedTintColor = StyleManager.wooSecondary
         toolbar.disabledTintColor = StyleManager.buttonDisabledColor
-        toolbar.dividerTintColor = StyleManager.cellSeparatorColor
+        toolbar.dividerTintColor = .divider
         toolbar.overflowToggleIcon = Gridicon.iconOfType(.ellipsis)
 
         updateToolbar(toolbar)

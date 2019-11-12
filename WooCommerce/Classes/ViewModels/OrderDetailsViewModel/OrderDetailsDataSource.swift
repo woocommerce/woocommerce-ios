@@ -185,6 +185,10 @@ private extension OrderDetailsDataSource {
             configurePayment(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
+            configureRefund(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
+            configureNetAmount(cell: cell)
         case let cell as ProductDetailsTableViewCell:
             configureOrderItem(cell: cell, at: indexPath)
         case let cell as FulfillButtonTableViewCell:

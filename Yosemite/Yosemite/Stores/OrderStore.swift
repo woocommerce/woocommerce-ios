@@ -287,15 +287,23 @@ private extension OrderStore {
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
     ///
     private func handleOrderItems(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        var storageItem: Storage.OrderItem
+        let siteID = readOnlyOrder.siteID
+        let orderID = readOnlyOrder.orderID
+
         // Upsert the items from the read-only order
         for readOnlyItem in readOnlyOrder.items {
-            if let existingStorageItem = storage.loadOrderItem(itemID: readOnlyItem.itemID) {
+            if let existingStorageItem = storage.loadOrderItem(siteID: siteID, orderID: orderID, itemID: readOnlyItem.itemID) {
                 existingStorageItem.update(with: readOnlyItem)
+                storageItem = existingStorageItem
             } else {
                 let newStorageItem = storage.insertNewObject(ofType: Storage.OrderItem.self)
                 newStorageItem.update(with: readOnlyItem)
                 storageOrder.addToItems(newStorageItem)
+                storageItem = newStorageItem
             }
+            
+            handleOrderItemTaxes(readOnlyItem, storageItem, storage)
         }
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
@@ -303,6 +311,31 @@ private extension OrderStore {
             if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
                 storageOrder.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
+            }
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageOrderItem's taxes using the provided read-only OrderItem
+    ///
+    private func handleOrderItemTaxes(_ readOnlyItem: Networking.OrderItem, _ storageItem: Storage.OrderItem, _ storage: StorageType) {
+        let itemID = readOnlyItem.itemID
+
+        // Upsert the taxes from the read-only orderItem
+        for readOnlyTax in readOnlyItem.taxes {
+            if let existingStorageTax = storage.loadOrderItemTax(itemID: itemID, taxID: readOnlyTax.taxID) {
+                existingStorageTax.update(with: readOnlyTax)
+            } else {
+                let newStorageTax = storage.insertNewObject(ofType: Storage.OrderItemTax.self)
+                newStorageTax.update(with: readOnlyTax)
+                storageItem.addToTaxes(newStorageTax)
+            }
+        }
+
+        // Now, remove any objects that exist in storageOrderItem.taxes but not in readOnlyOrderItem.taxes
+        storageItem.taxes?.forEach { storageTax in
+            if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+                storageItem.removeFromTaxes(storageTax)
+                storage.deleteObject(storageTax)
             }
         }
     }

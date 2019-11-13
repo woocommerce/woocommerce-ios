@@ -27,8 +27,6 @@ protocol Style {
     var buttonDisabledHighlightedColor: UIColor { get }
     var buttonDisabledTitleColor: UIColor { get }
 
-    var highlightTextColor: UIColor { get }
-
     var goldStarColor: UIColor { get }
     var grayStarColor: UIColor { get }
     var yellowStarColor: UIColor { get }
@@ -293,10 +291,6 @@ class StyleManager {
 
     static var buttonDisabledTitleColor: UIColor {
         return active.buttonDisabledTitleColor
-    }
-
-    static var highlightTextColor: UIColor {
-        return active.highlightTextColor
     }
 
     static var statusNotIdentifiedColor: UIColor {

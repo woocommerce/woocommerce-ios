@@ -86,6 +86,12 @@ final class OrderDetailsDataSource: NSObject {
         return order.items
     }
 
+    /// All the condensed refunds in an order
+    ///
+    private var condensedRefunds: [OrderRefundCondensed] {
+        return order.refunds
+    }
+
     /// Notes of an Order
     ///
     var orderNotes: [OrderNote] = [] {
@@ -311,7 +317,8 @@ private extension OrderDetailsDataSource {
     }
 
     func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
-        let condensedRefund = order.refunds[indexPath.row]
+        let row = rowAtIndexPath(indexPath)
+        let condensedRefund = condensedRefunds[indexPath.row - 2]
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
         cell.leftText = Titles.refunded

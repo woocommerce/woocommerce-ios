@@ -306,7 +306,7 @@ private extension StoreStatsV4PeriodViewController {
         barChartView.drawValueAboveBarEnabled = true
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
-        barChartView.noDataTextColor = StyleManager.wooSecondary
+        barChartView.noDataTextColor = .textSubtle
         barChartView.extraRightOffset = Constants.chartExtraRightOffset
         barChartView.extraTopOffset = Constants.chartExtraTopOffset
         barChartView.delegate = self
@@ -314,7 +314,7 @@ private extension StoreStatsV4PeriodViewController {
         let xAxis = barChartView.xAxis
         xAxis.labelPosition = .bottom
         xAxis.labelFont = StyleManager.chartLabelFont
-        xAxis.labelTextColor = StyleManager.wooSecondary
+        xAxis.labelTextColor = .textSubtle
         xAxis.axisLineColor = .listSmallIcon
         xAxis.gridColor = .listSmallIcon
         xAxis.drawLabelsEnabled = true
@@ -327,7 +327,7 @@ private extension StoreStatsV4PeriodViewController {
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
-        yAxis.labelTextColor = StyleManager.wooSecondary
+        yAxis.labelTextColor = .textSubtle
         yAxis.axisLineColor = .listSmallIcon
         yAxis.gridColor = .listSmallIcon
         yAxis.zeroLineColor = .listSmallIcon
@@ -366,13 +366,11 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func updateBarChartAxisUI(hasRevenue: Bool) {
-        let labelTextColor = hasRevenue ? StyleManager.wooSecondary: UIColor.textSubtle
-
         let xAxis = barChartView.xAxis
-        xAxis.labelTextColor = labelTextColor
+        xAxis.labelTextColor = .textSubtle
 
         let yAxis = barChartView.leftAxis
-        yAxis.labelTextColor = labelTextColor
+        yAxis.labelTextColor = .textSubtle
     }
 }
 

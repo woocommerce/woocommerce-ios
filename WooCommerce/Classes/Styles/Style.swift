@@ -21,8 +21,6 @@ protocol Style {
     /// Colors
     ///
 
-    var wooSecondary: UIColor { get }
-
     /// NavBar
     ///
     var navBarImage: UIImage { get }
@@ -246,10 +244,6 @@ class StyleManager {
     }
 
     // MARK: - Colors
-
-    static var wooSecondary: UIColor {
-        return active.wooSecondary
-    }
 
     // MARK: - NavBar
 

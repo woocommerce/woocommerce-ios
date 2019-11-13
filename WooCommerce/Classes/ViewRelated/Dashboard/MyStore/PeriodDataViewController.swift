@@ -272,7 +272,7 @@ private extension PeriodDataViewController {
         barChartView.drawValueAboveBarEnabled = true
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
-        barChartView.noDataTextColor = StyleManager.wooSecondary
+        barChartView.noDataTextColor = .textSubtle
         barChartView.extraRightOffset = Constants.chartExtraRightOffset
         barChartView.extraTopOffset = Constants.chartExtraTopOffset
         barChartView.delegate = self
@@ -281,7 +281,7 @@ private extension PeriodDataViewController {
         xAxis.labelPosition = .bottom
         xAxis.setLabelCount(2, force: true)
         xAxis.labelFont = StyleManager.chartLabelFont
-        xAxis.labelTextColor = StyleManager.wooSecondary
+        xAxis.labelTextColor = .textSubtle
         xAxis.axisLineColor = .listSmallIcon
         xAxis.gridColor = .listSmallIcon
         xAxis.drawLabelsEnabled = true
@@ -293,7 +293,7 @@ private extension PeriodDataViewController {
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
-        yAxis.labelTextColor = StyleManager.wooSecondary
+        yAxis.labelTextColor = .textSubtle
         yAxis.axisLineColor = .listSmallIcon
         yAxis.gridColor = .listSmallIcon
         yAxis.zeroLineColor = .listSmallIcon
@@ -335,7 +335,7 @@ extension PeriodDataViewController: ChartViewDelegate {
         }
 
         let marker = ChartMarker(chartView: chartView,
-                                 color: StyleManager.wooSecondary,
+                                 color: .textSubtle,
                                  font: StyleManager.chartLabelFont,
                                  textColor: .basicBackground,
                                  insets: Constants.chartMarkerInsets)

@@ -19,7 +19,7 @@ class AccountHeaderView: UIView {
     ///
     @IBOutlet private var fullnameLabel: UILabel! {
         didSet {
-            fullnameLabel.textColor = StyleManager.wooSecondary
+            fullnameLabel.textColor = .textSubtle
         }
     }
 

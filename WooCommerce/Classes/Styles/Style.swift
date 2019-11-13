@@ -20,7 +20,6 @@ protocol Style {
 
     /// Colors
     ///
-    var grayStarColor: UIColor { get }
 
     var statusNotIdentifiedColor: UIColor { get }
     var statusNotIdentifiedBoldColor: UIColor { get }
@@ -306,10 +305,6 @@ class StyleManager {
 
     static var wooGreyTextMin: UIColor {
         return active.wooGreyTextMin
-    }
-
-    static var grayStarColor: UIColor {
-        return active.grayStarColor
     }
 
     // MARK: - NavBar

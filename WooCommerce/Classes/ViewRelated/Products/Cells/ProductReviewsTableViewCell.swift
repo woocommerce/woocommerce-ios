@@ -54,8 +54,8 @@ private extension ProductReviewsTableViewCell {
     enum Star {
         static let size = Double(20)
         static let filledImage = UIImage.starImage(size: Star.size,
-                                                   tintColor: StyleManager.grayStarColor)
+                                                   tintColor: .text)
         static let emptyImage = UIImage.starOutlineImage(size: Star.size,
-                                                         tintColor: StyleManager.grayStarColor)
+                                                         tintColor: .text)
     }
 }

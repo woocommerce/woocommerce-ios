@@ -96,6 +96,7 @@ private extension ProductFormViewController {
 
     func onEditProductDescriptionCompletion(newDescription: String) {
         guard newDescription != product.fullDescription else {
+            navigationController?.popViewController(animated: true)
             return
         }
 
@@ -107,6 +108,9 @@ private extension ProductFormViewController {
                                                                     return
                                                                 }
                                                                 self?.product = product
+
+                                                                // Dismisses Product description editor.
+                                                                self?.navigationController?.popViewController(animated: true)
         }
         ServiceLocator.stores.dispatch(action)
     }

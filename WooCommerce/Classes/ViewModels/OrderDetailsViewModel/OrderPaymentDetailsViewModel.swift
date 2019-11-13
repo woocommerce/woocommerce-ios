@@ -93,9 +93,9 @@ final class OrderPaymentDetailsViewModel {
         return order.coupons
     }
 
-    init(order: Order, refunds: [Refund]? = nil) {
+    init(order: Order, refund: Refund? = nil) {
         self.order = order
-        self.refunds = refunds
+        self.refund = refund
     }
 
     private func summarizeCoupons(from lines: [OrderCouponLine]?) -> String? {

@@ -40,12 +40,8 @@ final class OrderDetailsViewModel {
 
     /// Refunds
     ///
-    var refunds: [Refund] = [] {
-        didSet {
-            dataSource.refunds = refunds
-            dataSource.reloadSections()
-            onUIReloadRequired?()
-        }
+    var refunds: [Refund] {
+        return dataSource.refunds
     }
 
     /// Indicates if we consider the shipment tracking plugin as reachable

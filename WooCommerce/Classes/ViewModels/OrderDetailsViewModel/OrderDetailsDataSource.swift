@@ -192,7 +192,7 @@ private extension OrderDetailsDataSource {
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
-            configureRefund(cell: cell)
+            configureRefund(cell: cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
             configureNetAmount(cell: cell)
         case let cell as ProductDetailsTableViewCell:
@@ -319,7 +319,9 @@ private extension OrderDetailsDataSource {
         cell.footnoteAttributedText = paymentViewModel.refundSummary
     }
 
-    func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
+    func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        cell.leftText = Titles.netAmount
+//        cell.rightText = viewModel.netAmount
     }
     
     func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
@@ -490,7 +492,7 @@ extension OrderDetailsDataSource {
             var rows: [Row] = [.payment, .customerPaid]
 
             if order.refunds.count > 0 {
-                let refunds = Array<Row>(repeating: .refunds, count: order.refunds.count)
+                let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
                 rows.append(contentsOf: refunds)
                 rows.append(.netAmount)
             }

@@ -47,7 +47,7 @@ final class OrderDetailsResultsControllers {
                                     self.order.orderID)
         let descriptor = NSSortDescriptor(keyPath: \StorageRefund.dateCreated, ascending: true)
 
-        return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        return ResultsController<StorageRefund>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
     /// Order shipment tracking list

@@ -2,21 +2,17 @@ import UIKit
 import Yosemite
 
 /// The Product form contains 3 sections: images, primary fields, and details.
-final class DefaultProductFormTableViewModel: NSObject, ProductFormTableViewModel {
+struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 
     private(set) var sections: [ProductFormSection] = []
 
-    private let product: Product
-
     init(product: Product) {
-        self.product = product
-        super.init()
-        configureSections()
+        configureSections(product: product)
     }
 }
 
 private extension DefaultProductFormTableViewModel {
-    func configureSections() {
+    mutating func configureSections(product: Product) {
         sections = [.images,
                     .primaryFields(rows: primaryFieldRows(product: product)),
                     .details(rows: [])]
@@ -24,7 +20,7 @@ private extension DefaultProductFormTableViewModel {
 
     func primaryFieldRows(product: Product) -> [ProductFormSection.PrimaryFieldRow] {
         return [
-            .description(description: product.singleLineFullDescription)
+            .description(description: product.trimmedFullDescription)
         ]
     }
 }

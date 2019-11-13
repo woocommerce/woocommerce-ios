@@ -21,7 +21,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableCell {
     var cellType: UITableViewCell.Type {
         switch self {
         case .description:
-            return TextFieldTableViewCell.self
+            return PlaceholderOrTitleAndTextTableViewCell.self
         default:
             fatalError("Not implemented yet")
         }

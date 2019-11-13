@@ -54,7 +54,7 @@ private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
         case .description(let description):
-            guard let cell = cell as? TextFieldTableViewCell else {
+            guard let cell = cell as? PlaceholderOrTitleAndTextTableViewCell else {
                 assertionFailure()
                 return
             }
@@ -64,10 +64,18 @@ private extension ProductFormTableViewDataSource {
         }
     }
 
-    func configureDescription(cell: TextFieldTableViewCell, description: String?) {
-        cell.isEditable = false
-        cell.updateText(description,
-                        placeholder: NSLocalizedString("Describe your product", comment: "Placeholder in the Product description row on Product form screen."))
+    func configureDescription(cell: PlaceholderOrTitleAndTextTableViewCell, description: String?) {
+        let state: PlaceholderOrTitleAndTextTableViewCell.State
+
+        if let description = description, description.isEmpty == false {
+            let title = NSLocalizedString("Description",
+                                          comment: "Title in the Product description row on Product form screen when the description is non-empty.")
+            state = .text(title: title, text: description)
+        } else {
+            let placeholder = NSLocalizedString("Describe your product", comment: "Placeholder in the Product description row on Product form screen.")
+            state = .placeholder(placeholder: placeholder)
+        }
+        cell.update(state: state)
         cell.accessoryType = .disclosureIndicator
     }
 }

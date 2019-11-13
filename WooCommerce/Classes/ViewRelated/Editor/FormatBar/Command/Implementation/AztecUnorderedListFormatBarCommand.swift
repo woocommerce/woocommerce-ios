@@ -26,7 +26,7 @@ private extension AztecUnorderedListFormatBarCommand {
 
         let listOptions = lists.map { listType -> OptionsTableViewOption in
             let title = NSAttributedString(string: listType.description, attributes: [
-                .foregroundColor: StyleManager.defaultTextColor
+                .foregroundColor: UIColor.text
             ])
             return OptionsTableViewOption(image: listType.iconImage,
                                           title: title,

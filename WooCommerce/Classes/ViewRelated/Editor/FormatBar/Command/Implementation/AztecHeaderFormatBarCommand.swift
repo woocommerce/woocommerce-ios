@@ -29,7 +29,7 @@ private extension AztecHeaderFormatBarCommand {
         let headerOptions = headers.map { headerType -> OptionsTableViewOption in
             let attributes: [NSAttributedString.Key: Any] = [
                 .font: UIFont.systemFont(ofSize: CGFloat(headerType.fontSize)),
-                .foregroundColor: StyleManager.defaultTextColor
+                .foregroundColor: UIColor.text
             ]
 
             let title = NSAttributedString(string: headerType.description, attributes: attributes)

@@ -34,7 +34,7 @@ class AuthenticationManager: Authentication {
                                                 secondaryHighlightBorderColor: StyleManager.buttonSecondaryHighlightedColor,
                                                 disabledBackgroundColor: StyleManager.buttonDisabledColor,
                                                 disabledBorderColor: StyleManager.buttonDisabledHighlightedColor,
-                                                primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
+                                                primaryTitleColor: .text,
                                                 secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
                                                 disabledTitleColor: StyleManager.buttonDisabledTitleColor,
                                                 textButtonColor: .brand,

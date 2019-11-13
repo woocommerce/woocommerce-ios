@@ -30,16 +30,13 @@ extension UILabel {
         case .processing:
             fallthrough
         case .pending:
-            backgroundColor = StyleManager.statusSuccessColor
-            layer.borderColor = StyleManager.statusSuccessBoldColor.cgColor
+            backgroundColor = .neutral(.shade40)
         case .failed:
             fallthrough
         case .refunded:
             backgroundColor = .error
-            layer.borderColor = UIColor.errorDark.cgColor
         case .completed:
-            backgroundColor = StyleManager.statusPrimaryColor
-            layer.borderColor = StyleManager.statusPrimaryBoldColor.cgColor
+            backgroundColor = .neutral(.shade40)
         case .onHold:
             fallthrough
         case .cancelled:
@@ -47,8 +44,7 @@ extension UILabel {
         case .custom:
             fallthrough
         default:
-            backgroundColor = StyleManager.statusNotIdentifiedColor
-            layer.borderColor = StyleManager.statusNotIdentifiedBoldColor.cgColor
+            backgroundColor = .neutral(.shade40)
         }
     }
 }

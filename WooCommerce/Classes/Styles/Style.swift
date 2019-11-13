@@ -21,7 +21,6 @@ protocol Style {
     /// Colors
     ///
 
-    var statusNotIdentifiedColor: UIColor { get }
     var statusNotIdentifiedBoldColor: UIColor { get }
     var statusPrimaryColor: UIColor { get }
     var statusPrimaryBoldColor: UIColor { get }
@@ -257,10 +256,6 @@ class StyleManager {
     }
 
     // MARK: - Colors
-
-    static var statusNotIdentifiedColor: UIColor {
-        return active.statusNotIdentifiedColor
-    }
 
     static var statusNotIdentifiedBoldColor: UIColor {
         return active.statusNotIdentifiedBoldColor

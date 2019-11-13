@@ -68,7 +68,7 @@ private extension NoteDetailsHeaderPlainTableViewCell {
     /// Setup: Images
     ///
     func configureImages() {
-        imageView?.tintColor = StyleManager.wooGreyTextMin
+        imageView?.tintColor = .textSubtle
         accessoryImageView.tintColor = .brand
         accessoryView = accessoryImageView
     }

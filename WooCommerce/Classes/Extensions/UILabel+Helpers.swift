@@ -24,7 +24,7 @@ extension UILabel {
     func applySecondaryBodyStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body
-        textColor = StyleManager.wooGreyTextMin
+        textColor = .textSubtle
     }
 
     func applyFootnoteStyle() {
@@ -36,7 +36,7 @@ extension UILabel {
     func applySecondaryFootnoteStyle() {
         adjustsFontForContentSizeCategory = true
         font = .footnote
-        textColor = StyleManager.wooGreyTextMin
+        textColor = .textSubtle
     }
 
     func applyTitleStyle() {

@@ -10,7 +10,7 @@ class EmptyStoresTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var legendLabel: UILabel! {
         didSet {
-            legendLabel.textColor = StyleManager.wooGreyTextMin
+            legendLabel.textColor = .textSubtle
             legendLabel.font = .subheadline
             legendLabel.text = NSLocalizedString("Unable to find WooCommerce stores connected to this account",
                                                  comment: "Displayed during the Login flow, whenever the user has no woo stores associated.")

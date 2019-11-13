@@ -68,7 +68,7 @@ private extension TopBannerView {
         infoLabel.numberOfLines = 0
 
         dismissButton.setImage(Gridicon.iconOfType(.cross, withSize: CGSize(width: 24, height: 24)), for: .normal)
-        dismissButton.tintColor = StyleManager.wooGreyTextMin
+        dismissButton.tintColor = .textSubtle
         dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
 
         actionButton.applyLinkButtonStyle()

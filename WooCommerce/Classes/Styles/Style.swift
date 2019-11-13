@@ -21,7 +21,6 @@ protocol Style {
     /// Colors
     ///
 
-    var wooGreyTextMin: UIColor { get }
     var wooGreyBorder: UIColor { get }
     var wooSecondary: UIColor { get }
 
@@ -255,10 +254,6 @@ class StyleManager {
 
     static var wooGreyBorder: UIColor {
         return active.wooGreyBorder
-    }
-
-    static var wooGreyTextMin: UIColor {
-        return active.wooGreyTextMin
     }
 
     // MARK: - NavBar

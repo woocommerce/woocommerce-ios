@@ -35,7 +35,7 @@ final class ReviewViewModel {
         }
 
         let accentColor = UIColor.orange
-        let textColor = StyleManager.wooGreyTextMin
+        let textColor = UIColor.textSubtle
 
         let pendingReviewLiteral = NSAttributedString(string: Strings.pendingReviews,
                                                       attributes: [.foregroundColor: accentColor])

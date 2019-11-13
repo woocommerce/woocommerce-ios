@@ -95,7 +95,7 @@ class StorePickerViewController: UIViewController {
     @IBOutlet private var noResultsLabel: UILabel! {
         didSet {
             noResultsLabel.font = StyleManager.subheadlineFont
-            noResultsLabel.textColor = StyleManager.wooGreyTextMin
+            noResultsLabel.textColor = .textSubtle
         }
     }
 

@@ -27,7 +27,7 @@ class AccountHeaderView: UIView {
     ///
     @IBOutlet private var usernameLabel: UILabel! {
         didSet {
-            usernameLabel.textColor = StyleManager.wooGreyTextMin
+            usernameLabel.textColor = .textSubtle
         }
     }
 

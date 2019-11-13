@@ -54,6 +54,7 @@ final class ProductReviewTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
         configureSubjectLabel()
         configureSnippetLabel()
         configureNoticonLabel()
@@ -100,6 +101,10 @@ private extension ProductReviewTableViewCell {
         sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
     }
 
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+    
     func configureSubjectLabel() {
         subjectLabel.applyBodyStyle()
     }

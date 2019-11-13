@@ -162,9 +162,11 @@ final class NoteDetailsCommentTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
         configureActionButtons()
         configureTitleLabel()
         configureDetailsLabel()
+        configureTextView()
         configureStarView()
         configureDefaultAppearance()
     }
@@ -175,6 +177,12 @@ final class NoteDetailsCommentTableViewCell: UITableViewCell {
 //
 private extension NoteDetailsCommentTableViewCell {
 
+    /// Setup: Cell background
+    ///
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+    
     /// Setup: Actions!
     ///
     func configureActionButtons() {
@@ -202,6 +210,11 @@ private extension NoteDetailsCommentTableViewCell {
     func configureDetailsLabel() {
         detailsLabel.textColor = StyleManager.defaultTextColor
     }
+    
+    func configureTextView() {
+        textView.backgroundColor = StyleManager.wooWhite
+    }
+    
     /// Setup: Default Action(s) Style
     ///
     func configureDefaultAppearance() {

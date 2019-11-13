@@ -104,7 +104,8 @@ private extension ProductFormViewController {
                                                             productID: product.productID,
                                                             description: newDescription) { [weak self] (product, error) in
                                                                 guard let product = product, error == nil else {
-                                                                    DDLogError("⛔️ Error updating Product: \(error?.localizedDescription ?? "No error specified")")
+                                                                    let errorDescription = error?.localizedDescription ?? "No error specified"
+                                                                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
                                                                     return
                                                                 }
                                                                 self?.product = product

@@ -41,7 +41,7 @@ class AuthenticationManager: Authentication {
                                                 textButtonHighlightColor: .brand,
                                                 instructionColor: .brand,
                                                 subheadlineColor: .brand,
-                                                placeholderColor: .textSubtle,
+                                                placeholderColor: .textPlaceholder,
                                                 viewControllerBackgroundColor: .listBackground,
                                                 textFieldBackgroundColor: .basicBackground,
                                                 navBarImage: StyleManager.navBarImage,

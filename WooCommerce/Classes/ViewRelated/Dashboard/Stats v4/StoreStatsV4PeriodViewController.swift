@@ -243,10 +243,10 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureView() {
         view.backgroundColor = .basicBackground
-        borderView.backgroundColor = StyleManager.wooGreyBorder
+        borderView.backgroundColor = .listSmallIcon
 
         // Time range bar bottom border view
-        timeRangeBarBottomBorderView.backgroundColor = StyleManager.wooGreyBorder
+        timeRangeBarBottomBorderView.backgroundColor = .listSmallIcon
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
@@ -315,8 +315,8 @@ private extension StoreStatsV4PeriodViewController {
         xAxis.labelPosition = .bottom
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = StyleManager.wooSecondary
-        xAxis.axisLineColor = StyleManager.wooGreyBorder
-        xAxis.gridColor = StyleManager.wooGreyBorder
+        xAxis.axisLineColor = .listSmallIcon
+        xAxis.gridColor = .listSmallIcon
         xAxis.drawLabelsEnabled = true
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
@@ -328,9 +328,9 @@ private extension StoreStatsV4PeriodViewController {
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
         yAxis.labelTextColor = StyleManager.wooSecondary
-        yAxis.axisLineColor = StyleManager.wooGreyBorder
-        yAxis.gridColor = StyleManager.wooGreyBorder
-        yAxis.zeroLineColor = StyleManager.wooGreyBorder
+        yAxis.axisLineColor = .listSmallIcon
+        yAxis.gridColor = .listSmallIcon
+        yAxis.zeroLineColor = .listSmallIcon
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
         yAxis.drawAxisLineEnabled = false

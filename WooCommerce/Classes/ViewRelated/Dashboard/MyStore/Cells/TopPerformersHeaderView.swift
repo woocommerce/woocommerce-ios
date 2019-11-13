@@ -63,7 +63,7 @@ class TopPerformersHeaderView: UITableViewHeaderFooterView {
         rightColumn.applyFootnoteStyle()
         leftColumn.textColor = .listIcon
         rightColumn.textColor = .listIcon
-        borderView.backgroundColor = StyleManager.wooGreyBorder
+        borderView.backgroundColor = .listSmallIcon
     }
 }
 

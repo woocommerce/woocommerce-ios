@@ -106,7 +106,7 @@ private extension PickListTableViewCell {
     
     func setupImageView() {
         productImageView.image = .productImage
-        productImageView.tintColor = StyleManager.wooGreyBorder
+        productImageView.tintColor = .listSmallIcon
         productImageView.contentMode = .scaleAspectFill
         productImageView.clipsToBounds = true
     }

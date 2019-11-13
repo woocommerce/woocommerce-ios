@@ -149,8 +149,8 @@ private extension TopPerformersViewController {
 
     func configureView() {
         view.backgroundColor = .listBackground
-        topBorder.backgroundColor = StyleManager.wooGreyBorder
-        middleBorder.backgroundColor = StyleManager.wooGreyBorder
+        topBorder.backgroundColor = .listSmallIcon
+        middleBorder.backgroundColor = .listSmallIcon
         headingLabel.applyFootnoteStyle()
         headingLabel.textColor = .listIcon
         headingLabel.textInsets = Constants.headerLabelInsets

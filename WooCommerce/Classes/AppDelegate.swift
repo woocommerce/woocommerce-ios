@@ -167,8 +167,8 @@ private extension AppDelegate {
     ///
     func setupFancyAlertAppearance() {
         let appearance = FancyAlertView.appearance()
-        appearance.bottomDividerColor = StyleManager.wooGreyBorder
-        appearance.topDividerColor = StyleManager.wooGreyBorder
+        appearance.bottomDividerColor = .listSmallIcon
+        appearance.topDividerColor = .listSmallIcon
 
         appearance.titleTextColor = .text
         appearance.titleFont = UIFont.title2

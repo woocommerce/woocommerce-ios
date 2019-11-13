@@ -11,7 +11,7 @@ extension UISearchBar {
         let appearance = UISearchBar.appearance()
         appearance.barTintColor = .white
 
-        appearance.layer.borderColor = StyleManager.wooGreyBorder.cgColor
+        appearance.layer.borderColor = UIColor.listSmallIcon.cgColor
         appearance.layer.borderWidth = 1.0
 
         let brandColor = UIColor.brand

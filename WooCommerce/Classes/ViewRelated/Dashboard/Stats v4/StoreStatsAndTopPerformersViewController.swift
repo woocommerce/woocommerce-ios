@@ -222,7 +222,7 @@ private extension StoreStatsAndTopPerformersViewController {
     func createBorderView() -> UIView {
         let view = UIView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = StyleManager.wooGreyBorder
+        view.backgroundColor = .listSmallIcon
         NSLayoutConstraint.activate([
             view.heightAnchor.constraint(equalToConstant: 1)
             ])

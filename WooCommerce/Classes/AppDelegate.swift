@@ -179,7 +179,7 @@ private extension AppDelegate {
         appearance.actionFont = UIFont.headline
         appearance.infoFont = UIFont.subheadline
         appearance.infoTintColor = .brand
-        appearance.headerBackgroundColor = StyleManager.wooGreyLight
+        appearance.headerBackgroundColor = .listSmallIcon
     }
 
     /// Sets up FancyButton's UIAppearance.

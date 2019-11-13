@@ -236,8 +236,8 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Button Appearance
     ///
     func refreshAppearance(button: UIButton) {
-        let bgColor = button.isSelected ? UIColor.brand : StyleManager.wooGreyLight
-        let textColor = button.isSelected ? StyleManager.wooGreyLight : UIColor.brand
+        let bgColor = button.isSelected ? UIColor.brand : UIColor.listIcon
+        let textColor = button.isSelected ? UIColor.listIcon : UIColor.brand
 
         button.backgroundColor = bgColor
         button.tintColor = textColor
@@ -317,5 +317,5 @@ private struct Star {
     static let filledImage = UIImage.starImage(size: Star.size,
                                                tintColor: .yellow)
     static let emptyImage = UIImage.starImage(size: Star.size,
-                                              tintColor: StyleManager.wooGreyLight)
+                                              tintColor: UIColor.listIcon)
 }

@@ -181,7 +181,7 @@ extension UIImage {
     /// Product Placeholder Image
     ///
     static var productPlaceholderImage: UIImage {
-        let tintColor = StyleManager.wooGreyLight
+        let tintColor = UIColor.listIcon
         return Gridicon.iconOfType(.product).imageWithTintColor(tintColor)!
     }
 

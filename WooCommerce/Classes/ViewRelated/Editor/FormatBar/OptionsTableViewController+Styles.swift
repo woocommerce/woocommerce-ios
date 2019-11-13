@@ -4,7 +4,7 @@ extension OptionsTableViewController {
     func applyDefaultStyles() {
         cellDeselectedTintColor = .brand
         cellBackgroundColor = .listForeground
-        cellSelectedBackgroundColor = StyleManager.wooGreyLight
+        cellSelectedBackgroundColor = .listBackground
         view.tintColor = .brand
     }
 }

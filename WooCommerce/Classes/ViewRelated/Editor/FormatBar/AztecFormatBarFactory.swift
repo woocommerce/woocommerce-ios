@@ -10,7 +10,7 @@ struct AztecFormatBarFactory {
         toolbar.tintColor = .brand
         toolbar.highlightedTintColor = UIColor.brand.withAlphaComponent(0.5)
         toolbar.selectedTintColor = StyleManager.wooSecondary
-        toolbar.disabledTintColor = StyleManager.buttonDisabledColor
+        toolbar.disabledTintColor = .textSubtle
         toolbar.dividerTintColor = .divider
         toolbar.overflowToggleIcon = Gridicon.iconOfType(.ellipsis)
 

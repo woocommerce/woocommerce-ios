@@ -20,12 +20,6 @@ protocol Style {
 
     /// Colors
     ///
-    var buttonSecondaryColor: UIColor { get }
-    var buttonSecondaryHighlightedColor: UIColor { get }
-    var buttonSecondaryTitleColor: UIColor { get }
-    var buttonDisabledColor: UIColor { get }
-    var buttonDisabledHighlightedColor: UIColor { get }
-    var buttonDisabledTitleColor: UIColor { get }
 
     var goldStarColor: UIColor { get }
     var grayStarColor: UIColor { get }
@@ -268,30 +262,6 @@ class StyleManager {
     }
 
     // MARK: - Colors
-
-    static var buttonSecondaryColor: UIColor {
-        return active.buttonSecondaryColor
-    }
-
-    static var buttonSecondaryHighlightedColor: UIColor {
-        return active.buttonSecondaryHighlightedColor
-    }
-
-    static var buttonSecondaryTitleColor: UIColor {
-        return active.buttonSecondaryTitleColor
-    }
-
-    static var buttonDisabledColor: UIColor {
-        return active.buttonDisabledColor
-    }
-
-    static var buttonDisabledHighlightedColor: UIColor {
-        return active.buttonDisabledHighlightedColor
-    }
-
-    static var buttonDisabledTitleColor: UIColor {
-        return active.buttonDisabledTitleColor
-    }
 
     static var statusNotIdentifiedColor: UIColor {
         return active.statusNotIdentifiedColor

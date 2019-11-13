@@ -20,10 +20,7 @@ protocol Style {
 
     /// Colors
     ///
-
-    var goldStarColor: UIColor { get }
     var grayStarColor: UIColor { get }
-    var yellowStarColor: UIColor { get }
 
     var statusNotIdentifiedColor: UIColor { get }
     var statusNotIdentifiedBoldColor: UIColor { get }
@@ -291,13 +288,6 @@ class StyleManager {
         return active.statusWarningColor
     }
 
-    static var goldStarColor: UIColor {
-        return active.goldStarColor
-    }
-
-    static var yellowStarColor: UIColor {
-        return active.yellowStarColor
-    }
     static var wooSecondary: UIColor {
         return active.wooSecondary
     }

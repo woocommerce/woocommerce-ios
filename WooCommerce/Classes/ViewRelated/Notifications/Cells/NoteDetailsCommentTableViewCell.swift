@@ -315,7 +315,7 @@ private struct Approve {
 private struct Star {
     static let size        = Double(18)
     static let filledImage = UIImage.starImage(size: Star.size,
-                                               tintColor: StyleManager.goldStarColor)
+                                               tintColor: .yellow)
     static let emptyImage = UIImage.starImage(size: Star.size,
                                               tintColor: StyleManager.wooGreyLight)
 }

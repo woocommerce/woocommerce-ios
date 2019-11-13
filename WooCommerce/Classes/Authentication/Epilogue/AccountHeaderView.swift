@@ -100,7 +100,7 @@ private extension AccountHeaderView {
         helpButton.setTitle(Strings.helpButtonTitle, for: .normal)
         helpButton.setTitle(Strings.helpButtonTitle, for: .highlighted)
         helpButton.setTitleColor(.brand, for: .normal)
-        helpButton.setTitleColor(StyleManager.wooGreyMid, for: .highlighted)
+        helpButton.setTitleColor(.textSubtle, for: .highlighted)
         helpButton.on(.touchUpInside) { [weak self] control in
             ServiceLocator.analytics.track(.sitePickerHelpButtonTapped)
             self?.handleHelpButtonTapped(control)

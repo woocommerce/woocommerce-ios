@@ -95,7 +95,7 @@ private extension AboutViewController {
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.footnote.attributedText = nil
         footerView.footnote.text = footerTitleText
-        footerView.footnote.textColor = StyleManager.wooGreyMid
+        footerView.footnote.textColor = .textSubtle
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }

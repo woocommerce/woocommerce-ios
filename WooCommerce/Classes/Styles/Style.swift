@@ -21,7 +21,6 @@ protocol Style {
     /// Colors
     ///
 
-    var wooGreyMid: UIColor { get }
     var wooGreyTextMin: UIColor { get }
     var wooGreyBorder: UIColor { get }
     var wooSecondary: UIColor { get }
@@ -256,10 +255,6 @@ class StyleManager {
 
     static var wooGreyBorder: UIColor {
         return active.wooGreyBorder
-    }
-
-    static var wooGreyMid: UIColor {
-        return active.wooGreyMid
     }
 
     static var wooGreyTextMin: UIColor {

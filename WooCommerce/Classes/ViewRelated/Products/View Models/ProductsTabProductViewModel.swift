@@ -26,7 +26,7 @@ private extension Product {
 
         let attributedString = NSMutableAttributedString(string: detailsText,
                                                          attributes: [
-                                                            .foregroundColor: StyleManager.wooGreyMid,
+                                                            .foregroundColor: UIColor.textSubtle,
                                                             .font: StyleManager.footerLabelFont
             ])
         if let statusText = statusText {

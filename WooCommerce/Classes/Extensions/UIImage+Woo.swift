@@ -56,7 +56,7 @@ extension UIImage {
     /// Chevron Pointing Right
     ///
     static var chevronImage: UIImage {
-        let tintColor = StyleManager.wooGreyMid
+        let tintColor = UIColor.neutral(.shade40)
         return Gridicon.iconOfType(.chevronRight).imageWithTintColor(tintColor)!
     }
 

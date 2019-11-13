@@ -62,6 +62,6 @@ extension UILabel {
     func applyEmptyStateTitleStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body
-        textColor = StyleManager.wooGreyMid
+        textColor = .textQuaternary
     }
 }

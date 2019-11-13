@@ -92,7 +92,7 @@ private extension OrderNoteTableViewCell {
                                   comment: "Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System)")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else {
-            iconButton.backgroundColor = StyleManager.wooGreyMid
+            iconButton.backgroundColor = .textSubtle
             let template =
                 NSLocalizedString("%1$@ - %2$@ (Private)",
                                   comment: "Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private)")
@@ -108,7 +108,7 @@ private extension OrderNoteTableViewCell {
     ///
     func configureLabels() {
         statusLabel.applyBodyStyle()
-        statusLabel.textColor = StyleManager.wooGreyMid
+        statusLabel.textColor = .textSubtle
         noteLabel.applyBodyStyle()
     }
 

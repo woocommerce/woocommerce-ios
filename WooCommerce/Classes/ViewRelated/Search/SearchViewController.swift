@@ -222,7 +222,7 @@ private extension SearchViewController {
     ///
     func configureEmptyStateLabel() {
         emptyStateLabel.text = searchUICommand.emptyStateText
-        emptyStateLabel.textColor = StyleManager.wooGreyMid
+        emptyStateLabel.textColor = .textSubtle
         emptyStateLabel.font = .headline
         emptyStateLabel.adjustsFontForContentSizeCategory = true
         emptyStateLabel.numberOfLines = 0

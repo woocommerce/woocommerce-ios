@@ -26,7 +26,7 @@ extension Note {
     ///
     var noticonTintColor: UIColor {
         guard kind == .storeOrder else {
-            return StyleManager.wooGreyMid
+            return .listIcon
         }
         return .accent
     }

@@ -20,7 +20,7 @@ extension UISearchBar {
         let cancelButtonAttributes = [NSAttributedString.Key.foregroundColor: brandColor]
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(cancelButtonAttributes, for: .normal)
 
-        let textAttributes = [NSAttributedString.Key.foregroundColor: StyleManager.wooGreyMid]
+        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.textTertiary]
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = textAttributes
     }
 }

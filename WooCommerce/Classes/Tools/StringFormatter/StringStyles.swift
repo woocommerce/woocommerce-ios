@@ -64,7 +64,7 @@ extension StringStyles {
         let bold: Style         = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.bold]
         let blockquote: Style   = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
         let italics: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.body.italics]
-        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: StyleManager.wooGreyMid]
+        let noticon: Style      = [.paragraphStyle: NSParagraphStyle.body, .font: UIFont.noticon(forStyle: .body), .foregroundColor: UIColor.listIcon]
 
         return StringStyles(regular: regular, bold: bold, blockquote: blockquote, italics: italics, match: nil, noticon: noticon)
     }

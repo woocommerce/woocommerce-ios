@@ -263,7 +263,7 @@ private extension StoreStatsV4PeriodViewController {
 
         // Footer
         lastUpdated.font = UIFont.footnote
-        lastUpdated.textColor = StyleManager.wooGreyMid
+        lastUpdated.textColor = .textSubtle
 
         // Visibility
         updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
@@ -366,7 +366,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func updateBarChartAxisUI(hasRevenue: Bool) {
-        let labelTextColor = hasRevenue ? StyleManager.wooSecondary: StyleManager.wooGreyMid
+        let labelTextColor = hasRevenue ? StyleManager.wooSecondary: UIColor.textSubtle
 
         let xAxis = barChartView.xAxis
         xAxis.labelTextColor = labelTextColor
@@ -708,7 +708,7 @@ private extension StoreStatsV4PeriodViewController {
                                                                                 with: currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
-            barColors.append(StyleManager.wooGreyMid)
+            barColors.append(.textSubtle)
             dataEntries.append(entry)
             barCount += 1
         }

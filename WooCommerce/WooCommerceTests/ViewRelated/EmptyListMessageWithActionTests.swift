@@ -41,7 +41,6 @@ final class EmptyListMessageWithActionTests: XCTestCase {
 
         XCTAssertEqual(label?.textAlignment, NSTextAlignment.center)
         XCTAssertEqual(label?.font, UIFont.body)
-        XCTAssertEqual(label?.textColor, StyleManager.wooGreyMid)
     }
 
     func testActionLabelStyle() {

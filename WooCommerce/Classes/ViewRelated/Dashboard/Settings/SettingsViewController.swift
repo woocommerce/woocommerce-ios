@@ -541,7 +541,7 @@ private extension SettingsViewController {
         )
         let hiringAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,
-            .foregroundColor: StyleManager.wooGreyMid
+            .foregroundColor: UIColor.textSubtle
         ]
 
         let hiringAttrText = NSMutableAttributedString()

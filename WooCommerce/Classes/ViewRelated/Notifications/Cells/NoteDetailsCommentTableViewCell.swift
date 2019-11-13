@@ -182,7 +182,7 @@ private extension NoteDetailsCommentTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
-    
+
     /// Setup: Actions!
     ///
     func configureActionButtons() {
@@ -210,11 +210,11 @@ private extension NoteDetailsCommentTableViewCell {
     func configureDetailsLabel() {
         detailsLabel.textColor = StyleManager.defaultTextColor
     }
-    
+
     func configureTextView() {
         textView.backgroundColor = StyleManager.wooWhite
     }
-    
+
     /// Setup: Default Action(s) Style
     ///
     func configureDefaultAppearance() {

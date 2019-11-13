@@ -175,7 +175,7 @@ private extension ProductDetailsViewController {
     }
 
     @objc func editProduct() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) == false {
             let productForm = ProductFormViewController()
             let navController = WooNavigationController(rootViewController: productForm)
             navigationController?.present(navController, animated: true)

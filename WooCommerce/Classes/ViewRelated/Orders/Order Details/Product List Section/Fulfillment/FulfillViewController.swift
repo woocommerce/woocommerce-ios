@@ -637,6 +637,7 @@ private extension FulfillViewController {
             var rows: [Row] = []
 
             let productsList = self.products ?? []
+
             if shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }

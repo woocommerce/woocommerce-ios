@@ -227,7 +227,7 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
 
         let orderIndex = reviewsResultsController.objectIndex(from: indexPath)
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
-        
+
         // Preserve the Cell Height
         // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
         // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to

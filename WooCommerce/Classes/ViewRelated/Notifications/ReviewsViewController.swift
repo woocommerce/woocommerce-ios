@@ -246,7 +246,7 @@ private extension ReviewsViewController {
 
                 tracks.track(.reviewsMarkAllReadSuccess)
             }
-            
+
             self.updateMarkAllReadButtonState()
             self.tableView.reloadData()
         }
@@ -298,7 +298,7 @@ private extension ReviewsViewController {
     ///
     func reloadResultsController() {
         viewModel.refreshResults()
-        
+
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
         transitionToSyncingState()

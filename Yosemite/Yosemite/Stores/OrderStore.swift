@@ -302,7 +302,7 @@ private extension OrderStore {
                 storageOrder.addToItems(newStorageItem)
                 storageItem = newStorageItem
             }
-            
+
             handleOrderItemTaxes(readOnlyItem, storageItem, storage)
         }
 
@@ -362,7 +362,7 @@ private extension OrderStore {
             }
         }
     }
-    
+
     /// Updates, inserts, or prunes the provided StorageOrder's shipping lines using the provided read-only Order's shippingLine
     ///
     private func handleOrderShippingLines(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {

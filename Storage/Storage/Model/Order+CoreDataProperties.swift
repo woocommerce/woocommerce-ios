@@ -60,19 +60,19 @@ extension Order {
 
 // MARK: Generated accessors for shippingLines
 extension Order {
-    
+
     @objc(addShippingLinesObject:)
     @NSManaged public func addToShippingLines(_ value: ShippingLine)
-    
+
     @objc(removeShippingLinesObject:)
     @NSManaged public func removeFromShippingLines(_ value: ShippingLine)
-    
+
     @objc(addShippingLines:)
     @NSManaged public func addToShippingLines(_ values: NSSet)
-    
+
     @objc(removeShippingLines:)
     @NSManaged public func removeFromShippingLines(_ values: NSSet)
-    
+
 }
 
 // MARK: Generated accessors for coupons

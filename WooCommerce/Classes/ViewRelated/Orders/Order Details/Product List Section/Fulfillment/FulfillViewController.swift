@@ -31,13 +31,13 @@ final class FulfillViewController: UIViewController {
     /// Products in the Order
     ///
     private let products: [Product]?
-    
+
     /// Shipping Lines from an Order
     ///
     private var shippingLines: [ShippingLine] {
         return order.shippingLines
     }
-    
+
     /// First Shipping method from an order
     ///
     private var shippingMethod: String {
@@ -386,12 +386,12 @@ private extension FulfillViewController {
                 comment: "Order details > customer info > shipping details. This is where the address would normally display."
         )
     }
-    
+
     func setupShippingMethodCell(_ cell: UITableViewCell) {
         guard let cell = cell as? CustomerNoteTableViewCell else {
             fatalError()
         }
-        
+
         cell.headline = NSLocalizedString("Shipping Method",
                                           comment: "Shipping method title for customer info cell")
         cell.body = shippingMethod
@@ -635,11 +635,13 @@ private extension FulfillViewController {
 
         let address: Section = {
             var rows: [Row] = []
-            
+
+            let productsList = self.products ?? []
+
             if shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }
-            
+
             let title = NSLocalizedString("Customer Information", comment: "Section title for the customer's billing and shipping address")
             if let shippingAddress = order.shippingAddress {
                 let row = Row.address(shipping: shippingAddress)
@@ -649,7 +651,7 @@ private extension FulfillViewController {
 
             let row = Row.address(shipping: order.billingAddress)
             rows.insert(row, at: 0)
-            
+
             return Section(title: title, secondaryTitle: nil, rows: rows)
         }()
 
@@ -697,7 +699,7 @@ private enum Row {
     /// Represents an Address Row
     ///
     case address(shipping: Address?)
-    
+
     /// Represents a Shipping Method Row
     ///
     case shippingMethod

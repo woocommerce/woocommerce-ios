@@ -21,13 +21,6 @@ protocol Style {
     /// Colors
     ///
 
-    var statusNotIdentifiedBoldColor: UIColor { get }
-    var statusPrimaryColor: UIColor { get }
-    var statusPrimaryBoldColor: UIColor { get }
-    var statusSuccessColor: UIColor { get }
-    var statusSuccessBoldColor: UIColor { get }
-    var statusWarningColor: UIColor { get }
-
     var wooGreyMid: UIColor { get }
     var wooGreyTextMin: UIColor { get }
     var wooGreyBorder: UIColor { get }
@@ -256,30 +249,6 @@ class StyleManager {
     }
 
     // MARK: - Colors
-
-    static var statusNotIdentifiedBoldColor: UIColor {
-        return active.statusNotIdentifiedBoldColor
-    }
-
-    static var statusPrimaryColor: UIColor {
-        return active.statusPrimaryColor
-    }
-
-    static var statusPrimaryBoldColor: UIColor {
-        return active.statusPrimaryBoldColor
-    }
-
-    static var statusSuccessColor: UIColor {
-        return active.statusSuccessColor
-    }
-
-    static var statusSuccessBoldColor: UIColor {
-        return active.statusSuccessBoldColor
-    }
-
-    static var statusWarningColor: UIColor {
-        return active.statusWarningColor
-    }
 
     static var wooSecondary: UIColor {
         return active.wooSecondary

@@ -56,12 +56,13 @@ private extension PlaceholderOrTitleAndTextTableViewCell {
 private extension PlaceholderOrTitleAndTextTableViewCell {
     func configureLabels() {
         placeholderLabel.applyBodyStyle()
-        placeholderLabel.textColor = StyleManager.wooGreyMid
+        placeholderLabel.textColor = .textSubtle
 
         titleLabel.applySubheadlineStyle()
+        titleLabel.textColor = .text
 
         descriptionLabel.applyFootnoteStyle()
-        descriptionLabel.textColor = StyleManager.wooGreyMid
+        descriptionLabel.textColor = .textSubtle
     }
 
     func configureTitleAndTextStackView() {

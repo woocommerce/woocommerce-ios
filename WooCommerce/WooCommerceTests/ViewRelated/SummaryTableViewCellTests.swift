@@ -123,7 +123,7 @@ private extension SummaryTableViewCellTests {
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
     }
-    
+
     func sampleShippingLines() -> [ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",
@@ -131,7 +131,7 @@ private extension SummaryTableViewCellTests {
         total: "133.00",
         totalTax: "0.00")]
     }
-    
+
     func sampleCoupons() -> [OrderCouponLine] {
         let coupon1 = OrderCouponLine(couponID: 894,
                                       code: "30$off",

@@ -104,7 +104,7 @@ private extension ProductReviewTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
-    
+
     func configureSubjectLabel() {
         subjectLabel.applyBodyStyle()
     }

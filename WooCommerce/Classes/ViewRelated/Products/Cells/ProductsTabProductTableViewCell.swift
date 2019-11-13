@@ -77,7 +77,7 @@ private extension ProductsTabProductTableViewCell {
         contentStackView.axis = .vertical
         return contentStackView
     }
-    
+
     func configureBackground() {
         backgroundColor = .listForeground
         

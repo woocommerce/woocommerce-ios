@@ -59,51 +59,7 @@ class DefaultStyle: Style {
                                                                         weight: .regular,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
 
-    /// Colors!
-    ///
-    let buttonPrimaryColor              = HandbookColors.wooPrimary
-    let buttonPrimaryHighlightedColor   = UIColor(red: 0x6E/255.0, green: 0x29/255.0, blue: 0x67/255.0, alpha: 0xFF/255.0)
-    let buttonPrimaryTitleColor         = HandbookColors.wooWhite
-    let buttonSecondaryColor            = HandbookColors.wooWhite
-    let buttonSecondaryHighlightedColor = HandbookColors.wooGreyMid
-    let buttonSecondaryTitleColor       = HandbookColors.wooGreyMid
-    let buttonDisabledColor             = HandbookColors.wooWhite
-    let buttonDisabledHighlightedColor  = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
-    let buttonDisabledTitleColor        = UIColor(red: 233.0/255.0, green: 239.0/255.0, blue: 234.0/255.0, alpha: 1.0)
-    let cellSeparatorColor              = HandbookColors.wooGreyBorder
-    let defaultTextColor                = HandbookColors.wooSecondary
-    let destructiveActionColor          = UIColor(red: 197.0/255.0, green: 60.0/255.0, blue: 53.0/255.0, alpha: 1.0)
-    let highlightTextColor              = HandbookColors.murielBlue50
-    let sectionBackgroundColor          = HandbookColors.wooGreyLight
-    let sectionTitleColor               = HandbookColors.wooSecondary
-    let tableViewBackgroundColor        = HandbookColors.wooGreyLight
-    let tableViewCellSelectionStyle     = UIColor(red: 209.0/255.0, green: 209/255.0, blue: 213/255.0, alpha: 1.0)
-    let noticeIconColor                 = HandbookColors.orange50
 
-    let statusDangerColor               = HandbookColors.statusRedDimmed
-    let statusDangerBoldColor           = HandbookColors.statusRed
-    let statusNotIdentifiedColor        = HandbookColors.wooGreyLight
-    let statusNotIdentifiedBoldColor    = HandbookColors.wooGreyBorder
-    let statusPrimaryColor              = HandbookColors.statusBlueDimmed
-    let statusPrimaryBoldColor          = HandbookColors.statusBlue
-    let statusSuccessColor              = HandbookColors.statusGreenDimmed
-    let statusSuccessBoldColor          = HandbookColors.statusGreen
-    let statusWarningColor              = HandbookColors.statusYellowDimmed
-
-    let wooCommerceBrandColor           = HandbookColors.wooPrimary
-    let wooSecondary                    = HandbookColors.wooSecondary
-    let wooAccent                       = HandbookColors.wooAccent
-    let wooGreyLight                    = HandbookColors.wooGreyLight
-    let wooGreyBorder                   = HandbookColors.wooGreyBorder
-    let wooGreyMid                      = HandbookColors.wooGreyMid
-    let wooGreyTextMin                  = HandbookColors.wooGreyTextMin
-    let wooWhite                        = HandbookColors.wooWhite
-
-    /// Stars
-    ///
-    let goldStarColor                   = HandbookColors.goldStarColor
-    let grayStarColor                   = HandbookColors.grayStarColor
-    let yellowStarColor                 = HandbookColors.murielYellow30
 
     /// NavBar
     ///
@@ -113,48 +69,6 @@ class DefaultStyle: Style {
     ///
     let statusBarDark                   = UIStatusBarStyle.default
     let statusBarLight                  = UIStatusBarStyle.lightContent
-
-    /// Announcement
-    ///
-    let announcementDotColor            = HandbookColors.murielRed50
-}
-
-
-// MARK: - Handbook colors!
-//
-private extension DefaultStyle {
-
-    /// Colors as defined in the Woo Mobile Design Handbook
-    ///
-    enum HandbookColors {
-        static let statusRedDimmed       = UIColor(red: 255.0/255.0, green: 230.0/255.0, blue: 229.0/255.0, alpha: 1.0)
-        static let statusRed             = UIColor(red: 255.0/255.0, green: 197.0/255.0, blue: 195.0/255.0, alpha: 1.0)
-        static let statusBlueDimmed      = UIColor(red: 244.0/255.0, green: 249.0/255.0, blue: 251.0/255.0, alpha: 1.0)
-        static let statusBlue            = UIColor(red: 188.0/255.0, green: 222.0/255.0, blue: 238.0/255.0, alpha: 1.0)
-        static let statusGreenDimmed     = UIColor(red: 239.00/255.0, green: 249.0/255.0, blue: 230.0/255.0, alpha: 1.0)
-        static let statusGreen           = UIColor(red: 201.0/255.0, green: 233.0/255.0, blue: 169.0/255.0, alpha: 1.0)
-        static let statusYellowDimmed    = UIColor(red: 0.97, green: 0.88, blue: 0.68, alpha: 1.0)
-
-        static let wooPrimary            = UIColor(red: 0x96/255.0, green: 0x58/255.0, blue: 0x8A/255.0, alpha: 0xFF/255.0) // woo purple
-        static let wooSecondary          = UIColor(red: 60.0/255.0, green: 60.0/255.0, blue: 60.0/255.0, alpha: 1.0)
-        static let wooAccent             = UIColor(red: 113.0/255.0, green: 176.0/255.0, blue: 47.0/255.0, alpha: 1.0)
-
-        // multiple grays
-        static let wooGreyLight          = UIColor(red: 247.0/255.0, green: 247.0/255.0, blue: 247.0/255.0, alpha: 1.0)
-        static let wooGreyBorder         = UIColor(red: 230.0/255.0, green: 230.0/255.0, blue: 230.0/255.0, alpha: 1.0)
-        static let wooWhite              = UIColor.white
-        static let wooGreyMid            = UIColor(red: 150.0/255.0, green: 150.0/255.0, blue: 150.0/255.0, alpha: 1.0)
-        static let wooGreyTextMin        = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
-
-        static let goldStarColor         = UIColor(red: 238.0/255.0, green: 180.0/255.0, blue: 34.0/255.0, alpha: 1.0)
-        static let grayStarColor         = UIColor(red: 89.0/255.0, green: 89.0/255.0, blue: 89.0/255.0, alpha: 1.0)
-
-        // Muriel theme in https://color-studio.blog/
-        static let murielRed50                 = UIColor(red: 0.84, green: 0.21, blue: 0.22, alpha: 1)
-        static let murielYellow30        = UIColor(red: 0.86, green: 0.68, blue: 0.09, alpha: 1.0)
-        static let murielBlue50          = UIColor(red: 0.13, green: 0.44, blue: 0.69, alpha: 1.0)
-        static let orange50              = UIColor(red: 0.70, green: 0.38, blue: 0.00, alpha: 1.0)
-    }
 }
 
 

@@ -335,9 +335,9 @@ extension PeriodDataViewController: ChartViewDelegate {
         }
 
         let marker = ChartMarker(chartView: chartView,
-                                 color: .textSubtle,
+                                 color: .accentDark,
                                  font: StyleManager.chartLabelFont,
-                                 textColor: .basicBackground,
+                                 textColor: .text,
                                  insets: Constants.chartMarkerInsets)
         marker.minimumSize = Constants.chartMarkerMinimumSize
         marker.arrowSize = Constants.chartMarkerArrowSize
@@ -548,7 +548,7 @@ private extension PeriodDataViewController {
                                                                                 with: orderStats.currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
-            barColors.append(.textSubtle)
+            barColors.append(.accent)
             dataEntries.append(entry)
             barCount += 1
         }
@@ -556,7 +556,7 @@ private extension PeriodDataViewController {
         let dataSet =  BarChartDataSet(entries: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
-        dataSet.highlightColor = .brand
+        dataSet.highlightColor = .accentDark
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)

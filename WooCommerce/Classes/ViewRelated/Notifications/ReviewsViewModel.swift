@@ -33,7 +33,8 @@ final class ReviewsViewModel {
 
     func displayPlaceholderReviews(tableView: UITableView) {
         let options = GhostOptions(reuseIdentifier: ProductReviewTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        tableView.displayGhostContent(options: options,
+                                      style: .wooDefaultGhostStyle)
 
         data.stopForwardingEvents()
     }

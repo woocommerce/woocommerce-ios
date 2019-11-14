@@ -119,7 +119,8 @@ extension TopPerformerDataViewController {
         let options = GhostOptions(displaysSectionHeader: false,
                                    reuseIdentifier: ProductTableViewCell.reuseIdentifier,
                                    rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        tableView.displayGhostContent(options: options,
+                                      style: .wooDefaultGhostStyle)
     }
 
     /// Removes the Placeholder Content.

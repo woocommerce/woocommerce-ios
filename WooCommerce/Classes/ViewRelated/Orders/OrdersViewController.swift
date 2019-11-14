@@ -521,7 +521,8 @@ private extension OrdersViewController {
     ///
     func displayPlaceholderOrders() {
         let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        tableView.displayGhostContent(options: options,
+                                      style: .wooDefaultGhostStyle)
 
         resultsController.stopForwardingEvents()
     }

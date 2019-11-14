@@ -123,7 +123,7 @@ private extension TopPerformersViewController {
     ///
     func displayGhostContent() {
         view.isUserInteractionEnabled = false
-        buttonBarView.startGhostAnimation()
+        buttonBarView.startGhostAnimation(style: .wooDefaultGhostStyle)
         visibleChildViewController.displayGhostContent()
     }
 
@@ -138,7 +138,7 @@ private extension TopPerformersViewController {
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
     ///
     func ensureGhostContentIsAnimated() {
-        view.restartGhostAnimation()
+        view.restartGhostAnimation(style:.wooDefaultGhostStyle)
     }
 }
 

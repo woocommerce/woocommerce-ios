@@ -189,7 +189,7 @@ extension StoreStatsV4PeriodViewController {
     ///
     func displayGhostContent() {
         ensurePlaceholderIsVisible()
-        placeholderChartsView.startGhostAnimation()
+        placeholderChartsView.startGhostAnimation(style: .wooDefaultGhostStyle)
     }
 
     /// Removes the Placeholder Content.

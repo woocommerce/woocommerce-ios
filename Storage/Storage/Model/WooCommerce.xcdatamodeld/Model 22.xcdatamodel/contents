@@ -11,7 +11,7 @@
         <attribute name="tracksOptOut" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
-    <entity name="Attribute" representedClassName="Attribute" syncable="YES" codeGenerationType="class">
+    <entity name="Attribute" representedClassName="Attribute" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="key" attributeType="String"/>
         <attribute name="value" optional="YES" attributeType="String"/>
@@ -288,6 +288,7 @@
         <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductDimensions" inverseName="product" inverseEntity="ProductDimensions"/>
         <relationship name="downloads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductDownload" inverseName="product" inverseEntity="ProductDownload"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductImage" inverseName="product" inverseEntity="ProductImage"/>
+        <relationship name="productVariations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductVariation" inverseName="product" inverseEntity="ProductVariation"/>
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductSearchResults" inverseName="products" inverseEntity="ProductSearchResults"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductTag" inverseName="product" inverseEntity="ProductTag"/>
     </entity>
@@ -359,7 +360,8 @@
         <attribute name="tagID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="tags" inverseEntity="Product"/>
     </entity>
-    <entity name="ProductVariation" representedClassName="ProductVariation" syncable="YES" codeGenerationType="class">
+    <entity name="ProductVariation" representedClassName="ProductVariation" syncable="YES">
+        <attribute name="attributes" attributeType="Transformable" customClassName="[Attribute]"/>
         <attribute name="backordered" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="backordersAllowed" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="backordersKey" attributeType="String"/>
@@ -390,10 +392,10 @@
         <attribute name="taxStatusKey" attributeType="String"/>
         <attribute name="virtual" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="weight" optional="YES" attributeType="String"/>
-        <relationship name="attributes" maxCount="1" deletionRule="Nullify" destinationEntity="Attribute"/>
-        <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductDimensions" inverseName="productVariation" inverseEntity="ProductDimensions"/>
-        <relationship name="downloads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductDownload" inverseName="productVariation" inverseEntity="ProductDownload"/>
-        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductImage" inverseName="productVariation" inverseEntity="ProductImage"/>
+        <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductDimensions" inverseName="productVariation" inverseEntity="ProductDimensions"/>
+        <relationship name="downloads" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductDownload" inverseName="productVariation" inverseEntity="ProductDownload"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductImage" inverseName="productVariation" inverseEntity="ProductImage"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="productVariations" inverseEntity="Product"/>
     </entity>
     <entity name="Refund" representedClassName="Refund" syncable="YES">
         <attribute name="amount" optional="YES" attributeType="String"/>
@@ -500,7 +502,7 @@
         <element name="OrderStatsV4Interval" positionX="-675" positionY="54" width="128" height="120"/>
         <element name="OrderStatsV4Totals" positionX="-519.01171875" positionY="96.5546875" width="128" height="225"/>
         <element name="OrderStatus" positionX="-64.2578125" positionY="807.0234375" width="128" height="105"/>
-        <element name="Product" positionX="-669.6796875" positionY="1015.5859375" width="128" height="915"/>
+        <element name="Product" positionX="-669.6796875" positionY="1015.5859375" width="128" height="928"/>
         <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="148"/>
         <element name="ProductCategory" positionX="-773.3125" positionY="94.1328125" width="128" height="103"/>
         <element name="ProductDefaultAttribute" positionX="-819.42578125" positionY="224.1171875" width="145.12109375" height="103"/>
@@ -521,7 +523,7 @@
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
-        <element name="ProductVariation" positionX="-693" positionY="36" width="128" height="553"/>
+        <element name="ProductVariation" positionX="-693" positionY="36" width="128" height="568"/>
         <element name="Attribute" positionX="-684" positionY="45" width="128" height="88"/>
     </elements>
 </model>

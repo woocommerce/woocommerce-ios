@@ -86,7 +86,7 @@ private extension LoginPrologueViewController {
         upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
         upperLabel.adjustsFontForContentSizeCategory = true
         upperLabel.font = StyleManager.subheadlineBoldFont
-        upperLabel.textColor = .brand
+        upperLabel.textColor = .gray(.shade60)
     }
 
     func setupJetpackImage() {
@@ -108,7 +108,7 @@ private extension LoginPrologueViewController {
         let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
         loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
         loginButton.setTitle(title, for: .normal)
-        loginButton.setTitleColor(.textSubtle, for: .normal)
+        loginButton.setTitleColor(.black, for: .normal)
         loginButton.titleLabel?.font = StyleManager.headlineSemiBold
         loginButton.backgroundColor = .white
         loginButton.layer.cornerRadius = Settings.buttonCornerRadius

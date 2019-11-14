@@ -37,13 +37,13 @@ class AuthenticationManager: Authentication {
                                                 primaryTitleColor: .text,
                                                 secondaryTitleColor: .textTertiary,
                                                 disabledTitleColor: .textSubtle,
-                                                textButtonColor: .brand,
-                                                textButtonHighlightColor: .brand,
-                                                instructionColor: .brand,
-                                                subheadlineColor: .brand,
+                                                textButtonColor: .primary,
+                                                textButtonHighlightColor: .primaryDark,
+                                                instructionColor: .textSubtle,
+                                                subheadlineColor: .textSubtle,
                                                 placeholderColor: .textPlaceholder,
                                                 viewControllerBackgroundColor: .listBackground,
-                                                textFieldBackgroundColor: .basicBackground,
+                                                textFieldBackgroundColor: .listForeground,
                                                 navBarImage: StyleManager.navBarImage,
                                                 navBarBadgeColor: .brand)
 
@@ -63,11 +63,6 @@ class AuthenticationManager: Authentication {
         let prologueViewController = LoginPrologueViewController()
         let navigationController = LoginNavigationController(rootViewController: prologueViewController)
         navigationController.modalPresentationStyle = .fullScreen
-
-        // TODO-1335: properly handle login input field text color in Dark mode in `WordPressAuthenticator`.
-        if #available(iOS 13.0, *) {
-            navigationController.overrideUserInterfaceStyle = .light
-        }
 
         presenter.present(navigationController, animated: true, completion: nil)
     }

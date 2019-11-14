@@ -138,7 +138,7 @@ private extension TopPerformersViewController {
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
     ///
     func ensureGhostContentIsAnimated() {
-        view.restartGhostAnimation(style:.wooDefaultGhostStyle)
+        view.restartGhostAnimation(style: .wooDefaultGhostStyle)
     }
 }
 

@@ -80,7 +80,7 @@ private extension ProductsTabProductTableViewCell {
 
     func configureBackground() {
         backgroundColor = .listForeground
-        
+
         //Background when selected
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = .listBackground

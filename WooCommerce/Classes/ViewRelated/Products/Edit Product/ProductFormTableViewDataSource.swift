@@ -54,28 +54,30 @@ private extension ProductFormTableViewDataSource {
     func configureCellInPrimaryFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.PrimaryFieldRow) {
         switch row {
         case .description(let description):
-            guard let cell = cell as? PlaceholderOrTitleAndTextTableViewCell else {
-                assertionFailure()
-                return
-            }
             configureDescription(cell: cell, description: description)
         default:
             fatalError("Not implemented yet")
         }
     }
 
-    func configureDescription(cell: PlaceholderOrTitleAndTextTableViewCell, description: String?) {
-        let state: PlaceholderOrTitleAndTextTableViewCell.State
-
+    func configureDescription(cell: UITableViewCell, description: String?) {
         if let description = description, description.isEmpty == false {
+            guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+                fatalError()
+            }
             let title = NSLocalizedString("Description",
                                           comment: "Title in the Product description row on Product form screen when the description is non-empty.")
-            state = .text(title: title, text: description)
+            let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: title, text: description)
+            cell.updateUI(viewModel: viewModel)
         } else {
+            guard let cell = cell as? BasicTableViewCell else {
+                fatalError()
+            }
             let placeholder = NSLocalizedString("Describe your product", comment: "Placeholder in the Product description row on Product form screen.")
-            state = .placeholder(placeholder: placeholder)
+            cell.textLabel?.text = placeholder
+            cell.textLabel?.applySubheadlineStyle()
+            cell.textLabel?.textColor = .textSubtle
         }
-        cell.update(state: state)
         cell.accessoryType = .disclosureIndicator
     }
 }

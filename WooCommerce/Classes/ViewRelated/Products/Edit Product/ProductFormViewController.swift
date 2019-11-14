@@ -53,7 +53,9 @@ private extension ProductFormViewController {
             switch section {
             case .primaryFields(let rows):
                 rows.forEach { row in
-                    tableView.register(row.cellType.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+                    row.cellTypes.forEach { cellType in
+                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                    }
                 }
             default:
                 return

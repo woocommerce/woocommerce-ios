@@ -98,7 +98,7 @@ private extension StoreTableViewCell {
     }
 
     func configureNameLabel() {
-        nameLabel.textColor = .textSubtle
+        nameLabel.textColor = .text
     }
 
     func configureUrlLabel() {

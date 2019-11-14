@@ -16,5 +16,6 @@ extension UITableViewCell {
     ///
     func applyDefaultBackgroundStyle() {
         backgroundColor = .listForeground
+        contentView.backgroundColor = .listForeground
     }
 }

@@ -32,4 +32,18 @@ class StringHTMLTests: XCTestCase {
 
         XCTAssertEqual(sampleHTML3.strippedHTML, sampleStripped3)
     }
+
+    func testHTMLTagsRemovedWithHTMLText() {
+        let sampleHTML = "<a href='www.automattic.com'><b><i>LINK</i></b></a>"
+        let expectedString = "LINK"
+
+        XCTAssertEqual(sampleHTML.removedHTMLTags, expectedString)
+    }
+
+    func testHTMLTagsRemovedWithLineBreaks() {
+        let sampleHTML = "<br><br/>"
+        let expectedString = ""
+
+        XCTAssertEqual(sampleHTML.removedHTMLTags, expectedString)
+    }
 }

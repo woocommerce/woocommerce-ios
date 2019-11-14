@@ -29,10 +29,6 @@ protocol Style {
     ///
     var statusBarDark: UIStatusBarStyle { get }
     var statusBarLight: UIStatusBarStyle { get }
-
-    /// Announcement
-    ///
-    var announcementDotColor: UIColor { get }
 }
 
 
@@ -259,11 +255,5 @@ class StyleManager {
 
     static var statusBarLight: UIStatusBarStyle {
         return active.statusBarLight
-    }
-
-    // MARK: - Announcement
-
-    static var announcementDotColor: UIColor {
-        return active.announcementDotColor
     }
 }

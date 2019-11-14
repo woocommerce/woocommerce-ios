@@ -24,6 +24,7 @@ final class LoginPrologueViewController: UIViewController {
     ///
     @IBOutlet var disclaimerTextView: UITextView!
 
+    @IBOutlet var slantedRectangle: UIImageView!
     /// Jetpack Logo ImageVIew
     ///
     @IBOutlet var jetpackImageView: UIImageView!
@@ -48,6 +49,7 @@ final class LoginPrologueViewController: UIViewController {
         setupMainView()
         setupBackgroundView()
         setupContainerView()
+        setupSlantedRectangle()
         setupJetpackImage()
 
         setupLabels()
@@ -86,7 +88,11 @@ private extension LoginPrologueViewController {
         upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
         upperLabel.adjustsFontForContentSizeCategory = true
         upperLabel.font = StyleManager.subheadlineBoldFont
-        upperLabel.textColor = .gray(.shade60)
+        upperLabel.textColor = .filterBarSelected
+    }
+
+    func setupSlantedRectangle() {
+        slantedRectangle.image = UIImage.slantedRectangle.imageWithTintColor(.brand)
     }
 
     func setupJetpackImage() {
@@ -98,8 +104,8 @@ private extension LoginPrologueViewController {
         disclaimerTextView.adjustsFontForContentSizeCategory = true
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
-            .foregroundColor: UIColor.basicBackground,
-            .underlineColor: UIColor.basicBackground,
+            .foregroundColor: UIColor.text,
+            .underlineColor: UIColor.text,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
     }

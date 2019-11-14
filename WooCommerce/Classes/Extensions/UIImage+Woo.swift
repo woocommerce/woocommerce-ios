@@ -143,6 +143,12 @@ extension UIImage {
         return Gridicon.iconOfType(.heartOutline)
     }
 
+    /// Login prologue slanted rectangle
+    ///
+    static var slantedRectangle: UIImage {
+        return UIImage(named: "prologue-slanted-rectangle")!
+    }
+
     /// Jetpack Logo Image
     ///
     static var jetpackLogoImage: UIImage {

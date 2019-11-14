@@ -15,6 +15,7 @@
                 <outlet property="disclaimerTextView" destination="vue-fy-kfo" id="Pph-D3-yFK"/>
                 <outlet property="jetpackImageView" destination="ua7-QM-6C0" id="EZJ-r0-klP"/>
                 <outlet property="loginButton" destination="6pL-xH-OzE" id="BmO-7R-g01"/>
+                <outlet property="slantedRectangle" destination="Rhn-8s-tRs" id="dC6-d7-uzp"/>
                 <outlet property="upperLabel" destination="n36-ix-D75" id="crr-RQ-Us6"/>
                 <outlet property="view" destination="V2X-Xj-JeZ" id="Vob-Ki-8K1"/>
             </connections>
@@ -89,7 +90,7 @@ L3</string>
                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1" verticalHuggingPriority="1" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="Manage orders, track sales, and monitor store activity with real-time alerts." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n36-ix-D75" userLabel="Legend Label">
                     <rect key="frame" x="30" y="168" width="354" height="41"/>
                     <fontDescription key="fontDescription" type="system" weight="medium" pointSize="17"/>
-                    <color key="textColor" name="controlBackgroundColor" catalog="System" colorSpace="catalog"/>
+                    <nil key="textColor"/>
                     <nil key="highlightedColor"/>
                 </label>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1" verticalHuggingPriority="1" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" image="prologue-logo" translatesAutoresizingMaskIntoConstraints="NO" id="bNB-4i-gz9" userLabel="Top Logo">

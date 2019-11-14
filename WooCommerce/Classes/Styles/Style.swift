@@ -5,7 +5,6 @@ import UIKit
 final class StyleManager {
     private static let maxFontSize = CGFloat(28.0)
 
-
     // MARK: - Fonts
     static var actionButtonTitleFont: UIFont {
         return .font(forStyle: .headline, weight: .semibold)

@@ -212,7 +212,7 @@ private extension NoteDetailsCommentTableViewCell {
     }
 
     func configureTextView() {
-        textView.backgroundColor = .basicBackground
+        textView.backgroundColor = .listForeground
     }
 
     /// Setup: Default Action(s) Style

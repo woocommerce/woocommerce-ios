@@ -118,7 +118,6 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="wI4-XX-k2z" firstAttribute="top" secondItem="pVG-uH-VOs" secondAttribute="top" id="BPH-Mb-QEh"/>
                             <constraint firstItem="wI4-XX-k2z" firstAttribute="bottom" secondItem="pVG-uH-VOs" secondAttribute="bottom" id="QMr-P8-3K9"/>
@@ -156,7 +155,6 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstAttribute="bottomMargin" secondItem="hwi-He-cKY" secondAttribute="bottom" id="UPd-Rr-5ev"/>
                             <constraint firstItem="hwi-He-cKY" firstAttribute="trailing" secondItem="e4p-U3-YVf" secondAttribute="trailing" id="mcB-Fh-FAx"/>
@@ -190,7 +188,6 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="qMn-MK-zzV" firstAttribute="trailing" secondItem="pYs-VV-dST" secondAttribute="trailing" id="9bn-9p-K1Z"/>
                             <constraint firstItem="pYs-VV-dST" firstAttribute="leading" secondItem="qMn-MK-zzV" secondAttribute="leading" id="OUm-VB-DJ3"/>
@@ -227,7 +224,6 @@
                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                             </textView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="VZ4-xD-33I" firstAttribute="bottom" secondItem="qu3-Gh-sHY" secondAttribute="bottom" id="4Ax-uJ-Iya"/>
                             <constraint firstItem="VZ4-xD-33I" firstAttribute="leading" secondItem="qu3-Gh-sHY" secondAttribute="leading" constant="16" id="8fn-dv-dTY"/>
@@ -397,7 +393,6 @@
                                 </connections>
                             </tableView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="ibP-Y7-8cn" firstAttribute="trailing" secondItem="BsY-oa-k6u" secondAttribute="trailing" id="2ck-f3-BSs"/>
                             <constraint firstItem="ibP-Y7-8cn" firstAttribute="leading" secondItem="BsY-oa-k6u" secondAttribute="leading" id="QKN-1I-cNm"/>
@@ -431,7 +426,6 @@
                                 </wkWebViewConfiguration>
                             </wkWebView>
                         </subviews>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
                             <constraint firstItem="3Ux-jX-kZE" firstAttribute="leading" secondItem="gcq-RR-2k7" secondAttribute="leading" id="Qmb-Md-7xS"/>
                             <constraint firstItem="gcq-RR-2k7" firstAttribute="trailing" secondItem="3Ux-jX-kZE" secondAttribute="trailing" id="hPA-YS-aD5"/>

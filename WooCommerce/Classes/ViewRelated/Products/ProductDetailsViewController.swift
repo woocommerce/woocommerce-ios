@@ -175,27 +175,10 @@ private extension ProductDetailsViewController {
     }
 
     @objc func editProduct() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) == false {
-            let productForm = ProductFormViewController()
-            let navController = WooNavigationController(rootViewController: productForm)
-            navigationController?.present(navController, animated: true)
-        } else {
-            // TODO-1420: remove after the entry point to edit Product description is implemented.
-            let product = viewModel.product
-            let editorViewController = EditorFactory().productDescriptionEditor(product: product) { content in
-                let action = ProductAction.updateProductDescription(siteID: product.siteID,
-                                                                    productID: product.productID,
-                                                                    description: content) { (product, error) in
-                                                                        guard let product = product, error == nil else {
-                                                                            DDLogError("⛔️ Error updating Product: \(error?.localizedDescription ?? "No error specified")")
-                                                                            return
-                                                                        }
-                                                                        DDLogInfo("Product description updated: \(product.fullDescription ?? "")")
-                }
-                ServiceLocator.stores.dispatch(action)
-            }
-            navigationController?.pushViewController(editorViewController, animated: true)
-        }
+        let product = viewModel.product
+        let productForm = ProductFormViewController(product: product)
+        let navController = WooNavigationController(rootViewController: productForm)
+        navigationController?.present(navController, animated: true)
     }
 }
 

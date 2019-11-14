@@ -136,7 +136,7 @@ private extension ProductReviewTableViewCell {
 
     enum Star {
         static let size = Double(13)
-        static let filledImage = UIImage.starImage(size: Star.size, tintColor: .yellow)
+        static let filledImage = UIImage.starImage(size: Star.size, tintColor: .text)
         static let emptyImage = UIImage.starImage(size: Star.size, tintColor: .clear)
     }
 

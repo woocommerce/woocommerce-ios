@@ -45,10 +45,10 @@ extension ImageAndTitleAndTextTableViewCell {
 //
 private extension ImageAndTitleAndTextTableViewCell {
     func configureLabels() {
-        titleLabel.applySubheadlineStyle()
+        titleLabel.applyBodyStyle()
         titleLabel.textColor = .text
 
-        descriptionLabel.applyFootnoteStyle()
+        descriptionLabel.applySubheadlineStyle()
         descriptionLabel.textColor = .textSubtle
     }
 

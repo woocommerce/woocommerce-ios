@@ -75,7 +75,7 @@ private extension ProductFormTableViewDataSource {
             }
             let placeholder = NSLocalizedString("Describe your product", comment: "Placeholder in the Product description row on Product form screen.")
             cell.textLabel?.text = placeholder
-            cell.textLabel?.applySubheadlineStyle()
+            cell.textLabel?.applyBodyStyle()
             cell.textLabel?.textColor = .textSubtle
         }
         cell.accessoryType = .disclosureIndicator

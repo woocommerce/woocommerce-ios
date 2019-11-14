@@ -174,7 +174,7 @@ private extension StoreStatsViewController {
 private extension StoreStatsViewController {
 
     func configureView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .listForeground
         topBorder.backgroundColor = .listSmallIcon
         middleBorder.backgroundColor = .listSmallIcon
         bottomBorder.backgroundColor = .listSmallIcon
@@ -193,8 +193,8 @@ private extension StoreStatsViewController {
     }
 
     func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = .basicBackground
-        settings.style.buttonBarItemBackgroundColor = .basicBackground
+        settings.style.buttonBarBackgroundColor = .listForeground
+        settings.style.buttonBarItemBackgroundColor = .listForeground
         settings.style.selectedBarBackgroundColor = .brand
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight

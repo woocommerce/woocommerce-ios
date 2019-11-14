@@ -219,7 +219,7 @@ private extension PeriodDataViewController {
     }
 
     func configureView() {
-        view.backgroundColor = .basicBackground
+        view.backgroundColor = .listForeground
         borderView.backgroundColor = .listSmallIcon
 
         // Titles

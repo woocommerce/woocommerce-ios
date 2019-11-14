@@ -96,7 +96,7 @@ private extension TopBannerView {
     }
 
     func configureBackground() {
-        backgroundColor = .white
+        backgroundColor = .basicBackground
     }
 
     func createContentView() -> UIView {

@@ -168,7 +168,6 @@ private extension ReviewsViewController {
     /// Setup: NavigationBar Buttons
     ///
     func configureNavigationBarButtons() {
-        rightBarButton.tintColor = .white
         rightBarButton.accessibilityTraits = .button
         rightBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Reviews as Read Button")
         rightBarButton.accessibilityHint = NSLocalizedString("Marks Every Review as Read",

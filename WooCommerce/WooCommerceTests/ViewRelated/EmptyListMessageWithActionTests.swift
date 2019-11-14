@@ -49,10 +49,4 @@ final class EmptyListMessageWithActionTests: XCTestCase {
         XCTAssertEqual(label?.font, UIFont.body)
         XCTAssertEqual(label?.textColor, .text)
     }
-
-    func testActionButtonStyle() {
-        let button = subject?.getButton()
-
-        XCTAssertEqual(button?.backgroundColor, .white)
-    }
 }

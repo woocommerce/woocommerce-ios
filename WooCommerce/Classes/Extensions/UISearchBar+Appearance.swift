@@ -9,7 +9,7 @@ extension UISearchBar {
     ///
     class func applyWooAppearance() {
         let appearance = UISearchBar.appearance()
-        appearance.barTintColor = .white
+        appearance.barTintColor = .basicBackground
 
         appearance.layer.borderColor = UIColor.listSmallIcon.cgColor
         appearance.layer.borderWidth = 1.0

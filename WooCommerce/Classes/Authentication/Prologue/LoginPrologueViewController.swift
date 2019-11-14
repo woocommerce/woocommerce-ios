@@ -71,7 +71,7 @@ final class LoginPrologueViewController: UIViewController {
 private extension LoginPrologueViewController {
 
     func setupMainView() {
-        view.backgroundColor = .white
+        view.backgroundColor = .basicBackground
     }
 
     func setupBackgroundView() {
@@ -98,8 +98,8 @@ private extension LoginPrologueViewController {
         disclaimerTextView.adjustsFontForContentSizeCategory = true
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
-            .foregroundColor: UIColor.white,
-            .underlineColor: UIColor.white,
+            .foregroundColor: UIColor.basicBackground,
+            .underlineColor: UIColor.basicBackground,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
     }
@@ -185,7 +185,7 @@ private extension LoginPrologueViewController {
         )
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.thinCaptionFont,
-            .foregroundColor: UIColor.white
+            .foregroundColor: UIColor.basicBackground
         ]
 
         let disclaimerAttrText = NSMutableAttributedString()

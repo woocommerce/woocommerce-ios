@@ -213,7 +213,6 @@ private extension OrdersViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(displaySearchOrders))
-            button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
             button.accessibilityHint = NSLocalizedString(
@@ -229,7 +228,6 @@ private extension OrdersViewController {
                                                  style: .plain,
                                                  target: self,
                                                  action: #selector(displayFiltersAlert))
-            button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
             button.accessibilityHint = NSLocalizedString(

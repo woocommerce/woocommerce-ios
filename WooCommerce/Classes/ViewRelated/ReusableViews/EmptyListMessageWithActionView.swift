@@ -62,7 +62,7 @@ private extension EmptyListMessageWithActionView {
     }
 
     func applyActionButtonStyle() {
-        actionButton.backgroundColor = .white
+        actionButton.backgroundColor = .listForeground
         actionButton.topVisible = true
         actionButton.bottomVisible = true
     }

@@ -13,7 +13,7 @@ class TextViewTableViewCell: UITableViewCell {
         }
         set {
             noteIconButton.setImage(newValue, for: .normal)
-            noteIconButton.tintColor = .white
+            noteIconButton.tintColor = .listForeground
             noteIconButton.layer.cornerRadius = noteIconButton.frame.width / 2
         }
     }

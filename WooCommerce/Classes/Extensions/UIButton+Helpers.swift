@@ -10,7 +10,7 @@ extension UIButton {
     func applyPrimaryButtonStyle() {
         backgroundColor = .brand
         contentEdgeInsets = Style.defaultEdgeInsets
-        tintColor = .white
+        tintColor = .primaryButtonBackground
         layer.borderColor = UIColor.brand.cgColor
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius

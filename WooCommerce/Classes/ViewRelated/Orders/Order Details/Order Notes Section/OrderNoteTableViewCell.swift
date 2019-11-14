@@ -117,6 +117,5 @@ private extension OrderNoteTableViewCell {
     func configureIconButton() {
         iconButton.setImage(.asideImage, for: .normal)
         iconButton.layer.cornerRadius = iconButton.frame.width / 2
-        iconButton.tintColor = .white
     }
 }

@@ -264,7 +264,6 @@ private extension NewNoteViewController {
                                             style: .plain,
                                             target: self,
                                             action: #selector(dismissButtonTapped))
-        leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 
@@ -275,7 +274,6 @@ private extension NewNoteViewController {
                                              style: .done,
                                              target: self,
                                              action: #selector(addButtonTapped))
-        rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.isEnabled = false
     }

@@ -129,7 +129,6 @@ extension OrderStatusListViewController {
                                             style: .plain,
                                             target: self,
                                             action: #selector(dismissButtonTapped))
-        leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 
@@ -140,7 +139,6 @@ extension OrderStatusListViewController {
                                              style: .done,
                                              target: self,
                                              action: #selector(applyButtonTapped))
-        rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         deActivateApplyButton()
     }

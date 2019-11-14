@@ -79,7 +79,6 @@ private extension ManualTrackingViewController {
                                             style: .plain,
                                             target: self,
                                             action: #selector(dismissButtonTapped))
-        leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 
@@ -106,7 +105,6 @@ private extension ManualTrackingViewController {
                                              style: .done,
                                              target: self,
                                              action: #selector(primaryButtonTapped))
-        rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.isEnabled = false
     }

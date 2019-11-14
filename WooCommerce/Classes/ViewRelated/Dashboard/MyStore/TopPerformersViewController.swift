@@ -151,6 +151,7 @@ private extension TopPerformersViewController {
         view.backgroundColor = .listBackground
         topBorder.backgroundColor = .listSmallIcon
         middleBorder.backgroundColor = .listSmallIcon
+        buttonBarView.backgroundColor = .listForeground
         headingLabel.applyFootnoteStyle()
         headingLabel.textColor = .listIcon
         headingLabel.textInsets = Constants.headerLabelInsets
@@ -189,6 +190,8 @@ private extension TopPerformersViewController {
             guard changeCurrentIndex == true else { return }
             oldCell?.label.textColor = .text
             newCell?.label.textColor = .brand
+            oldCell?.contentView.backgroundColor = .listForeground
+            newCell?.contentView.backgroundColor = .listForeground
         }
     }
 }

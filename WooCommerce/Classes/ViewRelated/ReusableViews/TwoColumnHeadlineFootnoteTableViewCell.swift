@@ -61,6 +61,7 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         super.awakeFromNib()
         configureBackground()
         configureLabels()
+        configureFootnoteLabel()
     }
 }
 
@@ -78,6 +79,15 @@ private extension TwoColumnHeadlineFootnoteTableViewCell {
     func configureLabels() {
         leftTitleLabel.applyHeadlineStyle()
         rightTitleLabel.applyHeadlineStyle()
+    }
+
+    /// Setup: Footnote Label
+    ///
+    func configureFootnoteLabel() {
+        guard footnoteLabel?.attributedText?.string.count == 0 else {
+//            footnoteLabel.applySecondaryFootnoteStyle()
+            return
+        }
         footnoteLabel.applyFootnoteStyle()
     }
 }

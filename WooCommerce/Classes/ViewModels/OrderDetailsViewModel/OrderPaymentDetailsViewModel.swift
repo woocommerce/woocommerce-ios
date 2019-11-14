@@ -85,37 +85,47 @@ final class OrderPaymentDetailsViewModel {
 
     /// Refund Summary
     /// - returns: A full sentence summary of the date the refund was created, which payment gateway it was refunded to, and a link to the detailed refund.
+    /// Example: Oct 28, 2019 via Credit Card (Stripe)
     ///
     var refundSummary: NSAttributedString? {
         guard let refund = refund else {
             return nil
         }
 
+        // First, localize all the pieces of the sentence.
         let dateCreated = DateFormatter.mediumLengthLocalizedDateFormatter.string(from: refund.dateCreated)
 
         let hasRefundGateway = refund.isAutomated ?? false
 
         // Yes, we're making the assumption that the payment method is the same as the refund method.
-        let refundType = hasRefundGateway ? order.paymentMethodTitle : NSLocalizedString("manual refund", comment: "A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded)")
+        let refundType = hasRefundGateway ? order.paymentMethodTitle : NSLocalizedString("manual refund",
+                                                                                         comment: "A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded)")
 
-        let viewDetailsText = NSLocalizedString("View details", comment: "This text is linked so the user can view refund details.")
-        let viewDetailsRange = NSRange(location: 0, length: viewDetailsText.count)
-        let viewDetailsAttr = NSMutableAttributedString(string: viewDetailsText)
-        let linkAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: StyleManager.wooCommerceBrandColor
-        ]
-        viewDetailsAttr.addAttributes(linkAttributes, range: viewDetailsRange)
+        let viewDetailsText = NSLocalizedString("View details",
+                                                comment: "This text is linked so the user can view refund details.")
 
-        let template = NSLocalizedString("%@ via %@ (%@)", comment: "It reads: <date> via <refund method type> (View details). The text `View details` is a link.")
-        let refundText = String.localizedStringWithFormat(template, dateCreated, refundType, viewDetailsAttr)
+        let template = NSLocalizedString("%@ via %@ (%@)",
+                                         comment: "It reads: \"<date> via <refund method type> (View details)\". The text `View details` is a link.")
+        let refundText = String.localizedStringWithFormat(template, dateCreated, refundType, viewDetailsText)
+
+        // Next, style the localized text.
         let refundAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,
-            .foregroundColor: StyleManager.wooGreyMid
+            .foregroundColor: UIColor.listIcon
         ]
 
         let refundAttrText = NSMutableAttributedString(string: refundText)
         let range = NSRange(location: 0, length: refundText.count)
         refundAttrText.addAttributes(refundAttributes, range: range)
+
+        // Last, style the link text.
+        let location = refundText.characterCount - viewDetailsText.characterCount - 1
+        let viewDetailsRange = NSRange(location: location, length: viewDetailsText.count)
+        let viewDetailsAttr = NSMutableAttributedString(string: refundText)
+        let linkAttributes: [NSAttributedString.Key: Any] = [
+            .foregroundColor: StyleManager.wooCommerceBrandColor
+        ]
+        viewDetailsAttr.addAttributes(linkAttributes, range: viewDetailsRange)
 
         return refundAttrText
     }

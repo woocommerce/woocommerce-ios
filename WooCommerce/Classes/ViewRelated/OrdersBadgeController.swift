@@ -133,7 +133,7 @@ private extension OrdersBadgeController {
         // BUGFIX: Don't add the backgroundColor property, use this!
         // Labels with rounded borders and a background color will end
         // up with a fuzzy shadow / outline outside of the border color.
-        returnValue.fillColor = .brand
+        returnValue.fillColor = .accent
 
         returnValue.isHidden = true
         returnValue.adjustsFontForContentSizeCategory = false

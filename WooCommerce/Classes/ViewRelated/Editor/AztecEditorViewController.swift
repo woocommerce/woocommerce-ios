@@ -219,8 +219,6 @@ private extension AztecEditorViewController {
     @objc func saveButtonTapped() {
         let content = getHTML()
         onContentSave?(content)
-
-        navigationController?.popViewController(animated: true)
     }
 }
 

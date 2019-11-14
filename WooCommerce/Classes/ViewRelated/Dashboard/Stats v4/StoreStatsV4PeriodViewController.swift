@@ -243,13 +243,13 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func configureView() {
-        view.backgroundColor = .basicBackground
-        containerStackView.backgroundColor = .basicBackground
-        visitorsStackView.backgroundColor = .basicBackground
+        view.backgroundColor = .listForeground
+        containerStackView.backgroundColor = .listForeground
+        visitorsStackView.backgroundColor = .listForeground
         borderView.backgroundColor = .listSmallIcon
 
         // Time range bar bottom border view
-        timeRangeBarBottomBorderView.backgroundColor = .listSmallIcon
+        timeRangeBarBottomBorderView.backgroundColor = .listForeground
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")

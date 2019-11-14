@@ -45,6 +45,7 @@ class ProductTableViewCell: UITableViewCell {
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
         productImage.contentMode = .scaleAspectFit
+        contentView.backgroundColor = .listForeground
     }
 }
 

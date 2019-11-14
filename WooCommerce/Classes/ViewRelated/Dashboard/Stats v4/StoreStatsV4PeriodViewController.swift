@@ -52,6 +52,7 @@ class StoreStatsV4PeriodViewController: UIViewController {
 
     // MARK: - Subviews
 
+    @IBOutlet private weak var containerStackView: UIStackView!
     @IBOutlet private weak var visitorsStackView: UIStackView!
     @IBOutlet private weak var visitorsTitle: UILabel!
     @IBOutlet private weak var visitorsData: UILabel!
@@ -243,6 +244,8 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureView() {
         view.backgroundColor = .basicBackground
+        containerStackView.backgroundColor = .basicBackground
+        visitorsStackView.backgroundColor = .basicBackground
         borderView.backgroundColor = .listSmallIcon
 
         // Time range bar bottom border view
@@ -264,6 +267,7 @@ private extension StoreStatsV4PeriodViewController {
         // Footer
         lastUpdated.font = UIFont.footnote
         lastUpdated.textColor = .textSubtle
+        lastUpdated.backgroundColor = .basicBackground
 
         // Visibility
         updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)

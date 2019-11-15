@@ -320,6 +320,33 @@ public extension StorageType {
         return firstObject(ofType: ProductReview.self, matching: predicate)
     }
 
+    /// Retrieves all of the stored ProductVariation's for the provided siteID and productID.
+    /// Sorted by dateCreated, descending
+    ///
+    func loadProductVariations(siteID: Int, productID: Int) -> [ProductVariation]? {
+        let predicate = NSPredicate(format: "product.siteID = %lld AND product.productID = %lld", siteID, productID)
+        let descriptor = NSSortDescriptor(keyPath: \ProductVariation.dateCreated, ascending: false)
+        return allObjects(ofType: ProductVariation.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves a stored ProductVariation for the provided siteID and productID.
+    ///
+    func loadProductVariation(siteID: Int, productVariationID: Int64) -> ProductVariation? {
+        let predicate = NSPredicate(format: "product.siteID = %lld AND productVariationID = %lld", siteID, productVariationID)
+        return firstObject(ofType: ProductVariation.self, matching: predicate)
+    }
+
+    /// Retrieves a stored Product Variation Attribute.
+    ///
+    /// Note: WC attribute ID's often have an ID of `0` (local Product attributes), so we need to
+    /// also look them up by key and value
+    ///
+    func loadProductVariationAttribute(attributeID: Int64, name: String, option: String) -> Attribute? {
+        let predicate = NSPredicate(format: "id = %lld AND key = %@ AND value = %@",
+                                    attributeID, name, option)
+        return firstObject(ofType: Attribute.self, matching: predicate)
+    }
+
     // MARK: - Refunds
 
     /// Retrieves a stored Refund for the provided siteID, orderID, and refundID.

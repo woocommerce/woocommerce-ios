@@ -9,7 +9,8 @@ extension Attribute {
     }
 
     @NSManaged public var id: Int64
-    @NSManaged public var key: String?
-    @NSManaged public var value: String?
+    @NSManaged public var key: String
+    @NSManaged public var value: String
+    @NSManaged public var productVariation: ProductVariation?
 
 }

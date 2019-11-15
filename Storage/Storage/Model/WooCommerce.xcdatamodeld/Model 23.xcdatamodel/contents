@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15400" systemVersion="18G103" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15400" systemVersion="18F132" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -10,6 +10,12 @@
     <entity name="AccountSettings" representedClassName="AccountSettings" syncable="YES">
         <attribute name="tracksOptOut" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="userID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+    </entity>
+    <entity name="Attribute" representedClassName="Attribute" syncable="YES">
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="key" attributeType="String"/>
+        <attribute name="value" attributeType="String"/>
+        <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="attributes" inverseEntity="ProductVariation"/>
     </entity>
     <entity name="Note" representedClassName="Note" syncable="YES">
         <attribute name="body" optional="YES" attributeType="Binary"/>
@@ -283,6 +289,7 @@
         <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductDimensions" inverseName="product" inverseEntity="ProductDimensions"/>
         <relationship name="downloads" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="ProductDownload" inverseName="product" inverseEntity="ProductDownload"/>
         <relationship name="images" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductImage" inverseName="product" inverseEntity="ProductImage"/>
+        <relationship name="productVariations" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductVariation" inverseName="product" inverseEntity="ProductVariation"/>
         <relationship name="searchResults" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductSearchResults" inverseName="products" inverseEntity="ProductSearchResults"/>
         <relationship name="tags" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductTag" inverseName="product" inverseEntity="ProductTag"/>
     </entity>
@@ -312,12 +319,14 @@
         <attribute name="length" attributeType="String"/>
         <attribute name="width" attributeType="String"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="dimensions" inverseEntity="Product"/>
+        <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="dimensions" inverseEntity="ProductVariation"/>
     </entity>
     <entity name="ProductDownload" representedClassName="ProductDownload" syncable="YES">
         <attribute name="downloadID" attributeType="String"/>
         <attribute name="fileURL" optional="YES" attributeType="String"/>
         <attribute name="name" optional="YES" attributeType="String"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="downloads" inverseEntity="Product"/>
+        <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="downloads" inverseEntity="ProductVariation"/>
     </entity>
     <entity name="ProductImage" representedClassName="ProductImage" syncable="YES">
         <attribute name="alt" optional="YES" attributeType="String"/>
@@ -327,6 +336,7 @@
         <attribute name="name" optional="YES" attributeType="String"/>
         <attribute name="src" attributeType="String"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="images" inverseEntity="Product"/>
+        <relationship name="productVariation" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductVariation" inverseName="image" inverseEntity="ProductVariation"/>
     </entity>
     <entity name="ProductReview" representedClassName="ProductReview" syncable="YES">
         <attribute name="dateCreated" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
@@ -350,6 +360,43 @@
         <attribute name="slug" attributeType="String"/>
         <attribute name="tagID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="tags" inverseEntity="Product"/>
+    </entity>
+    <entity name="ProductVariation" representedClassName="ProductVariation" syncable="YES">
+        <attribute name="backordered" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="backordersAllowed" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="backordersKey" attributeType="String"/>
+        <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateOnSaleEnd" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateOnSaleStart" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="downloadable" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="downloadExpiry" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="downloadLimit" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
+        <attribute name="fullDescription" optional="YES" attributeType="String"/>
+        <attribute name="manageStock" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="menuOrder" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="onSale" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="permalink" attributeType="String"/>
+        <attribute name="price" attributeType="String"/>
+        <attribute name="productVariationID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="purchasable" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
+        <attribute name="regularPrice" optional="YES" attributeType="String"/>
+        <attribute name="salePrice" optional="YES" attributeType="String"/>
+        <attribute name="shippingClass" optional="YES" attributeType="String"/>
+        <attribute name="shippingClassID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sku" optional="YES" attributeType="String"/>
+        <attribute name="statusKey" attributeType="String"/>
+        <attribute name="stockQuantity" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stockStatusKey" attributeType="String"/>
+        <attribute name="taxClass" optional="YES" attributeType="String"/>
+        <attribute name="taxStatusKey" attributeType="String"/>
+        <attribute name="virtual" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
+        <attribute name="weight" optional="YES" attributeType="String"/>
+        <relationship name="attributes" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Attribute" inverseName="productVariation" inverseEntity="Attribute"/>
+        <relationship name="dimensions" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="ProductDimensions" inverseName="productVariation" inverseEntity="ProductDimensions"/>
+        <relationship name="downloads" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="ProductDownload" inverseName="productVariation" inverseEntity="ProductDownload"/>
+        <relationship name="image" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="ProductImage" inverseName="productVariation" inverseEntity="ProductImage"/>
+        <relationship name="product" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product" inverseName="productVariations" inverseEntity="Product"/>
     </entity>
     <entity name="Refund" representedClassName="Refund" syncable="YES">
         <attribute name="amount" optional="YES" attributeType="String"/>
@@ -438,6 +485,7 @@
     <elements>
         <element name="Account" positionX="-200.9765625" positionY="63.5625" width="128" height="120"/>
         <element name="AccountSettings" positionX="-846" positionY="270" width="128" height="75"/>
+        <element name="Attribute" positionX="-684" positionY="45" width="128" height="103"/>
         <element name="Note" positionX="-369.61328125" positionY="-95.85546875" width="128" height="283"/>
         <element name="Order" positionX="-41.5859375" positionY="23.53125" width="128" height="748"/>
         <element name="OrderCount" positionX="-693" positionY="36" width="128" height="75"/>
@@ -456,16 +504,17 @@
         <element name="OrderStatsV4Interval" positionX="-675" positionY="54" width="128" height="120"/>
         <element name="OrderStatsV4Totals" positionX="-519.01171875" positionY="96.5546875" width="128" height="225"/>
         <element name="OrderStatus" positionX="-64.2578125" positionY="807.0234375" width="128" height="105"/>
-        <element name="Product" positionX="-669.6796875" positionY="1015.5859375" width="128" height="915"/>
+        <element name="Product" positionX="-669.6796875" positionY="1015.5859375" width="128" height="928"/>
         <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="148"/>
         <element name="ProductCategory" positionX="-773.3125" positionY="94.1328125" width="128" height="103"/>
         <element name="ProductDefaultAttribute" positionX="-819.42578125" positionY="224.1171875" width="145.12109375" height="103"/>
-        <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="105"/>
-        <element name="ProductDownload" positionX="-684" positionY="45" width="128" height="105"/>
-        <element name="ProductImage" positionX="-859.9296875" positionY="471.46484375" width="128" height="148"/>
+        <element name="ProductDimensions" positionX="-830.15234375" positionY="345.6328125" width="128" height="118"/>
+        <element name="ProductDownload" positionX="-684" positionY="45" width="128" height="118"/>
+        <element name="ProductImage" positionX="-859.9296875" positionY="471.46484375" width="128" height="163"/>
         <element name="ProductReview" positionX="-693" positionY="36" width="128" height="210"/>
         <element name="ProductSearchResults" positionX="-693" positionY="36" width="128" height="75"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="103"/>
+        <element name="ProductVariation" positionX="-693" positionY="36" width="128" height="568"/>
         <element name="Refund" positionX="-657" positionY="81" width="128" height="28"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>

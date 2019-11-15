@@ -27,7 +27,7 @@ extension ProductVariation {
     @NSManaged public var taxStatusKey: String
     @NSManaged public var taxClass: String?
     @NSManaged public var manageStock: Bool
-    @NSManaged public var stockQuantity: String?
+    @NSManaged public var stockQuantity: Int64
     @NSManaged public var stockStatusKey: String
     @NSManaged public var backordersKey: String
     @NSManaged public var backordersAllowed: Bool
@@ -38,11 +38,11 @@ extension ProductVariation {
     @NSManaged public var menuOrder: Int64
     @NSManaged public var dateOnSaleStart: Date?
     @NSManaged public var dateOnSaleEnd: Date?
-    @NSManaged public var attributes: [Attribute]?
     @NSManaged public var dimensions: ProductDimensions?
     @NSManaged public var image: ProductImage?
-    @NSManaged public var downloads: NSSet?
+    @NSManaged public var downloads: Set<ProductDownload>?
     @NSManaged public var product: Product?
+    @NSManaged public var attributes: NSOrderedSet
 
 }
 
@@ -60,5 +60,40 @@ extension ProductVariation {
 
     @objc(removeDownloads:)
     @NSManaged public func removeFromDownloads(_ values: NSSet)
+
+}
+
+// MARK: Generated accessors for attributes
+extension ProductVariation {
+
+    @objc(insertObject:inAttributesAtIndex:)
+    @NSManaged public func insertIntoAttributes(_ value: Attribute, at idx: Int)
+
+    @objc(removeObjectFromAttributesAtIndex:)
+    @NSManaged public func removeFromAttributes(at idx: Int)
+
+    @objc(insertAttributes:atIndexes:)
+    @NSManaged public func insertIntoAttributes(_ values: [Attribute], at indexes: NSIndexSet)
+
+    @objc(removeAttributesAtIndexes:)
+    @NSManaged public func removeFromAttributes(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInAttributesAtIndex:withObject:)
+    @NSManaged public func replaceAttributes(at idx: Int, with value: Attribute)
+
+    @objc(replaceAttributesAtIndexes:withAttributes:)
+    @NSManaged public func replaceAttributes(at indexes: NSIndexSet, with values: [Attribute])
+
+    @objc(addAttributesObject:)
+    @NSManaged public func addToAttributes(_ value: Attribute)
+
+    @objc(removeAttributesObject:)
+    @NSManaged public func removeFromAttributes(_ value: Attribute)
+
+    @objc(addAttributes:)
+    @NSManaged public func addToAttributes(_ values: NSOrderedSet)
+
+    @objc(removeAttributes:)
+    @NSManaged public func removeFromAttributes(_ values: NSOrderedSet)
 
 }

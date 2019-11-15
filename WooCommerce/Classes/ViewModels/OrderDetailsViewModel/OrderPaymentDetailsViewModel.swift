@@ -108,24 +108,15 @@ final class OrderPaymentDetailsViewModel {
                                          comment: "It reads: \"<date> via <refund method type> (View details)\". The text `View details` is a link.")
         let refundText = String.localizedStringWithFormat(template, dateCreated, refundType, viewDetailsText)
 
-        // Next, style the localized text.
-        let refundAttributes: [NSAttributedString.Key: Any] = [
-            .font: StyleManager.footerLabelFont,
-            .foregroundColor: UIColor.listIcon
-        ]
-
         let refundAttrText = NSMutableAttributedString(string: refundText)
-        let range = NSRange(location: 0, length: refundText.count)
-        refundAttrText.addAttributes(refundAttributes, range: range)
-
-        // Last, style the link text.
-        let location = refundText.characterCount - viewDetailsText.characterCount - 1
+        let location = refundAttrText.string.count - viewDetailsText.count - 1
         let viewDetailsRange = NSRange(location: location, length: viewDetailsText.count)
-        let viewDetailsAttr = NSMutableAttributedString(string: refundText)
+
+         // Last, style the link text.
         let linkAttributes: [NSAttributedString.Key: Any] = [
             .foregroundColor: StyleManager.wooCommerceBrandColor
         ]
-        viewDetailsAttr.addAttributes(linkAttributes, range: viewDetailsRange)
+        refundAttrText.addAttributes(linkAttributes, range: viewDetailsRange)
 
         return refundAttrText
     }

@@ -337,7 +337,7 @@ extension OrdersViewController {
     @IBAction func displayFiltersAlert() {
         ServiceLocator.analytics.track(.ordersListFilterTapped)
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .brand
+        actionSheet.view.tintColor = .text
 
         actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
         actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in

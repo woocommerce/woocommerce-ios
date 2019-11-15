@@ -1,6 +1,6 @@
 import WordPressUI
 
-/// Style for ghosting that does not show calles with a white background.
+/// Style for ghosting that will not show calls with a white background.
 ///
 extension GhostStyle {
     static var wooDefaultGhostStyle: Self {

@@ -151,8 +151,8 @@ extension OrderDetailsDataSource {
     }
 
     func configureRefund(cell: TwoColumnHeadlineAttributedFootnoteTableViewCell, at indexPath: IndexPath) {
-        let row = rowAtIndexPath(indexPath)
-        let condensedRefund = condensedRefunds[indexPath.row - 2]
+//        let row = rowAtIndexPath(indexPath)
+        let condensedRefund = condensedRefunds[indexPath.row - 2] // TODO-thuy: minus two should be constants
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
         cell.leftText = Titles.refunded

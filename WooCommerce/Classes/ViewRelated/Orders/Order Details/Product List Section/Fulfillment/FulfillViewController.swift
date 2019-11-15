@@ -635,7 +635,7 @@ private extension FulfillViewController {
 
         let address: Section = {
             var rows: [Row] = []
-            
+
             if shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }

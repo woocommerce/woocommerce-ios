@@ -56,7 +56,7 @@ extension OrderDetailsDataSource {
             return Section(title: Title.information, rows: rows)
         }()
 
-        let payment:Section = {
+        let payment: Section = {
             var rows: [Row] = [.payment, .customerPaid]
 
             if FeatureFlag.refunds.enabled {

@@ -197,7 +197,7 @@ extension OrderDetailsDataSource {
     func lookUpRefund(by refundID: Int) -> Refund? {
         return refunds.filter({ $0.refundID == refundID }).first
     }
-    
+
     func isMultiShippingLinesAvailable(for order: Order) -> Bool {
         return shippingLines.count > 1
     }

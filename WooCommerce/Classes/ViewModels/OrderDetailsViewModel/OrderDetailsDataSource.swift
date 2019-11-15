@@ -323,7 +323,7 @@ private extension OrderDetailsDataSource {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
         cell.leftText = Titles.refunded
         cell.rightText = refund?.amount
-        cell.footnoteAttributedText = paymentViewModel.refundSummary
+        cell.footnoteLabel.attributedText = paymentViewModel.refundSummary
     }
 
     func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {

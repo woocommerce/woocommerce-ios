@@ -187,16 +187,25 @@ private extension NoteDetailsCommentTableViewCell {
     ///
     func configureActionButtons() {
         spamButton.setImage(.spamImage, for: .normal)
+        spamButton.backgroundColor = .primaryButtonBackground
+        spamButton.imageView?.tintColor = .text
+        spamButton.setTitleColor(.textInverted, for: .normal)
         spamButton.setTitle(Spam.normalTitle, for: .normal)
         spamButton.accessibilityLabel = Spam.normalLabel
         spamButton.accessibilityTraits = .button
 
         trashButton.setImage(.trashImage, for: .normal)
+        trashButton.backgroundColor = .primaryButtonBackground
+        trashButton.imageView?.tintColor = .text
+        trashButton.setTitleColor(.textInverted, for: .normal)
         trashButton.setTitle(Trash.normalTitle, for: .normal)
         trashButton.accessibilityLabel = Trash.normalLabel
         trashButton.accessibilityTraits = .button
 
         approvalButton.setImage(.checkmarkImage, for: .normal)
+        approvalButton.backgroundColor = .primaryButtonBackground
+        approvalButton.imageView?.tintColor = .text
+        approvalButton.setTitleColor(.textInverted, for: .normal)
         approvalButton.setTitle(Approve.normalTitle, for: .normal)
         approvalButton.setTitle(Approve.selectedTitle, for: .selected)
         approvalButton.accessibilityLabel = Approve.normalLabel

@@ -53,10 +53,5 @@ private extension TextViewTableViewCell {
 
     func configureTextView() {
         noteTextView.delegate = self
-        // Overriding the textview user interface style until Dark Mode
-        // is fully supported
-        if #available(iOS 13.0, *) {
-            noteTextView.overrideUserInterfaceStyle = .light
-        }
     }
 }

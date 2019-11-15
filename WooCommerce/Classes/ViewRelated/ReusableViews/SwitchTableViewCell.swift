@@ -80,7 +80,7 @@ private extension SwitchTableViewCell {
     }
 
     func setupSwitch() {
-        toggleSwitch.onTintColor = .brand
+        toggleSwitch.onTintColor = .listIcon
         toggleSwitch.addTarget(self, action: #selector(toggleSwitchWasPressed), for: .touchUpInside)
         accessoryView = toggleSwitch
     }

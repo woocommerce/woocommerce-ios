@@ -2,6 +2,9 @@ import Foundation
 import UIKit
 import Yosemite
 
+
+/// The main file for Order Details data.
+///
 final class OrderDetailsDataSource: NSObject {
     private(set) var order: Order
     private let currencyFormatter = CurrencyFormatter()
@@ -9,16 +12,20 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Haptic Feedback!
     ///
-    private let hapticGenerator = UINotificationFeedbackGenerator()
+    let hapticGenerator = UINotificationFeedbackGenerator()
 
     /// Sections to be rendered
     ///
-    private(set) var sections = [Section]()
+    var sections = [Section]()
 
-    private var isProcessingPayment: Bool {
+    /// Is this order processing?
+    ///
+    var isProcessingPayment: Bool {
         return order.statusKey == OrderStatusEnum.processing.rawValue
     }
 
+    /// Is the shipment tracking plugin available?
+    ///
     var trackingIsReachable: Bool = false
 
     /// Anything above 999.99 or below -999.99 should display a truncated amount
@@ -27,6 +34,8 @@ final class OrderDetailsDataSource: NSObject {
         return currencyFormatter.formatHumanReadableAmount(order.total, with: order.currency, roundSmallNumbers: false) ?? String()
     }
 
+    /// For example, #560 Pamela Nguyen
+    ///
     var summaryTitle: String? {
         if let billingAddress = order.billingAddress {
             return "#\(order.number) \(billingAddress.firstName) \(billingAddress.lastName)"
@@ -34,11 +43,14 @@ final class OrderDetailsDataSource: NSObject {
         return "#\(order.number)"
     }
 
-    private var summaryDateCreated: String {
+    /// For example, Oct 1, 2019 at 2:31 PM
+    ///
+    var summaryDateCreated: String {
         return order.dateModified.relativelyFormattedUpdateString
     }
 
-
+    /// Closure to be executed when the cell was tapped.
+    ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
 
     /// Closure to be executed when the UI needs to be reloaded.
@@ -71,24 +83,24 @@ final class OrderDetailsDataSource: NSObject {
     
     /// Shipping Lines from an Order
     ///
-    private var shippingLines: [ShippingLine] {
+    var shippingLines: [ShippingLine] {
         return order.shippingLines
     }
 
     /// First Shipping method from an order
     ///
-    private var shippingMethod: String {
+    var shippingMethod: String {
         return shippingLines.first?.methodTitle ?? String()
     }
 
     /// All the items inside an order
-    private var items: [OrderItem] {
+    var items: [OrderItem] {
         return order.items
     }
 
     /// All the condensed refunds in an order
     ///
-    private var condensedRefunds: [OrderRefundCondensed] {
+    var condensedRefunds: [OrderRefundCondensed] {
         return order.refunds
     }
 
@@ -101,19 +113,19 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     /// Note of customer about the order
-    private var customerNote: String {
+    var customerNote: String {
         return order.customerNote ?? String()
     }
 
     /// Computed Notes of an Order with note sections
     ///
-    private var orderNotesSections: [NoteSection] = []
+    var orderNotesSections: [NoteSection] = []
 
     private lazy var resultsControllers: OrderDetailsResultsControllers = {
         return OrderDetailsResultsControllers(order: self.order)
     }()
 
-    private lazy var orderNoteAsyncDictionary: AsyncDictionary<Int, String> = {
+    lazy var orderNoteAsyncDictionary: AsyncDictionary<Int, String> = {
         return AsyncDictionary()
     }()
 

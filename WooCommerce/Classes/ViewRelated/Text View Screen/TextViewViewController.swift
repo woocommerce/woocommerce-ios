@@ -69,7 +69,7 @@ private extension TextViewViewController {
         textView.adjustsFontForContentSizeCategory = true
         textView.font = .body
         textView.textColor = .text
-        textView.textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
+        textView.textContainerInset = Constants.textContainerInset
 
         textView.delegate = self
     }
@@ -120,5 +120,11 @@ extension TextViewViewController: KeyboardScrollable {
 private extension TextViewViewController {
     func refreshPlaceholderVisibility() {
         placeholderLabel.isHidden = textView.isHidden || !textView.text.isEmpty
+    }
+}
+
+private extension TextViewViewController {
+    enum Constants {
+        static let textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
 }

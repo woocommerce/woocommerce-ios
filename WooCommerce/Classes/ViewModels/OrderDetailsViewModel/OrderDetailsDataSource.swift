@@ -80,7 +80,7 @@ final class OrderDetailsDataSource: NSObject {
     var refunds: [Refund] {
         return resultsControllers.refunds
     }
-    
+
     /// Shipping Lines from an Order
     ///
     var shippingLines: [ShippingLine] {

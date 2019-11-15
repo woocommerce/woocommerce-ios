@@ -235,7 +235,7 @@ private extension ProductsViewController {
     func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "dateModified", ascending: true)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }

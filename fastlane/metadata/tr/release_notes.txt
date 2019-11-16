@@ -1,1 +1,3 @@
-Daha iyi okunabilirlik ve kullanılabilirlik için Sipariş Ayrıntılarının bazı kısımlarını yeniden düzenledik: Müşteri ödemesi ayrıntıları daha belirgindir ve Sipariş Notları, daha iyi tarama için tarih başlıklarıyla gruplandırılır. Ek olarak, artık Fatura Ayrıntılarını görüntülerken tuhaf genişleme animasyonları yok!
+* Zaman dilimlerinin hatalı olması nedeniyle satış istatistiklerini etkileyen hatayı bulduk ve düzelttik.
+* Sipariş Ayrıntıları ekranından bir müşteriye e-posta gönderirken gezinme çubuğunun uygulamanın geri kalanında gördüğünüz çubuktan farklı olduğunu fark ettiniz mi? Bu çubuk artık tüm uygulamada tutarlı bir şekilde görüntüleniyor.
+* Klavye artık Sevkiyat Takibi uzantısındaki tarih seçicinin üzerini kapatmıyor. Artık çok daha kolay bir şekilde tarih seçebilirsiniz.

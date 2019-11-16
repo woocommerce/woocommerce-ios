@@ -1,1 +1,3 @@
-Reorganizamos partes dos Detalhes do pedido para melhor fluência e utilização: os detalhes do pagamento do cliente estão mais proeminentes, e as Observações do pedido estão organizadas por data para facilitar a leitura. Além disso, a animação esquisita de ampliação ao exibir os Detalhes de cobrança foi removida!
+* Correção do bug que deturpava a exibição das estatísticas de venda em caso de fusos horários desativados.
+* Percebeu a barra de navegação diferente do restante do aplicativo ao enviar um e-mail pela tela “Detalhes do pedido”? Já está consistente.
+* O teclado não oculta mais o seletor de data na extensão “Rastreamento do envio”, facilitando bastante a seleção.

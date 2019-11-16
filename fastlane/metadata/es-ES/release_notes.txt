@@ -1,1 +1,3 @@
-Hemos reorganizado algunas partes de la sección Información del pedido para mejorar su legibilidad y usabilidad: Los datos de pago de los clientes se ven mejor y las notas del pedido se agrupan mediante encabezados de fecha para facilitar el análisis. Hemos quitado esas animaciones incómodas que se expanden al consultar la sección Información de facturación.
+* Hemos encontrado el error que hacía que las estadísticas de ventas no parecieran correctas porque las zonas horarias estaban desactivadas y lo hemos corregido.
+* ¿Alguna vez has enviado un correo electrónico a un cliente desde la pantalla Detalles del pedido y te has fijado en que la barra de navegación tiene un aspecto diferente al del resto de la aplicación? Eso ya no pasa.
+* El teclado ya no tapa el selector de fecha en la extensión Seguimiento de envíos, lo que hace que sea mucho más fácil elegir una fecha.

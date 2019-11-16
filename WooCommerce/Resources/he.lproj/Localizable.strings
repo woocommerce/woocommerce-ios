@@ -234,6 +234,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "המשך קריאה";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "להמשיך עם Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "להמשיך עם WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "להמשיך עם Apple";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "העתק";
 
@@ -543,10 +552,10 @@
 "Log in failed. Please try again." = "התחברות נכשלה. נא לנסות שנית.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "התחברות ל-WordPress.com באמצעות כתובת אימייל כדי לנהל את האתרים שלך ב-WordPress.";
+"Log in to the WordPress.com account you used to connect Jetpack." = "יש להיכנס לחשבון WordPress.com שדרכו חיברת את Jetpack.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "יש להיכנס לחשבון WordPress.com שדרכו חיברת את Jetpack.";
+"Log in to your WordPress.com account with your email address." = "יש להתחבר לחשבון שלך ב-WordPress.com באמצעות כתובת האימייל שלך.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "התחברות באמצעות Jetpack";
@@ -716,6 +725,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "מידע על מעקב אופציונלי";
 
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "לחלופין, ניתן להתחבר באמצעות _הזנת הכתובת של האתר שלך_.";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "הזמנה ‎#‎(viewModel.order.number)‎";
@@ -788,6 +800,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "נא להזין כתובת אימייל תקינה.";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "עליך להזין את הסיסמה לחשבון שלך ב-WordPress.com כדי להתחבר עם ה-Apple ID שלך.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "הזינו את הפרטים";

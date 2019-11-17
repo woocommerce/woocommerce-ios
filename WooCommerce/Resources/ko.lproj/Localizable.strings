@@ -234,6 +234,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "계속 읽기";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "Google로 계속하기";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "워드프레스닷컴으로 계속하기";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "Apple로 계속하기";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "복사";
 
@@ -543,10 +552,10 @@
 "Log in failed. Please try again." = "로그인에 실패했습니다. 다시 시도하세요.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "이메일 주소를 입력하여 워드프레스닷컴에 로그인하고 회원님의 모든 WordPress 사이트를 관리하세요.";
+"Log in to the WordPress.com account you used to connect Jetpack." = "젯팩에 연결하는 데 사용한 워드프레스닷컴 계정으로 로그인하세요.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "젯팩에 연결하는 데 사용한 워드프레스닷컴 계정으로 로그인하세요.";
+"Log in to your WordPress.com account with your email address." = "이메일 주소로 워드프레스닷컴 계정에 로그인하세요.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "젯팩으로 로그인";
@@ -716,6 +725,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "선택적 추적 정보";
 
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "또는 사이트 주소를 입력하여 로그인하세요.";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "주문 #(viewModel.order.number)";
@@ -788,6 +800,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "유효한 이메일 주소를 입력해주세요.";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Apple ID로 로그인하려면 워드프레스닷컴 계정의 비밀번호를 입력하세요.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "자격을 입력하세요";

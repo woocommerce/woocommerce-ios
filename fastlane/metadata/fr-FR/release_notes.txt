@@ -1,1 +1,3 @@
-Nous avons réorganisé certaines parties des détails de la commande pour améliorer la visibilité et la convivialité : Les informations de paiement des clients sont plus visibles, et les notes de commande sont regroupées par date pour accélérer la recherche. Nous avons par ailleurs supprimé les animations qui se développaient à l'ouverture des informations de facturation.
+* Nous avons détecté et résolu un bug qui pouvait perturber vos statistiques de ventes lorsque les fuseaux horaires étaient désactivés.
+* N'avez-vous jamais envoyé un e-mail à un client à partir de l'écran de détails de la commande et constaté que la barre de navigation était différente du reste de l'application ? Désormais elle est identique.
+* Le clavier ne masque plus le sélecteur de date dans l'extension Suivi de l'expédition ce qui facilite grandement la sélection d'une date.

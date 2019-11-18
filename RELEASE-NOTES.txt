@@ -6,10 +6,10 @@
 - The order detail view now includes the shipping method of the order.
 - Enhancement: The Reviews tab now presents all the Product Reviews
 - Updated appearance of Order Details - temporarily disabling dark mode.
-- bugfix: fixed UI appearance on cells of Order List when tappen with dark mode enabled.
+- bugfix: fixed UI appearance on cells of Order List when tapping with dark mode enabled.
 - bugfix: Reviews no longer convert to partial dark mode. Dark mode coming soon!
 - bugfix: Order Details now has the right space between cells.
-- bugfix: Settings no longer convert to partial dark model.
+- bugfix: Settings no longer convert to partial dark mode.
 
 3.0
 -----

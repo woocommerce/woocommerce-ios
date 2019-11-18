@@ -165,6 +165,23 @@ private extension ProductStore {
             }
         }
     }
+    
+    /// Updates the product name.
+    ///
+    func updateProduct(siteID: Int, productID: Int, name: String?, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+        
+        remote.updateProductName(for: siteID, productID: productID, name: name ?? "") { [weak self] (product, error) in
+            guard let product = product else {
+                onCompletion(nil, error)
+                return
+            }
+
+            self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) {
+                onCompletion(product, nil)
+            }
+        }
+    }
 
     /// Updates the product description.
     ///

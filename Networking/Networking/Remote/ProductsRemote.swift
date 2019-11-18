@@ -101,6 +101,25 @@ public class ProductsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Updates the Name of a specific `Product`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Product.
+    ///     - productID: Identifier of the Product.
+    ///     - name: Name of the Product.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductName(for siteID: Int, productID: Int, name: String, completion: @escaping (Product?, Error?) -> Void) {
+        let parameters = [
+            "name": name
+        ]
+        let path = "\(Path.products)/\(productID)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+    
     /// Updates the description of a specific `Product`.
     ///
     /// - Parameters:

@@ -137,6 +137,43 @@ class ProductsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    
+    // MARK: - Update Product name
+
+    /// Verifies that updateProductName name properly parses the `product-update-name` sample response.
+    ///
+    func testUpdateProductNameProperlyReturnsParsedProduct() {
+        let remote = ProductsRemote(network: network)
+        let expectation = self.expectation(description: "Wait for product name update")
+
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)", filename: "product-update-name")
+
+        let productName = "This is my new product name!"
+        remote.updateProductName(for: sampleSiteID, productID: sampleProductID, name: productName) { (product, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(product)
+            XCTAssertEqual(product?.name, productName)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that updateProductName name properly relays Networking Layer errors.
+    ///
+    func testUpdateProductNameProperlyRelaysNetwokingErrors() {
+        let remote = ProductsRemote(network: network)
+        let expectation = self.expectation(description: "Wait for product name update")
+
+        remote.updateProductName(for: sampleSiteID, productID: sampleProductID, name: "") { (product, error) in
+            XCTAssertNil(product)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+    
     // MARK: - Update Product Description
 
     /// Verifies that updateProductDescription description properly parses the `product-update-description` sample response.

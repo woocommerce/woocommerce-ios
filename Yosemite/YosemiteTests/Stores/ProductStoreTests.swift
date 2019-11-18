@@ -626,21 +626,21 @@ class ProductStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update-name")
         let action = ProductAction.updateProductName(siteID: sampleSiteID,
-                                                     productID: expectedProductID,
-                                                     name: expectedProductName) { (product, error) in
-                                                        XCTAssertNil(error)
-                                                        XCTAssertNotNil(product)
-                                                        XCTAssertEqual(product?.productID, expectedProductID)
-                                                        XCTAssertEqual(product?.name, expectedProductName)
+                     productID: expectedProductID,
+                     name: expectedProductName) { (product, error) in
+                     XCTAssertNil(error)
+                     XCTAssertNotNil(product)
+                     XCTAssertEqual(product?.productID, expectedProductID)
+                     XCTAssertEqual(product?.name, expectedProductName)
 
-                                                        let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
-                                                        let readOnlyStoredProduct = storedProduct?.toReadOnly()
-                                                        XCTAssertNotNil(storedProduct)
-                                                        XCTAssertNotNil(readOnlyStoredProduct)
-                                                        XCTAssertEqual(readOnlyStoredProduct?.productID, expectedProductID)
-                                                        XCTAssertEqual(readOnlyStoredProduct?.name, expectedProductName)
+                     let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
+                     let readOnlyStoredProduct = storedProduct?.toReadOnly()
+                     XCTAssertNotNil(storedProduct)
+                     XCTAssertNotNil(readOnlyStoredProduct)
+                     XCTAssertEqual(readOnlyStoredProduct?.productID, expectedProductID)
+                     XCTAssertEqual(readOnlyStoredProduct?.name, expectedProductName)
 
-                                                        expectation.fulfill()
+                     expectation.fulfill()
         }
 
         productStore.onAction(action)

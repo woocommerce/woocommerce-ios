@@ -38,6 +38,8 @@ extension ProductVariation {
     @NSManaged public var menuOrder: Int64
     @NSManaged public var dateOnSaleStart: Date?
     @NSManaged public var dateOnSaleEnd: Date?
+    @NSManaged public var siteID: Int64
+    @NSManaged public var productID: Int64
     @NSManaged public var dimensions: ProductDimensions?
     @NSManaged public var image: ProductImage?
     @NSManaged public var downloads: Set<ProductDownload>?

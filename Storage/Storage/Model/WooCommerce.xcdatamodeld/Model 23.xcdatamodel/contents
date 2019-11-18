@@ -378,12 +378,14 @@
         <attribute name="onSale" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES"/>
         <attribute name="permalink" attributeType="String"/>
         <attribute name="price" attributeType="String"/>
+        <attribute name="productID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="productVariationID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="purchasable" attributeType="Boolean" defaultValueString="YES" usesScalarValueType="YES"/>
         <attribute name="regularPrice" optional="YES" attributeType="String"/>
         <attribute name="salePrice" optional="YES" attributeType="String"/>
         <attribute name="shippingClass" optional="YES" attributeType="String"/>
         <attribute name="shippingClassID" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sku" optional="YES" attributeType="String"/>
         <attribute name="statusKey" attributeType="String"/>
         <attribute name="stockQuantity" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -514,7 +516,7 @@
         <element name="ProductReview" positionX="-693" positionY="36" width="128" height="210"/>
         <element name="ProductSearchResults" positionX="-693" positionY="36" width="128" height="75"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="103"/>
-        <element name="ProductVariation" positionX="-693" positionY="36" width="128" height="568"/>
+        <element name="ProductVariation" positionX="-693" positionY="36" width="128" height="598"/>
         <element name="Refund" positionX="-657" positionY="81" width="128" height="28"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>

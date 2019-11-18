@@ -151,7 +151,7 @@ extension OrderDetailsDataSource {
     }
 
     private func configureRefund(cell: TwoColumnHeadlineAttributedFootnoteTableViewCell, at indexPath: IndexPath) {
-//        let row = rowAtIndexPath(indexPath)
+        // TODO-thuy: create a `lookUpCondensedRefunds()` method and show why minus two rows.
         let condensedRefund = condensedRefunds[indexPath.row - 2] // TODO-thuy: minus two should be constants
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
@@ -161,8 +161,9 @@ extension OrderDetailsDataSource {
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        // TODO-thuy: add configuration for Net Amount cell.
+        // Temporarily displays fake info.
         cell.leftText = Titles.netAmount
-//        cell.rightText = viewModel.netAmount
     }
 
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {

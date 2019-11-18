@@ -14,7 +14,7 @@ app_identifier "com.automattic.woocommerce"
 screenshots_path "./promo_screenshots/"
 
 # Make sure to update these keys for a new version
-app_version "3.0"
+app_version "3.1"
 
 privacy_url({
   'default' => 'https://automattic.com/privacy/',

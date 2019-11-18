@@ -50,7 +50,7 @@ extension OrderDetailsDataSource {
         }
     }
 
-    func configureCustomerNote(cell: CustomerNoteTableViewCell) {
+    private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
         cell.headline = Title.customerNote
         let localizedBody = String.localizedStringWithFormat(
             NSLocalizedString("“%@”",
@@ -60,7 +60,7 @@ extension OrderDetailsDataSource {
         cell.selectionStyle = .none
     }
 
-    func configureBillingDetail(cell: WooBasicTableViewCell) {
+    private func configureBillingDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showBilling
         cell.bodyLabel?.applyBodyStyle()
         cell.accessoryType = .disclosureIndicator
@@ -78,7 +78,7 @@ extension OrderDetailsDataSource {
         )
     }
 
-    func configureShippingNotice(cell: TopLeftImageTableViewCell) {
+    private func configureShippingNotice(cell: TopLeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString(
             "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
             comment: "Shipping notice row label when there is more than one shipping method")
@@ -94,7 +94,7 @@ extension OrderDetailsDataSource {
                                                     comment: "VoiceOver accessibility label for the shipping notice about the order")
     }
 
-    func configureNewNote(cell: LeftImageTableViewCell) {
+    private func configureNewNote(cell: LeftImageTableViewCell) {
         cell.leftImage = Icons.addNoteIcon
         cell.labelText = Titles.addNoteText
 
@@ -110,7 +110,7 @@ extension OrderDetailsDataSource {
         )
     }
 
-    func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
+    private func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
         guard let noteHeader = noteHeader(at: indexPath) else {
             return
         }
@@ -118,7 +118,7 @@ extension OrderDetailsDataSource {
         cell.dateCreated = noteHeader.toString(dateStyle: .medium, timeStyle: .none)
     }
 
-    func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
+    private func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
         guard let note = note(at: indexPath) else {
             return
         }
@@ -130,19 +130,19 @@ extension OrderDetailsDataSource {
         cell.contents = orderNoteAsyncDictionary.value(forKey: note.noteID)
     }
 
-    func configurePayment(cell: PaymentTableViewCell) {
+    private func configurePayment(cell: PaymentTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.configure(with: paymentViewModel)
     }
 
-    func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+    private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
         cell.rightText = paymentViewModel.paymentTotal
         cell.footnoteText = paymentViewModel.paymentSummary
     }
 
-    func configureDetails(cell: WooBasicTableViewCell) {
+    private func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Titles.productDetails
         cell.bodyLabel?.applyBodyStyle()
         cell.accessoryImage = nil
@@ -150,7 +150,7 @@ extension OrderDetailsDataSource {
         cell.selectionStyle = .default
     }
 
-    func configureRefund(cell: TwoColumnHeadlineAttributedFootnoteTableViewCell, at indexPath: IndexPath) {
+    private func configureRefund(cell: TwoColumnHeadlineAttributedFootnoteTableViewCell, at indexPath: IndexPath) {
 //        let row = rowAtIndexPath(indexPath)
         let condensedRefund = condensedRefunds[indexPath.row - 2] // TODO-thuy: minus two should be constants
         let refund = lookUpRefund(by: condensedRefund.refundID)
@@ -160,12 +160,12 @@ extension OrderDetailsDataSource {
         cell.footnoteAttributedText = paymentViewModel.refundSummary
     }
 
-    func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+    private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         cell.leftText = Titles.netAmount
 //        cell.rightText = viewModel.netAmount
     }
 
-    func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+    private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let item = items[indexPath.row]
         let product = lookUpProduct(by: item.productID)
         let itemViewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
@@ -173,14 +173,14 @@ extension OrderDetailsDataSource {
         cell.configure(item: itemViewModel)
     }
 
-    func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
+    private func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
         cell.fulfillButton.setTitle(Titles.fulfillTitle, for: .normal)
         cell.onFullfillTouchUp = { [weak self] in
             self?.onCellAction?(.fulfill, nil)
         }
     }
 
-    func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
+    private func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
         guard let tracking = orderTracking(at: indexPath) else {
             return
         }
@@ -204,7 +204,7 @@ extension OrderDetailsDataSource {
         }
     }
 
-    func configureNewTracking(cell: LeftImageTableViewCell) {
+    private func configureNewTracking(cell: LeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
         cell.leftImage = .addOutlineImage
         cell.labelText = cellTextContent
@@ -221,7 +221,7 @@ extension OrderDetailsDataSource {
         )
     }
 
-    func configureShippingAddress(cell: CustomerInfoTableViewCell) {
+    private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
@@ -233,14 +233,14 @@ extension OrderDetailsDataSource {
         )
     }
 
-    func configureShippingMethod(cell: CustomerNoteTableViewCell) {
+    private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
         cell.headline = NSLocalizedString("Shipping Method",
                                           comment: "Shipping method title for customer info cell")
         cell.body = shippingMethod
         cell.selectionStyle = .none
     }
 
-    func configureSummary(cell: SummaryTableViewCell) {
+    private func configureSummary(cell: SummaryTableViewCell) {
         cell.title = summaryTitle
         cell.dateCreated = summaryDateCreated
         cell.onEditTouchUp = { [weak self] in

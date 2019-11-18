@@ -23,6 +23,8 @@ protocol ReusableTableRow {
 extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
     var cellTypes: [UITableViewCell.Type] {
         switch self {
+        case .name:
+            return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         case .description:
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         default:
@@ -36,6 +38,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
 
     private var cellType: UITableViewCell.Type {
         switch self {
+        case .name(let name):
+            return name?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         case .description(let description):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         default:

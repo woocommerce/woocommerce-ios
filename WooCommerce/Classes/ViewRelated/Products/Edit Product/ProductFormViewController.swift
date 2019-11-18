@@ -75,6 +75,8 @@ extension ProductFormViewController: UITableViewDelegate {
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
+            case .name:
+                editProductName()
             case .description:
                 editProductDescription()
             default:
@@ -83,6 +85,39 @@ extension ProductFormViewController: UITableViewDelegate {
         case .details:
             fatalError()
         }
+    }
+}
+
+// MARK: Action - Edit Product Name
+//
+private extension ProductFormViewController {
+    func editProductName() {
+        let editorViewController = EditorFactory().productNameEditor(product: product) { [weak self] content in
+            self?.onEditProductNameCompletion(newName: content)
+        }
+        navigationController?.pushViewController(editorViewController, animated: true)
+    }
+
+    func onEditProductNameCompletion(newName: String) {
+        guard newName != product.name else {
+            navigationController?.popViewController(animated: true)
+            return
+        }
+
+        let action = ProductAction.updateProductName(siteID: product.siteID,
+                                                            productID: product.productID,
+                                                            name: newName) { [weak self] (product, error) in
+                                                                guard let product = product, error == nil else {
+                                                                    let errorDescription = error?.localizedDescription ?? "No error specified"
+                                                                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                                                                    return
+                                                                }
+                                                                self?.product = product
+
+                                                                // Dismisses Product description editor.
+                                                                self?.navigationController?.popViewController(animated: true)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

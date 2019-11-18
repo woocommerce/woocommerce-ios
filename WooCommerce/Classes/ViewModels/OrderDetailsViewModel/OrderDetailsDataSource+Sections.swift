@@ -59,7 +59,7 @@ extension OrderDetailsDataSource {
         let payment: Section = {
             var rows: [Row] = [.payment, .customerPaid]
 
-            if FeatureFlag.refunds.enabled {
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(. refunds) {
                 if order.refunds.count > 0 {
                     let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
                     rows.append(contentsOf: refunds)

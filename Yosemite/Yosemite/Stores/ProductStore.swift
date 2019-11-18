@@ -38,6 +38,8 @@ public class ProductStore: Store {
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .requestMissingProducts(let order, let onCompletion):
             requestMissingProducts(for: order, onCompletion: onCompletion)
+        case .updateProductName(let siteID, let productID, let name, let onCompletion):
+            updateProduct(siteID: siteID, productID: productID, name: name, onCompletion: onCompletion)
         case .updateProductDescription(let siteID, let productID, let description, let onCompletion):
             updateProduct(siteID: siteID, productID: productID, description: description, onCompletion: onCompletion)
         }
@@ -165,12 +167,12 @@ private extension ProductStore {
             }
         }
     }
-    
+
     /// Updates the product name.
     ///
     func updateProduct(siteID: Int, productID: Int, name: String?, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
         let remote = ProductsRemote(network: network)
-        
+
         remote.updateProductName(for: siteID, productID: productID, name: name ?? "") { [weak self] (product, error) in
             guard let product = product else {
                 onCompletion(nil, error)

@@ -119,7 +119,7 @@ public class ProductsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
-    
+
     /// Updates the description of a specific `Product`.
     ///
     /// - Parameters:

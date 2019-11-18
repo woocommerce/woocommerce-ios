@@ -137,7 +137,7 @@ class ProductsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    
+
     // MARK: - Update Product name
 
     /// Verifies that updateProductName name properly parses the `product-update-name` sample response.
@@ -173,7 +173,7 @@ class ProductsRemoteTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-    
+
     // MARK: - Update Product Description
 
     /// Verifies that updateProductDescription description properly parses the `product-update-description` sample response.

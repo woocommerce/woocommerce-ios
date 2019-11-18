@@ -329,7 +329,7 @@ public extension StorageType {
         return allObjects(ofType: ProductVariation.self, matching: predicate, sortedBy: [descriptor])
     }
 
-    /// Retrieves a stored ProductVariation for the provided siteID and productID.
+    /// Retrieves a stored ProductVariation for the provided siteID and productVariationID.
     ///
     func loadProductVariation(siteID: Int, productVariationID: Int64) -> ProductVariation? {
         let predicate = NSPredicate(format: "product.siteID = %lld AND productVariationID = %lld", siteID, productVariationID)

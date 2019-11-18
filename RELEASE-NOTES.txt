@@ -1,3 +1,6 @@
+3.2
+-----
+ 
 3.1
 -----
 - The order detail view now includes the shipping method of the order.

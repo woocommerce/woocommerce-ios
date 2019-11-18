@@ -30,12 +30,26 @@ final class CustomerNoteTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        headlineLabel.applyHeadlineStyle()
-        bodyLabel.applyBodyStyle()
+        configureBackground()
+        configureLabels()
     }
 
 }
+
+
+// MARK: - Private Methods
+//
+private extension CustomerNoteTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureLabels() {
+        headlineLabel.applyHeadlineStyle()
+        bodyLabel.applyBodyStyle()
+    }
+}
+
 
 /// MARK: - Testability
 extension CustomerNoteTableViewCell {

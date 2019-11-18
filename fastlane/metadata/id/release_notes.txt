@@ -1,1 +1,3 @@
-Kami telah menyusun ulang beberapa bagian Detail Pesanan agar lebih mudah dibaca dan digunakan: Tampilan detail pembayaran pelanggan kini lebih mencolok, dan Catatan Pesanan dikelompokkan dengan judul tanggal agar pemindaian lebih mudah. Dan tidak ada lagi animasi menyebalkan yang memenuhi tampilan saat Anda melihat Detail Tagihan!
+* Jika statistik penjualan Anda terlihat tidak normal karena zona waktu mati, kami telah menemukan bug tersebut dan memperbaikinya.
+* Pernah mengirim email ke pelanggan dari layar Detail Pesanan dan mendapati bilah navigasi terlihat berbeda dengan yang lainnya dari aplikasi? Sekarang sudah konsisten.
+* Keyboard tidak lagi menutupi pemilih tanggal di ekstensi Pelacakan Pengiriman, sehingga membuatnya jauh lebih mudah untuk memilih tanggal.

@@ -234,6 +234,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "继续阅读";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "继续使用 Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "继续使用 WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "继续使用 Apple";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "复制";
 
@@ -543,10 +552,10 @@
 "Log in failed. Please try again." = "登录失败，请重试。";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "使用电子邮件地址登录 WordPress.com 管理您的所有 WordPress 站点。";
+"Log in to the WordPress.com account you used to connect Jetpack." = "登录关联 Jetpack 时使用的 WordPress.com 帐户。";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "登录关联 Jetpack 时使用的 WordPress.com 帐户。";
+"Log in to your WordPress.com account with your email address." = "使用您的电子邮件地址登录 WordPress.com 帐户。";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "使用 Jetpack 帐户登录";
@@ -716,6 +725,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "可选的跟踪信息";
 
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "或通过 _输入您的站点地址_ 登录。";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "订单号 (viewModel.order.number)";
@@ -788,6 +800,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "请输入一个合法的 E-mail 地址。";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "请输入您的 WordPress.com 帐户密码，以使用 Apple ID 登录。";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "请输入你的验证信息";

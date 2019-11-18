@@ -1,1 +1,3 @@
-Abbiamo riorganizzato alcune parti dei dettagli dell'ordine per migliorarne la leggibilità e l'usabilità: i dettagli di pagamento dei clienti ora sono più evidenti e le note degli ordini sono raggruppate con intestazioni contenenti la data per una più semplice scansione. Inoltre, niente più strane animazioni che si espandono durante la visualizzazione dei dettagli di fatturazione.
+* Se le statistiche delle vendite ti sembravano strane perché i fusi orari erano disattivati, abbiamo trovato e risolto il bug.
+* Hai mai inviato un'e-mail a un cliente dalla schermata Dettagli dell'ordine e notato che la barra di navigazione sembrava diversa da quella nel resto dell'app? Ora è uniforme.
+* La tastiera non copre più il selezionatore per la data nell'estensione Tracciabilità della spedizione, il che rende decisamente più semplice selezionare una data.

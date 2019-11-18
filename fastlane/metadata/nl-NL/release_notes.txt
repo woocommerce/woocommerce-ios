@@ -1,1 +1,3 @@
-We hebben de volgorde van sommige delen van de bestellingsdetails veranderd voor verbeterde leesbaarheid en bruikbaarheid: Betalingsgegevens van klanten zijn prominenter en bestelberichten zijn gegroepeerd met datumkoppen, om scannen eenvoudiger te maken. En er is geen onhandige uitschuifanimatie meer wanneer je de factuurdetails bekijkt!
+* Als je verkoopstatistieken vreemd leken omdat de tijdzones niet klopten, hebben we die bug nu gevonden en verwijderd.
+* Heb je ooit een bericht naar een klant gestuurd vanuit het scherm Bestelgegevens en opgemerkt dat de navigatiebalk er anders uitzag dan in de rest van de app? Hij is nu weer overal hetzelfde.
+* Het toetsenbord overlapt de datumkiezer niet meer in de extensie Verzending tracken, waardoor het een stuk eenvoudiger wordt om een datum te kiezen.

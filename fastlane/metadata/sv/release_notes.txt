@@ -1,1 +1,3 @@
-Vi har arrangerat om vissa delar av skärmen Orderdetaljer för bättre läsbarhet och användbarhet: Betalningsinformationen för kunder är mer framträdande och orderanteckningar grupperas med datumrubriker för enklare skanning. Och den besvärliga expanderande animeringen när du visar faktureringsinformationen är borta!
+* Om din försäljningsstatistik verkade konstig så är det för att tidszonerna var felaktiga. Vi har åtgärdat det.
+* Har du någonsin e-postat en kund från Beställningsinformationsskärmen och märkt att navigeringsfältet såg annorlunda ut än i resten av appen? Nu ser den likadan ut.
+* Tangentbordet täcker inte längre datumväljaren i Fraktspårningstillägget, vilket gör det markant enklare att faktiskt välja ett datum.

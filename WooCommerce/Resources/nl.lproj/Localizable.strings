@@ -234,6 +234,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Lees verder";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "Doorgaan met Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "Doorgaan met WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "Doorgaan met Apple";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopiëren";
 
@@ -543,10 +552,10 @@
 "Log in failed. Please try again." = "Inloggen mislukt. Probeer het nogmaals.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "Login op WordPress.com met een e-mailadres om al je WordPress sites te beheren.";
+"Log in to the WordPress.com account you used to connect Jetpack." = "Login met je WordPress.com account die je gebruikt hebt om verbinding met Jetpack te maken.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "Login met je WordPress.com account die je gebruikt hebt om verbinding met Jetpack te maken.";
+"Log in to your WordPress.com account with your email address." = "Log in op je WordPress.com-account met je e-mailadres.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Inloggen met Jetpack";
@@ -716,6 +725,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Optionele tracking-informatie";
 
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "Je kunt ook inloggen door _je site-adres in te voeren_.";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "Bestelnr. (viewModel.order.number)";
@@ -788,6 +800,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "Een geldig e-mailadres invoeren.";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Voer het wachtwoord voor je WordPress.com-account in om in te loggen met je Apple ID.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Voer alsjeblieft je gegevens in";

@@ -108,12 +108,12 @@ final class OrderPaymentDetailsViewModel {
         let viewDetailsText = NSLocalizedString("View details",
                                                 comment: "This text is linked so the user can view refund details.")
 
-        let template = NSLocalizedString("%@ via %@ (%@)",
-                                         comment: "It reads: \"<date> via <refund method type> (View details)\". The text `View details` is a link.")
+        let template = NSLocalizedString("%@ via %@ – %@",
+                                         comment: "It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link.")
         let refundText = String.localizedStringWithFormat(template, dateCreated, refundType, viewDetailsText)
 
         let refundAttrText = NSMutableAttributedString(string: refundText)
-        let location = refundAttrText.string.count - viewDetailsText.count - 1
+        let location = refundAttrText.string.count - viewDetailsText.count
         let viewDetailsRange = NSRange(location: location, length: viewDetailsText.count)
 
          // Last, style the link text.

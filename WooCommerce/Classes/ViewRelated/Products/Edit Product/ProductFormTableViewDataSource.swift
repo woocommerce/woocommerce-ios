@@ -82,7 +82,7 @@ private extension ProductFormTableViewDataSource {
         }
         cell.accessoryType = .disclosureIndicator
     }
-    
+
     func configureDescription(cell: UITableViewCell, description: String?) {
         if let description = description, description.isEmpty == false {
             guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {

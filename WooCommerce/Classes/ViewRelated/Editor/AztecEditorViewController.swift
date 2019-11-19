@@ -149,7 +149,7 @@ private extension AztecEditorViewController {
         view.addSubview(htmlTextView)
         view.addSubview(placeholderLabel)
     }
-    
+
     func configureFormatBar() {
         formatBar.isHidden = viewProperties.formatBarHidden
     }

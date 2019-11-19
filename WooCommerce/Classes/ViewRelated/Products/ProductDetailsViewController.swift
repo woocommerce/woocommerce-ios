@@ -14,7 +14,7 @@ final class ProductDetailsViewController: UIViewController {
     private lazy var entityListener: EntityListener<Product> = {
         return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: viewModel.product)
     }()
-    
+
     /// Product view model
     ///
     private let viewModel: ProductDetailsViewModel
@@ -85,7 +85,7 @@ private extension ProductDetailsViewController {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editProduct))
         }
     }
-    
+
     /// Setup: EntityListener
     ///
     func configureEntityListener() {
@@ -153,7 +153,7 @@ private extension ProductDetailsViewController {
             self?.displayProductRemovedNotice()
         }
     }
-    
+
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {

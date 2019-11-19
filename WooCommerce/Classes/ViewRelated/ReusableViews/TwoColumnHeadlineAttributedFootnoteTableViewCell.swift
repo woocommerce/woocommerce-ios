@@ -26,17 +26,6 @@ final class TwoColumnHeadlineAttributedFootnoteTableViewCell: UITableViewCell {
         }
     }
 
-    /// Right title label text
-    ///
-    var rightText: String? {
-        get {
-            return rightTitleLabel?.text
-        }
-        set {
-            rightTitleLabel?.text = newValue
-        }
-    }
-
     /// Footnote label text
     ///
     var footnoteAttributedText: NSAttributedString? {

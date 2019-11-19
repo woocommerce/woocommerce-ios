@@ -40,7 +40,7 @@ private extension DashboardTopBannerFactory {
 
     enum V4ToV3BannerConstants {
         static let title: String? = nil
-        static let info = NSLocalizedString("We have reverted to the old stats as we couldn’t find the WooCommerce Admin plugin",
+        static let info = NSLocalizedString("We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.22 or higher",
                                             comment: "The info of the top banner on Dashboard that indicates new stats is unavailable")
         static let icon = UIImage.infoImage
         static let actionTitle = NSLocalizedString("Learn more",

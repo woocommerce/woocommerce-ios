@@ -15,7 +15,7 @@ struct ProductVariationListMapper: Mapper {
     /// We're injecting this field via `JSONDecoder.userInfo` because ProductID is not returned in any of the Product Variation Endpoints.
     ///
     let productID: Int64
-    
+
     /// (Attempts) to convert a dictionary into ProductVariation.
     ///
     func map(response: Data) throws -> [ProductVariation] {

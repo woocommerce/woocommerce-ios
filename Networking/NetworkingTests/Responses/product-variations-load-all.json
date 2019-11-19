@@ -1,0 +1,748 @@
+{
+    "data": [
+        {
+            "id": 1275,
+            "date_created": "2019-11-14T15:10:55",
+            "date_created_gmt": "2019-11-14T12:40:55",
+            "date_modified": "2019-11-14T15:36:42",
+            "date_modified_gmt": "2019-11-14T13:06:42",
+            "description": "<p>Nutty chocolate marble, 99% and organic.</p>\n",
+            "permalink": "https://chocolate.com/marble",
+            "sku": "99%-nuts-marble",
+            "price": "12",
+            "regular_price": "12",
+            "sale_price": "8",
+            "date_on_sale_from": "2019-10-16T00:00:00",
+            "date_on_sale_from_gmt": "2019-10-15T21:30:00",
+            "date_on_sale_to": "2019-10-27T23:59:59",
+            "date_on_sale_to_gmt": "2019-10-27T21:29:59",
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": true,
+            "virtual": false,
+            "downloadable": true,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": 0,
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": true,
+            "stock_quantity": 16,
+            "stock_status": "instock",
+            "backorders": "notify",
+            "backorders_allowed": true,
+            "backordered": false,
+            "weight": "2.5",
+            "dimensions": {
+                "length": "10",
+                "width": "2.5",
+                "height": ""
+            },
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "image": {
+                "id": 1063,
+                "date_created": "2019-11-01T08:42:05",
+                "date_created_gmt": "2019-11-01T04:12:05",
+                "date_modified": "2019-11-01T08:42:05",
+                "date_modified_gmt": "2019-11-01T04:12:05",
+                "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+                "name": "DSC_0010",
+                "alt": ""
+            },
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "99%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "nuts"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "marble"
+                }
+            ],
+            "menu_order": 8,
+            "meta_data": [
+                {
+                    "id": 6767,
+                    "key": "_created_via",
+                    "value": "ajax-unknown"
+                }
+            ],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations/1275"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 1274,
+            "date_created": "2019-11-14T15:10:55",
+            "date_created_gmt": "2019-11-14T12:40:55",
+            "date_modified": "2019-11-14T15:36:42",
+            "date_modified_gmt": "2019-11-14T13:06:42",
+            "description": "",
+            "permalink": "https://funtestingusa.wpcomstaging.com/product/chocolate-2/?attribute_darkness=99%25&attribute_flavor=nuts&attribute_shape=brick",
+            "sku": "",
+            "price": "",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": false,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "image": {
+                "id": 1063,
+                "date_created": "2019-11-01T08:42:05",
+                "date_created_gmt": "2019-11-01T04:12:05",
+                "date_modified": "2019-11-01T08:42:05",
+                "date_modified_gmt": "2019-11-01T04:12:05",
+                "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+                "name": "DSC_0010",
+                "alt": ""
+            },
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "99%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "nuts"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "brick"
+                }
+            ],
+            "menu_order": 7,
+            "meta_data": [
+                {
+                    "id": 6747,
+                    "key": "_created_via",
+                    "value": "ajax-unknown"
+                }
+            ],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations/1274"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 1273,
+            "date_created": "2019-11-14T15:10:55",
+            "date_created_gmt": "2019-11-14T12:40:55",
+            "date_modified": "2019-11-14T15:36:42",
+            "date_modified_gmt": "2019-11-14T13:06:42",
+            "description": "",
+            "permalink": "https://funtestingusa.wpcomstaging.com/product/chocolate-2/?attribute_darkness=99%25&attribute_flavor=strawberry&attribute_shape=marble",
+            "sku": "",
+            "price": "",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": false,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "image": {
+                "id": 1063,
+                "date_created": "2019-11-01T08:42:05",
+                "date_created_gmt": "2019-11-01T04:12:05",
+                "date_modified": "2019-11-01T08:42:05",
+                "date_modified_gmt": "2019-11-01T04:12:05",
+                "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+                "name": "DSC_0010",
+                "alt": ""
+            },
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "99%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "strawberry"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "marble"
+                }
+            ],
+            "menu_order": 6,
+            "meta_data": [
+                {
+                    "id": 6727,
+                    "key": "_created_via",
+                    "value": "ajax-unknown"
+                }
+            ],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations/1273"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 1272,
+            "date_created": "2019-11-14T15:10:55",
+            "date_created_gmt": "2019-11-14T12:40:55",
+            "date_modified": "2019-11-14T15:36:42",
+            "date_modified_gmt": "2019-11-14T13:06:42",
+            "description": "",
+            "permalink": "https://funtestingusa.wpcomstaging.com/product/chocolate-2/?attribute_darkness=99%25&attribute_flavor=strawberry&attribute_shape=brick",
+            "sku": "",
+            "price": "",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": false,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "image": {
+                "id": 1063,
+                "date_created": "2019-11-01T08:42:05",
+                "date_created_gmt": "2019-11-01T04:12:05",
+                "date_modified": "2019-11-01T08:42:05",
+                "date_modified_gmt": "2019-11-01T04:12:05",
+                "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+                "name": "DSC_0010",
+                "alt": ""
+            },
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "99%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "strawberry"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "brick"
+                }
+            ],
+            "menu_order": 5,
+            "meta_data": [
+                {
+                    "id": 6707,
+                    "key": "_created_via",
+                    "value": "ajax-unknown"
+                }
+            ],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations/1272"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 1271,
+            "date_created": "2019-11-14T15:10:55",
+            "date_created_gmt": "2019-11-14T12:40:55",
+            "date_modified": "2019-11-14T15:36:42",
+            "date_modified_gmt": "2019-11-14T13:06:42",
+            "description": "",
+            "permalink": "https://funtestingusa.wpcomstaging.com/product/chocolate-2/?attribute_darkness=87%25&attribute_flavor=nuts&attribute_shape=marble",
+            "sku": "",
+            "price": "",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": false,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "image": {
+                "id": 1063,
+                "date_created": "2019-11-01T08:42:05",
+                "date_created_gmt": "2019-11-01T04:12:05",
+                "date_modified": "2019-11-01T08:42:05",
+                "date_modified_gmt": "2019-11-01T04:12:05",
+                "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+                "name": "DSC_0010",
+                "alt": ""
+            },
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "87%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "nuts"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "marble"
+                }
+            ],
+            "menu_order": 4,
+            "meta_data": [
+                {
+                    "id": 6687,
+                    "key": "_created_via",
+                    "value": "ajax-unknown"
+                }
+            ],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations/1271"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 1270,
+            "date_created": "2019-11-14T15:10:54",
+            "date_created_gmt": "2019-11-14T12:40:54",
+            "date_modified": "2019-11-14T15:36:42",
+            "date_modified_gmt": "2019-11-14T13:06:42",
+            "description": "",
+            "permalink": "https://funtestingusa.wpcomstaging.com/product/chocolate-2/?attribute_darkness=87%25&attribute_flavor=nuts&attribute_shape=brick",
+            "sku": "",
+            "price": "",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": false,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "image": {
+                "id": 1063,
+                "date_created": "2019-11-01T08:42:05",
+                "date_created_gmt": "2019-11-01T04:12:05",
+                "date_modified": "2019-11-01T08:42:05",
+                "date_modified_gmt": "2019-11-01T04:12:05",
+                "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+                "name": "DSC_0010",
+                "alt": ""
+            },
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "87%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "nuts"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "brick"
+                }
+            ],
+            "menu_order": 3,
+            "meta_data": [
+                {
+                    "id": 6667,
+                    "key": "_created_via",
+                    "value": "ajax-unknown"
+                }
+            ],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations/1270"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 1269,
+            "date_created": "2019-11-14T15:10:54",
+            "date_created_gmt": "2019-11-14T12:40:54",
+            "date_modified": "2019-11-14T15:36:42",
+            "date_modified_gmt": "2019-11-14T13:06:42",
+            "description": "",
+            "permalink": "https://funtestingusa.wpcomstaging.com/product/chocolate-2/?attribute_darkness=87%25&attribute_flavor=strawberry&attribute_shape=marble",
+            "sku": "",
+            "price": "",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": false,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "image": {
+                "id": 1063,
+                "date_created": "2019-11-01T08:42:05",
+                "date_created_gmt": "2019-11-01T04:12:05",
+                "date_modified": "2019-11-01T08:42:05",
+                "date_modified_gmt": "2019-11-01T04:12:05",
+                "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+                "name": "DSC_0010",
+                "alt": ""
+            },
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "87%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "strawberry"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "marble"
+                }
+            ],
+            "menu_order": 2,
+            "meta_data": [
+                {
+                    "id": 6647,
+                    "key": "_created_via",
+                    "value": "ajax-unknown"
+                }
+            ],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations/1269"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 1268,
+            "date_created": "2019-11-14T15:10:54",
+            "date_created_gmt": "2019-11-14T12:40:54",
+            "date_modified": "2019-11-14T15:36:42",
+            "date_modified_gmt": "2019-11-14T13:06:42",
+            "description": "",
+            "permalink": "https://funtestingusa.wpcomstaging.com/product/chocolate-2/?attribute_darkness=87%25&attribute_flavor=strawberry&attribute_shape=brick",
+            "sku": "",
+            "price": "",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "on_sale": false,
+            "status": "publish",
+            "purchasable": false,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "image": {
+                "id": 1063,
+                "date_created": "2019-11-01T08:42:05",
+                "date_created_gmt": "2019-11-01T04:12:05",
+                "date_modified": "2019-11-01T08:42:05",
+                "date_modified_gmt": "2019-11-01T04:12:05",
+                "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+                "name": "DSC_0010",
+                "alt": ""
+            },
+            "attributes": [
+                {
+                    "id": 0,
+                    "name": "Darkness",
+                    "option": "87%"
+                },
+                {
+                    "id": 0,
+                    "name": "Flavor",
+                    "option": "strawberry"
+                },
+                {
+                    "id": 0,
+                    "name": "Shape",
+                    "option": "brick"
+                }
+            ],
+            "menu_order": 1,
+            "meta_data": [
+                {
+                    "id": 6627,
+                    "key": "_created_via",
+                    "value": "ajax-unknown"
+                }
+            ],
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations/1268"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846/variations"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/846"
+                    }
+                ]
+            }
+        }
+    ]
+}

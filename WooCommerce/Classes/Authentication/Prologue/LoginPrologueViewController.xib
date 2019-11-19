@@ -79,10 +79,10 @@ L3</string>
                     </constraints>
                 </view>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="1" image="prologue-slanted-rectangle" translatesAutoresizingMaskIntoConstraints="NO" id="Rhn-8s-tRs" userLabel="Slanted ImageView">
-                    <rect key="frame" x="0.0" y="525.5" width="414" height="160"/>
+                    <rect key="frame" x="0.0" y="365.5" width="414" height="320"/>
                 </imageView>
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="1000" verticalCompressionResistancePriority="200" image="prologue-bubbles" translatesAutoresizingMaskIntoConstraints="NO" id="pzF-Fz-byr" userLabel="Bubbles View">
-                    <rect key="frame" x="266" y="360.5" width="108" height="175"/>
+                    <rect key="frame" x="158" y="273" width="216" height="350"/>
                     <constraints>
                         <constraint firstAttribute="width" secondItem="pzF-Fz-byr" secondAttribute="height" multiplier="108:175" id="Rsb-pu-GHs"/>
                     </constraints>
@@ -136,7 +136,7 @@ L3</string>
     <resources>
         <image name="icon-jetpack-gray" width="72" height="72"/>
         <image name="prologue-bubbles" width="108" height="175"/>
-        <image name="prologue-logo" width="262" height="54"/>
+        <image name="prologue-logo" width="263" height="54"/>
         <image name="prologue-slanted-rectangle" width="375" height="160"/>
     </resources>
 </document>

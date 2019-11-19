@@ -77,11 +77,11 @@ private extension LoginPrologueViewController {
     }
 
     func setupBackgroundView() {
-        backgroundView.backgroundColor = .brand
+        backgroundView.backgroundColor = .withColorStudio(.brand, shade: .shade80)
     }
 
     func setupContainerView() {
-        containerView.backgroundColor = .brand
+        containerView.backgroundColor = .withColorStudio(.brand, shade: .shade80)
     }
 
     func setupUpperLabel() {
@@ -92,7 +92,7 @@ private extension LoginPrologueViewController {
     }
 
     func setupSlantedRectangle() {
-        slantedRectangle.image = UIImage.slantedRectangle.imageWithTintColor(.brand)
+        slantedRectangle.image = UIImage.slantedRectangle.imageWithTintColor(.withColorStudio(.brand, shade: .shade80))
     }
 
     func setupJetpackImage() {
@@ -191,7 +191,7 @@ private extension LoginPrologueViewController {
         )
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.thinCaptionFont,
-            .foregroundColor: UIColor.basicBackground
+            .foregroundColor: UIColor.white
         ]
 
         let disclaimerAttrText = NSMutableAttributedString()

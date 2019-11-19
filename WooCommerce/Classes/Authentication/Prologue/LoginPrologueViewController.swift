@@ -104,8 +104,8 @@ private extension LoginPrologueViewController {
         disclaimerTextView.adjustsFontForContentSizeCategory = true
         disclaimerTextView.textContainerInset = .zero
         disclaimerTextView.linkTextAttributes = [
-            .foregroundColor: UIColor.text,
-            .underlineColor: UIColor.text,
+            .foregroundColor: UIColor.white,
+            .underlineColor: UIColor.white,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]
     }
@@ -115,8 +115,10 @@ private extension LoginPrologueViewController {
         loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
         loginButton.setTitle(title, for: .normal)
         loginButton.setTitleColor(.black, for: .normal)
+        loginButton.setTitleColor(.white, for: .highlighted)
         loginButton.titleLabel?.font = StyleManager.headlineSemiBold
-        loginButton.backgroundColor = .white
+        loginButton.setBackgroundImage(UIImage.renderBackgroundImage(fill: .white, border: .white), for: .normal)
+        loginButton.setBackgroundImage(UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground, border: .primaryButtonDownBackground), for: .highlighted)
         loginButton.layer.cornerRadius = Settings.buttonCornerRadius
     }
 }

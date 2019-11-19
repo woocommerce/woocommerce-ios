@@ -559,6 +559,7 @@ extension LoginEmailViewController {
 
         // Disconnect now that we're done with Google.
         GIDSignIn.sharedInstance().disconnect()
+        WordPressAuthenticator.track(.signedIn, properties: ["source": "google"])
         WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
     }
 

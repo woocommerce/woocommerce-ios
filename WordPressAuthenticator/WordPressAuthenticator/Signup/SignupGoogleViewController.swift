@@ -141,6 +141,7 @@ private extension SignupGoogleViewController {
     /// Social Login Successful: Analytics + Pushing the Login Epilogue.
     ///
     func wasLoggedInInstead(with credentials: AuthenticatorCredentials) {
+        WordPressAuthenticator.track(.signedIn, properties: ["source": "google"])
         WordPressAuthenticator.track(.signupSocialToLogin, properties: ["source": "google"])
         WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
 

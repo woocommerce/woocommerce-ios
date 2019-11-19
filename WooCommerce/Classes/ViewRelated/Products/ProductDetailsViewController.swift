@@ -9,6 +9,12 @@ import WordPressUI
 ///
 final class ProductDetailsViewController: UIViewController {
 
+    /// EntityListener: Update / Deletion Notifications.
+    ///
+    private lazy var entityListener: EntityListener<Product> = {
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: viewModel.product)
+    }()
+    
     /// Product view model
     ///
     private let viewModel: ProductDetailsViewModel
@@ -49,6 +55,7 @@ final class ProductDetailsViewController: UIViewController {
         // prepare UI
         configureNavigationTitle()
         configureNavigationActions()
+        configureEntityListener()
         configureMainView()
         configureTableView()
         registerTableViewCells()
@@ -76,6 +83,25 @@ private extension ProductDetailsViewController {
     func configureNavigationActions() {
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
             navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editProduct))
+        }
+    }
+    
+    /// Setup: EntityListener
+    ///
+    func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] product in
+            guard let self = self else {
+                return
+            }
+            self.viewModel.product = product
+            self.reloadTableViewDataIfPossible()
+        }
+        entityListener.onDelete = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.navigationController?.popViewController(animated: true)
         }
     }
 
@@ -127,7 +153,7 @@ private extension ProductDetailsViewController {
             self?.displayProductRemovedNotice()
         }
     }
-
+    
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {

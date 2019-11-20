@@ -300,7 +300,7 @@ extension MainTabBarController {
         guard let reviewsViewController: ReviewsViewController = childViewController() else {
             return
         }
-        
+
         reviewsViewController.presentDetails(for: noteID)
     }
 

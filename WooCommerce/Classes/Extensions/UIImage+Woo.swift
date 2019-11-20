@@ -19,7 +19,7 @@ extension UIImage {
         let tintColor = StyleManager.noticeIconColor
         return Gridicon.iconOfType(.notice).imageWithTintColor(tintColor)!
     }
-    
+
     /// Aside Image
     ///
     static var asideImage: UIImage {

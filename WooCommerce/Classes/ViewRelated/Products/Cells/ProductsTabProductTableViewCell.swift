@@ -77,10 +77,10 @@ private extension ProductsTabProductTableViewCell {
         contentStackView.axis = .vertical
         return contentStackView
     }
-    
+
     func configureBackground() {
         backgroundColor = StyleManager.wooWhite
-        
+
         //Background when selected
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle

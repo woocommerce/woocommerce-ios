@@ -769,7 +769,7 @@ private extension OrderStoreTests {
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
     }
-    
+
     func sampleShippingLines() -> [Networking.ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",

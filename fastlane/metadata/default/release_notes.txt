@@ -1,1 +1,3 @@
-We’ve rearranged some parts of Order Details for better readability and usability: Customer payment details are more prominent, and Order Notes are grouped with date headings for easier scanning. And no more awkward expanding animation when you view the Billing Details!
+* If your sales stats seemed odd because timezones were off, we found that bug and fixed it.
+* Ever email a customer from the Order Details screen and notice that the navigation bar looked different than in the rest of the app? Now it’s consistent.
+* The keyboard no longer covers the date picker in the Shipment Tracking extension, which makes it significantly easier to actually pick a date.

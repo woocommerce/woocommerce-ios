@@ -64,7 +64,7 @@ private extension NoteDetailsHeaderPlainTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
-    
+
     /// Setup: Images
     ///
     func configureImages() {
@@ -72,7 +72,7 @@ private extension NoteDetailsHeaderPlainTableViewCell {
         accessoryImageView.tintColor = StyleManager.wooCommerceBrandColor
         accessoryView = accessoryImageView
     }
-    
+
     /// Setup: Labels
     ///
     func configureLabels() {

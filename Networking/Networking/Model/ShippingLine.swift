@@ -9,7 +9,7 @@ public struct ShippingLine: Decodable {
     public let methodID: String
     public let total: String
     public let totalTax: String
-    
+
     /// Shipping Method struct initializer.
     ///
     public init(shippingID: Int,
@@ -17,26 +17,26 @@ public struct ShippingLine: Decodable {
                 methodID: String,
                 total: String,
                 totalTax: String) {
-        
+
         self.shippingID = shippingID
         self.methodTitle = methodTitle
         self.methodID = methodID
         self.total = total
         self.totalTax = totalTax
     }
-    
-    
+
+
     /// The public initializer for Shipping Line.
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        
+
         let shippingID = try container.decode(Int.self, forKey: .shippingID)
         let methodTitle = try container.decode(String.self, forKey: .methodTitle)
         let methodID = try container.decode(String.self, forKey: .methodID)
         let total = try container.decode(String.self, forKey: .total)
         let totalTax = try container.decode(String.self, forKey: .totalTax)
-        
+
         self.init(shippingID: shippingID,
                   methodTitle: methodTitle,
                   methodID: methodID,
@@ -49,7 +49,7 @@ public struct ShippingLine: Decodable {
 /// Defines all of the Shipping Line CodingKeys
 ///
 private extension ShippingLine {
-    
+
     enum CodingKeys: String, CodingKey {
         case shippingID            = "id"
         case methodTitle           = "method_title"
@@ -70,7 +70,7 @@ extension ShippingLine: Comparable {
             lhs.total == rhs.total &&
             lhs.totalTax == rhs.totalTax
     }
-    
+
     public static func < (lhs: ShippingLine, rhs: ShippingLine) -> Bool {
         return lhs.shippingID == rhs.shippingID &&
             lhs.methodID == rhs.methodID &&

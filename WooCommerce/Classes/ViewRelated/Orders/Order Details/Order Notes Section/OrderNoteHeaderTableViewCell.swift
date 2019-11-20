@@ -35,7 +35,7 @@ private extension OrderNoteHeaderTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
-    
+
     /// Setup: Labels
     ///
     func configureLabels() {

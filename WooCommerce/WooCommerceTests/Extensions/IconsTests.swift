@@ -5,7 +5,7 @@ final class IconsTests: XCTestCase {
     func testAddOutlineIconIsNotNil() {
         XCTAssertNotNil(UIImage.addOutlineImage)
     }
-    
+
     func testNoticeImageIsNotNil() {
         XCTAssertNotNil(UIImage.noticeImage)
     }

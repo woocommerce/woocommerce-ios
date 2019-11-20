@@ -14,5 +14,5 @@ extension ShippingLine {
     @NSManaged public var total: String?
     @NSManaged public var totalTax: String?
     @NSManaged public var order: Order?
-    
+
 }

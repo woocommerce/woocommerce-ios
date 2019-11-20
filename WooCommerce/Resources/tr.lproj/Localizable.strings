@@ -234,6 +234,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Okumaya devam et";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "Google ile devam et";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "WordPress.com ile devam et";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "Apple ile devam ediliyor";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Kopyala";
 
@@ -543,10 +552,10 @@
 "Log in failed. Please try again." = "Giriş başarısız. Lütfen tekrar deneyin.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "Tüm WordPress sitelerinizi yönetmek için WordPress.com üzeridne e-posta adresinizle oturum açın.";
+"Log in to the WordPress.com account you used to connect Jetpack." = "Jetpack’e bağlanmak için kullandığınız WordPress.com hesabında oturum açın.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "Jetpack’e bağlanmak için kullandığınız WordPress.com hesabında oturum açın.";
+"Log in to your WordPress.com account with your email address." = "E-posta adresinizle WordPress.com hesabınızda oturum açın.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Jetpack ile oturum açın";
@@ -716,6 +725,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "İsteğe Bağlı Takip Bilgileri";
 
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "Veya _site adresinizi girerek_ oturum açın.";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "(viewModel.order.number) Numaralı Sipariş";
@@ -788,6 +800,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "Lütfen geçerli bir e-posta adresi girin.";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Lütfen Apple ID’nizle oturum açmak için WordPress.com hesabınızın parolasını girin.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Lütfen giriş bilgilerinizi girin";

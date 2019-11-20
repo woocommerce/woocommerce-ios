@@ -98,12 +98,12 @@ private extension PickListTableViewCell {
 
     func configureBackground() {
         applyDefaultBackgroundStyle()
-        
+
         //Background when selected
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
     }
-    
+
     func setupImageView() {
         productImageView.image = .productImage
         productImageView.tintColor = StyleManager.wooGreyBorder

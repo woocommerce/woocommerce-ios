@@ -30,7 +30,7 @@ final class MockOrders {
                      coupons: [],
                      refunds: [])
     }
-    
+
     func sampleShippingLines() -> [Networking.ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",

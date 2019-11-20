@@ -303,7 +303,7 @@ private extension OrderNoteStoreTests {
         total: "133.00",
         totalTax: "0.00")]
     }
-    
+
     func sampleAddress() -> Networking.Address {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",

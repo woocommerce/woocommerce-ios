@@ -1,1 +1,3 @@
-Wir haben einige Punkte der Bestelldetails neu angeordnet, um die Lesbarkeit und Benutzerfreundlichkeit zu verbessern: Zur leichteren Überprüfung sind die Zahlungsdetails für Kunden nun besser hervorgehoben und die Auftragsnotizen mit Datumsangaben überschrieben. Kein mühsames Ausklappen der Abrechnungsdetails mehr!
+* Wenn deine Vertriebsstatistik seltsam aussah, weil die Zeitzonen deaktiviert waren, haben wir jetzt den Fehler gefunden und ihn behoben.
+* Haben Sie schon einmal einem Kunden eine E-Mail über den Bildschirm mit den Bestelldetails geschickt und bemerkt, dass die Navigationsleiste dort anders aussieht als auf den anderen Bildschirmen der App? Jetzt sieht sie überall gleich aus.
+* Die Tastatur enthält in der Sendungsverfolgungserweiterung nicht mehr die Datumsauswahl, sodass es jetzt viel einfacher ist, ein Datum auszuwählen.

@@ -103,8 +103,12 @@ private extension ProductReviewTableViewCell {
 
     func configureBackground() {
         applyDefaultBackgroundStyle()
+
+        //Background when selected
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
     }
-    
+
     func configureSubjectLabel() {
         subjectLabel.applyBodyStyle()
     }

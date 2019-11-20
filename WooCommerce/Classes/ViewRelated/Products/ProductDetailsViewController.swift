@@ -93,7 +93,7 @@ private extension ProductDetailsViewController {
             guard let self = self else {
                 return
             }
-            
+
             self.viewModel.product = product
             self.reloadTableViewDataIfPossible()
         }

@@ -18,7 +18,7 @@ public struct ProductVariation: Decodable {
     public let dateOnSaleStart: Date?
     public let dateOnSaleEnd: Date?
 
-    public let statusKey: String        // draft, pending, private, published
+    public var status: ProductStatus
 
     public let description: String?
     public let sku: String?
@@ -41,7 +41,7 @@ public struct ProductVariation: Decodable {
 
     public let manageStock: Bool
     public let stockQuantity: Int64?    // API reports Int or null
-    public let stockStatusKey: String   // instock, outofstock, backorder
+    public var stockStatus: ProductStockStatus
 
     public let backordersKey: String    // no, notify, yes
     public let backordersAllowed: Bool
@@ -55,16 +55,6 @@ public struct ProductVariation: Decodable {
 
     public let menuOrder: Int64
 
-    /// Computed Properties
-    ///
-    public var status: ProductStatus {
-        return ProductStatus(rawValue: statusKey)
-    }
-
-    public var stockStatus: ProductStockStatus {
-        return ProductStockStatus(rawValue: stockStatusKey)
-    }
-
     /// ProductVariation struct initializer.
     ///
     public init(siteID: Int64,
@@ -77,7 +67,7 @@ public struct ProductVariation: Decodable {
                 dateModified: Date?,
                 dateOnSaleStart: Date?,
                 dateOnSaleEnd: Date?,
-                statusKey: String,
+                status: ProductStatus,
                 description: String?,
                 sku: String?,
                 price: String,
@@ -94,7 +84,7 @@ public struct ProductVariation: Decodable {
                 taxClass: String?,
                 manageStock: Bool,
                 stockQuantity: Int64?,
-                stockStatusKey: String,
+                stockStatus: ProductStockStatus,
                 backordersKey: String,
                 backordersAllowed: Bool,
                 backordered: Bool,
@@ -113,7 +103,7 @@ public struct ProductVariation: Decodable {
         self.dateModified = dateModified
         self.dateOnSaleStart = dateOnSaleStart
         self.dateOnSaleEnd = dateOnSaleEnd
-        self.statusKey = statusKey
+        self.status = status
         self.description = description
         self.sku = sku
         self.price = price
@@ -130,7 +120,7 @@ public struct ProductVariation: Decodable {
         self.taxClass = taxClass
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
-        self.stockStatusKey = stockStatusKey
+        self.stockStatus = stockStatus
         self.backordersKey = backordersKey
         self.backordersAllowed = backordersAllowed
         self.backordered = backordered
@@ -163,6 +153,7 @@ public struct ProductVariation: Decodable {
         let dateOnSaleStart = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleStart)
         let dateOnSaleEnd = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleEnd)
         let statusKey = try container.decode(String.self, forKey: .statusKey)
+        let status = ProductStatus(rawValue: statusKey)
         let description = try container.decodeIfPresent(String.self, forKey: .description)
         let sku = try container.decodeIfPresent(String.self, forKey: .sku)
         let price = try container.decode(String.self, forKey: .price)
@@ -193,6 +184,7 @@ public struct ProductVariation: Decodable {
 
         let stockQuantity = try container.decodeIfPresent(Int64.self, forKey: .stockQuantity)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)
+        let stockStatus = ProductStockStatus(rawValue: stockStatusKey)
         let backordersKey = try container.decode(String.self, forKey: .backordersKey)
         let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
         let backordered = try container.decode(Bool.self, forKey: .backordered)
@@ -212,7 +204,7 @@ public struct ProductVariation: Decodable {
                   dateModified: dateModified,
                   dateOnSaleStart: dateOnSaleStart,
                   dateOnSaleEnd: dateOnSaleEnd,
-                  statusKey: statusKey,
+                  status: status,
                   description: description,
                   sku: sku,
                   price: price,
@@ -229,7 +221,7 @@ public struct ProductVariation: Decodable {
                   taxClass: taxClass,
                   manageStock: manageStock,
                   stockQuantity: stockQuantity,
-                  stockStatusKey: stockStatusKey,
+                  stockStatus: stockStatus,
                   backordersKey: backordersKey,
                   backordersAllowed: backordersAllowed,
                   backordered: backordered,
@@ -312,7 +304,7 @@ extension ProductVariation: Equatable {
             lhs.dateModified == rhs.dateModified &&
             lhs.dateOnSaleStart == rhs.dateOnSaleStart &&
             lhs.dateOnSaleEnd == rhs.dateOnSaleEnd &&
-            lhs.statusKey == rhs.statusKey &&
+            lhs.status == rhs.status &&
             lhs.description == rhs.description &&
             lhs.sku == rhs.sku &&
             lhs.price == rhs.price &&
@@ -329,7 +321,7 @@ extension ProductVariation: Equatable {
             lhs.taxClass == rhs.taxClass &&
             lhs.manageStock == rhs.manageStock &&
             lhs.stockQuantity == rhs.stockQuantity &&
-            lhs.stockStatusKey == rhs.stockStatusKey &&
+            lhs.stockStatus == rhs.stockStatus &&
             lhs.backordersKey == rhs.backordersKey &&
             lhs.backordersAllowed == rhs.backordersAllowed &&
             lhs.backordered == rhs.backordered &&

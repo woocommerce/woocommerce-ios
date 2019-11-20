@@ -116,7 +116,6 @@ final class AztecEditorViewController: UIViewController, Editor {
         configureNavigationBar()
         configureView()
         configureSubviews()
-        configureFormatBar()
 
         aztecUIConfigurator.configureConstraints(editorView: editorView,
                                                  editorContainerView: view,
@@ -148,10 +147,6 @@ private extension AztecEditorViewController {
         view.addSubview(richTextView)
         view.addSubview(htmlTextView)
         view.addSubview(placeholderLabel)
-    }
-
-    func configureFormatBar() {
-        formatBar.isHidden = viewProperties.formatBarHidden
     }
 
     func registerAttachmentImageProviders() {

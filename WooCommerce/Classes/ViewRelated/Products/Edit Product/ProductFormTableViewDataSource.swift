@@ -57,8 +57,6 @@ private extension ProductFormTableViewDataSource {
             configureName(cell: cell, name: name)
         case .description(let description):
             configureDescription(cell: cell, description: description)
-        default:
-            fatalError("Not implemented yet")
         }
     }
 

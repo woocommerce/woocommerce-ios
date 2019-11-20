@@ -27,8 +27,6 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         case .description:
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
-        default:
-            fatalError("Not implemented yet")
         }
     }
 
@@ -42,8 +40,6 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return name?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         case .description(let description):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
-        default:
-            fatalError("Not implemented yet")
         }
     }
 }

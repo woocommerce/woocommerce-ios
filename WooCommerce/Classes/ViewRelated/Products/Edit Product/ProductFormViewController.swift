@@ -90,7 +90,10 @@ extension ProductFormViewController: UITableViewDelegate {
 //
 private extension ProductFormViewController {
     func editProductName() {
-        let textViewController = TextViewViewController(text: product.name, placeholder: NSLocalizedString("Enter a title...", comment: "The text placeholder for the Text Editor screen"), navigationTitle: NSLocalizedString("Title", comment: "The navigation bar title of the Text editor screen.")) { [weak self] (newProductName) in
+        let textViewController = TextViewViewController(text: product.name,
+                                                        placeholder: NSLocalizedString("Enter a title...", comment: "The text placeholder for the Text Editor screen"),
+                                                        navigationTitle: NSLocalizedString("Title", comment: "The navigation bar title of the Text editor screen.")
+        ) { [weak self] (newProductName) in
             self?.onEditProductNameCompletion(newName: newProductName ?? "")
         }
 

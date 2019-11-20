@@ -34,15 +34,16 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         }
     }
 
-    /// Footnote label text
-    ///
-    var footnoteText: String? {
-        get {
-            return footnoteLabel?.text
-        }
-        set {
-            footnoteLabel?.text = newValue
-        }
+    func updateFootnoteAttributedText(_ attributedString: NSAttributedString?) {
+        footnoteLabel.attributedText = attributedString
+    }
+
+    func updateFootnoteText(_ footnoteText: String?) {
+        footnoteLabel.text = footnoteText
+    }
+
+    func toggleFootnote() {
+        footnoteLabel.isHidden = !footnoteLabel.isHidden
     }
 
     override func awakeFromNib() {

@@ -113,7 +113,7 @@ extension OrderDetailsDataSource {
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refund:
-                return TwoColumnHeadlineAttributedFootnoteTableViewCell.reuseIdentifier
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .netAmount:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .tracking:

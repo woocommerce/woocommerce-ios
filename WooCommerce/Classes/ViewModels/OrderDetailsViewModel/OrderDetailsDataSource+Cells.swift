@@ -31,7 +31,7 @@ extension OrderDetailsDataSource {
             configurePayment(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
-        case let cell as TwoColumnHeadlineAttributedFootnoteTableViewCell where row == .refund:
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
             configureRefund(cell: cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
             configureNetAmount(cell: cell)
@@ -139,7 +139,7 @@ extension OrderDetailsDataSource {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
         cell.rightText = paymentViewModel.paymentTotal
-        cell.footnoteText = paymentViewModel.paymentSummary
+        cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
     private func configureDetails(cell: WooBasicTableViewCell) {
@@ -150,21 +150,21 @@ extension OrderDetailsDataSource {
         cell.selectionStyle = .default
     }
 
-    private func configureRefund(cell: TwoColumnHeadlineAttributedFootnoteTableViewCell, at indexPath: IndexPath) {
+    private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
         // TODO-thuy: create a `lookUpCondensedRefunds()` method and show why minus two rows.
         let condensedRefund = condensedRefunds[indexPath.row - 2] // TODO-thuy: minus two should be constants
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
         cell.leftText = Titles.refunded
         cell.rightText = refund?.amount
-        cell.footnoteAttributedText = paymentViewModel.refundSummary
+        cell.updateFootnoteAttributedText(paymentViewModel.refundSummary)
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         // TODO-thuy: add configuration for Net Amount cell.
         // Temporarily displays fake info.
         cell.leftText = Titles.netAmount
-        cell.footnoteText = nil
+        cell.toggleFootnote()
     }
 
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {

@@ -136,8 +136,7 @@ extension OrderDetailsViewModel {
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
             SummaryTableViewCell.self,
-            FulfillButtonTableViewCell.self,
-            TwoColumnHeadlineAttributedFootnoteTableViewCell.self
+            FulfillButtonTableViewCell.self
         ]
 
         for cell in cells {

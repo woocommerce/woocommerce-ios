@@ -2,12 +2,12 @@ import UIKit
 import Yosemite
 
 struct LinkSettings {
-    var url: String = ""
-    var text: String = ""
-    var openInNewWindow: Bool = false
-    var isNewLink: Bool = true
+    var url: String
+    var text: String
+    var openInNewWindow: Bool
+    var isNewLink: Bool
 
-    init(url: String, text: String, openInNewWindow: Bool, isNewLink: Bool = true) {
+    init(url: String, text: String, openInNewWindow: Bool, isNewLink: Bool) {
         self.url = url
         self.text = text
         self.openInNewWindow = openInNewWindow
@@ -22,16 +22,17 @@ enum LinkAction {
     case cancel
 }
 
-class LinkSettingsViewController: UIViewController {
+/// Allows the user to update the settings for a link text.
+///
+final class LinkSettingsViewController: UIViewController {
+    typealias LinkCallback = (_ action: LinkAction, _ settings: LinkSettings) -> ()
+
     private var linkSettings: LinkSettings
 
     /// Table Sections to be rendered
     ///
     private var sections = [Section]()
-
-    typealias LinkCallback = (_ action: LinkAction, _ settings: LinkSettings) -> ()
-
-    private var callback: LinkCallback?
+    private let callback: LinkCallback?
 
     @IBOutlet private weak var tableView: UITableView!
 
@@ -130,7 +131,6 @@ extension LinkSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        // listed in the order they are displayed
         switch rowAtIndexPath(indexPath) {
         case .url:
             editURL()
@@ -261,8 +261,6 @@ private extension LinkSettingsViewController {
 private extension LinkSettingsViewController {
     enum Constants {
         static let rowHeight = CGFloat(44)
-        static let separatorInset = CGFloat(16)
-        static let sectionHeight = CGFloat(18)
     }
 
     struct Section {

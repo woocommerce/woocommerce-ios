@@ -390,8 +390,6 @@
 		CE583A0B2107937F00D73C1C /* TextViewTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE583A092107937F00D73C1C /* TextViewTableViewCell.swift */; };
 		CE583A0C2107937F00D73C1C /* TextViewTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE583A0A2107937F00D73C1C /* TextViewTableViewCell.xib */; };
 		CE82EF88237EF93900F8D432 /* OrderDetailsDataSource+Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82EF87237EF93900F8D432 /* OrderDetailsDataSource+Constants.swift */; };
-		CE82EF8A237EFAFC00F8D432 /* OrderDetailsDataSource+Cells.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82EF89237EFAFC00F8D432 /* OrderDetailsDataSource+Cells.swift */; };
-		CE82EF8C237EFD8000F8D432 /* OrderDetailsDataSource+Sections.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE82EF8B237EFD8000F8D432 /* OrderDetailsDataSource+Sections.swift */; };
 		CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */; };
 		CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */; };
 		CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */; };
@@ -923,8 +921,6 @@
 		CE583A092107937F00D73C1C /* TextViewTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewTableViewCell.swift; sourceTree = "<group>"; };
 		CE583A0A2107937F00D73C1C /* TextViewTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextViewTableViewCell.xib; sourceTree = "<group>"; };
 		CE82EF87237EF93900F8D432 /* OrderDetailsDataSource+Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderDetailsDataSource+Constants.swift"; sourceTree = "<group>"; };
-		CE82EF89237EFAFC00F8D432 /* OrderDetailsDataSource+Cells.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderDetailsDataSource+Cells.swift"; sourceTree = "<group>"; };
-		CE82EF8B237EFD8000F8D432 /* OrderDetailsDataSource+Sections.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderDetailsDataSource+Sections.swift"; sourceTree = "<group>"; };
 		CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerInfoTableViewCell.xib; sourceTree = "<group>"; };
 		CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerInfoTableViewCell.swift; sourceTree = "<group>"; };
@@ -2284,8 +2280,6 @@
 				D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */,
 				D8C11A5D22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift */,
 				CE82EF87237EF93900F8D432 /* OrderDetailsDataSource+Constants.swift */,
-				CE82EF89237EFAFC00F8D432 /* OrderDetailsDataSource+Cells.swift */,
-				CE82EF8B237EFD8000F8D432 /* OrderDetailsDataSource+Sections.swift */,
 			);
 			path = OrderDetailsViewModel;
 			sourceTree = "<group>";
@@ -2859,7 +2853,6 @@
 				B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */,
 				02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */,
 				B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */,
-				CE82EF8A237EFAFC00F8D432 /* OrderDetailsDataSource+Cells.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
 				7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */,
 				02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */,
@@ -2953,7 +2946,6 @@
 				B57C744520F55BA600EEFC87 /* NSObject+Helpers.swift in Sources */,
 				D817586022BB614A00289CFE /* OrderMessageComposer.swift in Sources */,
 				0269576A23726304001BA0BF /* KeyboardFrameObserver.swift in Sources */,
-				CE82EF8C237EFD8000F8D432 /* OrderDetailsDataSource+Sections.swift in Sources */,
 				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
 				B5F04D952194F2A300501EE1 /* NoteDetailsRow.swift in Sources */,
 				020F41E623163C0100776C4D /* TopBannerView.swift in Sources */,

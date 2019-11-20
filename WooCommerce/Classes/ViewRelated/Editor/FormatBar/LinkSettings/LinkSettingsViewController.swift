@@ -54,42 +54,36 @@ class LinkSettingsViewController: UIViewController {
         registerTableViewCells()
         updateNavigation()
     }
-
-    private func updateNavigation() {
-        navigationItem.rightBarButtonItem?.isEnabled = !linkSettings.url.isEmpty
-    }
-
-//    private func pushSettingsController(for row: Row, hint: String? = nil, onValueChanged: @escaping SettingsTextChanged, mode: SettingsTextModes = .text) {
-//        let title = row.title
-//        let value = row.value
-//        let controller = SettingsTextViewController(text: value, placeholder: "\(title)...", hint: hint)
-//
-//        controller.title = title
-//        controller.onValueChanged = onValueChanged
-//        controller.mode = mode
-//
-//        navigationController?.pushViewController(controller, animated: true)
-//    }
 }
 
 // MARK: Actions
 //
 private extension LinkSettingsViewController {
     func editURL() {
-//        pushSettingsController(for: editableRow, hint: nil,
-//                               onValueChanged: { [weak self] value in
-//                                self?.linkSettings.url  = value
-//                                self?.reloadViewModel()
-//        }, mode: .URL)
+        let placeholder = NSLocalizedString("Please enter a URL", comment: "Placeholder for editing the URL of a text link")
+        let navigationTitle = NSLocalizedString("URL", comment: "Navigation bar title for editing the URL of a text link")
+        let textViewController = TextViewViewController(text: linkSettings.url,
+                                                        placeholder: placeholder,
+                                                        navigationTitle: navigationTitle,
+                                                        keyboardType: .URL) { [weak self] text in
+                                                            self?.linkSettings.url = text ?? ""
+                                                            self?.updateUI()
+                                                            self?.navigationController?.popViewController(animated: true)
+        }
+        navigationController?.pushViewController(textViewController, animated: true)
     }
 
     func editTitle() {
-//        let editableRow = row as! EditableTextRow
-//        pushSettingsController(for: editableRow, hint: nil,
-//                               onValueChanged: { [weak self] value in
-//                                self?.linkSettings.text  = value
-//                                self?.reloadViewModel()
-//        })
+        let placeholder = NSLocalizedString("Please enter some text", comment: "Placeholder for editing the text of a text link")
+        let navigationTitle = NSLocalizedString("Link Text", comment: "Navigation bar title for editing the text of a text link")
+        let textViewController = TextViewViewController(text: linkSettings.text,
+                                                        placeholder: placeholder,
+                                                        navigationTitle: navigationTitle) { [weak self] text in
+                                                            self?.linkSettings.text = text ?? ""
+                                                            self?.updateUI()
+                                                            self?.navigationController?.popViewController(animated: true)
+        }
+        navigationController?.pushViewController(textViewController, animated: true)
     }
 
     func editOpenInNewWindow(value: Bool) {
@@ -98,6 +92,19 @@ private extension LinkSettingsViewController {
 
     func removeLink() {
         callback?(.remove, linkSettings)
+    }
+}
+
+// MARK: Updates
+//
+private extension LinkSettingsViewController {
+    func updateUI() {
+        updateNavigation()
+        tableView.reloadData()
+    }
+
+    func updateNavigation() {
+        navigationItem.rightBarButtonItem?.isEnabled = linkSettings.url.isEmpty == false
     }
 }
 
@@ -120,7 +127,6 @@ private extension LinkSettingsViewController {
 // MARK: - UITableViewDelegate Conformance
 //
 extension LinkSettingsViewController: UITableViewDelegate {
-
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 

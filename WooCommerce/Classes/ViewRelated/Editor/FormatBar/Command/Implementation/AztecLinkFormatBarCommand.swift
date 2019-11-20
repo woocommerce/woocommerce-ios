@@ -5,7 +5,7 @@ private extension URL {
     ///
     /// - Returns: an url
     func normalizedURLForWordPressLink() -> URL {
-        let urlString = self.absoluteString
+        let urlString = absoluteString
 
         guard self.scheme == nil,
             !urlString.hasPrefix("/") else {
@@ -35,6 +35,7 @@ struct AztecLinkFormatBarCommand: AztecFormatBarCommand {
         var linkURL: URL? = nil
         var linkTarget: String?
         var linkRange = richTextView.selectedRange
+
         // Let's check if the current range already has a link assigned to it.
         if let expandedRange = richTextView.linkFullRange(forRange: richTextView.selectedRange) {
             linkRange = expandedRange
@@ -61,9 +62,13 @@ private extension AztecLinkFormatBarCommand {
             }
         }
 
-        let linkSettings = LinkSettings(url: urlToUse?.absoluteString ?? "", text: title ?? "", openInNewWindow: target != nil, isNewLink: isInsertingNewLink)
-        let linkController = LinkSettingsViewController(linkSettings: linkSettings, callback: { (action, settings) in
-            self.presenter.dismiss(animated: true, completion: {
+        let linkSettings = LinkSettings(url: urlToUse?.absoluteString ?? "",
+                                        text: title ?? "",
+                                        openInNewWindow: target != nil,
+                                        isNewLink: isInsertingNewLink)
+        let linkController = LinkSettingsViewController(linkSettings: linkSettings,
+                                                        callback: { (action, settings) in
+            self.presenter.dismiss(animated: true) {
                 richTextView.becomeFirstResponder()
                 switch action {
                 case .insert, .update:
@@ -73,20 +78,11 @@ private extension AztecLinkFormatBarCommand {
                 case .cancel:
                     break
                 }
-            })
+            }
         })
 
+        // TODO-1496: show the Link Settings as a popover.
         let navigationController = UINavigationController(rootViewController: linkController)
-        navigationController.modalPresentationStyle = .popover
-        navigationController.popoverPresentationController?.permittedArrowDirections = [.any]
-        navigationController.popoverPresentationController?.sourceView = richTextView
-//        navigationController.popoverPresentationController?.backgroundColor = WPStyleGuide.aztecFormatPickerBackgroundColor
-        if richTextView.selectedRange.length > 0, let textRange = richTextView.selectedTextRange, let selectionRect = richTextView.selectionRects(for: textRange).first {
-            navigationController.popoverPresentationController?.sourceRect = selectionRect.rect
-        } else if let textRange = richTextView.selectedTextRange {
-            let caretRect = richTextView.caretRect(for: textRange.start)
-            navigationController.popoverPresentationController?.sourceRect = caretRect
-        }
         presenter.present(navigationController, animated: true)
         richTextView.resignFirstResponder()
     }

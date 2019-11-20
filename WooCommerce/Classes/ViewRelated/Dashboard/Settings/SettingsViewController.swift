@@ -120,7 +120,7 @@ private extension SettingsViewController {
         configureSections()
         tableView.reloadData()
     }
-    
+
     func configureSections() {
         let selectedStoreTitle = NSLocalizedString(
             "Selected Store",

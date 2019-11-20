@@ -336,17 +336,6 @@ public extension StorageType {
         return firstObject(ofType: ProductVariation.self, matching: predicate)
     }
 
-    /// Retrieves a stored Product Variation Attribute.
-    ///
-    /// Note: WC attribute ID's often have an ID of `0` (local Product attributes), so we need to
-    /// also look them up by key and value
-    ///
-    func loadProductVariationAttribute(attributeID: Int64, name: String, option: String) -> Attribute? {
-        let predicate = NSPredicate(format: "id = %lld AND key = %@ AND value = %@",
-                                    attributeID, name, option)
-        return firstObject(ofType: Attribute.self, matching: predicate)
-    }
-
     // MARK: - Refunds
 
     /// Retrieves a stored Refund for the provided siteID, orderID, and refundID.

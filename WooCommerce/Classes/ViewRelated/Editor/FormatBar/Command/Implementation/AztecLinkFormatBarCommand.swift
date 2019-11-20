@@ -72,7 +72,11 @@ private extension AztecLinkFormatBarCommand {
                 richTextView.becomeFirstResponder()
                 switch action {
                 case .insert, .update:
-                    self.insertLink(url: settings.url, text: settings.text, target: settings.openInNewWindow ? "_blank" : nil, range: range, editorView: editorView)
+                    self.insertLink(url: settings.url,
+                                    text: settings.text,
+                                    target: settings.openInNewWindow ? "_blank" : nil,
+                                    range: range,
+                                    editorView: editorView)
                 case .remove:
                     self.removeLink(in: range, editorView: editorView)
                 case .cancel:

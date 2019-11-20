@@ -1,24 +1,34 @@
-//
-//  SettingTitleAndValueTableViewCell.swift
-//  WooCommerce
-//
-//  Created by Jaclyn Chen on 11/20/19.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
-
 import UIKit
 
-class SettingTitleAndValueTableViewCell: UITableViewCell {
+final class SettingTitleAndValueTableViewCell: UITableViewCell {
+
+    @IBOutlet weak var titleLabel: UILabel!
+    @IBOutlet weak var valueLabel: UILabel!
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
-    }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-
-        // Configure the view for the selected state
+        configureLabels()
     }
-    
+}
+
+// MARK: Updates
+//
+extension SettingTitleAndValueTableViewCell {
+    func updateUI(title: String, value: String?) {
+        titleLabel.text = title
+        valueLabel.text = value
+    }
+}
+
+// MARK: Configurations
+//
+private extension SettingTitleAndValueTableViewCell {
+    func configureLabels() {
+        titleLabel.applyBodyStyle()
+        titleLabel.textColor = .text
+
+        valueLabel.applyBodyStyle()
+        valueLabel.textColor = .textSubtle
+    }
 }

@@ -18,7 +18,7 @@ public struct ProductVariation: Decodable {
     public let dateOnSaleStart: Date?
     public let dateOnSaleEnd: Date?
 
-    public var status: ProductStatus
+    public let status: ProductStatus
 
     public let description: String?
     public let sku: String?
@@ -41,7 +41,7 @@ public struct ProductVariation: Decodable {
 
     public let manageStock: Bool
     public let stockQuantity: Int64?    // API reports Int or null
-    public var stockStatus: ProductStockStatus
+    public let stockStatus: ProductStockStatus
 
     public let backordersKey: String    // no, notify, yes
     public let backordersAllowed: Bool

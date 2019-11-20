@@ -47,7 +47,9 @@ private extension ProductVariationStore {
                 return
             }
 
-            self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations, siteID: siteID, productID: productID) {
+            self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations,
+                                                            siteID: siteID,
+                                                            productID: productID) {
                 onCompletion(nil)
             }
         }
@@ -62,7 +64,10 @@ private extension ProductVariationStore {
     /// Updates (OR Inserts) the specified ReadOnly ProductReview Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    func upsertStoredProductVariationsInBackground(readOnlyProductVariations: [Networking.ProductVariation], siteID: Int64, productID: Int64, onCompletion: @escaping () -> Void) {
+    func upsertStoredProductVariationsInBackground(readOnlyProductVariations: [Networking.ProductVariation],
+                                                   siteID: Int64,
+                                                   productID: Int64,
+                                                   onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             self?.upsertStoredProductVariations(readOnlyProductVariations: readOnlyProductVariations, in: derivedStorage, siteID: siteID, productID: productID)
@@ -92,7 +97,9 @@ private extension ProductVariationStore {
 
         // Upserts the Product Variations from the read-only version
         for readOnlyProductVariation in readOnlyProductVariations {
-            let storageProductVariation = storage.loadProductVariation(siteID: siteID, productVariationID: readOnlyProductVariation.productVariationID) ?? storage.insertNewObject(ofType: Storage.ProductVariation.self)
+            let storageProductVariation = storage.loadProductVariation(siteID: siteID,
+                                                                       productVariationID: readOnlyProductVariation.productVariationID)
+                ?? storage.insertNewObject(ofType: Storage.ProductVariation.self)
             storageProductVariation.update(with: readOnlyProductVariation)
             storageProductVariation.product = product
             handleProductDimensions(readOnlyProductVariation, storageProductVariation, storage)
@@ -118,8 +125,9 @@ private extension ProductVariationStore {
     /// Because all local Product attributes have ID = 0, they are not unique in Storage and we always replace the whole
     /// attribute array.
     ///
-    func handleProductVariationAttributes(_ readOnlyVariation: Networking.ProductVariation, _ storageVariation: Storage.ProductVariation, _ storage: StorageType) {
-
+    func handleProductVariationAttributes(_ readOnlyVariation: Networking.ProductVariation,
+                                          _ storageVariation: Storage.ProductVariation,
+                                          _ storage: StorageType) {
         // Removes all the attributes first.
         storageVariation.attributesArray.forEach { existingStorageAttribute in
             storage.deleteObject(existingStorageAttribute)

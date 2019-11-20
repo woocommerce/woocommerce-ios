@@ -57,7 +57,10 @@ final class ProductVariationStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
-        let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID,
+                                                                         productID: sampleProductID,
+                                                                         pageNumber: defaultPageNumber,
+                                                                         pageSize: defaultPageSize) { error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 8)
             XCTAssertNil(error)
 
@@ -84,7 +87,10 @@ final class ProductVariationStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
 
-        let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID,
+                                                                         productID: sampleProductID,
+                                                                         pageNumber: defaultPageNumber,
+                                                                         pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
 
             let storedProductVariations = self.viewStorage.loadProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)
@@ -94,7 +100,10 @@ final class ProductVariationStoreTests: XCTestCase {
             let storedProductVariation = self.viewStorage.loadProductVariation(siteID: self.sampleSiteID, productVariationID: sampleProductVariationID)
             XCTAssertEqual(storedProductVariation?.toReadOnly(), self.sampleProductVariation(id: sampleProductVariationID))
 
-            let action = ProductVariationAction.synchronizeProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID, pageNumber: self.defaultPageNumber, pageSize: self.defaultPageSize) { error in
+            let action = ProductVariationAction.synchronizeProductVariations(siteID: self.sampleSiteID,
+                                                                             productID: self.sampleProductID,
+                                                                             pageNumber: self.defaultPageNumber,
+                                                                             pageSize: self.defaultPageSize) { error in
                 XCTAssertNil(error)
 
                 let storedProductVariations = self.viewStorage.loadProductVariations(siteID: self.sampleSiteID, productID: self.sampleProductID)
@@ -122,7 +131,10 @@ final class ProductVariationStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "generic_error")
 
-        let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID,
+                                                                         productID: sampleProductID,
+                                                                         pageNumber: defaultPageNumber,
+                                                                         pageSize: defaultPageSize) { error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()
@@ -138,7 +150,10 @@ final class ProductVariationStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve product variations empty response")
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID, productID: sampleProductID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductVariationAction.synchronizeProductVariations(siteID: sampleSiteID,
+                                                                         productID: sampleProductID,
+                                                                         pageNumber: defaultPageNumber,
+                                                                         pageSize: defaultPageSize) { error in
             XCTAssertNotNil(error)
 
             expectation.fulfill()
@@ -160,6 +175,7 @@ private extension ProductVariationStoreTests {
     }
 
     func sampleProductVariation(id: Int64) -> Yosemite.ProductVariation {
+        let imageSource = "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1"
         return ProductVariation(siteID: sampleSiteID,
                                 productID: sampleProductID,
                                 productVariationID: id,
@@ -167,7 +183,7 @@ private extension ProductVariationStoreTests {
                                 image: ProductImage(imageID: 1063,
                                                     dateCreated: dateFromGMT("2019-11-01T04:12:05"),
                                                     dateModified: dateFromGMT("2019-11-01T04:12:05"),
-                                                    src: "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1",
+                                                    src: imageSource,
                                                     name: "DSC_0010",
                                                     alt: ""),
                                 permalink: "https://chocolate.com/marble",

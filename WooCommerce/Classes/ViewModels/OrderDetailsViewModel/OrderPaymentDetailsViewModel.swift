@@ -189,9 +189,11 @@ final class OrderPaymentDetailsViewModel {
         }
 
         // Can't use .reduce(0,+) here because we're working with NSDecimalNumber.
-        let refundTotal: NSDecimalNumber = .zero
-        for refund in refunds {
-            refundTotal.adding(refund ?? .zero)
+        var refundTotal: NSDecimalNumber = .zero
+        for r in refunds {
+            if let refund = r {
+                refundTotal = refundTotal.adding(refund)
+            }
         }
 
         return orderTotal.adding(refundTotal)

@@ -3,7 +3,7 @@ import Foundation
 /// Error when serializing an Encodable
 ///
 public enum EncodableError: Error {
-    
+
     /// Fails to convert JSONSerialization JSON object to the expected type
     ///
     case jsonSerializationType

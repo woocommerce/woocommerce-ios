@@ -1,7 +1,6 @@
 import Foundation
 import Alamofire
 
-
 /// Product: Remote Endpoints
 ///
 public class ProductsRemote: Remote {
@@ -101,42 +100,28 @@ public class ProductsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Updates the Name of a specific `Product`.
+    /// Updates a specific `Product`.
     ///
     /// - Parameters:
-    ///     - siteID: Site which hosts the Product.
-    ///     - productID: Identifier of the Product.
-    ///     - name: Name of the Product.
-    ///     - completion: Closure to be executed upon completion.
-    ///
-    public func updateProductName(for siteID: Int, productID: Int, name: String, completion: @escaping (Product?, Error?) -> Void) {
-        let parameters = [
-            "name": name
-        ]
-        let path = "\(Path.products)/\(productID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-        let mapper = ProductMapper(siteID: siteID)
-
-        enqueue(request, mapper: mapper, completion: completion)
-    }
-
-    /// Updates the description of a specific `Product`.
-    ///
-    /// - Parameters:
-    ///     - siteID: Site which hosts the Product.
-    ///     - productID: Identifier of the Product.
+    ///     - product: the Product to update remotely.
     ///     - description: Description of the Product.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateProductDescription(for siteID: Int, productID: Int, description: String, completion: @escaping (Product?, Error?) -> Void) {
-        let parameters = [
-            "description": description
-        ]
-        let path = "\(Path.products)/\(productID)"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
-        let mapper = ProductMapper(siteID: siteID)
+    public func updateProduct(product: Product, completion: @escaping (Product?, Error?) -> Void) {
+        do {
+            let parameters = try product.toDictionary()
+            let productID = product.productID
+            let siteID = product.siteID
+            let path = "\(Path.products)/\(productID)"
+            let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+            let mapper = ProductMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+            print("!! \(parameters)")
+
+            enqueue(request, mapper: mapper, completion: completion)
+        } catch {
+            completion(nil, error)
+        }
     }
 }
 

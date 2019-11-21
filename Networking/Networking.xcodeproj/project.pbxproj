@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		021C7BF723863D1800A3BCBD /* Encodable+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021C7BF623863D1800A3BCBD /* Encodable+Serialization.swift */; };
 		022902D422E2436400059692 /* stats_module_disabled_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 022902D122E2436300059692 /* stats_module_disabled_error.json */; };
 		022902D622E2436400059692 /* no_stats_permission_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 022902D322E2436400059692 /* no_stats_permission_error.json */; };
 		025FDD2F23715A8900824006 /* product-update-description.json in Resources */ = {isa = PBXBuildFile; fileRef = 025FDD2E23715A8900824006 /* product-update-description.json */; };
@@ -290,6 +291,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		021C7BF623863D1800A3BCBD /* Encodable+Serialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+Serialization.swift"; sourceTree = "<group>"; };
 		022902D122E2436300059692 /* stats_module_disabled_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_module_disabled_error.json; sourceTree = "<group>"; };
 		022902D322E2436400059692 /* no_stats_permission_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = no_stats_permission_error.json; sourceTree = "<group>"; };
 		025FDD2E23715A8900824006 /* product-update-description.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-update-description.json"; sourceTree = "<group>"; };
@@ -1016,6 +1018,7 @@
 				B5BB1D0B20A2050300112D92 /* DateFormatter+Woo.swift */,
 				B53EF5312180F21C003E146F /* Dictionary+Woo.swift */,
 				B5C151BA217EC34100C7BDC1 /* KeyedDecodingContainer+Woo.swift */,
+				021C7BF623863D1800A3BCBD /* Encodable+Serialization.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -1416,6 +1419,7 @@
 				B53EF53C21814900003E146F /* SuccessResultMapper.swift in Sources */,
 				B554FA912180BCFC00C54DFF /* NoteHash.swift in Sources */,
 				CE0A0F19223987DF0075ED8D /* ProductListMapper.swift in Sources */,
+				021C7BF723863D1800A3BCBD /* Encodable+Serialization.swift in Sources */,
 				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
 				026CF61E237D6985009563D4 /* ProductVariationListMapper.swift in Sources */,
 				CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */,

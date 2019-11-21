@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Product Entity.
 ///
-public struct Product: Decodable {
+public struct Product: Codable {
     public let siteID: Int
     public let productID: Int
     public let name: String
@@ -291,7 +291,7 @@ public struct Product: Decodable {
         let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
         let backordered = try container.decode(Bool.self, forKey: .backordered)
 
-        let soldIndividuallly = try container.decode(Bool.self, forKey: .soldIndividually)
+        let soldIndividually = try container.decode(Bool.self, forKey: .soldIndividually)
         let weight = try container.decodeIfPresent(String.self, forKey: .weight)
         let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)
 
@@ -355,7 +355,7 @@ public struct Product: Decodable {
                   backordersKey: backordersKey,
                   backordersAllowed: backordersAllowed,
                   backordered: backordered,
-                  soldIndividually: soldIndividuallly,
+                  soldIndividually: soldIndividually,
                   weight: weight,
                   dimensions: dimensions,
                   shippingRequired: shippingRequired,
@@ -378,6 +378,50 @@ public struct Product: Decodable {
                   variations: variations,
                   groupedProducts: groupedProducts,
                   menuOrder: menuOrder)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(name, forKey: .name)
+        try container.encode(slug, forKey: .slug)
+        try container.encode(dateCreated, forKey: .dateCreated)
+        try container.encode(dateModified, forKey: .dateModified)
+        try container.encode(productTypeKey, forKey: .productTypeKey)
+        try container.encode(statusKey, forKey: .statusKey)
+        try container.encode(fullDescription, forKey: .fullDescription)
+        try container.encode(featured, forKey: .featured)
+        try container.encode(catalogVisibilityKey, forKey: .catalogVisibilityKey)
+        try container.encode(fullDescription, forKey: .fullDescription)
+        try container.encode(briefDescription, forKey: .briefDescription)
+        try container.encode(sku, forKey: .sku)
+        try container.encode(regularPrice, forKey: .regularPrice)
+        try container.encode(salePrice, forKey: .salePrice)
+        try container.encode(purchasable, forKey: .purchasable)
+        try container.encode(totalSales, forKey: .totalSales)
+        try container.encode(virtual, forKey: .virtual)
+        try container.encode(downloadable, forKey: .downloadable)
+        try container.encode(downloadLimit, forKey: .downloadLimit)
+        try container.encode(downloadExpiry, forKey: .downloadExpiry)
+        try container.encode(externalURL, forKey: .externalURL)
+        try container.encode(taxStatusKey, forKey: .taxStatusKey)
+        try container.encode(taxClass, forKey: .taxClass)
+        try container.encode(manageStock, forKey: .manageStock)
+        try container.encode(stockQuantity, forKey: .stockQuantity)
+        try container.encode(stockStatusKey, forKey: .stockStatusKey)
+        try container.encode(backordersKey, forKey: .backordersKey)
+        try container.encode(soldIndividually, forKey: .soldIndividually)
+        try container.encode(weight, forKey: .weight)
+        try container.encode(dimensions, forKey: .dimensions)
+        try container.encode(shippingClass, forKey: .shippingClass)
+        try container.encode(reviewsAllowed, forKey: .reviewsAllowed)
+        try container.encode(upsellIDs, forKey: .upsellIDs)
+        try container.encode(crossSellIDs, forKey: .crossSellIDs)
+        try container.encode(parentID, forKey: .parentID)
+        try container.encode(purchaseNote, forKey: .purchaseNote)
+        try container.encode(images, forKey: .images)
+        try container.encode(groupedProducts, forKey: .groupedProducts)
+        try container.encode(menuOrder, forKey: .menuOrder)
     }
 }
 

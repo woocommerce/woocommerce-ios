@@ -128,25 +128,13 @@ private extension ProductFormViewController {
     }
 
     func onEditProductNameCompletion(newName: String) {
-        guard newName != product.name else {
+        defer {
             navigationController?.popViewController(animated: true)
+        }
+        guard newName != product.name else {
             return
         }
-
-        let action = ProductAction.updateProductName(siteID: product.siteID,
-                                                     productID: product.productID,
-                                                     name: newName) { [weak self] (product, error) in
-                                                        guard let product = product, error == nil else {
-                                                            let errorDescription = error?.localizedDescription ?? "No error specified"
-                                                            DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                                                            return
-                                                        }
-                                                        self?.product = product
-
-                                                        // Dismisses Product description editor.
-                                                        self?.navigationController?.popViewController(animated: true)
-        }
-        ServiceLocator.stores.dispatch(action)
+        self.product = productUpdater.nameUpdated(name: newName)
     }
 }
 

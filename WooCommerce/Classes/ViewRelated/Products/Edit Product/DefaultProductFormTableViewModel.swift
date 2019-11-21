@@ -20,6 +20,7 @@ private extension DefaultProductFormTableViewModel {
 
     func primaryFieldRows(product: Product) -> [ProductFormSection.PrimaryFieldRow] {
         return [
+            .name(name: product.name),
             .description(description: product.trimmedFullDescription)
         ]
     }

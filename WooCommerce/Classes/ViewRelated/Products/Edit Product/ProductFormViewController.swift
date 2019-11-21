@@ -75,14 +75,53 @@ extension ProductFormViewController: UITableViewDelegate {
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
+            case .name:
+                editProductName()
             case .description:
                 editProductDescription()
-            default:
-                fatalError()
             }
         case .details:
             fatalError()
         }
+    }
+}
+
+// MARK: Action - Edit Product Name
+//
+private extension ProductFormViewController {
+    func editProductName() {
+        let placeholder = NSLocalizedString("Enter a title...", comment: "The text placeholder for the Text Editor screen")
+        let navigationTitle = NSLocalizedString("Title", comment: "The navigation bar title of the Text editor screen.")
+        let textViewController = TextViewViewController(text: product.name,
+                                                        placeholder: placeholder,
+                                                        navigationTitle: navigationTitle
+        ) { [weak self] (newProductName) in
+            self?.onEditProductNameCompletion(newName: newProductName ?? "")
+        }
+
+        navigationController?.pushViewController(textViewController, animated: true)
+    }
+
+    func onEditProductNameCompletion(newName: String) {
+        guard newName != product.name else {
+            navigationController?.popViewController(animated: true)
+            return
+        }
+
+        let action = ProductAction.updateProductName(siteID: product.siteID,
+                                                     productID: product.productID,
+                                                     name: newName) { [weak self] (product, error) in
+                                                        guard let product = product, error == nil else {
+                                                            let errorDescription = error?.localizedDescription ?? "No error specified"
+                                                            DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                                                            return
+                                                        }
+                                                        self?.product = product
+
+                                                        // Dismisses Product description editor.
+                                                        self?.navigationController?.popViewController(animated: true)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 

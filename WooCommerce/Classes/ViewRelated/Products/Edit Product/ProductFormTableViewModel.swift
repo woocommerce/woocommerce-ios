@@ -6,7 +6,7 @@ enum ProductFormSection {
     case details(rows: [DetailRow])
 
     enum PrimaryFieldRow {
-        case title
+        case name(name: String?)
         case description(description: String?)
     }
 

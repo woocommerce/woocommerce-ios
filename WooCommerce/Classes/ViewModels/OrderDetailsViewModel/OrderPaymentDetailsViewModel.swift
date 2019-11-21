@@ -125,6 +125,16 @@ final class OrderPaymentDetailsViewModel {
         return refundAttrText
     }
 
+    /// Format the refund amount with the correct currency
+    ///
+    var refundAmount: String? {
+        guard let refund = refund else {
+            return nil
+        }
+
+        return currencyFormatter.formatAmount(refund.amount, with: order.currency)
+    }
+
     var couponLines: [OrderCouponLine] {
         return order.coupons
     }

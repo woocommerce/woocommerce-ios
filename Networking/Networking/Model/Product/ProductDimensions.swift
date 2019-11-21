@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Dimensions Entity.
 ///
-public struct ProductDimensions: Codable {
+public struct ProductDimensions: Decodable {
     public let length: String
     public let width: String
     public let height: String

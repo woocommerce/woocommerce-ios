@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductImage entity.
 ///
-public struct ProductImage: Codable {
+public struct ProductImage: Decodable {
     public let imageID: Int
     public let dateCreated: Date    // gmt
     public let dateModified: Date?  // gmt

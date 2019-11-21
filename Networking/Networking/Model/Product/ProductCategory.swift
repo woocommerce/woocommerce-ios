@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductCategory entity.
 ///
-public struct ProductCategory: Codable {
+public struct ProductCategory: Decodable {
     public let categoryID: Int
     public let name: String
     public let slug: String

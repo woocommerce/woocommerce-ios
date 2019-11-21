@@ -128,11 +128,17 @@ final class OrderPaymentDetailsViewModel {
     /// Format the refund amount with the correct currency
     ///
     var refundAmount: String? {
-        guard let refund = refund else {
+        guard let fullRefund = refund else {
             return nil
         }
 
-        return currencyFormatter.formatAmount(refund.amount, with: order.currency)
+        let refundLookUp = order.refunds.filter { $0.refundID == fullRefund.refundID }.first
+        guard let condensedRefund = refundLookUp else {
+            return nil
+        }
+
+        // We want the condensed refund total because it's reported as a negative value
+        return currencyFormatter.formatAmount(condensedRefund.total, with: order.currency)
     }
 
     /// Format the net amount with the correct currency

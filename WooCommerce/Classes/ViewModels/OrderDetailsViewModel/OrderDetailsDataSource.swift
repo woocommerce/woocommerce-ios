@@ -339,9 +339,10 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        // TODO-thuy: add configuration for Net Amount cell.
-        // Temporarily displays fake info.
+        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
+
         cell.leftText = Titles.netAmount
+        cell.rightText = paymentViewModel.netAmount
         cell.toggleFootnote()
     }
 

@@ -44,6 +44,8 @@ public class CurrencyFormatter {
         numberFormatter.generatesDecimalNumbers = true
         numberFormatter.minimumFractionDigits = decimalPosition
         numberFormatter.maximumFractionDigits = decimalPosition
+        numberFormatter.negativeSuffix = ""
+        numberFormatter.negativePrefix = "-"
 
         return numberFormatter.string(from: decimalAmount)
     }

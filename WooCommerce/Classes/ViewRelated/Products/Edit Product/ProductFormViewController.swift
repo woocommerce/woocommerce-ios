@@ -118,11 +118,11 @@ private extension ProductFormViewController {
     }
 
     func onEditProductDescriptionCompletion(newDescription: String) {
-        guard newDescription != product.fullDescription else {
-            return
-        }
         defer {
             navigationController?.popViewController(animated: true)
+        }
+        guard newDescription != product.fullDescription else {
+            return
         }
         self.product = product.descriptionUpdated(description: newDescription)
     }

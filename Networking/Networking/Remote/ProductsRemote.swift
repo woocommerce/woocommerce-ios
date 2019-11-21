@@ -116,8 +116,6 @@ public class ProductsRemote: Remote {
             let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
             let mapper = ProductMapper(siteID: siteID)
 
-            print("!! \(parameters)")
-
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
             completion(nil, error)

@@ -15,6 +15,10 @@ final class ProductFormViewController: UIViewController {
         }
     }
 
+    private var productUpdater: ProductUpdater {
+        return product
+    }
+
     private var viewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
 
@@ -124,6 +128,6 @@ private extension ProductFormViewController {
         guard newDescription != product.fullDescription else {
             return
         }
-        self.product = product.descriptionUpdated(description: newDescription)
+        self.product = productUpdater.descriptionUpdated(description: newDescription)
     }
 }

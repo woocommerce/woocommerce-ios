@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductDefaultAttribute entity.
 ///
-public struct ProductDefaultAttribute: Decodable {
+public struct ProductDefaultAttribute: Codable {
     public let attributeID: Int
     public let name: String?
     public let option: String?

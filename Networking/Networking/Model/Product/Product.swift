@@ -419,7 +419,11 @@ public struct Product: Codable {
         try container.encode(crossSellIDs, forKey: .crossSellIDs)
         try container.encode(parentID, forKey: .parentID)
         try container.encode(purchaseNote, forKey: .purchaseNote)
+        try container.encode(categories, forKey: .categories)
+        try container.encode(tags, forKey: .tags)
         try container.encode(images, forKey: .images)
+        try container.encode(attributes, forKey: .attributes)
+        try container.encode(defaultAttributes, forKey: .defaultAttributes)
         try container.encode(groupedProducts, forKey: .groupedProducts)
         try container.encode(menuOrder, forKey: .menuOrder)
     }

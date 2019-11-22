@@ -40,6 +40,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Add Image icon
+    ///
+    static var addImage: UIImage {
+        return Gridicon.iconOfType(.addImage)
+    }
+    
     /// Checkmark image, no style applied
     ///
     static var checkmarkImage: UIImage {

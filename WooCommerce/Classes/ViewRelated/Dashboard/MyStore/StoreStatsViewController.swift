@@ -195,7 +195,7 @@ private extension StoreStatsViewController {
     func configureTabStrip() {
         settings.style.buttonBarBackgroundColor = .listForeground
         settings.style.buttonBarItemBackgroundColor = .listForeground
-        settings.style.selectedBarBackgroundColor = .brand
+        settings.style.selectedBarBackgroundColor = .primary
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight
         settings.style.buttonBarItemTitleColor = .text
@@ -210,8 +210,8 @@ private extension StoreStatsViewController {
             animated: Bool) -> Void in
 
             guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = .text
-            newCell?.label.textColor = .brand
+            oldCell?.label.textColor = .textSubtle
+            newCell?.label.textColor = .primary
         }
     }
 }

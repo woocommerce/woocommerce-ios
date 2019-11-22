@@ -15,6 +15,10 @@ final class ProductFormViewController: UIViewController {
         }
     }
 
+    private var productUpdater: ProductUpdater {
+        return product
+    }
+
     private var viewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
 
@@ -32,11 +36,16 @@ final class ProductFormViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureNavigationBar()
         configureTableView()
     }
 }
 
 private extension ProductFormViewController {
+    func configureNavigationBar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+    }
+
     func configureTableView() {
         registerTableViewCells()
 
@@ -61,6 +70,25 @@ private extension ProductFormViewController {
                 return
             }
         }
+    }
+}
+
+// MARK: Navigation actions
+//
+private extension ProductFormViewController {
+    @objc func updateProduct() {
+        let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
+            guard let product = product, error == nil else {
+                let errorDescription = error?.localizedDescription ?? "No error specified"
+                DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                return
+            }
+            self?.product = product
+
+            // Temporarily dismisses the Product form before the navigation is implemented.
+            self?.dismiss(animated: true)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -103,25 +131,13 @@ private extension ProductFormViewController {
     }
 
     func onEditProductNameCompletion(newName: String) {
-        guard newName != product.name else {
+        defer {
             navigationController?.popViewController(animated: true)
+        }
+        guard newName != product.name else {
             return
         }
-
-        let action = ProductAction.updateProductName(siteID: product.siteID,
-                                                     productID: product.productID,
-                                                     name: newName) { [weak self] (product, error) in
-                                                        guard let product = product, error == nil else {
-                                                            let errorDescription = error?.localizedDescription ?? "No error specified"
-                                                            DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                                                            return
-                                                        }
-                                                        self?.product = product
-
-                                                        // Dismisses Product description editor.
-                                                        self?.navigationController?.popViewController(animated: true)
-        }
-        ServiceLocator.stores.dispatch(action)
+        self.product = productUpdater.nameUpdated(name: newName)
     }
 }
 
@@ -136,24 +152,12 @@ private extension ProductFormViewController {
     }
 
     func onEditProductDescriptionCompletion(newDescription: String) {
-        guard newDescription != product.fullDescription else {
+        defer {
             navigationController?.popViewController(animated: true)
+        }
+        guard newDescription != product.fullDescription else {
             return
         }
-
-        let action = ProductAction.updateProductDescription(siteID: product.siteID,
-                                                            productID: product.productID,
-                                                            description: newDescription) { [weak self] (product, error) in
-                                                                guard let product = product, error == nil else {
-                                                                    let errorDescription = error?.localizedDescription ?? "No error specified"
-                                                                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                                                                    return
-                                                                }
-                                                                self?.product = product
-
-                                                                // Dismisses Product description editor.
-                                                                self?.navigationController?.popViewController(animated: true)
-        }
-        ServiceLocator.stores.dispatch(action)
+        self.product = productUpdater.descriptionUpdated(description: newDescription)
     }
 }

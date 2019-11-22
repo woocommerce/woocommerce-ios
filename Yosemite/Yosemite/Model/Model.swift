@@ -48,6 +48,8 @@ public typealias ProductAttribute = Networking.ProductAttribute
 public typealias ProductDimensions = Networking.ProductDimensions
 public typealias ProductDefaultAttribute = Networking.ProductDefaultAttribute
 public typealias ProductDownload = Networking.ProductDownload
+public typealias ProductVariation = Networking.ProductVariation
+public typealias ProductVariationAttribute = Networking.ProductVariationAttribute
 public typealias Refund = Networking.Refund
 public typealias StatGranularity = Networking.StatGranularity
 public typealias StatsGranularityV4 = Networking.StatsGranularityV4
@@ -69,6 +71,7 @@ public typealias WooAPIVersion = Networking.WooAPIVersion
 // MARK: - Exported Storage Symbols
 
 public typealias StorageAccount = Storage.Account
+public typealias StorageAttribute = Storage.Attribute
 public typealias StorageNote = Storage.Note
 public typealias StorageOrder = Storage.Order
 public typealias StorageOrderNote = Storage.OrderNote
@@ -90,6 +93,7 @@ public typealias StorageProductDownload = Storage.ProductDownload
 public typealias StorageProductReview = Storage.ProductReview
 public typealias StorageProductTag = Storage.ProductTag
 public typealias StorageRefund = Storage.Refund
+public typealias StorageProductVariation = Storage.ProductVariation
 public typealias StorageShipmentTracking = Storage.ShipmentTracking
 public typealias StorageShipmentTrackingProvider = Storage.ShipmentTrackingProvider
 public typealias StorageShipmentTrackingProviderGroup = Storage.ShipmentTrackingProviderGroup

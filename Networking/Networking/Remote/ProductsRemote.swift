@@ -104,7 +104,6 @@ public class ProductsRemote: Remote {
     ///
     /// - Parameters:
     ///     - product: the Product to update remotely.
-    ///     - description: Description of the Product.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func updateProduct(product: Product, completion: @escaping (Product?, Error?) -> Void) {

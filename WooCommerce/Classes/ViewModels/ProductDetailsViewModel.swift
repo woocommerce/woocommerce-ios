@@ -269,6 +269,8 @@ extension ProductDetailsViewModel {
             configurePermalink(cell)
         case let cell as WooBasicTableViewCell where row == .affiliateLink:
             configureAffiliateLink(cell)
+        case let cell as TitleBodyTableViewCell where row == .productVariants:
+            configureProductVariants(cell)
         case let cell as TitleBodyTableViewCell where row == .price:
             configurePrice(cell)
         case let cell as TitleBodyTableViewCell where row == .inventory:
@@ -358,6 +360,22 @@ extension ProductDetailsViewModel {
         cell.bodyLabel?.text = NSLocalizedString("View affiliate product",
                                                  comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
         cell.accessoryImage = .externalImage
+    }
+
+    /// Product variants cell.
+    ///
+    func configureProductVariants(_ cell: TitleBodyTableViewCell) {
+        cell.titleLabel?.text = NSLocalizedString("Variants", comment: "Product Details > descriptive label for the Product Variants cell.")
+
+        let attributes = product.attributes
+
+        let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
+        let bodyText = attributes
+            .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
+            .joined(separator: "\n")
+        cell.bodyLabel.text = bodyText
+
+        cell.accessoryType = .disclosureIndicator
     }
 
     /// Price cell.
@@ -613,14 +631,23 @@ extension ProductDetailsViewModel {
             return Section(rows: affiliateRows)
         }
 
-        let rows: [Row] = [.productName, .totalOrders, .reviews, .permalink]
+        let rows: [Row]
+        if shouldShowProductVariantsInfo() {
+            rows = [.productName, .totalOrders, .reviews, .productVariants, .permalink]
+        } else {
+            rows = [.productName, .totalOrders, .reviews, .permalink]
+        }
 
         return Section(rows: rows)
     }
 
     /// Pricing and Inventory Section.
     ///
-    func configurePricingAndInventory() -> Section {
+    func configurePricingAndInventory() -> Section? {
+        guard shouldShowProductVariantsInfo() == false else {
+            return nil
+        }
+
         // For grouped products
         if product.productType == .grouped {
             return groupedProductInventorySection()
@@ -756,6 +783,17 @@ extension ProductDetailsViewModel {
 }
 
 
+// MARK: - Variants Helpers
+//
+private extension ProductDetailsViewModel {
+    func shouldShowProductVariantsInfo() -> Bool {
+        let isFeatureEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readonlyProductVariants)
+        let hasVariations = product.variations.isEmpty == false
+        return isFeatureEnabled && hasVariations
+    }
+}
+
+
 // MARK: - Constants
 //
 extension ProductDetailsViewModel {
@@ -787,6 +825,7 @@ extension ProductDetailsViewModel {
         case productName
         case totalOrders
         case reviews
+        case productVariants
         case permalink
         case affiliateLink
         case price
@@ -807,6 +846,8 @@ extension ProductDetailsViewModel {
                 return TwoColumnTableViewCell.reuseIdentifier
             case .reviews:
                 return ProductReviewsTableViewCell.reuseIdentifier
+            case .productVariants:
+                return TitleBodyTableViewCell.reuseIdentifier
             case .permalink:
                 return WooBasicTableViewCell.reuseIdentifier
             case .affiliateLink:

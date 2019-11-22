@@ -15,6 +15,10 @@ final class ProductFormViewController: UIViewController {
         }
     }
 
+    private var productUpdater: ProductUpdater {
+        return product
+    }
+
     private var viewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
 
@@ -32,11 +36,16 @@ final class ProductFormViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureNavigationBar()
         configureTableView()
     }
 }
 
 private extension ProductFormViewController {
+    func configureNavigationBar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+    }
+
     func configureTableView() {
         registerTableViewCells()
 
@@ -64,6 +73,25 @@ private extension ProductFormViewController {
     }
 }
 
+// MARK: Navigation actions
+//
+private extension ProductFormViewController {
+    @objc func updateProduct() {
+        let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
+            guard let product = product, error == nil else {
+                let errorDescription = error?.localizedDescription ?? "No error specified"
+                DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                return
+            }
+            self?.product = product
+
+            // Temporarily dismisses the Product form before the navigation is implemented.
+            self?.dismiss(animated: true)
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+}
+
 extension ProductFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -75,14 +103,41 @@ extension ProductFormViewController: UITableViewDelegate {
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
+            case .name:
+                editProductName()
             case .description:
                 editProductDescription()
-            default:
-                fatalError()
             }
         case .details:
             fatalError()
         }
+    }
+}
+
+// MARK: Action - Edit Product Name
+//
+private extension ProductFormViewController {
+    func editProductName() {
+        let placeholder = NSLocalizedString("Enter a title...", comment: "The text placeholder for the Text Editor screen")
+        let navigationTitle = NSLocalizedString("Title", comment: "The navigation bar title of the Text editor screen.")
+        let textViewController = TextViewViewController(text: product.name,
+                                                        placeholder: placeholder,
+                                                        navigationTitle: navigationTitle
+        ) { [weak self] (newProductName) in
+            self?.onEditProductNameCompletion(newName: newProductName ?? "")
+        }
+
+        navigationController?.pushViewController(textViewController, animated: true)
+    }
+
+    func onEditProductNameCompletion(newName: String) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        guard newName != product.name else {
+            return
+        }
+        self.product = productUpdater.nameUpdated(name: newName)
     }
 }
 
@@ -97,24 +152,12 @@ private extension ProductFormViewController {
     }
 
     func onEditProductDescriptionCompletion(newDescription: String) {
-        guard newDescription != product.fullDescription else {
+        defer {
             navigationController?.popViewController(animated: true)
+        }
+        guard newDescription != product.fullDescription else {
             return
         }
-
-        let action = ProductAction.updateProductDescription(siteID: product.siteID,
-                                                            productID: product.productID,
-                                                            description: newDescription) { [weak self] (product, error) in
-                                                                guard let product = product, error == nil else {
-                                                                    let errorDescription = error?.localizedDescription ?? "No error specified"
-                                                                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                                                                    return
-                                                                }
-                                                                self?.product = product
-
-                                                                // Dismisses Product description editor.
-                                                                self?.navigationController?.popViewController(animated: true)
-        }
-        ServiceLocator.stores.dispatch(action)
+        self.product = productUpdater.descriptionUpdated(description: newDescription)
     }
 }

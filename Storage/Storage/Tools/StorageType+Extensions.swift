@@ -320,6 +320,22 @@ public extension StorageType {
         return firstObject(ofType: ProductReview.self, matching: predicate)
     }
 
+    /// Retrieves all of the stored ProductVariation's for the provided siteID and productID.
+    /// Sorted by dateCreated, descending
+    ///
+    func loadProductVariations(siteID: Int64, productID: Int64) -> [ProductVariation]? {
+        let predicate = NSPredicate(format: "siteID = %lld AND productID = %lld", siteID, productID)
+        let descriptor = NSSortDescriptor(keyPath: \ProductVariation.dateCreated, ascending: false)
+        return allObjects(ofType: ProductVariation.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves a stored ProductVariation for the provided siteID and productVariationID.
+    ///
+    func loadProductVariation(siteID: Int64, productVariationID: Int64) -> ProductVariation? {
+        let predicate = NSPredicate(format: "siteID = %lld AND productVariationID = %lld", siteID, productVariationID)
+        return firstObject(ofType: ProductVariation.self, matching: predicate)
+    }
+
     // MARK: - Refunds
 
     /// Retrieves a stored Refund for the provided siteID, orderID, and refundID.

@@ -1,18 +1,28 @@
-//
-//  AddProductImageCollectionViewCell.swift
-//  WooCommerce
-//
-//  Created by Paolo Musolino on 21/11/2019.
-//  Copyright © 2019 Automattic. All rights reserved.
-//
-
 import UIKit
 
 class AddProductImageCollectionViewCell: UICollectionViewCell {
 
+    @IBOutlet weak var view: UIView!
+    @IBOutlet weak var imageView: UIImageView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
-        // Initialization code
+        
+        configureBackground()
+        configureImageView()
     }
 
+}
+
+/// Private Methods
+private extension AddProductImageCollectionViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+    
+    func configureImageView() {
+        imageView.image = UIImage.addImage
+        imageView.contentMode = .center
+        
+    }
 }

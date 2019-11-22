@@ -755,6 +755,10 @@ extension ProductDetailsViewModel {
             WebviewHelper.launch(product.permalink, with: sender)
         case .affiliateLink:
             WebviewHelper.launch(product.externalURL, with: sender)
+        case .productVariants:
+            let variationsViewController = ProductVariationsViewController(siteID: Int64(product.siteID),
+                                                                           productID: Int64(product.productID))
+            sender.navigationController?.pushViewController(variationsViewController, animated: true)
         default:
             break
         }

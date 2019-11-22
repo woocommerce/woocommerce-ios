@@ -57,9 +57,9 @@ enum ProductImagesItem {
     var reuseIdentifier: String {
         switch self {
         case .image:
-            return String(describing: ProductImageCollectionViewCell.self)
+            return ProductImageCollectionViewCell.reuseIdentifier
         case .addImage:
-            return String(describing: AddProductImageCollectionViewCell.self)
+            return ProductImageCollectionViewCell.reuseIdentifier
         }
     }
     

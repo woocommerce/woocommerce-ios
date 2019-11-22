@@ -268,10 +268,10 @@ private extension StoreStatsAndTopPerformersViewController {
     func configureTabStrip() {
         settings.style.buttonBarBackgroundColor = .basicBackground
         settings.style.buttonBarItemBackgroundColor = .basicBackground
-        settings.style.selectedBarBackgroundColor = .brand
+        settings.style.selectedBarBackgroundColor = .primary
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = .text
+        settings.style.buttonBarItemTitleColor = .textSubtle
         settings.style.buttonBarItemsShouldFillAvailableWidth = false
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
 
@@ -283,8 +283,8 @@ private extension StoreStatsAndTopPerformersViewController {
             animated: Bool) -> Void in
 
             guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = .text
-            newCell?.label.textColor = .brand
+            oldCell?.label.textColor = .textSubtle
+            newCell?.label.textColor = .primary
         }
     }
 }

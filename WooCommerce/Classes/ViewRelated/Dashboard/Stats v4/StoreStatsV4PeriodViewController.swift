@@ -245,6 +245,7 @@ private extension StoreStatsV4PeriodViewController {
     func configureView() {
         view.backgroundColor = .listForeground
         containerStackView.backgroundColor = .listForeground
+        timeRangeBarView.backgroundColor = .listForeground
         visitorsStackView.backgroundColor = .listForeground
         borderView.backgroundColor = .listSmallIcon
 
@@ -267,7 +268,7 @@ private extension StoreStatsV4PeriodViewController {
         // Footer
         lastUpdated.font = UIFont.footnote
         lastUpdated.textColor = .textSubtle
-        lastUpdated.backgroundColor = .basicBackground
+        lastUpdated.backgroundColor = .listForeground
 
         // Visibility
         updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
@@ -294,6 +295,7 @@ private extension StoreStatsV4PeriodViewController {
 
     func configureNoRevenueView() {
         noRevenueView.isHidden = true
+        noRevenueView.backgroundColor = .listForeground
         noRevenueLabel.text = NSLocalizedString("No revenue this period",
                                                 comment: "Text displayed when no order data are available for the selected time range.")
         noRevenueLabel.font = StyleManager.subheadlineFont

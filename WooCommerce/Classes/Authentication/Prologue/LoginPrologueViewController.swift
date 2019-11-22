@@ -77,22 +77,22 @@ private extension LoginPrologueViewController {
     }
 
     func setupBackgroundView() {
-        backgroundView.backgroundColor = .withColorStudio(.brand, shade: .shade80)
+        backgroundView.backgroundColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
     }
 
     func setupContainerView() {
-        containerView.backgroundColor = .withColorStudio(.brand, shade: .shade80)
+        containerView.backgroundColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
     }
 
     func setupUpperLabel() {
         upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
         upperLabel.adjustsFontForContentSizeCategory = true
         upperLabel.font = StyleManager.subheadlineBoldFont
-        upperLabel.textColor = .filterBarSelected
+        upperLabel.textColor = .text
     }
 
     func setupSlantedRectangle() {
-        slantedRectangle.image = UIImage.slantedRectangle.imageWithTintColor(.withColorStudio(.brand, shade: .shade80))
+        slantedRectangle.image = UIImage.slantedRectangle.imageWithTintColor(.init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80)))
     }
 
     func setupJetpackImage() {

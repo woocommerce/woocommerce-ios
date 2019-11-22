@@ -48,7 +48,7 @@ private extension BetaFeaturesViewController {
     /// Set the title.
     ///
     func configureNavigationBar() {
-        title = NSLocalizedString("Beta Features", comment: "Beta features navigation title")
+        title = NSLocalizedString("Experimental Features", comment: "Beta features navigation title")
     }
 
     /// Apply Woo styles.

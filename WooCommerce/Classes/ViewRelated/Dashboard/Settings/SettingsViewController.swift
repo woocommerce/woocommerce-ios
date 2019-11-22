@@ -236,7 +236,7 @@ private extension SettingsViewController {
     func configureBetaFeatures(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Beta Features", comment: "Navigates to Beta features screen")
+        cell.textLabel?.text = NSLocalizedString("Experimental Features", comment: "Navigates to Beta features screen")
     }
 
     func configureFeatureSuggestions(cell: BasicTableViewCell) {

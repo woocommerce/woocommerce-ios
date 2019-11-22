@@ -281,6 +281,7 @@ private extension OrderStore {
             handleOrderItems(readOnlyOrder, storageOrder, storage)
             handleOrderCoupons(readOnlyOrder, storageOrder, storage)
             handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
+            handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
         }
     }
 
@@ -359,6 +360,29 @@ private extension OrderStore {
             if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
                 storageOrder.removeFromCoupons(storageCoupon)
                 storage.deleteObject(storageCoupon)
+            }
+        }
+    }
+
+    /// Updates, inserts, or prunes the provided StorageOrder's condensed refunds using the provided read-only Order's OrderRefundCondensed
+    ///
+    private func handleOrderRefundsCondensed(_ readOnlyOrder: Networking.Order, _ storageOrder: Storage.Order, _ storage: StorageType) {
+        // Upsert the refunds from the read-only order
+        for readOnlyRefund in readOnlyOrder.refunds {
+            if let existingStorageRefund = storage.loadOrderRefundCondensed(refundID: readOnlyRefund.refundID) {
+                existingStorageRefund.update(with: readOnlyRefund)
+            } else {
+                let newStorageRefund = storage.insertNewObject(ofType: Storage.OrderRefundCondensed.self)
+                newStorageRefund.update(with: readOnlyRefund)
+                storageOrder.addToRefunds(newStorageRefund)
+            }
+        }
+
+        // Now, remove any objects that exist in storageOrder.OrderRefundCondensed but not in readOnlyOrder.OrderRefundCondensed
+        storageOrder.refunds?.forEach { storageRefunds in
+            if readOnlyOrder.refunds.first(where: { $0.refundID == storageRefunds.refundID } ) == nil {
+                storageOrder.removeFromRefunds(storageRefunds)
+                storage.deleteObject(storageRefunds)
             }
         }
     }

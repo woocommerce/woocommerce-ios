@@ -118,7 +118,7 @@ final class OrderPaymentDetailsViewModel {
 
          // Last, style the link text.
         let linkAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: StyleManager.wooCommerceBrandColor
+            .foregroundColor: UIColor.primary
         ]
         refundAttrText.addAttributes(linkAttributes, range: viewDetailsRange)
 

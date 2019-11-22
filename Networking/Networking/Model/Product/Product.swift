@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Product Entity.
 ///
-public struct Product: Decodable {
+public struct Product: Codable {
     public let siteID: Int
     public let productID: Int
     public let name: String
@@ -291,7 +291,7 @@ public struct Product: Decodable {
         let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
         let backordered = try container.decode(Bool.self, forKey: .backordered)
 
-        let soldIndividuallly = try container.decode(Bool.self, forKey: .soldIndividually)
+        let soldIndividually = try container.decode(Bool.self, forKey: .soldIndividually)
         let weight = try container.decodeIfPresent(String.self, forKey: .weight)
         let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)
 
@@ -355,7 +355,7 @@ public struct Product: Decodable {
                   backordersKey: backordersKey,
                   backordersAllowed: backordersAllowed,
                   backordered: backordered,
-                  soldIndividually: soldIndividuallly,
+                  soldIndividually: soldIndividually,
                   weight: weight,
                   dimensions: dimensions,
                   shippingRequired: shippingRequired,
@@ -378,6 +378,13 @@ public struct Product: Decodable {
                   variations: variations,
                   groupedProducts: groupedProducts,
                   menuOrder: menuOrder)
+    }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(name, forKey: .name)
+        try container.encode(fullDescription, forKey: .fullDescription)
     }
 }
 

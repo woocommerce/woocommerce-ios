@@ -44,7 +44,7 @@ class CurrencySettingsTests: XCTestCase {
     }
 
     func testInitWithSiteSettingsEmptyArray() {
-        siteSettings = [siteSettings]
+        siteSettings = []
         moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
         XCTAssertEqual(.USD, moneyFormat.currencyCode)

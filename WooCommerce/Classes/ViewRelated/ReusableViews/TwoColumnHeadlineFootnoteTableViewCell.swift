@@ -42,8 +42,8 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         footnoteLabel.text = footnoteText
     }
 
-    func toggleFootnote() {
-        footnoteLabel.isHidden = !footnoteLabel.isHidden
+    func hideFootnote() {
+        footnoteLabel.isHidden = true
     }
 
     override func awakeFromNib() {

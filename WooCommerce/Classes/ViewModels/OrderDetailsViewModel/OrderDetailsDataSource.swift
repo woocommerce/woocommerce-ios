@@ -342,7 +342,7 @@ private extension OrderDetailsDataSource {
         // TODO-thuy: add configuration for Net Amount cell.
         // Temporarily displays fake info.
         cell.leftText = Titles.netAmount
-        cell.toggleFootnote()
+        cell.hideFootnote()
     }
 
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {

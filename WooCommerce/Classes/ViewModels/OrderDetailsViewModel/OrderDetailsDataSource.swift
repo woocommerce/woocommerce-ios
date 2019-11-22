@@ -342,6 +342,7 @@ private extension OrderDetailsDataSource {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
 
         cell.leftText = Titles.netAmount
+        cell.rightText = paymentViewModel.netAmount
         cell.hideFootnote()
     }
 

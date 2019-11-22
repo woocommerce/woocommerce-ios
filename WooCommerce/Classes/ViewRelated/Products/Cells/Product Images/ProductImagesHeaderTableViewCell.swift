@@ -24,8 +24,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         self.viewModel = viewModel
         datasource = ProductImagesCollectionViewDatasource(viewModel: viewModel)
         
-        collectionView.delegate = self
-        collectionView.dataSource = datasource
+        configureCollectionView()
         
         viewModel.registerCollectionViewCells(collectionView)
     }
@@ -40,5 +39,11 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
 private extension ProductImagesHeaderTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
+    }
+    
+    func configureCollectionView() {
+        collectionView.delegate = self
+        collectionView.dataSource = datasource
+        collectionView.backgroundColor = StyleManager.wooWhite
     }
 }

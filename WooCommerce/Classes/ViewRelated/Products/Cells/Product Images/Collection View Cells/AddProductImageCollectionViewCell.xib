@@ -30,8 +30,6 @@
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                         <constraints>
-                            <constraint firstAttribute="width" constant="128" id="7pe-Dc-f4p"/>
-                            <constraint firstAttribute="height" constant="128" id="hbh-HO-7jC"/>
                             <constraint firstItem="AI1-bg-Kbe" firstAttribute="centerX" secondItem="waA-fC-D0S" secondAttribute="centerX" id="mW2-5A-cNi"/>
                             <constraint firstItem="AI1-bg-Kbe" firstAttribute="centerY" secondItem="waA-fC-D0S" secondAttribute="centerY" id="oTM-sl-OaD"/>
                         </constraints>

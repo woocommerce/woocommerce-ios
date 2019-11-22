@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0202B690238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68F238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift */; };
 		0225512122FC2F3000D98613 /* OrderStatsV4Interval+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */; };
 		0225512522FC312400D98613 /* OrderStatsV4Interval+DateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */; };
 		0232372922F7DA6E00715FAB /* StatsTimeRangeV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */; };
@@ -163,6 +164,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		0202B68F238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsVisibilityPListWrapper.swift; sourceTree = "<group>"; };
 		0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+Date.swift"; sourceTree = "<group>"; };
 		0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+DateTests.swift"; sourceTree = "<group>"; };
 		0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeV4.swift; sourceTree = "<group>"; };
@@ -340,6 +342,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0202B68E238790B900F3EBE0 /* PListStorage */ = {
+			isa = PBXGroup;
+			children = (
+				0202B68F238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift */,
+			);
+			path = PListStorage;
+			sourceTree = "<group>";
+		};
 		0225511F22FC2ED000D98613 /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
@@ -574,6 +584,7 @@
 		B5C9DDF72087FEC0006B910A /* Yosemite */ = {
 			isa = PBXGroup;
 			children = (
+				0202B68E238790B900F3EBE0 /* PListStorage */,
 				B5C9DE132087FF0E006B910A /* Internal */,
 				B5C9DE0F2087FF0E006B910A /* Base */,
 				B5DC3CAF20D1B8660063AC41 /* Actions */,
@@ -930,6 +941,7 @@
 				B5C9DE182087FF0E006B910A /* Assert.swift in Sources */,
 				CE0DB6C0233EB3F300A27E7A /* OrderRefundCondensed+ReadOnlyConvertible.swift in Sources */,
 				0225512122FC2F3000D98613 /* OrderStatsV4Interval+Date.swift in Sources */,
+				0202B690238790E200F3EBE0 /* ProductsVisibilityPListWrapper.swift in Sources */,
 				74D7F29B20F6A7FB0058B2F0 /* Order+ReadOnlyConvertible.swift in Sources */,
 				026CF628237D8F30009563D4 /* ProductVariationAction.swift in Sources */,
 				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,

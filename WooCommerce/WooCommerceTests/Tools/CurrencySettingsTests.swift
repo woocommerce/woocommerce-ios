@@ -6,14 +6,21 @@ import Yosemite
 ///
 class CurrencySettingsTests: XCTestCase {
 
-    override func setUp() {
-        ServiceLocator.stores.deauthenticate()
+    var moneyFormat = CurrencySettings()
+    var siteSettings: [SiteSetting] = []
 
+    override func setUp() {
         super.setUp()
     }
 
+    override func tearDown() {
+        moneyFormat = CurrencySettings()
+        siteSettings = []
+        super.tearDown()
+    }
+
     func testInitDefault() {
-        let moneyFormat = CurrencySettings()
+        moneyFormat = CurrencySettings()
 
         XCTAssertEqual(.USD, moneyFormat.currencyCode)
         XCTAssertEqual(.left, moneyFormat.currencyPosition)
@@ -23,11 +30,11 @@ class CurrencySettingsTests: XCTestCase {
     }
 
     func testInitWithIndividualParameters() {
-        let moneyFormat = CurrencySettings(currencyCode: .USD,
-                                           currencyPosition: .right,
-                                           thousandSeparator: "M",
-                                           decimalSeparator: "X",
-                                           numberOfDecimals: 10)
+        moneyFormat = CurrencySettings(currencyCode: .USD,
+                                       currencyPosition: .right,
+                                       thousandSeparator: "M",
+                                       decimalSeparator: "X",
+                                       numberOfDecimals: 10)
 
         XCTAssertEqual(.USD, moneyFormat.currencyCode)
         XCTAssertEqual(.right, moneyFormat.currencyPosition)
@@ -37,8 +44,8 @@ class CurrencySettingsTests: XCTestCase {
     }
 
     func testInitWithSiteSettingsEmptyArray() {
-        let siteSettings: [SiteSetting] = []
-        let moneyFormat = CurrencySettings(siteSettings: siteSettings)
+        siteSettings = [siteSettings]
+        moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
         XCTAssertEqual(.USD, moneyFormat.currencyCode)
         XCTAssertEqual(.left, moneyFormat.currencyPosition)
@@ -83,13 +90,13 @@ class CurrencySettingsTests: XCTestCase {
                                            value: "3",
                                            settingGroupKey: SiteSettingGroup.general.rawValue)
 
-        let siteSettings = [wooCurrencyCode,
-                            wooCurrencyPosition,
-                            thousandsSeparator,
-                            decimalSeparator,
-                            numberOfDecimals]
+        siteSettings = [wooCurrencyCode,
+                        wooCurrencyPosition,
+                        thousandsSeparator,
+                        decimalSeparator,
+                        numberOfDecimals]
 
-        let moneyFormat = CurrencySettings(siteSettings: siteSettings)
+        moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
         XCTAssertEqual(.SHP, moneyFormat.currencyCode)
         XCTAssertEqual(.right, moneyFormat.currencyPosition)
@@ -127,14 +134,14 @@ class CurrencySettingsTests: XCTestCase {
                                            value: "Y",
                                            settingGroupKey: SiteSettingGroup.general.rawValue)
 
-        // Note that the above is missing a declaration for the number of decimals; it should default to 2.
+        // Note that the above is missing a declaration for the number of decimals; this lets us test that it is using the default number, 2.
 
-        let siteSettings = [wooCurrencyCode,
-                            wooCurrencyPosition,
-                            thousandsSeparator,
-                            decimalSeparator]
+        siteSettings = [wooCurrencyCode,
+                        wooCurrencyPosition,
+                        thousandsSeparator,
+                        decimalSeparator]
 
-        let moneyFormat = CurrencySettings(siteSettings: siteSettings)
+        moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
         XCTAssertEqual(.SHP, moneyFormat.currencyCode)
         XCTAssertEqual(.right, moneyFormat.currencyPosition)

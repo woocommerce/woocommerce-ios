@@ -2,9 +2,12 @@ import UIKit
 
 class ProductImageCollectionViewCell: UICollectionViewCell {
     
+    @IBOutlet weak var imageView: UIImageView!
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
+        configureImageView()
         configureCellAppearance()
     }
 
@@ -16,6 +19,11 @@ class ProductImageCollectionViewCell: UICollectionViewCell {
 private extension ProductImageCollectionViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
+    }
+    
+    func configureImageView() {
+        imageView.image = UIImage.addImage
+        imageView.contentMode = .scaleAspectFit
     }
     
     func configureCellAppearance(){

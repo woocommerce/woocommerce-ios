@@ -49,6 +49,7 @@ private extension ProductImagesHeaderTableViewCell {
         collectionView.delegate = self
         collectionView.dataSource = datasource
         collectionView.backgroundColor = StyleManager.wooWhite
+        collectionView.showsHorizontalScrollIndicator = false
         collectionView.collectionViewLayout = ProductImagesFlowLayout()
     }
 }

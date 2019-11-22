@@ -32,6 +32,10 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 }
 
 extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+    }
+    
     
 }
 
@@ -45,5 +49,6 @@ private extension ProductImagesHeaderTableViewCell {
         collectionView.delegate = self
         collectionView.dataSource = datasource
         collectionView.backgroundColor = StyleManager.wooWhite
+        collectionView.collectionViewLayout = ProductImagesFlowLayout()
     }
 }

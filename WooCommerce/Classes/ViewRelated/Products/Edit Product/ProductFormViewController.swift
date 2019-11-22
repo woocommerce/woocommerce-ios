@@ -78,12 +78,15 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     @objc func updateProduct() {
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
-                                                                guard let product = product, error == nil else {
-                                                                    let errorDescription = error?.localizedDescription ?? "No error specified"
-                                                                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                                                                    return
-                                                                }
-                                                                self?.product = product
+            guard let product = product, error == nil else {
+                let errorDescription = error?.localizedDescription ?? "No error specified"
+                DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                return
+            }
+            self?.product = product
+
+            // Temporarily dismisses the Product form before the navigation is implemented.
+            self?.dismiss(animated: true)
         }
         ServiceLocator.stores.dispatch(action)
     }

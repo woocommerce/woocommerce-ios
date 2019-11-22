@@ -5,7 +5,7 @@ import Yosemite
 /// Displays a paginated list of Product Variations with its price or visibility.
 ///
 final class ProductVariationsViewController: UIViewController {
-    
+
     @IBOutlet private weak var tableView: UITableView!
 
     /// Pull To Refresh Support.

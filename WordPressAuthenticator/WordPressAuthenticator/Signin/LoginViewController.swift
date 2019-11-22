@@ -288,7 +288,7 @@ extension LoginViewController {
                         serviceToken: serviceToken,
                         connectParameters: appleConnectParameters,
                         success: {
-                            let source: String = appleConnectParameters != nil ? "apple" : "google"
+                            let source = appleConnectParameters != nil ? "apple" : "google"
                             WordPressAuthenticator.track(.signedIn, properties: ["source": source])
                             WordPressAuthenticator.track(.loginSocialConnectSuccess)
                             WordPressAuthenticator.track(.loginSocialSuccess)

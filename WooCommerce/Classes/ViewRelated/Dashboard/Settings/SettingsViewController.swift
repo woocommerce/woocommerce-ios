@@ -60,12 +60,7 @@ class SettingsViewController: UIViewController {
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        configureSections()
-        tableView.reloadData()
+        refreshViewContent()
     }
 
     override func viewDidLayoutSubviews() {
@@ -119,6 +114,11 @@ private extension SettingsViewController {
 
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
+    }
+
+    func refreshViewContent() {
+        configureSections()
+        tableView.reloadData()
     }
 
     func configureSections() {
@@ -314,6 +314,12 @@ private extension SettingsViewController {
         if let navigationController = navigationController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
+            storePickerCoordinator?.onDismiss = { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                self.refreshViewContent()
+            }
         }
     }
 

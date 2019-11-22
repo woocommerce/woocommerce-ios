@@ -36,8 +36,7 @@ extension ProductImagesViewModel {
         ]
 
         for cell in cells {
-            let reuseIdentifier = String(describing: cell.self)
-            collectionView.register(cell.loadNib(), forCellWithReuseIdentifier: reuseIdentifier)
+            collectionView.register(cell.loadNib(), forCellWithReuseIdentifier: cell.reuseIdentifier)
         }
     }
 }

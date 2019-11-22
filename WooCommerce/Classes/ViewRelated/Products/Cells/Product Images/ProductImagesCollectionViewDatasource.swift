@@ -11,7 +11,7 @@ final class ProductImagesCollectionViewDatasource: NSObject {
 
 extension ProductImagesCollectionViewDatasource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 1
+        return viewModel.items.count
     }
     
     
@@ -59,7 +59,7 @@ enum ProductImagesItem {
         case .image:
             return ProductImageCollectionViewCell.reuseIdentifier
         case .addImage:
-            return ProductImageCollectionViewCell.reuseIdentifier
+            return AddProductImageCollectionViewCell.reuseIdentifier
         }
     }
     

@@ -9,6 +9,8 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return BuildConfiguration.current == .localDeveloper
         case .stats:
             return true
+        case .refunds:
+            return BuildConfiguration.current == .localDeveloper
         default:
             return true
         }

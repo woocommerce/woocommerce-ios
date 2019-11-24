@@ -15,7 +15,7 @@ class OrderListMapperTests: XCTestCase {
     ///
     func testOrderFieldsAreProperlyParsed() {
         let orders = mapLoadAllOrdersResponse()
-        XCTAssert(orders.count == 3)
+        XCTAssert(orders.count == 4)
 
         let firstOrder = orders[0]
         let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:12")
@@ -52,7 +52,7 @@ class OrderListMapperTests: XCTestCase {
     ///
     func testOrderAddressesAreCorrectlyParsed() {
         let orders = mapLoadAllOrdersResponse()
-        XCTAssert(orders.count == 3)
+        XCTAssert(orders.count == 4)
 
         let firstOrder = orders[0]
         var dummyAddresses = [Address]()

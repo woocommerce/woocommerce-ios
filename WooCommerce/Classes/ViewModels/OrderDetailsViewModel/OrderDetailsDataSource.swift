@@ -2,6 +2,9 @@ import Foundation
 import UIKit
 import Yosemite
 
+
+/// The main file for Order Details data.
+///
 final class OrderDetailsDataSource: NSObject {
     private(set) var order: Order
     private let currencyFormatter = CurrencyFormatter()
@@ -15,10 +18,14 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
+    /// Is this order processing?
+    ///
     private var isProcessingPayment: Bool {
         return order.statusKey == OrderStatusEnum.processing.rawValue
     }
 
+    /// Is the shipment tracking plugin available?
+    ///
     var trackingIsReachable: Bool = false
 
     /// Anything above 999.99 or below -999.99 should display a truncated amount
@@ -27,6 +34,8 @@ final class OrderDetailsDataSource: NSObject {
         return currencyFormatter.formatHumanReadableAmount(order.total, with: order.currency, roundSmallNumbers: false) ?? String()
     }
 
+    /// For example, #560 Pamela Nguyen
+    ///
     var summaryTitle: String? {
         if let billingAddress = order.billingAddress {
             return "#\(order.number) \(billingAddress.firstName) \(billingAddress.lastName)"
@@ -34,11 +43,14 @@ final class OrderDetailsDataSource: NSObject {
         return "#\(order.number)"
     }
 
+    /// For example, Oct 1, 2019 at 2:31 PM
+    ///
     private var summaryDateCreated: String {
         return order.dateModified.relativelyFormattedUpdateString
     }
 
-
+    /// Closure to be executed when the cell was tapped.
+    ///
     var onCellAction: ((CellActionType, IndexPath?) -> Void)?
 
     /// Closure to be executed when the UI needs to be reloaded.
@@ -63,6 +75,12 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
+    /// Refunds on an Order
+    ///
+    var refunds: [Refund] {
+        return resultsControllers.refunds
+    }
+
     /// Shipping Lines from an Order
     ///
     private var shippingLines: [ShippingLine] {
@@ -78,6 +96,12 @@ final class OrderDetailsDataSource: NSObject {
     /// All the items inside an order
     private var items: [OrderItem] {
         return order.items
+    }
+
+    /// All the condensed refunds in an order
+    ///
+    var condensedRefunds: [OrderRefundCondensed] {
+        return order.refunds
     }
 
     /// Notes of an Order
@@ -185,6 +209,10 @@ private extension OrderDetailsDataSource {
             configurePayment(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .refund:
+            configureRefund(cell: cell, at: indexPath)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
+            configureNetAmount(cell: cell)
         case let cell as ProductDetailsTableViewCell:
             configureOrderItem(cell: cell, at: indexPath)
         case let cell as FulfillButtonTableViewCell:
@@ -200,7 +228,7 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    func configureCustomerNote(cell: CustomerNoteTableViewCell) {
+    private func configureCustomerNote(cell: CustomerNoteTableViewCell) {
         cell.headline = Title.customerNote
         let localizedBody = String.localizedStringWithFormat(
             NSLocalizedString("“%@”",
@@ -210,7 +238,7 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .none
     }
 
-    func configureBillingDetail(cell: WooBasicTableViewCell) {
+    private func configureBillingDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showBilling
         cell.bodyLabel?.applyBodyStyle()
         cell.accessoryType = .disclosureIndicator
@@ -228,7 +256,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    func configureShippingNotice(cell: TopLeftImageTableViewCell) {
+    private func configureShippingNotice(cell: TopLeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString(
             "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
             comment: "Shipping notice row label when there is more than one shipping method")
@@ -244,7 +272,7 @@ private extension OrderDetailsDataSource {
                                                     comment: "VoiceOver accessibility label for the shipping notice about the order")
     }
 
-    func configureNewNote(cell: LeftImageTableViewCell) {
+    private func configureNewNote(cell: LeftImageTableViewCell) {
         cell.leftImage = Icons.addNoteIcon
         cell.labelText = Titles.addNoteText
 
@@ -260,7 +288,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
+    private func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
         guard let noteHeader = noteHeader(at: indexPath) else {
             return
         }
@@ -268,7 +296,7 @@ private extension OrderDetailsDataSource {
         cell.dateCreated = noteHeader.toString(dateStyle: .medium, timeStyle: .none)
     }
 
-    func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
+    private func configureOrderNote(cell: OrderNoteTableViewCell, at indexPath: IndexPath) {
         guard let note = note(at: indexPath) else {
             return
         }
@@ -280,19 +308,19 @@ private extension OrderDetailsDataSource {
         cell.contents = orderNoteAsyncDictionary.value(forKey: note.noteID)
     }
 
-    func configurePayment(cell: PaymentTableViewCell) {
+    private func configurePayment(cell: PaymentTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.configure(with: paymentViewModel)
     }
 
-    func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+    private func configureCustomerPaid(cell: TwoColumnHeadlineFootnoteTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.leftText = Titles.paidByCustomer
         cell.rightText = paymentViewModel.paymentTotal
-        cell.footnoteText = paymentViewModel.paymentSummary
+        cell.updateFootnoteText(paymentViewModel.paymentSummary)
     }
 
-    func configureDetails(cell: WooBasicTableViewCell) {
+    private func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Titles.productDetails
         cell.bodyLabel?.applyBodyStyle()
         cell.accessoryImage = nil
@@ -300,7 +328,24 @@ private extension OrderDetailsDataSource {
         cell.selectionStyle = .default
     }
 
-    func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+    private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
+        // TODO-thuy: create a `lookUpCondensedRefunds()` method and show why minus two rows.
+        let condensedRefund = condensedRefunds[indexPath.row - 2] // TODO-thuy: minus two should be constants
+        let refund = lookUpRefund(by: condensedRefund.refundID)
+        let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
+        cell.leftText = Titles.refunded
+        cell.rightText = refund?.amount
+        cell.updateFootnoteAttributedText(paymentViewModel.refundSummary)
+    }
+
+    private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
+        // TODO-thuy: add configuration for Net Amount cell.
+        // Temporarily displays fake info.
+        cell.leftText = Titles.netAmount
+        cell.hideFootnote()
+    }
+
+    private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let item = items[indexPath.row]
         let product = lookUpProduct(by: item.productID)
         let itemViewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
@@ -308,14 +353,14 @@ private extension OrderDetailsDataSource {
         cell.configure(item: itemViewModel)
     }
 
-    func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
+    private func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
         cell.fulfillButton.setTitle(Titles.fulfillTitle, for: .normal)
         cell.onFullfillTouchUp = { [weak self] in
             self?.onCellAction?(.fulfill, nil)
         }
     }
 
-    func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
+    private func configureTracking(cell: OrderTrackingTableViewCell, at indexPath: IndexPath) {
         guard let tracking = orderTracking(at: indexPath) else {
             return
         }
@@ -339,7 +384,7 @@ private extension OrderDetailsDataSource {
         }
     }
 
-    func configureNewTracking(cell: LeftImageTableViewCell) {
+    private func configureNewTracking(cell: LeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
         cell.leftImage = .addOutlineImage
         cell.labelText = cellTextContent
@@ -356,7 +401,7 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    func configureShippingAddress(cell: CustomerInfoTableViewCell) {
+    private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
         cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
@@ -368,14 +413,14 @@ private extension OrderDetailsDataSource {
         )
     }
 
-    func configureShippingMethod(cell: CustomerNoteTableViewCell) {
+    private func configureShippingMethod(cell: CustomerNoteTableViewCell) {
         cell.headline = NSLocalizedString("Shipping Method",
                                           comment: "Shipping method title for customer info cell")
         cell.body = shippingMethod
         cell.selectionStyle = .none
     }
 
-    func configureSummary(cell: SummaryTableViewCell) {
+    private func configureSummary(cell: SummaryTableViewCell) {
         cell.title = summaryTitle
         cell.dateCreated = summaryDateCreated
         cell.onEditTouchUp = { [weak self] in
@@ -400,6 +445,10 @@ extension OrderDetailsDataSource {
 
     func lookUpProduct(by productID: Int) -> Product? {
         return products.filter({ $0.productID == productID }).first
+    }
+
+    func lookUpRefund(by refundID: Int) -> Refund? {
+        return refunds.filter({ $0.refundID == refundID }).first
     }
 
     func isMultiShippingLinesAvailable(for order: Order) -> Bool {
@@ -460,7 +509,19 @@ extension OrderDetailsDataSource {
             return Section(title: Title.information, rows: rows)
         }()
 
-        let payment = Section(title: Title.payment, rows: [.payment, .customerPaid])
+        let payment: Section = {
+            var rows: [Row] = [.payment, .customerPaid]
+
+            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(. refunds) {
+                if order.refunds.count > 0 {
+                    let refunds = Array<Row>(repeating: .refund, count: order.refunds.count)
+                    rows.append(contentsOf: refunds)
+                    rows.append(.netAmount)
+                }
+            }
+
+            return Section(title: Title.payment, rows: rows)
+        }()
 
         let tracking: Section? = {
             guard orderTracking.count > 0 else {
@@ -509,115 +570,6 @@ extension OrderDetailsDataSource {
                                                operation: calculation,
                                                onCompletion: onSet)
         }
-    }
-
-    private enum Title {
-        static let product = NSLocalizedString("Product", comment: "Product section title")
-        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
-        static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
-        static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
-        static let information = NSLocalizedString("Customer", comment: "Customer info section title")
-        static let payment = NSLocalizedString("Payment", comment: "Payment section title")
-        static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
-    }
-
-    private enum Footer {
-        static let showBilling = NSLocalizedString("View Billing Information",
-                                                   comment: "Button on bottom of Customer's information to show the billing details")
-    }
-
-    struct Section {
-        let title: String?
-        let rightTitle: String?
-        let footer: String?
-        let rows: [Row]
-
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
-            self.title = title
-            self.rightTitle = rightTitle
-            self.footer = footer
-            self.rows = rows
-        }
-
-        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
-            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
-        }
-    }
-
-    struct NoteSection {
-        let row: Row
-        let date: Date
-        let orderNote: OrderNote
-
-        init(row: Row, date: Date, orderNote: OrderNote) {
-            self.row = row
-            self.date = date
-            self.orderNote = orderNote
-        }
-    }
-
-    /// Rows listed in the order they appear on screen
-    ///
-    enum Row {
-        case summary
-        case orderItem
-        case fulfillButton
-        case details
-        case customerNote
-        case shippingAddress
-        case shippingMethod
-        case billingDetail
-        case payment
-        case customerPaid
-        case tracking
-        case trackingAdd
-        case shippingNotice
-        case addOrderNote
-        case orderNoteHeader
-        case orderNote
-
-        var reuseIdentifier: String {
-            switch self {
-            case .summary:
-                return SummaryTableViewCell.reuseIdentifier
-            case .orderItem:
-                return ProductDetailsTableViewCell.reuseIdentifier
-            case .fulfillButton:
-                return FulfillButtonTableViewCell.reuseIdentifier
-            case .details:
-                return WooBasicTableViewCell.reuseIdentifier
-            case .customerNote:
-                return CustomerNoteTableViewCell.reuseIdentifier
-            case .shippingAddress:
-                return CustomerInfoTableViewCell.reuseIdentifier
-            case .shippingMethod:
-                return CustomerNoteTableViewCell.reuseIdentifier
-            case .billingDetail:
-                return WooBasicTableViewCell.reuseIdentifier
-            case .payment:
-                return PaymentTableViewCell.reuseIdentifier
-            case .customerPaid:
-                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
-            case .tracking:
-                return OrderTrackingTableViewCell.reuseIdentifier
-            case .trackingAdd:
-                return LeftImageTableViewCell.reuseIdentifier
-            case .shippingNotice:
-                return TopLeftImageTableViewCell.reuseIdentifier
-            case .addOrderNote:
-                return LeftImageTableViewCell.reuseIdentifier
-            case .orderNoteHeader:
-                return OrderNoteHeaderTableViewCell.reuseIdentifier
-            case .orderNote:
-                return OrderNoteTableViewCell.reuseIdentifier
-            }
-        }
-    }
-
-    enum CellActionType {
-        case fulfill
-        case tracking
-        case summary
     }
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
@@ -675,7 +627,7 @@ extension OrderDetailsDataSource {
     ///
     /// - Parameter
     ///   - text: string value to send to the pasteboard
-    ///   - includeTrailingNewline: It true, insert a trailing newline; defaults to true
+    ///   - includeTrailingNewline: If true, insert a trailing newline; defaults to true
     ///
     func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
         guard var text = text, text.isEmpty == false else {
@@ -736,7 +688,7 @@ extension OrderDetailsDataSource {
 
 
 // MARK: - Constants
-private extension OrderDetailsDataSource {
+extension OrderDetailsDataSource {
     enum Titles {
         static let productDetails = NSLocalizedString("Details",
                                                       comment: "The row label to tap for a detailed product list")
@@ -746,10 +698,128 @@ private extension OrderDetailsDataSource {
                                                    comment: "Button text for adding a new order note")
         static let paidByCustomer = NSLocalizedString("Paid By Customer",
                                                       comment: "The title for the customer payment cell")
+        static let refunded = NSLocalizedString("Refunded",
+                                                comment: "The title for the refunded amount cell")
+        static let netAmount = NSLocalizedString("Net", comment: "The title for the net amount paid cell")
     }
 
     enum Icons {
         static let addNoteIcon = UIImage.addOutlineImage
         static let shippingNoticeIcon = UIImage.noticeImage
+    }
+
+    enum Title {
+        static let product = NSLocalizedString("Product", comment: "Product section title")
+        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+        static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
+        static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
+        static let information = NSLocalizedString("Customer", comment: "Customer info section title")
+        static let payment = NSLocalizedString("Payment", comment: "Payment section title")
+        static let notes = NSLocalizedString("Order Notes", comment: "Order notes section title")
+    }
+
+    enum Footer {
+        static let showBilling = NSLocalizedString("View Billing Information",
+                                                   comment: "Button on bottom of Customer's information to show the billing details")
+    }
+
+    struct Section {
+        let title: String?
+        let rightTitle: String?
+        let footer: String?
+        let rows: [Row]
+
+        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, rows: [Row]) {
+            self.title = title
+            self.rightTitle = rightTitle
+            self.footer = footer
+            self.rows = rows
+        }
+
+        init(title: String? = nil, rightTitle: String? = nil, footer: String? = nil, row: Row) {
+            self.init(title: title, rightTitle: rightTitle, footer: footer, rows: [row])
+        }
+    }
+
+    struct NoteSection {
+        let row: Row
+        let date: Date
+        let orderNote: OrderNote
+
+        init(row: Row, date: Date, orderNote: OrderNote) {
+            self.row = row
+            self.date = date
+            self.orderNote = orderNote
+        }
+    }
+
+    /// Rows listed in the order they appear on screen
+    ///
+    enum Row {
+        case summary
+        case orderItem
+        case fulfillButton
+        case details
+        case customerNote
+        case shippingAddress
+        case shippingMethod
+        case billingDetail
+        case payment
+        case customerPaid
+        case refund
+        case netAmount
+        case tracking
+        case trackingAdd
+        case shippingNotice
+        case addOrderNote
+        case orderNoteHeader
+        case orderNote
+
+        var reuseIdentifier: String {
+            switch self {
+            case .summary:
+                return SummaryTableViewCell.reuseIdentifier
+            case .orderItem:
+                return ProductDetailsTableViewCell.reuseIdentifier
+            case .fulfillButton:
+                return FulfillButtonTableViewCell.reuseIdentifier
+            case .details:
+                return WooBasicTableViewCell.reuseIdentifier
+            case .customerNote:
+                return CustomerNoteTableViewCell.reuseIdentifier
+            case .shippingAddress:
+                return CustomerInfoTableViewCell.reuseIdentifier
+            case .shippingMethod:
+                return CustomerNoteTableViewCell.reuseIdentifier
+            case .billingDetail:
+                return WooBasicTableViewCell.reuseIdentifier
+            case .payment:
+                return PaymentTableViewCell.reuseIdentifier
+            case .customerPaid:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .refund:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .netAmount:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .tracking:
+                return OrderTrackingTableViewCell.reuseIdentifier
+            case .trackingAdd:
+                return LeftImageTableViewCell.reuseIdentifier
+            case .shippingNotice:
+                return TopLeftImageTableViewCell.reuseIdentifier
+            case .addOrderNote:
+                return LeftImageTableViewCell.reuseIdentifier
+            case .orderNoteHeader:
+                return OrderNoteHeaderTableViewCell.reuseIdentifier
+            case .orderNote:
+                return OrderNoteTableViewCell.reuseIdentifier
+            }
+        }
+    }
+
+    enum CellActionType {
+        case fulfill
+        case tracking
+        case summary
     }
 }

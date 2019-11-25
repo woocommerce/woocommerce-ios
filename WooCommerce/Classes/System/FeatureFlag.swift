@@ -14,6 +14,10 @@ enum FeatureFlag: Int {
     ///
     case editProducts
 
+    /// Readonly Product variants
+    ///
+    case readonlyProductVariants
+
     /// Store stats
     ///
     case stats

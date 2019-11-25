@@ -5,8 +5,12 @@ struct DefaultFeatureFlagService: FeatureFlagService {
             return BuildConfiguration.current == .localDeveloper
         case .editProducts:
             return BuildConfiguration.current == .localDeveloper
+        case .readonlyProductVariants:
+            return BuildConfiguration.current == .localDeveloper
         case .stats:
             return true
+        case .refunds:
+            return BuildConfiguration.current == .localDeveloper
         default:
             return true
         }

@@ -66,7 +66,8 @@ private extension LinkSettingsViewController {
         let textViewController = TextViewViewController(text: linkSettings.url,
                                                         placeholder: placeholder,
                                                         navigationTitle: navigationTitle,
-                                                        keyboardType: .URL) { [weak self] text in
+                                                        keyboardType: .URL,
+                                                        autocapitalizationType: .none) { [weak self] text in
                                                             self?.linkSettings.url = text ?? ""
                                                             self?.updateUI()
                                                             self?.navigationController?.popViewController(animated: true)

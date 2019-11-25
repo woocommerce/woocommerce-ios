@@ -55,6 +55,9 @@
 		02404EE2231501E000FF1170 /* StatsVersionStateCoordinatorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE1231501E000FF1170 /* StatsVersionStateCoordinatorTests.swift */; };
 		02404EE42315151400FF1170 /* MockupStatsVersionStoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EE32315151400FF1170 /* MockupStatsVersionStoresManager.swift */; };
 		0240B3AC230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */; };
+		02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02482A89237BE8C7007E73ED /* LinkSettingsViewController.swift */; };
+		02482A8C237BE8C7007E73ED /* LinkSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02482A8A237BE8C7007E73ED /* LinkSettingsViewController.xib */; };
+		02482A8E237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */; };
 		024A543422BA6F8F00F4F38E /* DeveloperEmailChecker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */; };
 		024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */; };
 		024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF3042372ADCD006658FE /* KeyboardScrollable.swift */; };
@@ -110,6 +113,8 @@
 		02E4FD7C2306A04C0049610C /* StatsTimeRangeBarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7B2306A04C0049610C /* StatsTimeRangeBarView.swift */; };
 		02E4FD7E2306A8180049610C /* StatsTimeRangeBarViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */; };
 		02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */; };
+		02E6B97823853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E6B97623853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift */; };
+		02E6B97923853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02E6B97723853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib */; };
 		02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F4F50A237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift */; };
 		02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F4F50D237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift */; };
 		02F4F510237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02F4F50E237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib */; };
@@ -558,6 +563,9 @@
 		02404EE1231501E000FF1170 /* StatsVersionStateCoordinatorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsVersionStateCoordinatorTests.swift; sourceTree = "<group>"; };
 		02404EE32315151400FF1170 /* MockupStatsVersionStoresManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockupStatsVersionStoresManager.swift; sourceTree = "<group>"; };
 		0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4ChartAxisHelper.swift; sourceTree = "<group>"; };
+		02482A89237BE8C7007E73ED /* LinkSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkSettingsViewController.swift; sourceTree = "<group>"; };
+		02482A8A237BE8C7007E73ED /* LinkSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = LinkSettingsViewController.xib; sourceTree = "<group>"; };
+		02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecLinkFormatBarCommand.swift; sourceTree = "<group>"; };
 		024A543322BA6F8F00F4F38E /* DeveloperEmailChecker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailChecker.swift; sourceTree = "<group>"; };
 		024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeveloperEmailCheckerTests.swift; sourceTree = "<group>"; };
 		024DF3042372ADCD006658FE /* KeyboardScrollable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardScrollable.swift; sourceTree = "<group>"; };
@@ -613,6 +621,8 @@
 		02E4FD7B2306A04C0049610C /* StatsTimeRangeBarView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarView.swift; sourceTree = "<group>"; };
 		02E4FD7D2306A8180049610C /* StatsTimeRangeBarViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModel.swift; sourceTree = "<group>"; };
 		02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModelTests.swift; sourceTree = "<group>"; };
+		02E6B97623853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTitleAndValueTableViewCell.swift; sourceTree = "<group>"; };
+		02E6B97723853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingTitleAndValueTableViewCell.xib; sourceTree = "<group>"; };
 		02F4F50A237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormTableViewDataSource.swift; sourceTree = "<group>"; };
 		02F4F50D237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAndTitleAndTextTableViewCell.swift; sourceTree = "<group>"; };
 		02F4F50E237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageAndTitleAndTextTableViewCell.xib; sourceTree = "<group>"; };
@@ -1119,6 +1129,7 @@
 				0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */,
 				02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */,
 				0230535A2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift */,
+				02482A8D237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift */,
 			);
 			path = Implementation;
 			sourceTree = "<group>";
@@ -1133,6 +1144,15 @@
 			path = "Top Banner";
 			sourceTree = "<group>";
 		};
+		02482A86237BDEA9007E73ED /* LinkSettings */ = {
+			isa = PBXGroup;
+			children = (
+				02482A89237BE8C7007E73ED /* LinkSettingsViewController.swift */,
+				02482A8A237BE8C7007E73ED /* LinkSettingsViewController.xib */,
+			);
+			path = LinkSettings;
+			sourceTree = "<group>";
+		};
 		024A543222BA6DD500F4F38E /* Developer */ = {
 			isa = PBXGroup;
 			children = (
@@ -1144,6 +1164,7 @@
 		024DF30C237429CF006658FE /* FormatBar */ = {
 			isa = PBXGroup;
 			children = (
+				02482A86237BDEA9007E73ED /* LinkSettings */,
 				024DF31723742BFB006658FE /* Command */,
 				024DF31823742C3F006658FE /* AztecFormatBarFactory.swift */,
 				024DF31A23742E1C006658FE /* FormatBarItemViewProperties.swift */,
@@ -2231,6 +2252,8 @@
 				B5BE75DC213F1D3D00909A14 /* OverlayMessageView.xib */,
 				CE0F17CD22A8105800964A63 /* ReadMoreTableViewCell.swift */,
 				CE0F17CE22A8105800964A63 /* ReadMoreTableViewCell.xib */,
+				02E6B97623853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift */,
+				02E6B97723853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib */,
 				744F00D121B582A9007EFA93 /* StarRatingView.swift */,
 				D85B8331222FABD1002168F3 /* StatusListTableViewCell.swift */,
 				D85B8332222FABD1002168F3 /* StatusListTableViewCell.xib */,
@@ -2512,6 +2535,7 @@
 				028296ED237D28B600E84012 /* TextViewViewController.xib in Resources */,
 				D85136BF231E064700DD0539 /* NoteTableViewCell.xib in Resources */,
 				B59C09DC2188D70200AB41D6 /* Notifications.storyboard in Resources */,
+				02E6B97923853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib in Resources */,
 				CE37C04522984E81008DCB39 /* PickListTableViewCell.xib in Resources */,
 				D85B8334222FABD1002168F3 /* StatusListTableViewCell.xib in Resources */,
 				B5F571A621BEC92A0010D1B8 /* NoteDetailsHeaderPlainTableViewCell.xib in Resources */,
@@ -2540,6 +2564,7 @@
 				CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */,
 				B5A82EE521025E550053ADC8 /* FulfillViewController.xib in Resources */,
 				45C8B26223155CBC0002FA77 /* BillingInformationViewController.xib in Resources */,
+				02482A8C237BE8C7007E73ED /* LinkSettingsViewController.xib in Resources */,
 				740ADFE521C33688009EE5A9 /* licenses.html in Resources */,
 				45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
@@ -2810,6 +2835,7 @@
 				B55D4C2720B717C000D7A50F /* UserAgent.swift in Sources */,
 				D8C2A28823190B2300F503E9 /* StorageProductReview+Woo.swift in Sources */,
 				CE1CCB402056F21C000EE3AC /* Style.swift in Sources */,
+				02E6B97823853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift in Sources */,
 				D85B8333222FABD1002168F3 /* StatusListTableViewCell.swift in Sources */,
 				CE22E3F72170E23C005A6BEF /* PrivacySettingsViewController.swift in Sources */,
 				B58B4AB32108F01700076FDD /* DefaultNoticePresenter.swift in Sources */,
@@ -2835,6 +2861,7 @@
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,
 				02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */,
 				D843D5D322485009001BFA55 /* ShipmentProvidersViewController.swift in Sources */,
+				02482A8E237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift in Sources */,
 				02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
@@ -2865,6 +2892,7 @@
 				020F41E523163C0100776C4D /* TopBannerViewModel.swift in Sources */,
 				B541B2172189EED4008FE7C1 /* NSMutableAttributedString+Helpers.swift in Sources */,
 				B586906621A5F4B1001F1EFC /* UINavigationController+Woo.swift in Sources */,
+				02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */,
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
 				0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */,

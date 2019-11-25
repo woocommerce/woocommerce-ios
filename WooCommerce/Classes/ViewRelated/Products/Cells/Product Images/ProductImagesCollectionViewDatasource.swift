@@ -9,6 +9,8 @@ final class ProductImagesCollectionViewDatasource: NSObject {
     }
 }
 
+// MARK - Collection View DataSource methods
+//
 extension ProductImagesCollectionViewDatasource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.items.count
@@ -22,10 +24,9 @@ extension ProductImagesCollectionViewDatasource: UICollectionViewDataSource {
         return cell
     }
 
-
 }
 
-// MARK: - Support for UITableViewDataSource
+// MARK: - Support methods for UICollectionViewDataSource
 //
 private extension ProductImagesCollectionViewDatasource {
     func configure(collectionView: UICollectionView, _ cell: UICollectionViewCell, for item: ProductImagesItem, at indexPath: IndexPath) {

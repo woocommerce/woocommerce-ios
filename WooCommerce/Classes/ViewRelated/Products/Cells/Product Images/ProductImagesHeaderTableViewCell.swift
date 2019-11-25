@@ -32,6 +32,8 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         super.setSelected(selected, animated: animated)
     }
 
+    /// Configure cell
+    ///
     func configure(with product: Product) {
         let viewModel = ProductImagesViewModel(product: product)
         self.viewModel = viewModel
@@ -44,6 +46,8 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
 }
 
+// MARK: - Collection View Delegate
+//
 extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch viewModel?.items[indexPath.item] {
@@ -59,6 +63,8 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
     }
 }
 
+// MARK: - Collection View Flow Layout Delegate
+//
 extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 

@@ -106,6 +106,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.productImage)
     }
 
+    func testProductsTabWorkInProgressBannerIconIsNotNil() {
+        XCTAssertNotNil(UIImage.workInProgressBanner)
+    }
+
     func testPencilImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.pencilImage)
     }

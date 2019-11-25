@@ -756,6 +756,7 @@ extension ProductDetailsViewModel {
         case .affiliateLink:
             WebviewHelper.launch(product.externalURL, with: sender)
         case .productVariants:
+            ServiceLocator.analytics.track(.productDetailsProductVariantsTapped)
             let variationsViewController = ProductVariationsViewController(siteID: Int64(product.siteID),
                                                                            productID: Int64(product.productID))
             sender.navigationController?.pushViewController(variationsViewController, animated: true)

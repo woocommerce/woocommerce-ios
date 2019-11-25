@@ -232,7 +232,7 @@ extension ProductVariationsViewController: UITableViewDelegate {
 
 private extension ProductVariationsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.productListPulledToRefresh)
+        ServiceLocator.analytics.track(.productVariationListPulledToRefresh)
 
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
@@ -309,11 +309,12 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
                                     }
 
                                     if let error = error {
-                                        // TODO-1464: analytics
+                                        ServiceLocator.analytics.track(.productVariationListLoadError, withError: error)
+
                                         DDLogError("⛔️ Error synchronizing product variations: \(error)")
                                         self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
                                     } else {
-                                        // TODO-1464: analytics
+                                        ServiceLocator.analytics.track(.productVariationListLoaded)
                                     }
 
                                     self.transitionToResultsUpdatedState()

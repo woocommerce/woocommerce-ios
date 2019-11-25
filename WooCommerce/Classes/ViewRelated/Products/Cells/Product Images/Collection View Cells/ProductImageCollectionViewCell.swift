@@ -22,8 +22,8 @@ private extension ProductImageCollectionViewCell {
     }
     
     func configureImageView() {
-        imageView.image = UIImage.addImage
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
     }
     
     func configureCellAppearance(){

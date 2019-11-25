@@ -39,11 +39,12 @@ class AuthenticatedState: StoresManagerState {
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
         startListeningToNotifications()

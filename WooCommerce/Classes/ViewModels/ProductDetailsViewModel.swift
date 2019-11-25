@@ -270,6 +270,12 @@ extension ProductDetailsViewModel {
     ///
     func configureProductImages(_ cell: ProductImagesHeaderTableViewCell) {
         cell.configure(with: product)
+        cell.onImageSelected = {[weak self] (productImage, indexPath) in
+            print("OnImageSelected")
+        }
+        cell.onAddImage = { [weak self] in
+            print("OnAddImage")
+        }
 //        if productHasImage {
 //            cell.heightConstraint.constant = Metrics.productImageHeight
 //            mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)

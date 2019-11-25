@@ -115,6 +115,7 @@ public enum WooAnalyticsStat: String {
 
     case settingsBetaFeaturesButtonTapped       = "settings_beta_features_button_tapped"
     case settingsBetaFeaturesNewStatsUIToggled  = "settings_beta_features_new_stats_ui_toggled"
+    case settingsBetaFeaturesProductsToggled    = "settings_beta_features_products_toggled"
 
     case settingsPrivacySettingsTapped          = "settings_privacy_settings_button_tapped"
     case settingsCollectInfoToggled             = "privacy_settings_collect_info_toggled"
@@ -247,6 +248,13 @@ public enum WooAnalyticsStat: String {
     case productListPulledToRefresh             = "product_list_pulled_to_refresh"
     case productListSearched                    = "product_list_searched"
     case productListMenuSearchTapped            = "product_list_menu_search_tapped"
+
+    // Readonly Product Variations Events
+    //
+    case productDetailsProductVariantsTapped    = "product_detail_view_product_variants_tapped"
+    case productVariationListLoaded             = "product_variants_loaded"
+    case productVariationListLoadError          = "product_variants_load_error"
+    case productVariationListPulledToRefresh    = "product_variants_pulled_to_refresh"
 
     // Jetpack Tunnel Events
     //

@@ -21,6 +21,10 @@ final class IconsTests: XCTestCase {
     func testCameraIconIsNotNil() {
         XCTAssertNotNil(UIImage.cameraImage)
     }
+    
+    func testAddImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.addImage)
+    }
 
     func testCheckmarkImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.checkmarkImage)

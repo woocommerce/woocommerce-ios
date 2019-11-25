@@ -19,7 +19,7 @@ class AddProductImageCollectionViewCellTests: XCTestCase {
     func testImageViewIsNotEmpty() {
         XCTAssertNotNil(cell?.imageView.image)
     }
-    
+
     func testImageViewConfiguration() {
         XCTAssertEqual(cell?.imageView.contentMode, .center)
         XCTAssertEqual(cell?.imageView.clipsToBounds, true)
@@ -35,6 +35,6 @@ class AddProductImageCollectionViewCellTests: XCTestCase {
         XCTAssertEqual(cell?.contentView.layer.borderColor, borderColor)
         XCTAssertEqual(cell?.contentView.layer.masksToBounds, maskToBounds)
     }
-    
-    
+
+
 }

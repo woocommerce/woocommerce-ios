@@ -1,9 +1,9 @@
 import UIKit
 
 class ProductImageCollectionViewCell: UICollectionViewCell {
-    
+
     @IBOutlet weak var imageView: UIImageView!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
@@ -18,13 +18,13 @@ private extension ProductImageCollectionViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
-    
+
     func configureImageView() {
         imageView.contentMode = Settings.imageContentMode
         imageView.clipsToBounds = Settings.clipToBounds
     }
-    
-    func configureCellAppearance(){
+
+    func configureCellAppearance() {
         self.contentView.layer.cornerRadius = Constants.cornerRadius
         self.contentView.layer.borderWidth = Constants.borderWidth
         self.contentView.layer.borderColor = Colors.borderColor
@@ -39,11 +39,11 @@ private extension ProductImageCollectionViewCell {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
     }
-    
+
     enum Colors {
         static let borderColor = StyleManager.tableViewCellSelectionStyle.cgColor
     }
-    
+
     enum Settings {
         static let clipToBounds = true
         static let imageContentMode = ContentMode.scaleAspectFit

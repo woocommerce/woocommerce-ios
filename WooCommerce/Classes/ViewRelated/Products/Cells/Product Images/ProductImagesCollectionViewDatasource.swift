@@ -2,7 +2,7 @@ import UIKit
 
 final class ProductImagesCollectionViewDatasource: NSObject {
     private let viewModel: ProductImagesViewModel
-    
+
     init(viewModel: ProductImagesViewModel) {
         self.viewModel = viewModel
         super.init()
@@ -13,16 +13,16 @@ extension ProductImagesCollectionViewDatasource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.items.count
     }
-    
-    
+
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = viewModel.items[indexPath.item]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseIdentifier, for: indexPath)
         configure(collectionView: collectionView, cell, for: item, at: indexPath)
         return cell
     }
-    
-    
+
+
 }
 
 // MARK: - Support for UITableViewDataSource
@@ -38,14 +38,14 @@ private extension ProductImagesCollectionViewDatasource {
             fatalError("Unidentified product image item type")
         }
     }
-    
+
     /// Cell configuration
     ///
     func configureImageCell(collectionView: UICollectionView, cell: ProductImageCollectionViewCell, at indexPath: IndexPath) {
         let image = viewModel.product.images[indexPath.item]
         let imageURL = URL(string: image.src)
         cell.imageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage, success: { (image) in
-            
+
 //            if CGSize(width: (128 / image.size.height) * image.size.width, height: 128.0) != cell.frame.size{
 //                let animationsStatus = UIView.areAnimationsEnabled
 //                UIView.setAnimationsEnabled(false)
@@ -55,11 +55,11 @@ private extension ProductImagesCollectionViewDatasource {
 //            }
         }) { (error) in
         }
-        
+
     }
-    
+
     func configureAddImageCell(collectionView: UICollectionView, cell: AddProductImageCollectionViewCell, at: IndexPath) {
-        
+
     }
 }
 
@@ -75,5 +75,5 @@ enum ProductImagesItem {
             return AddProductImageCollectionViewCell.reuseIdentifier
         }
     }
-    
+
 }

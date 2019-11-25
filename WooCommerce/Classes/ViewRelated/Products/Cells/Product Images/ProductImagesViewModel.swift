@@ -2,26 +2,26 @@ import UIKit
 import Yosemite
 
 final class ProductImagesViewModel {
-    
+
     private(set) var product: Product
-    
+
     // Fixed width/height of collection view cell
     static let defaultCollectionViewCellSize = CGSize(width: 128.0, height: 128.0)
-    
+
     var items: [ProductImagesItem] = []
-    
+
     init(product: Product) {
         self.product = product
-        
+
         configureItems()
     }
-    
+
     func configureItems() {
         items = []
         for _ in product.images {
             items.append(.image)
         }
-        
+
         items.append(.addImage)
     }
 }

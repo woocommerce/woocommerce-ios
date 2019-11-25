@@ -25,6 +25,7 @@ private extension AddProductImageCollectionViewCell {
     func configureImageView() {
         imageView.image = UIImage.addImage
         imageView.contentMode = .center
+        imageView.clipsToBounds = true
     }
     
     func configureCellAppearance(){

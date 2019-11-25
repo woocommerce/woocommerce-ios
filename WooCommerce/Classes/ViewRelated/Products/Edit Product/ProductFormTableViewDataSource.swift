@@ -1,5 +1,14 @@
 import UIKit
 
+private extension ProductFormSection.SettingsRow.ViewModel {
+    func toCellViewModel() -> ImageAndTitleAndTextTableViewCell.ViewModel {
+        return ImageAndTitleAndTextTableViewCell.ViewModel(title: title,
+                                                           text: details,
+                                                           image: icon,
+                                                           numberOfLinesForText: 0)
+    }
+}
+
 /// Configures the sections and rows of Product form table view based on the view model.
 ///
 final class ProductFormTableViewDataSource: NSObject {
@@ -23,7 +32,7 @@ extension ProductFormTableViewDataSource: UITableViewDataSource {
             return 0
         case .primaryFields(let rows):
             return rows.count
-        case .details(let rows):
+        case .settings(let rows):
             return rows.count
         }
     }
@@ -42,6 +51,8 @@ private extension ProductFormTableViewDataSource {
         switch section {
         case .primaryFields(let rows):
             configureCellInPrimaryFieldsSection(cell, row: rows[indexPath.row])
+        case .settings(let rows):
+            configureCellInSettingsFieldsSection(cell, row: rows[indexPath.row])
         default:
             fatalError("Not implemented yet")
         }
@@ -99,6 +110,25 @@ private extension ProductFormTableViewDataSource {
             cell.textLabel?.applyBodyStyle()
             cell.textLabel?.textColor = .textSubtle
         }
+        cell.accessoryType = .disclosureIndicator
+    }
+}
+
+// MARK: Configure rows in Settings Fields Section
+//
+private extension ProductFormTableViewDataSource {
+    func configureCellInSettingsFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.SettingsRow) {
+        guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
+            fatalError()
+        }
+        switch row {
+        case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel):
+            configureSettings(cell: cell, viewModel: viewModel)
+        }
+    }
+
+    func configureSettings(cell: ImageAndTitleAndTextTableViewCell, viewModel: ProductFormSection.SettingsRow.ViewModel) {
+        cell.updateUI(viewModel: viewModel.toCellViewModel())
         cell.accessoryType = .disclosureIndicator
     }
 }

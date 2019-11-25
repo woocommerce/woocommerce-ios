@@ -8,7 +8,7 @@ final class ProductFormViewController: UIViewController {
 
     private var product: Product {
         didSet {
-            viewModel = DefaultProductFormTableViewModel(product: product)
+            viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
@@ -22,9 +22,12 @@ final class ProductFormViewController: UIViewController {
     private var viewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
 
-    init(product: Product) {
+    private let currency: String
+
+    init(product: Product, currency: String) {
+        self.currency = currency
         self.product = product
-        self.viewModel = DefaultProductFormTableViewModel(product: product)
+        self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
     }
@@ -51,6 +54,9 @@ private extension ProductFormViewController {
 
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
+
+        tableView.backgroundColor = .listBackground
+        tableView.tableFooterView = UIView()
 
         tableView.reloadData()
     }
@@ -108,8 +114,33 @@ extension ProductFormViewController: UITableViewDelegate {
             case .description:
                 editProductDescription()
             }
-        case .details:
-            fatalError()
+        case .settings:
+            // TODO-1422: Shipping Settings
+            // TODO-1423: Price Settings
+            // TODO-1424: Inventory Settings
+            return
+        }
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let section = viewModel.sections[section]
+        switch section {
+        case .settings:
+            return Constants.settingsHeaderHeight
+        default:
+            return 0
+        }
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let section = viewModel.sections[section]
+        switch section {
+        case .settings:
+            let clearView = UIView(frame: .zero)
+            clearView.backgroundColor = .clear
+            return clearView
+        default:
+            return nil
         }
     }
 }
@@ -159,5 +190,13 @@ private extension ProductFormViewController {
             return
         }
         self.product = productUpdater.descriptionUpdated(description: newDescription)
+    }
+}
+
+// MARK: Action - Edit Product Description
+//
+private extension ProductFormViewController {
+    enum Constants {
+        static let settingsHeaderHeight = CGFloat(16)
     }
 }

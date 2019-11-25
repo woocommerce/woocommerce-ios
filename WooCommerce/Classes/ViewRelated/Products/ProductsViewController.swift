@@ -234,8 +234,10 @@ private extension ProductsViewController {
     }
 
     func createTopBannerView() -> TopBannerView {
-        let title = NSLocalizedString("Work in progress!", comment: "")
-        let infoText = NSLocalizedString("We’re hard at work on the new products section so you may see some changes as we get ready for launch 🚀", comment: "")
+        let title = NSLocalizedString("Work in progress!",
+                                      comment: "The title of the Work In Progress top banner on the Products tab")
+        let infoText = NSLocalizedString("We’re hard at work on the new products section so you may see some changes as we get ready for launch 🚀",
+                                         comment: "The info of the Work In Progress top banner on the Products tab")
         let viewModel = TopBannerViewModel(title: title,
                                            infoText: infoText,
                                            icon: .workInProgressBanner)

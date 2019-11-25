@@ -5,6 +5,9 @@ final class ProductImagesViewModel {
     
     private(set) var product: Product
     
+    // Fixed width/height of collection view cell
+    static let defaultCollectionViewCellSize = CGSize(width: 128.0, height: 128.0)
+    
     var items: [ProductImagesItem] = []
     
     init(product: Product) {

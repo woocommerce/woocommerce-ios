@@ -9,11 +9,8 @@ class ProductImageCollectionViewCell: UICollectionViewCell {
         configureBackground()
         configureImageView()
         configureCellAppearance()
-        self.systemLayoutSizeFitting(CGSize(width: 1.0, height: 128.0))
     }
-
 }
-
 
 /// Private Methods
 ///

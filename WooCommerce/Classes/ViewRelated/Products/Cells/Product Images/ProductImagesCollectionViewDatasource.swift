@@ -18,7 +18,7 @@ extension ProductImagesCollectionViewDatasource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let item = viewModel.items[indexPath.item]
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: item.reuseIdentifier, for: indexPath)
-        configure(cell, for: item, at: indexPath)
+        configure(collectionView: collectionView, cell, for: item, at: indexPath)
         return cell
     }
     
@@ -28,12 +28,12 @@ extension ProductImagesCollectionViewDatasource: UICollectionViewDataSource {
 // MARK: - Support for UITableViewDataSource
 //
 private extension ProductImagesCollectionViewDatasource {
-    func configure(_ cell: UICollectionViewCell, for item: ProductImagesItem, at indexPath: IndexPath) {
+    func configure(collectionView: UICollectionView, _ cell: UICollectionViewCell, for item: ProductImagesItem, at indexPath: IndexPath) {
         switch cell {
         case let cell as ProductImageCollectionViewCell where item == .image:
-            configureImageCell(cell: cell, at: indexPath)
+            configureImageCell(collectionView: collectionView, cell: cell, at: indexPath)
         case let cell as AddProductImageCollectionViewCell where item == .addImage:
-            configureAddImageCell(cell: cell, at: indexPath)
+            configureAddImageCell(collectionView: collectionView, cell: cell, at: indexPath)
         default:
             fatalError("Unidentified product image item type")
         }
@@ -41,13 +41,24 @@ private extension ProductImagesCollectionViewDatasource {
     
     /// Cell configuration
     ///
-    func configureImageCell(cell: ProductImageCollectionViewCell, at indexPath: IndexPath) {
+    func configureImageCell(collectionView: UICollectionView, cell: ProductImageCollectionViewCell, at indexPath: IndexPath) {
         let image = viewModel.product.images[indexPath.item]
         let imageURL = URL(string: image.src)
-        cell.imageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
+        cell.imageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage, success: { (image) in
+            
+//            if CGSize(width: (128 / image.size.height) * image.size.width, height: 128.0) != cell.frame.size{
+//                let animationsStatus = UIView.areAnimationsEnabled
+//                UIView.setAnimationsEnabled(false)
+//                collectionView.reloadItems(at: [indexPath])
+//                collectionView.collectionViewLayout.invalidateLayout()
+//                UIView.setAnimationsEnabled(true)
+//            }
+        }) { (error) in
+        }
+        
     }
     
-    func configureAddImageCell(cell: AddProductImageCollectionViewCell, at: IndexPath) {
+    func configureAddImageCell(collectionView: UICollectionView, cell: AddProductImageCollectionViewCell, at: IndexPath) {
         
     }
 }

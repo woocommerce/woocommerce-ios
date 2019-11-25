@@ -4,14 +4,16 @@ import UIKit
 ///
 final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
     struct ViewModel {
-        let title: String
-        let text: String
+        let title: String?
+        let text: String?
         let image: UIImage?
+        let numberOfLinesForText: Int
 
-        init(title: String, text: String, image: UIImage? = nil) {
+        init(title: String?, text: String?, image: UIImage? = nil, numberOfLinesForText: Int = 1) {
             self.title = title
             self.text = text
             self.image = image
+            self.numberOfLinesForText = numberOfLinesForText
         }
     }
 
@@ -35,7 +37,11 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
 extension ImageAndTitleAndTextTableViewCell {
     func updateUI(viewModel: ViewModel) {
         titleLabel.text = viewModel.title
+        titleLabel.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
+        titleLabel.textColor = viewModel.text?.isEmpty == false ? .text: .textSubtle
         descriptionLabel.text = viewModel.text
+        descriptionLabel.isHidden = viewModel.text == nil || viewModel.text?.isEmpty == true
+        descriptionLabel.numberOfLines = viewModel.numberOfLinesForText
         contentImageView.image = viewModel.image
         contentImageView.isHidden = viewModel.image == nil
     }
@@ -63,6 +69,6 @@ private extension ImageAndTitleAndTextTableViewCell {
     }
 
     func configureTitleAndTextStackView() {
-        titleAndTextStackView.spacing = 6
+        titleAndTextStackView.spacing = 2
     }
 }

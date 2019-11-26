@@ -595,6 +595,9 @@ extension ProductDetailsViewModel {
     /// Product Images section
     ///
     func configureProductImages() -> Section? {
+        guard product.images.count > 0 else {
+            return nil
+        }
         return Section(row: .productImages)
     }
 

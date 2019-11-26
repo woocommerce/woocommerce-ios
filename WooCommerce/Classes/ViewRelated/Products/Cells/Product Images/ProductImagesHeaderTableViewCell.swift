@@ -83,7 +83,7 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
     }
 }
 
-/// Cell configuration allowed
+/// Cell configurations allowed
 ///
 enum ProductImagesCellConfig {
 
@@ -110,9 +110,9 @@ private extension ProductImagesHeaderTableViewCell {
         collectionView.showsHorizontalScrollIndicator = false
         switch config {
         case .extendedAddImages:
-            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: self.frame.size)
+            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: self.frame.size, config: config)
         default:
-            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesViewModel.defaultCollectionViewCellSize)
+            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesViewModel.defaultCollectionViewCellSize, config: config)
         }
     }
 }

@@ -24,7 +24,6 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-
         configureBackground()
     }
 

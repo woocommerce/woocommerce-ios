@@ -197,9 +197,8 @@ extension UIImage {
     /// Work In Progress banner icon on the Products Tab
     ///
     static var workInProgressBanner: UIImage {
-        let tintColor = UIColor.gray(.shade10)
-        return Gridicon
-            .iconOfType(.customize, withSize: CGSize(width: 24, height: 24))
+        let tintColor = UIColor.gray(.shade30)
+        return UIImage(named: "icon-tools")!
             .imageWithTintColor(tintColor)!
     }
 

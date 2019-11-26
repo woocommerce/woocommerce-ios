@@ -177,8 +177,6 @@ extension ProductDetailsViewModel {
 
     func heightForRow(at indexPath: IndexPath) -> CGFloat {
         switch rowAtIndexPath(indexPath) {
-        case .productImages:
-            return Metrics.productImagesHeight
         default:
             return UITableView.automaticDimension
         }
@@ -857,7 +855,6 @@ extension ProductDetailsViewModel {
     enum Metrics {
         static let estimatedRowHeight = CGFloat(86)
         static let sectionHeight = CGFloat(44)
-        static let productImagesHeight = CGFloat(160)
     }
 
     enum Keys {

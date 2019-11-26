@@ -21,7 +21,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="160"/>
                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                         <constraints>
-                            <constraint firstAttribute="height" constant="160" id="MNC-Lo-Noh"/>
+                            <constraint firstAttribute="height" priority="999" constant="160" id="o7N-sD-4mr"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="lwO-tS-awB"/>
                         <collectionViewFlowLayout key="collectionViewLayout" automaticEstimatedItemSize="YES" minimumLineSpacing="10" minimumInteritemSpacing="10" id="Kfh-Id-hJg">
@@ -34,7 +34,7 @@
                 </subviews>
                 <constraints>
                     <constraint firstItem="WFL-te-HOK" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="PDR-n7-9mK"/>
-                    <constraint firstAttribute="bottom" secondItem="WFL-te-HOK" secondAttribute="bottom" id="bgk-Ox-pVB"/>
+                    <constraint firstAttribute="bottom" secondItem="WFL-te-HOK" secondAttribute="bottom" id="b2N-Ek-wUv"/>
                     <constraint firstAttribute="trailing" secondItem="WFL-te-HOK" secondAttribute="trailing" id="qbp-mF-mga"/>
                     <constraint firstItem="WFL-te-HOK" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="vH3-dk-bIR"/>
                 </constraints>
@@ -43,7 +43,7 @@
             <connections>
                 <outlet property="collectionView" destination="WFL-te-HOK" id="6lI-qf-ou5"/>
             </connections>
-            <point key="canvasLocation" x="132" y="123"/>
+            <point key="canvasLocation" x="131.15942028985509" y="122.54464285714285"/>
         </tableViewCell>
     </objects>
 </document>

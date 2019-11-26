@@ -92,8 +92,26 @@ private extension DefaultProductFormTableViewModel {
     func shippingSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.shippingImage.applyProductFormSettingsStyle()
         let title = Constants.shippingSettingsTitle
-        // TODO-1507: show shipping details after the weight and dimension units are available
-        let details: String? = nil
+
+        var shippingDetails = [String]()
+
+        // Weight[unit]
+        if let weight = product.weight, let weightUnit = ServiceLocator.shippingSettingsService.weightUnit, !weight.isEmpty {
+            shippingDetails.append(String.localizedStringWithFormat(Constants.weightFormat,
+                                                                    weight, weightUnit))
+        }
+
+        // L x W x H[unit]
+        let length = product.dimensions.length
+        let width = product.dimensions.width
+        let height = product.dimensions.height
+        if let dimensionUnit = ServiceLocator.shippingSettingsService.dimensionUnit,
+            !length.isEmpty && !width.isEmpty && !height.isEmpty {
+            shippingDetails.append(String.localizedStringWithFormat(Constants.fullDimensionsFormat,
+                                                                    length, width, height, dimensionUnit))
+        }
+
+        let details: String? = shippingDetails.isEmpty ? nil: shippingDetails.joined(separator: "\n")
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details)
@@ -124,5 +142,11 @@ private extension DefaultProductFormTableViewModel {
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
         static let stockStatusFormat = NSLocalizedString("Stock status: %@",
                                                          comment: "Format of the stock status on the Inventory Settings row")
+
+        // Shipping
+        static let weightFormat = NSLocalizedString("Weight: %1$@%2$@",
+                                                    comment: "Format of the weight on the Shipping Settings row - weight[unit]")
+        static let fullDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@ x %3$@%4$@",
+                                                            comment: "Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit]")
     }
 }

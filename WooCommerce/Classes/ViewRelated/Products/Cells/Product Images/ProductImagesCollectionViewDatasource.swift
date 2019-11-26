@@ -9,7 +9,7 @@ final class ProductImagesCollectionViewDatasource: NSObject {
     }
 }
 
-// MARK - Collection View DataSource methods
+// MARK: - Collection View DataSource methods
 //
 extension ProductImagesCollectionViewDatasource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -64,7 +64,7 @@ private extension ProductImagesCollectionViewDatasource {
     func configureAddImageCell(collectionView: UICollectionView, cell: AddProductImageCollectionViewCell, at: IndexPath) {
 
     }
-    
+
     func configureExtendedAddImageCell(collectionView: UICollectionView, cell: ExtendedAddProductImageCollectionViewCell, at: IndexPath) {
 
     }

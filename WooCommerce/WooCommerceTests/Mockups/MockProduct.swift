@@ -3,16 +3,16 @@ import Foundation
 
 
 final class MockProduct {
-    
+
     let testSiteID = 2019
     let testProductID = 2020
-    
+
     func product(name: String = "Hogsmeade",
                  stockQuantity: Int? = nil,
                  stockStatus: ProductStockStatus = .inStock,
                  variations: [Int] = [],
                  images: [ProductImage] = []) -> Product {
-    
+
     return Product(siteID: testSiteID,
                    productID: testProductID,
                    name: name,

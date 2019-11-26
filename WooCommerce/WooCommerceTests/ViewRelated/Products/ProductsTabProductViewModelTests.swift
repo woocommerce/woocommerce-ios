@@ -62,7 +62,7 @@ extension ProductsTabProductViewModelTests {
                      stockStatus: ProductStockStatus = .inStock,
                      variations: [Int] = [],
                      images: [ProductImage] = []) -> Product {
-        
+
         let mock = MockProduct()
         return mock.product(name: name, stockQuantity: stockQuantity, stockStatus: stockStatus, variations: variations, images: images)
     }

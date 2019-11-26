@@ -4,7 +4,7 @@ class ExtendedAddProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var title: UILabel!
-    
+
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
@@ -26,7 +26,7 @@ private extension ExtendedAddProductImageCollectionViewCell {
         imageView.contentMode = Settings.imageContentMode
         imageView.clipsToBounds = Settings.clipToBounds
     }
-    
+
     func configureLabel() {
         title.applyBodyStyle()
         title.textAlignment = .center

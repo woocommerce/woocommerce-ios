@@ -17,7 +17,7 @@ extension UICollectionViewCell {
     func applyDefaultBackgroundStyle() {
         backgroundColor = StyleManager.wooWhite
     }
-    
+
     func applyGrayBackgroundStyle() {
         backgroundColor = StyleManager.wooGreyLight
     }

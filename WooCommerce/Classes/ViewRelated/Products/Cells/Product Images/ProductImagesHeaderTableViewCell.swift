@@ -86,13 +86,13 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
 /// Cell configuration allowed
 ///
 enum ProductImagesCellConfig {
-        
+
         // only images
         case images
-        
+
         // images + add image cell
         case addImages
-        
+
         // only the extended add image cell
         case extendedAddImages
 }

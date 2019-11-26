@@ -399,7 +399,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             vc.googleTapped = { [weak self] in
                 self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showGoogle.rawValue, sender: self)
             }
-            // TODO: remove this - erroneously added when fixing #12398.
             vc.appleTapped = { [weak self] in
                 self?.appleTapped()
             }

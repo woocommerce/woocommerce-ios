@@ -94,12 +94,20 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.invisibleImage)
     }
 
+    func testInventoryImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.inventoryImage)
+    }
+
     func testMailImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.mailImage)
     }
 
     func testMoreImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.moreImage)
+    }
+
+    func testPriceImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.priceImage)
     }
 
     func testProductPlaceholderImageIconIsNotNil() {
@@ -124,6 +132,10 @@ final class IconsTests: XCTestCase {
 
     func testSearchImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.searchImage)
+    }
+
+    func testShippingImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.shippingImage)
     }
 
     func testSpamImageIconIsNotNil() {

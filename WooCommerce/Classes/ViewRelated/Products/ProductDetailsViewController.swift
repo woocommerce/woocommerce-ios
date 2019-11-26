@@ -203,7 +203,9 @@ private extension ProductDetailsViewController {
 
     @objc func editProduct() {
         let product = viewModel.product
-        let productForm = ProductFormViewController(product: product)
+        let currencyCode = CurrencySettings.shared.currencyCode
+        let currency = CurrencySettings.shared.symbol(from: currencyCode)
+        let productForm = ProductFormViewController(product: product, currency: currency)
         let navController = WooNavigationController(rootViewController: productForm)
         navigationController?.present(navController, animated: true)
     }

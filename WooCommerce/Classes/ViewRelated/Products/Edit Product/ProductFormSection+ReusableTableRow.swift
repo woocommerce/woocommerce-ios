@@ -6,8 +6,11 @@ extension ProductFormSection {
         case .primaryFields(let rows):
             let row = rows[rowIndex]
             return row.reuseIdentifier
-        default:
-            fatalError("Not implemented yet")
+        case .settings(let rows):
+            let row = rows[rowIndex]
+            return row.reuseIdentifier
+        case .images:
+            fatalError()
         }
     }
 }
@@ -40,6 +43,26 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
             return name?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         case .description(let description):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
+        }
+    }
+}
+
+extension ProductFormSection.SettingsRow: ReusableTableRow {
+    var cellTypes: [UITableViewCell.Type] {
+        switch self {
+        case .price, .inventory, .shipping:
+            return [ImageAndTitleAndTextTableViewCell.self]
+        }
+    }
+
+    var reuseIdentifier: String {
+        return cellType.reuseIdentifier
+    }
+
+    private var cellType: UITableViewCell.Type {
+        switch self {
+        case .price, .inventory, .shipping:
+            return ImageAndTitleAndTextTableViewCell.self
         }
     }
 }

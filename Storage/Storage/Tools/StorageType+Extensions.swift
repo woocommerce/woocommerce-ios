@@ -63,6 +63,13 @@ public extension StorageType {
         return firstObject(ofType: OrderCoupon.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Order Refund Condensed.
+    ///
+    func loadOrderRefundCondensed(refundID: Int) -> OrderRefundCondensed? {
+        let predicate = NSPredicate(format: "refundID = %ld", refundID)
+        return firstObject(ofType: OrderRefundCondensed.self, matching: predicate)
+    }
+
     /// Retrieves the Stored Order Shipping Line.
     ///
     func loadShippingLine(shippingID: Int) -> ShippingLine? {
@@ -334,17 +341,6 @@ public extension StorageType {
     func loadProductVariation(siteID: Int64, productVariationID: Int64) -> ProductVariation? {
         let predicate = NSPredicate(format: "siteID = %lld AND productVariationID = %lld", siteID, productVariationID)
         return firstObject(ofType: ProductVariation.self, matching: predicate)
-    }
-
-    /// Retrieves a stored Product Variation Attribute.
-    ///
-    /// Note: WC attribute ID's often have an ID of `0` (local Product attributes), so we need to
-    /// also look them up by key and value
-    ///
-    func loadProductVariationAttribute(attributeID: Int64, name: String, option: String) -> Attribute? {
-        let predicate = NSPredicate(format: "id = %lld AND key = %@ AND value = %@",
-                                    attributeID, name, option)
-        return firstObject(ofType: Attribute.self, matching: predicate)
     }
 
     // MARK: - Refunds

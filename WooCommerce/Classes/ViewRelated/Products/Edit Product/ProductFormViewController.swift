@@ -8,19 +8,26 @@ final class ProductFormViewController: UIViewController {
 
     private var product: Product {
         didSet {
-            viewModel = DefaultProductFormTableViewModel(product: product)
+            viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
         }
     }
 
+    private var productUpdater: ProductUpdater {
+        return product
+    }
+
     private var viewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
 
-    init(product: Product) {
+    private let currency: String
+
+    init(product: Product, currency: String) {
+        self.currency = currency
         self.product = product
-        self.viewModel = DefaultProductFormTableViewModel(product: product)
+        self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
     }
@@ -32,16 +39,24 @@ final class ProductFormViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureNavigationBar()
         configureTableView()
     }
 }
 
 private extension ProductFormViewController {
+    func configureNavigationBar() {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+    }
+
     func configureTableView() {
         registerTableViewCells()
 
         tableView.dataSource = tableViewDataSource
         tableView.delegate = self
+
+        tableView.backgroundColor = .listBackground
+        tableView.tableFooterView = UIView()
 
         tableView.reloadData()
     }
@@ -64,6 +79,25 @@ private extension ProductFormViewController {
     }
 }
 
+// MARK: Navigation actions
+//
+private extension ProductFormViewController {
+    @objc func updateProduct() {
+        let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
+            guard let product = product, error == nil else {
+                let errorDescription = error?.localizedDescription ?? "No error specified"
+                DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                return
+            }
+            self?.product = product
+
+            // Temporarily dismisses the Product form before the navigation is implemented.
+            self?.dismiss(animated: true)
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+}
+
 extension ProductFormViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -80,8 +114,33 @@ extension ProductFormViewController: UITableViewDelegate {
             case .description:
                 editProductDescription()
             }
-        case .details:
-            fatalError()
+        case .settings:
+            // TODO-1422: Shipping Settings
+            // TODO-1423: Price Settings
+            // TODO-1424: Inventory Settings
+            return
+        }
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let section = viewModel.sections[section]
+        switch section {
+        case .settings:
+            return Constants.settingsHeaderHeight
+        default:
+            return 0
+        }
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let section = viewModel.sections[section]
+        switch section {
+        case .settings:
+            let clearView = UIView(frame: .zero)
+            clearView.backgroundColor = .clear
+            return clearView
+        default:
+            return nil
         }
     }
 }
@@ -103,25 +162,13 @@ private extension ProductFormViewController {
     }
 
     func onEditProductNameCompletion(newName: String) {
-        guard newName != product.name else {
+        defer {
             navigationController?.popViewController(animated: true)
+        }
+        guard newName != product.name else {
             return
         }
-
-        let action = ProductAction.updateProductName(siteID: product.siteID,
-                                                     productID: product.productID,
-                                                     name: newName) { [weak self] (product, error) in
-                                                        guard let product = product, error == nil else {
-                                                            let errorDescription = error?.localizedDescription ?? "No error specified"
-                                                            DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                                                            return
-                                                        }
-                                                        self?.product = product
-
-                                                        // Dismisses Product description editor.
-                                                        self?.navigationController?.popViewController(animated: true)
-        }
-        ServiceLocator.stores.dispatch(action)
+        self.product = productUpdater.nameUpdated(name: newName)
     }
 }
 
@@ -136,24 +183,20 @@ private extension ProductFormViewController {
     }
 
     func onEditProductDescriptionCompletion(newDescription: String) {
-        guard newDescription != product.fullDescription else {
+        defer {
             navigationController?.popViewController(animated: true)
+        }
+        guard newDescription != product.fullDescription else {
             return
         }
+        self.product = productUpdater.descriptionUpdated(description: newDescription)
+    }
+}
 
-        let action = ProductAction.updateProductDescription(siteID: product.siteID,
-                                                            productID: product.productID,
-                                                            description: newDescription) { [weak self] (product, error) in
-                                                                guard let product = product, error == nil else {
-                                                                    let errorDescription = error?.localizedDescription ?? "No error specified"
-                                                                    DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                                                                    return
-                                                                }
-                                                                self?.product = product
-
-                                                                // Dismisses Product description editor.
-                                                                self?.navigationController?.popViewController(animated: true)
-        }
-        ServiceLocator.stores.dispatch(action)
+// MARK: Action - Edit Product Description
+//
+private extension ProductFormViewController {
+    enum Constants {
+        static let settingsHeaderHeight = CGFloat(16)
     }
 }

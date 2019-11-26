@@ -25,6 +25,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         configureBackground()
+        configureSeparator()
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -94,6 +95,10 @@ enum ProductImagesCellConfig {
 private extension ProductImagesHeaderTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
+    }
+
+    func configureSeparator() {
+        separatorInset.left = 0
     }
 
     func configureCollectionView(config: ProductImagesCellConfig) {

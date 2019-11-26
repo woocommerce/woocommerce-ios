@@ -270,23 +270,9 @@ extension ProductDetailsViewModel {
     ///
     func configureProductImages(_ cell: ProductImagesHeaderTableViewCell) {
         cell.configure(with: product, config: .images)
-        cell.onImageSelected = {[weak self] (productImage, indexPath) in
-            print("OnImageSelected")
+        cell.onImageSelected = { (productImage, indexPath) in
+            // TODO: open image detail
         }
-        cell.onAddImage = { [weak self] in
-            print("OnAddImage")
-        }
-//        if productHasImage {
-//            cell.heightConstraint.constant = Metrics.productImageHeight
-//            mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
-//        }
-//
-//        if product.productStatus != .publish {
-//            cell.textBadge?.applyPaddedLabelSubheadStyles()
-//            cell.textBadge?.layer.backgroundColor = StyleManager.defaultTextColor.cgColor
-//            cell.textBadge?.textColor = StyleManager.wooWhite
-//            cell.textBadge?.text = product.productStatus.description
-//        }
     }
 
     /// Product Title cell.

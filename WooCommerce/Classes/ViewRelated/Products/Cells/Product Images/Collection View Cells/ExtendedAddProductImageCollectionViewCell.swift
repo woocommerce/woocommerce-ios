@@ -28,7 +28,7 @@ private extension ExtendedAddProductImageCollectionViewCell {
     }
 
     func configureLabel() {
-        title.applyBodyStyle()
+        title.applyEmptyStateTitleStyle()
         title.textAlignment = .center
         title.text = NSLocalizedString("Add a product image", comment: "Cell text in Add / Edit product when there are no images.")
     }

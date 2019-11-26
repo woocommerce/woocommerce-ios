@@ -39,7 +39,7 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
 
     private var cellType: UITableViewCell.Type {
         switch self {
-        case .images(let _):
+        case .images:
             return ProductImagesHeaderTableViewCell.self
         case .name(let name):
             return name?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self

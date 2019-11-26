@@ -27,7 +27,7 @@ class ExtendedAddProductImageCollectionViewCellTests: XCTestCase {
 
     func testTextLabelStyleIsSetToBody() {
         let mockLabel = UILabel()
-        mockLabel.applyBodyStyle()
+        mockLabel.applyEmptyStateTitleStyle()
 
         XCTAssertEqual(cell?.title?.font, mockLabel.font)
         XCTAssertEqual(cell?.title?.textColor, mockLabel.textColor)

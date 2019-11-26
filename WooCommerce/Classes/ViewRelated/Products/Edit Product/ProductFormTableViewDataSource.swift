@@ -81,6 +81,13 @@ private extension ProductFormTableViewDataSource {
         else {
             cell.configure(with: product, config: .extendedAddImages)
         }
+
+        cell.onImageSelected = { (productImage, indexPath) in
+            // TODO: open image detail
+        }
+        cell.onAddImage = {
+            // TODO: start add image process
+        }
     }
 
     func configureName(cell: UITableViewCell, name: String?) {

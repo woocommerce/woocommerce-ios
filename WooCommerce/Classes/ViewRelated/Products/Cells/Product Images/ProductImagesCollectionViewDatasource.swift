@@ -47,18 +47,7 @@ private extension ProductImagesCollectionViewDatasource {
     func configureImageCell(collectionView: UICollectionView, cell: ProductImageCollectionViewCell, at indexPath: IndexPath) {
         let image = viewModel.product.images[indexPath.item]
         let imageURL = URL(string: image.src)
-        cell.imageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage, success: { (image) in
-
-//            if CGSize(width: (128 / image.size.height) * image.size.width, height: 128.0) != cell.frame.size{
-//                let animationsStatus = UIView.areAnimationsEnabled
-//                UIView.setAnimationsEnabled(false)
-//                collectionView.reloadItems(at: [indexPath])
-//                collectionView.collectionViewLayout.invalidateLayout()
-//                UIView.setAnimationsEnabled(true)
-//            }
-        }) { (error) in
-        }
-
+        cell.imageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
     }
 
     func configureAddImageCell(collectionView: UICollectionView, cell: AddProductImageCollectionViewCell, at: IndexPath) {

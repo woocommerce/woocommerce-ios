@@ -16,7 +16,7 @@ class ProductImageCollectionViewCell: UICollectionViewCell {
 ///
 private extension ProductImageCollectionViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        applyGrayBackgroundStyle()
     }
 
     func configureImageView() {

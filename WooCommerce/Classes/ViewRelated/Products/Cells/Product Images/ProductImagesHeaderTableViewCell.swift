@@ -67,13 +67,6 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
 extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
 
-//        if viewModel?.items[indexPath.item] == .image{
-//            let cell = collectionView.cellForItem(at: indexPath) as? ProductImageCollectionViewCell
-//            if let imageSize = cell?.imageView.image?.size{
-//                return CGSize(width: (128 / imageSize.height) * imageSize.width, height: 128.0)
-//            }
-//        }
-
         switch viewModel?.items[indexPath.item] {
         case .extendedAddImage:
             return self.frame.size

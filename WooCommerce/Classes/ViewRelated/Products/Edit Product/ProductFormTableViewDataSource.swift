@@ -69,12 +69,12 @@ private extension ProductFormTableViewDataSource {
             configureDescription(cell: cell, description: description)
         }
     }
-    
+
     func configureImages(cell: UITableViewCell, product: Product) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
         }
-        
+
         if product.images.count > 0 {
             cell.configure(with: product, config: .addImages)
         }

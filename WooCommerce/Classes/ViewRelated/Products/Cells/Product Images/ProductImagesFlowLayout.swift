@@ -5,11 +5,11 @@ import UIKit
 class ProductImagesFlowLayout: UICollectionViewFlowLayout {
 
     private var defaultItemSize: CGSize
-    
+
     private let defaultInset: CGFloat = 16.0
-    
+
     private var config: ProductImagesCellConfig
-    
+
     init(itemSize: CGSize, config: ProductImagesCellConfig) {
         self.defaultItemSize = itemSize
         self.config = config
@@ -24,7 +24,7 @@ class ProductImagesFlowLayout: UICollectionViewFlowLayout {
         super.prepare()
 
         self.scrollDirection = .horizontal
-        
+
         switch config {
         case .extendedAddImages:
             self.minimumInteritemSpacing = 0.0

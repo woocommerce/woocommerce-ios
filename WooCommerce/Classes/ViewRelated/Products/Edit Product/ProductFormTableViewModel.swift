@@ -4,7 +4,7 @@ import Yosemite
 enum ProductFormSection {
     case primaryFields(rows: [PrimaryFieldRow])
     case settings(rows: [SettingsRow])
-    
+
     enum PrimaryFieldRow {
         case images(product: Product)
         case name(name: String?)

@@ -165,6 +165,14 @@ extension ServiceLocator {
         _authenticationManager = mock
     }
 
+    static func setShippingSettingsService(_ mock: ShippingSettingsService) {
+        guard isRunningTests() else {
+            return
+        }
+
+        _shippingSettingsService = mock
+    }
+
     static func setStorageManager(_ mock: CoreDataManager) {
         guard isRunningTests() else {
             return

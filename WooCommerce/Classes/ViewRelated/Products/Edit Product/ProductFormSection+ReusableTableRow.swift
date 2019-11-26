@@ -9,8 +9,6 @@ extension ProductFormSection {
         case .settings(let rows):
             let row = rows[rowIndex]
             return row.reuseIdentifier
-        case .images:
-            fatalError()
         }
     }
 }
@@ -26,6 +24,8 @@ protocol ReusableTableRow {
 extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
     var cellTypes: [UITableViewCell.Type] {
         switch self {
+        case .images:
+            return [ProductImagesHeaderTableViewCell.self]
         case .name:
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         case .description:
@@ -39,6 +39,8 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
 
     private var cellType: UITableViewCell.Type {
         switch self {
+        case .images(let _):
+            return ProductImagesHeaderTableViewCell.self
         case .name(let name):
             return name?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         case .description(let description):

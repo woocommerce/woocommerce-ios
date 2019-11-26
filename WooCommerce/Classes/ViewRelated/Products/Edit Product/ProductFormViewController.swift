@@ -104,11 +104,11 @@ extension ProductFormViewController: UITableViewDelegate {
 
         let section = viewModel.sections[indexPath.section]
         switch section {
-        case .images:
-            fatalError()
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
+            case .images:
+                break
             case .name:
                 editProductName()
             case .description:

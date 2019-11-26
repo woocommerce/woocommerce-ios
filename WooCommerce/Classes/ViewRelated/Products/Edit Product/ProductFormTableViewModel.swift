@@ -1,11 +1,12 @@
 import UIKit
+import Yosemite
 
 enum ProductFormSection {
-    case images
     case primaryFields(rows: [PrimaryFieldRow])
     case settings(rows: [SettingsRow])
-
+    
     enum PrimaryFieldRow {
+        case images(product: Product)
         case name(name: String?)
         case description(description: String?)
     }

@@ -139,7 +139,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
         // Is everything filled out?
         if !loginFields.validateFieldsPopulatedForSignin() {
-            let errorMsg = NSLocalizedString("Please fill out all the fields", comment: "A short prompt asking the user to properly fill out all login fields.")
+            let errorMsg = LocalizedText.missingInfoError
             displayError(message: errorMsg)
 
             return
@@ -182,7 +182,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
         let err = error as NSError
         guard err.code != 403 else {
-            let message = NSLocalizedString("Whoops, something went wrong and we couldn't log you in. Please try again!", comment: "An error message shown when a wpcom user provides the wrong password.")
+            let message = LocalizedText.loginError
             displayError(message: message)
             return
         }
@@ -204,8 +204,16 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         SafariCredentialsService.updateSafariCredentialsIfNeeded(with: loginFields)
     }
     
-}
+    private enum LocalizedText {
+        static let loginError = NSLocalizedString("Whoops, something went wrong and we couldn't log you in. Please try again!", comment: "An error message shown when a wpcom user provides the wrong password.")
+        static let missingInfoError = NSLocalizedString("Please fill out all the fields", comment: "A short prompt asking the user to properly fill out all login fields.")
+        static let gettingAccountInfo = NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved.")
+        static let googleConnected = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
+        static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
+        static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
+    }
 
+}
 
 // MARK: - Sync Helpers
 //
@@ -237,7 +245,7 @@ extension LoginViewController {
     private func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
         SafariCredentialsService.updateSafariCredentialsIfNeeded(with: loginFields)
 
-        configureStatusLabel(NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved."))
+        configureStatusLabel(LocalizedText.gettingAccountInfo)
 
         authenticationDelegate.sync(credentials: credentials) { [weak self] in
 
@@ -347,7 +355,7 @@ extension LoginViewController {
         loginFields.meta.socialService = SocialServiceName.google
 
         // Configure all the things and sign in.
-        GIDSignIn.sharedInstance().delegate = delegate//self
+        GIDSignIn.sharedInstance().delegate = delegate
         GIDSignIn.sharedInstance().uiDelegate = self
         GIDSignIn.sharedInstance().clientID = WordPressAuthenticator.shared.configuration.googleLoginClientId
         GIDSignIn.sharedInstance().serverClientID = WordPressAuthenticator.shared.configuration.googleLoginServerClientId
@@ -365,11 +373,11 @@ extension LoginViewController {
             let errorTitle: String
             let errorDescription: String
             if (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue {
-                errorTitle = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
-                errorDescription = NSLocalizedString("The Google account \"\(loginFields.username)\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
+                errorTitle = LocalizedText.googleConnected
+                errorDescription = String(format: LocalizedText.googleConnectedError, loginFields.username)
                 WordPressAuthenticator.track(.loginSocialErrorUnknownUser)
             } else {
-                errorTitle = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
+                errorTitle = LocalizedText.googleUnableToConnect
                 errorDescription = error.localizedDescription
             }
 

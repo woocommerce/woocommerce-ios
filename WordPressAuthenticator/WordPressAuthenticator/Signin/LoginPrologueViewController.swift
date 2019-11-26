@@ -2,6 +2,8 @@ import UIKit
 import Lottie
 import WordPressShared
 import WordPressUI
+import GoogleSignIn
+import WordPressKit
 
 class LoginPrologueViewController: LoginViewController {
 
@@ -56,7 +58,7 @@ class LoginPrologueViewController: LoginViewController {
             }
             vc.modalPresentationStyle = .custom
         }
-            
+
         else if let vc = segue.destination as? LoginPrologueLoginMethodViewController {
             vc.transitioningDelegate = self
             
@@ -64,10 +66,10 @@ class LoginPrologueViewController: LoginViewController {
                 self?.performSegue(withIdentifier: .showEmailLogin, sender: self)
             }
             vc.googleTapped = { [weak self] in
-                self?.performSegue(withIdentifier: .showGoogle, sender: self)
+                self?.googleLoginTapped(withDelegate: self)
             }
             vc.selfHostedTapped = { [weak self] in
-                self?.performSegue(withIdentifier: .showSelfHostedLogin, sender: self)
+                self?.loginToSelfHostedSite()
             }
             vc.appleTapped = { [weak self] in
                 self?.appleTapped()
@@ -124,6 +126,8 @@ class LoginPrologueViewController: LoginViewController {
 
 }
 
+// MARK: - AppleAuthenticatorDelegate
+
 extension LoginPrologueViewController: AppleAuthenticatorDelegate {
 
     func showWPComLogin(loginFields: LoginFields) {
@@ -134,5 +138,37 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
     }
+
+}
+
+// MARK: - Google Sign In
+
+// LoginFacadeDelegate methods for Google Google Sign In
+extension LoginPrologueViewController {
     
+    override open func displayRemoteError(_ error: Error) {
+        configureViewLoading(false)
+        displayRemoteErrorForGoogle(error)
+    }
+    
+    func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
+        googleFinishedLogin(withGoogleIDToken: googleIDToken, authToken: authToken)
+    }
+
+    func existingUserNeedsConnection(_ email: String) {
+        configureViewLoading(false)
+        googleExistingUserNeedsConnection(email)
+    }
+
+    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        configureViewLoading(false)
+        googleNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
+    }
+
+}
+
+extension LoginPrologueViewController: GIDSignInDelegate {
+    open func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
+        signInGoogleAccount(signIn, didSignInFor: user, withError: error)
+    }
 }

@@ -45,7 +45,6 @@
             <viewLayoutGuide key="safeArea" id="ZTg-uK-7eu"/>
             <connections>
                 <outlet property="imageView" destination="AI1-bg-Kbe" id="H6Z-hs-Xnb"/>
-                <outlet property="view" destination="waA-fC-D0S" id="0Cz-9l-dHH"/>
             </connections>
             <point key="canvasLocation" x="131.8840579710145" y="141.29464285714286"/>
         </collectionViewCell>

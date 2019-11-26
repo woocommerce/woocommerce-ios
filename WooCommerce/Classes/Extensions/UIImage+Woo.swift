@@ -43,7 +43,8 @@ extension UIImage {
     /// Add Image icon
     ///
     static var addImage: UIImage {
-        return Gridicon.iconOfType(.addImage)
+        let tintColor = StyleManager.wooGreyMid
+        return Gridicon.iconOfType(.addImage).imageWithTintColor(tintColor)!
     }
 
     /// Checkmark image, no style applied

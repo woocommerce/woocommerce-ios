@@ -5,24 +5,37 @@ final class ProductImagesViewModel {
 
     private(set) var product: Product
 
+    private(set) var config: ProductImagesCellConfig
+    
     // Fixed width/height of collection view cell
     static let defaultCollectionViewCellSize = CGSize(width: 128.0, height: 128.0)
 
     var items: [ProductImagesItem] = []
 
-    init(product: Product) {
+    init(product: Product, config: ProductImagesCellConfig) {
         self.product = product
-
+        self.config = config
+        
         configureItems()
     }
 
     func configureItems() {
         items = []
-        for _ in product.images {
-            items.append(.image)
+        
+        switch config {
+        case .images:
+            for _ in product.images {
+                items.append(.image)
+            }
+        case .addImages:
+            for _ in product.images {
+                items.append(.image)
+            }
+            
+            items.append(.addImage)
+        case .extendedAddImages:
+            items.append(.extendedAddImage)
         }
-
-        items.append(.addImage)
     }
 }
 
@@ -35,7 +48,8 @@ extension ProductImagesViewModel {
     func registerCollectionViewCells(_ collectionView: UICollectionView) {
         let cells = [
             ProductImageCollectionViewCell.self,
-            AddProductImageCollectionViewCell.self
+            AddProductImageCollectionViewCell.self,
+            ExtendedAddProductImageCollectionViewCell.self
         ]
 
         for cell in cells {

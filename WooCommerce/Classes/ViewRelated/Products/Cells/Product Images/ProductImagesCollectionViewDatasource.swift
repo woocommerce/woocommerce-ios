@@ -35,6 +35,8 @@ private extension ProductImagesCollectionViewDatasource {
             configureImageCell(collectionView: collectionView, cell: cell, at: indexPath)
         case let cell as AddProductImageCollectionViewCell where item == .addImage:
             configureAddImageCell(collectionView: collectionView, cell: cell, at: indexPath)
+        case let cell as ExtendedAddProductImageCollectionViewCell where item == .extendedAddImage:
+            configureExtendedAddImageCell(collectionView: collectionView, cell: cell, at: indexPath)
         default:
             fatalError("Unidentified product image item type")
         }
@@ -62,11 +64,16 @@ private extension ProductImagesCollectionViewDatasource {
     func configureAddImageCell(collectionView: UICollectionView, cell: AddProductImageCollectionViewCell, at: IndexPath) {
 
     }
+    
+    func configureExtendedAddImageCell(collectionView: UICollectionView, cell: ExtendedAddProductImageCollectionViewCell, at: IndexPath) {
+
+    }
 }
 
 enum ProductImagesItem {
     case image
     case addImage
+    case extendedAddImage
 
     var reuseIdentifier: String {
         switch self {
@@ -74,7 +81,8 @@ enum ProductImagesItem {
             return ProductImageCollectionViewCell.reuseIdentifier
         case .addImage:
             return AddProductImageCollectionViewCell.reuseIdentifier
+        case .extendedAddImage:
+            return ExtendedAddProductImageCollectionViewCell.reuseIdentifier
         }
     }
-
 }

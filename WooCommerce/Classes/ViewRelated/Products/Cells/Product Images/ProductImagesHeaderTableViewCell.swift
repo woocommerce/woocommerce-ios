@@ -33,12 +33,12 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     /// Configure cell
     ///
-    func configure(with product: Product) {
-        let viewModel = ProductImagesViewModel(product: product)
+    func configure(with product: Product, config: ProductImagesCellConfig) {
+        let viewModel = ProductImagesViewModel(product: product, config: config)
         self.viewModel = viewModel
         datasource = ProductImagesCollectionViewDatasource(viewModel: viewModel)
 
-        configureCollectionView()
+        configureCollectionView(config: config)
 
         viewModel.registerCollectionViewCells(collectionView)
     }
@@ -52,11 +52,11 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
         switch viewModel?.items[indexPath.item] {
         case .image:
             onImageSelected?(viewModel?.product.images[indexPath.item], indexPath)
-            break
         case .addImage:
             onAddImage?()
-            break
-        default:
+        case .extendedAddImage:
+            onAddImage?()
+        case .none:
             break
         }
     }
@@ -74,8 +74,27 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
 //            }
 //        }
 
-        return ProductImagesViewModel.defaultCollectionViewCellSize
+        switch viewModel?.items[indexPath.item] {
+        case .extendedAddImage:
+            return self.frame.size
+        default:
+            return ProductImagesViewModel.defaultCollectionViewCellSize
+        }
     }
+}
+
+/// Cell configuration allowed
+///
+enum ProductImagesCellConfig {
+        
+        // only images
+        case images
+        
+        // images + add image cell
+        case addImages
+        
+        // only the extended add image cell
+        case extendedAddImages
 }
 
 /// Private Methods
@@ -84,11 +103,16 @@ private extension ProductImagesHeaderTableViewCell {
         applyDefaultBackgroundStyle()
     }
 
-    func configureCollectionView() {
+    func configureCollectionView(config: ProductImagesCellConfig) {
         collectionView.delegate = self
         collectionView.dataSource = datasource
         collectionView.backgroundColor = StyleManager.wooWhite
         collectionView.showsHorizontalScrollIndicator = false
-        collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesViewModel.defaultCollectionViewCellSize)
+        switch config {
+        case .extendedAddImages:
+            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: self.frame.size)
+        default:
+            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesViewModel.defaultCollectionViewCellSize)
+        }
     }
 }

@@ -269,7 +269,7 @@ extension ProductDetailsViewModel {
     /// Product Images cell.
     ///
     func configureProductImages(_ cell: ProductImagesHeaderTableViewCell) {
-        cell.configure(with: product)
+        cell.configure(with: product, config: .images)
         cell.onImageSelected = {[weak self] (productImage, indexPath) in
             print("OnImageSelected")
         }

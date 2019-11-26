@@ -2,7 +2,6 @@ import UIKit
 
 class AddProductImageCollectionViewCell: UICollectionViewCell {
 
-    @IBOutlet weak var view: UIView!
     @IBOutlet weak var imageView: UIImageView!
 
     override func awakeFromNib() {

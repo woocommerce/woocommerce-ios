@@ -347,15 +347,16 @@
 		B5609095208A4EAF00399AE4 /* Signin */ = {
 			isa = PBXGroup;
 			children = (
+				98C9195A2308E3D900A90E12 /* AppleAuthenticator.swift */,
 				B5609126208A563600399AE4 /* EmailMagicLink.storyboard */,
 				B560912E208A563700399AE4 /* Login.storyboard */,
 				B5609125208A563600399AE4 /* Login2FAViewController.swift */,
 				B5609128208A563600399AE4 /* LoginEmailViewController.swift */,
 				B5609129208A563600399AE4 /* LoginLinkRequestViewController.swift */,
 				B5609131208A563700399AE4 /* LoginNavigationController.swift */,
+				982C8E7823021C20003F1BA0 /* LoginPrologueLoginMethodViewController.swift */,
 				B560912C208A563700399AE4 /* LoginProloguePageViewController.swift */,
 				B560912B208A563600399AE4 /* LoginProloguePromoViewController.swift */,
-				982C8E7823021C20003F1BA0 /* LoginPrologueLoginMethodViewController.swift */,
 				B5609133208A563700399AE4 /* LoginPrologueSignupMethodViewController.swift */,
 				B5609130208A563700399AE4 /* LoginPrologueViewController.swift */,
 				B560912A208A563600399AE4 /* LoginSelfHostedViewController.swift */,
@@ -366,7 +367,6 @@
 				B5609134208A563700399AE4 /* LoginViewController.swift */,
 				B5609124208A563600399AE4 /* LoginWPComViewController.swift */,
 				B560912D208A563700399AE4 /* SigninEditingState.swift */,
-				98C9195A2308E3D900A90E12 /* AppleAuthenticator.swift */,
 			);
 			path = Signin;
 			sourceTree = "<group>";

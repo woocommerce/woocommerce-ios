@@ -83,15 +83,6 @@ extension SignupGoogleViewController: GIDSignInDelegate {
 //
 private extension SignupGoogleViewController {
 
-    /// Updates the LoginFields structure, with the specified Google User + Token + Email.
-    ///
-    func updateLoginFields(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {
-        loginFields.emailAddress = googleEmail
-        loginFields.username = googleEmail
-        loginFields.meta.socialServiceIDToken = googleToken
-        loginFields.meta.googleUser = googleUser
-    }
-
     /// Creates a WordPress.com account with the associated GoogleUser + GoogleToken + GoogleEmail.
     ///
     func createWordPressComUser(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {
@@ -168,11 +159,4 @@ private extension SignupGoogleViewController {
         titleLabel?.text = NSLocalizedString("Google sign up failed.", comment: "Message shown on screen after the Google sign up process failed.")
         displayError(error as NSError, sourceTag: .wpComSignup)
     }
-}
-
-// MARK: - GIDSignInUIDelegate
-
-/// This is needed to set self as UIDelegate, even though none of the methods are called
-extension SignupGoogleViewController: GIDSignInUIDelegate {
-
 }

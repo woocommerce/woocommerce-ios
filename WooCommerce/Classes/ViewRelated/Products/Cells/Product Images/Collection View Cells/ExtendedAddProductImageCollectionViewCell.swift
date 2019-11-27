@@ -1,6 +1,6 @@
 import UIKit
 
-class ExtendedAddProductImageCollectionViewCell: UICollectionViewCell {
+final class ExtendedAddProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var title: UILabel!

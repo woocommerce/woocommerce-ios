@@ -1,6 +1,6 @@
 import UIKit
 
-class ProductImageCollectionViewCell: UICollectionViewCell {
+final class ProductImageCollectionViewCell: UICollectionViewCell {
 
     @IBOutlet weak var imageView: UIImageView!
 
@@ -25,10 +25,10 @@ private extension ProductImageCollectionViewCell {
     }
 
     func configureCellAppearance() {
-        self.contentView.layer.cornerRadius = Constants.cornerRadius
-        self.contentView.layer.borderWidth = Constants.borderWidth
-        self.contentView.layer.borderColor = Colors.borderColor
-        self.contentView.layer.masksToBounds = Settings.maskToBounds
+        contentView.layer.cornerRadius = Constants.cornerRadius
+        contentView.layer.borderWidth = Constants.borderWidth
+        contentView.layer.borderColor = Colors.borderColor
+        contentView.layer.masksToBounds = Settings.maskToBounds
     }
 }
 
@@ -41,7 +41,7 @@ private extension ProductImageCollectionViewCell {
     }
 
     enum Colors {
-        static let borderColor = StyleManager.tableViewCellSelectionStyle.cgColor
+        static let borderColor = UIColor.listBackground.cgColor
     }
 
     enum Settings {

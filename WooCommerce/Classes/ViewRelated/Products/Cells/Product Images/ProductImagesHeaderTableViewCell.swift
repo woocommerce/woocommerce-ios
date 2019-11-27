@@ -11,7 +11,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     /// Collection View Datasource
     ///
-    private var datasource: ProductImagesCollectionViewDatasource?
+    private var dataSource: ProductImagesCollectionViewDataSource?
 
     /// Closure to be executed when a image cell is tapped
     ///
@@ -28,16 +28,12 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         configureSeparator()
     }
 
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
-    }
-
     /// Configure cell
     ///
     func configure(with product: Product, config: ProductImagesCellConfig) {
         let viewModel = ProductImagesViewModel(product: product, config: config)
         self.viewModel = viewModel
-        datasource = ProductImagesCollectionViewDatasource(viewModel: viewModel)
+        dataSource = ProductImagesCollectionViewDataSource(viewModel: viewModel)
 
         configureCollectionView(config: config)
 
@@ -70,7 +66,7 @@ extension ProductImagesHeaderTableViewCell: UICollectionViewDelegateFlowLayout {
 
         switch viewModel?.items[indexPath.item] {
         case .extendedAddImage:
-            return self.frame.size
+            return frame.size
         default:
             return ProductImagesViewModel.defaultCollectionViewCellSize
         }
@@ -103,12 +99,12 @@ private extension ProductImagesHeaderTableViewCell {
 
     func configureCollectionView(config: ProductImagesCellConfig) {
         collectionView.delegate = self
-        collectionView.dataSource = datasource
+        collectionView.dataSource = dataSource
         collectionView.backgroundColor = StyleManager.wooWhite
         collectionView.showsHorizontalScrollIndicator = false
         switch config {
         case .extendedAddImages:
-            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: self.frame.size, config: config)
+            collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: frame.size, config: config)
         default:
             collectionView.collectionViewLayout = ProductImagesFlowLayout(itemSize: ProductImagesViewModel.defaultCollectionViewCellSize, config: config)
         }

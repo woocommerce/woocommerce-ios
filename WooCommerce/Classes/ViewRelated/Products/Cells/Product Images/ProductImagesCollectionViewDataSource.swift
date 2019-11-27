@@ -1,6 +1,6 @@
 import UIKit
 
-final class ProductImagesCollectionViewDatasource: NSObject {
+final class ProductImagesCollectionViewDataSource: NSObject {
     private let viewModel: ProductImagesViewModel
 
     init(viewModel: ProductImagesViewModel) {
@@ -11,7 +11,7 @@ final class ProductImagesCollectionViewDatasource: NSObject {
 
 // MARK: - Collection View DataSource methods
 //
-extension ProductImagesCollectionViewDatasource: UICollectionViewDataSource {
+extension ProductImagesCollectionViewDataSource: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return viewModel.items.count
     }
@@ -28,17 +28,17 @@ extension ProductImagesCollectionViewDatasource: UICollectionViewDataSource {
 
 // MARK: - Support methods for UICollectionViewDataSource
 //
-private extension ProductImagesCollectionViewDatasource {
+private extension ProductImagesCollectionViewDataSource {
     func configure(collectionView: UICollectionView, _ cell: UICollectionViewCell, for item: ProductImagesItem, at indexPath: IndexPath) {
         switch cell {
         case let cell as ProductImageCollectionViewCell where item == .image:
             configureImageCell(collectionView: collectionView, cell: cell, at: indexPath)
-        case let cell as AddProductImageCollectionViewCell where item == .addImage:
-            configureAddImageCell(collectionView: collectionView, cell: cell, at: indexPath)
-        case let cell as ExtendedAddProductImageCollectionViewCell where item == .extendedAddImage:
-            configureExtendedAddImageCell(collectionView: collectionView, cell: cell, at: indexPath)
+        case _ as AddProductImageCollectionViewCell where item == .addImage:
+            break
+        case _ as ExtendedAddProductImageCollectionViewCell where item == .extendedAddImage:
+            break
         default:
-            fatalError("Unidentified product image item type")
+            fatalError("Unidentified product image item type: \(item)")
         }
     }
 
@@ -50,13 +50,6 @@ private extension ProductImagesCollectionViewDatasource {
         cell.imageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
     }
 
-    func configureAddImageCell(collectionView: UICollectionView, cell: AddProductImageCollectionViewCell, at: IndexPath) {
-
-    }
-
-    func configureExtendedAddImageCell(collectionView: UICollectionView, cell: ExtendedAddProductImageCollectionViewCell, at: IndexPath) {
-
-    }
 }
 
 enum ProductImagesItem {

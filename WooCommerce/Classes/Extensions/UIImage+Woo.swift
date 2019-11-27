@@ -43,7 +43,7 @@ extension UIImage {
     /// Add Image icon
     ///
     static var addImage: UIImage {
-        let tintColor = StyleManager.wooGreyMid
+        let tintColor = UIColor.neutral(.shade40)
         return Gridicon.iconOfType(.addImage).imageWithTintColor(tintColor)!
     }
 

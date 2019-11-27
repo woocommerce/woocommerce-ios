@@ -3,14 +3,14 @@ import Yosemite
 
 final class ProductImagesViewModel {
 
-    private(set) var product: Product
+    let product: Product
 
-    private(set) var config: ProductImagesCellConfig
+    let config: ProductImagesCellConfig
 
     // Fixed width/height of collection view cell
     static let defaultCollectionViewCellSize = CGSize(width: 128.0, height: 128.0)
 
-    var items: [ProductImagesItem] = []
+    private(set) var items: [ProductImagesItem] = []
 
     init(product: Product, config: ProductImagesCellConfig) {
         self.product = product

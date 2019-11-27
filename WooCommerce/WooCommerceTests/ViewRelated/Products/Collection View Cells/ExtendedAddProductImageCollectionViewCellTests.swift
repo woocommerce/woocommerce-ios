@@ -1,7 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
-class ExtendedAddProductImageCollectionViewCellTests: XCTestCase {
+final class ExtendedAddProductImageCollectionViewCellTests: XCTestCase {
 
     private var cell: ExtendedAddProductImageCollectionViewCell?
 

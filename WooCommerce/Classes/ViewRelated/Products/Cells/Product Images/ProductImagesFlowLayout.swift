@@ -2,16 +2,16 @@ import UIKit
 
 /// Custom Collection View Flow Layout for Product Images
 ///
-class ProductImagesFlowLayout: UICollectionViewFlowLayout {
+final class ProductImagesFlowLayout: UICollectionViewFlowLayout {
 
-    private var defaultItemSize: CGSize
+    private let defaultItemSize: CGSize
 
     private let defaultInset: CGFloat = 16.0
 
     private var config: ProductImagesCellConfig
 
     init(itemSize: CGSize, config: ProductImagesCellConfig) {
-        self.defaultItemSize = itemSize
+        defaultItemSize = itemSize
         self.config = config
         super.init()
     }
@@ -23,19 +23,19 @@ class ProductImagesFlowLayout: UICollectionViewFlowLayout {
     override func prepare() {
         super.prepare()
 
-        self.scrollDirection = .horizontal
+        scrollDirection = .horizontal
 
         switch config {
         case .extendedAddImages:
-            self.minimumInteritemSpacing = 0.0
-            self.minimumLineSpacing = 0.00
-            self.sectionInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
+            minimumInteritemSpacing = 0.0
+            minimumLineSpacing = 0.00
+            sectionInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
         default:
-            self.minimumInteritemSpacing = defaultInset
-            self.minimumLineSpacing = defaultInset
-            self.sectionInset = UIEdgeInsets(top: 0.0, left: defaultInset, bottom: 0.0, right: defaultInset)
+            minimumInteritemSpacing = defaultInset
+            minimumLineSpacing = defaultInset
+            sectionInset = UIEdgeInsets(top: 0.0, left: defaultInset, bottom: 0.0, right: defaultInset)
         }
 
-        self.itemSize = defaultItemSize
+        itemSize = defaultItemSize
     }
 }

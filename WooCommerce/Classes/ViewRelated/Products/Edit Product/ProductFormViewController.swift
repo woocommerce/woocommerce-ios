@@ -56,7 +56,7 @@ private extension ProductFormViewController {
         tableView.delegate = self
 
         tableView.backgroundColor = .listBackground
-        tableView.tableFooterView = UIView()
+        tableView.removeLastCellSeparator()
 
         tableView.reloadData()
     }

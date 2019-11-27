@@ -40,6 +40,15 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         viewModel.registerCollectionViewCells(collectionView)
     }
 
+    /// Manage rotation
+    ///
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection != previousTraitCollection {
+            collectionView.collectionViewLayout.invalidateLayout()
+            collectionView.reloadData()
+        }
+    }
 }
 
 // MARK: - Collection View Delegate

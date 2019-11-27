@@ -29,7 +29,7 @@ final class ProductImageCollectionViewCellTests: XCTestCase {
     func testCellAppearance() {
         let cornerRadius = CGFloat(2.0)
         let borderWidth = CGFloat(0.5)
-        let borderColor = StyleManager.tableViewCellSelectionStyle.cgColor
+        let borderColor = UIColor.listBackground.cgColor
         let maskToBounds = true
         XCTAssertEqual(cell?.contentView.layer.cornerRadius, cornerRadius)
         XCTAssertEqual(cell?.contentView.layer.borderWidth, borderWidth)

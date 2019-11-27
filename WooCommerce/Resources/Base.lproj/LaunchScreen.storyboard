@@ -4,6 +4,7 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,7 +25,7 @@
                                 </constraints>
                             </imageView>
                         </subviews>
-                        <color key="backgroundColor" red="0.58823529409999997" green="0.34509803919999998" blue="0.54117647059999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <color key="backgroundColor" name="WooCommercePurple60"/>
                         <constraints>
                             <constraint firstItem="Q7F-qQ-dHf" firstAttribute="centerX" secondItem="Ze5-6b-2t3" secondAttribute="centerX" id="Ilw-Kx-7ga"/>
                             <constraint firstItem="Q7F-qQ-dHf" firstAttribute="centerY" secondItem="Ze5-6b-2t3" secondAttribute="centerY" id="Wnf-iK-LGA"/>
@@ -39,5 +40,8 @@
     </scenes>
     <resources>
         <image name="LaunchLogo" width="171.5" height="125"/>
+        <namedColor name="WooCommercePurple60">
+            <color red="0.40392156862745099" green="0.2627450980392157" blue="0.59999999999999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
     </resources>
 </document>

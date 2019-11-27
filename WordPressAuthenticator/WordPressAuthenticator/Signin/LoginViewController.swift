@@ -416,12 +416,22 @@ extension LoginViewController {
         configureViewLoading(false)
     }
 
-    func googleNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+    func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
 
         performSegue(withIdentifier: .show2FA, sender: self)
-        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: ["source": "google"])
+        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: ["source": loginFields.meta.socialService?.rawValue ?? ""])
+    }
+
+    func signInAppleAccount() {
+        guard let token = loginFields.meta.socialServiceIDToken else {
+            WordPressAuthenticator.track(.loginSocialButtonFailure, properties: ["source": SocialServiceName.apple.rawValue])
+            configureViewLoading(false)
+            return
+        }
+
+        loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.apple.rawValue)
     }
 
     func signInGoogleAccount(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {

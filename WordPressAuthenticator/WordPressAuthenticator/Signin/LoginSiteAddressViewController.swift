@@ -372,6 +372,11 @@ extension LoginSiteAddressViewController: AppleAuthenticatorDelegate {
         self.loginFields = loginFields
         performSegue(withIdentifier: .showWPComLogin, sender: self)
     }
+
+    func showApple2FA(loginFields: LoginFields) {
+        self.loginFields = loginFields
+        signInAppleAccount()
+    }
     
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)

@@ -40,7 +40,7 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         viewModel.registerCollectionViewCells(collectionView)
     }
 
-    /// Manage rotation
+    /// Rotation management
     ///
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
         super.traitCollectionDidChange(previousTraitCollection)

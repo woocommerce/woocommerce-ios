@@ -206,6 +206,14 @@ extension UIImage {
             .imageWithTintColor(tintColor)!
     }
 
+    /// Work In Progress banner icon on the Products Tab
+    ///
+    static var workInProgressBanner: UIImage {
+        let tintColor = UIColor.gray(.shade30)
+        return UIImage(named: "icon-tools")!
+            .imageWithTintColor(tintColor)!
+    }
+
     /// Product Image
     ///
     static var productImage: UIImage {

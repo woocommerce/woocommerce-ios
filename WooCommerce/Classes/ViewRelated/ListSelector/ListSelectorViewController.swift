@@ -1,24 +1,28 @@
 import UIKit
 
+/// A generic data source for the list selector UI `ListSelectorViewController`.
+///
 protocol ListSelectorDataSource {
     associatedtype Model: Equatable
 
+    /// A list of models to render the list.
     var data: [Model] { get }
 
+    /// The model that is currently selected in the list.
     var selected: Model? { get }
 
+    /// Called when a different model is selected.
     mutating func handleSelectedChange(selected: Model)
 
+    /// Configures the cell with the given model.
     func configureCell(cell: BasicTableViewCell, model: Model)
 }
 
-struct ListSelectorViewModel {
-    let navigationBarTitle: String?
-}
-
+/// Displays a list (implemented by table view) for the user to select a generic model.
+///
 final class ListSelectorViewController<DataSource: ListSelectorDataSource, Model>:
 UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Model == Model {
-    private let viewModel: ListSelectorViewModel
+    private let viewProperties: ListSelectorViewProperties
     private var dataSource: DataSource
     private let onDismiss: (_ selected: Model?) -> Void
 
@@ -26,10 +30,10 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Mo
 
     @IBOutlet private weak var tableView: UITableView!
 
-    init(viewModel: ListSelectorViewModel,
+    init(viewProperties: ListSelectorViewProperties,
          dataSource: DataSource,
          onDismiss: @escaping (_ selected: Model?) -> Void) {
-        self.viewModel = viewModel
+        self.viewProperties = viewProperties
         self.dataSource = dataSource
         self.onDismiss = onDismiss
         super.init(nibName: "ListSelectorViewController", bundle: nil)
@@ -93,7 +97,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Mo
 private extension ListSelectorViewController {
 
     func configureNavigation() {
-        title = viewModel.navigationBarTitle
+        title = viewProperties.navigationBarTitle
     }
 
     func configureMainView() {

@@ -4,6 +4,7 @@ import UIKit
 ///
 protocol ListSelectorDataSource {
     associatedtype Model: Equatable
+    associatedtype Cell: UITableViewCell
 
     /// A list of models to render the list.
     var data: [Model] { get }
@@ -15,18 +16,18 @@ protocol ListSelectorDataSource {
     mutating func handleSelectedChange(selected: Model)
 
     /// Configures the cell with the given model.
-    func configureCell(cell: BasicTableViewCell, model: Model)
+    func configureCell(cell: Cell, model: Model)
 }
 
 /// Displays a list (implemented by table view) for the user to select a generic model.
 ///
-final class ListSelectorViewController<DataSource: ListSelectorDataSource, Model>:
-UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Model == Model {
+final class ListSelectorViewController<DataSource: ListSelectorDataSource, Model, Cell>:
+UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Model == Model, DataSource.Cell == Cell {
     private let viewProperties: ListSelectorViewProperties
     private var dataSource: DataSource
     private let onDismiss: (_ selected: Model?) -> Void
 
-    private let rowType = BasicTableViewCell.self
+    private let rowType = Cell.self
 
     @IBOutlet private weak var tableView: UITableView!
 
@@ -68,7 +69,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Mo
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: rowType.reuseIdentifier,
-                                                       for: indexPath) as? BasicTableViewCell else {
+                                                       for: indexPath) as? Cell else {
                                                         fatalError()
         }
         let model = dataSource.data[indexPath.row]

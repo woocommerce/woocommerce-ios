@@ -106,6 +106,7 @@
 		0290E26F238E3CE400B5C466 /* ListSelectorViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */; };
 		0290E270238E3CE400B5C466 /* ListSelectorViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */; };
 		0290E27A238E590500B5C466 /* ListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E279238E590500B5C466 /* ListSelectorViewProperties.swift */; };
+		0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift */; };
 		029B0F57234197B80010C1F3 /* ProductSearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029B0F56234197B80010C1F3 /* ProductSearchUICommand.swift */; };
 		029D444922F13F8A00DEFA8A /* DashboardUIFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029D444822F13F8A00DEFA8A /* DashboardUIFactory.swift */; };
 		029D444E22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 029D444D22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift */; };
@@ -638,6 +639,7 @@
 		0290E26D238E3CE400B5C466 /* ListSelectorViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelectorViewController.swift; sourceTree = "<group>"; };
 		0290E26E238E3CE400B5C466 /* ListSelectorViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ListSelectorViewController.xib; sourceTree = "<group>"; };
 		0290E279238E590500B5C466 /* ListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ListSelectorViewProperties.swift; sourceTree = "<group>"; };
+		0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		029B0F56234197B80010C1F3 /* ProductSearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSearchUICommand.swift; sourceTree = "<group>"; };
 		029D444822F13F8A00DEFA8A /* DashboardUIFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardUIFactory.swift; sourceTree = "<group>"; };
 		029D444D22F141CD00DEFA8A /* DashboardStatsV3ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardStatsV3ViewController.swift; sourceTree = "<group>"; };
@@ -1328,6 +1330,14 @@
 				0240B3AB230A910C000A866C /* StoreStatsV4ChartAxisHelper.swift */,
 			);
 			path = "Stats v4";
+			sourceTree = "<group>";
+		};
+		0290E27C238E5B4A00B5C466 /* ListSelector */ = {
+			isa = PBXGroup;
+			children = (
+				0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift */,
+			);
+			path = ListSelector;
 			sourceTree = "<group>";
 		};
 		029B0F58234197C90010C1F3 /* Order */ = {
@@ -2422,6 +2432,7 @@
 		D816DDBA22265D8000903E59 /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				0290E27C238E5B4A00B5C466 /* ListSelector */,
 				0227958E237A5D5200787C63 /* Editor */,
 				0269576B237263F3001BA0BF /* Keyboard */,
 				02E4FD7F2306AA770049610C /* Dashboard */,
@@ -3286,6 +3297,7 @@
 				B53A569721123D3B000776C9 /* ResultsControllerUIKitTests.swift in Sources */,
 				022A45EE237BADA6001417F0 /* Product+ProductFormTests.swift in Sources */,
 				B57C5C9921B80E7100FF82B2 /* DictionaryWooTests.swift in Sources */,
+				0290E27E238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift in Sources */,
 				D816DDBC22265DA300903E59 /* OrderTrackingTableViewCellTests.swift in Sources */,
 				D85136DD231E613900DD0539 /* ReviewsViewModelTests.swift in Sources */,
 				D85B833D2230DC9D002168F3 /* StringWooTests.swift in Sources */,

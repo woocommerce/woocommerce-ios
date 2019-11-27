@@ -3,6 +3,7 @@ import Yosemite
 
 struct ProductStockStatusListSelectorDataSource: ListSelectorDataSource {
     typealias Model = ProductStockStatus
+    typealias Cell = BasicTableViewCell
 
     let data: [ProductStockStatus] = [
         .inStock,

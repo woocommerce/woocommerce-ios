@@ -40,6 +40,13 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Add Image icon
+    ///
+    static var addImage: UIImage {
+        let tintColor = UIColor.neutral(.shade40)
+        return Gridicon.iconOfType(.addImage).imageWithTintColor(tintColor)!
+    }
+
     /// Checkmark image, no style applied
     ///
     static var checkmarkImage: UIImage {

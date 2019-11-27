@@ -96,28 +96,6 @@ final class ProductDetailsViewModel {
     ///
     var dimensionUnit: String?
 
-    /// Grab the first available image for a product.
-    ///
-    private var imageURL: URL? {
-        guard let productImageURLString = product.images.first?.src else {
-            return nil
-        }
-
-        return URL(string: productImageURLString)
-    }
-
-    /// Check to see if the product has an image URL.
-    ///
-    private var productHasImage: Bool {
-        return imageURL != nil
-    }
-
-    /// Product image height.
-    ///
-    private var productImageHeight: CGFloat {
-        return productHasImage ? Metrics.productImageHeight : Metrics.emptyProductImageHeight
-    }
-
     /// Table section height.
     ///
     var sectionHeight: CGFloat {
@@ -199,8 +177,6 @@ extension ProductDetailsViewModel {
 
     func heightForRow(at indexPath: IndexPath) -> CGFloat {
         switch rowAtIndexPath(indexPath) {
-        case .productPhoto:
-            return productImageHeight
         default:
             return UITableView.automaticDimension
         }
@@ -257,8 +233,8 @@ extension ProductDetailsViewModel {
 
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as LargeImageTableViewCell:
-            configureProductImage(cell)
+        case let cell as ProductImagesHeaderTableViewCell:
+            configureProductImages(cell)
         case let cell as TitleBodyTableViewCell where row == .productName:
             configureProductName(cell)
         case let cell as TwoColumnTableViewCell where row == .totalOrders:
@@ -290,23 +266,12 @@ extension ProductDetailsViewModel {
         }
     }
 
-    /// Product Image cell.
+    /// Product Images cell.
     ///
-    func configureProductImage(_ cell: LargeImageTableViewCell) {
-        guard let mainImageView = cell.mainImageView else {
-            return
-        }
-
-        if productHasImage {
-            cell.heightConstraint.constant = Metrics.productImageHeight
-            mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
-        }
-
-        if product.productStatus != .publish {
-            cell.textBadge?.applyPaddedLabelSubheadStyles()
-            cell.textBadge?.layer.backgroundColor = StyleManager.defaultTextColor.cgColor
-            cell.textBadge?.textColor = StyleManager.wooWhite
-            cell.textBadge?.text = product.productStatus.description
+    func configureProductImages(_ cell: ProductImagesHeaderTableViewCell) {
+        cell.configure(with: product, config: .images)
+        cell.onImageSelected = { (productImage, indexPath) in
+            // TODO: open image detail
         }
     }
 
@@ -606,21 +571,20 @@ extension ProductDetailsViewModel {
     /// Rebuild the section struct.
     ///
     func reloadSections() {
-        let photo = configurePhoto()
+        let photo = configureProductImages()
         let summary = configureSummary()
         let pricingAndInventory = configurePricingAndInventory()
         let purchaseDetails = configurePurchaseDetails()
         sections = [photo, summary, pricingAndInventory, purchaseDetails].compactMap { $0 }
     }
 
-    /// Large photo section.
+    /// Product Images section
     ///
-    func configurePhoto() -> Section? {
-        if !productHasImage && product.productStatus == .publish {
+    func configureProductImages() -> Section? {
+        guard product.images.count > 0 else {
             return nil
         }
-
-        return Section(row: .productPhoto)
+        return Section(row: .productImages)
     }
 
     /// Summary section.
@@ -826,7 +790,7 @@ extension ProductDetailsViewModel {
     /// Table rows are organized in the order they appear in the UI.
     ///
     enum Row {
-        case productPhoto
+        case productImages
         case productName
         case totalOrders
         case reviews
@@ -843,8 +807,8 @@ extension ProductDetailsViewModel {
 
         var reuseIdentifier: String {
             switch self {
-            case .productPhoto:
-                return LargeImageTableViewCell.reuseIdentifier
+            case .productImages:
+                return ProductImagesHeaderTableViewCell.reuseIdentifier
             case .productName:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .totalOrders:
@@ -880,8 +844,6 @@ extension ProductDetailsViewModel {
     enum Metrics {
         static let estimatedRowHeight = CGFloat(86)
         static let sectionHeight = CGFloat(44)
-        static let productImageHeight = CGFloat(374)
-        static let emptyProductImageHeight = CGFloat(86)
     }
 
     enum Keys {

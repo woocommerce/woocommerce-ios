@@ -20,7 +20,7 @@ protocol ReviewsInteractionDelegate: UITableViewDelegate {
 }
 
 
-/// Abstracts the datasource used to render the Product Review list
+/// Abstracts the dataSource used to render the Product Review list
 protocol ReviewsDataSource: UITableViewDataSource, ReviewsInteractionDelegate {
 
     /// Boolean indicating if there are reviews

@@ -159,7 +159,7 @@ private extension ProductDetailsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            LargeImageTableViewCell.self,
+            ProductImagesHeaderTableViewCell.self,
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
             ProductReviewsTableViewCell.self,

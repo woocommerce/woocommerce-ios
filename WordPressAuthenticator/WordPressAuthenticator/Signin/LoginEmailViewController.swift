@@ -394,13 +394,10 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         if let vc = segue.destination as? LoginPrologueSignupMethodViewController {
             vc.transitioningDelegate = self
             vc.emailTapped = { [weak self] in
-                self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showSigninV2.rawValue, sender: self)
+                self?.performSegue(withIdentifier: .showSigninV2, sender: self)
             }
             vc.googleTapped = { [weak self] in
-                self?.performSegue(withIdentifier: NUXViewController.SegueIdentifier.showGoogle.rawValue, sender: self)
-            }
-            vc.appleTapped = { [weak self] in
-                self?.appleTapped()
+                self?.performSegue(withIdentifier: .showGoogle, sender: self)
             }
             vc.modalPresentationStyle = .custom
         }
@@ -493,25 +490,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
-    private func appleTapped() {
-        AppleAuthenticator.sharedInstance.delegate = self
-        AppleAuthenticator.sharedInstance.showFrom(viewController: self)
-    }
-}
-
-// MARK: - AppleAuthenticatorDelegate
-
-extension LoginEmailViewController: AppleAuthenticatorDelegate {
-
-    func showWPComLogin(loginFields: LoginFields) {
-        self.loginFields = loginFields
-         performSegue(withIdentifier: .showWPComLogin, sender: self)
-    }
-   
-    func authFailedWithError(message: String) {
-        displayErrorAlert(message, sourceTag: .wpComSignupApple)
-    }
-    
 }
 
 // MARK: - Google Sign In

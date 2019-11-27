@@ -20,10 +20,9 @@ final class ListSelectorViewController<DataSource: ListSelectorDataSource, Model
 UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Model == Model {
     private let viewModel: ListSelectorViewModel
     private var dataSource: DataSource
+    private let onDismiss: (_ selected: Model?) -> Void
 
     private let rowType = BasicTableViewCell.self
-
-    private let onDismiss: (_ selected: Model?) -> Void
 
     @IBOutlet private weak var tableView: UITableView!
 

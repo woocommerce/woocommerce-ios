@@ -240,7 +240,9 @@ private extension ProductsViewController {
                                          comment: "The info of the Work In Progress top banner on the Products tab")
         let viewModel = TopBannerViewModel(title: title,
                                            infoText: infoText,
-                                           icon: .workInProgressBanner)
+                                           icon: .workInProgressBanner) { [weak self] in
+                                            self?.tableView.updateHeaderHeight()
+        }
         let topBannerView = TopBannerView(viewModel: viewModel)
         topBannerView.translatesAutoresizingMaskIntoConstraints = false
         return topBannerView

@@ -194,7 +194,7 @@ private extension ProductsViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Configure common table properties.
@@ -215,8 +215,8 @@ private extension ProductsViewController {
         tableView.estimatedSectionHeaderHeight = 0
         tableView.sectionHeaderHeight = 0
 
-        tableView.backgroundColor = .listBackground
-        tableView.separatorColor = .divider
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.separatorColor = StyleManager.cellSeparatorColor
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
 

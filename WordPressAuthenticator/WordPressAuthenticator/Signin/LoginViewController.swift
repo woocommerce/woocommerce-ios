@@ -429,13 +429,17 @@ extension LoginViewController {
             let token = user.authentication.idToken,
             let email = user.profile.email else {
                 // The Google SignIn for may have been canceled.
-                WordPressAuthenticator.track(.loginSocialButtonFailure, error: error)
+
+                let properties = ["error": error?.localizedDescription,
+                                  "source": SocialServiceName.google.rawValue]
+
+                WordPressAuthenticator.track(.loginSocialButtonFailure, properties: properties as [AnyHashable : Any])
                 configureViewLoading(false)
                 return
         }
 
         updateLoginFields(googleUser: user, googleToken: token, googleEmail: email)
-        loginFacade.loginToWordPressDotCom(withGoogleIDToken: token)
+        loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
     }
     
     /// Updates the LoginFields structure, with the specified Google User + Token + Email.

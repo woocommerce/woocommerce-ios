@@ -529,7 +529,7 @@ extension LoginEmailViewController {
 
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         configureViewLoading(false)
-        googleNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
+        socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
 }
 

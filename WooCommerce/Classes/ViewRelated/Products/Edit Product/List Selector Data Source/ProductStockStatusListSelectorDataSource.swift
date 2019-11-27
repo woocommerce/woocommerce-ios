@@ -10,21 +10,18 @@ struct ProductStockStatusListSelectorDataSource: ListSelectorDataSource {
         .onBackOrder
     ]
 
-    var selected: ProductStockStatus? {
-        return product.productStockStatus
-    }
+    var selected: ProductStockStatus?
 
-    let onSelectedChange: (ProductStockStatus) -> Void
-
-    private let product: Product
-
-    init(product: Product, onSelectedChange: @escaping (ProductStockStatus) -> Void) {
-        self.product = product
-        self.onSelectedChange = onSelectedChange
+    init(product: Product) {
+        selected = product.productStockStatus
     }
 
     func configureCell(cell: BasicTableViewCell, model: ProductStockStatus) {
         cell.selectionStyle = .default
-        cell.textLabel?.text = model.rawValue
+        cell.textLabel?.text = model.description
+    }
+
+    mutating func handleSelectedChange(selected: ProductStockStatus) {
+        self.selected = selected
     }
 }

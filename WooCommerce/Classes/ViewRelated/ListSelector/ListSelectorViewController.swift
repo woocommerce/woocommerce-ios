@@ -7,7 +7,7 @@ protocol ListSelectorDataSource {
 
     var selected: Model? { get }
 
-    var onSelectedChange: (_ selected: Model) -> Void { get }
+    mutating func handleSelectedChange(selected: Model)
 
     func configureCell(cell: BasicTableViewCell, model: Model)
 }
@@ -16,16 +16,23 @@ struct ListSelectorViewModel {
     let navigationBarTitle: String?
 }
 
-final class ListSelectorViewController<DataSource: ListSelectorDataSource>: UIViewController, UITableViewDataSource {
+final class ListSelectorViewController<DataSource: ListSelectorDataSource, Model>:
+UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Model == Model {
     private let viewModel: ListSelectorViewModel
-    private let dataSource: DataSource
+    private var dataSource: DataSource
 
     private let rowType = BasicTableViewCell.self
 
-    @IBOutlet weak var tableView: UITableView!
-    init(viewModel: ListSelectorViewModel, dataSource: DataSource) {
+    private let onDismiss: (_ selected: Model?) -> Void
+
+    @IBOutlet private weak var tableView: UITableView!
+
+    init(viewModel: ListSelectorViewModel,
+         dataSource: DataSource,
+         onDismiss: @escaping (_ selected: Model?) -> Void) {
         self.viewModel = viewModel
         self.dataSource = dataSource
+        self.onDismiss = onDismiss
         super.init(nibName: "ListSelectorViewController", bundle: nil)
     }
 
@@ -39,6 +46,11 @@ final class ListSelectorViewController<DataSource: ListSelectorDataSource>: UIVi
         configureNavigation()
         configureMainView()
         configureTableView()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        onDismiss(dataSource.selected)
+        super.viewWillDisappear(animated)
     }
 
     // MARK: UITableViewDataSource
@@ -59,11 +71,21 @@ final class ListSelectorViewController<DataSource: ListSelectorDataSource>: UIVi
         let model = dataSource.data[indexPath.row]
         dataSource.configureCell(cell: cell, model: model)
 
-        if model == dataSource.selected {
-            cell.accessoryType = .checkmark
-        }
+        cell.accessoryType = model == dataSource.selected ? .checkmark: .none
 
         return cell
+    }
+
+    // MARK: UITableViewDelegate
+    //
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        let selected = dataSource.data[indexPath.row]
+        if selected != dataSource.selected {
+            dataSource.handleSelectedChange(selected: selected)
+            tableView.reloadData()
+        }
     }
 }
 
@@ -80,7 +102,7 @@ private extension ListSelectorViewController {
     }
 
     func configureTableView() {
-//        tableView.delegate = self
+        tableView.delegate = self
         tableView.dataSource = self
 
         tableView.rowHeight = UITableView.automaticDimension

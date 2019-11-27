@@ -35,10 +35,13 @@ final class TopBannerView: UIView {
         return button
     }()
 
-    private let onDismiss: () -> Void
-    private let onAction: () -> Void
+    private let isActionEnabled: Bool
+
+    private let onDismiss: (() -> Void)?
+    private let onAction: (() -> Void)?
 
     init(viewModel: TopBannerViewModel) {
+        isActionEnabled = viewModel.actionHandler != nil
         onDismiss = viewModel.dismissHandler
         onAction = viewModel.actionHandler
         super.init(frame: .zero)
@@ -70,6 +73,7 @@ private extension TopBannerView {
         dismissButton.setImage(Gridicon.iconOfType(.cross, withSize: CGSize(width: 24, height: 24)), for: .normal)
         dismissButton.tintColor = StyleManager.wooGreyTextMin
         dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
+        dismissButton.isHidden = !isActionEnabled
 
         actionButton.applyLinkButtonStyle()
         actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
@@ -127,29 +131,29 @@ private extension TopBannerView {
     }
 
     func createTopLevelView(contentContainerView: UIView) -> UIView {
-        let stackView = UIStackView(arrangedSubviews: [contentContainerView, createBorderView(), actionButton, createBorderView()])
+        let subviews: [UIView]
+        if isActionEnabled {
+            subviews = [contentContainerView, createBorderView(), actionButton, createBorderView()]
+        } else {
+            subviews = [contentContainerView, createBorderView()]
+        }
+        let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
 
     func createBorderView() -> UIView {
-        let view = UIView(frame: .zero)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = StyleManager.wooGreyBorder
-        NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalToConstant: 1)
-            ])
-        return view
+        return UIView.createBorderView()
     }
 }
 
 private extension TopBannerView {
     @objc private func onDismissButtonTapped() {
-        onDismiss()
+        onDismiss?()
     }
 
     @objc private func onActionButtonTapped() {
-        onAction()
+        onAction?()
     }
 }

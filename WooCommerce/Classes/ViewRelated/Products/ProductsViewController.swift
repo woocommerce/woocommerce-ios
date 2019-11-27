@@ -31,6 +31,12 @@ final class ProductsViewController: UIViewController {
         return UIView(frame: .zero)
     }()
 
+    /// Top banner that shows that the Products feature is still work in progress.
+    ///
+    private lazy var topBannerView: TopBannerView = {
+        return createTopBannerView()
+    }()
+
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
@@ -94,6 +100,11 @@ final class ProductsViewController: UIViewController {
         }
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        tableView.updateHeaderHeight()
+    }
 }
 
 // MARK: - Notifications
@@ -183,7 +194,7 @@ private extension ProductsViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Configure common table properties.
@@ -197,16 +208,42 @@ private extension ProductsViewController {
         tableView.delegate = self
 
         tableView.cellLayoutMarginsFollowReadableWidth = true
-        tableView.estimatedRowHeight = Settings.estimatedRowHeight
+        tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
 
         // Removes extra header spacing in ghost content view.
         tableView.estimatedSectionHeaderHeight = 0
         tableView.sectionHeaderHeight = 0
 
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
+        tableView.separatorColor = .divider
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+
+        let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
+        headerContainer.addSubview(topBannerView)
+        headerContainer.pinSubviewToAllEdges(topBannerView, insets: Constants.headerContainerInsets)
+        let bottomBorderView = UIView.createBorderView()
+        headerContainer.addSubview(bottomBorderView)
+        NSLayoutConstraint.activate([
+            bottomBorderView.constrainToSuperview(attribute: .leading),
+            bottomBorderView.constrainToSuperview(attribute: .trailing),
+            bottomBorderView.constrainToSuperview(attribute: .bottom)
+        ])
+        tableView.tableHeaderView = headerContainer
+    }
+
+    func createTopBannerView() -> TopBannerView {
+        let title = NSLocalizedString("Work in progress!",
+                                      comment: "The title of the Work In Progress top banner on the Products tab")
+        let infoText = NSLocalizedString("We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀",
+                                         comment: "The info of the Work In Progress top banner on the Products tab")
+        let viewModel = TopBannerViewModel(title: title,
+                                           infoText: infoText,
+                                           icon: .workInProgressBanner)
+        let topBannerView = TopBannerView(viewModel: viewModel)
+        topBannerView.translatesAutoresizingMaskIntoConstraints = false
+        return topBannerView
     }
 
     /// Setup: Sync'ing Coordinator
@@ -285,7 +322,7 @@ extension ProductsViewController: UITableViewDataSource {
 extension ProductsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return estimatedRowHeights[indexPath] ?? Settings.estimatedRowHeight
+        return estimatedRowHeights[indexPath] ?? Constants.estimatedRowHeight
     }
 
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
@@ -336,7 +373,7 @@ private extension ProductsViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
+        let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
 
         resultsController.stopForwardingEvents()
@@ -497,8 +534,10 @@ extension ProductsViewController {
 //
 private extension ProductsViewController {
 
-    enum Settings {
+    enum Constants {
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
+        static let headerDefaultHeight = CGFloat(130)
+        static let headerContainerInsets = UIEdgeInsets(top: 0, left: 0, bottom: 16, right: 0)
     }
 }

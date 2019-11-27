@@ -17,4 +17,21 @@ extension UITableView {
             }
         }
     }
+
+    /// Called in view controller's `viewDidLayoutSubviews`. If table view has a header view, calculates the new height.
+    /// If new height is different from current height, updates the header view with the new height and reassigns the table header view.
+    /// Note: make sure the top-level header view (`tableView.tableHeaderView`) is frame based as a container of the Auto Layout based subview.
+    func updateHeaderHeight() {
+        if let headerView = tableHeaderView {
+            let targetSize = CGSize(width: headerView.frame.width, height: 0)
+            let newSize = headerView.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: .required, verticalFittingPriority: .defaultLow)
+            let newHeight = newSize.height
+            var currentFrame = headerView.frame
+            if newHeight != currentFrame.size.height {
+                currentFrame.size.height = newHeight
+                headerView.frame = currentFrame
+                tableHeaderView = headerView
+            }
+        }
+    }
 }

@@ -365,7 +365,7 @@ extension ProductDetailsViewModel {
     /// Product variants cell.
     ///
     func configureProductVariants(_ cell: TitleBodyTableViewCell) {
-        cell.titleLabel?.text = NSLocalizedString("Variants", comment: "Product Details > descriptive label for the Product Variants cell.")
+        cell.titleLabel?.text = NSLocalizedString("Variations", comment: "Product Details > descriptive label for the Product Variants cell.")
 
         let attributes = product.attributes
 

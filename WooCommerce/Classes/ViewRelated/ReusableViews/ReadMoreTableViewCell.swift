@@ -30,7 +30,7 @@ final class ReadMoreTableViewCell: UITableViewCell {
     /// Configure the button
     ///
     func configureMoreButton() {
-        moreButton.tintColor = .brand
+        moreButton.tintColor = .primary
         moreButton.addTarget(self, action: #selector(moreWasTapped), for: .touchUpInside)
     }
 

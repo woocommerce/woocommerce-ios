@@ -47,6 +47,6 @@ private extension StatusListTableViewCell {
     }
 
     func styleCheckmark() {
-        tintColor = .brand
+        tintColor = .primary
     }
 }

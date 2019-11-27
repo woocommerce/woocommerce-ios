@@ -80,13 +80,13 @@ private extension OrderNoteTableViewCell {
         let theAuthor = author ?? ""
         let dateOfCreation = dateCreated ?? ""
         if isCustomerNote {
-            iconButton.backgroundColor = .blue
+            iconButton.backgroundColor = .primary
             let template =
                 NSLocalizedString("%1$@ - %@$@ (To Customer)",
                                   comment: "Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer)")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else if isSystemAuthor {
-            iconButton.backgroundColor = .brand
+            iconButton.backgroundColor = .listSmallIcon
             let template =
                 NSLocalizedString("%1$@ - %2$@ (System)",
                                   comment: "Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System)")
@@ -117,5 +117,6 @@ private extension OrderNoteTableViewCell {
     func configureIconButton() {
         iconButton.setImage(.asideImage, for: .normal)
         iconButton.layer.cornerRadius = iconButton.frame.width / 2
+        iconButton.tintColor = .neutral(.shade0)
     }
 }

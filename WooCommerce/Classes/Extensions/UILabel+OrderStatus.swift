@@ -27,25 +27,25 @@ extension UILabel {
     ///
     private func applyBackground(for statusEnum: OrderStatusEnum) {
         switch statusEnum {
-        case .processing:
+        case .cancelled:
+            fallthrough
+        case .completed:
+            fallthrough
+        case .custom:
+            fallthrough
+        case .onHold:
             fallthrough
         case .pending:
-            backgroundColor = .neutral(.shade40)
+            fallthrough
+        case .processing:
+            backgroundColor = .gray(.shade5)
         case .failed:
             fallthrough
         case .refunded:
             backgroundColor = .error
-        case .completed:
-            backgroundColor = .neutral(.shade40)
-        case .onHold:
-            fallthrough
-        case .cancelled:
-            fallthrough
-        case .custom:
-            fallthrough
-        default:
-            backgroundColor = .neutral(.shade40)
         }
+        
+        textColor = .black
     }
 }
 
@@ -55,7 +55,7 @@ extension UILabel {
 private extension UILabel {
 
     enum OrderStatusSettings {
-        static let borderWidth = CGFloat(1.0)
+        static let borderWidth = CGFloat(0.0)
         static let cornerRadius = CGFloat(4.0)
     }
 }

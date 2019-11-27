@@ -245,8 +245,8 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Button Appearance
     ///
     func refreshAppearance(button: UIButton) {
-        let bgColor = button.isSelected ? UIColor.brand : UIColor.listIcon
-        let textColor = button.isSelected ? UIColor.listIcon : UIColor.brand
+        let bgColor = button.isSelected ? UIColor.primary : UIColor.listIcon
+        let textColor = button.isSelected ? UIColor.listIcon : UIColor.primary
 
         button.backgroundColor = bgColor
         button.tintColor = textColor

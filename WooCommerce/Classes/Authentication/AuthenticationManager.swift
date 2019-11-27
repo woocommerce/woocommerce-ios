@@ -45,7 +45,7 @@ class AuthenticationManager: Authentication {
                                                 viewControllerBackgroundColor: .listBackground,
                                                 textFieldBackgroundColor: .listForeground,
                                                 navBarImage: StyleManager.navBarImage,
-                                                navBarBadgeColor: .brand)
+                                                navBarBadgeColor: .primary)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                      jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,

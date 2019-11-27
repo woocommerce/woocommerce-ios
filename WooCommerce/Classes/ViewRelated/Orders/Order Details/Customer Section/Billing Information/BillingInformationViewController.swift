@@ -112,7 +112,7 @@ private extension BillingInformationViewController {
         }
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .brand
+        actionSheet.view.tintColor = .primary
 
         actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
         actionSheet.addDefaultActionWithTitle(ContactAction.call) { [weak self] _ in

@@ -14,7 +14,7 @@ extension UISearchBar {
         appearance.layer.borderColor = UIColor.listSmallIcon.cgColor
         appearance.layer.borderWidth = 1.0
 
-        let brandColor = UIColor.brand
+        let brandColor = UIColor.primary
         appearance.tintColor = brandColor
 
         let cancelButtonAttributes = [NSAttributedString.Key.foregroundColor: brandColor]

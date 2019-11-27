@@ -7,8 +7,8 @@ struct AztecFormatBarFactory {
     func formatBar(onAction: @escaping (_ formatBarItem: FormatBarItem, _ formatBar: FormatBar) -> Void) -> FormatBar {
         let toolbar = Aztec.FormatBar()
 
-        toolbar.tintColor = .brand
-        toolbar.highlightedTintColor = UIColor.brand.withAlphaComponent(0.5)
+        toolbar.tintColor = .primary
+        toolbar.highlightedTintColor = UIColor.primary.withAlphaComponent(0.5)
         toolbar.selectedTintColor = .textSubtle
         toolbar.disabledTintColor = .textTertiary
         toolbar.dividerTintColor = .divider

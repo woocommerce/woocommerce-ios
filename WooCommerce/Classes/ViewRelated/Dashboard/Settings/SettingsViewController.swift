@@ -113,7 +113,7 @@ private extension SettingsViewController {
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.iconImage = .heartOutlineImage
         footerView.footnote.attributedText = hiringAttributedText
-        footerView.iconColor = .brand
+        footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
 

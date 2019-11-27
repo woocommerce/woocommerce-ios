@@ -24,7 +24,7 @@ final class StatusListTableViewCellTests: XCTestCase {
     }
 
     func testTintColorMatchesExpectation() {
-        XCTAssertEqual(cell?.tintColor, UIColor.brand)
+        XCTAssertEqual(cell?.tintColor, UIColor.primary)
     }
 
     func testAccessoryTypeForSelectedStateIsCheckMark() {

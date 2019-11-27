@@ -32,7 +32,7 @@ class LeftImageTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
         configureBackground()
-        imageView?.tintColor = .brand
+        imageView?.tintColor = .primary
         textLabel?.applyBodyStyle()
     }
 

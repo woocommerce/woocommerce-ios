@@ -79,7 +79,7 @@ private extension AboutViewController {
     /// Setup the tableview header.
     ///
     func configureTableViewHeader() {
-        let tintedImage             = UIImage.wooLogoImage(withSize: Constants.headerImageSize, tintColor: .brand)
+        let tintedImage             = UIImage.wooLogoImage(withSize: Constants.headerImageSize, tintColor: .primary)
         let imageView               = UIImageView(image: tintedImage)
         imageView.contentMode       = .center
         imageView.frame.size.height += Constants.headerPadding

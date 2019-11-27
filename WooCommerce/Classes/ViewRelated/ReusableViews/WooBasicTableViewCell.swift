@@ -49,7 +49,7 @@ class WooBasicTableViewCell: UITableViewCell {
     ///
     func configureLabel() {
         bodyLabel?.applyBodyStyle()
-        bodyLabel?.textColor = .brand
+        bodyLabel?.textColor = .primary
     }
 
     /// Add the accessoryView image, if any

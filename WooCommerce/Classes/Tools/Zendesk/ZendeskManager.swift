@@ -84,7 +84,7 @@ class ZendeskManager: NSObject {
                            clientId: ApiCredentials.zendeskClientId,
                            zendeskUrl: ApiCredentials.zendeskUrl)
         SupportUI.initialize(withZendesk: Zendesk.instance)
-        CommonTheme.currentTheme.primaryColor = UIColor.brand
+        CommonTheme.currentTheme.primaryColor = UIColor.primary
 
         haveUserIdentity = getUserProfile()
         zendeskEnabled = true

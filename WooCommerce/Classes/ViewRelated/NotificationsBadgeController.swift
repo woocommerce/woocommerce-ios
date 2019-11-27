@@ -93,7 +93,7 @@ private class PurpleDotView: UIView {
                                                y: rect.origin.y + borderWidth,
                                                width: rect.size.width - borderWidth * 2,
                                                height: rect.size.height - borderWidth * 2))
-        UIColor.brand.setFill()
+        UIColor.primary.setFill()
         path.fill()
 
         path.lineWidth = borderWidth

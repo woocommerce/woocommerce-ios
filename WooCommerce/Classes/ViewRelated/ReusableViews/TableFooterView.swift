@@ -63,7 +63,7 @@ extension TableFooterView {
         footnote.textContainerInset = .zero
         footnote.textAlignment = .center
         footnote.linkTextAttributes = [
-            .foregroundColor: UIColor.brand,
+            .foregroundColor: UIColor.primary,
             .underlineColor: UIColor.clear,
             .underlineStyle: NSUnderlineStyle.single.rawValue
         ]

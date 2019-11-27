@@ -71,7 +71,7 @@ final class EditableOrderTrackingTableViewCell: UITableViewCell {
     private func configureActionButton() {
         let deleteIcon = UIImage.deleteImage
             .imageFlippedForRightToLeftLayoutDirection()
-            .imageWithTintColor(.brand)
+            .imageWithTintColor(.primary)
 
         deleteButton.setImage(deleteIcon!, for: .normal)
         deleteButton.addTarget(self, action: #selector(iconTapped), for: .touchUpInside)

@@ -335,7 +335,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             self?.viewModel.dataSource.copyText(at: indexPath)
             success(true)
         }
-        copyAction.backgroundColor = .brand
+        copyAction.backgroundColor = .primary
 
         return UISwipeActionsConfiguration(actions: [copyAction])
     }
@@ -406,7 +406,7 @@ private extension OrderDetailsViewController {
         }
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .brand
+        actionSheet.view.tintColor = .primary
 
         actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
 

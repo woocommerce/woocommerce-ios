@@ -71,7 +71,7 @@ private extension AztecUIConfigurator {
         configureDefaultProperties(for: textView, accessibilityLabel: accessibilityLabel)
 
         let linkAttributes: [NSAttributedString.Key: Any] = [.underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                             .foregroundColor: UIColor.brand]
+                                                             .foregroundColor: UIColor.primary]
 
         textView.delegate = textViewDelegate
         textView.textAttachmentDelegate = textViewAttachmentDelegate

@@ -161,13 +161,15 @@ private extension AppDelegate {
         UITabBar.applyWooAppearance()
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
-        window?.tintColor = .brand
+        window?.tintColor = .primary
     }
 
     /// Sets up FancyAlert's UIAppearance.
     ///
     func setupFancyAlertAppearance() {
         let appearance = FancyAlertView.appearance()
+        appearance.bodyBackgroundColor = .listBackground
+        appearance.bottomBackgroundColor = .listBackground
         appearance.bottomDividerColor = .listSmallIcon
         appearance.topDividerColor = .listSmallIcon
 
@@ -179,7 +181,7 @@ private extension AppDelegate {
 
         appearance.actionFont = UIFont.headline
         appearance.infoFont = UIFont.subheadline
-        appearance.infoTintColor = .brand
+        appearance.infoTintColor = .primary
         appearance.headerBackgroundColor = .listSmallIcon
     }
 

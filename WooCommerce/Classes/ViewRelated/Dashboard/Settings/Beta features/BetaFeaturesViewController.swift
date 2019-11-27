@@ -191,7 +191,7 @@ private extension BetaFeaturesViewController {
         ServiceLocator.stores.dispatch(action)
 
         cell.onChange = { isSwitchOn in
-            // TODO-1464: analytics
+            ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
 
             let action = AppSettingsAction.setProductsVisibility(isVisible: isSwitchOn) {
                 NotificationCenter.default.post(name: .ProductsVisibilityDidChange, object: self)

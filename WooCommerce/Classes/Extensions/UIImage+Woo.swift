@@ -143,6 +143,12 @@ extension UIImage {
         return Gridicon.iconOfType(.heartOutline)
     }
 
+    /// Inventory Icon
+    ///
+    static var inventoryImage: UIImage {
+        return Gridicon.iconOfType(.listCheckmark, withSize: CGSize(width: 24, height: 24))
+    }
+
     /// Jetpack Logo Image
     ///
     static var jetpackLogoImage: UIImage {
@@ -176,6 +182,12 @@ extension UIImage {
     static var moreImage: UIImage {
         let tintColor = StyleManager.wooCommerceBrandColor
         return ellipsisImage.imageWithTintColor(tintColor)!
+    }
+
+    /// Price Icon
+    ///
+    static var priceImage: UIImage {
+        return Gridicon.iconOfType(.money, withSize: CGSize(width: 24, height: 24))
     }
 
     /// Product Placeholder Image
@@ -235,6 +247,12 @@ extension UIImage {
     static var searchImage: UIImage {
         return Gridicon.iconOfType(.search)
             .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Shipping Icon
+    ///
+    static var shippingImage: UIImage {
+        return Gridicon.iconOfType(.shipping, withSize: CGSize(width: 24, height: 24))
     }
 
     /// Spam Icon

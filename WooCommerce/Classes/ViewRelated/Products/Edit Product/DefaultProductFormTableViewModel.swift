@@ -105,10 +105,28 @@ private extension DefaultProductFormTableViewModel {
         let length = product.dimensions.length
         let width = product.dimensions.width
         let height = product.dimensions.height
+        let dimensions = [length, width, height].filter({ !$0.isEmpty })
         if let dimensionUnit = ServiceLocator.shippingSettingsService.dimensionUnit,
-            !length.isEmpty && !width.isEmpty && !height.isEmpty {
-            shippingDetails.append(String.localizedStringWithFormat(Constants.fullDimensionsFormat,
-                                                                    length, width, height, dimensionUnit))
+            !dimensions.isEmpty {
+            switch dimensions.count {
+            case 1:
+                let dimension = dimensions[0]
+                shippingDetails.append(String.localizedStringWithFormat(Constants.oneDimensionFormat,
+                                                                        dimension, dimensionUnit))
+            case 2:
+                let firstDimension = dimensions[0]
+                let secondDimension = dimensions[1]
+                shippingDetails.append(String.localizedStringWithFormat(Constants.twoDimensionsFormat,
+                                                                        firstDimension, secondDimension, dimensionUnit))
+            case 3:
+                let firstDimension = dimensions[0]
+                let secondDimension = dimensions[1]
+                let thirdDimension = dimensions[2]
+                shippingDetails.append(String.localizedStringWithFormat(Constants.fullDimensionsFormat,
+                                                                        firstDimension, secondDimension, thirdDimension, dimensionUnit))
+            default:
+                break
+            }
         }
 
         let details: String? = shippingDetails.isEmpty ? nil: shippingDetails.joined(separator: "\n")
@@ -146,6 +164,10 @@ private extension DefaultProductFormTableViewModel {
         // Shipping
         static let weightFormat = NSLocalizedString("Weight: %1$@%2$@",
                                                     comment: "Format of the weight on the Shipping Settings row - weight[unit]")
+        static let oneDimensionFormat = NSLocalizedString("Dimensions: %1$@%2$@",
+                                                          comment: "Format of one dimension on the Shipping Settings row - dimension[unit]")
+        static let twoDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@%3$@",
+                                                           comment: "Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit]")
         static let fullDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@ x %3$@%4$@",
                                                             comment: "Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit]")
     }

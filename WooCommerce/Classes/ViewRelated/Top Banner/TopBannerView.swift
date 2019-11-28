@@ -88,7 +88,7 @@ private extension TopBannerView {
             actionButton.applyLinkButtonStyle()
             actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
         } else {
-            expandCollapseButton.setImage(.chevronDownImage, for: .normal)
+            updateExpandCollapseState(isExpanded: isExpanded)
             expandCollapseButton.tintColor = StyleManager.wooGreyTextMin
             expandCollapseButton.addTarget(self, action: #selector(onExpandCollapseButtonTapped), for: .touchUpInside)
         }

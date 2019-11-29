@@ -1,7 +1,7 @@
 PODS:
   - 1PasswordExtension (1.8.5)
   - Alamofire (4.7.3)
-  - Automattic-Tracks-iOS (0.4.2):
+  - Automattic-Tracks-iOS (0.4.1):
     - CocoaLumberjack (~> 3.5.2)
     - Reachability (~> 3.1)
     - Sentry (~> 4)
@@ -21,24 +21,24 @@ PODS:
     - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
     - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
     - GTMSessionFetcher/Core (~> 1.1)
-  - GoogleToolboxForMac/DebugUtils (2.2.2):
-    - GoogleToolboxForMac/Defines (= 2.2.2)
-  - GoogleToolboxForMac/Defines (2.2.2)
-  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.2.2)":
-    - GoogleToolboxForMac/DebugUtils (= 2.2.2)
-    - GoogleToolboxForMac/Defines (= 2.2.2)
-    - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.2)"
-  - "GoogleToolboxForMac/NSString+URLArguments (2.2.2)"
+  - GoogleToolboxForMac/DebugUtils (2.2.1):
+    - GoogleToolboxForMac/Defines (= 2.2.1)
+  - GoogleToolboxForMac/Defines (2.2.1)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.2.1)":
+    - GoogleToolboxForMac/DebugUtils (= 2.2.1)
+    - GoogleToolboxForMac/Defines (= 2.2.1)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.1)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.2.1)"
   - Gridicons (0.19)
-  - GTMSessionFetcher/Core (1.3.0)
-  - KeychainAccess (3.2.1)
+  - GTMSessionFetcher/Core (1.2.2)
+  - KeychainAccess (3.2.0)
   - lottie-ios (2.5.2)
   - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
   - Reachability (3.2)
-  - Sentry (4.4.2):
-    - Sentry/Core (= 4.4.2)
-  - Sentry/Core (4.4.2)
+  - Sentry (4.4.0):
+    - Sentry/Core (= 4.4.0)
+  - Sentry/Core (4.4.0)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.1.4)
   - WordPress-Aztec-iOS (1.11.0)
@@ -56,14 +56,14 @@ PODS:
     - WordPressKit (~> 4.5.0)
     - WordPressShared (~> 1.8)
     - WordPressUI (~> 1.3)
-  - WordPressKit (4.5.3):
+  - WordPressKit (4.5.0):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.3)
     - UIDeviceIdentifier (~> 1.1.4)
     - WordPressShared (~> 1.8.0)
     - wpxmlrpc (= 0.8.4)
-  - WordPressShared (1.8.8):
+  - WordPressShared (1.8.7):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
   - WordPressUI (1.3.5)
@@ -130,27 +130,27 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: 4958112090127397a28e8338c776b0e3a9ad7425
+  Automattic-Tracks-iOS: a176848be4c95aa208184fe96d0322594ce230eb
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
-  GoogleToolboxForMac: 800648f8b3127618c1b59c7f97684427630c5ea3
+  GoogleToolboxForMac: b3553629623a3b1bff17f555e736cd5a6d95ad55
   Gridicons: dc92efbe5fd60111d2e8ea051d84a60cca552abc
-  GTMSessionFetcher: 43b8b64263023d4f32caa0b40f4c8bfa3c5f36d8
-  KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
+  GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
+  KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  Sentry: bba998b0fb157fdd6596aa73290a9d67ae47be79
+  Sentry: 26650184fe71eb7476dfd2737acb5ea6cc64b4b1
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
   WordPressAuthenticator: 17ad69bd1fc4dc54af15fb706c61bfe81da12ddd
-  WordPressKit: 023c6b1c2e1576c66c3044dc4ae8d28df7b2f1b5
-  WordPressShared: 64332b24b8a70b7796ee137847cd0d66bdb6b4c1
+  WordPressKit: 87ba4cce3f5269e26a09568a749ec1b8b2ba2267
+  WordPressShared: 09cf184caa614835f5811e8609227165201e6d3e
   WordPressUI: 1b006c7440e85e724b9773c7ebe3a2e783f70941
   Wormholy: f01b096b449a9fcab864a10f7e5b5693b1225c88
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2

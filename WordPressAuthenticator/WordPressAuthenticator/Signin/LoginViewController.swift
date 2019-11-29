@@ -421,7 +421,13 @@ extension LoginViewController {
         loginFields.nonceUserID = userID
 
         performSegue(withIdentifier: .show2FA, sender: self)
-        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: ["source": loginFields.meta.socialService?.rawValue ?? ""])
+
+        var properties = [AnyHashable:Any]()
+        if let service = loginFields.meta.socialService?.rawValue {
+            properties["source"] = service
+        }
+
+        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
     }
 
     func signInAppleAccount() {

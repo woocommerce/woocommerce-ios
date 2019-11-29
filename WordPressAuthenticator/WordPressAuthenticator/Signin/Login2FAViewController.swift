@@ -180,7 +180,13 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         GIDSignIn.sharedInstance().disconnect()
 
         WordPressAuthenticator.track(.signedIn)
-        WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": loginFields.meta.socialService?.rawValue ?? ""])
+
+        var properties = [AnyHashable:Any]()
+        if let service = loginFields.meta.socialService?.rawValue {
+            properties["source"] = service
+        }
+
+        WordPressAuthenticator.track(.loginSocialSuccess, properties: properties)
     }
 
     /// Only allow digits in the 2FA text field

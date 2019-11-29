@@ -281,7 +281,7 @@ private extension AppDelegate {
         appRating.systemWideSignificantEventCountRequiredForPrompt = WooConstants.systemEventCount
         appRating.setVersion(version)
     }
-    
+
     /// Set up Wormholy only in Debug build configuration
     ///
     func setupWormholy() {

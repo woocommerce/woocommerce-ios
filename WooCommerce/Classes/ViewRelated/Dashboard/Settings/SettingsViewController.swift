@@ -140,7 +140,7 @@ private extension SettingsViewController {
         #else
         otherSection = Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude)
         #endif
-        
+
         if couldShowBetaFeaturesRow() {
             rowsForImproveTheAppSection { [weak self] improveTheAppRows in
                 self?.sections = [
@@ -276,7 +276,7 @@ private extension SettingsViewController {
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Open Device Settings", comment: "Opens iOS's Device Settings for the app")
     }
-    
+
     func configureWormholy(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -390,7 +390,7 @@ private extension SettingsViewController {
         }
         UIApplication.shared.open(targetURL)
     }
-    
+
     func wormholyWasPressed() {
         /// Fire a local notification, which fire Wormholy if enabled.
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)

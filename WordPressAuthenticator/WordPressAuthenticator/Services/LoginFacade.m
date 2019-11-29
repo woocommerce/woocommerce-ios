@@ -73,7 +73,7 @@
     [self.wordpressComOAuthClientFacade authenticateWithSocialIDToken:token
                                                               service:service
                                                               success:^(NSString *authToken) {
-        if ([self.delegate respondsToSelector:@selector(finishedLoginWithGoogleIDToken:authToken:)]) {
+        if ([service isEqualToString:@"google"] && [self.delegate respondsToSelector:@selector(finishedLoginWithGoogleIDToken:authToken:)]) {
             // Apple is handled in AppleAuthenticator
             [self.delegate finishedLoginWithGoogleIDToken:token authToken:authToken];
         }

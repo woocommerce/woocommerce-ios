@@ -143,10 +143,12 @@ final class MainTabBarController: UITabBarController {
 
     /// Switches the TabBarcController to the specified Tab
     ///
-    func navigateTo(_ tab: WooTab, animated: Bool = false) {
+    func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
         selectedIndex = tab.visibleIndex()
         if let navController = selectedViewController as? UINavigationController {
-            navController.popToRootViewController(animated: animated)
+            navController.popToRootViewController(animated: animated) {
+                completion?()
+            }
         }
     }
 }
@@ -249,18 +251,17 @@ extension MainTabBarController {
 
     /// Switches to the Reviews tab and pops to the root view controller
     ///
-    static func switchToReviewsTab() {
-        navigateTo(.reviews)
+    static func switchToReviewsTab(completion: (() -> Void)? = nil) {
+        navigateTo(.reviews, completion: completion)
     }
 
     /// Switches the TabBarController to the specified Tab
     ///
-    private static func navigateTo(_ tab: WooTab, animated: Bool = false) {
+    private static func navigateTo(_ tab: WooTab, animated: Bool = false, completion: (() -> Void)? = nil) {
         guard let tabBar = AppDelegate.shared.tabBarController else {
             return
         }
-
-        tabBar.navigateTo(tab, animated: animated)
+        tabBar.navigateTo(tab, animated: animated, completion: completion)
     }
 
     /// Returns the "Top Visible Child" of the specified type
@@ -295,13 +296,12 @@ extension MainTabBarController {
     /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.
     ///
     static func presentNotificationDetails(for noteID: Int) {
-        switchToReviewsTab()
-
-        guard let reviewsViewController: ReviewsViewController = childViewController() else {
-            return
+        switchToReviewsTab {
+            guard let reviewsViewController: ReviewsViewController = childViewController() else {
+                return
+            }
+            reviewsViewController.presentDetails(for: noteID)
         }
-
-        reviewsViewController.presentDetails(for: noteID)
     }
 
     /// Switches to the My Store Tab, and presents the Settings .

@@ -97,7 +97,7 @@ DEPENDENCIES:
   - ZendeskSDK (~> 3.0.3)
 
 SPEC REPOS:
-  https://cdn.cocoapods.org/:
+  trunk:
     - 1PasswordExtension
     - Alamofire
     - Automattic-Tracks-iOS

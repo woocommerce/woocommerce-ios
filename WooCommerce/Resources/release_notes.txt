@@ -1,3 +1,7 @@
-* If your sales stats seemed odd because timezones were off, we found that bug and fixed it.
-* Ever email a customer from the Order Details screen and notice that the navigation bar looked different than in the rest of the app? Now it’s consistent.
-* The keyboard no longer covers the date picker in the Shipment Tracking extension, which makes it significantly easier to actually pick a date.
+- Improved: Order detail view now includes the order’s shipping method.
+- Enhancement: Reviews tab now shows all Product Reviews.
+- Modified: We updated the appearance of Order Details and temporarily disabled dark mode.
+- Bug fix: Fixed UI appearance on cells of Order List when tapping with dark mode enabled.
+- Bug fix: Reviews no longer convert to partial dark mode. Dark mode is coming soon!
+- Bug fix: Order Details now has the correct space between cells.
+- Bug fix: Settings no longer convert to partial dark mode.

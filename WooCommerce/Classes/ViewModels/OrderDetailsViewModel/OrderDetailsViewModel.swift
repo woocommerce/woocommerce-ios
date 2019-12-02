@@ -38,6 +38,12 @@ final class OrderDetailsViewModel {
         return dataSource.products
     }
 
+    /// Refunds
+    ///
+    var refunds: [Refund] {
+        return dataSource.refunds
+    }
+
     /// Indicates if we consider the shipment tracking plugin as reachable
     /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
     ///
@@ -90,6 +96,10 @@ final class OrderDetailsViewModel {
     func lookUpProduct(by productID: Int) -> Product? {
         return dataSource.lookUpProduct(by: productID)
     }
+
+    func lookUpRefund(by refundID: Int) -> Refund? {
+        return dataSource.lookUpRefund(by: refundID)
+    }
 }
 
 
@@ -98,7 +108,6 @@ final class OrderDetailsViewModel {
 extension OrderDetailsViewModel {
     func configureResultsControllers(onReload: @escaping () -> Void) {
         dataSource.configureResultsControllers(onReload: onReload)
-        //configureOrderListener()
     }
 
     func updateOrderStatus(order: Order) {
@@ -256,6 +265,22 @@ extension OrderDetailsViewModel {
         let action = ProductAction.requestMissingProducts(for: order) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing Products: \(error)")
+                onCompletion?(error)
+
+                return
+            }
+
+            onCompletion?(nil)
+        }
+
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
+        let refundIDs = order.refunds.map { $0.refundID }
+        let action = RefundAction.retrieveRefunds(siteID: order.siteID, orderID: order.orderID, refundIDs: refundIDs) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Error synchronizing detailed Refunds: \(error)")
                 onCompletion?(error)
 
                 return

@@ -1,5 +1,7 @@
 3.2
 -----
+- Experimental: if the Products feature flag is on, a Products feature switch is visible in Settings > Experimental Features that shows/hides the Products tab with a Work In Progress banner at the top.
+- If the Readonly Product variants feature flag is on and the Product has variations, the variants info are shown on the Product Details that navigates to a list of variations with each price or visibility shown.
  
 3.1
 -----
@@ -12,6 +14,7 @@
 - Enhancement: Support for dark mode
 - bugfix: Settings no longer convert to partial dark model.
 - bugfix: Settings no longer convert to partial dark mode.
+- bugfix: update the new stats endpoint for WC Admin plugin version 0.22+, and notify the user about the minimum plugin version when they cannot see the new stats. It'd be great to also mention this in the App Store release notes: the new stats UI now requires WC Admin plugin version 0.22+.
 
 3.0
 -----

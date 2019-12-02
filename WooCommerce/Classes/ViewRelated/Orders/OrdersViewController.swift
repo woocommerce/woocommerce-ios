@@ -441,7 +441,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                                                    statusKey: statusFilter?.slug,
                                                    pageNumber: pageNumber,
                                                    pageSize: pageSize) { [weak self] error in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 

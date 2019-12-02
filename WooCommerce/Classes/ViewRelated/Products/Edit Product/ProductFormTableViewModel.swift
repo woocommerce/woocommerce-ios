@@ -1,19 +1,26 @@
 import UIKit
+import Yosemite
 
 enum ProductFormSection {
-    case images
     case primaryFields(rows: [PrimaryFieldRow])
-    case details(rows: [DetailRow])
+    case settings(rows: [SettingsRow])
 
     enum PrimaryFieldRow {
+        case images(product: Product)
         case name(name: String?)
         case description(description: String?)
     }
 
-    enum DetailRow {
-        case price
-        case shipping
-        case inventory
+    enum SettingsRow {
+        case price(viewModel: ViewModel)
+        case shipping(viewModel: ViewModel)
+        case inventory(viewModel: ViewModel)
+
+        struct ViewModel {
+            let icon: UIImage
+            let title: String?
+            let details: String?
+        }
     }
 }
 

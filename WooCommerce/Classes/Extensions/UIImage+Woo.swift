@@ -40,6 +40,13 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Add Image icon
+    ///
+    static var addImage: UIImage {
+        let tintColor = UIColor.neutral(.shade40)
+        return Gridicon.iconOfType(.addImage).imageWithTintColor(tintColor)!
+    }
+
     /// Checkmark image, no style applied
     ///
     static var checkmarkImage: UIImage {
@@ -149,6 +156,12 @@ extension UIImage {
         return UIImage(named: "prologue-slanted-rectangle")!
     }
 
+    /// Inventory Icon
+    ///
+    static var inventoryImage: UIImage {
+        return Gridicon.iconOfType(.listCheckmark, withSize: CGSize(width: 24, height: 24))
+    }
+
     /// Jetpack Logo Image
     ///
     static var jetpackLogoImage: UIImage {
@@ -184,6 +197,12 @@ extension UIImage {
         return ellipsisImage.imageWithTintColor(tintColor)!
     }
 
+    /// Price Icon
+    ///
+    static var priceImage: UIImage {
+        return Gridicon.iconOfType(.money, withSize: CGSize(width: 24, height: 24))
+    }
+
     /// Product Placeholder Image
     ///
     static var productPlaceholderImage: UIImage {
@@ -197,6 +216,14 @@ extension UIImage {
         let tintColor = UIColor.listSmallIcon
         return Gridicon
             .iconOfType(.product, withSize: CGSize(width: 20, height: 20))
+            .imageWithTintColor(tintColor)!
+    }
+
+    /// Work In Progress banner icon on the Products Tab
+    ///
+    static var workInProgressBanner: UIImage {
+        let tintColor = UIColor.gray(.shade30)
+        return UIImage(named: "icon-tools")!
             .imageWithTintColor(tintColor)!
     }
 
@@ -233,6 +260,12 @@ extension UIImage {
     static var searchImage: UIImage {
         return Gridicon.iconOfType(.search)
             .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Shipping Icon
+    ///
+    static var shippingImage: UIImage {
+        return Gridicon.iconOfType(.shipping, withSize: CGSize(width: 24, height: 24))
     }
 
     /// Spam Icon

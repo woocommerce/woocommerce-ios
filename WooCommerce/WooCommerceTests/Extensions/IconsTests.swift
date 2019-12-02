@@ -86,6 +86,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.infoImage)
     }
 
+    func testSlantedRectangleIsNotNil() {
+        XCTAssertNotNil(UIImage.slantedRectangle)
+    }
+
     func testJetpackLogoImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.jetpackLogoImage)
     }

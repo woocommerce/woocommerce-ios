@@ -100,7 +100,7 @@ private extension ProductImagesHeaderTableViewCell {
     func configureCollectionView(config: ProductImagesCellConfig) {
         collectionView.delegate = self
         collectionView.dataSource = dataSource
-        collectionView.backgroundColor = StyleManager.wooWhite
+        collectionView.backgroundColor = .listBackground
         collectionView.showsHorizontalScrollIndicator = false
         switch config {
         case .extendedAddImages:

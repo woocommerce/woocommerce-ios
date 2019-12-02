@@ -179,7 +179,6 @@ private extension ProductsViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(displaySearchProducts))
-            button.tintColor = StyleManager.wooWhite
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search products", comment: "Search Products")
             button.accessibilityHint = NSLocalizedString(
@@ -194,7 +193,7 @@ private extension ProductsViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Configure common table properties.
@@ -215,8 +214,7 @@ private extension ProductsViewController {
         tableView.estimatedSectionHeaderHeight = 0
         tableView.sectionHeaderHeight = 0
 
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.separatorColor = StyleManager.cellSeparatorColor
+        tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
 
@@ -376,7 +374,8 @@ private extension ProductsViewController {
     ///
     func displayPlaceholderProducts() {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        tableView.displayGhostContent(options: options,
+        style: .wooDefaultGhostStyle)
 
         resultsController.stopForwardingEvents()
     }

@@ -68,8 +68,8 @@ private extension NoteDetailsHeaderPlainTableViewCell {
     /// Setup: Images
     ///
     func configureImages() {
-        imageView?.tintColor = StyleManager.wooGreyTextMin
-        accessoryImageView.tintColor = StyleManager.wooCommerceBrandColor
+        imageView?.tintColor = .textSubtle
+        accessoryImageView.tintColor = .primary
         accessoryView = accessoryImageView
     }
 
@@ -77,7 +77,7 @@ private extension NoteDetailsHeaderPlainTableViewCell {
     ///
     func configureLabels() {
         textLabel?.font = UIFont.body
-        textLabel?.textColor = StyleManager.defaultTextColor
+        textLabel?.textColor = .text
     }
 }
 

@@ -95,7 +95,7 @@ class StorePickerViewController: UIViewController {
     @IBOutlet private var noResultsLabel: UILabel! {
         didSet {
             noResultsLabel.font = StyleManager.subheadlineFont
-            noResultsLabel.textColor = StyleManager.wooGreyTextMin
+            noResultsLabel.textColor = .textSubtle
         }
     }
 
@@ -198,7 +198,7 @@ class StorePickerViewController: UIViewController {
 private extension StorePickerViewController {
 
     func setupMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .basicBackground
     }
 
     func setupTableView() {
@@ -211,7 +211,7 @@ private extension StorePickerViewController {
             tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
 
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .basicBackground
     }
 
     func setupAccountHeader() {

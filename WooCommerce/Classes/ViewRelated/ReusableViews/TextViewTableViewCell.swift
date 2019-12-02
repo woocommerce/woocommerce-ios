@@ -13,7 +13,7 @@ class TextViewTableViewCell: UITableViewCell {
         }
         set {
             noteIconButton.setImage(newValue, for: .normal)
-            noteIconButton.tintColor = .white
+            noteIconButton.tintColor = .listForeground
             noteIconButton.layer.cornerRadius = noteIconButton.frame.width / 2
         }
     }
@@ -53,10 +53,5 @@ private extension TextViewTableViewCell {
 
     func configureTextView() {
         noteTextView.delegate = self
-        // Overriding the textview user interface style until Dark Mode
-        // is fully supported
-        if #available(iOS 13.0, *) {
-            noteTextView.overrideUserInterfaceStyle = .light
-        }
     }
 }

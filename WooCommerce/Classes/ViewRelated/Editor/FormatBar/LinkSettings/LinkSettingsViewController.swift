@@ -253,7 +253,7 @@ private extension LinkSettingsViewController {
 
     func configureRemoveLink(cell: BasicTableViewCell) {
         cell.textLabel?.text = NSLocalizedString("Remove Link", comment: "Label action for removing a link from the editor")
-        cell.textLabel?.textColor = StyleManager.destructiveActionColor
+        cell.textLabel?.textColor = .error
     }
 }
 

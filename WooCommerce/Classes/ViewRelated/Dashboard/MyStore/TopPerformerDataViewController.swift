@@ -119,7 +119,8 @@ extension TopPerformerDataViewController {
         let options = GhostOptions(displaysSectionHeader: false,
                                    reuseIdentifier: ProductTableViewCell.reuseIdentifier,
                                    rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        tableView.displayGhostContent(options: options,
+                                      style: .wooDefaultGhostStyle)
     }
 
     /// Removes the Placeholder Content.
@@ -137,12 +138,12 @@ extension TopPerformerDataViewController {
 private extension TopPerformerDataViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .basicBackground
     }
 
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.separatorColor = StyleManager.cellSeparatorColor
+        tableView.backgroundColor = .basicBackground
+        tableView.separatorColor = .divider
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension

@@ -80,7 +80,7 @@ final class AztecEditorViewController: UIViewController, Editor {
     private lazy var placeholderLabel: UILabel = {
         let label = UILabel()
         label.text = NSLocalizedString("Start writing...", comment: "Aztec's Text Placeholder")
-        label.textColor = StyleManager.wooGreyMid
+        label.textColor = .textPlaceholder
         label.font = StyleManager.subheadlineFont
         label.isUserInteractionEnabled = false
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -140,7 +140,7 @@ private extension AztecEditorViewController {
 
     func configureView() {
         edgesForExtendedLayout = UIRectEdge()
-        view.backgroundColor = StyleManager.wooWhite
+        view.backgroundColor = .basicBackground
     }
 
     func configureSubviews() {

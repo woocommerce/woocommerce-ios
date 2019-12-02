@@ -24,7 +24,7 @@ final class StatusListTableViewCellTests: XCTestCase {
     }
 
     func testTintColorMatchesExpectation() {
-        XCTAssertEqual(cell?.tintColor, StyleManager.wooCommerceBrandColor)
+        XCTAssertEqual(cell?.tintColor.cgColor, UIColor.primary.cgColor)
     }
 
     func testAccessoryTypeForSelectedStateIsCheckMark() {

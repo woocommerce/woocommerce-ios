@@ -19,7 +19,7 @@ class AccountHeaderView: UIView {
     ///
     @IBOutlet private var fullnameLabel: UILabel! {
         didSet {
-            fullnameLabel.textColor = StyleManager.wooSecondary
+            fullnameLabel.textColor = .textSubtle
         }
     }
 
@@ -27,7 +27,7 @@ class AccountHeaderView: UIView {
     ///
     @IBOutlet private var usernameLabel: UILabel! {
         didSet {
-            usernameLabel.textColor = StyleManager.wooGreyTextMin
+            usernameLabel.textColor = .textSubtle
         }
     }
 
@@ -99,8 +99,8 @@ private extension AccountHeaderView {
     func setupHelpButton() {
         helpButton.setTitle(Strings.helpButtonTitle, for: .normal)
         helpButton.setTitle(Strings.helpButtonTitle, for: .highlighted)
-        helpButton.setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
-        helpButton.setTitleColor(StyleManager.wooGreyMid, for: .highlighted)
+        helpButton.setTitleColor(.primary, for: .normal)
+        helpButton.setTitleColor(.textSubtle, for: .highlighted)
         helpButton.on(.touchUpInside) { [weak self] control in
             ServiceLocator.analytics.track(.sitePickerHelpButtonTapped)
             self?.handleHelpButtonTapped(control)

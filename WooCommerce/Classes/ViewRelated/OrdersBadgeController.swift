@@ -124,16 +124,16 @@ private extension OrdersBadgeController {
         returnValue.tag = badgeTag(for: tab)
         returnValue.text = text
         returnValue.font = StyleManager.badgeFont
-        returnValue.borderColor = StyleManager.wooWhite
+        returnValue.borderColor = UIColor.basicBackground
         returnValue.borderWidth = Constants.borderWidth
-        returnValue.textColor = StyleManager.wooWhite
+        returnValue.textColor = .textInverted
         returnValue.horizontalPadding = horizontalPadding
         returnValue.cornerRadius = Constants.cornerRadius
 
         // BUGFIX: Don't add the backgroundColor property, use this!
         // Labels with rounded borders and a background color will end
         // up with a fuzzy shadow / outline outside of the border color.
-        returnValue.fillColor = StyleManager.wooCommerceBrandColor
+        returnValue.fillColor = .accent
 
         returnValue.isHidden = true
         returnValue.adjustsFontForContentSizeCategory = false

@@ -9,18 +9,18 @@ extension UISearchBar {
     ///
     class func applyWooAppearance() {
         let appearance = UISearchBar.appearance()
-        appearance.barTintColor = .white
+        appearance.barTintColor = .basicBackground
 
-        appearance.layer.borderColor = StyleManager.wooGreyBorder.cgColor
+        appearance.layer.borderColor = UIColor.listSmallIcon.cgColor
         appearance.layer.borderWidth = 1.0
 
-        let brandColor = StyleManager.wooCommerceBrandColor
+        let brandColor = UIColor.primary
         appearance.tintColor = brandColor
 
         let cancelButtonAttributes = [NSAttributedString.Key.foregroundColor: brandColor]
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(cancelButtonAttributes, for: .normal)
 
-        let textAttributes = [NSAttributedString.Key.foregroundColor: StyleManager.wooGreyMid]
+        let textAttributes = [NSAttributedString.Key.foregroundColor: UIColor.textTertiary]
         UITextField.appearance(whenContainedInInstancesOf: [UISearchBar.self]).defaultTextAttributes = textAttributes
     }
 }

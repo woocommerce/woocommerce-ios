@@ -20,6 +20,6 @@ extension UICollectionViewCell {
     }
 
     func applyGrayBackgroundStyle() {
-        backgroundColor = StyleManager.wooGreyLight
+        backgroundColor = .listBackground
     }
 }

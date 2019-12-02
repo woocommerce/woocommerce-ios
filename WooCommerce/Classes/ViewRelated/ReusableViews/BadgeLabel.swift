@@ -9,7 +9,7 @@ final class BadgeLabel: UILabel {
         }
     }
 
-    @IBInspectable var fillColor: UIColor = StyleManager.wooCommerceBrandColor
+    @IBInspectable var fillColor: UIColor = .primary
 
     // MARK: Initialization
 

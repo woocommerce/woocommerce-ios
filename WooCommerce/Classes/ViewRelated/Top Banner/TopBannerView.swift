@@ -82,14 +82,14 @@ private extension TopBannerView {
 
         if isActionEnabled {
             dismissButton.setImage(Gridicon.iconOfType(.cross, withSize: CGSize(width: 24, height: 24)), for: .normal)
-            dismissButton.tintColor = StyleManager.wooGreyTextMin
+            dismissButton.tintColor = .textSubtle
             dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
 
             actionButton.applyLinkButtonStyle()
             actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
         } else {
             updateExpandCollapseState(isExpanded: isExpanded)
-            expandCollapseButton.tintColor = StyleManager.wooGreyTextMin
+            expandCollapseButton.tintColor = .textSubtle
             expandCollapseButton.addTarget(self, action: #selector(onExpandCollapseButtonTapped), for: .touchUpInside)
         }
     }
@@ -115,7 +115,7 @@ private extension TopBannerView {
     }
 
     func configureBackground() {
-        backgroundColor = .white
+        backgroundColor = .basicBackground
     }
 
     func createContentView() -> UIView {

@@ -86,13 +86,13 @@ private extension SettingsViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
     }
 
     func refreshResultsController() {
@@ -108,7 +108,7 @@ private extension SettingsViewController {
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.iconImage = .heartOutlineImage
         footerView.footnote.attributedText = hiringAttributedText
-        footerView.iconColor = StyleManager.wooCommerceBrandColor
+        footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
 
@@ -271,7 +271,7 @@ private extension SettingsViewController {
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = StyleManager.destructiveActionColor
+        cell.textLabel?.textColor = .error
         cell.textLabel?.text = NSLocalizedString("Log Out", comment: "Log out button title")
     }
 }
@@ -557,7 +557,7 @@ private extension SettingsViewController {
         )
         let hiringAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,
-            .foregroundColor: StyleManager.wooGreyMid
+            .foregroundColor: UIColor.textSubtle
         ]
 
         let hiringAttrText = NSMutableAttributedString()

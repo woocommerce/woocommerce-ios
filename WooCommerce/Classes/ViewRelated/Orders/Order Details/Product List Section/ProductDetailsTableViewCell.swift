@@ -102,12 +102,12 @@ private extension ProductDetailsTableViewCell {
 
         //Background when selected
         selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 
     func configureProductImageView() {
         productImageView.image = .productPlaceholderImage
-        productImageView.tintColor = StyleManager.wooGreyBorder
+        productImageView.tintColor = .listSmallIcon
         productImageView.contentMode = .scaleAspectFill
         productImageView.clipsToBounds = true
     }

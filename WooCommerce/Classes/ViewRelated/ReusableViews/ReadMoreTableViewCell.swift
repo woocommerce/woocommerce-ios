@@ -30,7 +30,7 @@ final class ReadMoreTableViewCell: UITableViewCell {
     /// Configure the button
     ///
     func configureMoreButton() {
-        moreButton.tintColor = StyleManager.wooCommerceBrandColor
+        moreButton.tintColor = .primary
         moreButton.addTarget(self, action: #selector(moreWasTapped), for: .touchUpInside)
     }
 

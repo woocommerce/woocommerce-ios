@@ -261,6 +261,7 @@ extension MainTabBarController {
         guard let tabBar = AppDelegate.shared.tabBarController else {
             return
         }
+
         tabBar.navigateTo(tab, animated: animated, completion: completion)
     }
 

@@ -29,19 +29,4 @@ enum FeatureFlag: Int {
     /// Refunds
     ///
     case refunds
-
-    /// Returns a boolean indicating if the feature is enabled
-    ///
-    var enabled: Bool {
-        switch self {
-        case .stats:
-            return BuildConfiguration.current == .localDeveloper
-        case .reviews:
-            return true
-        case .refunds:
-            return BuildConfiguration.current == .localDeveloper
-        default:
-            return true
-        }
-    }
 }

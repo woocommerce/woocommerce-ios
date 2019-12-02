@@ -1,3 +1,7 @@
-* Zaman dilimlerinin hatalı olması nedeniyle satış istatistiklerini etkileyen hatayı bulduk ve düzelttik.
-* Sipariş Ayrıntıları ekranından bir müşteriye e-posta gönderirken gezinme çubuğunun uygulamanın geri kalanında gördüğünüz çubuktan farklı olduğunu fark ettiniz mi? Bu çubuk artık tüm uygulamada tutarlı bir şekilde görüntüleniyor.
-* Klavye artık Sevkiyat Takibi uzantısındaki tarih seçicinin üzerini kapatmıyor. Artık çok daha kolay bir şekilde tarih seçebilirsiniz.
+- İyileştirme: Sipariş ayrıntıları görünümünde artık siparişin sevkiyat yöntemi görüntüleniyor.
+- Geliştirme: :Yorumlar sekmesinde artık tüm Ürün Yorumları gösteriliyor.
+- Değiştirildi: Sipariş Ayrıntıları'nın görünümü güncellendi ve karanlık mod geçici olarak devre dışı bırakıldı.
+- Hata düzeltmesi: Karanlık mod etkinken dokunduğunuzda Sipariş Listesi hücrelerindeki kullanıcı arayüzü görünümü düzeltildi.
+- Hata düzeltmesi: Yorumlar artık kısmi karanlık moda geçmiyor. Karanlık mod yakında hizmetinizde!
+- Hata düzeltmesi: Sipariş Ayrıntıları'ndaki hücreler arasında artık doğru ebatta boşluk var.
+- Hata düzeltmesi: Ayarlar artık kısmi karanlık moda geçmiyor.

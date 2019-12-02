@@ -2,7 +2,11 @@ import Aztec
 
 /// Implements Aztec's `TextViewAttachmentDelegate` without media support.
 final class AztecTextViewAttachmentHandler: TextViewAttachmentDelegate {
-    func textView(_ textView: TextView, attachment: NSTextAttachment, imageAt url: URL, onSuccess success: @escaping (UIImage) -> Void, onFailure failure: @escaping () -> Void) {
+    func textView(_ textView: TextView,
+                  attachment: NSTextAttachment,
+                  imageAt url: URL,
+                  onSuccess success: @escaping (UIImage) -> Void,
+                  onFailure failure: @escaping () -> Void) {
     }
 
     func textView(_ textView: TextView, urlFor imageAttachment: ImageAttachment) -> URL? {

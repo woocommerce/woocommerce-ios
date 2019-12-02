@@ -1,3 +1,7 @@
-* Om din försäljningsstatistik verkade konstig så är det för att tidszonerna var felaktiga. Vi har åtgärdat det.
-* Har du någonsin e-postat en kund från Beställningsinformationsskärmen och märkt att navigeringsfältet såg annorlunda ut än i resten av appen? Nu ser den likadan ut.
-* Tangentbordet täcker inte längre datumväljaren i Fraktspårningstillägget, vilket gör det markant enklare att faktiskt välja ett datum.
+- Förbättring: Beställningsinformationsvyn inkluderar nu beställningens fraktmetod.
+- Förbättring: Fliken Recensioner visar nu alla produktrecensioner.
+- Modifiering: Vi har uppdaterat utseendet på beställningsinformationen och tillfälligt inaktiverat mörkt läge.
+- Buggkorrigering: Användargränssnittsutseendet på celler i beställningslistan när du trycker med mörkt läge aktiverat har korrigerats.
+- Buggkorrigering: Recensioner konverteras inte längre till delvis mörkt läge. Mörkt läge kommer snart!
+- Buggkorrigering: Beställningsinformationen har nu korrekt utrymme mellan celler.
+- Buggkorrigering: Inställningar konverteras inte längre till delvis mörkt läge.

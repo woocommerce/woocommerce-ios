@@ -12,6 +12,12 @@ extension NSDecimalNumber {
         return false
     }
 
+    /// Returns true if the decimalValue is negative, false otherwise.
+    ///
+    func isNegative() -> Bool {
+        return self.decimalValue._isNegative == 1
+    }
+
     /// Provides a short, friendly, and *localized* representation of the receiver.
     ///
     /// - Parameter roundSmallNumbers: if `true`, small numbers are rounded, if `false`, no rounding occurs (defaults to true)

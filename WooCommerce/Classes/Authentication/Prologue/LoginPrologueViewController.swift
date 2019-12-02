@@ -118,7 +118,9 @@ private extension LoginPrologueViewController {
         loginButton.setTitleColor(.white, for: .highlighted)
         loginButton.titleLabel?.font = StyleManager.headlineSemiBold
         loginButton.setBackgroundImage(UIImage.renderBackgroundImage(fill: .white, border: .white), for: .normal)
-        loginButton.setBackgroundImage(UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground, border: .primaryButtonDownBackground), for: .highlighted)
+        loginButton.setBackgroundImage(UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground,
+                                                                     border: .primaryButtonDownBackground),
+                                       for: .highlighted)
         loginButton.layer.cornerRadius = Settings.buttonCornerRadius
     }
 }

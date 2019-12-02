@@ -24,7 +24,7 @@ final class LoginPrologueViewController: UIViewController {
     ///
     @IBOutlet var disclaimerTextView: UITextView!
 
-    @IBOutlet var slantedRectangle: UIImageView!
+    @IBOutlet private var slantedRectangle: UIImageView!
     /// Jetpack Logo ImageVIew
     ///
     @IBOutlet var jetpackImageView: UIImageView!

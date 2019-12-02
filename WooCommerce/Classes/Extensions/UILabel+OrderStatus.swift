@@ -44,7 +44,7 @@ extension UILabel {
         case .refunded:
             backgroundColor = .error
         }
-        
+
         textColor = .black
     }
 }

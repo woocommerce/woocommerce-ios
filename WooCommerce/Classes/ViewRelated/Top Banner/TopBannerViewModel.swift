@@ -9,18 +9,21 @@ struct TopBannerViewModel {
     let actionButtonTitle: String?
     let actionHandler: (() -> Void)?
     let dismissHandler: (() -> Void)?
+    let expandedStateChangeHandler: (() -> Void)?
 
     /// Used when the top banner is not actionable.
     ///
     init(title: String?,
          infoText: String?,
-         icon: UIImage?) {
+         icon: UIImage?,
+         expandedStateChangeHandler: (() -> Void)?) {
         self.title = title
         self.infoText = infoText
         self.icon = icon
         self.actionButtonTitle = nil
         self.actionHandler = nil
         self.dismissHandler = nil
+        self.expandedStateChangeHandler = expandedStateChangeHandler
     }
 
     /// Used when the top banner is actionable.
@@ -37,5 +40,6 @@ struct TopBannerViewModel {
         self.actionButtonTitle = actionButtonTitle
         self.actionHandler = actionHandler
         self.dismissHandler = dismissHandler
+        self.expandedStateChangeHandler = nil
     }
 }

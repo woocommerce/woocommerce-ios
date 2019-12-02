@@ -194,7 +194,7 @@ private extension ProductsViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = StyleManager.tableViewBackgroundColor
     }
 
     /// Configure common table properties.
@@ -215,8 +215,8 @@ private extension ProductsViewController {
         tableView.estimatedSectionHeaderHeight = 0
         tableView.sectionHeaderHeight = 0
 
-        tableView.backgroundColor = .listBackground
-        tableView.separatorColor = .divider
+        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.separatorColor = StyleManager.cellSeparatorColor
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
 
@@ -240,7 +240,9 @@ private extension ProductsViewController {
                                          comment: "The info of the Work In Progress top banner on the Products tab")
         let viewModel = TopBannerViewModel(title: title,
                                            infoText: infoText,
-                                           icon: .workInProgressBanner)
+                                           icon: .workInProgressBanner) { [weak self] in
+                                            self?.tableView.updateHeaderHeight()
+        }
         let topBannerView = TopBannerView(viewModel: viewModel)
         topBannerView.translatesAutoresizingMaskIntoConstraints = false
         return topBannerView

@@ -98,10 +98,10 @@ private extension StoreTableViewCell {
     }
 
     func configureNameLabel() {
-        nameLabel.textColor = StyleManager.wooSecondary
+        nameLabel.textColor = .text
     }
 
     func configureUrlLabel() {
-        urlLabel.textColor = StyleManager.wooSecondary
+        urlLabel.textColor = .textSubtle
     }
 }

@@ -123,8 +123,8 @@ private extension NoteTableViewCell {
     /// Refreshes the Cell's Colors.
     ///
     func refreshColors() {
-        backgroundColor = StyleManager.wooWhite
-        sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
+        backgroundColor = .listForeground
+        sidebarView.backgroundColor = read ? UIColor.clear : UIColor.accent
     }
 
     func configureStarView() {
@@ -141,7 +141,7 @@ private extension NoteTableViewCell {
 
     enum Star {
         static let size = Double(13)
-        static let filledImage = UIImage.starImage(size: Star.size, tintColor: StyleManager.defaultTextColor)
+        static let filledImage = UIImage.starImage(size: Star.size, tintColor: .text)
         static let emptyImage = UIImage.starImage(size: Star.size, tintColor: .clear)
     }
 }

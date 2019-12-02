@@ -109,13 +109,13 @@ private extension ProductDetailsViewController {
     /// Setup: main view
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Setup: TableView
     ///
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = viewModel.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
@@ -159,7 +159,7 @@ private extension ProductDetailsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            LargeImageTableViewCell.self,
+            ProductImagesHeaderTableViewCell.self,
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
             ProductReviewsTableViewCell.self,
@@ -203,7 +203,9 @@ private extension ProductDetailsViewController {
 
     @objc func editProduct() {
         let product = viewModel.product
-        let productForm = ProductFormViewController(product: product)
+        let currencyCode = CurrencySettings.shared.currencyCode
+        let currency = CurrencySettings.shared.symbol(from: currencyCode)
+        let productForm = ProductFormViewController(product: product, currency: currency)
         let navController = WooNavigationController(rootViewController: productForm)
         navigationController?.present(navController, animated: true)
     }

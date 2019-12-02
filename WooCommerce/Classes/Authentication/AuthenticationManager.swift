@@ -24,28 +24,28 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent)
 
-        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: StyleManager.buttonPrimaryColor,
-                                                primaryNormalBorderColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                primaryHighlightBackgroundColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                primaryHighlightBorderColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                secondaryNormalBackgroundColor: StyleManager.buttonSecondaryColor,
-                                                secondaryNormalBorderColor: StyleManager.buttonSecondaryHighlightedColor,
-                                                secondaryHighlightBackgroundColor: StyleManager.buttonSecondaryHighlightedColor,
-                                                secondaryHighlightBorderColor: StyleManager.buttonSecondaryHighlightedColor,
-                                                disabledBackgroundColor: StyleManager.buttonDisabledColor,
-                                                disabledBorderColor: StyleManager.buttonDisabledHighlightedColor,
-                                                primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
-                                                secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
-                                                disabledTitleColor: StyleManager.buttonDisabledTitleColor,
-                                                textButtonColor: StyleManager.wooCommerceBrandColor,
-                                                textButtonHighlightColor: StyleManager.wooCommerceBrandColor,
-                                                instructionColor: StyleManager.wooCommerceBrandColor,
-                                                subheadlineColor: StyleManager.wooCommerceBrandColor,
-                                                placeholderColor: StyleManager.wooGreyTextMin,
-                                                viewControllerBackgroundColor: StyleManager.wooGreyLight,
-                                                textFieldBackgroundColor: StyleManager.wooWhite,
+        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
+                                                primaryNormalBorderColor: .primaryButtonDownBackground,
+                                                primaryHighlightBackgroundColor: .primaryButtonDownBackground,
+                                                primaryHighlightBorderColor: .primaryButtonDownBorder,
+                                                secondaryNormalBackgroundColor: .primaryButtonDownBackground,
+                                                secondaryNormalBorderColor: .primaryButtonDownBorder,
+                                                secondaryHighlightBackgroundColor: .primaryButtonDownBackground,
+                                                secondaryHighlightBorderColor: .primaryButtonDownBorder,
+                                                disabledBackgroundColor: .textSubtle,
+                                                disabledBorderColor: .textSubtle,
+                                                primaryTitleColor: .text,
+                                                secondaryTitleColor: .textTertiary,
+                                                disabledTitleColor: .textSubtle,
+                                                textButtonColor: .primary,
+                                                textButtonHighlightColor: .primaryDark,
+                                                instructionColor: .textSubtle,
+                                                subheadlineColor: .textSubtle,
+                                                placeholderColor: .textPlaceholder,
+                                                viewControllerBackgroundColor: .listBackground,
+                                                textFieldBackgroundColor: .listForeground,
                                                 navBarImage: StyleManager.navBarImage,
-                                                navBarBadgeColor: StyleManager.wooCommerceBrandColor)
+                                                navBarBadgeColor: .primary)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                      jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
@@ -63,11 +63,6 @@ class AuthenticationManager: Authentication {
         let prologueViewController = LoginPrologueViewController()
         let navigationController = LoginNavigationController(rootViewController: prologueViewController)
         navigationController.modalPresentationStyle = .fullScreen
-
-        // TODO-1335: properly handle login input field text color in Dark mode in `WordPressAuthenticator`.
-        if #available(iOS 13.0, *) {
-            navigationController.overrideUserInterfaceStyle = .light
-        }
 
         presenter.present(navigationController, animated: true, completion: nil)
     }

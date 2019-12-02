@@ -23,14 +23,6 @@ class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(tabBarController.viewControllers?.count, 3)
     }
 
-    func testTabBarViewControllersWhenProductListFeatureIsOn() {
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isProductListFeatureOn: true))
-
-        XCTAssertNotNil(tabBarController.view)
-
-        XCTAssertEqual(tabBarController.viewControllers?.count, 4)
-    }
-
     func testWooTabIndexWhenProductListFeatureIsOff() {
         let isProductListFeatureOn = false
 

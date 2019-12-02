@@ -278,7 +278,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     # makes the default gym output override the "file" parameter. 
     appcenter_upload(
       api_token: get_required_env("APPCENTER_API_TOKEN"),
-      owner_name: "Hogwarts-Organization",
+      owner_name: "automattic",
       owner_type: "organization", 
       app_name: "WooCommerce-Installable-Builds",
       ipa: "build/WooCommerce Alpha.ipa",
@@ -289,7 +289,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
     download_url = Actions.lane_context[SharedValues::APPCENTER_DOWNLOAD_LINK]
     UI.message("Successfully built and uploaded installable build here: #{download_url}")
-    install_url = "https://install.appcenter.ms/orgs/Hogwarts-Organization/apps/WooCommerce-Installable-Builds"
+    install_url = "https://install.appcenter.ms/orgs/automattic/apps/WooCommerce-Installable-Builds"
 
     # Create a comment.json file so that Peril to comment with the build details, if this is running on CI
     comment_body = "You can test the changes on this Pull Request by downloading it from AppCenter [here](#{install_url}) with build number: #{build_number}. IPA is available [here](#{download_url}). If you need access to this, you can ask a maintainer to add you."

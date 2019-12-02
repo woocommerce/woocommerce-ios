@@ -132,8 +132,8 @@ private extension FulfillViewController {
     /// Setup: Main View
     ///
     func setupMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
     }
 
     /// Setup: TableView
@@ -491,7 +491,7 @@ private extension FulfillViewController {
         }
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        actionSheet.view.tintColor = .primary
         actionSheet.addCancelActionWithTitle(DeleteAction.cancel)
         actionSheet.addDestructiveActionWithTitle(DeleteAction.delete) { [weak self] _ in
             ServiceLocator.analytics.track(.orderFulfillmentDeleteTrackingButtonTapped)

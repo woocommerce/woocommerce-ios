@@ -86,13 +86,13 @@ private extension SettingsViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
     }
 
     func refreshResultsController() {
@@ -108,7 +108,7 @@ private extension SettingsViewController {
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.iconImage = .heartOutlineImage
         footerView.footnote.attributedText = hiringAttributedText
-        footerView.iconColor = StyleManager.wooCommerceBrandColor
+        footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
 
@@ -134,7 +134,7 @@ private extension SettingsViewController {
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stats) {
+        if couldShowBetaFeaturesRow() {
             rowsForImproveTheAppSection { [weak self] improveTheAppRows in
                 self?.sections = [
                     Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
@@ -158,6 +158,11 @@ private extension SettingsViewController {
     }
 
     func rowsForImproveTheAppSection(onCompletion: @escaping (_ rows: [Row]) -> Void) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) {
+            onCompletion([.privacy, .betaFeatures, .featureRequest])
+            return
+        }
+
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             assertionFailure("Cannot find store ID")
             return
@@ -236,7 +241,7 @@ private extension SettingsViewController {
     func configureBetaFeatures(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
-        cell.textLabel?.text = NSLocalizedString("Beta Features", comment: "Navigates to Beta features screen")
+        cell.textLabel?.text = NSLocalizedString("Experimental Features", comment: "Navigates to experimental features screen")
     }
 
     func configureFeatureSuggestions(cell: BasicTableViewCell) {
@@ -266,7 +271,7 @@ private extension SettingsViewController {
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = StyleManager.destructiveActionColor
+        cell.textLabel?.textColor = .error
         cell.textLabel?.text = NSLocalizedString("Log Out", comment: "Log out button title")
     }
 }
@@ -278,6 +283,11 @@ private extension SettingsViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
+    }
+
+    func couldShowBetaFeaturesRow() -> Bool {
+        let featureFlagService = ServiceLocator.featureFlagService
+        return featureFlagService.isFeatureFlagEnabled(.stats) || featureFlagService.isFeatureFlagEnabled(.productList)
     }
 }
 
@@ -547,7 +557,7 @@ private extension SettingsViewController {
         )
         let hiringAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,
-            .foregroundColor: StyleManager.wooGreyMid
+            .foregroundColor: UIColor.textSubtle
         ]
 
         let hiringAttrText = NSMutableAttributedString()

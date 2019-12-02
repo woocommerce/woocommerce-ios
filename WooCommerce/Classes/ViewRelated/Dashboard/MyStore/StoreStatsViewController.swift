@@ -149,7 +149,7 @@ private extension StoreStatsViewController {
     ///
     func displayGhostContent() {
         view.isUserInteractionEnabled = false
-        buttonBarView.startGhostAnimation()
+        buttonBarView.startGhostAnimation(style: .wooDefaultGhostStyle)
         visibleChildViewController.displayGhostContent()
     }
 
@@ -164,7 +164,7 @@ private extension StoreStatsViewController {
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
     ///
     func ensureGhostContentIsAnimated() {
-        view.restartGhostAnimation()
+        view.restartGhostAnimation(style: .wooDefaultGhostStyle)
     }
 }
 
@@ -174,10 +174,10 @@ private extension StoreStatsViewController {
 private extension StoreStatsViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        topBorder.backgroundColor = StyleManager.wooGreyBorder
-        middleBorder.backgroundColor = StyleManager.wooGreyBorder
-        bottomBorder.backgroundColor = StyleManager.wooGreyBorder
+        view.backgroundColor = .listForeground
+        topBorder.backgroundColor = .divider
+        middleBorder.backgroundColor = .divider
+        bottomBorder.backgroundColor = .divider
     }
 
     func configurePeriodViewControllers() {
@@ -193,12 +193,12 @@ private extension StoreStatsViewController {
     }
 
     func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = StyleManager.wooWhite
-        settings.style.buttonBarItemBackgroundColor = StyleManager.wooWhite
-        settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
+        settings.style.buttonBarBackgroundColor = .listForeground
+        settings.style.buttonBarItemBackgroundColor = .listForeground
+        settings.style.selectedBarBackgroundColor = .primary
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = StyleManager.defaultTextColor
+        settings.style.buttonBarItemTitleColor = .text
         settings.style.buttonBarItemsShouldFillAvailableWidth = false
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
 
@@ -210,8 +210,8 @@ private extension StoreStatsViewController {
             animated: Bool) -> Void in
 
             guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = StyleManager.defaultTextColor
-            newCell?.label.textColor = StyleManager.wooCommerceBrandColor
+            oldCell?.label.textColor = .textSubtle
+            newCell?.label.textColor = .primary
         }
     }
 }

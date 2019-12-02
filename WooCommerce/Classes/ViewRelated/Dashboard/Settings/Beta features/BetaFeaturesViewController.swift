@@ -2,6 +2,13 @@ import Storage
 import UIKit
 import Yosemite
 
+// MARK: - BetaFeaturesViewController's Notifications
+//
+extension Notification.Name {
+    static let ProductsVisibilityDidChange = Notification.Name(rawValue: "ProductsVisibilityDidChange")
+}
+
+
 /// Contains UI for Beta features that can be turned on and off.
 ///
 class BetaFeaturesViewController: UIViewController {
@@ -48,13 +55,13 @@ private extension BetaFeaturesViewController {
     /// Set the title.
     ///
     func configureNavigationBar() {
-        title = NSLocalizedString("Beta Features", comment: "Beta features navigation title")
+        title = NSLocalizedString("Experimental Features", comment: "Experimental features navigation title")
     }
 
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Configure common table properties.
@@ -69,16 +76,39 @@ private extension BetaFeaturesViewController {
         tableView.cellLayoutMarginsFollowReadableWidth = true
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
     }
 
     /// Configure sections for table view.
     ///
     func configureSections() {
-        sections = [
-            Section(rows: [.statsVersionSwitch,
-                           .statsVersionDescription])
-        ]
+        let action = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { [weak self] eligibleStatsVersion in
+            guard let self = self else {
+                return
+            }
+            guard eligibleStatsVersion == .v4 else {
+                self.sections = [
+                    self.productsSection()
+                ]
+
+                return
+            }
+            self.sections = [
+                self.statsSection(),
+                self.productsSection()
+            ]
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func statsSection() -> Section {
+        return Section(rows: [.statsVersionSwitch,
+                              .statsVersionDescription])
+    }
+
+    func productsSection() -> Section {
+        return Section(rows: [.productsSwitch,
+                              .productsDescription])
     }
 
     /// Register table cells.
@@ -98,10 +128,16 @@ private extension BetaFeaturesViewController {
         }
 
         switch cell {
+        // Stats v4
         case let cell as SwitchTableViewCell where row == .statsVersionSwitch:
             configureStatsVersionSwitch(cell: cell)
         case let cell as BasicTableViewCell where row == .statsVersionDescription:
             configureStatsVersionDescription(cell: cell)
+        // Product list
+        case let cell as SwitchTableViewCell where row == .productsSwitch:
+            configureProductsSwitch(cell: cell)
+        case let cell as BasicTableViewCell where row == .productsDescription:
+            configureProductsDescription(cell: cell)
         default:
             fatalError()
         }
@@ -110,10 +146,10 @@ private extension BetaFeaturesViewController {
     // MARK: - Stats version feature
 
     func configureStatsVersionSwitch(cell: SwitchTableViewCell) {
-        cell.accessoryType = .none
-        cell.selectionStyle = .none
+        configureCommonStylesForSwitchCell(cell)
+
         let statsVersionTitle = NSLocalizedString("Improved stats",
-                                                  comment: "My Store > Settings > Beta features > Switch stats version")
+                                                  comment: "My Store > Settings > Experimental features > Switch stats version")
         cell.title = statsVersionTitle
 
         let action = AppSettingsAction.loadInitialStatsVersionToShow(siteID: siteID) { initialStatsVersion in
@@ -135,11 +171,54 @@ private extension BetaFeaturesViewController {
     }
 
     func configureStatsVersionDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = NSLocalizedString("Try the new stats available with the WooCommerce Admin plugin",
+                                                 comment: "My Store > Settings > Experimental features > Stats version description")
+    }
+
+    // MARK: - Product List feature
+
+    func configureProductsSwitch(cell: SwitchTableViewCell) {
+        configureCommonStylesForSwitchCell(cell)
+
+        let statsVersionTitle = NSLocalizedString("Products",
+                                                  comment: "My Store > Settings > Experimental features > Switch Products")
+        cell.title = statsVersionTitle
+
+        let action = AppSettingsAction.loadProductsVisibility() { isVisible in
+            cell.isOn = isVisible
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        cell.onChange = { isSwitchOn in
+            ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
+
+            let action = AppSettingsAction.setProductsVisibility(isVisible: isSwitchOn) {
+                NotificationCenter.default.post(name: .ProductsVisibilityDidChange, object: self)
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
+    }
+
+    func configureProductsDescription(cell: BasicTableViewCell) {
+        configureCommonStylesForDescriptionCell(cell)
+        cell.textLabel?.text = NSLocalizedString("Test out the new products section as we get ready to launch",
+                                                 comment: "My Store > Settings > Experimental features > Products description")
+    }
+}
+
+// MARK: - Shared Configurations
+//
+private extension BetaFeaturesViewController {
+    func configureCommonStylesForSwitchCell(_ cell: SwitchTableViewCell) {
+        cell.accessoryType = .none
+        cell.selectionStyle = .none
+    }
+
+    func configureCommonStylesForDescriptionCell(_ cell: BasicTableViewCell) {
         cell.accessoryType = .none
         cell.selectionStyle = .none
         cell.textLabel?.numberOfLines = 0
-        cell.textLabel?.text = NSLocalizedString("Try the new stats available with the WooCommerce Admin plugin",
-                                                 comment: "My Store > Settings > Beta features > Stats version description")
     }
 }
 
@@ -186,14 +265,19 @@ private struct Section {
 }
 
 private enum Row: CaseIterable {
+    // Stats v4.
     case statsVersionSwitch
     case statsVersionDescription
 
+    // Products.
+    case productsSwitch
+    case productsDescription
+
     var type: UITableViewCell.Type {
         switch self {
-        case .statsVersionSwitch:
+        case .statsVersionSwitch, .productsSwitch:
             return SwitchTableViewCell.self
-        case .statsVersionDescription:
+        case .statsVersionDescription, .productsDescription:
             return BasicTableViewCell.self
         }
     }

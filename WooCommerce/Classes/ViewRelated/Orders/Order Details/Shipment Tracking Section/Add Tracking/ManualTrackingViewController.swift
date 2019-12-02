@@ -58,7 +58,7 @@ final class ManualTrackingViewController: UIViewController {
 ///
 private extension ManualTrackingViewController {
     func configureBackground() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureNavigation() {
@@ -79,7 +79,6 @@ private extension ManualTrackingViewController {
                                             style: .plain,
                                             target: self,
                                             action: #selector(dismissButtonTapped))
-        leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 
@@ -106,7 +105,6 @@ private extension ManualTrackingViewController {
                                              style: .done,
                                              target: self,
                                              action: #selector(primaryButtonTapped))
-        rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.isEnabled = false
     }
@@ -160,7 +158,7 @@ private extension ManualTrackingViewController {
 
         table.estimatedRowHeight = Constants.rowHeight
         table.rowHeight = UITableView.automaticDimension
-        table.backgroundColor = StyleManager.tableViewBackgroundColor
+        table.backgroundColor = .listBackground
         table.dataSource = self
         table.delegate = self
     }
@@ -287,7 +285,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
     private func configureSecondaryAction(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = StyleManager.destructiveActionColor
+        cell.textLabel?.textColor = .error
         cell.textLabel?.text = viewModel.secondaryActionTitle
     }
 

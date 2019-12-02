@@ -7,11 +7,11 @@ struct AztecFormatBarFactory {
     func formatBar(onAction: @escaping (_ formatBarItem: FormatBarItem, _ formatBar: FormatBar) -> Void) -> FormatBar {
         let toolbar = Aztec.FormatBar()
 
-        toolbar.tintColor = StyleManager.wooCommerceBrandColor
-        toolbar.highlightedTintColor = StyleManager.wooCommerceBrandColor.withAlphaComponent(0.5)
-        toolbar.selectedTintColor = StyleManager.wooSecondary
-        toolbar.disabledTintColor = StyleManager.buttonDisabledColor
-        toolbar.dividerTintColor = StyleManager.cellSeparatorColor
+        toolbar.tintColor = .primary
+        toolbar.highlightedTintColor = UIColor.primary.withAlphaComponent(0.5)
+        toolbar.selectedTintColor = .textSubtle
+        toolbar.disabledTintColor = .textTertiary
+        toolbar.dividerTintColor = .divider
         toolbar.overflowToggleIcon = Gridicon.iconOfType(.ellipsis)
 
         updateToolbar(toolbar)
@@ -23,7 +23,7 @@ struct AztecFormatBarFactory {
         return toolbar
     }
 
-    func formatBarCommandCoordinator(optionsTablePresenter: OptionsTablePresenter) -> AztecFormatBarCommandCoordinator {
+    func formatBarCommandCoordinator(optionsTablePresenter: OptionsTablePresenter, linkDialogPresenter: UIViewController) -> AztecFormatBarCommandCoordinator {
         return AztecFormatBarCommandCoordinator(commands: [
             AztecBoldFormatBarCommand(),
             AztecItalicFormatBarCommand(),
@@ -34,7 +34,8 @@ struct AztecFormatBarFactory {
             AztecInsertMoreFormatBarCommand(),
             AztecSourceCodeFormatBarCommand(),
             AztecHeaderFormatBarCommand(optionsTablePresenter: optionsTablePresenter),
-            AztecUnorderedListFormatBarCommand(optionsTablePresenter: optionsTablePresenter)
+            AztecUnorderedListFormatBarCommand(optionsTablePresenter: optionsTablePresenter),
+            AztecLinkFormatBarCommand(linkDialogPresenter: linkDialogPresenter)
         ])
     }
 }

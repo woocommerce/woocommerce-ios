@@ -23,12 +23,21 @@ final class TextViewViewController: UIViewController {
     private let initialText: String?
     private let placeholder: String
     private let navigationTitle: String?
+    private let keyboardType: UIKeyboardType
+    private let autocapitalizationType: UITextAutocapitalizationType
     private let onCompletion: Completion
 
-    init(text: String?, placeholder: String, navigationTitle: String?, completion: @escaping Completion) {
+    init(text: String?,
+         placeholder: String,
+         navigationTitle: String?,
+         keyboardType: UIKeyboardType = .default,
+         autocapitalizationType: UITextAutocapitalizationType = .sentences,
+         completion: @escaping Completion) {
         self.initialText = text
         self.placeholder = placeholder
         self.navigationTitle = navigationTitle
+        self.keyboardType = keyboardType
+        self.autocapitalizationType = autocapitalizationType
         self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -45,6 +54,12 @@ final class TextViewViewController: UIViewController {
         configurePlaceholderLabel()
         refreshPlaceholderVisibility()
         startListeningToNotifications()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        textView.becomeFirstResponder()
     }
 }
 
@@ -65,6 +80,8 @@ private extension TextViewViewController {
 
     func configureTextView() {
         textView.text = initialText
+        textView.keyboardType = keyboardType
+        textView.autocapitalizationType = autocapitalizationType
 
         textView.adjustsFontForContentSizeCategory = true
         textView.font = .body

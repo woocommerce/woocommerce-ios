@@ -79,11 +79,11 @@ private extension ProductsTabProductTableViewCell {
     }
 
     func configureBackground() {
-        backgroundColor = StyleManager.wooWhite
+        backgroundColor = .listForeground
 
         //Background when selected
         selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 
     func configureNameLabel() {
@@ -99,7 +99,7 @@ private extension ProductsTabProductTableViewCell {
 
         productImageView.layer.cornerRadius = CGFloat(2.0)
         productImageView.layer.borderWidth = 1
-        productImageView.layer.borderColor = StyleManager.wooGreyBorder.cgColor
+        productImageView.layer.borderColor = UIColor.listSmallIcon.cgColor
         productImageView.clipsToBounds = true
 
         NSLayoutConstraint.activate([

@@ -26,9 +26,9 @@ extension Note {
     ///
     var noticonTintColor: UIColor {
         guard kind == .storeOrder else {
-            return StyleManager.wooGreyMid
+            return .listIcon
         }
-        return StyleManager.wooAccent
+        return .accent
     }
 
     /// Returns the number of stars for a review (or nil if the Note is not a review)

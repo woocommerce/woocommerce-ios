@@ -76,7 +76,7 @@ class ApplicationLogViewController: UIViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Configure common table properties.
@@ -84,7 +84,7 @@ class ApplicationLogViewController: UIViewController {
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
     }
 
     /// Get the sorted log files
@@ -215,7 +215,7 @@ private extension ApplicationLogViewController {
     func configureClearLogs(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = StyleManager.destructiveActionColor
+        cell.textLabel?.textColor = .error
         cell.textLabel?.text = NSLocalizedString("Reset Activity Log", comment: "Deletes all activity logs except for the marked 'Current'.")
     }
 }

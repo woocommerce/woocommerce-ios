@@ -26,11 +26,11 @@ private extension Product {
 
         let attributedString = NSMutableAttributedString(string: detailsText,
                                                          attributes: [
-                                                            .foregroundColor: StyleManager.wooGreyMid,
+                                                            .foregroundColor: UIColor.textSubtle,
                                                             .font: StyleManager.footerLabelFont
             ])
         if let statusText = statusText {
-            attributedString.addAttributes([.foregroundColor: StyleManager.highlightTextColor],
+            attributedString.addAttributes([.foregroundColor: UIColor.orange],
                                            range: NSRange(location: 0, length: statusText.count))
         }
         return attributedString

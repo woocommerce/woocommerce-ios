@@ -187,16 +187,25 @@ private extension NoteDetailsCommentTableViewCell {
     ///
     func configureActionButtons() {
         spamButton.setImage(.spamImage, for: .normal)
+        spamButton.backgroundColor = .primaryButtonBackground
+        spamButton.imageView?.tintColor = .text
+        spamButton.setTitleColor(.textInverted, for: .normal)
         spamButton.setTitle(Spam.normalTitle, for: .normal)
         spamButton.accessibilityLabel = Spam.normalLabel
         spamButton.accessibilityTraits = .button
 
         trashButton.setImage(.trashImage, for: .normal)
+        trashButton.backgroundColor = .primaryButtonBackground
+        trashButton.imageView?.tintColor = .text
+        trashButton.setTitleColor(.textInverted, for: .normal)
         trashButton.setTitle(Trash.normalTitle, for: .normal)
         trashButton.accessibilityLabel = Trash.normalLabel
         trashButton.accessibilityTraits = .button
 
         approvalButton.setImage(.checkmarkImage, for: .normal)
+        approvalButton.backgroundColor = .primaryButtonBackground
+        approvalButton.imageView?.tintColor = .text
+        approvalButton.setTitleColor(.textInverted, for: .normal)
         approvalButton.setTitle(Approve.normalTitle, for: .normal)
         approvalButton.setTitle(Approve.selectedTitle, for: .selected)
         approvalButton.accessibilityLabel = Approve.normalLabel
@@ -204,15 +213,15 @@ private extension NoteDetailsCommentTableViewCell {
     }
 
     func configureTitleLabel() {
-        titleLabel.textColor = StyleManager.defaultTextColor
+        titleLabel.textColor = .text
     }
 
     func configureDetailsLabel() {
-        detailsLabel.textColor = StyleManager.defaultTextColor
+        detailsLabel.textColor = .text
     }
 
     func configureTextView() {
-        textView.backgroundColor = StyleManager.wooWhite
+        textView.backgroundColor = .listForeground
     }
 
     /// Setup: Default Action(s) Style
@@ -236,8 +245,8 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Button Appearance
     ///
     func refreshAppearance(button: UIButton) {
-        let bgColor = button.isSelected ? StyleManager.wooCommerceBrandColor : StyleManager.wooGreyLight
-        let textColor = button.isSelected ? StyleManager.wooGreyLight : StyleManager.wooCommerceBrandColor
+        let bgColor = button.isSelected ? UIColor.primary : UIColor.listIcon
+        let textColor = button.isSelected ? UIColor.listIcon : UIColor.primary
 
         button.backgroundColor = bgColor
         button.tintColor = textColor
@@ -315,7 +324,7 @@ private struct Approve {
 private struct Star {
     static let size        = Double(18)
     static let filledImage = UIImage.starImage(size: Star.size,
-                                               tintColor: StyleManager.goldStarColor)
+                                               tintColor: .warning)
     static let emptyImage = UIImage.starImage(size: Star.size,
-                                              tintColor: StyleManager.wooGreyLight)
+                                              tintColor: UIColor.listIcon)
 }

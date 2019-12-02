@@ -8,10 +8,10 @@ extension UIButton {
     /// Applies the Primary Button Style: Solid BG!
     ///
     func applyPrimaryButtonStyle() {
-        backgroundColor = StyleManager.wooCommerceBrandColor
+        backgroundColor = .primary
         contentEdgeInsets = Style.defaultEdgeInsets
-        tintColor = .white
-        layer.borderColor = StyleManager.wooCommerceBrandColor.cgColor
+        tintColor = .primaryButtonBackground
+        layer.borderColor = UIColor.primary.cgColor
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
@@ -24,8 +24,8 @@ extension UIButton {
     func applySecondaryButtonStyle() {
         backgroundColor = .clear
         contentEdgeInsets = Style.defaultEdgeInsets
-        tintColor = StyleManager.wooCommerceBrandColor
-        layer.borderColor = StyleManager.wooCommerceBrandColor.cgColor
+        tintColor = .primary
+        layer.borderColor = UIColor.primary.cgColor
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
@@ -38,8 +38,8 @@ extension UIButton {
     func applyTertiaryButtonStyle() {
         backgroundColor = .clear
         contentEdgeInsets = Style.noMarginEdgeInsets
-        tintColor = StyleManager.wooCommerceBrandColor
-        layer.borderColor = StyleManager.wooCommerceBrandColor.cgColor
+        tintColor = .primary
+        layer.borderColor = UIColor.primary.cgColor
         titleLabel?.applySubheadlineStyle()
         titleLabel?.textAlignment = .natural
     }
@@ -49,11 +49,11 @@ extension UIButton {
     func applyLinkButtonStyle() {
         backgroundColor = .clear
         contentEdgeInsets = Style.defaultEdgeInsets
-        tintColor = StyleManager.wooCommerceBrandColor
+        tintColor = .primary
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
-        setTitleColor(StyleManager.wooCommerceBrandColor, for: .normal)
-        setTitleColor(StyleManager.wooCommerceBrandColor.withAlphaComponent(0.5), for: .highlighted)
+        setTitleColor(.primary, for: .normal)
+        setTitleColor(UIColor.primary.withAlphaComponent(0.5), for: .highlighted)
     }
 
     /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.

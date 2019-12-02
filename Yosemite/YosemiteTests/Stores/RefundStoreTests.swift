@@ -141,7 +141,10 @@ class RefundStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve refunds empty response")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = RefundAction.synchronizeRefunds(siteID: sampleSiteID, orderID: sampleOrderID, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
+        let action = RefundAction.synchronizeRefunds(siteID: sampleSiteID,
+                                                     orderID: sampleOrderID,
+                                                     pageNumber: defaultPageNumber,
+                                                     pageSize: defaultPageSize) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }

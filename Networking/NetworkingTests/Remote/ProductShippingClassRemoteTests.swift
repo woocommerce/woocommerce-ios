@@ -29,7 +29,7 @@ final class ProductShippingClassRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/shipping_classes", filename: "product-shipping-classes-load-all")
 
-        remote.loadAllProductShippingClasses(for: sampleSiteID) { productShippingClasses, error in
+        remote.loadAll(for: sampleSiteID) { productShippingClasses, error in
             XCTAssertNil(error)
             XCTAssertNotNil(productShippingClasses)
             XCTAssertEqual(productShippingClasses?.count, 3)
@@ -57,7 +57,7 @@ final class ProductShippingClassRemoteTests: XCTestCase {
         let remote = ProductShippingClassRemote(network: network)
         let expectation = self.expectation(description: "Load All Product Shipping Classes returns error")
 
-        remote.loadAllProductShippingClasses(for: sampleSiteID) { (productShippingClasses, error) in
+        remote.loadAll(for: sampleSiteID) { (productShippingClasses, error) in
             XCTAssertNil(productShippingClasses)
             XCTAssertNotNil(error)
             expectation.fulfill()

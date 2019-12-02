@@ -339,8 +339,8 @@ public extension StorageType {
     /// Retrieves all of the stored ProductShippingClass's for the provided siteID.
     /// Sorted by name, ascending
     ///
-    func loadProductShippingClass(siteID: Int64, shippingClassID: Int64) -> ProductShippingClass? {
-        let predicate = NSPredicate(format: "siteID = %lld AND shippingClassID = %lld", siteID, shippingClassID)
+    func loadProductShippingClass(siteID: Int64, remoteID: Int64) -> ProductShippingClass? {
+        let predicate = NSPredicate(format: "siteID = %lld AND shippingClassID = %lld", siteID, remoteID)
         return firstObject(ofType: ProductShippingClass.self, matching: predicate)
     }
 

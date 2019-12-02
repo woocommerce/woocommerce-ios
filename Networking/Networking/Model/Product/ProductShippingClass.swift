@@ -1,31 +1,33 @@
 import Foundation
 
-
 /// Represents a ProductShippingClass entity.
 ///
 public struct ProductShippingClass: Decodable {
+    // Entities.
+    public let count: Int64
+    public let descriptionHTML: String?
+    public let name: String
     public let shippingClassID: Int64
     public let siteID: Int64
-    public let name: String
     public let slug: String
-    public let descriptionHTML: String?
-    public let count: Int64
 
     /// ProductShippingClass initializer.
     ///
-    public init(shippingClassID: Int64,
-                siteID: Int64,
-                name: String,
-                slug: String,
+    public init(count: Int64,
                 descriptionHTML: String?,
-                count: Int64) {
+                name: String,
+                shippingClassID: Int64,
+                siteID: Int64,
+                slug: String) {
+        // Entities.
+        self.count = count
+        self.descriptionHTML = descriptionHTML
+        self.name = name
         self.shippingClassID = shippingClassID
         self.siteID = siteID
-        self.name = name
         self.slug = slug
-        self.descriptionHTML = descriptionHTML
-        self.count = count
     }
+
 
     /// Public initializer for ProductShippingClass.
     ///
@@ -36,31 +38,34 @@ public struct ProductShippingClass: Decodable {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let shippingClassID = try container.decode(Int64.self, forKey: .shippingClassID)
-        let name = try container.decode(String.self, forKey: .name)
-        let slug = try container.decode(String.self, forKey: .slug)
-        let descriptionHTML = try container.decodeIfPresent(String.self, forKey: .descriptionHTML)
+        // Entities.
         let count = try container.decode(Int64.self, forKey: .count)
+        let descriptionHTML = try container.decodeIfPresent(String.self, forKey: .descriptionHTML)
+        let name = try container.decode(String.self, forKey: .name)
+        let shippingClassID = try container.decode(Int64.self, forKey: .shippingClassID)
+        let slug = try container.decode(String.self, forKey: .slug)
 
-        self.init(shippingClassID: shippingClassID,
-                  siteID: siteID,
-                  name: name,
-                  slug: slug,
+
+        self.init(count: count,
                   descriptionHTML: descriptionHTML,
-                  count: count)
+                  name: name,
+                  shippingClassID: shippingClassID,
+                  siteID: siteID,
+                  slug: slug)
     }
 }
 
 
-/// Defines all of the ProductTag CodingKeys
+/// Defines all of the ProductShippingClass CodingKeys
 ///
 private extension ProductShippingClass {
     enum CodingKeys: String, CodingKey {
-        case shippingClassID = "id"
-        case name
-        case slug
-        case descriptionHTML = "description"
         case count
+        case descriptionHTML = "description"
+        case name
+        case shippingClassID = "id"
+        case siteID
+        case slug
     }
 }
 
@@ -69,12 +74,12 @@ private extension ProductShippingClass {
 //
 extension ProductShippingClass: Equatable {
     public static func == (lhs: ProductShippingClass, rhs: ProductShippingClass) -> Bool {
-        return lhs.shippingClassID == rhs.shippingClassID &&
-            lhs.siteID == rhs.siteID &&
-            lhs.name == rhs.name &&
-            lhs.slug == rhs.slug &&
+        return lhs.count == rhs.count &&
             lhs.descriptionHTML == rhs.descriptionHTML &&
-            lhs.count == rhs.count
+            lhs.name == rhs.name &&
+            lhs.shippingClassID == rhs.shippingClassID &&
+            lhs.siteID == rhs.siteID &&
+            lhs.slug == rhs.slug
     }
 }
 

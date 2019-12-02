@@ -53,20 +53,24 @@ final class ProductShippingClassStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/shipping_classes", filename: "product-shipping-classes-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
 
-        let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: sampleSiteID,
-                                                                         pageNumber: defaultPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 3)
-            XCTAssertNil(error)
+        let action = ProductShippingClassAction
+            .synchronizeProductShippingClassModels(siteID: sampleSiteID,
+                                                   pageNumber: defaultPageNumber,
+                                                   pageSize: defaultPageSize) { error in
+                                                    XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 3)
+                                                    XCTAssertNil(error)
 
-            let sampleProductShippingClassID: Int64 = 94
-            let storedProductShippingClass = self.viewStorage.loadProductShippingClass(siteID: self.sampleSiteID, shippingClassID: sampleProductShippingClassID)
-            let readOnlyStoredProductShippingClass = storedProductShippingClass?.toReadOnly()
-            XCTAssertNotNil(storedProductShippingClass)
-            XCTAssertNotNil(readOnlyStoredProductShippingClass)
-                                                                            XCTAssertEqual(readOnlyStoredProductShippingClass, self.sampleProductShippingClass(remoteID: sampleProductShippingClassID))
+                                                    let sampleRemoteID: Int64 = 94
+                                                    let storedProductShippingClass = self.viewStorage
+                                                        .loadProductShippingClass(siteID: self.sampleSiteID,
+                                                                                  remoteID: sampleRemoteID)
+                                                    let readOnlyStoredProductShippingClass = storedProductShippingClass?.toReadOnly()
+                                                    XCTAssertNotNil(storedProductShippingClass)
+                                                    XCTAssertNotNil(readOnlyStoredProductShippingClass)
+                                                    XCTAssertEqual(readOnlyStoredProductShippingClass,
+                                                                   self.sampleProductShippingClass(remoteID: sampleRemoteID))
 
-            expectation.fulfill()
+                                                    expectation.fulfill()
         }
 
         store.onAction(action)
@@ -82,34 +86,44 @@ final class ProductShippingClassStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/shipping_classes", filename: "product-shipping-classes-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
 
-        let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: sampleSiteID,
-                                                                         pageNumber: defaultPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertNil(error)
+        let action = ProductShippingClassAction
+            .synchronizeProductShippingClassModels(siteID: sampleSiteID,
+                                                   pageNumber: defaultPageNumber,
+                                                   pageSize: defaultPageSize) { error in
+                                                    XCTAssertNil(error)
 
-            let storedProductShippingClasss = self.viewStorage.loadProductShippingClasses(siteID: self.sampleSiteID)
-            XCTAssertEqual(storedProductShippingClasss?.count, 3)
+                                                    let storedProductShippingClasss = self.viewStorage.loadProductShippingClasses(siteID: self.sampleSiteID)
+                                                    XCTAssertEqual(storedProductShippingClasss?.count, 3)
 
-            let sampleProductShippingClassID: Int64 = 94
-                                                                            let storedProductShippingClass = self.viewStorage.loadProductShippingClass(siteID: self.sampleSiteID, shippingClassID: sampleProductShippingClassID)
-            XCTAssertEqual(storedProductShippingClass?.toReadOnly(), self.sampleProductShippingClass(remoteID: sampleProductShippingClassID))
+                                                    let sampleShippingClassID: Int64 = 94
+                                                    let storedProductShippingClass = self.viewStorage
+                                                        .loadProductShippingClass(siteID: self.sampleSiteID,
+                                                                                  remoteID: sampleShippingClassID)
+                                                    XCTAssertEqual(storedProductShippingClass?.toReadOnly(),
+                                                                   self.sampleProductShippingClass(remoteID: sampleShippingClassID))
 
-            let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: self.sampleSiteID,
-                                                                             pageNumber: self.defaultPageNumber,
-                                                                             pageSize: self.defaultPageSize) { error in
-                XCTAssertNil(error)
+                                                    let action = ProductShippingClassAction
+                                                        .synchronizeProductShippingClassModels(siteID: self.sampleSiteID,
+                                                                                               pageNumber: self.defaultPageNumber,
+                                                                                               pageSize: self.defaultPageSize) { error in
+                                                                                                XCTAssertNil(error)
 
-                let storedProductShippingClasss = self.viewStorage.loadProductShippingClasses(siteID: self.sampleSiteID)
-                XCTAssertEqual(storedProductShippingClasss?.count, 3)
+                                                                                                let storedProductShippingClasss = self.viewStorage
+                                                                                                    .loadProductShippingClasses(siteID: self.sampleSiteID)
+                                                                                                XCTAssertEqual(storedProductShippingClasss?.count, 3)
 
-                // Verifies the expected ProductShippingClass is still correct.
-                let sampleProductShippingClassID: Int64 = 94
-                let storedProductShippingClass = self.viewStorage.loadProductShippingClass(siteID: self.sampleSiteID, shippingClassID: sampleProductShippingClassID)
-                XCTAssertEqual(storedProductShippingClass?.toReadOnly(), self.sampleProductShippingClass(remoteID: sampleProductShippingClassID))
+                                                                                                // Verifies the expected ProductShippingClass is still correct.
+                                                                                                let sampleShippingClassID: Int64 = 94
+                                                                                                let storedProductShippingClass = self.viewStorage
+                                                                                                    .loadProductShippingClass(siteID: self.sampleSiteID,
+                                                                                                                              remoteID: sampleShippingClassID)
+                                                                                                XCTAssertEqual(storedProductShippingClass?.toReadOnly(),
+                                                                                                               self.sampleProductShippingClass(remoteID:
+                                                                                                                sampleShippingClassID))
 
-                expectation.fulfill()
-            }
-            store.onAction(action)
+                                                                                                expectation.fulfill()
+                                                    }
+                                                    store.onAction(action)
         }
 
         store.onAction(action)
@@ -125,11 +139,11 @@ final class ProductShippingClassStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/shipping_classes", filename: "generic_error")
 
         let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: sampleSiteID,
-                                                                         pageNumber: defaultPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertNotNil(error)
+                                                                                      pageNumber: defaultPageNumber,
+                                                                                      pageSize: defaultPageSize) { error in
+                                                                                        XCTAssertNotNil(error)
 
-            expectation.fulfill()
+                                                                                        expectation.fulfill()
         }
 
         store.onAction(action)
@@ -143,11 +157,11 @@ final class ProductShippingClassStoreTests: XCTestCase {
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: sampleSiteID,
-                                                                         pageNumber: defaultPageNumber,
-                                                                         pageSize: defaultPageSize) { error in
-            XCTAssertNotNil(error)
+                                                                                      pageNumber: defaultPageNumber,
+                                                                                      pageSize: defaultPageSize) { error in
+                                                                                        XCTAssertNotNil(error)
 
-            expectation.fulfill()
+                                                                                        expectation.fulfill()
         }
 
         store.onAction(action)
@@ -158,11 +172,11 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
 private extension ProductShippingClassStoreTests {
     func sampleProductShippingClass(remoteID: Int64) -> Yosemite.ProductShippingClass {
-        return ProductShippingClass(shippingClassID: remoteID,
-                                    siteID: sampleSiteID,
-                                    name: "Free Shipping",
-                                    slug: "free-shipping",
+        return ProductShippingClass(count: 3,
                                     descriptionHTML: "Limited offer!",
-                                    count: 3)
+                                    name: "Free Shipping",
+                                    shippingClassID: remoteID,
+                                    siteID: sampleSiteID,
+                                    slug: "free-shipping")
     }
 }

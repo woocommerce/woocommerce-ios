@@ -8,22 +8,24 @@ extension Storage.ProductShippingClass: ReadOnlyConvertible {
     /// Updates the Storage.ProductShippingClass with the ReadOnly.
     ///
     public func update(with productShippingClass: Yosemite.ProductShippingClass) {
+        // Entities.
+        count = productShippingClass.count
+        descriptionHTML = productShippingClass.descriptionHTML
+        name = productShippingClass.name
         shippingClassID = productShippingClass.shippingClassID
         siteID = productShippingClass.siteID
-        name = productShippingClass.name
         slug = productShippingClass.slug
-        descriptionHTML = productShippingClass.descriptionHTML
-        count = productShippingClass.count
     }
+
 
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductShippingClass {
-        return ProductShippingClass(shippingClassID: shippingClassID,
-                                    siteID: siteID,
-                                    name: name,
-                                    slug: slug,
+        return ProductShippingClass(count: count,
                                     descriptionHTML: descriptionHTML,
-                                    count: count)
+                                    name: name,
+                                    shippingClassID: shippingClassID,
+                                    siteID: siteID,
+                                    slug: slug)
     }
 }

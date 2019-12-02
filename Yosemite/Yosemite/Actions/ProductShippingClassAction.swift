@@ -1,7 +1,6 @@
 import Foundation
 import Networking
 
-
 // MARK: - ProductShippingClassAction: Defines all of the Actions supported by the ProductShippingClassStore.
 //
 public enum ProductShippingClassAction: Action {

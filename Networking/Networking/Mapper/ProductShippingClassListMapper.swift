@@ -9,27 +9,28 @@ struct ProductShippingClassListMapper: Mapper {
     ///
     let siteID: Int64
 
-    /// (Attempts) to convert a dictionary into ProductVariation.
+    /// (Attempts) to convert a dictionary into [ProductShippingClass].
     ///
     func map(response: Data) throws -> [ProductShippingClass] {
         let decoder = JSONDecoder()
         decoder.userInfo = [
-            .siteID: siteID,
+            .siteID: siteID
         ]
 
-        return try decoder.decode(ProductShippingClassesEnvelope.self, from: response).productShippingClasses
+        return try decoder.decode(ProductShippingClassListEnvelope.self, from: response).data
     }
 }
 
-/// ProductShippingClassesEnvelope Disposable Entity
+
+/// ProductShippingClassListEnvelope Disposable Entity
 ///
-/// `Load Product Shipping Classes` endpoint returns the requested objects in the `data` key. This entity
+/// `Load All ProductShippingClass` endpoint returns the requested data in the `data` key. This entity
 /// allows us to parse all the things with JSONDecoder.
 ///
-private struct ProductShippingClassesEnvelope: Decodable {
-    let productShippingClasses: [ProductShippingClass]
+private struct ProductShippingClassListEnvelope: Decodable {
+    let data: [ProductShippingClass]
 
     private enum CodingKeys: String, CodingKey {
-        case productShippingClasses = "data"
+        case data = "data"
     }
 }

@@ -99,11 +99,17 @@ class ProductDetailsTableViewCell: UITableViewCell {
 private extension ProductDetailsTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
+
+        //Background when selected
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
     }
 
     func configureProductImageView() {
         productImageView.image = .productPlaceholderImage
         productImageView.tintColor = StyleManager.wooGreyBorder
+        productImageView.contentMode = .scaleAspectFill
+        productImageView.clipsToBounds = true
     }
 
     func configureNameLabel() {

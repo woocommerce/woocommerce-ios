@@ -6,7 +6,7 @@ import Gridicons
 
 // MARK: - NoteDetailsCommentTableViewCell
 //
-class NoteDetailsCommentTableViewCell: UITableViewCell {
+final class NoteDetailsCommentTableViewCell: UITableViewCell {
 
     /// Gravatar ImageView.
     ///
@@ -162,7 +162,11 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
         configureActionButtons()
+        configureTitleLabel()
+        configureDetailsLabel()
+        configureTextView()
         configureStarView()
         configureDefaultAppearance()
     }
@@ -172,6 +176,12 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
 // MARK: - Setup
 //
 private extension NoteDetailsCommentTableViewCell {
+
+    /// Setup: Cell background
+    ///
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
 
     /// Setup: Actions!
     ///
@@ -191,6 +201,18 @@ private extension NoteDetailsCommentTableViewCell {
         approvalButton.setTitle(Approve.selectedTitle, for: .selected)
         approvalButton.accessibilityLabel = Approve.normalLabel
         approvalButton.accessibilityTraits = .button
+    }
+
+    func configureTitleLabel() {
+        titleLabel.textColor = StyleManager.defaultTextColor
+    }
+
+    func configureDetailsLabel() {
+        detailsLabel.textColor = StyleManager.defaultTextColor
+    }
+
+    func configureTextView() {
+        textView.backgroundColor = StyleManager.wooWhite
     }
 
     /// Setup: Default Action(s) Style

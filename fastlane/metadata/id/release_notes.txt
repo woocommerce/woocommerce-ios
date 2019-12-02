@@ -1,1 +1,7 @@
-Kami telah menyusun ulang beberapa bagian Detail Pesanan agar lebih mudah dibaca dan digunakan: Tampilan detail pembayaran pelanggan kini lebih mencolok, dan Catatan Pesanan dikelompokkan dengan judul tanggal agar pemindaian lebih mudah. Dan tidak ada lagi animasi menyebalkan yang memenuhi tampilan saat Anda melihat Detail Tagihan!
+- Disempurnakan: Tampilan detail pemesanan kini menyertakan metode pengiriman pemesanan.
+- Penyempurnaan: Tab ulasan kini menampilkan seluruh Ulasan Produk.
+- Diubah: Kami memperbarui tampilan Detail Pemesanan dan menonaktifkan mode gelap untuk sementara.
+- Perbaikan bug: Memperbaiki tampilan UI di sel Daftar Pesanan saat mengetuk dengan mode gelap diaktifkan.
+- Perbaikan bug: Ulasan kini tidak lagi beralih ke mode gelap sebagian. Mode gelap akan segera kembali!
+- Perbaikan bug: Detail Pesanan kini memiliki jarak yang tepat antar sel.
+- Perbaikan bug: Pengaturan kini tidak lagi beralih ke mode gelap sebagian.

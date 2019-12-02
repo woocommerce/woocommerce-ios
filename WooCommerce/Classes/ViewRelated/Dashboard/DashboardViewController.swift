@@ -23,10 +23,6 @@ class DashboardViewController: UIViewController {
 
     // MARK: View Lifecycle
 
-    deinit {
-        stopListeningToNotifications()
-    }
-
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         startListeningToNotifications()
@@ -177,12 +173,6 @@ extension DashboardViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-    }
-
-    /// Stops listening to all related Notifications
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     /// Runs whenever the default Account is updated.

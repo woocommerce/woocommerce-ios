@@ -47,9 +47,15 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v2.8-whats-new"
+msgctxt "v3.1-whats-new"
 msgid ""
-"We’ve rearranged some parts of Order Details for better readability and usability: Customer payment details are more prominent, and Order Notes are grouped with date headings for easier scanning. And no more awkward expanding animation when you view the Billing Details!\n"
+"- Improved: Order detail view now includes the order’s shipping method.\n"
+"- Enhancement: Reviews tab now shows all Product Reviews.\n"
+"- Modified: We updated the appearance of Order Details and temporarily disabled dark mode.\n"
+"- Bug fix: Fixed UI appearance on cells of Order List when tapping with dark mode enabled.\n"
+"- Bug fix: Reviews no longer convert to partial dark mode. Dark mode is coming soon!\n"
+"- Bug fix: Order Details now has the correct space between cells.\n"
+"- Bug fix: Settings no longer convert to partial dark mode.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

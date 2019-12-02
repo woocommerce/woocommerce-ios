@@ -156,8 +156,6 @@ private extension ReviewDetailsViewController {
     /// Refresh Control's Callback.
     ///
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
-
         synchronizeReview(reviewID: productReview.reviewID) {
             sender.endRefreshing()
         }
@@ -173,9 +171,13 @@ private extension ReviewDetailsViewController {
         let action = ProductReviewAction.retrieveProductReview(siteID: siteID, reviewID: reviewID) { (productReview, error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing product review [\(reviewID)]: \(error)")
+                ServiceLocator.analytics.track(.reviewLoadFailed,
+                                               withError: error)
             }
 
             onCompletion()
+            ServiceLocator.analytics.track(.reviewLoaded,
+                                           withProperties: ["remote_review_id": reviewID])
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -280,6 +282,16 @@ extension ReviewDetailsViewController: UITableViewDelegate {
             openProductURL()
         default:
             break
+        }
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = detailsForRow(at: indexPath)
+        switch row {
+        case .header:
+            return Constants.headerHeight
+        default:
+            return UITableView.automaticDimension
         }
     }
 }
@@ -487,9 +499,17 @@ private extension ReviewDetailsViewController {
             return
         }
 
+        ServiceLocator.analytics.track(.reviewMarkRead,
+                                       withProperties: ["remote_review_id": productReview.reviewID,
+                                                        "remote_note_id": note.noteId])
+
         let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
+                ServiceLocator.analytics.track(.reviewMarkReadFailed,
+                                               withError: error)
+            } else {
+                ServiceLocator.analytics.track(.reviewMarkReadSuccess)
             }
         }
         ServiceLocator.stores.dispatch(action)
@@ -504,6 +524,7 @@ private extension ReviewDetailsViewController {
         static let section = "notifications"
         static let title = NSLocalizedString("Product Review",
                                              comment: "Title of the view containing a single Product Review")
+        static let headerHeight = CGFloat(48)
     }
 }
 

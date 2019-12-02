@@ -1,1 +1,7 @@
-Nous avons réorganisé certaines parties des détails de la commande pour améliorer la visibilité et la convivialité : Les informations de paiement des clients sont plus visibles, et les notes de commande sont regroupées par date pour accélérer la recherche. Nous avons par ailleurs supprimé les animations qui se développaient à l'ouverture des informations de facturation.
+- Progrès : la vue présentant les détails de la commande mentionne désormais le mode de livraison de la commande.
+- Amélioration : l'onglet Avis présente désormais tous les avis sur le produit.
+- Modification : nous avons mis à jour l'apparence des détails de la commande et provisoirement désactivé le mode sombre.
+- Résolution de bug : résolution d'un bug au niveau de l'apparence de l'interface utilisateur dans les cellules de la liste des commandes lors de la saisie en mode sombre.
+- Résolution de bug : les avis ne sont plus convertis en mode partiellement sombre. Le mode sombre sera bientôt disponible.
+- Résolution de bug : l'espace entre les cellules dans les détails de la commande est désormais de taille adéquate.
+- Résolution de bug : les réglages ne sont plus convertis en mode partiellement sombre.

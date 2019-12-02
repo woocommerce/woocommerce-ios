@@ -19,7 +19,7 @@ final class ProductSearchUICommand: SearchUICommand {
     func createResultsController() -> ResultsController<ResultsControllerModel> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "dateModified", ascending: true)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
@@ -43,7 +43,8 @@ final class ProductSearchUICommand: SearchUICommand {
         }
 
         ServiceLocator.stores.dispatch(action)
-        // TODO-1263: analytics
+
+        ServiceLocator.analytics.track(.productListSearched)
     }
 
     func didSelectSearchResult(model: Product, from viewController: UIViewController) {

@@ -6,6 +6,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.addOutlineImage)
     }
 
+    func testNoticeImageIsNotNil() {
+        XCTAssertNotNil(UIImage.noticeImage)
+    }
+
     func testAsideIconIsNotNil() {
         XCTAssertNotNil(UIImage.asideImage)
     }

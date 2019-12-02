@@ -67,10 +67,6 @@ final class ProductsViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    deinit {
-        stopListeningToNotifications()
-    }
-
     override func viewDidLoad() {
         super.viewDidLoad()
 
@@ -144,7 +140,8 @@ private extension ProductsViewController {
             return
         }
 
-        // TODO-1263: analytics
+        ServiceLocator.analytics.track(.productListMenuSearchTapped)
+
         let searchViewController = SearchViewController(storeID: storeID,
                                                         command: ProductSearchUICommand(siteID: storeID),
                                                         cellType: ProductsTabProductTableViewCell.self)
@@ -238,7 +235,7 @@ private extension ProductsViewController {
     func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "dateModified", ascending: true)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
@@ -298,7 +295,10 @@ extension ProductsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
+        ServiceLocator.analytics.track(.productListProductTapped)
+
         let product = resultsController.object(at: indexPath)
+
         let currencyCode = CurrencySettings.shared.currencyCode
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
         let viewModel = ProductDetailsViewModel(product: product, currency: currency)
@@ -321,7 +321,8 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
-        // TODO-1263: analytics
+        ServiceLocator.analytics.track(.productListPulledToRefresh)
+
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
@@ -404,10 +405,11 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
                                     }
 
                                     if let error = error {
+                                        ServiceLocator.analytics.track(.productListLoadError, withError: error)
                                         DDLogError("⛔️ Error synchronizing products: \(error)")
                                         self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
                                     } else {
-                                        // TODO-1263: analytics
+                                        ServiceLocator.analytics.track(.productListLoaded)
                                     }
 
                                     self.transitionToResultsUpdatedState()

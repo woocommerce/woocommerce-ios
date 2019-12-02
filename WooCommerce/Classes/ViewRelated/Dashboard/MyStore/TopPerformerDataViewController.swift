@@ -116,7 +116,9 @@ extension TopPerformerDataViewController {
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func displayGhostContent() {
-        let options = GhostOptions(reuseIdentifier: ProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
+        let options = GhostOptions(displaysSectionHeader: false,
+                                   reuseIdentifier: ProductTableViewCell.reuseIdentifier,
+                                   rowsPerSection: Constants.placeholderRowsPerSection)
         tableView.displayGhostContent(options: options)
     }
 
@@ -143,7 +145,6 @@ private extension TopPerformerDataViewController {
         tableView.separatorColor = StyleManager.cellSeparatorColor
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
-        tableView.estimatedSectionHeaderHeight = Constants.estimatedSectionHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = Constants.emptyView
     }
@@ -227,6 +228,9 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension TopPerformerDataViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return Constants.estimatedSectionHeight
+    }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension

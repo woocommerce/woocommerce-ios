@@ -1,1 +1,7 @@
-Daha iyi okunabilirlik ve kullanılabilirlik için Sipariş Ayrıntılarının bazı kısımlarını yeniden düzenledik: Müşteri ödemesi ayrıntıları daha belirgindir ve Sipariş Notları, daha iyi tarama için tarih başlıklarıyla gruplandırılır. Ek olarak, artık Fatura Ayrıntılarını görüntülerken tuhaf genişleme animasyonları yok!
+- İyileştirme: Sipariş ayrıntıları görünümünde artık siparişin sevkiyat yöntemi görüntüleniyor.
+- Geliştirme: :Yorumlar sekmesinde artık tüm Ürün Yorumları gösteriliyor.
+- Değiştirildi: Sipariş Ayrıntıları'nın görünümü güncellendi ve karanlık mod geçici olarak devre dışı bırakıldı.
+- Hata düzeltmesi: Karanlık mod etkinken dokunduğunuzda Sipariş Listesi hücrelerindeki kullanıcı arayüzü görünümü düzeltildi.
+- Hata düzeltmesi: Yorumlar artık kısmi karanlık moda geçmiyor. Karanlık mod yakında hizmetinizde!
+- Hata düzeltmesi: Sipariş Ayrıntıları'ndaki hücreler arasında artık doğru ebatta boşluk var.
+- Hata düzeltmesi: Ayarlar artık kısmi karanlık moda geçmiyor.

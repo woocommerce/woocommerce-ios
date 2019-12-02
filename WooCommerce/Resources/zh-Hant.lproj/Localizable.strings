@@ -234,6 +234,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "繼續閱讀";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "繼續使用 Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "繼續使用 WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "繼續使用 Apple";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "複製";
 
@@ -543,10 +552,10 @@
 "Log in failed. Please try again." = "登入失敗，請再試一次。";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "使用電子郵件地址登入 WordPress.com，即可管理你的所有 WordPress 網站。";
+"Log in to the WordPress.com account you used to connect Jetpack." = "請登入你用來連結 Jetpack 的 WordPress.com 帳號。";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "請登入你用來連結 Jetpack 的 WordPress.com 帳號。";
+"Log in to your WordPress.com account with your email address." = "使用電子郵件地址登入 WordPress.com 帳號。";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "透過 Jetpack 登入";
@@ -716,6 +725,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "選用追蹤資訊";
 
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "或輸入網站位址登入。";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "訂單編號 (viewModel.order.number)";
@@ -788,6 +800,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "請輸入有效的電子郵件位址";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "請輸入 WordPress.com 帳戶的密碼，以便使用 Apple ID 登入。";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "請輸入你的密碼";

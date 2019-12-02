@@ -22,6 +22,7 @@ extension UINavigationBar {
         let appearance = UINavigationBar.appearance()
         appearance.barTintColor = nil
         appearance.titleTextAttributes = nil
+        appearance.isTranslucent = true
         appearance.tintColor = nil
     }
 }

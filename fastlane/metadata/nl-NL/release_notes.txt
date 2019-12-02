@@ -1,1 +1,7 @@
-We hebben de volgorde van sommige delen van de bestellingsdetails veranderd voor verbeterde leesbaarheid en bruikbaarheid: Betalingsgegevens van klanten zijn prominenter en bestelberichten zijn gegroepeerd met datumkoppen, om scannen eenvoudiger te maken. En er is geen onhandige uitschuifanimatie meer wanneer je de factuurdetails bekijkt!
+- Verbeterd: het overzicht van bestelgegevens bevat nu ook de verzendmethode.
+- Verbetering: onder het tabblad Beoordelingen worden nu alle productbeoordelingen weergegeven.
+- Aangepast: we hebben de weergave van het overzicht van bestelgegevens aangepast en de nachtmodus tijdelijk uitgeschakeld.
+- Bugfix: een probleem met de UI-weergave van cellen in de bestellijst door hierop te tikken terwijl de nachtmodus is ingeschakeld, is nu opgelost.
+- Bugfix: beoordelingen worden niet meer gedeeltelijk in de nachtmodus gezet. De nachtmodus is binnenkort beschikbaar!
+- Bugfix: het overzicht van bestelgegevens geeft nu de juiste ruimte tussen cellen weer.
+- Bugfix: instellingen worden niet meer gedeeltelijk in de nachtmodus gezet.

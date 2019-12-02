@@ -32,6 +32,18 @@ final class FulfillViewController: UIViewController {
     ///
     private let products: [Product]?
 
+    /// Shipping Lines from an Order
+    ///
+    private var shippingLines: [ShippingLine] {
+        return order.shippingLines
+    }
+
+    /// First Shipping method from an order
+    ///
+    private var shippingMethod: String {
+        return shippingLines.first?.methodTitle ?? String()
+    }
+
     /// ResultsController fetching ShipemntTracking data
     ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
@@ -148,6 +160,7 @@ private extension FulfillViewController {
     func registerTableViewCells() {
         let cells = [
             CustomerInfoTableViewCell.self,
+            CustomerNoteTableViewCell.self,
             LeftImageTableViewCell.self,
             EditableOrderTrackingTableViewCell.self,
             PickListTableViewCell.self
@@ -314,6 +327,8 @@ private extension FulfillViewController {
             setupNoteCell(cell, with: text)
         case .address(let shipping):
             setupAddressCell(cell, with: shipping)
+        case .shippingMethod:
+            setupShippingMethodCell(cell)
         case .tracking:
             setupTrackingCell(cell, at: indexPath)
         case .trackingAdd:
@@ -370,6 +385,17 @@ private extension FulfillViewController {
                 "No address specified.",
                 comment: "Order details > customer info > shipping details. This is where the address would normally display."
         )
+    }
+
+    func setupShippingMethodCell(_ cell: UITableViewCell) {
+        guard let cell = cell as? CustomerNoteTableViewCell else {
+            fatalError()
+        }
+
+        cell.headline = NSLocalizedString("Shipping Method",
+                                          comment: "Shipping method title for customer info cell")
+        cell.body = shippingMethod
+        cell.selectionStyle = .none
     }
 
     /// Setup: Shipment Tracking Cell
@@ -584,12 +610,11 @@ private extension FulfillViewController {
     }
 }
 
-
 // MARK: - Table view sections
 //
 private extension FulfillViewController {
     func reloadSections() {
-        let products: Section = {
+        let productsSection: Section = {
             let title = NSLocalizedString("Product", comment: "Section header title for the product")
             let secondaryTitle = NSLocalizedString("Qty", comment: "Section header title - abbreviation for quantity")
             let rows = order.items.map { Row.product(item: $0) }
@@ -609,16 +634,25 @@ private extension FulfillViewController {
         }()
 
         let address: Section = {
+            var rows: [Row] = []
+
+            let productsList = self.products ?? []
+
+            if shippingLines.count > 0 {
+                rows.append(.shippingMethod)
+            }
+
             let title = NSLocalizedString("Customer Information", comment: "Section title for the customer's billing and shipping address")
             if let shippingAddress = order.shippingAddress {
                 let row = Row.address(shipping: shippingAddress)
-
-                return Section(title: title, secondaryTitle: nil, rows: [row])
+                rows.insert(row, at: 0)
+                return Section(title: title, secondaryTitle: nil, rows: rows)
             }
 
             let row = Row.address(shipping: order.billingAddress)
+            rows.insert(row, at: 0)
 
-            return Section(title: title, secondaryTitle: nil, rows: [row])
+            return Section(title: title, secondaryTitle: nil, rows: rows)
         }()
 
         let tracking: Section? = {
@@ -644,7 +678,7 @@ private extension FulfillViewController {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        sections =  [products, note, address, tracking, addTracking].compactMap { $0 }
+        sections =  [productsSection, note, address, tracking, addTracking].compactMap { $0 }
     }
 }
 
@@ -665,6 +699,10 @@ private enum Row {
     /// Represents an Address Row
     ///
     case address(shipping: Address?)
+
+    /// Represents a Shipping Method Row
+    ///
+    case shippingMethod
 
     /// Represents an "Add Tracking" Row
     ///
@@ -687,6 +725,8 @@ private enum Row {
         switch self {
         case .address:
             return CustomerInfoTableViewCell.self
+        case .shippingMethod:
+            return CustomerNoteTableViewCell.self
         case .note:
             return LeftImageTableViewCell.self
         case .product:

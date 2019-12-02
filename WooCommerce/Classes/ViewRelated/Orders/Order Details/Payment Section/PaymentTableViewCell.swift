@@ -25,16 +25,8 @@ final class PaymentTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        subtotalLabel.applyBodyStyle()
-        subtotalValue.applyBodyStyle()
-        discountLabel.applyBodyStyle()
-        discountValue.applyBodyStyle()
-        shippingLabel.applyBodyStyle()
-        shippingValue.applyBodyStyle()
-        taxesLabel.applyBodyStyle()
-        taxesValue.applyBodyStyle()
-        totalLabel.applyHeadlineStyle()
-        totalValue.applyHeadlineStyle()
+        configureBackground()
+        configureLabels()
     }
 
     func configure(with viewModel: OrderPaymentDetailsViewModel) {
@@ -124,5 +116,30 @@ extension PaymentTableViewCell {
 
     func getTotalValue() -> UILabel {
         return totalValue
+    }
+}
+
+// MARK: - Private Methods
+//
+private extension PaymentTableViewCell {
+    /// Setup: Cell background
+    ///
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    /// Setup: Labels
+    ///
+    func configureLabels() {
+        subtotalLabel.applyBodyStyle()
+        subtotalValue.applyBodyStyle()
+        discountLabel.applyBodyStyle()
+        discountValue.applyBodyStyle()
+        shippingLabel.applyBodyStyle()
+        shippingValue.applyBodyStyle()
+        taxesLabel.applyBodyStyle()
+        taxesValue.applyBodyStyle()
+        totalLabel.applyHeadlineStyle()
+        totalValue.applyHeadlineStyle()
     }
 }

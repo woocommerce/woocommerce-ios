@@ -52,6 +52,8 @@ protocol Style {
     var statusSuccessBoldColor: UIColor { get }
     var statusWarningColor: UIColor { get }
     var tableViewBackgroundColor: UIColor { get }
+    var tableViewCellSelectionStyle: UIColor { get }
+    var noticeIconColor: UIColor { get }
 
     var wooCommerceBrandColor: UIColor { get }
     var wooAccent: UIColor { get }
@@ -88,7 +90,7 @@ class DefaultStyle: Style {
     let alternativeLoginsTitleFont      = UIFont.font(forStyle: .subheadline, weight: .semibold)
     let badgeFont                       = DefaultStyle.fontForTextStyle(.caption2,
                                                                         weight: .regular,
-                                                                        maximumPointSize: 11.0)
+                                                                        maximumPointSize: 12.0)
     let headlineSemiBold                = DefaultStyle.fontForTextStyle(.headline,
                                                                         weight: .semibold,
                                                                         maximumPointSize: DefaultStyle.maxFontSize)
@@ -122,6 +124,8 @@ class DefaultStyle: Style {
     let sectionBackgroundColor          = HandbookColors.wooGreyLight
     let sectionTitleColor               = HandbookColors.wooSecondary
     let tableViewBackgroundColor        = HandbookColors.wooGreyLight
+    let tableViewCellSelectionStyle     = UIColor(red: 209.0/255.0, green: 209/255.0, blue: 213/255.0, alpha: 1.0)
+    let noticeIconColor                 = HandbookColors.orange50
 
     let statusDangerColor               = HandbookColors.statusRedDimmed
     let statusDangerBoldColor           = HandbookColors.statusRed
@@ -196,6 +200,7 @@ private extension DefaultStyle {
         static let murielRed50                 = UIColor(red: 0.84, green: 0.21, blue: 0.22, alpha: 1)
         static let murielYellow30        = UIColor(red: 0.86, green: 0.68, blue: 0.09, alpha: 1.0)
         static let murielBlue50          = UIColor(red: 0.13, green: 0.44, blue: 0.69, alpha: 1.0)
+        static let orange50              = UIColor(red: 0.70, green: 0.38, blue: 0.00, alpha: 1.0)
     }
 }
 
@@ -331,6 +336,10 @@ class StyleManager {
         return active.destructiveActionColor
     }
 
+    static var noticeIconColor: UIColor {
+        return active.noticeIconColor
+    }
+
     static var highlightTextColor: UIColor {
         return active.highlightTextColor
     }
@@ -389,6 +398,10 @@ class StyleManager {
 
     static var tableViewBackgroundColor: UIColor {
         return active.tableViewBackgroundColor
+    }
+
+    static var tableViewCellSelectionStyle: UIColor {
+        return active.tableViewCellSelectionStyle
     }
 
     static var wooCommerceBrandColor: UIColor {

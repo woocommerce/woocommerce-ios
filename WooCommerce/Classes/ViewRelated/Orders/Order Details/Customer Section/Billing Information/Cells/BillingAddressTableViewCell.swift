@@ -27,9 +27,28 @@ final class BillingAddressTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
+        configureLabels()
+    }
+}
+
+/// MARK: - Private Methods
+///
+private extension BillingAddressTableViewCell {
+
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+
+        //Background when selected
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
+    }
+
+    func configureLabels() {
         nameLabel.applyBodyStyle()
         addressLabel.applyBodyStyle()
     }
+
 }
 
 /// MARK: - Testability

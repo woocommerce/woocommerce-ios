@@ -80,11 +80,17 @@ final class ReviewsViewController: UIViewController {
         }
     }
 
-    // MARK: - View Lifecycle
+    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
+    ///
+    private let syncingCoordinator = SyncingCoordinator()
 
-    deinit {
-        stopListeningToNotifications()
-    }
+    /// Footer "Loading More" Spinner.
+    ///
+    private lazy var footerSpinnerView = {
+        return FooterSpinnerView(tableViewStyle: tableView.style)
+    }()
+
+    // MARK: - View Lifecycle
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -98,6 +104,8 @@ final class ReviewsViewController: UIViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
 
         refreshTitle()
+
+        configureSyncingCoordinator()
         configureNavigationItem()
         configureNavigationBarButtons()
         configureTableView()
@@ -112,7 +120,8 @@ final class ReviewsViewController: UIViewController {
 
         resetApplicationBadge()
         transitionToResultsUpdatedState()
-        synchronizeReviews()
+
+        syncingCoordinator.synchronizeFirstPage()
 
         if AppRatingManager.shared.shouldPromptForAppReview(section: Constants.section) {
             displayRatingPrompt()
@@ -120,7 +129,14 @@ final class ReviewsViewController: UIViewController {
     }
 
     func presentDetails(for noteId: Int) {
-        // TO BE IMPLEMENTED
+        syncingCoordinator.synchronizeFirstPage()
+        viewModel.loadReview(for: noteId) { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.viewModel.delegate.presentReviewDetails(for: noteId, in: self)
+        }
     }
 }
 
@@ -128,6 +144,12 @@ final class ReviewsViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension ReviewsViewController {
+
+    /// Setup: Sync'ing Coordinator
+    ///
+    func configureSyncingCoordinator() {
+        syncingCoordinator.delegate = self
+    }
 
     /// Setup: TabBar
     ///
@@ -161,6 +183,7 @@ private extension ReviewsViewController {
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.refreshControl = refreshControl
         tableView.dataSource = viewModel.dataSource
+        tableView.tableFooterView = footerSpinnerView
 
         // We decorate the delegate informally, because we want to intercept
         // didSelectItem:at: but delegate the rest of the implementation of
@@ -182,7 +205,6 @@ private extension ReviewsViewController {
     }
 
     func refreshTitle() {
-        transitionToResultsUpdatedState()
         navigationItem.title = NSLocalizedString(
             "Reviews",
             comment: "Title that appears on top of the main Reviews screen (plural form of the word Review)."
@@ -196,14 +218,19 @@ private extension ReviewsViewController {
 private extension ReviewsViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        ServiceLocator.analytics.track(.notificationsListPulledToRefresh)
-        synchronizeReviews {
+        ServiceLocator.analytics.track(.reviewsListPulledToRefresh)
+        syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
     }
 
     @IBAction func markAllAsRead() {
+        ServiceLocator.analytics.track(.reviewsListReadAllTapped)
+
         viewModel.markAllAsRead { [weak self] error in
+            let tracks = ServiceLocator.analytics
+            tracks.track(.reviewsMarkAllRead)
+
             guard let self = self else {
                 return
             }
@@ -211,10 +238,15 @@ private extension ReviewsViewController {
             if let error = error {
                 DDLogError("⛔️ Error marking multiple notifications as read: \(error)")
                 self.hapticGenerator.notificationOccurred(.error)
+
+                tracks.track(.reviewsMarkAllReadFailed, withError: error)
             } else {
                 self.hapticGenerator.notificationOccurred(.success)
                 self.displayMarkAllAsReadNoticeIfNeeded()
+
+                tracks.track(.reviewsMarkAllReadSuccess)
             }
+
             self.updateMarkAllReadButtonState()
             self.tableView.reloadData()
         }
@@ -242,7 +274,7 @@ extension ReviewsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        viewModel.delegate.tableView?(tableView, willDisplay: cell, forRowAt: indexPath)
+        viewModel.delegate.tableView(tableView, willDisplay: cell, forRowAt: indexPath, with: syncingCoordinator)
     }
 }
 
@@ -255,17 +287,6 @@ private extension ReviewsViewController {
     func resetApplicationBadge() {
         ServiceLocator.pushNotesManager.resetBadgeCount()
     }
-
-    /// Synchronizes the Notifications associated to the active WordPress.com account.
-    ///
-    func synchronizeReviews(onCompletion: (() -> Void)? = nil) {
-        transitionToSyncingState()
-        viewModel.synchronizeReviews { [weak self] in
-            self?.transitionToResultsUpdatedState()
-            self?.tableView.reloadData()
-            onCompletion?()
-        }
-    }
 }
 
 
@@ -276,6 +297,8 @@ private extension ReviewsViewController {
     /// Refreshes the Results Controller Predicate, and ensures the UI is in Sync.
     ///
     func reloadResultsController() {
+        viewModel.refreshResults()
+
         tableView.setContentOffset(.zero, animated: false)
         tableView.reloadData()
         transitionToSyncingState()
@@ -317,7 +340,7 @@ private extension ReviewsViewController {
                 return
             }
 
-            ServiceLocator.analytics.track(.notificationShareStoreButtonTapped)
+            ServiceLocator.analytics.track(.reviewsShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 
@@ -346,16 +369,11 @@ private extension ReviewsViewController {
         nc.addObserver(self, selector: #selector(applicationDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
     }
 
-    /// Tear down the Notifications Hooks
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     /// Default Site Updated Handler
     ///
     @objc func defaultSiteWasUpdated() {
         reloadResultsController()
+        syncingCoordinator.resetInternalState()
     }
 
     /// Application became Active Again (while the Notes Tab was onscreen)
@@ -392,8 +410,10 @@ private extension ReviewsViewController {
             }
         case .results:
             break
-        case .syncing:
+        case .placeholder:
             displayPlaceholderReviews()
+        case .syncing:
+            ensureFooterSpinnerIsStarted()
         }
     }
 
@@ -405,15 +425,17 @@ private extension ReviewsViewController {
             removeAllOverlays()
         case .results:
             break
-        case .syncing:
+        case .placeholder:
             removePlaceholderReviews()
+        case .syncing:
+            ensureFooterSpinnerIsStopped()
         }
     }
 
     /// Should be called before Sync'ing Starts: Transitions to .results / .syncing
     ///
     func transitionToSyncingState() {
-        state = isEmpty ? .syncing : .results
+        state = isEmpty ? .placeholder : .syncing
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).
@@ -462,6 +484,53 @@ private extension ReviewsViewController {
 }
 
 
+// MARK: - Sync'ing Helpers
+//
+extension ReviewsViewController: SyncingCoordinatorDelegate {
+
+    /// Synchronizes the Orders for the Default Store (if any).
+    ///
+    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+        transitionToSyncingState()
+        viewModel.synchronizeReviews(pageNumber: pageNumber, pageSize: pageSize) { [weak self] in
+            self?.transitionToResultsUpdatedState()
+            onCompletion?(true)
+        }
+    }
+}
+
+// MARK: - Spinner Helpers
+//
+extension ReviewsViewController {
+
+    /// Starts the Footer Spinner animation, whenever `mustStartFooterSpinner` returns *true*.
+    ///
+    private func ensureFooterSpinnerIsStarted() {
+        guard mustStartFooterSpinner() else {
+            return
+        }
+
+        footerSpinnerView.startAnimating()
+    }
+
+    /// Whenever we're sync'ing an Orders Page that's beyond what we're currently displaying, this method will return *true*.
+    ///
+    private func mustStartFooterSpinner() -> Bool {
+        guard let highestPageBeingSynced = syncingCoordinator.highestPageBeingSynced else {
+            return false
+        }
+
+        return viewModel.containsMorePages(highestPageBeingSynced * SyncingCoordinator.Defaults.pageSize)
+    }
+
+    /// Stops animating the Footer Spinner.
+    ///
+    private func ensureFooterSpinnerIsStopped() {
+        footerSpinnerView.stopAnimating()
+    }
+}
+
+
 // MARK: - Nested Types
 //
 private extension ReviewsViewController {
@@ -473,6 +542,7 @@ private extension ReviewsViewController {
     }
 
     enum State {
+        case placeholder
         case emptyUnfiltered
         case results
         case syncing

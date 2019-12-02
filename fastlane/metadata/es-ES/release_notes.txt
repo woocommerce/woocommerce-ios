@@ -1,1 +1,7 @@
-Hemos reorganizado algunas partes de la sección Información del pedido para mejorar su legibilidad y usabilidad: Los datos de pago de los clientes se ven mejor y las notas del pedido se agrupan mediante encabezados de fecha para facilitar el análisis. Hemos quitado esas animaciones incómodas que se expanden al consultar la sección Información de facturación.
+- Mejora: La vista de detalles del pedido ahora incluye el método de envío.
+- Mejora: La pestaña Reseñas muestra todas las reseñas de los productos.
+- Modificación: Hemos actualizado la apariencia de la página Detalles del pedido y hemos desactivado temporalmente el modo oscuro.
+- Corrección de error: Hemos corregido la apariencia de las celdas de la interfaz de usuario Lista de pedidos al tocarlas con el modo oscuro activado.
+- Corrección de error: Las reseñas ya no se convierten al modo oscuro parcial. ¡El modo oscuro estará disponible próximamente!
+- Corrección de error: La página Detalles del pedido ahora tiene el espacio adecuado entre celdas.
+- Corrección de error: La página Configuración ya no se convierte al modo oscuro parcial.

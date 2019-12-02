@@ -43,6 +43,29 @@
              "email": "scrambled@scrambled.com",
              "phone": "333-333-3333"
              },
+             "shipping_lines": [
+                 {
+                     "id": 123,
+                     "method_title": "International Priority Mail Express Flat Rate",
+                     "method_id": "usps",
+                     "instance_id": "5",
+                     "total": "133.00",
+                     "total_tax": "0.00",
+                     "taxes": [],
+                     "meta_data": [
+                         {
+                             "id": 1307,
+                             "key": "Package 1",
+                             "value": "1 × 1 × 1 (in) 4lbs × 1"
+                         },
+                         {
+                             "id": 1308,
+                             "key": "Package 2",
+                             "value": "1 × 1 × 1 (in) 1lbs × 1"
+                         }
+                     ]
+                 }
+             ],
              "payment_method_title": "Credit Card (Stripe)",
              "date_paid_gmt": "2018-04-03T23:05:14",
              "date_completed_gmt": null,

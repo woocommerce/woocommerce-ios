@@ -15,14 +15,6 @@ final class OrderDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
-    private var customerNote: String {
-        return order.customerNote ?? String()
-    }
-
-    private var items: [OrderItem] {
-        return order.items
-    }
-
     private var isProcessingPayment: Bool {
         return order.statusKey == OrderStatusEnum.processing.rawValue
     }
@@ -71,12 +63,34 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
+    /// Shipping Lines from an Order
+    ///
+    private var shippingLines: [ShippingLine] {
+        return order.shippingLines
+    }
+
+    /// First Shipping method from an order
+    ///
+    private var shippingMethod: String {
+        return shippingLines.first?.methodTitle ?? String()
+    }
+
+    /// All the items inside an order
+    private var items: [OrderItem] {
+        return order.items
+    }
+
     /// Notes of an Order
     ///
     var orderNotes: [OrderNote] = [] {
         didSet {
             orderNotesSections = computeOrderNotesSections()
         }
+    }
+
+    /// Note of customer about the order
+    private var customerNote: String {
+        return order.customerNote ?? String()
     }
 
     /// Computed Notes of an Order with note sections
@@ -155,8 +169,12 @@ private extension OrderDetailsDataSource {
             configureShippingAddress(cell: cell)
         case let cell as CustomerNoteTableViewCell where row == .customerNote:
             configureCustomerNote(cell: cell)
+        case let cell as CustomerNoteTableViewCell where row == .shippingMethod:
+            configureShippingMethod(cell: cell)
         case let cell as WooBasicTableViewCell where row == .billingDetail:
             configureBillingDetail(cell: cell)
+        case let cell as TopLeftImageTableViewCell where row == .shippingNotice:
+            configureShippingNotice(cell: cell)
         case let cell as LeftImageTableViewCell where row == .addOrderNote:
             configureNewNote(cell: cell)
         case let cell as OrderNoteHeaderTableViewCell:
@@ -208,6 +226,22 @@ private extension OrderDetailsDataSource {
             "Show the billing details for this order.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
         )
+    }
+
+    func configureShippingNotice(cell: TopLeftImageTableViewCell) {
+        let cellTextContent = NSLocalizedString(
+            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
+            comment: "Shipping notice row label when there is more than one shipping method")
+        cell.imageView?.image = Icons.shippingNoticeIcon
+        cell.textLabel?.text = cellTextContent
+        cell.selectionStyle = .none
+
+        cell.accessibilityTraits = .staticText
+        cell.accessibilityLabel = NSLocalizedString(
+            "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
+            comment: "Accessibility label for the Shipping notice")
+        cell.accessibilityHint = NSLocalizedString("Shipping notice about the order",
+                                                    comment: "VoiceOver accessibility label for the shipping notice about the order")
     }
 
     func configureNewNote(cell: LeftImageTableViewCell) {
@@ -334,6 +368,13 @@ private extension OrderDetailsDataSource {
         )
     }
 
+    func configureShippingMethod(cell: CustomerNoteTableViewCell) {
+        cell.headline = NSLocalizedString("Shipping Method",
+                                          comment: "Shipping method title for customer info cell")
+        cell.body = shippingMethod
+        cell.selectionStyle = .none
+    }
+
     func configureSummary(cell: SummaryTableViewCell) {
         cell.title = summaryTitle
         cell.dateCreated = summaryDateCreated
@@ -361,6 +402,9 @@ extension OrderDetailsDataSource {
         return products.filter({ $0.productID == productID }).first
     }
 
+    func isMultiShippingLinesAvailable(for order: Order) -> Bool {
+        return shippingLines.count > 1
+    }
 }
 
 
@@ -374,6 +418,15 @@ extension OrderDetailsDataSource {
     ///
     func reloadSections() {
         let summary = Section(row: .summary)
+
+        let shippingNotice: Section? = {
+            //Hide the shipping method warning if order contains only virtual products or if the order contains only one shipping method
+            if isMultiShippingLinesAvailable(for: order) == false {
+                return nil
+            }
+
+            return Section(title: nil, rightTitle: nil, footer: nil, rows: [.shippingNotice])
+        }()
 
         let products: Section? = {
             guard items.isEmpty == false else {
@@ -398,6 +451,9 @@ extension OrderDetailsDataSource {
             }
             if order.shippingAddress != nil {
                 rows.append(.shippingAddress)
+            }
+            if shippingLines.count > 0 {
+                rows.append(.shippingMethod)
             }
             rows.append(.billingDetail)
 
@@ -433,7 +489,7 @@ extension OrderDetailsDataSource {
             return Section(title: Title.notes, rows: rows)
         }()
 
-        sections = [summary, products, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
+        sections = [summary, shippingNotice, products, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
 
@@ -509,11 +565,13 @@ extension OrderDetailsDataSource {
         case details
         case customerNote
         case shippingAddress
+        case shippingMethod
         case billingDetail
         case payment
         case customerPaid
         case tracking
         case trackingAdd
+        case shippingNotice
         case addOrderNote
         case orderNoteHeader
         case orderNote
@@ -532,6 +590,8 @@ extension OrderDetailsDataSource {
                 return CustomerNoteTableViewCell.reuseIdentifier
             case .shippingAddress:
                 return CustomerInfoTableViewCell.reuseIdentifier
+            case .shippingMethod:
+                return CustomerNoteTableViewCell.reuseIdentifier
             case .billingDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .payment:
@@ -542,6 +602,8 @@ extension OrderDetailsDataSource {
                 return OrderTrackingTableViewCell.reuseIdentifier
             case .trackingAdd:
                 return LeftImageTableViewCell.reuseIdentifier
+            case .shippingNotice:
+                return TopLeftImageTableViewCell.reuseIdentifier
             case .addOrderNote:
                 return LeftImageTableViewCell.reuseIdentifier
             case .orderNoteHeader:
@@ -688,5 +750,6 @@ private extension OrderDetailsDataSource {
 
     enum Icons {
         static let addNoteIcon = UIImage.addOutlineImage
+        static let shippingNoticeIcon = UIImage.noticeImage
     }
 }

@@ -1,1 +1,7 @@
-Reorganizamos partes dos Detalhes do pedido para melhor fluência e utilização: os detalhes do pagamento do cliente estão mais proeminentes, e as Observações do pedido estão organizadas por data para facilitar a leitura. Além disso, a animação esquisita de ampliação ao exibir os Detalhes de cobrança foi removida!
+- Aprimorado: agora a visualização “Detalhes do pedido” inclui o método de envio.
+- Melhoria: agora a guia “Avaliações” exibe todas as avaliações de produtos.
+- Modificado: atualizamos a aparência dos “Detalhes do pedido” e desativamos temporariamente o modo escuro.
+- Correção de bug: corrigida a aparência da interface do usuário nas células da “Lista de pedidos” ao tocar no modo escuro ativado.
+- Correção de bug: as avaliações não são mais convertidas para o modo escuro parcial. O modo escuro estará disponível em breve!
+- Correção de bug: agora “Detalhes do pedido” tem o espaço correto entre as células.
+- Correção de bug: as configurações não são mais convertidas para o modo escuro parcial.

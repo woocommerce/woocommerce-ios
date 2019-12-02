@@ -18,7 +18,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
         return ResultsController<StorageProductReview>(storageManager: storageManager,
                                                        sectionNameKeyPath: "normalizedAgeAsString",
-                                                       matching: self.filterPredicate,
+                                                       matching: filterPredicate(),
                                                        sortedBy: [descriptor])
     }()
 
@@ -29,7 +29,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         let descriptor = NSSortDescriptor(keyPath: \StorageProduct.productID, ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager,
-                                                       matching: sitePredicate,
+                                                       matching: sitePredicate(),
                                                        sortedBy: [descriptor])
     }()
 
@@ -45,29 +45,12 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
                                               sortedBy: [descriptor])
     }()
 
-    /// Predicate to filter only Product Reviews that are either approved or on hold
-    ///
-    private lazy var filterPredicate: NSPredicate = {
-        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
-                                          ProductReviewStatus.approved.rawValue,
-                                          ProductReviewStatus.hold.rawValue)
-
-        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, statusPredicate])
-    }()
-
-    /// Predicate to entities that belong to the current store
-    ///
-    private lazy var sitePredicate: NSPredicate = {
-        return NSPredicate(format: "siteID == %lld",
-                          ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-    }()
-
     private lazy var notificationsPredicate: NSPredicate = {
         let notDeletedPredicate = NSPredicate(format: "deleteInProgress == NO")
         let typeReviewPredicate =  NSPredicate(format: "subtype == %@", Note.Subkind.storeReview.rawValue)
 
         return NSCompoundPredicate(andPredicateWithSubpredicates: [typeReviewPredicate,
-                                                                   sitePredicate,
+                                                                   sitePredicate(),
                                                                    notDeletedPredicate])
     }()
 
@@ -99,6 +82,10 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
             .uniqued()
     }
 
+    var reviewCount: Int {
+        return reviewsResultsController.numberOfObjects
+    }
+
 
     override init() {
         super.init()
@@ -120,6 +107,23 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
         try? notificationsResultsController.performFetch()
     }
 
+    /// Predicate to filter only Product Reviews that are either approved or on hold
+    ///
+    private func filterPredicate() -> NSPredicate {
+        let statusPredicate = NSPredicate(format: "statusKey ==[c] %@ OR statusKey ==[c] %@",
+                                          ProductReviewStatus.approved.rawValue,
+                                          ProductReviewStatus.hold.rawValue)
+
+        return  NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate(), statusPredicate])
+    }
+
+    /// Predicate to entities that belong to the current store
+    ///
+    private func sitePredicate() -> NSPredicate {
+        return NSPredicate(format: "siteID == %lld",
+                          ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+    }
+
     /// Initializes observers for incoming reviews
     ///
     func observeReviews() throws {
@@ -132,6 +136,11 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
 
     func startForwardingEvents(to tableView: UITableView) {
         reviewsResultsController.startForwardingEvents(to: tableView)
+    }
+
+    func refreshDataObservers() {
+        reviewsResultsController.predicate = filterPredicate()
+        productsResultsController.predicate = sitePredicate()
     }
 }
 
@@ -214,7 +223,10 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
         return UITableView.automaticDimension
     }
 
-    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath, with syncingCoordinator: SyncingCoordinator) {
+
+        let orderIndex = reviewsResultsController.objectIndex(from: indexPath)
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
 
         // Preserve the Cell Height
         // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
@@ -228,6 +240,24 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
         let review = reviewsResultsController.object(at: indexPath)
         let reviewedProduct = product(id: review.productID)
         let note = notification(id: review.reviewID)
+
+        let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct, notification: note)
+        viewController.navigationController?.pushViewController(detailsViewController, animated: true)
+    }
+
+    func presentReviewDetails(for noteId: Int, in viewController: UIViewController) {
+        let notificationMaybe = notificationsResultsController.fetchedObjects.first { $0.noteId == noteId }
+        guard let note = notificationMaybe,
+            let reviewID = note.meta.identifier(forKey: .comment) else {
+            return
+        }
+
+        guard let review = reviewsResultsController.fetchedObjects.first(where: { $0.reviewID == reviewID
+        }) else {
+            return
+        }
+
+        let reviewedProduct = product(id: review.productID)
 
         let detailsViewController = ReviewDetailsViewController(productReview: review, product: reviewedProduct, notification: note)
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)

@@ -29,6 +29,7 @@ public struct Order: Decodable {
     public let items: [OrderItem]
     public let billingAddress: Address?
     public let shippingAddress: Address?
+    public let shippingLines: [ShippingLine]
     public let coupons: [OrderCouponLine]
     public let refunds: [OrderRefundCondensed]
 
@@ -55,6 +56,7 @@ public struct Order: Decodable {
                 items: [OrderItem],
                 billingAddress: Address?,
                 shippingAddress: Address?,
+                shippingLines: [ShippingLine],
                 coupons: [OrderCouponLine],
                 refunds: [OrderRefundCondensed]) {
 
@@ -83,6 +85,7 @@ public struct Order: Decodable {
         self.items = items
         self.billingAddress = billingAddress
         self.shippingAddress = shippingAddress
+        self.shippingLines = shippingLines
         self.coupons = coupons
         self.refunds = refunds
     }
@@ -123,6 +126,7 @@ public struct Order: Decodable {
 
         let shippingAddress = try? container.decode(Address.self, forKey: .shippingAddress)
         let billingAddress = try? container.decode(Address.self, forKey: .billingAddress)
+        let shippingLines = try container.decodeIfPresent([ShippingLine].self, forKey: .shippingLines) ?? []
 
         let coupons = try container.decode([OrderCouponLine].self, forKey: .couponLines)
 
@@ -150,6 +154,7 @@ public struct Order: Decodable {
                   items: items,
                   billingAddress: billingAddress,
                   shippingAddress: shippingAddress,
+                  shippingLines: shippingLines,
                   coupons: coupons,
                   refunds: refunds)
     }
@@ -185,6 +190,7 @@ private extension Order {
         case items              = "line_items"
         case shippingAddress    = "shipping"
         case billingAddress     = "billing"
+        case shippingLines      = "shipping_lines"
         case couponLines        = "coupon_lines"
         case refunds            = "refunds"
     }
@@ -213,6 +219,8 @@ extension Order: Comparable {
             lhs.paymentMethodTitle == rhs.paymentMethodTitle &&
             lhs.billingAddress == rhs.billingAddress &&
             lhs.shippingAddress == rhs.shippingAddress &&
+            lhs.shippingLines.count == rhs.shippingLines.count &&
+            lhs.shippingLines.sorted() == rhs.shippingLines.sorted() &&
             lhs.coupons.count == rhs.coupons.count &&
             lhs.coupons.sorted() == rhs.coupons.sorted() &&
             lhs.refunds.count == rhs.refunds.count &&

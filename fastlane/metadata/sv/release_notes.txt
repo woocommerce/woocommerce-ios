@@ -1,1 +1,7 @@
-Vi har arrangerat om vissa delar av skärmen Orderdetaljer för bättre läsbarhet och användbarhet: Betalningsinformationen för kunder är mer framträdande och orderanteckningar grupperas med datumrubriker för enklare skanning. Och den besvärliga expanderande animeringen när du visar faktureringsinformationen är borta!
+- Förbättring: Beställningsinformationsvyn inkluderar nu beställningens fraktmetod.
+- Förbättring: Fliken Recensioner visar nu alla produktrecensioner.
+- Modifiering: Vi har uppdaterat utseendet på beställningsinformationen och tillfälligt inaktiverat mörkt läge.
+- Buggkorrigering: Användargränssnittsutseendet på celler i beställningslistan när du trycker med mörkt läge aktiverat har korrigerats.
+- Buggkorrigering: Recensioner konverteras inte längre till delvis mörkt läge. Mörkt läge kommer snart!
+- Buggkorrigering: Beställningsinformationen har nu korrekt utrymme mellan celler.
+- Buggkorrigering: Inställningar konverteras inte längre till delvis mörkt läge.

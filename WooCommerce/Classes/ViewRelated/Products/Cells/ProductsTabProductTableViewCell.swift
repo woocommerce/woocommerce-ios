@@ -18,6 +18,7 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        configureBackground()
         configureSubviews()
         configureNameLabel()
         configureDetailsLabel()
@@ -75,6 +76,14 @@ private extension ProductsTabProductTableViewCell {
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .vertical
         return contentStackView
+    }
+
+    func configureBackground() {
+        backgroundColor = StyleManager.wooWhite
+
+        //Background when selected
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
     }
 
     func configureNameLabel() {

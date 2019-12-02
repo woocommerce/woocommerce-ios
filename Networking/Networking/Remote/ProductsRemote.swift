@@ -44,7 +44,7 @@ public class ProductsRemote: Remote {
     /// - Parameters:
     ///     - siteID: We are fetching remote products for this site.
     ///     - productIDs: The array of product IDs that are requested.
-    ///     - comletion: Closure to be executed upon completion.
+    ///     - completion: Closure to be executed upon completion.
     ///
     public func loadProducts(for siteID: Int, by productIDs: [Int], completion: @escaping ([Product]?, Error?) -> Void) {
         let stringOfProductIDs = productIDs.map { String($0) }
@@ -97,6 +97,25 @@ public class ProductsRemote: Remote {
         let path = Path.products
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
         let mapper = ProductListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Updates the description of a specific `Product`.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site which hosts the Product.
+    ///     - productID: Identifier of the Product.
+    ///     - description: Description of the Product.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func updateProductDescription(for siteID: Int, productID: Int, description: String, completion: @escaping (Product?, Error?) -> Void) {
+        let parameters = [
+            "description": description
+        ]
+        let path = "\(Path.products)/\(productID)"
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

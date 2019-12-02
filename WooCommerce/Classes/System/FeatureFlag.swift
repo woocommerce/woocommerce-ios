@@ -10,6 +10,10 @@ enum FeatureFlag: Int {
     ///
     case productList
 
+    /// Edit products
+    ///
+    case editProducts
+
     /// Store stats
     ///
     case stats
@@ -29,7 +33,7 @@ enum FeatureFlag: Int {
         case .stats:
             return BuildConfiguration.current == .localDeveloper
         case .reviews:
-            return false
+            return true
         case .refunds:
             return BuildConfiguration.current == .localDeveloper
         default:

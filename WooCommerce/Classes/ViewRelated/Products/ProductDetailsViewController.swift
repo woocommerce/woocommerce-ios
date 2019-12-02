@@ -48,6 +48,7 @@ final class ProductDetailsViewController: UIViewController {
 
         // prepare UI
         configureNavigationTitle()
+        configureNavigationActions()
         configureMainView()
         configureTableView()
         registerTableViewCells()
@@ -68,6 +69,14 @@ private extension ProductDetailsViewController {
     ///
     func configureNavigationTitle() {
         title = viewModel.title
+    }
+
+    /// Setup: Navigation Actions
+    ///
+    func configureNavigationActions() {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
+            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editProduct))
+        }
     }
 
     /// Setup: main view
@@ -152,7 +161,7 @@ private extension ProductDetailsViewController {
 
 // MARK: - Action Handlers
 //
-extension ProductDetailsViewController {
+private extension ProductDetailsViewController {
 
     @objc func pullToRefresh() {
         DDLogInfo("♻️ Requesting product detail data be reloaded...")
@@ -163,6 +172,13 @@ extension ProductDetailsViewController {
             }
             self?.refreshControl.endRefreshing()
         }
+    }
+
+    @objc func editProduct() {
+        let product = viewModel.product
+        let productForm = ProductFormViewController(product: product)
+        let navController = WooNavigationController(rootViewController: productForm)
+        navigationController?.present(navController, animated: true)
     }
 }
 

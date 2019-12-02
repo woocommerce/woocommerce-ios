@@ -29,7 +29,7 @@ final class StatusListTableViewCell: UITableViewCell {
 
     override func setHighlighted(_ highlighted: Bool, animated: Bool) {
         super.setHighlighted(highlighted, animated: animated)
-        accessoryType = highlighted ? .checkmark : .none
+        accessoryType = highlighted || isSelected ? .checkmark : .none
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {
@@ -42,6 +42,10 @@ final class StatusListTableViewCell: UITableViewCell {
 private extension StatusListTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
+
+        //Background when selected
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
     }
 
     func styleCheckmark() {

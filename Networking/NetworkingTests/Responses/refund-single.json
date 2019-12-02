@@ -1,0 +1,53 @@
+{
+    "data": {
+        "id": 562,
+        "date_created": "2019-10-01T19:33:46",
+        "date_created_gmt": "2019-10-01T19:33:46",
+        "amount": "27.00",
+        "reason": "My pet hamster ate the sleeve off of one of the Blue XL hoodies. Sorry! No longer for sale.",
+        "refunded_by": 1,
+        "refunded_payment": true,
+        "meta_data": [],
+        "line_items": [
+            {
+                "id": 67,
+                "name": "Ship Your Idea - Blue, XL",
+                "product_id": 21,
+                "variation_id": 70,
+                "quantity": -1,
+                "tax_class": "",
+                "subtotal": "-27.00",
+                "subtotal_tax": "0.00",
+                "total": "-27.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 605,
+                        "key": "_refunded_item_id",
+                        "value": "65"
+                    }
+                ],
+                "sku": "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
+                "price": 27
+            }
+        ],
+        "_links": {
+            "self": [
+                {
+                    "href": "https://thuy-test.mystagingwebsite.com/wp-json/wc/v3/orders/560/refunds/562"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://thuy-test.mystagingwebsite.com/wp-json/wc/v3/orders/560/refunds"
+                }
+            ],
+            "up": [
+                {
+                    "href": "https://thuy-test.mystagingwebsite.com/wp-json/wc/v3/orders/560"
+                }
+            ]
+        }
+    }
+}

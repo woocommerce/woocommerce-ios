@@ -79,7 +79,6 @@ private extension OrderDetailsViewController {
         view.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.backgroundColor = StyleManager.tableViewBackgroundColor
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
-        tableView.estimatedSectionFooterHeight = Constants.rowHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
@@ -363,7 +362,16 @@ extension OrderDetailsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        // Remove the first header
+        if section == 0 {
+            return CGFloat.leastNormalMagnitude
+        }
+
         return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
     }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
@@ -432,7 +440,7 @@ private extension OrderDetailsViewController {
     private func displayOrderStatusList() {
         ServiceLocator.analytics.track(.orderDetailOrderStatusEditButtonTapped,
                                   withProperties: ["status": viewModel.order.statusKey])
-        let statusList = OrderStatusListViewController(order: viewModel.order)
+        let statusList = OrderStatusListViewController(order: viewModel.order, currentStatus: viewModel.orderStatus)
         let navigationController = UINavigationController(rootViewController: statusList)
 
         present(navigationController, animated: true)

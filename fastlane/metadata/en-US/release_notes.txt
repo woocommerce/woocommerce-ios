@@ -1,1 +1,7 @@
-We’ve rearranged some parts of Order Details for better readability and usability: Customer payment details are more prominent, and Order Notes are grouped with date headings for easier scanning. And no more awkward expanding animation when you view the Billing Details!
+- Improved: Order detail view now includes the order’s shipping method.
+- Enhancement: Reviews tab now shows all Product Reviews.
+- Modified: We updated the appearance of Order Details and temporarily disabled dark mode.
+- Bug fix: Fixed UI appearance on cells of Order List when tapping with dark mode enabled.
+- Bug fix: Reviews no longer convert to partial dark mode. Dark mode is coming soon!
+- Bug fix: Order Details now has the correct space between cells.
+- Bug fix: Settings no longer convert to partial dark mode.

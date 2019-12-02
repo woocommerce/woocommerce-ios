@@ -1,11 +1,39 @@
 default_platform(:ios)
 fastlane_require 'dotenv'
 
+USER_ENV_FILE_PATH = File.join(Dir.home, '.wcios-env.default')
+PROJECT_ENV_FILE_PATH = File.expand_path(File.join(Dir.pwd, '../.configure-files/project.env'))
+
+# Use this instead of getting values from ENV directly
+# It will throw an error if the requested value is missing
+def get_required_env(key)
+  unless ENV.key?(key)
+    UI.user_error!("Environment variable '#{key}' is not set. Have you setup #{USER_ENV_FILE_PATH} correctly?")
+  end
+  ENV[key]
+end
+
+before_all do
+  # Check that the env files exist
+  unless is_ci || File.file?(USER_ENV_FILE_PATH)
+    UI.user_error!("~/.wcios-env.default not found: Please copy env/user.env-example to #{USER_ENV_FILE_PATH} and fill in the values")
+  end
+  unless File.file?(PROJECT_ENV_FILE_PATH)
+    UI.user_error!("project.env not found: Make sure your configuration is up to date with `rake dependencies`")
+  end
+
+  # This allows code signing to work on CircleCI
+  # It is skipped if this isn't running on CI
+  # See https://circleci.com/docs/2.0/ios-codesigning/
+  setup_circle_ci
+end
+
 platform :ios do
 ########################################################################
 # Environment
 ########################################################################
-Dotenv.load('~/.wcios-env.default')
+Dotenv.load(USER_ENV_FILE_PATH)
+Dotenv.load(PROJECT_ENV_FILE_PATH)
 ENV[GHHELPER_REPO="woocommerce/woocommerce-iOS"]
 ENV["PROJECT_NAME"]="WooCommerce"
 ENV["PUBLIC_CONFIG_FILE"]="config/Version.Public.xcconfig"
@@ -183,13 +211,12 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_build_prechecks(skip_confirm: options[:skip_confirm], external: true) unless (options[:skip_prechecks])
     ios_build_preflight() unless (options[:skip_prechecks])
 
+    appstore_code_signing
+
     gym(scheme: "WooCommerce", workspace: "./WooCommerce.xcworkspace",
-      clean: true, export_team_id: ENV["EXT_EXPORT_TEAM_ID"], 
+      clean: true, export_team_id: get_required_env("EXT_EXPORT_TEAM_ID"), 
       export_options: {
-        method: "app-store",
-        provisioningProfiles: { 
-          "com.automattic.woocommerce" => "WooCommerce App Store"
-        }
+        method: "app-store"
       }
     )
     
@@ -197,12 +224,76 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     sh("cd .. && rm WooCommerce.ipa")
 
     sentry_upload_dsym(
-      auth_token: ENV["SENTRY_AUTH_TOKEN"],
+      auth_token: get_required_env("SENTRY_AUTH_TOKEN"),
       org_slug: 'a8c',
       project_slug: 'woocommerce-ios',
       dsym_path: "./WooCommerce.app.dSYM.zip",
     )
     sh("cd .. && rm WooCommerce.app.dSYM.zip")
+  end
+
+  #####################################################################################
+  # build_and_upload_installable_build
+  # -----------------------------------------------------------------------------------
+  # This lane builds the app and upload it for adhoc testing 
+  # -----------------------------------------------------------------------------------
+  # Usage:
+  # bundle exec fastlane build_and_upload_installable_build [version_long:<version_long>]
+  #
+  # Example:
+  # bundle exec fastlane build_and_upload_installable_build 
+  # bundle exec fastlane build_and_upload_installable_build build_number:123 
+  #####################################################################################
+  desc "Builds and uploads an installable build"
+  lane :build_and_upload_installable_build do | options |
+    alpha_code_signing
+
+    # Get the current build version, and update it if needed
+    version_config_path = "../config/Version.Public.xcconfig"
+    versions = Xcodeproj::Config.new(File.new(version_config_path)).to_hash
+    build_number = versions["VERSION_LONG"]
+
+    if options.key?(:build_number)
+      build_number = options[:build_number]
+
+      UI.message("Updating build version to #{build_number}")
+
+      versions["VERSION_LONG"] = build_number
+      new_config = Xcodeproj::Config.new(versions)
+      new_config.save_as(Pathname.new(version_config_path))
+    end
+
+    gym(
+      scheme: "WooCommerce Alpha",
+      workspace: "WooCommerce.xcworkspace",
+      export_method: "enterprise",
+      clean: true,
+      output_directory: "build",
+      export_team_id: ENV["INT_EXPORT_TEAM_ID"],
+      export_options: { method: "enterprise", iCloudContainerEnvironment: 'Production' })
+
+    sh("mv ../build/WooCommerce.ipa \"../build/WooCommerce Alpha.ipa\"")
+    
+    # NOTE: "ipa" parameter is deprecated in appcenter_upload 1.6.0, but there's a bug in the action that
+    # makes the default gym output override the "file" parameter. 
+    appcenter_upload(
+      api_token: get_required_env("APPCENTER_API_TOKEN"),
+      owner_name: "Hogwarts-Organization",
+      owner_type: "organization", 
+      app_name: "WooCommerce-Installable-Builds",
+      ipa: "build/WooCommerce Alpha.ipa",
+      destinations: "All-users-of-WooCommerce-Installable-Builds",
+      notify_testers: false 
+    )
+
+
+    download_url = Actions.lane_context[SharedValues::APPCENTER_DOWNLOAD_LINK]
+    UI.message("Successfully built and uploaded installable build here: #{download_url}")
+    install_url = "https://install.appcenter.ms/orgs/Hogwarts-Organization/apps/WooCommerce-Installable-Builds"
+
+    # Create a comment.json file so that Peril to comment with the build details, if this is running on CI
+    comment_body = "You can test the changes on this Pull Request by downloading it from AppCenter [here](#{install_url}) with build number: #{build_number}. IPA is available [here](#{download_url}). If you need access to this, you can ask a maintainer to add you."
+    File.write("comment.json", { body: comment_body }.to_json)
   end
 
   ########################################################################
@@ -211,7 +302,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   desc "Take Screenshots"
   lane :screenshots do | options |
 
-    languages = ENV["MAGNIFICENT_16"].split() + ["en"]
+    languages = get_required_env("MAGNIFICENT_16").split() + ["en"]
 
     if options[:languages] != nil
       languages = languages & options[:languages].split(",")
@@ -257,7 +348,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       "app_store_screenshot-8"    => {desc: "app_store_screenshot_8.txt"},
     }
 
-    metadata_locales = ENV["MAGNIFICENT_16"].split().map { |locale| locale.downcase }
+    metadata_locales = get_required_env("MAGNIFICENT_16").split().map { |locale| locale.downcase }
 
     gp_downloadmetadata(project_url: "https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/", 
       target_files: files,
@@ -312,6 +403,25 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
        output_folder: output_directory,
        force: options[:force],
      )
+  end
+
+  ########################################################################
+  # Fastlane match code signing
+  ########################################################################
+  private_lane :alpha_code_signing do |options|
+    match(
+      type: "enterprise",
+      team_id: get_required_env("INT_EXPORT_TEAM_ID"),
+      readonly: options[:readonly] || is_ci,
+      app_identifier: ["com.automattic.alpha.woocommerce"])
+  end
+
+  private_lane :appstore_code_signing do |options|
+    match(
+      type: "appstore",
+      team_id: get_required_env("EXT_EXPORT_TEAM_ID"),
+      readonly: options[:readonly] || is_ci,
+      app_identifier: ["com.automattic.woocommerce"])
   end
 
   ########################################################################

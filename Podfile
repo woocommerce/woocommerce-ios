@@ -1,11 +1,11 @@
+source 'https://cdn.cocoapods.org/'
+
 inhibit_all_warnings!
 use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
 use_modular_headers!
 
 platform :ios, '12.0'
 workspace 'WooCommerce.xcworkspace'
-
-plugin 'cocoapods-repo-update'
 
 # Main Target!
 # ============
@@ -33,6 +33,7 @@ target 'WooCommerce' do
   
   pod 'WordPressUI', '~> 1.3.5'
 
+  pod 'WordPress-Editor-iOS', '~> 1.11.0'
 
   # External Libraries
   # ==================
@@ -157,7 +158,6 @@ pre_install do |installer|
       true
     end
   end
-
 
   puts "Installing #{static.count} pods as static frameworks"
   puts "Installing #{dynamic.count} pods as dynamic frameworks"

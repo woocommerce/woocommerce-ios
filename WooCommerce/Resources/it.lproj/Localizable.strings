@@ -234,6 +234,15 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Continua a leggere";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "Continua con Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "Continua con WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "Continua con Apple";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Copia";
 
@@ -543,10 +552,10 @@
 "Log in failed. Please try again." = "Accesso fallito. Si prega di riprovare.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "Accedi a WordPress.com utilizzando un indirizzo e-mail per gestire tutti i tuoi siti WordPress.com.";
+"Log in to the WordPress.com account you used to connect Jetpack." = "Accedi all'account WordPress.com che hai utilizzato per connettere Jetpack.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "Accedi all'account WordPress.com che hai utilizzato per connettere Jetpack.";
+"Log in to your WordPress.com account with your email address." = "Accedi al tuo account WordPress.com con il tuo indirizzo e-mail.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Accedi con Jetpack";
@@ -716,6 +725,9 @@
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Informazioni di monitoraggio opzionali";
 
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "Altrimenti, accedi _inserendo l'indirizzo del tuo sito_.";
+
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "Ordine n. (viewModel.order.number)";
@@ -788,6 +800,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "Per favore, inserire un indirizzo email valido.";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Digita la password del tuo account WordPress.com per accedere con il tuo Apple ID.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Si prega di inserire i dati di accesso";

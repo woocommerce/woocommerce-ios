@@ -36,8 +36,9 @@ final class OrderStatusListViewController: UIViewController {
     ///
     private let order: Order
 
-    init(order: Order) {
+    init(order: Order, currentStatus: OrderStatus?) {
         self.order = order
+        self.selectedStatus = currentStatus
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 
@@ -52,6 +53,8 @@ final class OrderStatusListViewController: UIViewController {
         configureTableView()
 
         configureResultsController()
+
+        preselectStatusIfPossible()
     }
 
     /// Setup: Results Controller
@@ -59,6 +62,13 @@ final class OrderStatusListViewController: UIViewController {
     private func configureResultsController() {
         statusResultsController.startForwardingEvents(to: tableView)
         try? statusResultsController.performFetch()
+    }
+
+    private func preselectStatusIfPossible() {
+        if let selectedStatus = selectedStatus,
+            let index = statusResultsController.fetchedObjects.firstIndex(of: selectedStatus) {
+            tableView.selectRow(at: IndexPath(row: index, section: 0), animated: false, scrollPosition: .none)
+        }
     }
 
     /// Registers all of the available TableViewCells

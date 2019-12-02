@@ -24,6 +24,11 @@ final class ManualTrackingViewController: UIViewController {
         return noticePresenter
     }()
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        return keyboardFrameObserver
+    }()
+
     init(viewModel: ManualTrackingViewModel) {
         self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -38,6 +43,7 @@ final class ManualTrackingViewController: UIViewController {
         configureBackground()
         configureNavigation()
         configureTable()
+        startListeningToNotifications()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -366,8 +372,8 @@ private extension ManualTrackingViewController {
 
     func displayDatePicker(at indexPath: IndexPath) {
         datePickerVisible = true
-
         reloadDatePicker(at: indexPath)
+        table.scrollToRow(at: indexPath, at: .top, animated: true)
     }
 
     func showAllShipmentProviders() {
@@ -554,6 +560,21 @@ private extension ManualTrackingViewController {
 
 }
 
+// MARK: - Keyboard management
+//
+private extension ManualTrackingViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
+
+extension ManualTrackingViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return table
+    }
+}
 
 // MARK: - Error handling
 //

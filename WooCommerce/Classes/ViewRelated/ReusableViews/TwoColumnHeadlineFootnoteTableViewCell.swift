@@ -45,7 +45,23 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
+        configureLabels()
+    }
+}
 
+// MARK: - Private Methods
+//
+private extension TwoColumnHeadlineFootnoteTableViewCell {
+    /// Setup: Cell background
+    ///
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    /// Setup: Labels
+    ///
+    func configureLabels() {
         leftTitleLabel.applyHeadlineStyle()
         rightTitleLabel.applyHeadlineStyle()
         footnoteLabel.applyFootnoteStyle()

@@ -134,7 +134,7 @@ private extension SettingsViewController {
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
-        var otherSection: Section
+        let otherSection: Section
         #if DEBUG
         otherSection = Section(title: otherTitle, rows: [.appSettings, .wormholy], footerHeight: CGFloat.leastNonzeroMagnitude)
         #else

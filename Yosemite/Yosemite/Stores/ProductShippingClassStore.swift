@@ -68,7 +68,8 @@ private extension ProductShippingClassStore {
                                                             onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
-            self?.upsertStoredProductShippingClassModels(readOnlyProductShippingClassModels: readOnlyProductShippingClassModels, in: derivedStorage, siteID: siteID)
+            self?.upsertStoredProductShippingClassModels(readOnlyProductShippingClassModels: readOnlyProductShippingClassModels,
+                                                         in: derivedStorage, siteID: siteID)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {

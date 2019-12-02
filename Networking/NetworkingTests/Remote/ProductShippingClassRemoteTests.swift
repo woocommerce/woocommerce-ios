@@ -21,7 +21,7 @@ final class ProductShippingClassRemoteTests: XCTestCase {
 
     // MARK: - Load All Product Shipping Classes tests
 
-    /// Verifies that loadAllProductShippingClasses properly parses the `product-variations-load-all` sample response.
+    /// Verifies that loadAllProductShippingClasses properly parses the `product-shipping-classes-load-all` sample response.
     ///
     func testLoadAllProductShippingClassesProperlyReturnsParsedData() {
         let remote = ProductShippingClassRemote(network: network)

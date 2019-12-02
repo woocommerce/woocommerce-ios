@@ -3,9 +3,9 @@ import Foundation
 /// Mapper: ProductShippingClass List
 ///
 struct ProductShippingClassListMapper: Mapper {
-    /// Site Identifier associated to the product variation that will be parsed.
+    /// Site Identifier associated to the `ProductShippingClass`s that will be parsed.
     ///
-    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Product Variation Endpoints.
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the ProductShippingClass Endpoints.
     ///
     let siteID: Int64
 

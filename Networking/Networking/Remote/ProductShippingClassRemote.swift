@@ -1,7 +1,7 @@
 import Foundation
 import Alamofire
 
-/// ProductVariation: Remote Endpoints
+/// ProductShippingClass: Remote Endpoints
 ///
 public class ProductShippingClassRemote: Remote {
 

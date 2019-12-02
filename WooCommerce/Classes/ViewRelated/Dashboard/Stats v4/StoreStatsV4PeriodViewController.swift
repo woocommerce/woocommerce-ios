@@ -512,7 +512,8 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
                 yAxisMaximum = value.humanReadableString()
                 return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
                                                           at: CurrencySettings.shared.currencyPosition,
-                                                          with: currencySymbol)
+                                                          with: currencySymbol,
+                                                          isNegative: value.sign == .minus)
             }
         }
     }

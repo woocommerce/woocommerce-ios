@@ -34,6 +34,10 @@ public class CurrencyFormatter {
                   in decimalPosition: Int = 2,
                   including thousandSeparator: String? = ",") -> String? {
 
+        // If the decimal amount is negative, change it to a positive.
+        // We'll add our own custom negative sign in `formatAmount(with:)`
+        let absoluteAmount = decimalAmount.isNegative() ? decimalAmount.multiplying(by: -1) : decimalAmount
+
         let numberFormatter = NumberFormatter()
         numberFormatter.usesGroupingSeparator = true
         numberFormatter.groupingSeparator = thousandSeparator
@@ -44,10 +48,8 @@ public class CurrencyFormatter {
         numberFormatter.generatesDecimalNumbers = true
         numberFormatter.minimumFractionDigits = decimalPosition
         numberFormatter.maximumFractionDigits = decimalPosition
-        numberFormatter.negativeSuffix = ""
-        numberFormatter.negativePrefix = "-"
 
-        return numberFormatter.string(from: decimalAmount)
+        return numberFormatter.string(from: absoluteAmount)
     }
 
     /// Returns a string that displays the amount using all of the specified currency settings
@@ -56,28 +58,52 @@ public class CurrencyFormatter {
     ///     - position: the currency position enum, either right, left, right_space, or left_space.
     ///     - symbol: the currency symbol as a string, to be used with the amount.
     ///
-    func formatCurrency(using amount: String, at position: CurrencySettings.CurrencyPosition, with symbol: String) -> String {
+    func formatCurrency(using amount: String, at position: CurrencySettings.CurrencyPosition, with symbol: String, isNegative: Bool) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
+        let negative = isNegative ? "-" : ""
+        let current = Locale.current as NSLocale
+        let languageCode = current.object(forKey: NSLocale.Key.languageCode) as? String
+
+        var languageDirection: Locale.LanguageDirection = .unknown
+        if let language = languageCode {
+            languageDirection = Locale.characterDirection(forLanguage: language)
+        }
+
+        guard languageDirection == .rightToLeft else {
+            // For all languages that are not RTL.
+            switch position {
+            case .left:
+                return negative + symbol + amount
+            case .right:
+                return negative + amount + symbol
+            case .leftSpace:
+                return negative + space + symbol + space + amount
+            case .rightSpace:
+                return negative + amount + space + symbol
+            }
+        }
+
+        // For the RTL languages, such as AED.
         switch position {
         case .left:
-            return symbol + amount
+            return  symbol + negative + amount
         case .right:
-            return amount + symbol
+            return negative + amount + symbol
         case .leftSpace:
-            return symbol + space + amount
+            return symbol + space + negative + space + amount
         case .rightSpace:
-            return amount + space + symbol
+            return negative + space + amount + space + symbol
         }
     }
 
-    /// Applies currency option settings to the amount for the given currency.
+    /// Applies currency option settings to the amount (as String) for the given currency.
     ///
     /// - Parameters:
     ///     - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///
-    func formatAmount(_ amount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
-        guard let decimalAmount = convertToDecimal(from: amount) else {
+    func formatAmount(_ stringAmount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
+        guard let decimalAmount = convertToDecimal(from: stringAmount) else {
             return nil
         }
 
@@ -115,25 +141,31 @@ public class CurrencyFormatter {
     ///  - 1000 becomes "$1.0k"
     ///  - 5800199.56 becomes "$5.8m"
     ///
-    func formatHumanReadableAmount(_ amount: String,
+    func formatHumanReadableAmount(_ stringAmount: String,
                                    with currency: String = CurrencySettings.shared.currencyCode.rawValue,
                                    roundSmallNumbers: Bool = true) -> String? {
-        guard let decimalAmount = convertToDecimal(from: amount) else {
+        guard let amount = convertToDecimal(from: stringAmount) else {
             return nil
         }
 
-        let humanReadableAmount = decimalAmount.humanReadableString(roundSmallNumbers: roundSmallNumbers)
-        if humanReadableAmount == decimalAmount.stringValue, roundSmallNumbers == false {
+        let humanReadableAmount = amount.humanReadableString(roundSmallNumbers: roundSmallNumbers)
+        if humanReadableAmount == amount.stringValue, roundSmallNumbers == false {
             // The human readable version of amount is the same as the converted param value which means this is a "small"
             // number — format it normally *without* rounding.
-            return formatAmount(decimalAmount, with: currency)
+            return formatAmount(amount, with: currency)
         }
 
         // If we are here, the human readable version of the amount param is a "large" number *OR* a small number but rounding has been requested,
         // so let's just put the currency symbol on the correct side of the string with proper spacing (based on the site settings).
         let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
         let symbol = CurrencySettings.shared.symbol(from: code)
-        return formatCurrency(using: humanReadableAmount, at: CurrencySettings.shared.currencyPosition, with: symbol)
+        let position = CurrencySettings.shared.currencyPosition
+        let isNegative = amount.isNegative()
+
+        return formatCurrency(using: humanReadableAmount,
+                              at: position,
+                              with: symbol,
+                              isNegative: isNegative)
     }
 
     /// Applies currency option settings to the amount for the given currency.
@@ -142,22 +174,32 @@ public class CurrencyFormatter {
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///
     func formatAmount(_ decimalAmount: NSDecimalNumber, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
+        // Get the currency code
+        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
         // Grab the read-only currency options. These are set by the user in Site > Settings.
+        let symbol = CurrencySettings.shared.symbol(from: code)
         let separator = CurrencySettings.shared.decimalSeparator
-        let position = CurrencySettings.shared.numberOfDecimals
+        let numberOfDecimals = CurrencySettings.shared.numberOfDecimals
+        let position = CurrencySettings.shared.currencyPosition
         let thousandSeparator = CurrencySettings.shared.thousandSeparator
 
-        let localized = localize(decimalAmount, with: separator, in: position, including: thousandSeparator)
+        // Put all the pieces of user preferences on currency formatting together
+        // and spit out a string that has the formatted amount.
+        let localized = localize(decimalAmount,
+                                 with: separator,
+                                 in: numberOfDecimals,
+                                 including: thousandSeparator)
 
         guard let localizedAmount = localized else {
             return nil
         }
 
-        // If no country code was specified or it was not found, assume the user wants to use the default.
-        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
-        let currencySymbol = CurrencySettings.shared.symbol(from: code)
-        let currencyPosition = CurrencySettings.shared.currencyPosition
-        let formattedAmount = formatCurrency(using: localizedAmount, at: currencyPosition, with: currencySymbol)
+        // Now take the formatted amount and piece it together with
+        // the currency symbol, negative sign, and any requisite spaces.
+        let formattedAmount = formatCurrency(using: localizedAmount,
+                                             at: position,
+                                             with: symbol,
+                                             isNegative: decimalAmount.isNegative())
 
         return formattedAmount
     }

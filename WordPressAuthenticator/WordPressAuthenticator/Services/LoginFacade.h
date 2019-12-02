@@ -58,11 +58,12 @@ NS_ASSUME_NONNULL_BEGIN
 - (void)requestSocial2FACodeWithLoginFields:(LoginFields *)loginFields;
 
 /**
- * Social login via google.
+ * Social login.
  *
- * @param googleIDToken A Google id_token.
+ * @param token Social id token.
  */
-- (void)loginToWordPressDotComWithGoogleIDToken:(NSString *)googleIDToken;
+- (void)loginToWordPressDotComWithSocialIDToken:(NSString *)token
+                                        service:(NSString *)service;
 
 /**
  * Social login via a social account with 2FA using a nonce.

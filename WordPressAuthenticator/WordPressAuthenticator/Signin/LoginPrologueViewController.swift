@@ -135,15 +135,19 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
          performSegue(withIdentifier: .showWPComLogin, sender: self)
     }
 
+    func showApple2FA(loginFields: LoginFields) {
+        self.loginFields = loginFields
+        signInAppleAccount()
+    }
+    
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
     }
 
 }
 
-// MARK: - Google Sign In
+// MARK: - Social LoginFacadeDelegate Methods
 
-// LoginFacadeDelegate methods for Google Google Sign In
 extension LoginPrologueViewController {
     
     override open func displayRemoteError(_ error: Error) {
@@ -162,10 +166,12 @@ extension LoginPrologueViewController {
 
     func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         configureViewLoading(false)
-        googleNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
+        socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
 
 }
+
+// MARK: - GIDSignInDelegate
 
 extension LoginPrologueViewController: GIDSignInDelegate {
     open func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {

@@ -1,5 +1,6 @@
 import WordPressShared
 import WordPressKit
+import GoogleSignIn
 
 
 /// View Controller for login-specific screens
@@ -32,6 +33,8 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         return delegate
     }
 
+    private var awaitingGoogle = false
+    
     // MARK: Lifecycle Methods
 
     override open func viewDidLoad() {
@@ -122,6 +125,10 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         }
     }
 
+    /// Displays the self-hosted sign in form.
+    func loginToSelfHostedSite() {
+        performSegue(withIdentifier: .showSelfHostedLogin, sender: self)
+    }
 
     /// Validates what is entered in the various form fields and, if valid,
     /// proceeds with login.
@@ -132,7 +139,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
         // Is everything filled out?
         if !loginFields.validateFieldsPopulatedForSignin() {
-            let errorMsg = NSLocalizedString("Please fill out all the fields", comment: "A short prompt asking the user to properly fill out all login fields.")
+            let errorMsg = LocalizedText.missingInfoError
             displayError(message: errorMsg)
 
             return
@@ -175,7 +182,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
         let err = error as NSError
         guard err.code != 403 else {
-            let message = NSLocalizedString("Whoops, something went wrong and we couldn't log you in. Please try again!", comment: "An error message shown when a wpcom user provides the wrong password.")
+            let message = LocalizedText.loginError
             displayError(message: message)
             return
         }
@@ -196,8 +203,17 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     func updateSafariCredentialsIfNeeded() {
         SafariCredentialsService.updateSafariCredentialsIfNeeded(with: loginFields)
     }
-}
+    
+    private enum LocalizedText {
+        static let loginError = NSLocalizedString("Whoops, something went wrong and we couldn't log you in. Please try again!", comment: "An error message shown when a wpcom user provides the wrong password.")
+        static let missingInfoError = NSLocalizedString("Please fill out all the fields", comment: "A short prompt asking the user to properly fill out all login fields.")
+        static let gettingAccountInfo = NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved.")
+        static let googleConnected = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
+        static let googleConnectedError = NSLocalizedString("The Google account \"%@\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
+        static let googleUnableToConnect = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
+    }
 
+}
 
 // MARK: - Sync Helpers
 //
@@ -229,7 +245,7 @@ extension LoginViewController {
     private func syncWPCom(credentials: AuthenticatorCredentials, completion: (() -> ())? = nil) {
         SafariCredentialsService.updateSafariCredentialsIfNeeded(with: loginFields)
 
-        configureStatusLabel(NSLocalizedString("Getting account information", comment: "Alerts the user that wpcom account information is being retrieved."))
+        configureStatusLabel(LocalizedText.gettingAccountInfo)
 
         authenticationDelegate.sync(credentials: credentials) { [weak self] in
 
@@ -288,6 +304,8 @@ extension LoginViewController {
                         serviceToken: serviceToken,
                         connectParameters: appleConnectParameters,
                         success: {
+                            let source = appleConnectParameters != nil ? "apple" : "google"
+                            WordPressAuthenticator.track(.signedIn, properties: ["source": source])
                             WordPressAuthenticator.track(.loginSocialConnectSuccess)
                             WordPressAuthenticator.track(.loginSocialSuccess)
         }, failure: { error in
@@ -314,6 +332,145 @@ extension LoginViewController {
 
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
             didChangePreferredContentSize()
+        }
+    }
+}
+
+
+// MARK: - Google Sign In Handling
+
+// This is needed to set self as uiDelegate, even though none of the methods are called
+extension LoginViewController: GIDSignInUIDelegate {
+}
+
+extension LoginViewController {
+
+    @objc func googleLoginTapped(withDelegate delegate: GIDSignInDelegate?) {
+        awaitingGoogle = true
+        configureViewLoading(true)
+
+        GIDSignIn.sharedInstance().disconnect()
+
+        // Flag this as a social sign in.
+        loginFields.meta.socialService = SocialServiceName.google
+
+        // Configure all the things and sign in.
+        GIDSignIn.sharedInstance().delegate = delegate
+        GIDSignIn.sharedInstance().uiDelegate = self
+        GIDSignIn.sharedInstance().clientID = WordPressAuthenticator.shared.configuration.googleLoginClientId
+        GIDSignIn.sharedInstance().serverClientID = WordPressAuthenticator.shared.configuration.googleLoginServerClientId
+        GIDSignIn.sharedInstance().signIn()
+
+        WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "google"])
+    }
+
+    func displayRemoteErrorForGoogle(_ error: Error) {
+
+        if awaitingGoogle {
+            awaitingGoogle = false
+            GIDSignIn.sharedInstance().disconnect()
+
+            let errorTitle: String
+            let errorDescription: String
+            if (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue {
+                errorTitle = LocalizedText.googleConnected
+                errorDescription = String(format: LocalizedText.googleConnectedError, loginFields.username)
+                WordPressAuthenticator.track(.loginSocialErrorUnknownUser)
+            } else {
+                errorTitle = LocalizedText.googleUnableToConnect
+                errorDescription = error.localizedDescription
+            }
+
+            let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)
+            let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
+            socialErrorVC.delegate = self
+            socialErrorVC.loginFields = loginFields
+            socialErrorVC.modalPresentationStyle = .fullScreen
+            present(socialErrorNav, animated: true) {}
+        } else {
+            errorToPresent = error
+            performSegue(withIdentifier: .showWPComLogin, sender: self)
+        }
+    }
+    
+    func googleFinishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: false, siteURL: loginFields.siteAddress)
+        let credentials = AuthenticatorCredentials(wpcom: wpcom)
+        syncWPComAndPresentEpilogue(credentials: credentials)
+
+        // Disconnect now that we're done with Google.
+        GIDSignIn.sharedInstance().disconnect()
+        WordPressAuthenticator.track(.signedIn, properties: ["source": "google"])
+        WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
+    }
+
+    func googleExistingUserNeedsConnection(_ email: String) {
+        // Disconnect now that we're done with Google.
+        GIDSignIn.sharedInstance().disconnect()
+
+        loginFields.username = email
+        loginFields.emailAddress = email
+
+        performSegue(withIdentifier: .showWPComLogin, sender: self)
+        WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: ["source": "google"])
+        configureViewLoading(false)
+    }
+
+    func googleNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        loginFields.nonceInfo = nonceInfo
+        loginFields.nonceUserID = userID
+
+        performSegue(withIdentifier: .show2FA, sender: self)
+        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: ["source": "google"])
+    }
+
+    func signInGoogleAccount(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
+        guard let user = user,
+            let token = user.authentication.idToken,
+            let email = user.profile.email else {
+                // The Google SignIn for may have been canceled.
+                WordPressAuthenticator.track(.loginSocialButtonFailure, error: error)
+                configureViewLoading(false)
+                return
+        }
+
+        updateLoginFields(googleUser: user, googleToken: token, googleEmail: email)
+        loginFacade.loginToWordPressDotCom(withGoogleIDToken: token)
+    }
+    
+    /// Updates the LoginFields structure, with the specified Google User + Token + Email.
+    ///
+    func updateLoginFields(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {
+        loginFields.emailAddress = googleEmail
+        loginFields.username = googleEmail
+        loginFields.meta.socialServiceIDToken = googleToken
+        loginFields.meta.googleUser = googleUser
+    }
+    
+}
+
+extension LoginViewController: LoginSocialErrorViewControllerDelegate {
+    private func cleanupAfterSocialErrors() {
+        dismiss(animated: true) {}
+    }
+
+    func retryWithEmail() {
+        loginFields.username = ""
+        cleanupAfterSocialErrors()
+    }
+
+    func retryWithAddress() {
+        cleanupAfterSocialErrors()
+        loginToSelfHostedSite()
+    }
+
+    func retryAsSignup() {
+        cleanupAfterSocialErrors()
+
+        let storyboard = UIStoryboard(name: "Signup", bundle: WordPressAuthenticator.bundle)
+        if let controller = storyboard.instantiateViewController(withIdentifier: "emailEntry") as? SignupEmailViewController {
+            controller.loginFields = loginFields
+            navigationController?.pushViewController(controller, animated: true)
         }
     }
 }

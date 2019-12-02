@@ -29,7 +29,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     var didFindSafariSharedCredentials = false
     var didRequestSafariSharedCredentials = false
     open var offerSignupOption = false
-    fileprivate var awaitingGoogle = false
     private let showNewLoginFlow = WordPressAuthenticator.shared.configuration.showNewLoginFlow
 
     private struct Constants {
@@ -145,7 +144,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
         let button = WPStyleGuide.googleLoginButton()
         stackView.addArrangedSubview(button)
-        button.addTarget(self, action: #selector(googleLoginTapped), for: .touchUpInside)
+        button.addTarget(self, action: #selector(handleGoogleLoginTapped), for: .touchUpInside)
 
         stackView.addConstraints([
             button.leadingAnchor.constraint(equalTo: instructionLabel.leadingAnchor),
@@ -153,26 +152,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
             ])
 
         googleLoginButton = button
-    }
-
-    @objc func googleLoginTapped() {
-        awaitingGoogle = true
-        configureViewLoading(true)
-
-        GIDSignIn.sharedInstance().disconnect()
-
-        // Flag this as a social sign in.
-        loginFields.meta.socialService = SocialServiceName.google
-
-        // Configure all the things and sign in.
-        GIDSignIn.sharedInstance().delegate = self
-        GIDSignIn.sharedInstance().uiDelegate = self
-        GIDSignIn.sharedInstance().clientID = WordPressAuthenticator.shared.configuration.googleLoginClientId
-        GIDSignIn.sharedInstance().serverClientID = WordPressAuthenticator.shared.configuration.googleLoginServerClientId
-
-        GIDSignIn.sharedInstance().signIn()
-
-        WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "google"])
     }
 
     /// Add the log in with site address button to the view
@@ -321,14 +300,6 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
-
-    /// Displays the self-hosted sign in form.
-    ///
-    func loginToSelfHostedSite() {
-        performSegue(withIdentifier: .showSelfHostedLogin, sender: self)
-    }
-
-
     /// Proceeds along the "magic link" sign-in flow, showing a form that let's
     /// the user request a magic link.
     ///
@@ -404,32 +375,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
 
     override open func displayRemoteError(_ error: Error) {
         configureViewLoading(false)
-
-        if awaitingGoogle {
-            awaitingGoogle = false
-            GIDSignIn.sharedInstance().disconnect()
-
-            let errorTitle: String
-            let errorDescription: String
-            if (error as NSError).code == WordPressComOAuthError.unknownUser.rawValue {
-                errorTitle = NSLocalizedString("Connected But…", comment: "Title shown when a user logs in with Google but no matching WordPress.com account is found")
-                errorDescription = NSLocalizedString("The Google account \"\(loginFields.username)\" doesn't match any account on WordPress.com", comment: "Description shown when a user logs in with Google but no matching WordPress.com account is found")
-                WordPressAuthenticator.track(.loginSocialErrorUnknownUser)
-            } else {
-                errorTitle = NSLocalizedString("Unable To Connect", comment: "Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com")
-                errorDescription = error.localizedDescription
-            }
-
-            let socialErrorVC = LoginSocialErrorViewController(title: errorTitle, description: errorDescription)
-            let socialErrorNav = LoginNavigationController(rootViewController: socialErrorVC)
-            socialErrorVC.delegate = self
-            socialErrorVC.loginFields = loginFields
-            socialErrorVC.modalPresentationStyle = .fullScreen
-            present(socialErrorNav, animated: true) {}
-        } else {
-            errorToPresent = error
-            performSegue(withIdentifier: .showWPComLogin, sender: self)
-        }
+        displayRemoteErrorForGoogle(error)
     }
 
 
@@ -484,6 +430,9 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         }
     }
 
+    @objc func handleGoogleLoginTapped() {
+        googleLoginTapped(withDelegate: self)
+    }
 
     @IBAction func handleSelfHostedButtonTapped(_ sender: UIButton) {
         loginToSelfHostedSite()
@@ -550,90 +499,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     }
 }
 
-// LoginFacadeDelegate methods for Google Google Sign In
-extension LoginEmailViewController {
-    func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
-        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: false, siteURL: loginFields.siteAddress)
-        let credentials = AuthenticatorCredentials(wpcom: wpcom)
-        syncWPComAndPresentEpilogue(credentials: credentials)
-
-        // Disconnect now that we're done with Google.
-        GIDSignIn.sharedInstance().disconnect()
-        WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
-    }
-
-
-    func existingUserNeedsConnection(_ email: String) {
-        // Disconnect now that we're done with Google.
-        GIDSignIn.sharedInstance().disconnect()
-
-        loginFields.username = email
-        loginFields.emailAddress = email
-
-        performSegue(withIdentifier: .showWPComLogin, sender: self)
-        WordPressAuthenticator.track(.loginSocialAccountsNeedConnecting, properties: ["source": "google"])
-        configureViewLoading(false)
-    }
-
-
-    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
-        loginFields.nonceInfo = nonceInfo
-        loginFields.nonceUserID = userID
-
-        performSegue(withIdentifier: .show2FA, sender: self)
-        WordPressAuthenticator.track(.loginSocial2faNeeded)
-        configureViewLoading(false)
-    }
-}
-
-extension LoginEmailViewController: GIDSignInDelegate {
-    open func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
-        guard let user = user,
-            let token = user.authentication.idToken,
-            let email = user.profile.email else {
-                // The Google SignIn for may have been canceled.
-                WordPressAuthenticator.track(.loginSocialButtonFailure, error: error)
-                configureViewLoading(false)
-                return
-        }
-
-        // Store the email address and token.
-        loginFields.emailAddress = email
-        loginFields.username = email
-        loginFields.meta.socialServiceIDToken = token
-
-        loginFacade.loginToWordPressDotCom(withGoogleIDToken: token)
-    }
-}
-
-extension LoginEmailViewController: LoginSocialErrorViewControllerDelegate {
-    private func cleanupAfterSocialErrors() {
-        dismiss(animated: true) {}
-    }
-
-    func retryWithEmail() {
-        loginFields.username = ""
-        cleanupAfterSocialErrors()
-    }
-    func retryWithAddress() {
-        cleanupAfterSocialErrors()
-        loginToSelfHostedSite()
-    }
-    func retryAsSignup() {
-        cleanupAfterSocialErrors()
-
-
-        let storyboard = UIStoryboard(name: "Signup", bundle: WordPressAuthenticator.bundle)
-        if let controller = storyboard.instantiateViewController(withIdentifier: "emailEntry") as? SignupEmailViewController {
-            controller.loginFields = loginFields
-            navigationController?.pushViewController(controller, animated: true)
-        }
-    }
-}
-
-/// This is needed to set self as uiDelegate, even though none of the methods are called
-extension LoginEmailViewController: GIDSignInUIDelegate {
-}
+// MARK: - AppleAuthenticatorDelegate
 
 extension LoginEmailViewController: AppleAuthenticatorDelegate {
 
@@ -646,4 +512,29 @@ extension LoginEmailViewController: AppleAuthenticatorDelegate {
         displayErrorAlert(message, sourceTag: .wpComSignupApple)
     }
     
+}
+
+// MARK: - Google Sign In
+
+// LoginFacadeDelegate methods for Google Google Sign In
+extension LoginEmailViewController {
+    func finishedLogin(withGoogleIDToken googleIDToken: String, authToken: String) {
+        googleFinishedLogin(withGoogleIDToken: googleIDToken, authToken: authToken)
+    }
+
+    func existingUserNeedsConnection(_ email: String) {
+        configureViewLoading(false)
+        googleExistingUserNeedsConnection(email)
+    }
+
+    func needsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+        configureViewLoading(false)
+        googleNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
+    }
+}
+
+extension LoginEmailViewController: GIDSignInDelegate {
+    open func sign(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
+        signInGoogleAccount(signIn, didSignInFor: user, withError: error)
+    }
 }

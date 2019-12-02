@@ -178,6 +178,8 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
 
         // Disconnect now that we're done with Google.
         GIDSignIn.sharedInstance().disconnect()
+
+        WordPressAuthenticator.track(.signedIn)
         WordPressAuthenticator.track(.loginSocialSuccess)
     }
 

@@ -83,15 +83,6 @@ extension SignupGoogleViewController: GIDSignInDelegate {
 //
 private extension SignupGoogleViewController {
 
-    /// Updates the LoginFields structure, with the specified Google User + Token + Email.
-    ///
-    func updateLoginFields(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {
-        loginFields.emailAddress = googleEmail
-        loginFields.username = googleEmail
-        loginFields.meta.socialServiceIDToken = googleToken
-        loginFields.meta.googleUser = googleUser
-    }
-
     /// Creates a WordPress.com account with the associated GoogleUser + GoogleToken + GoogleEmail.
     ///
     func createWordPressComUser(googleUser: GIDGoogleUser, googleToken: String, googleEmail: String) {
@@ -133,6 +124,7 @@ private extension SignupGoogleViewController {
         // This stat is part of a funnel that provides critical information.  Before
         // making ANY modification to this stat please refer to: p4qSXL-35X-p2
         WordPressAuthenticator.track(.createdAccount, properties: ["source": "google"])
+        WordPressAuthenticator.track(.signedIn, properties: ["source": "google"])
         WordPressAuthenticator.track(.signupSocialSuccess, properties: ["source": "google"])
 
         showSignupEpilogue(for: credentials)
@@ -141,6 +133,7 @@ private extension SignupGoogleViewController {
     /// Social Login Successful: Analytics + Pushing the Login Epilogue.
     ///
     func wasLoggedInInstead(with credentials: AuthenticatorCredentials) {
+        WordPressAuthenticator.track(.signedIn, properties: ["source": "google"])
         WordPressAuthenticator.track(.signupSocialToLogin, properties: ["source": "google"])
         WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "google"])
 
@@ -166,11 +159,4 @@ private extension SignupGoogleViewController {
         titleLabel?.text = NSLocalizedString("Google sign up failed.", comment: "Message shown on screen after the Google sign up process failed.")
         displayError(error as NSError, sourceTag: .wpComSignup)
     }
-}
-
-// MARK: - GIDSignInUIDelegate
-
-/// This is needed to set self as UIDelegate, even though none of the methods are called
-extension SignupGoogleViewController: GIDSignInUIDelegate {
-
 }

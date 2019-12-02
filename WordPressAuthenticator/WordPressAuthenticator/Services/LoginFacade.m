@@ -63,21 +63,26 @@
                                                                  }];
 }
 
-- (void)loginToWordPressDotComWithGoogleIDToken:(NSString *)googleIDToken
+- (void)loginToWordPressDotComWithSocialIDToken:(NSString *)token
+                                        service:(NSString *)service
 {
     if ([self.delegate respondsToSelector:@selector(displayLoginMessage:)]) {
         [self.delegate displayLoginMessage:NSLocalizedString(@"Connecting to WordPress.com", nil)];
     }
 
-    [self.wordpressComOAuthClientFacade authenticateWithGoogleIDToken:googleIDToken success:^(NSString *authToken) {
-        if ([self.delegate respondsToSelector:@selector(finishedLoginWithGoogleIDToken:authToken:)]) {
-            [self.delegate finishedLoginWithGoogleIDToken:googleIDToken authToken:authToken];
+    [self.wordpressComOAuthClientFacade authenticateWithSocialIDToken:token
+                                                              service:service
+                                                              success:^(NSString *authToken) {
+        if ([service isEqualToString:@"google"] && [self.delegate respondsToSelector:@selector(finishedLoginWithGoogleIDToken:authToken:)]) {
+            // Apple is handled in AppleAuthenticator
+            [self.delegate finishedLoginWithGoogleIDToken:token authToken:authToken];
         }
     } needsMultiFactor:^(NSInteger userID, SocialLogin2FANonceInfo *nonceInfo){
         if ([self.delegate respondsToSelector:@selector(needsMultifactorCodeForUserID:andNonceInfo:)]) {
             [self.delegate needsMultifactorCodeForUserID:userID andNonceInfo:nonceInfo];
         }
     } existingUserNeedsConnection: ^(NSString *email) {
+        // Apple is handled in AppleAuthenticator
         if ([self.delegate respondsToSelector:@selector(existingUserNeedsConnection:)]) {
             [self.delegate existingUserNeedsConnection: email];
         }

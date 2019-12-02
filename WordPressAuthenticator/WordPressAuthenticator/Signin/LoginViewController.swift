@@ -416,12 +416,28 @@ extension LoginViewController {
         configureViewLoading(false)
     }
 
-    func googleNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
+    func socialNeedsMultifactorCode(forUserID userID: Int, andNonceInfo nonceInfo: SocialLogin2FANonceInfo) {
         loginFields.nonceInfo = nonceInfo
         loginFields.nonceUserID = userID
 
         performSegue(withIdentifier: .show2FA, sender: self)
-        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: ["source": "google"])
+
+        var properties = [AnyHashable:Any]()
+        if let service = loginFields.meta.socialService?.rawValue {
+            properties["source"] = service
+        }
+
+        WordPressAuthenticator.track(.loginSocial2faNeeded, properties: properties)
+    }
+
+    func signInAppleAccount() {
+        guard let token = loginFields.meta.socialServiceIDToken else {
+            WordPressAuthenticator.track(.loginSocialButtonFailure, properties: ["source": SocialServiceName.apple.rawValue])
+            configureViewLoading(false)
+            return
+        }
+
+        loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.apple.rawValue)
     }
 
     func signInGoogleAccount(_ signIn: GIDSignIn?, didSignInFor user: GIDGoogleUser?, withError error: Error?) {
@@ -429,13 +445,17 @@ extension LoginViewController {
             let token = user.authentication.idToken,
             let email = user.profile.email else {
                 // The Google SignIn for may have been canceled.
-                WordPressAuthenticator.track(.loginSocialButtonFailure, error: error)
+
+                let properties = ["error": error?.localizedDescription,
+                                  "source": SocialServiceName.google.rawValue]
+
+                WordPressAuthenticator.track(.loginSocialButtonFailure, properties: properties as [AnyHashable : Any])
                 configureViewLoading(false)
                 return
         }
 
         updateLoginFields(googleUser: user, googleToken: token, googleEmail: email)
-        loginFacade.loginToWordPressDotCom(withGoogleIDToken: token)
+        loginFacade.loginToWordPressDotCom(withSocialIDToken: token, service: SocialServiceName.google.rawValue)
     }
     
     /// Updates the LoginFields structure, with the specified Google User + Token + Email.

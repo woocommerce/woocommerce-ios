@@ -51,7 +51,11 @@ class SignupService {
     func createWPComUserWithApple(token: String,
                                   email: String,
                                   fullName: String?,
-                                  success: @escaping (_ newAccount: Bool, _ existingNonSocialAccount: Bool, _ username: String, _ wpcomToken: String) -> Void,
+                                  success: @escaping (_ newAccount: Bool,
+                                                    _ existingNonSocialAccount: Bool,
+                                                    _ existing2faAccount: Bool,
+                                                    _ username: String,
+                                                    _ wpcomToken: String) -> Void,
                                   failure: @escaping (_ error: Error) -> Void) {
         let remote = WordPressComServiceRemote(wordPressComRestApi: anonymousAPI)
         
@@ -68,22 +72,27 @@ class SignupService {
                                     }
                                     
                                     let createdAccount = (response?[ResponseKeys.createdAccount] as? Int ?? 0) == 1
-                                    success(createdAccount, false, username, bearer_token)
+                                    success(createdAccount, false, false, username, bearer_token)
         }, failure: { error in
             if let error = (error as NSError?) {
 
-                // If an account already exists, the account email should be returned in the Error response.
-                // Extract it and return it.
-                var existingEmail = ""
-                if let errorData = error.userInfo[WordPressComRestApi.ErrorKeyErrorData] as? [String: String] {
-                    let emailDict = errorData.first { $0.key == WordPressComRestApi.ErrorKeyErrorDataEmail }
-                    let email = emailDict?.value ?? ""
-                    existingEmail = email
+                if (error.userInfo[ErrorKeys.errorCode] as? String ?? "") == ErrorKeys.twoFactorEnabled {
+                    success(false, true, true, "", "")
+                    return
                 }
 
-                let existingNonSocialAccount = (error.userInfo[ErrorKeys.errorCode] as? String ?? "") == ErrorKeys.existingNonSocialUser
-                if existingNonSocialAccount {
-                    success(false, true, existingEmail, "")
+                if (error.userInfo[ErrorKeys.errorCode] as? String ?? "") == ErrorKeys.existingNonSocialUser {
+                    
+                    // If an account already exists, the account email should be returned in the Error response.
+                    // Extract it and return it.
+                    var existingEmail = ""
+                    if let errorData = error.userInfo[WordPressComRestApi.ErrorKeyErrorData] as? [String: String] {
+                        let emailDict = errorData.first { $0.key == WordPressComRestApi.ErrorKeyErrorDataEmail }
+                        let email = emailDict?.value ?? ""
+                        existingEmail = email
+                    }
+                    
+                    success(false, true, false, existingEmail, "")
                     return
                 }
             }
@@ -118,6 +127,7 @@ private extension SignupService {
     struct ErrorKeys {
         static let errorCode = "WordPressComRestApiErrorCodeKey"
         static let existingNonSocialUser = "user_exists"
+        static let twoFactorEnabled = "2FA_enabled"
     }
 }
 

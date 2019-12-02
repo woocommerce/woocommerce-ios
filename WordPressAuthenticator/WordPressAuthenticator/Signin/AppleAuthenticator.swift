@@ -5,6 +5,7 @@ import SVProgressHUD
 
 @objc protocol AppleAuthenticatorDelegate {
     func showWPComLogin(loginFields: LoginFields)
+    func showApple2FA(loginFields: LoginFields)
     func authFailedWithError(message: String)
 }
 
@@ -75,13 +76,23 @@ private extension AppleAuthenticator {
         
         let service = SignupService()
         service.createWPComUserWithApple(token: token, email: email, fullName: name,
-                                         success: { [weak self] accountCreated, existingNonSocialAccount, wpcomUsername, wpcomToken in
+                                         success: { [weak self] accountCreated,
+                                            existingNonSocialAccount,
+                                            existing2faAccount,
+                                            wpcomUsername,
+                                            wpcomToken in
                                             SVProgressHUD.dismiss()
 
                                             // Notify host app of successful Apple authentication
                                             self?.authenticationDelegate.userAuthenticatedWithAppleUserID(appleCredentials.user)
                                             
                                             guard !existingNonSocialAccount else {
+
+                                                if existing2faAccount {
+                                                    self?.show2FA()
+                                                    return
+                                                }
+
                                                 self?.updateLoginEmail(wpcomUsername)
                                                 self?.logInInstead()
                                                 return
@@ -152,6 +163,11 @@ private extension AppleAuthenticator {
         WordPressAuthenticator.track(.signupSocialToLogin, properties: ["source": "apple"])
         WordPressAuthenticator.track(.loginSocialSuccess, properties: ["source": "apple"])
         delegate?.showWPComLogin(loginFields: loginFields)
+    }
+    
+    func show2FA() {
+        WordPressAuthenticator.track(.signupSocialToLogin, properties: ["source": "apple"])
+        delegate?.showApple2FA(loginFields: loginFields)
     }
     
     // MARK: - Helpers

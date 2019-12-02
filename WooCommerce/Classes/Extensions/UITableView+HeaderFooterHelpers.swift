@@ -34,4 +34,11 @@ extension UITableView {
             }
         }
     }
+
+    /// Removes the separator of the last cell.
+    ///
+    func removeLastCellSeparator() {
+        tableFooterView = UIView(frame: CGRect(origin: .zero,
+                                               size: CGSize(width: frame.width, height: 1)))
+    }
 }

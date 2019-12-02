@@ -92,8 +92,44 @@ private extension DefaultProductFormTableViewModel {
     func shippingSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.shippingImage.applyProductFormSettingsStyle()
         let title = Constants.shippingSettingsTitle
-        // TODO-1507: show shipping details after the weight and dimension units are available
-        let details: String? = nil
+
+        var shippingDetails = [String]()
+
+        // Weight[unit]
+        if let weight = product.weight, let weightUnit = ServiceLocator.shippingSettingsService.weightUnit, !weight.isEmpty {
+            shippingDetails.append(String.localizedStringWithFormat(Constants.weightFormat,
+                                                                    weight, weightUnit))
+        }
+
+        // L x W x H[unit]
+        let length = product.dimensions.length
+        let width = product.dimensions.width
+        let height = product.dimensions.height
+        let dimensions = [length, width, height].filter({ !$0.isEmpty })
+        if let dimensionUnit = ServiceLocator.shippingSettingsService.dimensionUnit,
+            !dimensions.isEmpty {
+            switch dimensions.count {
+            case 1:
+                let dimension = dimensions[0]
+                shippingDetails.append(String.localizedStringWithFormat(Constants.oneDimensionFormat,
+                                                                        dimension, dimensionUnit))
+            case 2:
+                let firstDimension = dimensions[0]
+                let secondDimension = dimensions[1]
+                shippingDetails.append(String.localizedStringWithFormat(Constants.twoDimensionsFormat,
+                                                                        firstDimension, secondDimension, dimensionUnit))
+            case 3:
+                let firstDimension = dimensions[0]
+                let secondDimension = dimensions[1]
+                let thirdDimension = dimensions[2]
+                shippingDetails.append(String.localizedStringWithFormat(Constants.fullDimensionsFormat,
+                                                                        firstDimension, secondDimension, thirdDimension, dimensionUnit))
+            default:
+                break
+            }
+        }
+
+        let details: String? = shippingDetails.isEmpty ? nil: shippingDetails.joined(separator: "\n")
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details)
@@ -124,5 +160,15 @@ private extension DefaultProductFormTableViewModel {
                                                            comment: "Format of the stock quantity on the Inventory Settings row")
         static let stockStatusFormat = NSLocalizedString("Stock status: %@",
                                                          comment: "Format of the stock status on the Inventory Settings row")
+
+        // Shipping
+        static let weightFormat = NSLocalizedString("Weight: %1$@%2$@",
+                                                    comment: "Format of the weight on the Shipping Settings row - weight[unit]")
+        static let oneDimensionFormat = NSLocalizedString("Dimensions: %1$@%2$@",
+                                                          comment: "Format of one dimension on the Shipping Settings row - dimension[unit]")
+        static let twoDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@%3$@",
+                                                           comment: "Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit]")
+        static let fullDimensionsFormat = NSLocalizedString("Dimensions: %1$@ x %2$@ x %3$@%4$@",
+                                                            comment: "Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit]")
     }
 }

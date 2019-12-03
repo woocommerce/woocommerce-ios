@@ -9,20 +9,22 @@ final class DateWooTests: XCTestCase {
     func testUpdateStringWorksForIntervalsUnderTwoMinutes() {
 
         // 1 second
+        let momentsAgo = NSLocalizedString("Updated moments ago",
+                                           comment: "A unit test string for relative time intervals")
         let oneSecondAgo = Calendar.current.date(byAdding: .second, value: -1, to: Date())!
-        XCTAssertEqual(oneSecondAgo.relativelyFormattedUpdateString, "Updated moments ago")
+        XCTAssertEqual(oneSecondAgo.relativelyFormattedUpdateString, momentsAgo)
 
         // 12 seconds
         let twelveSecondsAgo = Calendar.current.date(byAdding: .second, value: -12, to: Date())!
-        XCTAssertEqual(twelveSecondsAgo.relativelyFormattedUpdateString, "Updated moments ago")
+        XCTAssertEqual(twelveSecondsAgo.relativelyFormattedUpdateString, momentsAgo)
 
         // 1 minute, 59 seconds
         let almostTwoMinutesAgo = Calendar.current.date(byAdding: .second, value: -119, to: Date())!
-        XCTAssertEqual(almostTwoMinutesAgo.relativelyFormattedUpdateString, "Updated moments ago")
+        XCTAssertEqual(almostTwoMinutesAgo.relativelyFormattedUpdateString, momentsAgo)
 
         // 2 minutes
         let twoMinutesAgo = Calendar.current.date(byAdding: .minute, value: -2, to: Date())!
-        XCTAssertNotEqual(twoMinutesAgo.relativelyFormattedUpdateString, "Updated moments ago")
+        XCTAssertNotEqual(twoMinutesAgo.relativelyFormattedUpdateString, momentsAgo)
     }
 
     func testUpdateStringWorksForIntervalsOneDayOrLess() {

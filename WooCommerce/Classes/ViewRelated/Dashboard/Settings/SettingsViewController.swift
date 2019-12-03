@@ -392,7 +392,7 @@ private extension SettingsViewController {
     }
 
     func wormholyWasPressed() {
-        /// Fire a local notification, which fire Wormholy if enabled.
+        // Fire a local notification, which fires Wormholy if enabled.
         NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
     }
 

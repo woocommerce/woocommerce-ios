@@ -58,11 +58,15 @@ public class CurrencyFormatter {
     ///     - position: the currency position enum, either right, left, right_space, or left_space.
     ///     - symbol: the currency symbol as a string, to be used with the amount.
     ///
-    func formatCurrency(using amount: String, at position: CurrencySettings.CurrencyPosition, with symbol: String, isNegative: Bool) -> String {
+    func formatCurrency(using stringValue: String, at position: CurrencySettings.CurrencyPosition, with symbol: String, isNegative: Bool) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
         let negative = isNegative ? "-" : ""
         let current = Locale.current as NSLocale
         let languageCode = current.object(forKey: NSLocale.Key.languageCode) as? String
+
+        // Remove all occurences of the minus sign from the string amount.
+        // We want to position the minus sign manually.
+        let amount = stringValue.replacingOccurrences(of: "-", with: "")
 
         var languageDirection: Locale.LanguageDirection = .unknown
         if let language = languageCode {
@@ -90,9 +94,9 @@ public class CurrencyFormatter {
         case .right:
             return negative + amount + symbol
         case .leftSpace:
-            return symbol + space + negative + space + amount
+            return symbol + space + negative + amount
         case .rightSpace:
-            return negative + space + amount + space + symbol
+            return negative + amount + space + symbol
         }
     }
 

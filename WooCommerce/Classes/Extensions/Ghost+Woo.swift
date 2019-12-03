@@ -6,6 +6,6 @@ extension GhostStyle {
     static var wooDefaultGhostStyle: Self {
         return GhostStyle(beatDuration: Defaults.beatDuration,
                           beatStartColor: .listForeground,
-                          beatEndColor: .textQuaternary)
+                          beatEndColor: .neutral(.shade10))
     }
 }

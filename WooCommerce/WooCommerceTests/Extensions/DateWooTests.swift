@@ -78,9 +78,11 @@ final class DateWooTests: XCTestCase {
 
         // Create and translate the exact phrase for the expected result
         let updatedOct = NSLocalizedString("Updated on Oct 10, 2018",
-                                           comment: "A unit test string that checks the string date formatter works properly. Please translate this using your language's medium-length date abbreviation (if you have one).")
+                                           comment: "A unit test string that checks the string date formatter works properly." +
+            "Please translate this using your language's medium-length date abbreviation (if you have one).")
         let updatedFeb = NSLocalizedString("Updated on Feb 2, 2016",
-                                           comment: "A unit test string that checks the string date formatter works properly. Please translate this using your language's medium-length date abbreviation (if you have one).")
+                                           comment: "A unit test string that checks the string date formatter works properly." +
+            "Please translate this using your language's medium-length date abbreviation (if you have one).")
 
         // Oct 10,2018
         let dateComponents1 = DateComponents(calendar: Calendar.current, year: 2018, month: 10, day: 10)

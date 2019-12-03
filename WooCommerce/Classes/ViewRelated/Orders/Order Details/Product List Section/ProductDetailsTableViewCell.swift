@@ -142,14 +142,8 @@ private extension ProductDetailsTableViewCell {
 //
 extension ProductDetailsTableViewCell {
     func configure(item: OrderItemViewModel) {
-        if item.productHasImage {
-            if let imageURL = item.imageURL {
-                productImageView.downloadImage(from: imageURL,
-                                               placeholderImage: UIImage.productPlaceholderImage)
-            }
-        } else {
-            productImageView.image = .productPlaceholderImage
-        }
+
+        productImageView.kf.setImage(with: item.imageURL, placeholder: UIImage.productPlaceholderImage)
 
         name = item.name
         quantity = item.quantity

@@ -47,7 +47,7 @@ private extension ProductImagesCollectionViewDataSource {
     func configureImageCell(collectionView: UICollectionView, cell: ProductImageCollectionViewCell, at indexPath: IndexPath) {
         let image = viewModel.product.images[indexPath.item]
         let imageURL = URL(string: image.src)
-        cell.imageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
+        cell.imageView.kf.setImage(with: imageURL, placeholder: UIImage.productPlaceholderImage)
     }
 
 }

@@ -85,7 +85,7 @@ final class PickListTableViewCell: UITableViewCell {
 ///
 extension PickListTableViewCell {
     func configure(item: OrderItemViewModel) {
-        productImageView.downloadImage(from: item.imageURL, placeholderImage: UIImage.productPlaceholderImage)
+        productImageView.kf.setImage(with: item.imageURL, placeholder: UIImage.productPlaceholderImage)
         name = item.name
         quantity = item.quantity
         sku = item.sku

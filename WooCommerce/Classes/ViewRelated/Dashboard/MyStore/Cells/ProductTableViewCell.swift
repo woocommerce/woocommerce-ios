@@ -2,7 +2,6 @@ import UIKit
 import Yosemite
 import WordPressUI
 import Gridicons
-import Kingfisher
 
 class ProductTableViewCell: UITableViewCell {
 

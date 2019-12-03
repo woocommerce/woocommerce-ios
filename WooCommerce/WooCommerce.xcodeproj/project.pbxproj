@@ -89,8 +89,8 @@
 		0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */; };
 		0274C25423162FB200EF1E40 /* DashboardTopBannerFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0274C25323162FB200EF1E40 /* DashboardTopBannerFactory.swift */; };
 		02784A03238B8BC800BDD6A8 /* UIView+Border.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02784A02238B8BC800BDD6A8 /* UIView+Border.swift */; };
-		02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */; };
 		02784A05238BA85500BDD6A8 /* UIImage+ProductForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02784A04238BA85500BDD6A8 /* UIImage+ProductForm.swift */; };
+		02820F3422C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */; };
 		028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 028296EA237D28B600E84012 /* TextViewViewController.swift */; };
 		028296ED237D28B600E84012 /* TextViewViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 028296EB237D28B600E84012 /* TextViewViewController.xib */; };
 		0282DD94233C9465006A5FDB /* SearchUICommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0282DD93233C9465006A5FDB /* SearchUICommand.swift */; };
@@ -622,8 +622,8 @@
 		0272C00222EE9C3200D7CA2C /* AsyncDictionary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDictionary.swift; sourceTree = "<group>"; };
 		0274C25323162FB200EF1E40 /* DashboardTopBannerFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DashboardTopBannerFactory.swift; sourceTree = "<group>"; };
 		02784A02238B8BC800BDD6A8 /* UIView+Border.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Border.swift"; sourceTree = "<group>"; };
-		02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HeaderFooterHelpers.swift"; sourceTree = "<group>"; };
 		02784A04238BA85500BDD6A8 /* UIImage+ProductForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+ProductForm.swift"; sourceTree = "<group>"; };
+		02820F3322C257B700DE0D37 /* UITableView+HeaderFooterHelpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITableView+HeaderFooterHelpers.swift"; sourceTree = "<group>"; };
 		028296EA237D28B600E84012 /* TextViewViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TextViewViewController.swift; sourceTree = "<group>"; };
 		028296EB237D28B600E84012 /* TextViewViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TextViewViewController.xib; sourceTree = "<group>"; };
 		0282DD93233C9465006A5FDB /* SearchUICommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchUICommand.swift; sourceTree = "<group>"; };
@@ -2511,8 +2511,8 @@
 				B56DB3C42049BFAA00D4AA8E /* Resources */,
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
-				20B459508F75052BDBC0902F /* [CP] Copy Pods Resources */,
 				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
+				3339899885696210D6CB3EA8 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2731,7 +2731,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		20B459508F75052BDBC0902F /* [CP] Copy Pods Resources */ = {
+		3339899885696210D6CB3EA8 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -2818,6 +2818,7 @@
 				"${BUILT_PRODUCTS_DIR}/WordPressKit/WordPressKit.framework",
 				"${BUILT_PRODUCTS_DIR}/WordPressShared/WordPressShared.framework",
 				"${BUILT_PRODUCTS_DIR}/WordPressUI/WordPressUI.framework",
+				"${BUILT_PRODUCTS_DIR}/Wormholy/Wormholy.framework",
 				"${BUILT_PRODUCTS_DIR}/XLPagerTabStrip/XLPagerTabStrip.framework",
 				"${PODS_ROOT}/ZendeskSDK/ZendeskSDK/5.1.2/ZendeskCoreSDK.framework",
 				"${PODS_ROOT}/ZendeskSDK/ZendeskSDK/5.1.2/ZendeskProviderSDK.framework",
@@ -2849,6 +2850,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WordPressKit.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WordPressShared.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WordPressUI.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Wormholy.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/XLPagerTabStrip.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskCoreSDK.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/ZendeskProviderSDK.framework",

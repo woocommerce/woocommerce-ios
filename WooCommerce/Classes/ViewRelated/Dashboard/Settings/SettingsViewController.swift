@@ -134,6 +134,13 @@ private extension SettingsViewController {
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
+        let otherSection: Section
+        #if DEBUG
+        otherSection = Section(title: otherTitle, rows: [.appSettings, .wormholy], footerHeight: CGFloat.leastNonzeroMagnitude)
+        #else
+        otherSection = Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude)
+        #endif
+
         if couldShowBetaFeaturesRow() {
             rowsForImproveTheAppSection { [weak self] improveTheAppRows in
                 self?.sections = [
@@ -141,7 +148,7 @@ private extension SettingsViewController {
                     Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
                     Section(title: improveTheAppTitle, rows: improveTheAppRows, footerHeight: UITableView.automaticDimension),
                     Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
-                    Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
+                    otherSection,
                     Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
                 ]
             }
@@ -151,7 +158,7 @@ private extension SettingsViewController {
                 Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
                 Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
                 Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
-                Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
+                otherSection,
                 Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
             ]
         }
@@ -205,6 +212,8 @@ private extension SettingsViewController {
             configureLicenses(cell: cell)
         case let cell as BasicTableViewCell where row == .appSettings:
             configureAppSettings(cell: cell)
+        case let cell as BasicTableViewCell where row == .wormholy:
+            configureWormholy(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -266,6 +275,13 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Open Device Settings", comment: "Opens iOS's Device Settings for the app")
+    }
+
+    func configureWormholy(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Launch Wormholy debug",
+                                                 comment: "Opens an internal library called Wormholy. Not visible to users.")
     }
 
     func configureLogout(cell: BasicTableViewCell) {
@@ -375,6 +391,11 @@ private extension SettingsViewController {
         UIApplication.shared.open(targetURL)
     }
 
+    func wormholyWasPressed() {
+        // Fire a local notification, which fires Wormholy if enabled.
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
+    }
+
     func logOutUser() {
         ServiceLocator.stores.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
@@ -472,6 +493,8 @@ extension SettingsViewController: UITableViewDelegate {
             licensesWasPressed()
         case .appSettings:
             appSettingsWasPressed()
+        case .wormholy:
+            wormholyWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -505,6 +528,7 @@ private enum Row: CaseIterable {
     case about
     case licenses
     case appSettings
+    case wormholy
 
     var type: UITableViewCell.Type {
         switch self {
@@ -527,6 +551,8 @@ private enum Row: CaseIterable {
         case .licenses:
             return BasicTableViewCell.self
         case .appSettings:
+            return BasicTableViewCell.self
+        case .wormholy:
             return BasicTableViewCell.self
         }
     }

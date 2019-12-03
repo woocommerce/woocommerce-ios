@@ -8,6 +8,10 @@ import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
 
+#if DEBUG
+import Wormholy
+#endif
+
 
 // MARK: - Woo's App Delegate!
 //
@@ -51,6 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNoticePresenter()
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
+        setupWormholy()
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -278,6 +283,15 @@ private extension AppDelegate {
         appRating.register(section: "notifications", significantEventCount: WooConstants.notificationEventCount)
         appRating.systemWideSignificantEventCountRequiredForPrompt = WooConstants.systemEventCount
         appRating.setVersion(version)
+    }
+
+    /// Set up Wormholy only in Debug build configuration
+    ///
+    func setupWormholy() {
+        #if DEBUG
+        /// We want to activate it programmatically, not using the shake.
+        Wormholy.shakeEnabled = false
+        #endif
     }
 }
 

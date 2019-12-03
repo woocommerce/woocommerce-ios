@@ -45,6 +45,7 @@ target 'WooCommerce' do
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.3.0'
   pod 'ZendeskSDK', '~> 3.0.3'
+  pod 'Wormholy', '~> 1.5.1', :configurations => ['Debug']
 
   # Unit Tests
   # ==========

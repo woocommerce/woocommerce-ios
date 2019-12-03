@@ -59,12 +59,17 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func testPaymentSummaryMatchesExpectation() {
-        let datePaid = order.datePaid!.toString(dateStyle: .medium, timeStyle: .none)
-        let expectedValue = NSLocalizedString(
-            "\(datePaid) via \(order.paymentMethodTitle)",
-            comment: "Payment on <date> received via (payment method title)"
-        )
-        XCTAssertEqual(subject.paymentSummary, expectedValue)
+        guard let paymentSummary = subject.paymentSummary else {
+            XCTFail()
+            return
+        }
+
+        // Let's use a language from a region that is NOT the US,
+        // to test the localization for this sentence is correct.
+        let actualResult = String.getTranslationString(forKey: paymentSummary, languageCode: "zh")
+        let expectedResult = "已在 2018年4月3日 收到 Credit Card (Stripe) 付款"
+
+        XCTAssertEqual(actualResult, expectedResult)
     }
 
     func testCouponLinesMatchesExpectation() {

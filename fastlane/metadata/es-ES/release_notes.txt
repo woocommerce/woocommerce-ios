@@ -1,3 +1,7 @@
-* Hemos encontrado el error que hacía que las estadísticas de ventas no parecieran correctas porque las zonas horarias estaban desactivadas y lo hemos corregido.
-* ¿Alguna vez has enviado un correo electrónico a un cliente desde la pantalla Detalles del pedido y te has fijado en que la barra de navegación tiene un aspecto diferente al del resto de la aplicación? Eso ya no pasa.
-* El teclado ya no tapa el selector de fecha en la extensión Seguimiento de envíos, lo que hace que sea mucho más fácil elegir una fecha.
+- Mejora: La vista de detalles del pedido ahora incluye el método de envío.
+- Mejora: La pestaña Reseñas muestra todas las reseñas de los productos.
+- Modificación: Hemos actualizado la apariencia de la página Detalles del pedido y hemos desactivado temporalmente el modo oscuro.
+- Corrección de error: Hemos corregido la apariencia de las celdas de la interfaz de usuario Lista de pedidos al tocarlas con el modo oscuro activado.
+- Corrección de error: Las reseñas ya no se convierten al modo oscuro parcial. ¡El modo oscuro estará disponible próximamente!
+- Corrección de error: La página Detalles del pedido ahora tiene el espacio adecuado entre celdas.
+- Corrección de error: La página Configuración ya no se convierte al modo oscuro parcial.

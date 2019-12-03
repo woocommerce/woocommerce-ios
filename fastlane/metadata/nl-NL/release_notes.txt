@@ -1,3 +1,7 @@
-* Als je verkoopstatistieken vreemd leken omdat de tijdzones niet klopten, hebben we die bug nu gevonden en verwijderd.
-* Heb je ooit een bericht naar een klant gestuurd vanuit het scherm Bestelgegevens en opgemerkt dat de navigatiebalk er anders uitzag dan in de rest van de app? Hij is nu weer overal hetzelfde.
-* Het toetsenbord overlapt de datumkiezer niet meer in de extensie Verzending tracken, waardoor het een stuk eenvoudiger wordt om een datum te kiezen.
+- Verbeterd: het overzicht van bestelgegevens bevat nu ook de verzendmethode.
+- Verbetering: onder het tabblad Beoordelingen worden nu alle productbeoordelingen weergegeven.
+- Aangepast: we hebben de weergave van het overzicht van bestelgegevens aangepast en de nachtmodus tijdelijk uitgeschakeld.
+- Bugfix: een probleem met de UI-weergave van cellen in de bestellijst door hierop te tikken terwijl de nachtmodus is ingeschakeld, is nu opgelost.
+- Bugfix: beoordelingen worden niet meer gedeeltelijk in de nachtmodus gezet. De nachtmodus is binnenkort beschikbaar!
+- Bugfix: het overzicht van bestelgegevens geeft nu de juiste ruimte tussen cellen weer.
+- Bugfix: instellingen worden niet meer gedeeltelijk in de nachtmodus gezet.

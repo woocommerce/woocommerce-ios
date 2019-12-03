@@ -4,7 +4,7 @@ import XCTest
 
 /// Date+Woo: Unit Tests
 ///
-class DateWooTests: XCTestCase {
+final class DateWooTests: XCTestCase {
 
     func testUpdateStringWorksForIntervalsUnderTwoMinutes() {
 

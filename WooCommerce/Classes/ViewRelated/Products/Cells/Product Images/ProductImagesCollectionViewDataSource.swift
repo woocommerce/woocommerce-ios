@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ProductImagesCollectionViewDataSource: NSObject {
     private let viewModel: ProductImagesViewModel
@@ -47,7 +48,15 @@ private extension ProductImagesCollectionViewDataSource {
     func configureImageCell(collectionView: UICollectionView, cell: ProductImageCollectionViewCell, at indexPath: IndexPath) {
         let image = viewModel.product.images[indexPath.item]
         let imageURL = URL(string: image.src)
-        cell.imageView.kf.setImage(with: imageURL, placeholder: UIImage.productPlaceholderImage)
+        cell.imageView.kf.setImage(with: imageURL, placeholder: UIImage.productPlaceholderImage) { (result) in
+            switch result {
+            case .success:
+                cell.imageView.contentMode = .scaleAspectFit
+            case .failure:
+                cell.imageView.contentMode = .center
+                break
+            }
+        }
     }
 
 }

@@ -1,6 +1,8 @@
 import UIKit
 import Yosemite
 
+/// `ListSelectorDataSource` for selecting a Product Stock Status.
+///
 struct ProductStockStatusListSelectorDataSource: ListSelectorDataSource {
     typealias Model = ProductStockStatus
     typealias Cell = BasicTableViewCell

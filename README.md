@@ -9,6 +9,7 @@ A Jetpack-powered companion app for WooCommerce.
 
 - Download Xcode
   - At the moment *WooCommerce for iOS* uses Swift 5 and requires Xcode 10.2 or newer. Previous versions of Xcode can be [downloaded from Apple](https://developer.apple.com/downloads/index.action)
+- Install [git-lfs](https://github.com/git-lfs/git-lfs)
 - Clone project by `git clone https://github.com/woocommerce/woocommerce-ios.git` in the folder of your preference
 - Enter the project directory by `cd woocommerce-ios`
 - Install the third party dependencies and tools required to run the project

@@ -1129,10 +1129,6 @@
 		021627232379637E000208D2 /* Edit Product */ = {
 			isa = PBXGroup;
 			children = (
-				02162724237963AF000208D2 /* ProductFormViewController.swift */,
-				02162725237963AF000208D2 /* ProductFormViewController.xib */,
-				02162728237965E8000208D2 /* ProductFormTableViewModel.swift */,
-				0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */,
 				02F4F50C237AFBB700E13A9C /* Cells */,
 				02E262CA238D0D0500B79588 /* List Selector Data Source */,
 				02162724237963AF000208D2 /* ProductFormViewController.swift */,

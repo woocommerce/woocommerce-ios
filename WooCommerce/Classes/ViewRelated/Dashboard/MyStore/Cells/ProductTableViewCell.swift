@@ -2,6 +2,7 @@ import UIKit
 import Yosemite
 import WordPressUI
 import Gridicons
+import Kingfisher
 
 class ProductTableViewCell: UITableViewCell {
 
@@ -61,10 +62,6 @@ extension ProductTableViewCell {
         )
         priceText = statsItem?.formattedTotalString
 
-        if let productURLString = statsItem?.imageUrl {
-            productImage.downloadImage(from: URL(string: productURLString), placeholderImage: UIImage.productPlaceholderImage)
-        } else {
-            productImage.image = .productPlaceholderImage
-        }
+        productImage.kf.setImage(with: URL(string: statsItem?.imageUrl ?? ""), placeholder: UIImage.productPlaceholderImage)
     }
 }

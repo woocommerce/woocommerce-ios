@@ -44,6 +44,7 @@ final class DateWooTests: XCTestCase {
 
         // 2 minutes
         let twoMinutesAgo = Calendar.current.date(byAdding: .minute, value: -2, to: Date())!
+
         XCTAssertEqual(twoMinutesAgo.relativelyFormattedUpdateString, minutesAgo)
 
         // 2 minutes, 3 seconds
@@ -75,26 +76,34 @@ final class DateWooTests: XCTestCase {
 
         // Skip verifying the time part of the resulting string because of TZ madness
 
+        // Create and translate the exact phrase for the expected result
+        let updatedOct = NSLocalizedString("Updated on Oct 10, 2018",
+                                           comment: "A unit test string that checks the string date formatter works properly. Please translate this using your language's medium-length date abbreviation (if you have one).")
+        let updatedFeb = NSLocalizedString("Updated on Feb 2, 2016",
+                                           comment: "A unit test string that checks the string date formatter works properly. Please translate this using your language's medium-length date abbreviation (if you have one).")
+
         // Oct 10,2018
-        let calendar = Calendar(identifier: .gregorian)
-        let dateComponents1 = DateComponents(calendar: calendar, year: 2018, month: 10, day: 10)
+        let dateComponents1 = DateComponents(calendar: Calendar.current, year: 2018, month: 10, day: 10)
         let specificPastDate1 = Calendar.current.date(from: dateComponents1)!
-        XCTAssertTrue(specificPastDate1.relativelyFormattedUpdateString.contains("Updated on Oct 10, 2018"))
+        XCTAssertTrue(specificPastDate1.relativelyFormattedUpdateString.contains(updatedOct))
 
         // Feb 2, 2016
-        let dateComponents2 = DateComponents(calendar: calendar, year: 2016, month: 2, day: 2)
+        let dateComponents2 = DateComponents(calendar: Calendar.current, year: 2016, month: 2, day: 2)
         let specificPastDate2 = Calendar.current.date(from: dateComponents2)!
-        XCTAssertTrue(specificPastDate2.relativelyFormattedUpdateString.contains("Updated on Feb 2, 2016"))
+        XCTAssertTrue(specificPastDate2.relativelyFormattedUpdateString.contains(updatedFeb))
     }
 
     func testUpdateStringWorksForFutureIntervals() {
+        // Use the localized version of this saying
+        let momentsAgo = NSLocalizedString("Updated moments ago",
+                                           comment: "A unit test string for relative time intervals")
 
         // 1 second in future
         let futureDate = Calendar.current.date(byAdding: .second, value: 1, to: Date())!
-        XCTAssertEqual(futureDate.relativelyFormattedUpdateString, "Updated moments ago")
+        XCTAssertEqual(futureDate.relativelyFormattedUpdateString, momentsAgo)
 
         // 1 year in future
         let futureDate2 = Calendar.current.date(byAdding: .year, value: 1, to: Date())!
-        XCTAssertEqual(futureDate2.relativelyFormattedUpdateString, "Updated moments ago")
+        XCTAssertEqual(futureDate2.relativelyFormattedUpdateString, momentsAgo)
     }
 }

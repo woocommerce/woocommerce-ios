@@ -79,9 +79,8 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
     func testTopLabelAccessibilityLabelMatchesExpectation() {
         populateCell()
 
-        let shipmentCompany = NSLocalizedString("Shipment Company %@",
-                                                comment: "A unit test string for order tracking. Reads as: 'Shipment Company HK Post'")
-        let expectedLabel = String.localizedStringWithFormat(shipmentCompany, MockData.tracking.trackingProvider ?? "")
+        let expectedLabel = String.localizedStringWithFormat("Shipment Company %@",
+                                   MockData.tracking.trackingProvider ?? "")
 
         XCTAssertEqual(cell?.getTopLabel().accessibilityLabel, expectedLabel)
     }
@@ -89,9 +88,7 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
     func testMiddleLabelAccessibilityLabelMatchesExpectation() {
         populateCell()
 
-        let trackingNumber = NSLocalizedString("Tracking number %@",
-                                               comment: "A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'")
-        let expectedLabel = String.localizedStringWithFormat(trackingNumber,
+        let expectedLabel = String.localizedStringWithFormat("Tracking number %@",
                                                              MockData.tracking.trackingNumber)
 
         XCTAssertEqual(cell?.getMiddleLabel().accessibilityLabel, expectedLabel)

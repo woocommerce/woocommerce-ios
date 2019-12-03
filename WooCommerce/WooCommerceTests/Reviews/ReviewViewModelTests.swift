@@ -39,9 +39,8 @@ final class ReviewViewModelTests: XCTestCase {
         let viewModel = ReviewViewModel(review: mocks.anonyousReview(), product: product, notification: notification)
 
         let reviewSubject = viewModel.subject
-        let anon = NSLocalizedString("Someone",
-                                     comment: "A unit test for reviews, checking that anonymous users are added as the author named `someone`")
-        XCTAssertTrue(reviewSubject!.contains(anon))
+
+        XCTAssertTrue(reviewSubject!.contains("Someone"))
     }
 
     func testNotIconIsCommentIcon() {
@@ -49,9 +48,7 @@ final class ReviewViewModelTests: XCTestCase {
     }
 
     func testSnippetReturnsExpectation() {
-        let pending = NSLocalizedString("Pending Review",
-                                        comment: "A unit test string, appended before the title of a review.")
-        XCTAssertEqual(subject.snippet?.string, pending + " ∙ " + NSAttributedString(string: review.review.strippedHTML).trimNewlines().string)
+        XCTAssertEqual(subject.snippet?.string, "Pending Review ∙ " + NSAttributedString(string: review.review.strippedHTML).trimNewlines().string)
     }
 
     func testRatingMatchesExpectation() {

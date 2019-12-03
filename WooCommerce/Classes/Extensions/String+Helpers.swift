@@ -42,32 +42,4 @@ extension String {
 
         return newText
     }
-
-    /// Helper method to get currently known translated strings from other languages.
-    ///
-    /// - Parameters:
-    ///     - key: the key used when localizing a string
-    ///     - code: the language code used for switching the application's language in the Settings app.
-    ///
-    static func getTranslationString(forKey key: String, languageCode code: String) -> String {
-        if let currentLanguage = (UserDefaults.standard.array(forKey: "AppleLanguages")?.first as? String) {
-            if currentLanguage == code {
-                return NSLocalizedString(key, comment: "")
-            }
-            else {
-                // set the application language to Chinese
-                Bundle.setAccessibilityLanguage(code)
-
-                // get the localized string in Chinese
-                let translatedString = NSLocalizedString(key, comment: "")
-
-                // return the application to its original language
-                Bundle.setAccessibilityLanguage(currentLanguage)
-
-                return translatedString
-            }
-        }
-
-        return ""
-    }
 }

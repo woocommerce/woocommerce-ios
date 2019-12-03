@@ -321,37 +321,29 @@ class CurrencyFormatterTests: XCTestCase {
 
     func testFormatHumanReadableWorksUsingLargeDecimalValue() {
         let inputValue = "7867818684.64"
-        let expectedAbbreviation = expectedLocalizedAbbreviation(for: 7_900_000_000)
-        let expectedResult = "$\(expectedAbbreviation!)"
+        let expectedResult = "$7.9b"
         let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue)
         XCTAssertEqual(amount, expectedResult)
     }
 
     func testFormatHumanReadableWorksUsingLargeNegativeDecimalValue() {
         let inputValue = "-7867818684.64"
-        let expectedAbbreviation = expectedLocalizedAbbreviation(for: -7_900_000_000)
-        let expectedResult = "-$\(expectedAbbreviation!)"
+        let expectedResult = "-$7.9b"
         let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue)
         XCTAssertEqual(amount, expectedResult)
     }
 
     func testFormatHumanReadableWorksUsingLargeDecimalValueAndSpecificCountryCode() {
         let inputValue = "7867818684.64"
-        let expectedAbbreviation = expectedLocalizedAbbreviation(for: 7_900_000_000)
-        let expectedResult = "£\(expectedAbbreviation!)"
+        let expectedResult = "£7.9b"
         let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "GBP")
         XCTAssertEqual(amount, expectedResult)
     }
 
     func testFormatHumanReadableWorksUsingLargeNegativeDecimalValueAndSpecificCountryCode() {
         let inputValue = "-7867818684.64"
-        let expectedAbbreviation = expectedLocalizedAbbreviation(for: -7_900_000_000)
-        let expectedResult = "-£\(expectedAbbreviation!)"
+        let expectedResult = "-£7.9b"
         let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "GBP")
         XCTAssertEqual(amount, expectedResult)
-    }
-
-    private func expectedLocalizedAbbreviation(for num: Double) -> String? {
-        return Double(exactly: num)?.humanReadableString()
     }
 }

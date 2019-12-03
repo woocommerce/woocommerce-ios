@@ -1,5 +1,5 @@
 import Foundation
-import WordPressUI
+import UIKit
 
 /// Abstracts the In-App Notifications Presenter
 protocol NoticePresenter {

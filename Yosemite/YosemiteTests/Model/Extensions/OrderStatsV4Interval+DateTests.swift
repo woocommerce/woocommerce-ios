@@ -7,7 +7,10 @@ class OrderStatsV4Interval_DateTests: XCTestCase {
 
     func testDateStartAndDateEnd() {
         let dateStringInSiteTimeZone = "2019-08-08 10:45:00"
-        let interval = OrderStatsV4Interval(interval: "hour", dateStart: dateStringInSiteTimeZone, dateEnd: dateStringInSiteTimeZone, subtotals: mockIntervalSubtotals)
+        let interval = OrderStatsV4Interval(interval: "hour",
+                                            dateStart: dateStringInSiteTimeZone,
+                                            dateEnd: dateStringInSiteTimeZone,
+                                            subtotals: mockIntervalSubtotals)
         [interval.dateStart(), interval.dateEnd()].forEach { date in
             let dateComponents = Calendar.current.dateComponents(in: .current, from: date)
             XCTAssertEqual(dateComponents.year, 2019)

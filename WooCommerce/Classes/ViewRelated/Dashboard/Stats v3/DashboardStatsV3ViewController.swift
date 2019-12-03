@@ -20,11 +20,15 @@ class DashboardStatsV3ViewController: UIViewController {
     }()
 
     private var scrollView: UIScrollView = {
-        return UIScrollView(frame: .zero)
+        let returnValue = UIScrollView(frame: .zero)
+        returnValue.backgroundColor = .basicBackground
+        return returnValue
     }()
 
     private var stackView: UIStackView = {
-        return UIStackView(arrangedSubviews: [])
+        let returnValue = UIStackView(arrangedSubviews: [])
+        returnValue.backgroundColor = .basicBackground
+        return returnValue
     }()
 
     // MARK: child view controllers
@@ -194,6 +198,7 @@ private extension DashboardStatsV3ViewController {
     func configureContainerViews() {
         view.addSubview(scrollView)
         view.pinSubviewToAllEdges(scrollView)
+        view.backgroundColor = .basicBackground
 
         scrollView.addSubview(stackView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false

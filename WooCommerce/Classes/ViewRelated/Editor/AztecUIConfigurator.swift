@@ -71,11 +71,11 @@ private extension AztecUIConfigurator {
         configureDefaultProperties(for: textView, accessibilityLabel: accessibilityLabel)
 
         let linkAttributes: [NSAttributedString.Key: Any] = [.underlineStyle: NSUnderlineStyle.single.rawValue,
-                                                             .foregroundColor: StyleManager.wooCommerceBrandColor]
+                                                             .foregroundColor: UIColor.primary]
 
         textView.delegate = textViewDelegate
         textView.textAttachmentDelegate = textViewAttachmentDelegate
-        textView.backgroundColor = StyleManager.wooWhite
+        textView.backgroundColor = .basicBackground
         textView.linkTextAttributes = linkAttributes
 
         // We need this false to be able to set negative `scrollInset` values.

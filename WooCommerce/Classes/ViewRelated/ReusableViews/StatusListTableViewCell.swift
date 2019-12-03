@@ -41,14 +41,12 @@ final class StatusListTableViewCell: UITableViewCell {
 
 private extension StatusListTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
-
         //Background when selected
         selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 
     func styleCheckmark() {
-        tintColor = StyleManager.wooCommerceBrandColor
+        tintColor = .primary
     }
 }

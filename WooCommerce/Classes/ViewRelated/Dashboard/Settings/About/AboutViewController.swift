@@ -65,7 +65,7 @@ private extension AboutViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Configure common table properties.
@@ -73,13 +73,13 @@ private extension AboutViewController {
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
     }
 
     /// Setup the tableview header.
     ///
     func configureTableViewHeader() {
-        let tintedImage             = UIImage.wooLogoImage(withSize: Constants.headerImageSize, tintColor: StyleManager.wooCommerceBrandColor)
+        let tintedImage             = UIImage.wooLogoImage(withSize: Constants.headerImageSize, tintColor: .primary)
         let imageView               = UIImageView(image: tintedImage)
         imageView.contentMode       = .center
         imageView.frame.size.height += Constants.headerPadding
@@ -95,7 +95,7 @@ private extension AboutViewController {
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.footnote.attributedText = nil
         footerView.footnote.text = footerTitleText
-        footerView.footnote.textColor = StyleManager.wooGreyMid
+        footerView.footnote.textColor = .textSubtle
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }

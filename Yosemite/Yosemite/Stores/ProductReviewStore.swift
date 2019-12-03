@@ -177,7 +177,8 @@ extension ProductReviewStore {
     func upsertStoredProductReviews(readOnlyProductReviews: [Networking.ProductReview], in storage: StorageType, siteID: Int) {
         // Upsert the Product reviews from the read-only reviews
         for readOnlyProductReview in readOnlyProductReviews {
-            let storageProductReview = storage.loadProductReview(siteID: siteID, reviewID: readOnlyProductReview.reviewID) ?? storage.insertNewObject(ofType: Storage.ProductReview.self)
+            let storageProductReview = storage.loadProductReview(siteID: siteID, reviewID: readOnlyProductReview.reviewID) ??
+                storage.insertNewObject(ofType: Storage.ProductReview.self)
             storageProductReview.update(with: readOnlyProductReview)
         }
     }

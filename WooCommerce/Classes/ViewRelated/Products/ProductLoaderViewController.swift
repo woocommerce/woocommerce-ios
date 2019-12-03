@@ -75,7 +75,7 @@ private extension ProductLoaderViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
         view.addSubview(activityIndicator)
         view.pinSubviewAtCenter(activityIndicator)
     }
@@ -95,7 +95,6 @@ private extension ProductLoaderViewController {
                                             style: .plain,
                                             target: self,
                                             action: #selector(dismissButtonTapped))
-        leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 }

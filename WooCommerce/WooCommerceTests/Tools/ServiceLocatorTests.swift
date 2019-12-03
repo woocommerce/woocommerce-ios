@@ -54,6 +54,10 @@ final class ServiceLocatorTests: XCTestCase {
         XCTAssertTrue(authentication is AuthenticationManager)
     }
 
+    func testServiceLocatorProvidesShippingSettingsService() {
+        XCTAssertNotNil(ServiceLocator.shippingSettingsService)
+    }
+
     func testServiceLocatorProvidesStorageManager() {
         XCTAssertNotNil(ServiceLocator.storageManager)
     }

@@ -36,7 +36,7 @@ class WooBasicTableViewCell: UITableViewCell {
 
         //Background when selected
         selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 
     /// Set up the cell selection style
@@ -49,7 +49,7 @@ class WooBasicTableViewCell: UITableViewCell {
     ///
     func configureLabel() {
         bodyLabel?.applyBodyStyle()
-        bodyLabel?.textColor = StyleManager.wooCommerceBrandColor
+        bodyLabel?.textColor = .primary
     }
 
     /// Add the accessoryView image, if any
@@ -60,7 +60,7 @@ class WooBasicTableViewCell: UITableViewCell {
             return
         }
         let accessoryImageView = UIImageView(image: accessoryImage)
-        accessoryImageView.tintColor = StyleManager.buttonPrimaryColor
+        accessoryImageView.tintColor = .primaryButtonBackground
         accessoryView = accessoryImageView
     }
 }

@@ -98,7 +98,7 @@ private extension ProductReviewTableViewCell {
     /// Refreshes the Cell's Colors.
     ///
     func refreshColors() {
-        sidebarView.backgroundColor = read ? UIColor.clear : StyleManager.wooAccent
+        sidebarView.backgroundColor = read ? UIColor.clear : UIColor.accent
     }
 
     func configureBackground() {
@@ -106,7 +106,7 @@ private extension ProductReviewTableViewCell {
 
         //Background when selected
         selectedBackgroundView = UIView()
-        selectedBackgroundView?.backgroundColor = StyleManager.tableViewCellSelectionStyle
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 
     func configureSubjectLabel() {
@@ -140,7 +140,7 @@ private extension ProductReviewTableViewCell {
 
     enum Star {
         static let size = Double(13)
-        static let filledImage = UIImage.starImage(size: Star.size, tintColor: StyleManager.yellowStarColor)
+        static let filledImage = UIImage.starImage(size: Star.size, tintColor: .text)
         static let emptyImage = UIImage.starImage(size: Star.size, tintColor: .clear)
     }
 

@@ -213,7 +213,6 @@ private extension OrdersViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(displaySearchOrders))
-            button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
             button.accessibilityHint = NSLocalizedString(
@@ -229,7 +228,6 @@ private extension OrdersViewController {
                                                  style: .plain,
                                                  target: self,
                                                  action: #selector(displayFiltersAlert))
-            button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
             button.accessibilityHint = NSLocalizedString(
@@ -271,8 +269,8 @@ private extension OrdersViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
     }
@@ -339,7 +337,7 @@ extension OrdersViewController {
     @IBAction func displayFiltersAlert() {
         ServiceLocator.analytics.track(.ordersListFilterTapped)
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        actionSheet.view.tintColor = .text
 
         actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
         actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
@@ -443,7 +441,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                                                    statusKey: statusFilter?.slug,
                                                    pageNumber: pageNumber,
                                                    pageSize: pageSize) { [weak self] error in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -523,7 +521,8 @@ private extension OrdersViewController {
     ///
     func displayPlaceholderOrders() {
         let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        tableView.displayGhostContent(options: options,
+                                      style: .wooDefaultGhostStyle)
 
         resultsController.stopForwardingEvents()
     }

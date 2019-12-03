@@ -33,7 +33,7 @@ final class EmptyListMessageWithActionTests: XCTestCase {
     }
 
     func testBackgroundStyle() {
-        XCTAssertEqual(subject?.backgroundColor, StyleManager.tableViewBackgroundColor)
+        XCTAssertEqual(subject?.backgroundColor, UIColor.listBackground)
     }
 
     func testMessageLabelStyle() {
@@ -41,19 +41,12 @@ final class EmptyListMessageWithActionTests: XCTestCase {
 
         XCTAssertEqual(label?.textAlignment, NSTextAlignment.center)
         XCTAssertEqual(label?.font, UIFont.body)
-        XCTAssertEqual(label?.textColor, StyleManager.wooGreyMid)
     }
 
     func testActionLabelStyle() {
         let label = subject?.getButtonLabel()
 
         XCTAssertEqual(label?.font, UIFont.body)
-        XCTAssertEqual(label?.textColor, StyleManager.defaultTextColor)
-    }
-
-    func testActionButtonStyle() {
-        let button = subject?.getButton()
-
-        XCTAssertEqual(button?.backgroundColor, .white)
+        XCTAssertEqual(label?.textColor, .text)
     }
 }

@@ -58,10 +58,6 @@ final class ReviewViewModelTests: XCTestCase {
     func testReadMatchesNotificationRead() {
         XCTAssertEqual(subject.read, notification.read)
     }
-
-    func testIconColorMatchesExpectation() {
-        XCTAssertEqual(subject.notIconColor, StyleManager.wooAccent)
-    }
 }
 
 

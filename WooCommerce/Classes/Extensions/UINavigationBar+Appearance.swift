@@ -10,7 +10,7 @@ extension UINavigationBar {
     ///
     class func applyWooAppearance() {
         let appearance = UINavigationBar.appearance()
-        appearance.barTintColor = StyleManager.wooCommerceBrandColor
+        appearance.barTintColor = .appBar
         appearance.titleTextAttributes = [.foregroundColor: UIColor.white]
         appearance.isTranslucent = false
         appearance.tintColor = .white

@@ -77,7 +77,19 @@ public struct OrderItemRefund: Codable {
         let totalTax = try container.decode(String.self, forKey: .totalTax)
 
         // initialize the struct
-        self.init(itemID: itemID, name: name, productID: productID, variationID: variationID, quantity: quantity, price: price, sku: sku, subtotal: subtotal, subtotalTax: subtotalTax, taxClass: taxClass, taxes: taxes, total: total, totalTax: totalTax)
+        self.init(itemID: itemID,
+                  name: name,
+                  productID: productID,
+                  variationID: variationID,
+                  quantity: quantity,
+                  price: price,
+                  sku: sku,
+                  subtotal: subtotal,
+                  subtotalTax: subtotalTax,
+                  taxClass: taxClass,
+                  taxes: taxes,
+                  total: total,
+                  totalTax: totalTax)
     }
 
     /// The public encoder for OrderItemRefund.

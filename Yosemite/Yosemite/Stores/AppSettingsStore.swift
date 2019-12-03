@@ -58,6 +58,13 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.statsVersionLastShownFileName)
     }()
 
+    /// URL to the plist file that we use to determine the visibility for Product features.
+    ///
+    private lazy var productsVisibilityURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productsVisibilityFileName)
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -106,6 +113,10 @@ public class AppSettingsStore: Store {
             loadStatsVersionBannerVisibility(banner: banner, onCompletion: onCompletion)
         case .setStatsVersionBannerVisibility(let banner, let shouldShowBanner):
             setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
+        case .loadProductsVisibility(let onCompletion):
+            loadProductsVisibility(onCompletion: onCompletion)
+        case .setProductsVisibility(let isVisible, let onCompletion):
+            setProductsVisibility(isVisible: isVisible, onCompletion: onCompletion)
         case .resetStatsVersionStates:
             resetStatsVersionStates()
         }
@@ -345,6 +356,25 @@ private extension AppSettingsStore {
         write(StatsVersionBannerVisibility(visibilityByBanner: visibilityByBanner), to: fileURL, onCompletion: { _ in })
     }
 
+    func loadProductsVisibility(onCompletion: (Bool) -> Void) {
+        guard let existingData: ProductsVisibilityPListWrapper = read(from: productsVisibilityURL) else {
+            onCompletion(false)
+            return
+        }
+        onCompletion(existingData.isVisible)
+    }
+
+    func setProductsVisibility(isVisible: Bool, onCompletion: () -> Void) {
+        let fileURL = productsVisibilityURL
+        let visibilityWrapper = ProductsVisibilityPListWrapper(isVisible: isVisible)
+        write(visibilityWrapper, to: fileURL) { error in
+            if let error = error {
+                DDLogError("⛔️ Saving the Products visibility to \(isVisible) failed: \(error)")
+            }
+            onCompletion()
+        }
+    }
+
     func resetStatsVersionStates() {
         do {
             try fileStorage.deleteFile(at: statsVersionBannerVisibilityURL)
@@ -378,7 +408,6 @@ private extension AppSettingsStore {
             try fileStorage.write(encodedData, to: fileURL)
             onCompletion(nil)
         } catch {
-            let error = AppSettingsStoreErrors.writePListToFileStorage
             onCompletion(error)
         }
     }
@@ -410,4 +439,5 @@ private enum Constants {
     static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
     static let statsVersionEligibleFileName = "stats-version-eligible.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
+    static let productsVisibilityFileName = "products-visibility.plist"
 }

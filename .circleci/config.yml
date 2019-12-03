@@ -6,22 +6,22 @@ orbs:
   git: wordpress-mobile/git@1.0
 
 commands:
-  load-chruby:
+  fix-circleci:
     steps:
       - run:
-          name: Load chruby
+          name: Fix CircleCI
           command: |
-            # Force chruby to load to work around CircleCI Xcode 11 image issue
-            echo 'source /usr/local/opt/chruby/share/chruby/chruby.sh && chruby 2.5.5' >> $BASH_ENV
-
+            # A placeholder command that fixes any issues present on the CircleCI box – there's often something wrong with it,
+            # so preserving this step (even if empty) makes the diffs simpler.
+            echo "No issues for this image – skipping".
 jobs:
   Build Tests:
     executor:
       name: ios/default
-      xcode-version: "11.0.0"
+      xcode-version: "11.2.1"
     steps:
       - git/shallow-checkout
-      - load-chruby
+      - fix-circleci
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true
@@ -36,25 +36,25 @@ jobs:
   Unit Tests:
     executor:
       name: ios/default
-      xcode-version: "11.0.0"
+      xcode-version: "11.2.1"
     steps:
       - ios/boot-simulator:
-          xcode-version: "11.0.0"
+          xcode-version: "11.2.1"
           device: iPhone 11
       - attach_workspace:
           at: ./
       - ios/wait-for-simulator
       - ios/xcodebuild:
           command: test-without-building
-          arguments: -xctestrun DerivedData/Build/Products/WooCommerce_iphonesimulator13.0-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
+          arguments: -xctestrun DerivedData/Build/Products/WooCommerce_iphonesimulator13.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
       - ios/save-xcodebuild-artifacts
   Installable Build:
     executor:
       name: ios/default
-      xcode-version: "11.0.0"
+      xcode-version: "11.2.1"
     steps:
       - git/shallow-checkout
-      - load-chruby
+      - fix-circleci
       - ios/install-dependencies:
             bundle-install: true
             pod-install: true

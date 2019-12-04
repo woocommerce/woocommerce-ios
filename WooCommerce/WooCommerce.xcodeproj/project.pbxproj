@@ -36,6 +36,7 @@
 		02162727237963AF000208D2 /* ProductFormViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02162725237963AF000208D2 /* ProductFormViewController.xib */; };
 		02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02162728237965E8000208D2 /* ProductFormTableViewModel.swift */; };
 		0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */; };
+		0219B03723964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */; };
 		021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */; };
 		021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */; };
 		02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */; };
@@ -572,6 +573,7 @@
 		02162725237963AF000208D2 /* ProductFormViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductFormViewController.xib; sourceTree = "<group>"; };
 		02162728237965E8000208D2 /* ProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormTableViewModel.swift; sourceTree = "<group>"; };
 		0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductFormTableViewModel.swift; sourceTree = "<group>"; };
+		0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSource.swift; sourceTree = "<group>"; };
 		021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxisTests.swift"; sourceTree = "<group>"; };
 		021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxis.swift"; sourceTree = "<group>"; };
 		02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecUnorderedListFormatBarCommand.swift; sourceTree = "<group>"; };
@@ -1404,6 +1406,7 @@
 			isa = PBXGroup;
 			children = (
 				02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift */,
+				0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */,
 			);
 			path = "List Selector Data Source";
 			sourceTree = "<group>";
@@ -3083,6 +3086,7 @@
 				0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */,
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,
 				CE1F51252064179A00C6C810 /* UILabel+Helpers.swift in Sources */,
+				0219B03723964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift in Sources */,
 				024DF31923742C3F006658FE /* AztecFormatBarFactory.swift in Sources */,
 				B5A56BF3219F46470065A902 /* UIButton+Animations.swift in Sources */,
 				B54FBE552111F70700390F57 /* ResultsController+UIKit.swift in Sources */,

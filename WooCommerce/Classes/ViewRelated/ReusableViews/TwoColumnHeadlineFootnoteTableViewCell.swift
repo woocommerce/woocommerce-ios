@@ -69,5 +69,8 @@ private extension TwoColumnHeadlineFootnoteTableViewCell {
         leftTitleLabel.applyHeadlineStyle()
         rightTitleLabel.applyHeadlineStyle()
         footnoteLabel.applyFootnoteStyle()
+
+        // When the cell is recycled, ensure that the hidden label is restored.
+        footnoteLabel.isHidden = false
     }
 }

@@ -217,6 +217,13 @@ extension UIColor {
         return UIColor(light: .white,
                        dark: .withColorStudio(.gray, shade: .shade90))
     }
+
+    /// Ghost cell animation end color. `Gray-5` (Light Mode) and Gray-10 (Dark Mode)
+    ///
+    static var ghostCellAnimationEndColor: UIColor {
+        return UIColor(light: neutral(.shade5),
+                       dark: neutral(.shade10))
+    }
 }
 
 

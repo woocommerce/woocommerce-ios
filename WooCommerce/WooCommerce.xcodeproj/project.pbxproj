@@ -128,6 +128,7 @@
 		02FE89C7231FAA4100E85EF8 /* MainTabBarControllerTests+ProductListFeatureFlag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C6231FAA4100E85EF8 /* MainTabBarControllerTests+ProductListFeatureFlag.swift */; };
 		02FE89C9231FB31400E85EF8 /* FeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89C8231FB31400E85EF8 /* FeatureFlagService.swift */; };
 		02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FE89CA231FB36600E85EF8 /* DefaultFeatureFlagService.swift */; };
+		450106832397B92500E24722 /* UIImageView+Kingfisher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106822397B92500E24722 /* UIImageView+Kingfisher.swift */; };
 		451A04E62386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */; };
 		451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04E52386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib */; };
 		451A04EA2386D28300E368C9 /* ProductImagesViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04E92386D28300E368C9 /* ProductImagesViewModel.swift */; };
@@ -664,6 +665,7 @@
 		25D00C97936D2C6589F8ECE9 /* Pods-WooCommerce.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		2719B6FD1E6FE78A76B6AC74 /* Pods-WooCommerceTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerceTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerceTests/Pods-WooCommerceTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		33035144757869DE5E4DC88A /* Pods-WooCommerce.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WooCommerce.release.xcconfig"; path = "../Pods/Target Support Files/Pods-WooCommerce/Pods-WooCommerce.release.xcconfig"; sourceTree = "<group>"; };
+		450106822397B92500E24722 /* UIImageView+Kingfisher.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImageView+Kingfisher.swift"; sourceTree = "<group>"; };
 		451A04E42386CE8700E368C9 /* ProductImagesHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		451A04E52386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImagesHeaderTableViewCell.xib; sourceTree = "<group>"; };
 		451A04E92386D28300E368C9 /* ProductImagesViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesViewModel.swift; sourceTree = "<group>"; };
@@ -2135,6 +2137,7 @@
 				021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */,
 				D88CA757237D1C27005D2F44 /* Ghost+Woo.swift */,
 				02784A02238B8BC800BDD6A8 /* UIView+Border.swift */,
+				450106822397B92500E24722 /* UIImageView+Kingfisher.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3091,6 +3094,7 @@
 				B517EA18218B232700730EC4 /* StringFormatter+Notes.swift in Sources */,
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
 				D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */,
+				450106832397B92500E24722 /* UIImageView+Kingfisher.swift in Sources */,
 				D831E2E0230E0BA7000037D0 /* Logs.swift in Sources */,
 				02B296A722FA6DB500FD7A4C /* Date+StartAndEnd.swift in Sources */,
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,

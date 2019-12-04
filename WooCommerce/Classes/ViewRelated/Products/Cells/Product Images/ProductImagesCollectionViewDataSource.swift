@@ -47,7 +47,7 @@ private extension ProductImagesCollectionViewDataSource {
     ///
     func configureImageCell(collectionView: UICollectionView, cell: ProductImageCollectionViewCell, at indexPath: IndexPath) {
         let image = viewModel.product.images[indexPath.item]
-        
+
         cell.imageView.setImage(with: image.src, placeholder: UIImage.productPlaceholderImage) { (success) in
             if success {
                 cell.imageView.contentMode = .scaleAspectFit

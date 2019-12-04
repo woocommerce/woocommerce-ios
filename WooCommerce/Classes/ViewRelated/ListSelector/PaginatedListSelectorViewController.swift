@@ -26,8 +26,8 @@ protocol PaginatedListSelectorDataSource {
 
 /// Displays a paginated list (implemented by table view) for the user to select a generic model.
 ///
-final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>:
-    UIViewController, UITableViewDataSource, UITableViewDelegate, SyncingCoordinatorDelegate
+final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>: UIViewController,
+    UITableViewDataSource, UITableViewDelegate, SyncingCoordinatorDelegate
 where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.ReadOnlyType, Model: Equatable, DataSource.Cell == Cell {
     private let viewProperties: PaginatedListSelectorViewProperties
     private var dataSource: DataSource

@@ -47,14 +47,13 @@ private extension ProductImagesCollectionViewDataSource {
     ///
     func configureImageCell(collectionView: UICollectionView, cell: ProductImageCollectionViewCell, at indexPath: IndexPath) {
         let image = viewModel.product.images[indexPath.item]
-        let imageURL = URL(string: image.src)
-        cell.imageView.kf.setImage(with: imageURL, placeholder: UIImage.productPlaceholderImage) { (result) in
-            switch result {
-            case .success:
+        
+        cell.imageView.setImage(with: image.src, placeholder: UIImage.productPlaceholderImage) { (success) in
+            if success {
                 cell.imageView.contentMode = .scaleAspectFit
-            case .failure:
+            }
+            else {
                 cell.imageView.contentMode = .center
-                break
             }
         }
     }

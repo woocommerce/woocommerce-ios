@@ -52,12 +52,9 @@ extension ProductsTabProductTableViewCell {
         productImageView.contentMode = .center
         productImageView.image = .productsTabProductCellPlaceholderImage
         if let productURLString = viewModel.imageUrl {
-            productImageView.kf.setImage(with: URL(string: productURLString)) { [weak self] (result) in
-                switch result {
-                case .success:
+            productImageView.setImage(with: productURLString) { [weak self] (success) in
+                if success {
                     self?.productImageView.contentMode = .scaleAspectFill
-                case .failure:
-                    break
                 }
             }
         }

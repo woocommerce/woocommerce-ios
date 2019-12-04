@@ -61,6 +61,6 @@ extension ProductTableViewCell {
         )
         priceText = statsItem?.formattedTotalString
 
-        productImage.kf.setImage(with: URL(string: statsItem?.imageUrl ?? ""), placeholder: UIImage.productPlaceholderImage)
+        productImage.setImage(with: statsItem?.imageUrl, placeholder: UIImage.productPlaceholderImage)
     }
 }

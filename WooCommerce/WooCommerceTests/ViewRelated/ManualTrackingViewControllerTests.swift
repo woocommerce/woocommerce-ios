@@ -60,6 +60,6 @@ final class ManualTrackingViewControllerTests: XCTestCase {
     }
 
     func testVCBackgroundColorIsSet() {
-        XCTAssertEqual(subject?.view.backgroundColor, StyleManager.tableViewBackgroundColor)
+        XCTAssertEqual(subject?.view.backgroundColor, UIColor.listBackground)
     }
 }

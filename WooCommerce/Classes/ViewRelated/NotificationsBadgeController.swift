@@ -93,11 +93,11 @@ private class PurpleDotView: UIView {
                                                y: rect.origin.y + borderWidth,
                                                width: rect.size.width - borderWidth * 2,
                                                height: rect.size.height - borderWidth * 2))
-        StyleManager.wooCommerceBrandColor.setFill()
+        UIColor.primary.setFill()
         path.fill()
 
         path.lineWidth = borderWidth
-        StyleManager.wooWhite.setStroke()
+        UIColor.basicBackground.setStroke()
         path.stroke()
     }
 }

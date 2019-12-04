@@ -1,3 +1,7 @@
-* Jika statistik penjualan Anda terlihat tidak normal karena zona waktu mati, kami telah menemukan bug tersebut dan memperbaikinya.
-* Pernah mengirim email ke pelanggan dari layar Detail Pesanan dan mendapati bilah navigasi terlihat berbeda dengan yang lainnya dari aplikasi? Sekarang sudah konsisten.
-* Keyboard tidak lagi menutupi pemilih tanggal di ekstensi Pelacakan Pengiriman, sehingga membuatnya jauh lebih mudah untuk memilih tanggal.
+- Disempurnakan: Tampilan detail pemesanan kini menyertakan metode pengiriman pemesanan.
+- Penyempurnaan: Tab ulasan kini menampilkan seluruh Ulasan Produk.
+- Diubah: Kami memperbarui tampilan Detail Pemesanan dan menonaktifkan mode gelap untuk sementara.
+- Perbaikan bug: Memperbaiki tampilan UI di sel Daftar Pesanan saat mengetuk dengan mode gelap diaktifkan.
+- Perbaikan bug: Ulasan kini tidak lagi beralih ke mode gelap sebagian. Mode gelap akan segera kembali!
+- Perbaikan bug: Detail Pesanan kini memiliki jarak yang tepat antar sel.
+- Perbaikan bug: Pengaturan kini tidak lagi beralih ke mode gelap sebagian.

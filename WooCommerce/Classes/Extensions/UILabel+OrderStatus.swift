@@ -27,29 +27,25 @@ extension UILabel {
     ///
     private func applyBackground(for statusEnum: OrderStatusEnum) {
         switch statusEnum {
-        case .processing:
-            fallthrough
-        case .pending:
-            backgroundColor = StyleManager.statusSuccessColor
-            layer.borderColor = StyleManager.statusSuccessBoldColor.cgColor
-        case .failed:
-            fallthrough
-        case .refunded:
-            backgroundColor = StyleManager.statusDangerColor
-            layer.borderColor = StyleManager.statusDangerBoldColor.cgColor
-        case .completed:
-            backgroundColor = StyleManager.statusPrimaryColor
-            layer.borderColor = StyleManager.statusPrimaryBoldColor.cgColor
-        case .onHold:
-            fallthrough
         case .cancelled:
+            fallthrough
+        case .completed:
             fallthrough
         case .custom:
             fallthrough
-        default:
-            backgroundColor = StyleManager.statusNotIdentifiedColor
-            layer.borderColor = StyleManager.statusNotIdentifiedBoldColor.cgColor
+        case .onHold:
+            fallthrough
+        case .pending:
+            fallthrough
+        case .processing:
+            backgroundColor = .gray(.shade5)
+        case .failed:
+            fallthrough
+        case .refunded:
+            backgroundColor = .error
         }
+
+        textColor = .black
     }
 }
 
@@ -59,7 +55,7 @@ extension UILabel {
 private extension UILabel {
 
     enum OrderStatusSettings {
-        static let borderWidth = CGFloat(1.0)
+        static let borderWidth = CGFloat(0.0)
         static let cornerRadius = CGFloat(4.0)
     }
 }

@@ -20,7 +20,7 @@ private extension ProductVariation {
 
         let attributedString = NSMutableAttributedString(string: detailsText,
                                                          attributes: [
-                                                            .foregroundColor: StyleManager.wooGreyMid,
+                                                            .foregroundColor: UIColor.textSubtle,
                                                             .font: StyleManager.footerLabelFont
             ])
         return attributedString

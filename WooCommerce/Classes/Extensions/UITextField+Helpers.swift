@@ -4,6 +4,6 @@ extension UITextField {
     func applyBodyStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
     }
 }

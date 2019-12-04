@@ -68,6 +68,7 @@ extension Product {
     @NSManaged public var tags: Set<ProductTag>?
     @NSManaged public var searchResults: Set<ProductSearchResults>?
     @NSManaged public var productVariations: Set<ProductVariation>?
+    @NSManaged public var productShippingClass: ProductShippingClass?
 
 }
 

@@ -34,8 +34,8 @@ final class ReviewViewModel {
             return NSAttributedString(string: review.review.strippedHTML).trimNewlines()
         }
 
-        let accentColor = StyleManager.highlightTextColor
-        let textColor = StyleManager.wooGreyTextMin
+        let accentColor = UIColor.orange
+        let textColor = UIColor.textSubtle
 
         let pendingReviewLiteral = NSAttributedString(string: Strings.pendingReviews,
                                                       attributes: [.foregroundColor: accentColor])
@@ -56,7 +56,7 @@ final class ReviewViewModel {
     }()
 
     lazy var notIconColor: UIColor = {
-        return read ? StyleManager.wooGreyMid : StyleManager.wooAccent
+        return read ? .textSubtle : .accent
     }()
 
     lazy var read: Bool = {

@@ -16,7 +16,7 @@ extension UIImage {
     /// Notice Icon
     ///
     static var noticeImage: UIImage {
-        let tintColor = StyleManager.noticeIconColor
+        let tintColor = UIColor.listIcon
         return Gridicon.iconOfType(.notice).imageWithTintColor(tintColor)!
     }
 
@@ -56,14 +56,14 @@ extension UIImage {
     /// WooCommerce Styled Checkmark
     ///
     static var checkmarkStyledImage: UIImage {
-        let tintColor = StyleManager.wooCommerceBrandColor
+        let tintColor = UIColor.primary
         return checkmarkImage.imageWithTintColor(tintColor)!
     }
 
     /// Chevron Pointing Right
     ///
     static var chevronImage: UIImage {
-        let tintColor = StyleManager.wooGreyMid
+        let tintColor = UIColor.neutral(.shade40)
         return Gridicon.iconOfType(.chevronRight).imageWithTintColor(tintColor)!
     }
 
@@ -94,7 +94,7 @@ extension UIImage {
     /// Delete Icon
     ///
     static var deleteImage: UIImage {
-        let tintColor = StyleManager.wooCommerceBrandColor
+        let tintColor = UIColor.primary
         return Gridicon.iconOfType(.crossCircle)
             .imageWithTintColor(tintColor)!
             .imageFlippedForRightToLeftLayoutDirection()
@@ -130,7 +130,7 @@ extension UIImage {
     ///
     static var giftWithTopRightRedDotImage: UIImage {
         guard let image = Gridicon.iconOfType(.gift, withSize: CGSize(width: 24, height: 24))
-            .imageWithTintColor(StyleManager.wooGreyTextMin)?
+            .imageWithTintColor(.textSubtle)?
             .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
                                   finalSize: CGSize(width: 26, height: 26)) else {
                                     fatalError()
@@ -150,6 +150,12 @@ extension UIImage {
         return Gridicon.iconOfType(.heartOutline)
     }
 
+    /// Login prologue slanted rectangle
+    ///
+    static var slantedRectangle: UIImage {
+        return UIImage(named: "prologue-slanted-rectangle")!
+    }
+
     /// Inventory Icon
     ///
     static var inventoryImage: UIImage {
@@ -166,7 +172,7 @@ extension UIImage {
     ///
     static var infoImage: UIImage {
         guard let image = Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
-            .imageWithTintColor(StyleManager.wooGreyTextMin) else {
+            .imageWithTintColor(.textSubtle) else {
                 fatalError()
         }
         return image
@@ -187,7 +193,7 @@ extension UIImage {
     /// More Icon
     ///
     static var moreImage: UIImage {
-        let tintColor = StyleManager.wooCommerceBrandColor
+        let tintColor = UIColor.primary
         return ellipsisImage.imageWithTintColor(tintColor)!
     }
 
@@ -200,14 +206,14 @@ extension UIImage {
     /// Product Placeholder Image
     ///
     static var productPlaceholderImage: UIImage {
-        let tintColor = StyleManager.wooGreyLight
+        let tintColor = UIColor.listIcon
         return Gridicon.iconOfType(.product).imageWithTintColor(tintColor)!
     }
 
     /// Product Placeholder Image on Products Tab Cell
     ///
     static var productsTabProductCellPlaceholderImage: UIImage {
-        let tintColor = StyleManager.wooGreyBorder
+        let tintColor = UIColor.listSmallIcon
         return Gridicon
             .iconOfType(.product, withSize: CGSize(width: 20, height: 20))
             .imageWithTintColor(tintColor)!
@@ -230,7 +236,7 @@ extension UIImage {
     /// Pencil Icon
     ///
     static var pencilImage: UIImage {
-        let tintColor = StyleManager.wooCommerceBrandColor
+        let tintColor = UIColor.primary
         return Gridicon.iconOfType(.pencil)
             .imageWithTintColor(tintColor)!
             .imageFlippedForRightToLeftLayoutDirection()

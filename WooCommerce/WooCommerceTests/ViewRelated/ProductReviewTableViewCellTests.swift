@@ -27,10 +27,6 @@ final class ProductReviewTableViewCellTests: XCTestCase {
         XCTAssertEqual(cell.getSubjectLabel().text, viewModel.subject)
     }
 
-    func testCellSnippetMatchesViewModel() {
-        XCTAssertEqual(cell.getSnippetLabel().attributedText, viewModel.snippet)
-    }
-
     func testCellRatingMatchesViewModel() {
         XCTAssertEqual(cell.getStarRatingView().rating, CGFloat(viewModel.rating))
     }

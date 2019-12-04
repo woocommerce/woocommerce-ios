@@ -1,3 +1,7 @@
-* Correção do bug que deturpava a exibição das estatísticas de venda em caso de fusos horários desativados.
-* Percebeu a barra de navegação diferente do restante do aplicativo ao enviar um e-mail pela tela “Detalhes do pedido”? Já está consistente.
-* O teclado não oculta mais o seletor de data na extensão “Rastreamento do envio”, facilitando bastante a seleção.
+- Aprimorado: agora a visualização “Detalhes do pedido” inclui o método de envio.
+- Melhoria: agora a guia “Avaliações” exibe todas as avaliações de produtos.
+- Modificado: atualizamos a aparência dos “Detalhes do pedido” e desativamos temporariamente o modo escuro.
+- Correção de bug: corrigida a aparência da interface do usuário nas células da “Lista de pedidos” ao tocar no modo escuro ativado.
+- Correção de bug: as avaliações não são mais convertidas para o modo escuro parcial. O modo escuro estará disponível em breve!
+- Correção de bug: agora “Detalhes do pedido” tem o espaço correto entre as células.
+- Correção de bug: as configurações não são mais convertidas para o modo escuro parcial.

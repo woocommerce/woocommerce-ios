@@ -209,12 +209,12 @@ private extension NoticeView {
     }
 
     enum Appearance {
-        static let actionBackgroundColor = UIColor.white.withAlphaComponent(0.5)
-        static let actionColor = StyleManager.buttonPrimaryColor
+        static let actionBackgroundColor = UIColor.basicBackground.withAlphaComponent(0.5)
+        static let actionColor: UIColor = .primaryButtonBackground
         static let shadowColor: UIColor = .black
         static let shadowOpacity: Float = 0.25
         static let shadowRadius: CGFloat = 8.0
         static let shadowOffset = CGSize(width: 0.0, height: 2.0)
-        static let titleColor: UIColor = StyleManager.defaultTextColor
+        static let titleColor: UIColor = .text
     }
 }

@@ -77,8 +77,8 @@ private extension OrderDetailsViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
@@ -345,7 +345,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             self?.viewModel.dataSource.copyText(at: indexPath)
             success(true)
         }
-        copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
+        copyAction.backgroundColor = .primary
 
         return UISwipeActionsConfiguration(actions: [copyAction])
     }
@@ -416,7 +416,7 @@ private extension OrderDetailsViewController {
         }
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        actionSheet.view.tintColor = .primary
 
         actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
 

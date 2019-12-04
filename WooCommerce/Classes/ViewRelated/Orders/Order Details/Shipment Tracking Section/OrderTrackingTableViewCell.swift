@@ -72,7 +72,7 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     private func configureActionButton() {
         let deleteIcon = UIImage.moreImage
             .imageFlippedForRightToLeftLayoutDirection()
-            .imageWithTintColor(StyleManager.wooCommerceBrandColor)
+            .imageWithTintColor(.primary)
 
         ellipsisButton.setImage(deleteIcon!, for: .normal)
         ellipsisButton.addTarget(self, action: #selector(iconTapped), for: .touchUpInside)

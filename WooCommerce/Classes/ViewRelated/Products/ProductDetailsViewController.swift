@@ -109,13 +109,13 @@ private extension ProductDetailsViewController {
     /// Setup: main view
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Setup: TableView
     ///
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = viewModel.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl

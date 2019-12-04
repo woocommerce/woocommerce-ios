@@ -82,8 +82,8 @@ private extension NewNoteViewController {
     /// Setup: TableView
     ///
     private func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
     }
@@ -128,7 +128,7 @@ private extension NewNoteViewController {
         }
 
         cell.iconImage = .asideImage
-        cell.iconTint = isCustomerNote ? StyleManager.statusPrimaryBoldColor : StyleManager.wooGreyMid
+        cell.iconTint = isCustomerNote ? .listIcon : .textSubtle
         cell.iconImage?.accessibilityLabel = isCustomerNote ?
             NSLocalizedString("Note to customer",
                               comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :
@@ -264,7 +264,6 @@ private extension NewNoteViewController {
                                             style: .plain,
                                             target: self,
                                             action: #selector(dismissButtonTapped))
-        leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 
@@ -275,7 +274,6 @@ private extension NewNoteViewController {
                                              style: .done,
                                              target: self,
                                              action: #selector(addButtonTapped))
-        rightBarButton.tintColor = .white
         navigationItem.setRightBarButton(rightBarButton, animated: false)
         navigationItem.rightBarButtonItem?.isEnabled = false
     }

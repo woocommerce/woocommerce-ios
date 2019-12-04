@@ -2,9 +2,9 @@ import WordPressEditor
 
 extension OptionsTableViewController {
     func applyDefaultStyles() {
-        cellDeselectedTintColor = StyleManager.wooCommerceBrandColor
-        cellBackgroundColor = StyleManager.wooWhite
-        cellSelectedBackgroundColor = StyleManager.wooGreyLight
-        view.tintColor = StyleManager.wooCommerceBrandColor
+        cellDeselectedTintColor = .primary
+        cellBackgroundColor = .listForeground
+        cellSelectedBackgroundColor = .listBackground
+        view.tintColor = .primary
     }
 }

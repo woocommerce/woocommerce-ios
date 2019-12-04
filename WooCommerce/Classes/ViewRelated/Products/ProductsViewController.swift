@@ -179,7 +179,6 @@ private extension ProductsViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(displaySearchProducts))
-            button.tintColor = StyleManager.wooWhite
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search products", comment: "Search Products")
             button.accessibilityHint = NSLocalizedString(
@@ -216,7 +215,6 @@ private extension ProductsViewController {
         tableView.sectionHeaderHeight = 0
 
         tableView.backgroundColor = .listBackground
-        tableView.separatorColor = .divider
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
 
@@ -240,7 +238,9 @@ private extension ProductsViewController {
                                          comment: "The info of the Work In Progress top banner on the Products tab")
         let viewModel = TopBannerViewModel(title: title,
                                            infoText: infoText,
-                                           icon: .workInProgressBanner)
+                                           icon: .workInProgressBanner) { [weak self] in
+                                            self?.tableView.updateHeaderHeight()
+        }
         let topBannerView = TopBannerView(viewModel: viewModel)
         topBannerView.translatesAutoresizingMaskIntoConstraints = false
         return topBannerView
@@ -374,7 +374,8 @@ private extension ProductsViewController {
     ///
     func displayPlaceholderProducts() {
         let options = GhostOptions(reuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        tableView.displayGhostContent(options: options,
+        style: .wooDefaultGhostStyle)
 
         resultsController.stopForwardingEvents()
     }

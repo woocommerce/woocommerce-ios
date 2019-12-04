@@ -40,6 +40,15 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
         viewModel.registerCollectionViewCells(collectionView)
     }
 
+    /// Rotation management
+    ///
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        if traitCollection != previousTraitCollection {
+            collectionView.collectionViewLayout.invalidateLayout()
+            collectionView.reloadData()
+        }
+    }
 }
 
 // MARK: - Collection View Delegate
@@ -100,7 +109,7 @@ private extension ProductImagesHeaderTableViewCell {
     func configureCollectionView(config: ProductImagesCellConfig) {
         collectionView.delegate = self
         collectionView.dataSource = dataSource
-        collectionView.backgroundColor = StyleManager.wooWhite
+        collectionView.backgroundColor = .listBackground
         collectionView.showsHorizontalScrollIndicator = false
         switch config {
         case .extendedAddImages:

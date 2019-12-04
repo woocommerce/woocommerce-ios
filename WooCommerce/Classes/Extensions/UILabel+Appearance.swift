@@ -10,6 +10,6 @@ extension UILabel {
     ///
     class func applyWooAppearance() {
         let appearanceInHeaderFooter = UILabel.appearance(whenContainedInInstancesOf: [UITableViewHeaderFooterView.self])
-        appearanceInHeaderFooter.textColor = StyleManager.sectionTitleColor
+        appearanceInHeaderFooter.textColor = .listIcon
     }
 }

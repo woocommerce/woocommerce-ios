@@ -8,6 +8,7 @@ final class MockProduct {
     let testProductID = 2020
 
     func product(name: String = "Hogsmeade",
+                 productShippingClass: ProductShippingClass? = nil,
                  stockQuantity: Int? = nil,
                  stockStatus: ProductStockStatus = .inStock,
                  variations: [Int] = [],
@@ -59,7 +60,7 @@ final class MockProduct {
                    shippingTaxable: false,
                    shippingClass: "",
                    shippingClassID: 0,
-                   productShippingClass: nil,
+                   productShippingClass: productShippingClass,
                    reviewsAllowed: true,
                    averageRating: "4.30",
                    ratingCount: 23,

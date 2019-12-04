@@ -2,28 +2,38 @@ import UIKit
 import WordPressUI
 import Yosemite
 
+/// A generic data source for the paginated list selector UI `PaginatedListSelectorViewController`.
+///
 protocol PaginatedListSelectorDataSource {
     associatedtype StorageModel: ResultsControllerMutableType
+    associatedtype Cell: UITableViewCell
 
+    /// The model that is currently selected in the list.
     var selected: StorageModel.ReadOnlyType? { get }
 
+    /// Creates a results controller that defines the data to fetch.
     func createResultsController() -> ResultsController<StorageModel>
 
+    /// Called when a different model is selected.
     mutating func handleSelectedChange(selected: StorageModel.ReadOnlyType)
 
-    func configureCell(cell: BasicTableViewCell, model: StorageModel.ReadOnlyType)
+    /// Configures the cell with the given model.
+    func configureCell(cell: Cell, model: StorageModel.ReadOnlyType)
 
+    /// Called when the UI is requesting to sync another page of data.
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?)
 }
 
-final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel>:
-UIViewController, UITableViewDataSource, UITableViewDelegate, SyncingCoordinatorDelegate
-where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.ReadOnlyType, Model: Equatable {
+/// Displays a paginated list (implemented by table view) for the user to select a generic model.
+///
+final class PaginatedListSelectorViewController<DataSource: PaginatedListSelectorDataSource, Model, StorageModel, Cell>:
+    UIViewController, UITableViewDataSource, UITableViewDelegate, SyncingCoordinatorDelegate
+where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.ReadOnlyType, Model: Equatable, DataSource.Cell == Cell {
     private let viewProperties: PaginatedListSelectorViewProperties
     private var dataSource: DataSource
     private let onDismiss: (_ selected: Model?) -> Void
 
-    private let rowType = BasicTableViewCell.self
+    private let rowType = Cell.self
 
     @IBOutlet private weak var tableView: UITableView!
 
@@ -123,7 +133,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: rowType.reuseIdentifier,
-                                                       for: indexPath) as? BasicTableViewCell else {
+                                                       for: indexPath) as? Cell else {
                                                         fatalError()
         }
         let model = resultsController.object(at: indexPath)
@@ -191,6 +201,8 @@ private extension PaginatedListSelectorViewController {
         tableView.delegate = self
         tableView.dataSource = self
 
+        tableView.refreshControl = refreshControl
+
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
 
@@ -255,9 +267,9 @@ private extension PaginatedListSelectorViewController {
     /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
     ///
     func displayPlaceholderProducts() {
-        let options = GhostOptions(reuseIdentifier: BasicTableViewCell.reuseIdentifier, rowsPerSection: placeholderRowsPerSection)
+        let options = GhostOptions(reuseIdentifier: Cell.reuseIdentifier, rowsPerSection: placeholderRowsPerSection)
         tableView.displayGhostContent(options: options,
-        style: .wooDefaultGhostStyle)
+                                      style: .wooDefaultGhostStyle)
 
         resultsController.stopForwardingEvents()
     }

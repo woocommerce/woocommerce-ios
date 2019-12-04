@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15508" systemVersion="18F132" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="15508" systemVersion="18G103" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Account" representedClassName="Account" syncable="YES">
         <attribute name="displayName" optional="YES" attributeType="String"/>
         <attribute name="email" optional="YES" attributeType="String"/>
@@ -242,6 +242,8 @@
         <attribute name="crossSellIDs" optional="YES" attributeType="Transformable" customClassName="[Int64]"/>
         <attribute name="dateCreated" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="dateModified" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateOnSaleEnd" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="dateOnSaleStart" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
         <attribute name="downloadable" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="downloadExpiry" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
         <attribute name="downloadLimit" attributeType="Integer 64" defaultValueString="-1" usesScalarValueType="YES"/>
@@ -516,7 +518,7 @@
         <element name="OrderStatsV4Interval" positionX="-675" positionY="54" width="128" height="120"/>
         <element name="OrderStatsV4Totals" positionX="-519.01171875" positionY="96.5546875" width="128" height="225"/>
         <element name="OrderStatus" positionX="-64.2578125" positionY="807.0234375" width="128" height="105"/>
-        <element name="Product" positionX="-669.6796875" positionY="1015.5859375" width="128" height="943"/>
+        <element name="Product" positionX="-669.6796875" positionY="1015.5859375" width="128" height="973"/>
         <element name="ProductAttribute" positionX="-733.52734375" positionY="-73.046875" width="128" height="148"/>
         <element name="ProductCategory" positionX="-773.3125" positionY="94.1328125" width="128" height="103"/>
         <element name="ProductDefaultAttribute" positionX="-819.42578125" positionY="224.1171875" width="145.12109375" height="103"/>

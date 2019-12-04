@@ -12,6 +12,8 @@ public struct Product: Codable {
 
     public let dateCreated: Date        // gmt
     public let dateModified: Date?      // gmt
+    public let dateOnSaleStart: Date?   // gmt
+    public let dateOnSaleEnd: Date?     // gmt
 
     public let productTypeKey: String
     public let statusKey: String        // draft, pending, private, published
@@ -102,6 +104,8 @@ public struct Product: Codable {
                 permalink: String,
                 dateCreated: Date,
                 dateModified: Date?,
+                dateOnSaleStart: Date?,
+                dateOnSaleEnd: Date?,
                 productTypeKey: String,
                 statusKey: String,
                 featured: Bool,
@@ -160,6 +164,8 @@ public struct Product: Codable {
         self.permalink = permalink
         self.dateCreated = dateCreated
         self.dateModified = dateModified
+        self.dateOnSaleStart = dateOnSaleStart
+        self.dateOnSaleEnd = dateOnSaleEnd
         self.productTypeKey = productTypeKey
         self.statusKey = statusKey
         self.featured = featured
@@ -229,6 +235,8 @@ public struct Product: Codable {
 
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
+        let dateOnSaleStart = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleStart)
+        let dateOnSaleEnd = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleEnd)
 
         let productTypeKey = try container.decode(String.self, forKey: .productTypeKey)
         let statusKey = try container.decode(String.self, forKey: .statusKey)
@@ -331,6 +339,8 @@ public struct Product: Codable {
                   permalink: permalink,
                   dateCreated: dateCreated,
                   dateModified: dateModified,
+                  dateOnSaleStart: dateOnSaleStart,
+                  dateOnSaleEnd: dateOnSaleEnd,
                   productTypeKey: productTypeKey,
                   statusKey: statusKey,
                   featured: featured,
@@ -405,6 +415,8 @@ private extension Product {
 
         case dateCreated  = "date_created_gmt"
         case dateModified = "date_modified_gmt"
+        case dateOnSaleStart  = "date_on_sale_from_gmt"
+        case dateOnSaleEnd = "date_on_sale_to_gmt"
 
         case productTypeKey         = "type"
         case statusKey              = "status"
@@ -484,6 +496,8 @@ extension Product: Comparable {
             lhs.permalink == rhs.permalink &&
             lhs.dateCreated == rhs.dateCreated &&
             lhs.dateModified == rhs.dateModified &&
+            lhs.dateOnSaleStart == rhs.dateOnSaleStart &&
+            lhs.dateOnSaleEnd == rhs.dateOnSaleEnd &&
             lhs.productTypeKey == rhs.productTypeKey &&
             lhs.statusKey == rhs.statusKey &&
             lhs.featured == rhs.featured &&

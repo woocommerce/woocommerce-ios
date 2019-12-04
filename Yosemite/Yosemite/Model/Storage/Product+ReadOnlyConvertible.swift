@@ -17,6 +17,8 @@ extension Storage.Product: ReadOnlyConvertible {
         permalink = product.permalink
         dateCreated = product.dateCreated
         dateModified = product.dateModified
+        dateOnSaleStart = product.dateOnSaleStart
+        dateOnSaleEnd = product.dateOnSaleEnd
         statusKey = product.statusKey
         featured = product.featured
         catalogVisibilityKey = product.catalogVisibilityKey
@@ -91,6 +93,8 @@ extension Storage.Product: ReadOnlyConvertible {
                        permalink: permalink,
                        dateCreated: dateCreated,
                        dateModified: dateModified,
+                       dateOnSaleStart: dateOnSaleStart,
+                       dateOnSaleEnd: dateOnSaleEnd,
                        productTypeKey: productTypeKey,
                        statusKey: statusKey,
                        featured: featured,

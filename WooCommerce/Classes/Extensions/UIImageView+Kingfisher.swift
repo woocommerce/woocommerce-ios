@@ -5,8 +5,8 @@ import Kingfisher
 ///
 extension UIImageView {
 
-    public typealias ImageDownloadProgressBlock = ((_ receivedSize: Int64, _ totalSize: Int64) -> Void)
-    public typealias ImageDownloadResultBlock = ((_ success: Bool) -> Void)
+    typealias ImageDownloadProgressBlock = ((_ receivedSize: Int64, _ totalSize: Int64) -> Void)
+    typealias ImageDownloadResultBlock = ((_ success: Bool) -> Void)
 
     // Base method to download and cache images
     //
@@ -17,7 +17,7 @@ extension UIImageView {
         completionHandler: ImageDownloadResultBlock? = nil) {
 
         let url = URL(string: url ?? "")
-        self.kf.setImage(with: url, placeholder: placeholder, progressBlock: progressBlock) { (result) in
+        kf.setImage(with: url, placeholder: placeholder, progressBlock: progressBlock) { (result) in
             switch result {
             case .success:
                 completionHandler?(true)

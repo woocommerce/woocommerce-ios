@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 24 (Release 3.3.0.0)
+- @jaclync 2019-12-2
+- New `ProductShippingClass` entity
+
 ## Model 23 (Release 3.2.0.0)
 - @jaclync 2019-11-15
 - New `Attribute` entity

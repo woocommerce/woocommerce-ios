@@ -61,10 +61,6 @@ extension ProductTableViewCell {
         )
         priceText = statsItem?.formattedTotalString
 
-        if let productURLString = statsItem?.imageUrl {
-            productImage.downloadImage(from: URL(string: productURLString), placeholderImage: UIImage.productPlaceholderImage)
-        } else {
-            productImage.image = .productPlaceholderImage
-        }
+        productImage.setImage(with: statsItem?.imageUrl, placeholder: UIImage.productPlaceholderImage)
     }
 }

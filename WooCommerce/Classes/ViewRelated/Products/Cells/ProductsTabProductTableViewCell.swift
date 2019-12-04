@@ -1,4 +1,5 @@
 import UIKit
+import Kingfisher
 
 final class ProductsTabProductTableViewCell: UITableViewCell {
     private lazy var productImageView: UIImageView = {
@@ -51,9 +52,11 @@ extension ProductsTabProductTableViewCell {
         productImageView.contentMode = .center
         productImageView.image = .productsTabProductCellPlaceholderImage
         if let productURLString = viewModel.imageUrl {
-            productImageView.downloadImage(from: URL(string: productURLString), placeholderImage: nil, success: { [weak self] _ in
-                self?.productImageView.contentMode = .scaleAspectFill
-            })
+            productImageView.setImage(with: productURLString) { [weak self] (success) in
+                if success {
+                    self?.productImageView.contentMode = .scaleAspectFill
+                }
+            }
         }
     }
 }

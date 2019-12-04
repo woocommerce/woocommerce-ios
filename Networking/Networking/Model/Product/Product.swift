@@ -56,6 +56,7 @@ public struct Product: Codable {
     public let shippingTaxable: Bool
     public let shippingClass: String?
     public let shippingClassID: Int
+    public let productShippingClass: ProductShippingClass?
 
     public let reviewsAllowed: Bool
     public let averageRating: String
@@ -135,6 +136,7 @@ public struct Product: Codable {
                 shippingTaxable: Bool,
                 shippingClass: String?,
                 shippingClassID: Int,
+                productShippingClass: ProductShippingClass?,
                 reviewsAllowed: Bool,
                 averageRating: String,
                 ratingCount: Int,
@@ -192,6 +194,7 @@ public struct Product: Codable {
         self.shippingTaxable = shippingTaxable
         self.shippingClass = shippingClass
         self.shippingClassID = shippingClassID
+        self.productShippingClass = productShippingClass
         self.reviewsAllowed = reviewsAllowed
         self.averageRating = averageRating
         self.ratingCount = ratingCount
@@ -362,6 +365,7 @@ public struct Product: Codable {
                   shippingTaxable: shippingTaxable,
                   shippingClass: shippingClass,
                   shippingClassID: shippingClassID,
+                  productShippingClass: nil,
                   reviewsAllowed: reviewsAllowed,
                   averageRating: averageRating,
                   ratingCount: ratingCount,
@@ -513,6 +517,7 @@ extension Product: Comparable {
             lhs.shippingTaxable == rhs.shippingTaxable &&
             lhs.shippingClass == rhs.shippingClass &&
             lhs.shippingClassID == rhs.shippingClassID &&
+            lhs.productShippingClass == rhs.productShippingClass &&
             lhs.reviewsAllowed == rhs.reviewsAllowed &&
             lhs.averageRating == rhs.averageRating &&
             lhs.ratingCount == rhs.ratingCount &&

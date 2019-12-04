@@ -77,6 +77,7 @@ extension Storage.Product: ReadOnlyConvertible {
         let productImages = images?.map { $0.toReadOnly() } ?? [Yosemite.ProductImage]()
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
+        let productShippingClassModel = productShippingClass?.toReadOnly()
 
         var quantity: Int?
         if let stockQuantity = stockQuantity {
@@ -124,6 +125,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        shippingTaxable: shippingTaxable,
                        shippingClass: shippingClass,
                        shippingClassID: Int(shippingClassID),
+                       productShippingClass: productShippingClassModel,
                        reviewsAllowed: reviewsAllowed,
                        averageRating: averageRating,
                        ratingCount: Int(ratingCount),

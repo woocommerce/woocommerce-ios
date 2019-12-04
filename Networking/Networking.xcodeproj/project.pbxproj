@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		020220E223966CD900290165 /* product-shipping-classes-load-one.json in Resources */ = {isa = PBXBuildFile; fileRef = 020220E123966CD900290165 /* product-shipping-classes-load-one.json */; };
+		0219B03923964BB3007DCD5E /* ProductShippingClassMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219B03823964BB3007DCD5E /* ProductShippingClassMapper.swift */; };
 		021C7BF723863D1800A3BCBD /* Encodable+Serialization.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021C7BF623863D1800A3BCBD /* Encodable+Serialization.swift */; };
 		022902D422E2436400059692 /* stats_module_disabled_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 022902D122E2436300059692 /* stats_module_disabled_error.json */; };
 		022902D622E2436400059692 /* no_stats_permission_error.json in Resources */ = {isa = PBXBuildFile; fileRef = 022902D322E2436400059692 /* no_stats_permission_error.json */; };
@@ -295,6 +297,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		020220E123966CD900290165 /* product-shipping-classes-load-one.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "product-shipping-classes-load-one.json"; sourceTree = "<group>"; };
+		0219B03823964BB3007DCD5E /* ProductShippingClassMapper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductShippingClassMapper.swift; sourceTree = "<group>"; };
 		021C7BF623863D1800A3BCBD /* Encodable+Serialization.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Encodable+Serialization.swift"; sourceTree = "<group>"; };
 		022902D122E2436300059692 /* stats_module_disabled_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = stats_module_disabled_error.json; sourceTree = "<group>"; };
 		022902D322E2436400059692 /* no_stats_permission_error.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = no_stats_permission_error.json; sourceTree = "<group>"; };
@@ -914,6 +918,7 @@
 				CE19CB10222486A500E8AF7A /* order-statuses.json */,
 				74749B98224135C4005C4CF2 /* product.json */,
 				025CA2C7238F4FF400B05C81 /* product-shipping-classes-load-all.json */,
+				020220E123966CD900290165 /* product-shipping-classes-load-one.json */,
 				457FC68B2382B2FD00B41B02 /* product-update.json */,
 				026CF623237D839A009563D4 /* product-variations-load-all.json */,
 				CE0A0F1E223998A00075ED8D /* products-load-all.json */,
@@ -978,6 +983,8 @@
 				CE0A0F18223987DF0075ED8D /* ProductListMapper.swift */,
 				D88D5A4A230BCF0A007B6E01 /* ProductReviewListMapper.swift */,
 				D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */,
+				0219B03823964BB3007DCD5E /* ProductShippingClassMapper.swift */,
+				025CA2C1238EBBAA00B05C81 /* ProductShippingClassListMapper.swift */,
 				CE430673234BA6AD0073CBFF /* RefundMapper.swift */,
 				CE430675234BA7920073CBFF /* RefundListMapper.swift */,
 				7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */,
@@ -991,7 +998,6 @@
 				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
 				74ABA1D2213F25AE00FFAD30 /* TopEarnerStatsMapper.swift */,
 				026CF61D237D6985009563D4 /* ProductVariationListMapper.swift */,
-				025CA2C1238EBBAA00B05C81 /* ProductShippingClassListMapper.swift */,
 			);
 			path = Mapper;
 			sourceTree = "<group>";
@@ -1291,6 +1297,7 @@
 				743E84F222172D0A00FAC9D7 /* shipment_tracking_plugin_not_active.json in Resources */,
 				74ABA1C9213F19FE00FFAD30 /* top-performers-month.json in Resources */,
 				743E84F622172D3E00FAC9D7 /* shipment_tracking_single.json in Resources */,
+				020220E223966CD900290165 /* product-shipping-classes-load-one.json in Resources */,
 				457FC68C2382B2FD00B41B02 /* product-update.json in Resources */,
 				CE19CB11222486A600E8AF7A /* order-statuses.json in Resources */,
 				74159628224D63CE003C21CF /* settings-product-alt.json in Resources */,
@@ -1435,6 +1442,7 @@
 				B554FA912180BCFC00C54DFF /* NoteHash.swift in Sources */,
 				CE0A0F19223987DF0075ED8D /* ProductListMapper.swift in Sources */,
 				021C7BF723863D1800A3BCBD /* Encodable+Serialization.swift in Sources */,
+				0219B03923964BB3007DCD5E /* ProductShippingClassMapper.swift in Sources */,
 				7452387321124B7700A973CD /* AnyCodable.swift in Sources */,
 				026CF61E237D6985009563D4 /* ProductVariationListMapper.swift in Sources */,
 				CE43066E2347CBA70073CBFF /* OrderItemTaxRefund.swift in Sources */,

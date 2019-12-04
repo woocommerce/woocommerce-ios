@@ -27,6 +27,8 @@ public final class ProductShippingClassStore: Store {
         switch action {
         case .synchronizeProductShippingClassModels(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProductShippingClassModels(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveProductShippingClass(let product, let onCompletion):
+            retrieveProductShippingClass(product: product, onCompletion: onCompletion)
         }
     }
 }
@@ -53,6 +55,29 @@ private extension ProductShippingClassStore {
             }
         }
     }
+
+    /// Retrieves the `ProductShippingClass` associated with a given `Product`.
+    ///
+    func retrieveProductShippingClass(product: Product, onCompletion: @escaping (ProductShippingClass?, Error?) -> Void) {
+        let remote = ProductShippingClassRemote(network: network)
+
+        guard product.shippingClassID != 0 else {
+            onCompletion(nil, nil)
+            return
+        }
+
+        remote.loadOne(for: Int64(product.siteID), remoteID: Int64(product.shippingClassID)) { [weak self] (model, error) in
+            guard let model = model else {
+                onCompletion(nil, error)
+                return
+            }
+
+            self?.upsertStoredProductShippingClassModelInBackground(readOnlyProductShippingClassModel: model,
+                                                                    for: product) {
+                                                                        onCompletion(model, nil)
+            }
+        }
+    }
 }
 
 
@@ -70,6 +95,24 @@ private extension ProductShippingClassStore {
         derivedStorage.perform { [weak self] in
             self?.upsertStoredProductShippingClassModels(readOnlyProductShippingClassModels: readOnlyProductShippingClassModels,
                                                          in: derivedStorage, siteID: siteID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly ProductShippingClass Entity associated with a Product
+    /// *in a background thread*. onCompletion will be called on the main thread!
+    ///
+    func upsertStoredProductShippingClassModelInBackground(readOnlyProductShippingClassModel: Networking.ProductShippingClass,
+                                                           for product: Product,
+                                                           onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            self?.upsertStoredProductShippingClassModel(readOnlyProductShippingClass: readOnlyProductShippingClassModel,
+                                                        for: product,
+                                                        in: derivedStorage)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
@@ -97,5 +140,26 @@ private extension ProductShippingClassStore {
                 ?? storage.insertNewObject(ofType: Storage.ProductShippingClass.self)
             storageProductShippingClass.update(with: readOnlyProductShippingClass)
         }
+    }
+
+    /// Updates (OR Inserts) the specified ReadOnly ProductShippingClass associated with a Product into the Storage Layer.
+    ///
+    /// - Parameters:
+    ///     - readOnlyProductShippingClass: Remote ProductShippingClass to be persisted.
+    ///     - product: the Product that is set to the ProductShippingClass.
+    ///     - storage: Where we should save all the things!
+    ///
+    func upsertStoredProductShippingClassModel(readOnlyProductShippingClass: Networking.ProductShippingClass,
+                                               for product: Product,
+                                               in storage: StorageType) {
+        guard let product = storage.loadProduct(siteID: product.siteID, productID: product.productID) else {
+            return
+        }
+
+        let storageProductShippingClass = storage.loadProductShippingClass(siteID: Int64(product.siteID),
+                                                                           remoteID: Int64(product.shippingClassID))
+            ?? storage.insertNewObject(ofType: Storage.ProductShippingClass.self)
+        storageProductShippingClass.update(with: readOnlyProductShippingClass)
+        storageProductShippingClass.addToProducts(product)
     }
 }

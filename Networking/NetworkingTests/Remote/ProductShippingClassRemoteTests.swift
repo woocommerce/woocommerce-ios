@@ -21,7 +21,7 @@ final class ProductShippingClassRemoteTests: XCTestCase {
 
     // MARK: - Load All Product Shipping Classes tests
 
-    /// Verifies that loadAllProductShippingClasses properly parses the `product-shipping-classes-load-all` sample response.
+    /// Verifies that loadAll properly parses the `product-shipping-classes-load-all` sample response.
     ///
     func testLoadAllProductShippingClassesProperlyReturnsParsedData() {
         let remote = ProductShippingClassRemote(network: network)
@@ -51,7 +51,7 @@ final class ProductShippingClassRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that loadAllProductShippingClasses properly relays Networking Layer errors.
+    /// Verifies that loadAll properly relays Networking Layer errors.
     ///
     func testLoadAllProductShippingClassesProperlyRelaysNetwokingErrors() {
         let remote = ProductShippingClassRemote(network: network)
@@ -66,4 +66,53 @@ final class ProductShippingClassRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    // MARK: - Load One Product Shipping Class tests
+
+    /// Verifies that loadOne properly parses the `product-shipping-classes-load-one` sample response.
+    ///
+    func testLoadOneProductShippingClassProperlyReturnsParsedData() {
+        let remote = ProductShippingClassRemote(network: network)
+        let expectation = self.expectation(description: "Load One Product Shipping Class")
+
+        let remoteID = Int64(94)
+        network.simulateResponse(requestUrlSuffix: "products/shipping_classes/\(remoteID)", filename: "product-shipping-classes-load-one")
+
+        remote.loadOne(for: sampleSiteID, remoteID: remoteID) { productShippingClass, error in
+            XCTAssertNil(error)
+            XCTAssertNotNil(productShippingClass)
+            XCTAssertEqual(productShippingClass, self.sampleProductShippingClass(remoteID: remoteID))
+
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that loadOne properly relays Networking Layer errors.
+    ///
+    func testLoadOneProductShippingClassProperlyRelaysNetwokingErrors() {
+        let remote = ProductShippingClassRemote(network: network)
+        let expectation = self.expectation(description: "Load One Product Shipping Class returns error")
+
+        let remoteID = Int64(96987515)
+        remote.loadOne(for: sampleSiteID, remoteID: remoteID) { (productShippingClass, error) in
+            XCTAssertNil(productShippingClass)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+}
+
+private extension ProductShippingClassRemoteTests {
+    func sampleProductShippingClass(remoteID: Int64) -> ProductShippingClass {
+        return ProductShippingClass(count: 3,
+                                    descriptionHTML: "Limited offer!",
+                                    name: "Free Shipping",
+                                    shippingClassID: remoteID,
+                                    siteID: sampleSiteID,
+                                    slug: "free-shipping")
+    }
 }

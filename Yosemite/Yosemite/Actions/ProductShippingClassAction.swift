@@ -8,4 +8,8 @@ public enum ProductShippingClassAction: Action {
     /// Synchronizes the ProductShippingClass's matching the specified criteria.
     ///
     case synchronizeProductShippingClassModels(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+
+    /// Retrieves the specified ProductShippingClass.
+    ///
+    case retrieveProductShippingClass(product: Product, onCompletion: (ProductShippingClass?, Error?) -> Void)
 }

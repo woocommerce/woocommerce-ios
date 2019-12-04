@@ -72,6 +72,7 @@ private extension Product_UpdaterTestCases {
                        shippingTaxable: false,
                        shippingClass: "",
                        shippingClassID: 0,
+                       productShippingClass: nil,
                        reviewsAllowed: true,
                        averageRating: "4.30",
                        ratingCount: 23,

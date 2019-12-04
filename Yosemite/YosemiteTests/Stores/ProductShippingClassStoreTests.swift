@@ -27,6 +27,10 @@ final class ProductShippingClassStoreTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 123
 
+    /// Testing ProductShippingClass ID
+    ///
+    private let sampleShippingClassID: Int64 = 94
+
     /// Testing Page Number
     ///
     private let defaultPageNumber = 1
@@ -46,7 +50,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.synchronizeProductShippingClasss` effectively persists any retrieved ProductShippingClasss.
     ///
-    func testRetrieveProductShippingClasssEffectivelyPersisted() {
+    func testRetrieveProductShippingClassesEffectivelyPersisted() {
         let expectation = self.expectation(description: "Retrieve ProductShippingClass list")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -79,7 +83,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.synchronizeProductShippingClassModels` multiple times does not create duplicated objects.
     ///
-    func testRetrieveProductShippingClasssCreateNoDuplicates() {
+    func testRetrieveProductShippingClassesCreateNoDuplicates() {
         let expectation = self.expectation(description: "Retrieve product shipping class list")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -92,8 +96,8 @@ final class ProductShippingClassStoreTests: XCTestCase {
                                                    pageSize: defaultPageSize) { error in
                                                     XCTAssertNil(error)
 
-                                                    let storedProductShippingClasss = self.viewStorage.loadProductShippingClasses(siteID: self.sampleSiteID)
-                                                    XCTAssertEqual(storedProductShippingClasss?.count, 3)
+                                                    let storedProductShippingClasses = self.viewStorage.loadProductShippingClasses(siteID: self.sampleSiteID)
+                                                    XCTAssertEqual(storedProductShippingClasses?.count, 3)
 
                                                     let sampleShippingClassID: Int64 = 94
                                                     let storedProductShippingClass = self.viewStorage
@@ -108,9 +112,9 @@ final class ProductShippingClassStoreTests: XCTestCase {
                                                                                                pageSize: self.defaultPageSize) { error in
                                                                                                 XCTAssertNil(error)
 
-                                                                                                let storedProductShippingClasss = self.viewStorage
+                                                                                                let storedProductShippingClasses = self.viewStorage
                                                                                                     .loadProductShippingClasses(siteID: self.sampleSiteID)
-                                                                                                XCTAssertEqual(storedProductShippingClasss?.count, 3)
+                                                                                                XCTAssertEqual(storedProductShippingClasses?.count, 3)
 
                                                                                                 // Verifies the expected ProductShippingClass is still correct.
                                                                                                 let sampleShippingClassID: Int64 = 94
@@ -162,6 +166,123 @@ final class ProductShippingClassStoreTests: XCTestCase {
                                                                                         XCTAssertNotNil(error)
 
                                                                                         expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    // MARK: - ProductShippingClassAction.retrieveProductShippingClass
+
+    /// Verifies that `ProductShippingClassAction.retrieveProductShippingClass` effectively persists any retrieved ProductShippingClasss.
+    ///
+    func testRetrieveProductShippingClassEffectivelyPersisted() {
+        let expectation = self.expectation(description: "Retrieve ProductShippingClass")
+        let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products/shipping_classes/\(sampleShippingClassID)", filename: "product-shipping-classes-load-one")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+
+        let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        let action = ProductShippingClassAction
+            .retrieveProductShippingClass(product: product) { (shippingClass, error) in
+                XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
+                XCTAssertNil(error)
+
+                let storedProductShippingClass = self.viewStorage
+                    .loadProductShippingClass(siteID: self.sampleSiteID,
+                                              remoteID: self.sampleShippingClassID)
+                let readOnlyStoredProductShippingClass = storedProductShippingClass?.toReadOnly()
+                XCTAssertNotNil(storedProductShippingClass)
+                XCTAssertNotNil(readOnlyStoredProductShippingClass)
+                XCTAssertEqual(readOnlyStoredProductShippingClass,
+                               self.sampleProductShippingClass(remoteID: self.sampleShippingClassID))
+
+                let storedProduct = self.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID)
+                XCTAssertEqual(storedProduct?.productShippingClass, storedProductShippingClass)
+
+                expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductShippingClassAction.retrieveProductShippingClass` multiple times does not create duplicated objects.
+    ///
+    func testRetrieveProductShippingClassCreateNoDuplicates() {
+        let expectation = self.expectation(description: "Retrieve product shipping class")
+        let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products/shipping_classes/\(sampleShippingClassID)",
+            filename: "product-shipping-classes-load-one")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
+
+        let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        let action = ProductShippingClassAction
+            .retrieveProductShippingClass(product: product) { (shippingClass, error) in
+                XCTAssertNil(error)
+
+                let storedProductShippingClasses = self.viewStorage.loadProductShippingClasses(siteID: self.sampleSiteID)
+                XCTAssertEqual(storedProductShippingClasses?.count, 1)
+
+                let action = ProductShippingClassAction
+                    .retrieveProductShippingClass(product: product) { (model, error) in
+                        XCTAssertNil(error)
+
+                        let storedProductShippingClasses = self.viewStorage
+                            .loadProductShippingClasses(siteID: self.sampleSiteID)
+                        XCTAssertEqual(storedProductShippingClasses?.count, 1)
+
+                        expectation.fulfill()
+                }
+                store.onAction(action)
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductShippingClassAction.retrieveProductShippingClass` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveProductShippingClassReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve ProductShippingClass error response")
+        let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products/shipping_classes/\(sampleShippingClassID)", filename: "generic_error")
+
+        let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        let action = ProductShippingClassAction.retrieveProductShippingClass(product: product) { (model, error) in
+            XCTAssertNil(model)
+            XCTAssertNotNil(error)
+
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `ProductShippingClassAction.retrieveProductShippingClass` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveProductShippingClassReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve ProductShippingClass empty response")
+        let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        let action = ProductShippingClassAction.retrieveProductShippingClass(product: product) { (model, error) in
+            XCTAssertNil(model)
+            XCTAssertNotNil(error)
+
+            expectation.fulfill()
         }
 
         store.onAction(action)

@@ -61,6 +61,8 @@ public class CurrencyFormatter {
     func formatCurrency(using stringValue: String, at position: CurrencySettings.CurrencyPosition, with symbol: String, isNegative: Bool) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
         let negative = isNegative ? "-" : ""
+
+        // We're relying on the phone's Locale to assist with language direction
         let current = Locale.current as NSLocale
         let languageCode = current.object(forKey: NSLocale.Key.languageCode) as? String
 
@@ -68,35 +70,36 @@ public class CurrencyFormatter {
         // We want to position the minus sign manually.
         let amount = stringValue.replacingOccurrences(of: "-", with: "")
 
+        // Detect the language direction
         var languageDirection: Locale.LanguageDirection = .unknown
         if let language = languageCode {
             languageDirection = Locale.characterDirection(forLanguage: language)
         }
 
+        // For left-to-right languages, such as English
         guard languageDirection == .rightToLeft else {
-            // For all languages that are not RTL.
             switch position {
             case .left:
                 return negative + symbol + amount
             case .right:
                 return negative + amount + symbol
             case .leftSpace:
-                return negative + space + symbol + space + amount
+                return negative + symbol + space + amount
             case .rightSpace:
                 return negative + amount + space + symbol
             }
         }
 
-        // For the RTL languages, such as AED.
+        // For right-to-left languages, such as Arabic
         switch position {
         case .left:
-            return  symbol + negative + amount
+            return amount + negative + symbol
         case .right:
-            return negative + amount + symbol
+            return symbol + negative + amount
         case .leftSpace:
-            return symbol + space + negative + amount
+            return amount + negative + space + symbol
         case .rightSpace:
-            return negative + amount + space + symbol
+            return symbol + space + negative + amount
         }
     }
 

@@ -190,17 +190,17 @@ extension UIColor {
         return .white
     }
 
+    /// Primary Button Border.
+    ///
+    static var primaryButtonBorder = UIColor.clear
+
     /// Primary Button Highlighted Background.
     ///
     static var primaryButtonDownBackground = accentDark
 
     /// Primary Button Highlighted Border.
     ///
-    static var primaryButtonDownBorder = primaryButtonDownBackground
-
-    /// Primary Button Border.
-    ///
-    static var primaryButtonBorder = primaryButtonBackground
+    static var primaryButtonDownBorder = accentDark
 
     /// Secondary Button Background.
     ///

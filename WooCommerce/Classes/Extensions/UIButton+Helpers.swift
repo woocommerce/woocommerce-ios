@@ -44,10 +44,10 @@ extension UIButton {
         setTitleColor(.secondaryButtonTitle, for: .highlighted)
         setTitleColor(.buttonDisabledTitle, for: .disabled)
         setBackgroundImage(UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
-                                                         border: .secondaryButtonDownBorder),
+                                                         border: .clear),
                            for: .highlighted)
         setBackgroundImage(UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
-                                                         border: .buttonDisabledBorder),
+                                                         border: .clear),
                            for: .disabled)
     }
 

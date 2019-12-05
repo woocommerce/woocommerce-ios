@@ -32,6 +32,9 @@ PODS:
   - Gridicons (0.19)
   - GTMSessionFetcher/Core (1.2.2)
   - KeychainAccess (3.2.0)
+  - Kingfisher (5.11.0):
+    - Kingfisher/Core (= 5.11.0)
+  - Kingfisher/Core (5.11.0)
   - lottie-ios (2.5.2)
   - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
@@ -88,6 +91,7 @@ DEPENDENCIES:
   - CocoaLumberjack/Swift (~> 3.5)
   - Gridicons (~> 0.19)
   - KeychainAccess (~> 3.2)
+  - Kingfisher (~> 5.11.0)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (~> 1.8.0)
   - WordPressShared (~> 1.8.2)
@@ -109,6 +113,7 @@ SPEC REPOS:
     - Gridicons
     - GTMSessionFetcher
     - KeychainAccess
+    - Kingfisher
     - lottie-ios
     - NSObject-SafeExpectations
     - "NSURL+IDN"
@@ -139,6 +144,7 @@ SPEC CHECKSUMS:
   Gridicons: dc92efbe5fd60111d2e8ea051d84a60cca552abc
   GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
+  Kingfisher: 4569606189149e19c7d9439f47e885d0679b7a90
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
@@ -157,6 +163,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: 12f516028e26e2e47a861cc0f5da968f4db3989a
 
-PODFILE CHECKSUM: f4f9a45c561c3f8dd39576b510de4056a14def98
+PODFILE CHECKSUM: 73555a471eb65ad619107196bc0b3dab9a65b8c3
 
 COCOAPODS: 1.8.4

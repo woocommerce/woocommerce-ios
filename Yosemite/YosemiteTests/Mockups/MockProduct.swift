@@ -1,24 +1,20 @@
-import XCTest
+import Foundation
+@testable import Networking
 
-@testable import WooCommerce
-import Yosemite
 
-class Product_ProductFormTests: XCTestCase {
+final class MockProduct {
+    func product(siteID: Int = 2019,
+                 productID: Int = 2020,
+                 name: String = "Hogsmeade",
+                 stockQuantity: Int? = nil,
+                 stockStatus: ProductStockStatus = .inStock,
+                 variations: [Int] = [],
+                 images: [ProductImage] = [],
+                 shippingClassID: Int = 0) -> Product {
 
-    func testTrimmedFullDescriptionWithLeadingNewLinesAndHTMLTags() {
-        let description = "\n\n\n  <p>This is the party room!</p>\n"
-        let product = sampleProduct(description: description)
-        let expectedDescription = "This is the party room!"
-        XCTAssertEqual(product.trimmedFullDescription, expectedDescription)
-    }
-}
-
-private extension Product_ProductFormTests {
-
-    func sampleProduct(description: String?) -> Product {
-        return Product(siteID: 109,
-                       productID: 177,
-                       name: "Book the Green Room",
+        return Product(siteID: siteID,
+                       productID: productID,
+                       name: name,
                        slug: "book-the-green-room",
                        permalink: "https://example.com/product/book-the-green-room/",
                        dateCreated: Date(),
@@ -29,7 +25,7 @@ private extension Product_ProductFormTests {
                        statusKey: "publish",
                        featured: false,
                        catalogVisibilityKey: "visible",
-                       fullDescription: description,
+                       fullDescription: "<p>This is the party room!</p>\n",
                        briefDescription: """
                        [contact-form]\n<p>The green room&#8217;s max capacity is 30 people. Reserving the date / time of your event is free. \
                        We can also accommodate large groups, with seating for 85 board game players at a time. If you have a large group, let us \
@@ -52,18 +48,18 @@ private extension Product_ProductFormTests {
                        taxStatusKey: "taxable",
                        taxClass: "",
                        manageStock: false,
-                       stockQuantity: nil,
-                       stockStatusKey: "instock",
+                       stockQuantity: stockQuantity,
+                       stockStatusKey: stockStatus.rawValue,
                        backordersKey: "no",
                        backordersAllowed: false,
                        backordered: false,
                        soldIndividually: true,
                        weight: "213",
-                       dimensions: ProductDimensions(length: "", width: "", height: ""),
+                       dimensions: ProductDimensions(length: "0", width: "0", height: "0"),
                        shippingRequired: false,
                        shippingTaxable: false,
                        shippingClass: "",
-                       shippingClassID: 0,
+                       shippingClassID: shippingClassID,
                        productShippingClass: nil,
                        reviewsAllowed: true,
                        averageRating: "4.30",
@@ -75,12 +71,13 @@ private extension Product_ProductFormTests {
                        purchaseNote: "Thank you!",
                        categories: [],
                        tags: [],
-                       images: [],
+                       images: images,
                        attributes: [],
                        defaultAttributes: [],
-                       variations: [192, 194, 193],
+                       variations: variations,
                        groupedProducts: [],
                        menuOrder: 0)
+
     }
 
     private func date(with dateString: String) -> Date {

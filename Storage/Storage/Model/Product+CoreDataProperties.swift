@@ -17,6 +17,8 @@ extension Product {
     @NSManaged public var permalink: String
     @NSManaged public var dateCreated: Date
     @NSManaged public var dateModified: Date?
+    @NSManaged public var dateOnSaleStart: Date?
+    @NSManaged public var dateOnSaleEnd: Date?
     @NSManaged public var statusKey: String
     @NSManaged public var featured: Bool
     @NSManaged public var catalogVisibilityKey: String
@@ -68,6 +70,7 @@ extension Product {
     @NSManaged public var tags: Set<ProductTag>?
     @NSManaged public var searchResults: Set<ProductSearchResults>?
     @NSManaged public var productVariations: Set<ProductVariation>?
+    @NSManaged public var productShippingClass: ProductShippingClass?
 
 }
 

@@ -2,25 +2,25 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-class ProductsViewControllerStateCoordinatorTests: XCTestCase {
+final class PaginatedListViewControllerStateCoordinatorTests: XCTestCase {
 
     func testTransitioningToSyncingState() {
         let hasExistingData = true
 
         let expectationForLeavingState = expectation(description: "Wait for leaving state")
         expectationForLeavingState.expectedFulfillmentCount = 1
-        let onLeavingState = { (state: ProductsViewControllerState) in
+        let onLeavingState = { (state: PaginatedListViewControllerState) in
             XCTAssertEqual(state, .results)
             expectationForLeavingState.fulfill()
         }
 
         let expectationForEnteringState = expectation(description: "Wait for entering state")
         expectationForEnteringState.expectedFulfillmentCount = 1
-        let onEnteringState = { (state: ProductsViewControllerState) in
+        let onEnteringState = { (state: PaginatedListViewControllerState) in
             XCTAssertEqual(state, .syncing(withExistingData: hasExistingData))
             expectationForEnteringState.fulfill()
         }
-        let stateCoordinator = ProductsViewControllerStateCoordinator(onLeavingState: onLeavingState, onEnteringState: onEnteringState)
+        let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: onLeavingState, onEnteringState: onEnteringState)
 
         stateCoordinator.transitionToSyncingState(withExistingData: hasExistingData)
         waitForExpectations(timeout: 0.1, handler: nil)
@@ -29,18 +29,18 @@ class ProductsViewControllerStateCoordinatorTests: XCTestCase {
     func testTransitioningToResultsUpdatedStateTwice() {
         let expectationForLeavingState = expectation(description: "Wait for leaving state")
         expectationForLeavingState.expectedFulfillmentCount = 1
-        let onLeavingState = { (state: ProductsViewControllerState) in
+        let onLeavingState = { (state: PaginatedListViewControllerState) in
             XCTAssertEqual(state, .results)
             expectationForLeavingState.fulfill()
         }
 
         let expectationForEnteringState = expectation(description: "Wait for entering state")
         expectationForEnteringState.expectedFulfillmentCount = 1
-        let onEnteringState = { (state: ProductsViewControllerState) in
+        let onEnteringState = { (state: PaginatedListViewControllerState) in
             XCTAssertEqual(state, .noResultsPlaceholder)
             expectationForEnteringState.fulfill()
         }
-        let stateCoordinator = ProductsViewControllerStateCoordinator(onLeavingState: onLeavingState, onEnteringState: onEnteringState)
+        let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: onLeavingState, onEnteringState: onEnteringState)
 
         // .results --> .results (no state change)
         stateCoordinator.transitionToResultsUpdatedState(hasData: true)

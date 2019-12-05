@@ -23,6 +23,8 @@ private extension Product_ProductFormTests {
                        permalink: "https://example.com/product/book-the-green-room/",
                        dateCreated: Date(),
                        dateModified: Date(),
+                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
                        productTypeKey: "booking",
                        statusKey: "publish",
                        featured: false,
@@ -79,5 +81,12 @@ private extension Product_ProductFormTests {
                        variations: [192, 194, 193],
                        groupedProducts: [],
                        menuOrder: 0)
+    }
+
+    private func date(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+            return Date()
+        }
+        return date
     }
 }

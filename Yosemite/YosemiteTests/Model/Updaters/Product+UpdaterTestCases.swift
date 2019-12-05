@@ -33,6 +33,8 @@ private extension Product_UpdaterTestCases {
                        permalink: "https://example.com/product/book-the-green-room/",
                        dateCreated: date(with: "2019-02-19T17:33:31"),
                        dateModified: date(with: "2019-02-19T17:48:01"),
+                       dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
+                       dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
                        productTypeKey: "booking",
                        statusKey: "publish",
                        featured: false,

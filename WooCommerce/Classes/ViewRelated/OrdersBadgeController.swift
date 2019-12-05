@@ -5,20 +5,20 @@ final class OrdersBadgeController {
 
     /// Shows the Badge in the specified WooTab
     ///
-    func showBadgeOn(_ tab: WooTab, in tabBar: UITabBar, withValue badgeText: String) {
-        hideBadgeOn(tab, in: tabBar)
+    func showBadgeOn(_ tab: WooTab, in tabBar: UITabBar, tabIndex: Int, withValue badgeText: String) {
+        hideBadgeOn(tab, in: tabBar, tabIndex: tabIndex)
 
-        let badgeView = badge(for: tab, with: badgeText)
-        tabBar.subviews[tab.visibleIndex()].subviews.first?.insertSubview(badgeView, at: 1)
-        updateBadgePosition(tab, in: tabBar)
+        let badgeView = badge(for: tab, with: badgeText, tabIndex: tabIndex)
+        tabBar.orderedTabBarActionableViews[tabIndex].subviews.first?.insertSubview(badgeView, at: 1)
+        updateBadgePosition(tab, in: tabBar, tabIndex: tabIndex)
         badgeView.fadeIn()
     }
 
     /// Hides the Dot in the specified WooTab
     ///
-    func hideBadgeOn(_ tab: WooTab, in tabBar: UITabBar) {
+    func hideBadgeOn(_ tab: WooTab, in tabBar: UITabBar, tabIndex: Int) {
         let tag = badgeTag(for: tab)
-        if let subviews = tabBar.subviews[tab.visibleIndex()].subviews.first?.subviews {
+        if let subviews = tabBar.orderedTabBarActionableViews[tabIndex].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
                 subview.fadeOut() { _ in
                     subview.removeFromSuperview()
@@ -29,12 +29,12 @@ final class OrdersBadgeController {
 
     /// Updates the badge position in the specified WooTab
     ///
-    func updateBadgePosition(_ tab: WooTab, in tabBar: UITabBar) {
-        guard let badgeLabel = badgeView(tab: tab, in: tabBar) as? BadgeLabel else {
+    func updateBadgePosition(_ tab: WooTab, in tabBar: UITabBar, tabIndex: Int) {
+        guard let badgeLabel = badgeView(tab: tab, in: tabBar, tabIndex: tabIndex) as? BadgeLabel else {
             return
         }
 
-        let tabAxis = tabLayoutAxis(tab: tab, in: tabBar)
+        let tabAxis = tabLayoutAxis(tab: tab, in: tabBar, tabIndex: tabIndex)
         let showsNinePlusText = badgeLabel.text == Constants.ninePlus
 
         let xOffset: CGFloat
@@ -54,9 +54,9 @@ final class OrdersBadgeController {
 }
 
 private extension OrdersBadgeController {
-    func badgeView(tab: WooTab, in tabBar: UITabBar) -> UIView? {
+    func badgeView(tab: WooTab, in tabBar: UITabBar, tabIndex: Int) -> UIView? {
         let tag = badgeTag(for: tab)
-        let subviews = tabBar.subviews[tab.visibleIndex()].subviews.first?.subviews
+        let subviews = tabBar.orderedTabBarActionableViews[tabIndex].subviews.first?.subviews
             .filter({ $0.tag == tag })
         guard let subview = subviews?.first, subviews?.count == 1 else {
             return nil
@@ -69,8 +69,8 @@ private extension OrdersBadgeController {
     /// If the two subviews assumption does not hold anymore with UIKit changes, `vertical` is returned.
     ///   1. The tab view (`UITabBarButton`) has two subviews - one for image and the other for text label
     ///   2. The tab layout is vertical if the subview with a larger min y has its min y larger than the max y of the other subview.
-    func tabLayoutAxis(tab: WooTab, in tabBar: UITabBar) -> UIView.Axis {
-        return tabBar.subviews[tab.visibleIndex()].axisOfTwoSubviews() ?? .vertical
+    func tabLayoutAxis(tab: WooTab, in tabBar: UITabBar, tabIndex: Int) -> UIView.Axis {
+        return tabBar.orderedTabBarActionableViews[tabIndex].axisOfTwoSubviews() ?? .vertical
     }
 }
 
@@ -104,7 +104,7 @@ private extension OrdersBadgeController {
         static let ninePlus = NSLocalizedString("9+", comment: "A badge with the number of orders. More than nine new orders.")
     }
 
-    func badge(for tab: WooTab, with text: String) -> BadgeLabel {
+    func badge(for tab: WooTab, with text: String, tabIndex: Int) -> BadgeLabel {
         let width: CGFloat
         let horizontalPadding: CGFloat // Badge inset
 
@@ -124,16 +124,16 @@ private extension OrdersBadgeController {
         returnValue.tag = badgeTag(for: tab)
         returnValue.text = text
         returnValue.font = StyleManager.badgeFont
-        returnValue.borderColor = StyleManager.wooWhite
+        returnValue.borderColor = UIColor.basicBackground
         returnValue.borderWidth = Constants.borderWidth
-        returnValue.textColor = StyleManager.wooWhite
+        returnValue.textColor = .textInverted
         returnValue.horizontalPadding = horizontalPadding
         returnValue.cornerRadius = Constants.cornerRadius
 
         // BUGFIX: Don't add the backgroundColor property, use this!
         // Labels with rounded borders and a background color will end
         // up with a fuzzy shadow / outline outside of the border color.
-        returnValue.fillColor = StyleManager.wooCommerceBrandColor
+        returnValue.fillColor = .accent
 
         returnValue.isHidden = true
         returnValue.adjustsFontForContentSizeCategory = false
@@ -142,6 +142,6 @@ private extension OrdersBadgeController {
     }
 
     func badgeTag(for tab: WooTab) -> Int {
-        return tab.visibleIndex() + Constants.tagOffset
+        return tab.identifierNumber + Constants.tagOffset
     }
 }

@@ -6,6 +6,8 @@ import UIKit
 ///
 final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
 
+    /// We want this reusable cell to be styled the same everywhere it's used, so the IBOutlets are made private.
+    ///
     @IBOutlet private weak var leftTitleLabel: UILabel!
     @IBOutlet private weak var rightTitleLabel: UILabel!
     @IBOutlet private weak var footnoteLabel: UILabel!
@@ -32,15 +34,16 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         }
     }
 
-    /// Footnote label text
-    ///
-    var footnoteText: String? {
-        get {
-            return footnoteLabel?.text
-        }
-        set {
-            footnoteLabel?.text = newValue
-        }
+    func updateFootnoteAttributedText(_ attributedString: NSAttributedString?) {
+        footnoteLabel.attributedText = attributedString
+    }
+
+    func updateFootnoteText(_ footnoteText: String?) {
+        footnoteLabel.text = footnoteText
+    }
+
+    func hideFootnote() {
+        footnoteLabel.isHidden = true
     }
 
     override func awakeFromNib() {
@@ -53,13 +56,14 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
 // MARK: - Private Methods
 //
 private extension TwoColumnHeadlineFootnoteTableViewCell {
+
     /// Setup: Cell background
     ///
     func configureBackground() {
         applyDefaultBackgroundStyle()
     }
 
-    /// Setup: Labels
+    /// Setup: Style the labels
     ///
     func configureLabels() {
         leftTitleLabel.applyHeadlineStyle()

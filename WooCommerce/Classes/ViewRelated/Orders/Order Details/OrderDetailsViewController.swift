@@ -53,6 +53,7 @@ final class OrderDetailsViewController: UIViewController {
         super.viewWillAppear(animated)
         syncNotes()
         syncProducts()
+        syncRefunds()
         syncTrackingsHidingAddButtonIfNecessary()
     }
 
@@ -76,8 +77,8 @@ private extension OrderDetailsViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
@@ -208,6 +209,11 @@ extension OrderDetailsViewController {
         }
 
         group.enter()
+        syncRefunds() { _ in
+            group.leave()
+        }
+
+        group.enter()
         syncNotes { _ in
             group.leave()
         }
@@ -251,6 +257,10 @@ private extension OrderDetailsViewController {
 
     func syncProducts(onCompletion: ((Error?) -> ())? = nil) {
         viewModel.syncProducts(onCompletion: onCompletion)
+    }
+
+    func syncRefunds(onCompletion: ((Error?) -> ())? = nil) {
+        viewModel.syncRefunds(onCompletion: onCompletion)
     }
 
     func deleteTracking(_ tracking: ShipmentTracking) {
@@ -335,7 +345,7 @@ extension OrderDetailsViewController: UITableViewDelegate {
             self?.viewModel.dataSource.copyText(at: indexPath)
             success(true)
         }
-        copyAction.backgroundColor = StyleManager.wooCommerceBrandColor
+        copyAction.backgroundColor = .primary
 
         return UISwipeActionsConfiguration(actions: [copyAction])
     }
@@ -406,7 +416,7 @@ private extension OrderDetailsViewController {
         }
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        actionSheet.view.tintColor = .primary
 
         actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
 

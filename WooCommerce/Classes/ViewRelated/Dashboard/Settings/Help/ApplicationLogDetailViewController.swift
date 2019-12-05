@@ -56,7 +56,7 @@ class ApplicationLogDetailViewController: UIViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Display the share activity

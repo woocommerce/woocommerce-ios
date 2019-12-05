@@ -68,7 +68,7 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
 
             expectation.fulfill()
         }
@@ -87,7 +87,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
             XCTAssertNil(error)
 
             expectation.fulfill()
@@ -253,7 +253,7 @@ class OrderStoreTests: XCTestCase {
                 XCTAssertEqual(order.searchResults?.first?.keyword, self.defaultSearchKeyword)
             }
 
-            XCTAssertEqual(context.firstObject(ofType: OrderSearchResults.self)?.orders?.count, 3)
+            XCTAssertEqual(context.firstObject(ofType: OrderSearchResults.self)?.orders?.count, 4)
             XCTAssertEqual(context.countObjects(ofType: OrderSearchResults.self), 1)
             XCTAssertNil(error)
 

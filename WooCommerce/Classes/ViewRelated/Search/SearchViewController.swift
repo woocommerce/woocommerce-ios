@@ -191,13 +191,13 @@ private extension SearchViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Setup: TableView
     ///
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
         tableView.estimatedRowHeight = Settings.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = footerSpinnerView
@@ -222,7 +222,7 @@ private extension SearchViewController {
     ///
     func configureEmptyStateLabel() {
         emptyStateLabel.text = searchUICommand.emptyStateText
-        emptyStateLabel.textColor = StyleManager.wooGreyMid
+        emptyStateLabel.textColor = .textSubtle
         emptyStateLabel.font = .headline
         emptyStateLabel.adjustsFontForContentSizeCategory = true
         emptyStateLabel.numberOfLines = 0

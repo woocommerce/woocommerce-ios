@@ -45,7 +45,7 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
         leftColumn.applyFootnoteStyle()
         rightColumn.applyFootnoteStyle()
 
-        leftColumn.textColor = StyleManager.sectionTitleColor
-        rightColumn.textColor = StyleManager.sectionTitleColor
+        leftColumn.textColor = .listIcon
+        rightColumn.textColor = .listIcon
     }
 }

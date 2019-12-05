@@ -55,7 +55,7 @@ class DashboardViewController: UIViewController {
 private extension DashboardViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureNavigation() {
@@ -86,7 +86,6 @@ private extension DashboardViewController {
                                              style: .plain,
                                              target: self,
                                              action: #selector(settingsTapped))
-        rightBarButton.tintColor = .white
         rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
         rightBarButton.accessibilityTraits = .button
         rightBarButton.accessibilityHint = NSLocalizedString(

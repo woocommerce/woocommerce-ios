@@ -63,6 +63,13 @@ public extension StorageType {
         return firstObject(ofType: OrderCoupon.self, matching: predicate)
     }
 
+    /// Retrieves the Stored Order Refund Condensed.
+    ///
+    func loadOrderRefundCondensed(refundID: Int) -> OrderRefundCondensed? {
+        let predicate = NSPredicate(format: "refundID = %ld", refundID)
+        return firstObject(ofType: OrderRefundCondensed.self, matching: predicate)
+    }
+
     /// Retrieves the Stored Order Shipping Line.
     ///
     func loadShippingLine(shippingID: Int) -> ShippingLine? {
@@ -318,6 +325,22 @@ public extension StorageType {
     func loadProductReview(siteID: Int, reviewID: Int) -> ProductReview? {
         let predicate = NSPredicate(format: "siteID = %ld AND reviewID = %ld", siteID, reviewID)
         return firstObject(ofType: ProductReview.self, matching: predicate)
+    }
+
+    /// Retrieves all of the stored ProductVariation's for the provided siteID and productID.
+    /// Sorted by dateCreated, descending
+    ///
+    func loadProductVariations(siteID: Int64, productID: Int64) -> [ProductVariation]? {
+        let predicate = NSPredicate(format: "siteID = %lld AND productID = %lld", siteID, productID)
+        let descriptor = NSSortDescriptor(keyPath: \ProductVariation.dateCreated, ascending: false)
+        return allObjects(ofType: ProductVariation.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves a stored ProductVariation for the provided siteID and productVariationID.
+    ///
+    func loadProductVariation(siteID: Int64, productVariationID: Int64) -> ProductVariation? {
+        let predicate = NSPredicate(format: "siteID = %lld AND productVariationID = %lld", siteID, productVariationID)
+        return firstObject(ofType: ProductVariation.self, matching: predicate)
     }
 
     // MARK: - Refunds

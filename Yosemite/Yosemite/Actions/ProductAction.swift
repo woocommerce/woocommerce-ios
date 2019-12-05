@@ -30,7 +30,7 @@ public enum ProductAction: Action {
     ///
     case requestMissingProducts(for: Order, onCompletion: (Error?) -> Void)
 
-    /// Updates the description of a specified Product.
+    /// Updates a specified Product.
     ///
-    case updateProductDescription(siteID: Int, productID: Int, description: String?, onCompletion: (Product?, Error?) -> Void)
+    case updateProduct(product: Product, onCompletion: (Product?, Error?) -> Void)
 }

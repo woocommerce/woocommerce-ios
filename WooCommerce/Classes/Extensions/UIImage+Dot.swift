@@ -12,7 +12,7 @@ extension UIImage {
     func imageWithTopRightDot(imageOrigin: CGPoint,
                               finalSize: CGSize,
                               dotDiameter: CGFloat = 7,
-                              dotColor: UIColor = StyleManager.announcementDotColor) -> UIImage? {
+                              dotColor: UIColor = .error) -> UIImage? {
         UIGraphicsBeginImageContextWithOptions(finalSize, false, 0)
         let context = UIGraphicsGetCurrentContext()!
         context.saveGState()

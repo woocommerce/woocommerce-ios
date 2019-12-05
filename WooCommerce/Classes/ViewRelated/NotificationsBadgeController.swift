@@ -4,19 +4,19 @@ import UIKit
 final class NotificationsBadgeController {
     /// Displays or Hides the Dot, depending on the new Badge Value
     ///
-    func badgeCountWasUpdated(newValue: Int, in tabBar: UITabBar) {
+    func badgeCountWasUpdated(newValue: Int, tab: WooTab, in tabBar: UITabBar, tabIndex: Int) {
         guard newValue > 0 else {
-            hideDotOn(.reviews, in: tabBar)
+            hideDotOn(tab, in: tabBar, tabIndex: tabIndex)
             return
         }
 
-        showDotOn(.reviews, in: tabBar)
+        showDotOn(tab, in: tabBar, tabIndex: tabIndex)
     }
 
     /// Shows the dot in the specified WooTab
     ///
-    func showDotOn(_ tab: WooTab, in tabBar: UITabBar) {
-        hideDotOn(tab, in: tabBar)
+    func showDotOn(_ tab: WooTab, in tabBar: UITabBar, tabIndex: Int) {
+        hideDotOn(tab, in: tabBar, tabIndex: tabIndex)
         let dot = PurpleDotView(frame: CGRect(x: DotConstants.xOffset,
                                              y: DotConstants.yOffset,
                                              width: DotConstants.diameter,
@@ -24,15 +24,15 @@ final class NotificationsBadgeController {
                                borderWidth: DotConstants.borderWidth)
         dot.tag = dotTag(for: tab)
         dot.isHidden = true
-        tabBar.subviews[tab.visibleIndex()].subviews.first?.insertSubview(dot, at: 1)
+        tabBar.orderedTabBarActionableViews[tabIndex].subviews.first?.insertSubview(dot, at: 1)
         dot.fadeIn()
     }
 
     /// Hides the Dot in the specified WooTab
     ///
-    func hideDotOn(_ tab: WooTab, in tabBar: UITabBar) {
+    func hideDotOn(_ tab: WooTab, in tabBar: UITabBar, tabIndex: Int) {
         let tag = dotTag(for: tab)
-        if let subviews = tabBar.subviews[tab.visibleIndex()].subviews.first?.subviews {
+        if let subviews = tabBar.orderedTabBarActionableViews[tabIndex].subviews.first?.subviews {
             for subview in subviews where subview.tag == tag {
                 subview.fadeOut() { _ in
                     subview.removeFromSuperview()
@@ -44,7 +44,7 @@ final class NotificationsBadgeController {
     /// Returns the DotView's Tag for the specified WooTab
     ///
     func dotTag(for tab: WooTab) -> Int {
-        return tab.visibleIndex() + DotConstants.tagOffset
+        return tab.identifierNumber + DotConstants.tagOffset
     }
 }
 
@@ -93,11 +93,11 @@ private class PurpleDotView: UIView {
                                                y: rect.origin.y + borderWidth,
                                                width: rect.size.width - borderWidth * 2,
                                                height: rect.size.height - borderWidth * 2))
-        StyleManager.wooCommerceBrandColor.setFill()
+        UIColor.primary.setFill()
         path.fill()
 
         path.lineWidth = borderWidth
-        StyleManager.wooWhite.setStroke()
+        UIColor.basicBackground.setStroke()
         path.stroke()
     }
 }

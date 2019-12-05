@@ -6,8 +6,9 @@ extension ProductFormSection {
         case .primaryFields(let rows):
             let row = rows[rowIndex]
             return row.reuseIdentifier
-        default:
-            fatalError("Not implemented yet")
+        case .settings(let rows):
+            let row = rows[rowIndex]
+            return row.reuseIdentifier
         }
     }
 }
@@ -23,10 +24,12 @@ protocol ReusableTableRow {
 extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
     var cellTypes: [UITableViewCell.Type] {
         switch self {
+        case .images:
+            return [ProductImagesHeaderTableViewCell.self]
+        case .name:
+            return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
         case .description:
             return [ImageAndTitleAndTextTableViewCell.self, BasicTableViewCell.self]
-        default:
-            fatalError("Not implemented yet")
         }
     }
 
@@ -36,10 +39,32 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
 
     private var cellType: UITableViewCell.Type {
         switch self {
+        case .images:
+            return ProductImagesHeaderTableViewCell.self
+        case .name(let name):
+            return name?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         case .description(let description):
             return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
-        default:
-            fatalError("Not implemented yet")
+        }
+    }
+}
+
+extension ProductFormSection.SettingsRow: ReusableTableRow {
+    var cellTypes: [UITableViewCell.Type] {
+        switch self {
+        case .price, .inventory, .shipping:
+            return [ImageAndTitleAndTextTableViewCell.self]
+        }
+    }
+
+    var reuseIdentifier: String {
+        return cellType.reuseIdentifier
+    }
+
+    private var cellType: UITableViewCell.Type {
+        switch self {
+        case .price, .inventory, .shipping:
+            return ImageAndTitleAndTextTableViewCell.self
         }
     }
 }

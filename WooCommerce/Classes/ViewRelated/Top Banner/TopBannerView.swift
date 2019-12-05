@@ -29,18 +29,31 @@ final class TopBannerView: UIView {
         return button
     }()
 
+    private lazy var expandCollapseButton: UIButton = {
+        let button = UIButton(frame: .zero)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+
     private lazy var actionButton: UIButton = {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
 
-    private let onDismiss: () -> Void
-    private let onAction: () -> Void
+    private let isActionEnabled: Bool
+
+    private var isExpanded: Bool = true
+
+    private let onDismiss: (() -> Void)?
+    private let onAction: (() -> Void)?
+    private let onExpandedStateChange: (() -> Void)?
 
     init(viewModel: TopBannerViewModel) {
+        isActionEnabled = viewModel.actionHandler != nil
         onDismiss = viewModel.dismissHandler
         onAction = viewModel.actionHandler
+        onExpandedStateChange = viewModel.expandedStateChangeHandler
         super.init(frame: .zero)
         configureSubviews()
         configureSubviews(viewModel: viewModel)
@@ -67,12 +80,18 @@ private extension TopBannerView {
         infoLabel.applyBodyStyle()
         infoLabel.numberOfLines = 0
 
-        dismissButton.setImage(Gridicon.iconOfType(.cross, withSize: CGSize(width: 24, height: 24)), for: .normal)
-        dismissButton.tintColor = StyleManager.wooGreyTextMin
-        dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
+        if isActionEnabled {
+            dismissButton.setImage(Gridicon.iconOfType(.cross, withSize: CGSize(width: 24, height: 24)), for: .normal)
+            dismissButton.tintColor = .textSubtle
+            dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
 
-        actionButton.applyLinkButtonStyle()
-        actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
+            actionButton.applyLinkButtonStyle()
+            actionButton.addTarget(self, action: #selector(onActionButtonTapped), for: .touchUpInside)
+        } else {
+            updateExpandCollapseState(isExpanded: isExpanded)
+            expandCollapseButton.tintColor = .textSubtle
+            expandCollapseButton.addTarget(self, action: #selector(onExpandCollapseButtonTapped), for: .touchUpInside)
+        }
     }
 
     func configureSubviews(viewModel: TopBannerViewModel) {
@@ -96,7 +115,7 @@ private extension TopBannerView {
     }
 
     func configureBackground() {
-        backgroundColor = .white
+        backgroundColor = .basicBackground
     }
 
     func createContentView() -> UIView {
@@ -109,8 +128,16 @@ private extension TopBannerView {
         iconImageView.setContentCompressionResistancePriority(.required, for: .horizontal)
         dismissButton.setContentHuggingPriority(.required, for: .horizontal)
         dismissButton.setContentCompressionResistancePriority(.required, for: .horizontal)
+        expandCollapseButton.setContentHuggingPriority(.required, for: .horizontal)
+        expandCollapseButton.setContentCompressionResistancePriority(.required, for: .horizontal)
 
-        let contentStackView = UIStackView(arrangedSubviews: [iconImageView, textStackView, dismissButton])
+        let subviews: [UIView]
+        if isActionEnabled {
+            subviews = [iconImageView, textStackView, dismissButton]
+        } else {
+            subviews = [iconImageView, textStackView, expandCollapseButton]
+        }
+        let contentStackView = UIStackView(arrangedSubviews: subviews)
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .horizontal
         contentStackView.spacing = 10
@@ -127,29 +154,45 @@ private extension TopBannerView {
     }
 
     func createTopLevelView(contentContainerView: UIView) -> UIView {
-        let stackView = UIStackView(arrangedSubviews: [contentContainerView, createBorderView(), actionButton, createBorderView()])
+        let subviews: [UIView]
+        if isActionEnabled {
+            subviews = [contentContainerView, createBorderView(), actionButton, createBorderView()]
+        } else {
+            subviews = [contentContainerView, createBorderView()]
+        }
+        let stackView = UIStackView(arrangedSubviews: subviews)
         stackView.axis = .vertical
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
     }
 
     func createBorderView() -> UIView {
-        let view = UIView(frame: .zero)
-        view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = StyleManager.wooGreyBorder
-        NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalToConstant: 1)
-            ])
-        return view
+        return UIView.createBorderView()
     }
 }
 
 private extension TopBannerView {
-    @objc private func onDismissButtonTapped() {
-        onDismiss()
+    @objc func onDismissButtonTapped() {
+        onDismiss?()
     }
 
-    @objc private func onActionButtonTapped() {
-        onAction()
+    @objc func onActionButtonTapped() {
+        onAction?()
+    }
+
+    @objc func onExpandCollapseButtonTapped() {
+        self.isExpanded = !isExpanded
+        updateExpandCollapseState(isExpanded: isExpanded)
+        onExpandedStateChange?()
+    }
+}
+
+// MARK: UI Updates
+//
+private extension TopBannerView {
+    func updateExpandCollapseState(isExpanded: Bool) {
+        let image = isExpanded ? UIImage.chevronUpImage: UIImage.chevronDownImage
+        expandCollapseButton.setImage(image, for: .normal)
+        infoLabel.isHidden = !isExpanded
     }
 }

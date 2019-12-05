@@ -50,8 +50,8 @@ final class ProductVariationsViewController: UIViewController {
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
-    private lazy var stateCoordinator: ProductsViewControllerStateCoordinator = {
-        let stateCoordinator = ProductsViewControllerStateCoordinator(onLeavingState: { [weak self] state in
+    private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
+        let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: { [weak self] state in
             self?.didLeave(state: state)
             }, onEnteringState: { [weak self] state in
                 self?.didEnter(state: state)
@@ -329,7 +329,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
 //
 private extension ProductVariationsViewController {
 
-    func didEnter(state: ProductsViewControllerState) {
+    func didEnter(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
@@ -344,7 +344,7 @@ private extension ProductVariationsViewController {
         }
     }
 
-    func didLeave(state: ProductsViewControllerState) {
+    func didLeave(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
             removeAllOverlays()

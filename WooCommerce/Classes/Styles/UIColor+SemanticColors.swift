@@ -198,9 +198,9 @@ extension UIColor {
     ///
     static var primaryButtonDownBorder = UIColor.clear
 
-    /// Primary Button Border. Resolves to `accent`
+    /// Primary Button Border.
     ///
-    static var primaryButtonBorder = accent
+    static var primaryButtonBorder = UIColor.clear
 
     /// Secondary Button Background.
     ///

@@ -83,7 +83,7 @@ private extension Product_ProductFormTests {
                        menuOrder: 0)
     }
 
-    func date(with dateString: String) -> Date {
+    private func date(with dateString: String) -> Date {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
             return Date()
         }

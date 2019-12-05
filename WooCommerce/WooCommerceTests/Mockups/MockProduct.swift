@@ -81,7 +81,7 @@ final class MockProduct {
 
     }
 
-    func date(with dateString: String) -> Date {
+    private func date(with dateString: String) -> Date {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
             return Date()
         }

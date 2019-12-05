@@ -196,11 +196,11 @@ extension UIColor {
 
     /// Primary Button Highlighted Border.
     ///
-    static var primaryButtonDownBorder = UIColor.clear
+    static var primaryButtonDownBorder = primaryButtonDownBackground
 
     /// Primary Button Border.
     ///
-    static var primaryButtonBorder = UIColor.clear
+    static var primaryButtonBorder = primaryButtonBackground
 
     /// Secondary Button Background.
     ///

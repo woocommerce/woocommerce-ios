@@ -1,18 +1,18 @@
 import UIKit
 
-/// UI state of `ProductsViewController`.
+/// UI state of a view controller that displays a paginated list.
 ///
 /// - noResultsPlaceholder: a no results placeholder is displayed
 /// - syncing: syncing data UI with a parameter that indicates whether there is existing data
 /// - results: the results are shown
-enum ProductsViewControllerState {
+enum PaginatedListViewControllerState {
     case noResultsPlaceholder
     case syncing(withExistingData: Bool)
     case results
 }
 
-extension ProductsViewControllerState: Equatable {
-    static func ==(lhs: ProductsViewControllerState, rhs: ProductsViewControllerState) -> Bool {
+extension PaginatedListViewControllerState: Equatable {
+    static func ==(lhs: PaginatedListViewControllerState, rhs: PaginatedListViewControllerState) -> Bool {
             switch (lhs, rhs) {
             case let (.syncing(lhs), .syncing(rhs)):
                 return lhs == rhs
@@ -26,10 +26,10 @@ extension ProductsViewControllerState: Equatable {
     }
 }
 
-/// Keeps track of the Products view controller UI state, and allows the owning view controller to update UI when leaving and entering a state.
+/// Keeps track of the paginated list view controller UI state, and allows the owning view controller to update UI when leaving and entering a state.
 ///
-final class ProductsViewControllerStateCoordinator {
-    typealias State = ProductsViewControllerState
+final class PaginatedListViewControllerStateCoordinator {
+    typealias State = PaginatedListViewControllerState
 
     private let onLeavingState: (_ state: State) -> Void
     private let onEnteringState: (_ state: State) -> Void

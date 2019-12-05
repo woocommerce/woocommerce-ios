@@ -8,6 +8,7 @@ final class MockProduct {
     let testProductID = 2020
 
     func product(name: String = "Hogsmeade",
+                 productShippingClass: ProductShippingClass? = nil,
                  stockQuantity: Int? = nil,
                  stockStatus: ProductStockStatus = .inStock,
                  variations: [Int] = [],
@@ -20,6 +21,8 @@ final class MockProduct {
                    permalink: "https://example.com/product/book-the-green-room/",
                    dateCreated: Date(),
                    dateModified: Date(),
+                   dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
+                   dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
                    productTypeKey: "booking",
                    statusKey: "publish",
                    featured: false,
@@ -59,7 +62,7 @@ final class MockProduct {
                    shippingTaxable: false,
                    shippingClass: "",
                    shippingClassID: 0,
-                   productShippingClass: nil,
+                   productShippingClass: productShippingClass,
                    reviewsAllowed: true,
                    averageRating: "4.30",
                    ratingCount: 23,
@@ -77,5 +80,12 @@ final class MockProduct {
                    groupedProducts: [],
                    menuOrder: 0)
 
-}
+    }
+
+    private func date(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
+            return Date()
+        }
+        return date
+    }
 }

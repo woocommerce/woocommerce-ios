@@ -359,6 +359,13 @@ public extension StorageType {
         let predicate = NSPredicate(format: "siteID = %lld AND productVariationID = %lld", siteID, productVariationID)
         return firstObject(ofType: ProductVariation.self, matching: predicate)
     }
+    
+    /// Retrieves a stored TaxClass for the provided tax name.
+    ///
+    func loadTaxClass(name: String) -> TaxClass? {
+        let predicate = NSPredicate(format: "name = %@", name)
+        return firstObject(ofType: TaxClass.self, matching: predicate)
+    }
 
     // MARK: - Refunds
 

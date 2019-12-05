@@ -480,6 +480,10 @@
         <attribute name="visitors" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SiteVisitStats" inverseName="items" inverseEntity="SiteVisitStats"/>
     </entity>
+    <entity name="TaxClass" representedClassName="TaxClass" syncable="YES" codeGenerationType="class">
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="slug" optional="YES" attributeType="String"/>
+    </entity>
     <entity name="TopEarnerStats" representedClassName="TopEarnerStats" syncable="YES">
         <attribute name="date" attributeType="String"/>
         <attribute name="granularity" attributeType="String"/>
@@ -530,16 +534,17 @@
         <element name="ProductShippingClass" positionX="-693" positionY="36" width="128" height="148"/>
         <element name="ProductTag" positionX="-896.65234375" positionY="645.7421875" width="128" height="103"/>
         <element name="ProductVariation" positionX="-693" positionY="36" width="128" height="598"/>
-        <element name="Refund" positionX="-657" positionY="81" width="128" height="28"/>
+        <element name="Refund" positionX="-394.35546875" positionY="-24.296875" width="128" height="193"/>
         <element name="ShipmentTracking" positionX="-201.47265625" positionY="-109.14453125" width="128" height="148"/>
         <element name="ShipmentTrackingProvider" positionX="248.25" positionY="-117.6640625" width="180.32421875" height="103"/>
         <element name="ShipmentTrackingProviderGroup" positionX="-8.2734375" positionY="-117.890625" width="187.5" height="88"/>
         <element name="ShippingLine" positionX="-247.203125" positionY="907.53125" width="128" height="133"/>
         <element name="Site" positionX="-203.6875" positionY="208.0703125" width="128" height="165"/>
-        <element name="SiteSetting" positionX="-362.54296875" positionY="217.9921875" width="128" height="135"/>
+        <element name="SiteSetting" positionX="-360.41015625" positionY="214.8515625" width="128" height="133"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
+        <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="73"/>
     </elements>
 </model>

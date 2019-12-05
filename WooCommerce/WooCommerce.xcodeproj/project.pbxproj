@@ -2511,7 +2511,7 @@
 				B5650B1020A4CD7F009702D0 /* Embed Frameworks */,
 				B7A94351C1ADC31EA528B895 /* [CP] Embed Pods Frameworks */,
 				CE1445302188ED0300A991D8 /* Zendesk Strip Frameworks */,
-				3339899885696210D6CB3EA8 /* [CP] Copy Pods Resources */,
+				8D8E4AE002344B3131D3EB29 /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -2730,7 +2730,7 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3339899885696210D6CB3EA8 /* [CP] Copy Pods Resources */ = {
+		8D8E4AE002344B3131D3EB29 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (

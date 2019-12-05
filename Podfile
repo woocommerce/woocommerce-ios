@@ -26,12 +26,15 @@ target 'WooCommerce' do
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
-  pod 'WordPressAuthenticator', '~> 1.8.0'
+  # TODO: update pod to point to the published beta version
+  #pod 'WordPressAuthenticator', '~> 1.8.0'
+  #pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
+  pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'issue/wcios-1555-color-fixes'
 
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
   pod 'WordPressShared', '~> 1.8.2'
   
-  pod 'WordPressUI', '~> 1.3.5'
+  pod 'WordPressUI', '~> 1.4'
 
   pod 'WordPress-Editor-iOS', '~> 1.11.0'
 

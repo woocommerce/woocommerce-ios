@@ -3,6 +3,26 @@ import UIKit
 import WordPressUI
 import Gridicons
 
+private extension UIButton {
+    func applyNoteDetailsActionStyle(icon: UIImage) {
+        setImage(icon, for: .normal)
+        backgroundColor = .systemColor(.systemGray5)
+        imageView?.tintColor = .primary
+        setTitleColor(.primary, for: .normal)
+        accessibilityTraits = .button
+    }
+
+    func updateNoteDetailsActionStyle(isSelected: Bool) {
+        let bgColor = isSelected ? UIColor.primary : UIColor.systemColor(.systemGray5)
+        let textColor = isSelected ? UIColor.white : UIColor.primary
+
+        backgroundColor = bgColor
+        tintColor = textColor
+        imageView?.tintColor = textColor
+        setTitleColor(textColor, for: .normal)
+    }
+}
+
 
 // MARK: - NoteDetailsCommentTableViewCell
 //
@@ -186,38 +206,26 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Actions!
     ///
     func configureActionButtons() {
-        spamButton.setImage(.spamImage, for: .normal)
-        spamButton.backgroundColor = .primaryButtonBackground
-        spamButton.imageView?.tintColor = .text
-        spamButton.setTitleColor(.textInverted, for: .normal)
+        spamButton.applyNoteDetailsActionStyle(icon: .spamImage)
         spamButton.setTitle(Spam.normalTitle, for: .normal)
         spamButton.accessibilityLabel = Spam.normalLabel
-        spamButton.accessibilityTraits = .button
 
-        trashButton.setImage(.trashImage, for: .normal)
-        trashButton.backgroundColor = .primaryButtonBackground
-        trashButton.imageView?.tintColor = .text
-        trashButton.setTitleColor(.textInverted, for: .normal)
+        trashButton.applyNoteDetailsActionStyle(icon: .trashImage)
         trashButton.setTitle(Trash.normalTitle, for: .normal)
         trashButton.accessibilityLabel = Trash.normalLabel
-        trashButton.accessibilityTraits = .button
 
-        approvalButton.setImage(.checkmarkImage, for: .normal)
-        approvalButton.backgroundColor = .primaryButtonBackground
-        approvalButton.imageView?.tintColor = .text
-        approvalButton.setTitleColor(.textInverted, for: .normal)
+        approvalButton.applyNoteDetailsActionStyle(icon: .checkmarkImage)
         approvalButton.setTitle(Approve.normalTitle, for: .normal)
         approvalButton.setTitle(Approve.selectedTitle, for: .selected)
         approvalButton.accessibilityLabel = Approve.normalLabel
-        approvalButton.accessibilityTraits = .button
     }
 
     func configureTitleLabel() {
-        titleLabel.textColor = .text
+        titleLabel.textColor = .systemColor(.label)
     }
 
     func configureDetailsLabel() {
-        detailsLabel.textColor = .text
+        detailsLabel.textColor = .systemColor(.secondaryLabel)
     }
 
     func configureTextView() {
@@ -245,12 +253,7 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Button Appearance
     ///
     func refreshAppearance(button: UIButton) {
-        let bgColor = button.isSelected ? UIColor.primary : UIColor.listIcon
-        let textColor = button.isSelected ? UIColor.listIcon : UIColor.primary
-
-        button.backgroundColor = bgColor
-        button.tintColor = textColor
-        button.setTitleColor(textColor, for: .normal)
+        button.updateNoteDetailsActionStyle(isSelected: button.isSelected)
     }
 
     /// Refreshes the ApprovalButton's Accessibility Label

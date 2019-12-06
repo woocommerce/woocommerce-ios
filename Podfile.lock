@@ -89,7 +89,7 @@ DEPENDENCIES:
   - Gridicons (~> 0.19)
   - KeychainAccess (~> 3.2)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/wcios-1555-more-color-fixes`)
+  - WordPressAuthenticator (~> 1.10.5-beta)
   - WordPressShared (~> 1.8.2)
   - WordPressUI (~> 1.4)
   - Wormholy (~> 1.5.1)
@@ -118,6 +118,7 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
+    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -125,16 +126,6 @@ SPEC REPOS:
     - wpxmlrpc
     - XLPagerTabStrip
     - ZendeskSDK
-
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :branch: issue/wcios-1555-more-color-fixes
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: d39a0014055ede1a56426fcd1732e8ae22710ef4
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
@@ -166,6 +157,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: 12f516028e26e2e47a861cc0f5da968f4db3989a
 
-PODFILE CHECKSUM: 97d03dddd27faa33fb85a3443a9dadbba4098e07
+PODFILE CHECKSUM: b791143492f78f474e97a3db9c59be3a2f82c758
 
 COCOAPODS: 1.8.4

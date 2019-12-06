@@ -34,22 +34,39 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         }
     }
 
+    /// Footnote: attributed text option
+    ///
     func updateFootnoteAttributedText(_ attributedString: NSAttributedString?) {
         footnoteLabel.attributedText = attributedString
     }
 
+    /// Footnote: text option
+    ///
     func updateFootnoteText(_ footnoteText: String?) {
         footnoteLabel.text = footnoteText
     }
 
+    /// Collapses the footnote inside the stack view
+    ///
     func hideFootnote() {
         footnoteLabel.isHidden = true
     }
 
+    /// Cell equivalent to viewDidLoad
+    ///
     override func awakeFromNib() {
         super.awakeFromNib()
+
         configureBackground()
         configureLabels()
+    }
+
+    /// Reset the cell when it's recycled
+    ///
+    override func prepareForReuse() {
+        super.prepareForReuse()
+
+        footnoteLabel.isHidden = false
     }
 }
 

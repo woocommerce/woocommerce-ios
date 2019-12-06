@@ -40,6 +40,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         super.viewWillAppear(animated)
 
         configureViewForEditingIfNeeded()
+        styleSendCodeButton()
     }
 
 

@@ -8,29 +8,47 @@ extension UIButton {
     /// Applies the Primary Button Style: Solid BG!
     ///
     func applyPrimaryButtonStyle() {
-        backgroundColor = .primary
+        backgroundColor = .primaryButtonBackground
         contentEdgeInsets = Style.defaultEdgeInsets
-        tintColor = .primaryButtonBackground
-        layer.borderColor = UIColor.primary.cgColor
+        layer.borderColor = UIColor.primaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
         enableMultipleLines()
         titleLabel?.textAlignment = .center
+
+        setTitleColor(.primaryButtonTitle, for: .normal)
+        setTitleColor(.primaryButtonTitle, for: .highlighted)
+        setTitleColor(.buttonDisabledTitle, for: .disabled)
+        setBackgroundImage(UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground,
+                                                         border: .primaryButtonDownBorder),
+                           for: .highlighted)
+        setBackgroundImage(UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
+                                                         border: .buttonDisabledBorder),
+                           for: .disabled)
     }
 
     /// Applies the Secondary Button Style: Clear BG / Bordered Outline
     ///
     func applySecondaryButtonStyle() {
-        backgroundColor = .clear
+        backgroundColor = .secondaryButtonBackground
         contentEdgeInsets = Style.defaultEdgeInsets
-        tintColor = .primary
-        layer.borderColor = UIColor.primary.cgColor
+        layer.borderColor = UIColor.secondaryButtonBorder.cgColor
         layer.borderWidth = Style.defaultBorderWidth
         layer.cornerRadius = Style.defaultCornerRadius
         titleLabel?.applyHeadlineStyle()
         enableMultipleLines()
         titleLabel?.textAlignment = .center
+
+        setTitleColor(.secondaryButtonTitle, for: .normal)
+        setTitleColor(.secondaryButtonTitle, for: .highlighted)
+        setTitleColor(.buttonDisabledTitle, for: .disabled)
+        setBackgroundImage(UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
+                                                         border: .clear),
+                           for: .highlighted)
+        setBackgroundImage(UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
+                                                         border: .clear),
+                           for: .disabled)
     }
 
     /// Applies the Tertiary Button Style: Clear BG / Top Outline

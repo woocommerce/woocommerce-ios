@@ -113,6 +113,7 @@ class LoginUsernamePasswordViewController: LoginViewController, NUXKeyboardRespo
     ///
     @objc func configureForgotPasswordButton() {
         forgotPasswordButton.isEnabled = enableSubmit(animating: false)
+        WPStyleGuide.configureTextButton(forgotPasswordButton)
     }
 
 

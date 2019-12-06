@@ -25,6 +25,7 @@ class LoginLinkRequestViewController: LoginViewController {
         super.viewDidLoad()
 
         localizeControls()
+        configureUsePasswordButton()
 
         let email = loginFields.username
         if !email.isValidEmail() {
@@ -76,6 +77,13 @@ class LoginLinkRequestViewController: LoginViewController {
         sendLinkButton?.showActivityIndicator(animating)
 
         sendLinkButton?.isEnabled = !animating
+    }
+
+    private func configureUsePasswordButton() {
+        guard let usePasswordButton = usePasswordButton else {
+            return
+        }
+        WPStyleGuide.configureTextButton(usePasswordButton)
     }
 
 

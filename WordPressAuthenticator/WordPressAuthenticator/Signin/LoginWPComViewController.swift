@@ -45,6 +45,7 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
 
         configureTextFields()
         configureEmailIcon()
+        configureForgotPasswordButton()
         configureSubmitButton(animating: false)
         configureViewForEditingIfNeeded()
     }
@@ -126,6 +127,13 @@ class LoginWPComViewController: LoginViewController, NUXKeyboardResponder {
             return
         }
         emailIcon?.image = image.imageWithTintColor(WordPressAuthenticator.shared.style.subheadlineColor)
+    }
+
+    private func configureForgotPasswordButton() {
+        guard let forgotPasswordButton = forgotPasswordButton else {
+            return
+        }
+        WPStyleGuide.configureTextButton(forgotPasswordButton)
     }
 
     @objc func localizeControls() {

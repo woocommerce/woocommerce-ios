@@ -75,11 +75,11 @@ extension UIButton {
     func applyLinkButtonStyle() {
         backgroundColor = .clear
         contentEdgeInsets = Style.defaultEdgeInsets
-        tintColor = .primary
+        tintColor = .accent
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
-        setTitleColor(.primary, for: .normal)
-        setTitleColor(UIColor.primary.withAlphaComponent(0.5), for: .highlighted)
+        setTitleColor(.accent, for: .normal)
+        setTitleColor(.accentDark, for: .highlighted)
     }
 
     /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.

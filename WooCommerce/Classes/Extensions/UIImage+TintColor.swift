@@ -10,4 +10,13 @@ extension UIImage {
         }
         return withTintColor(color)
     }
+
+    /// Returns an image with a tint color applied to the original image.
+    ///
+    func applyTintColor(_ color: UIColor) -> UIImage? {
+        guard #available(iOS 13.0, *) else {
+            return imageWithTintColor(color)
+        }
+        return withTintColor(color)
+    }
 }

@@ -278,6 +278,21 @@ extension UIColor {
     }
 }
 
+// MARK: - UI elements.
+extension UIColor {
+    /// Stats chart data bar color.
+    ///
+    static var chartDataBar: UIColor {
+        return .accent
+    }
+
+    /// Stats chart data bar highlighted color.
+    ///
+    static var chartDataBarHighlighted: UIColor {
+        return UIColor(light: .withColorStudio(.pink, shade: .shade70),
+                       dark: .withColorStudio(.pink, shade: .shade10))
+    }
+}
 
 // MARK: - Table Views.
 extension UIColor {

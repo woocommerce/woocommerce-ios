@@ -548,7 +548,7 @@ private extension PeriodDataViewController {
                                                                                 with: orderStats.currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
-            barColors.append(.accent)
+            barColors.append(.chartDataBar)
             dataEntries.append(entry)
             barCount += 1
         }
@@ -556,7 +556,7 @@ private extension PeriodDataViewController {
         let dataSet =  BarChartDataSet(entries: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
-        dataSet.highlightColor = .accentDark
+        dataSet.highlightColor = .chartDataBarHighlighted
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)

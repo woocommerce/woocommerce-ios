@@ -62,7 +62,6 @@ class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var barChartView: BarChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
-    @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
     @IBOutlet private weak var chartAccessibilityView: UIView!
@@ -245,12 +244,11 @@ private extension StoreStatsV4PeriodViewController {
     func configureView() {
         view.backgroundColor = .listForeground
         containerStackView.backgroundColor = .listForeground
-        timeRangeBarView.backgroundColor = .listForeground
+        timeRangeBarView.backgroundColor = .systemColor(.systemBackground)
         visitorsStackView.backgroundColor = .listForeground
-        borderView.backgroundColor = .listSmallIcon
 
         // Time range bar bottom border view
-        timeRangeBarBottomBorderView.backgroundColor = .listForeground
+        timeRangeBarBottomBorderView.backgroundColor = .systemColor(.separator)
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
@@ -712,7 +710,7 @@ private extension StoreStatsV4PeriodViewController {
                                                                                 with: currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
-            barColors.append(.textSubtle)
+            barColors.append(.chartDataBar)
             dataEntries.append(entry)
             barCount += 1
         }
@@ -720,7 +718,7 @@ private extension StoreStatsV4PeriodViewController {
         let dataSet = BarChartDataSet(entries: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
-        dataSet.highlightColor = .primary
+        dataSet.highlightColor = .chartDataBarHighlighted
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)

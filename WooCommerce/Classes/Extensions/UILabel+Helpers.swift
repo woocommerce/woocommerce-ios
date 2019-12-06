@@ -30,7 +30,7 @@ extension UILabel {
     func applyFootnoteStyle() {
         adjustsFontForContentSizeCategory = true
         font = .footnote
-        textColor = .text
+        textColor = .systemColor(.secondaryLabel)
     }
 
     func applySecondaryFootnoteStyle() {

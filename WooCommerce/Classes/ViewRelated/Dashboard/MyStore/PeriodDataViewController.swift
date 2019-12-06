@@ -335,9 +335,9 @@ extension PeriodDataViewController: ChartViewDelegate {
         }
 
         let marker = ChartMarker(chartView: chartView,
-                                 color: .accentDark,
+                                 color: .chartDataBarHighlighted,
                                  font: StyleManager.chartLabelFont,
-                                 textColor: .text,
+                                 textColor: .primaryButtonTitle,
                                  insets: Constants.chartMarkerInsets)
         marker.minimumSize = Constants.chartMarkerMinimumSize
         marker.arrowSize = Constants.chartMarkerArrowSize

@@ -23,12 +23,12 @@ extension UIButton {
 
         let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground,
                                                                        border: .primaryButtonDownBorder)
-            .applyTintColor(.primaryButtonDownBackground)
+            .applyTintColorToiOS13(.primaryButtonDownBackground)
         setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
 
         let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
                                                                     border: .buttonDisabledBorder)
-            .applyTintColor(.buttonDisabledBackground)
+            .applyTintColorToiOS13(.buttonDisabledBackground)
         setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
@@ -50,12 +50,12 @@ extension UIButton {
 
         let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
                                                                        border: .secondaryButtonDownBorder)
-            .applyTintColor(.secondaryButtonDownBackground)
+            .applyTintColorToiOS13(.secondaryButtonDownBackground)
         setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
 
         let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
                                                                     border: .buttonDisabledBorder)
-            .applyTintColor(.buttonDisabledBackground)
+            .applyTintColorToiOS13(.buttonDisabledBackground)
         setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 

@@ -48,6 +48,7 @@
 		02305352237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */; };
 		02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */; };
 		0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230535A2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift */; };
+		02396251239948470096F34C /* UIImage+TintColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02396250239948470096F34C /* UIImage+TintColor.swift */; };
 		02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */; };
 		02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */; };
 		02404EDC2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */; };
@@ -582,6 +583,7 @@
 		0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecHorizontalRulerFormatBarCommand.swift; sourceTree = "<group>"; };
 		02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecInsertMoreFormatBarCommand.swift; sourceTree = "<group>"; };
 		0230535A2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecSourceCodeFormatBarCommand.swift; sourceTree = "<group>"; };
+		02396250239948470096F34C /* UIImage+TintColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TintColor.swift"; sourceTree = "<group>"; };
 		02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV3ToV4BannerActionHandler.swift; sourceTree = "<group>"; };
 		02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsVersionStateCoordinator.swift; sourceTree = "<group>"; };
 		02404EDB2314CD3600FF1170 /* StatsV4ToV3BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV4ToV3BannerActionHandler.swift; sourceTree = "<group>"; };
@@ -2138,6 +2140,7 @@
 				021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */,
 				D88CA757237D1C27005D2F44 /* Ghost+Woo.swift */,
 				02784A02238B8BC800BDD6A8 /* UIView+Border.swift */,
+				02396250239948470096F34C /* UIImage+TintColor.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -3121,6 +3124,7 @@
 				025FDD3223717D2900824006 /* EditorFactory.swift in Sources */,
 				453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */,
 				024DF30E23742A70006658FE /* AztecBoldFormatBarCommand.swift in Sources */,
+				02396251239948470096F34C /* UIImage+TintColor.swift in Sources */,
 				020DD48F232392C9005822B1 /* UIViewController+AppReview.swift in Sources */,
 				CE263DE8206ACE3E0015A693 /* MainTabBarController.swift in Sources */,
 				CE14452E2188C11700A991D8 /* ZendeskManager.swift in Sources */,

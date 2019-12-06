@@ -172,11 +172,7 @@ extension UIImage {
     /// Info Icon
     ///
     static var infoImage: UIImage {
-        guard let image = Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
-            .applyTintColor(.textSubtle) else {
-                fatalError()
-        }
-        return image
+        return Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
     }
 
     /// Invisible Image

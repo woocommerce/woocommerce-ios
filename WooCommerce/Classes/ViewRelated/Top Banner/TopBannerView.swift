@@ -74,6 +74,8 @@ private extension TopBannerView {
         addSubview(topLevelView)
         pinSubviewToAllEdges(topLevelView)
 
+        iconImageView.tintColor = .textSubtle
+
         titleLabel.applyHeadlineStyle()
         titleLabel.numberOfLines = 0
 

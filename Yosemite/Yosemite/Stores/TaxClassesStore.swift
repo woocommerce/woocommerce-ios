@@ -24,7 +24,7 @@ public class TaxClassesStore: Store {
             assertionFailure("TaxClassesStore received an unsupported action")
             return
         }
-        
+
         switch action {
         case .retriveTaxClasses(let siteID, let onCompletion):
             retriveTaxClasses(siteID: siteID, onCompletion: onCompletion)
@@ -52,13 +52,13 @@ private extension TaxClassesStore {
                 onCompletion(error)
                 return
             }
-            
+
             self?.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
                 onCompletion(nil)
             }
         }
     }
-    
+
     /// Deletes all of the Stored TaxClasses.
     ///
     func resetStoredTaxClasses(onCompletion: () -> Void) {
@@ -77,10 +77,10 @@ private extension TaxClassesStore {
             onCompletion(nil)
             return
         }
-        
+
         let storage = storageManager.viewStorage
         let storageTaxClass = storage.loadTaxClass(slug: taxClassFromStorage)
-        
+
         if storageTaxClass == nil {
             let remote = TaxClassesRemote(network: network)
             remote.loadAllTaxClasses(for: product.siteID) { [weak self] (taxClasses, error) in
@@ -88,13 +88,13 @@ private extension TaxClassesStore {
                     onCompletion(error)
                     return
                 }
-                
+
                 self?.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
                     onCompletion(nil)
                 }
             }
         }
-        else{
+        else {
             onCompletion(nil)
             return
         }
@@ -129,7 +129,7 @@ private extension TaxClassesStore {
     func upsertStoredTaxClasses(readOnlyTaxClasses: [Networking.TaxClass], in storage: StorageType) {
         for readOnlyTaxClass in readOnlyTaxClasses {
             let storageTaxClass = storage.loadTaxClass(slug: readOnlyTaxClass.slug) ?? storage.insertNewObject(ofType: Storage.TaxClass.self)
-            
+
             storageTaxClass.update(with: readOnlyTaxClass)
         }
     }

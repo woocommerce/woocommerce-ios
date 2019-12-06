@@ -6,7 +6,7 @@ import Alamofire
 public class TaxClassesRemote: Remote {
 
     // MARK: - Tax Classes
-    
+
     /// Retrieves all of the `Tax Classes` available.
     ///
     /// - Parameters:

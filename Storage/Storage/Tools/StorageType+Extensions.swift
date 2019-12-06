@@ -360,10 +360,10 @@ public extension StorageType {
         return firstObject(ofType: ProductVariation.self, matching: predicate)
     }
     
-    /// Retrieves a stored TaxClass for the provided tax name.
+    /// Retrieves a stored TaxClass for the provided tax slug.
     ///
-    func loadTaxClass(name: String) -> TaxClass? {
-        let predicate = NSPredicate(format: "name = %@", name)
+    func loadTaxClass(slug: String) -> TaxClass? {
+        let predicate = NSPredicate(format: "slug = %@", slug)
         return firstObject(ofType: TaxClass.self, matching: predicate)
     }
 

@@ -33,7 +33,6 @@ class PeriodDataViewController: UIViewController {
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var barChartView: BarChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
-    @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
     @IBOutlet private weak var chartAccessibilityView: UIView!
@@ -220,8 +219,7 @@ private extension PeriodDataViewController {
 
     func configureView() {
         view.backgroundColor = .listForeground
-        borderView.backgroundColor = .listSmallIcon
-
+        
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
         visitorsTitle.applyFootnoteStyle()
@@ -337,7 +335,7 @@ extension PeriodDataViewController: ChartViewDelegate {
         let marker = ChartMarker(chartView: chartView,
                                  color: .chartDataBarHighlighted,
                                  font: StyleManager.chartLabelFont,
-                                 textColor: .primaryButtonTitle,
+                                 textColor: .systemColor(.systemGray6),
                                  insets: Constants.chartMarkerInsets)
         marker.minimumSize = Constants.chartMarkerMinimumSize
         marker.arrowSize = Constants.chartMarkerArrowSize

@@ -117,7 +117,7 @@ private extension TopBannerView {
     }
 
     func configureBackground() {
-        backgroundColor = .basicBackground
+        backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
     func createContentView() -> UIView {

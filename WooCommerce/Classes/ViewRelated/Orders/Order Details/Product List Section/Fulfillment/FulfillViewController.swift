@@ -98,7 +98,7 @@ final class FulfillViewController: UIViewController {
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        syncTrackingsHiddingAddButtonIfNecessary()
+        syncTrackingsHidingAddButtonIfNecessary()
     }
 
     override func viewDidLayoutSubviews() {
@@ -106,7 +106,7 @@ final class FulfillViewController: UIViewController {
         tableView.updateFooterHeight()
     }
 
-    private func syncTrackingsHiddingAddButtonIfNecessary() {
+    private func syncTrackingsHidingAddButtonIfNecessary() {
         syncTracking { [weak self] error in
             if error == nil {
                 self?.trackingIsReachable = true
@@ -535,7 +535,7 @@ private extension FulfillViewController {
                                                                     }
 
                                                                     ServiceLocator.analytics.track(.orderTrackingDeleteSuccess)
-                                                                    self?.syncTrackingsHiddingAddButtonIfNecessary()
+                                                                    self?.syncTrackingsHidingAddButtonIfNecessary()
         }
 
         ServiceLocator.stores.dispatch(deleteTrackingAction)

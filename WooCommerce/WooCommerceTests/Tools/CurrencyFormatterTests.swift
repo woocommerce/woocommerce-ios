@@ -348,7 +348,7 @@ class CurrencyFormatterTests: XCTestCase {
     func testFormatHumanReadableWorksUsingLargeNegativeDecimalValue() {
         let inputValue = "-7867818684.64"
         let expectedResult = "-$7.9b"
-        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with:"USD")
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "USD")
         XCTAssertEqual(amount, expectedResult)
     }
 

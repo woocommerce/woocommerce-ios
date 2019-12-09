@@ -40,6 +40,7 @@
 		45010693239A6C9F00E24722 /* TaxClassesStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010692239A6C9F00E24722 /* TaxClassesStore.swift */; };
 		45010695239A6CDE00E24722 /* TaxClassesAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45010694239A6CDE00E24722 /* TaxClassesAction.swift */; };
 		45E18632237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E18631237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift */; };
+		45ED4F16239E939A004F1BE3 /* TaxClassesStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F15239E939A004F1BE3 /* TaxClassesStoreTests.swift */; };
 		741F34802195EA62005F5BD9 /* CommentAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F347F2195EA62005F5BD9 /* CommentAction.swift */; };
 		741F34822195EA71005F5BD9 /* CommentStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34812195EA71005F5BD9 /* CommentStore.swift */; };
 		741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741F34832195F752005F5BD9 /* CommentStoreTests.swift */; };
@@ -211,6 +212,7 @@
 		45010692239A6C9F00E24722 /* TaxClassesStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassesStore.swift; sourceTree = "<group>"; };
 		45010694239A6CDE00E24722 /* TaxClassesAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassesAction.swift; sourceTree = "<group>"; };
 		45E18631237046CB009241F3 /* ShippingLine+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ShippingLine+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
+		45ED4F15239E939A004F1BE3 /* TaxClassesStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassesStoreTests.swift; sourceTree = "<group>"; };
 		585B973F61632665297738A3 /* Pods-Yosemite.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Yosemite.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-Yosemite/Pods-Yosemite.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		741F347F2195EA62005F5BD9 /* CommentAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentAction.swift; sourceTree = "<group>"; };
 		741F34812195EA71005F5BD9 /* CommentStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentStore.swift; sourceTree = "<group>"; };
@@ -610,6 +612,7 @@
 				02BA23C522EEF092009539E7 /* StatsV4AvailabilityStoreTests.swift */,
 				026D52BF238235930092AE05 /* ProductVariationStoreTests.swift */,
 				025CA2CF238F54E800B05C81 /* ProductShippingClassStoreTests.swift */,
+				45ED4F15239E939A004F1BE3 /* TaxClassesStoreTests.swift */,
 			);
 			path = Stores;
 			sourceTree = "<group>";
@@ -1082,6 +1085,7 @@
 				02DA641B2313D6D200284168 /* AppSettingsStoreTests+StatsVersion.swift in Sources */,
 				026D52C0238235930092AE05 /* ProductVariationStoreTests.swift in Sources */,
 				7492FAE1217FB87100ED2C69 /* SettingStoreTests.swift in Sources */,
+				45ED4F16239E939A004F1BE3 /* TaxClassesStoreTests.swift in Sources */,
 				0225512522FC312400D98613 /* OrderStatsV4Interval+DateTests.swift in Sources */,
 				02E262C0238CE80100B79588 /* StorageShippingSettingsServiceTests.swift in Sources */,
 				B5C9DE222087FF20006B910A /* DispatcherTests.swift in Sources */,

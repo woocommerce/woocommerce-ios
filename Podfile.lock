@@ -1,7 +1,7 @@
 PODS:
   - 1PasswordExtension (1.8.5)
   - Alamofire (4.7.3)
-  - Automattic-Tracks-iOS (0.4.2):
+  - Automattic-Tracks-iOS (0.4.1):
     - CocoaLumberjack (~> 3.5.2)
     - Reachability (~> 3.1)
     - Sentry (~> 4)
@@ -89,7 +89,7 @@ DEPENDENCIES:
   - Gridicons (~> 0.19)
   - KeychainAccess (~> 3.2)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/wcios-1555-more-color-fixes`)
+  - WordPressAuthenticator (~> 1.10.5-beta)
   - WordPressShared (~> 1.8.2)
   - WordPressUI (~> 1.4)
   - Wormholy (~> 1.5.1)
@@ -118,6 +118,7 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
+    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -126,20 +127,10 @@ SPEC REPOS:
     - XLPagerTabStrip
     - ZendeskSDK
 
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :branch: issue/wcios-1555-more-color-fixes
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: d39a0014055ede1a56426fcd1732e8ae22710ef4
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: 4958112090127397a28e8338c776b0e3a9ad7425
+  Automattic-Tracks-iOS: a176848be4c95aa208184fe96d0322594ce230eb
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
@@ -166,6 +157,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: 12f516028e26e2e47a861cc0f5da968f4db3989a
 
-PODFILE CHECKSUM: 97d03dddd27faa33fb85a3443a9dadbba4098e07
+PODFILE CHECKSUM: b791143492f78f474e97a3db9c59be3a2f82c758
 
 COCOAPODS: 1.8.4

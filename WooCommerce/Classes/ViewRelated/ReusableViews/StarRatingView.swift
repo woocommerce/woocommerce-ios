@@ -65,11 +65,13 @@ class RatingView: UIView {
     override init(frame: CGRect) {
         super.init(frame: frame)
         setupStarViewConstraints()
+        configureStarColors(fullStarTintColor: Defaults.fullStarTintColor, emptyStarTintColor: Defaults.emptyStarTintColor)
     }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         setupStarViewConstraints()
+        configureStarColors(fullStarTintColor: Defaults.fullStarTintColor, emptyStarTintColor: Defaults.emptyStarTintColor)
     }
 
     override var intrinsicContentSize: CGSize {
@@ -79,6 +81,14 @@ class RatingView: UIView {
 
         let tallestImageHeight = max(emptyStarImage.size.height, starImage.size.height)
         return CGSize(width: (tallestImageHeight * Defaults.maxStars) + (Defaults.padding * (Defaults.maxStars - 1)), height: tallestImageHeight)
+    }
+
+    // MARK: Public Configurations
+
+    func configureStarColors(fullStarTintColor: UIColor, emptyStarTintColor: UIColor) {
+        starViews.forEach { starView in
+            starView.updateStarColors(fullStarColor: fullStarTintColor, emptyStarColor: emptyStarTintColor)
+        }
     }
 
     // MARK: Private Helpers
@@ -190,6 +200,11 @@ private class StarView: UIView {
         super.init(coder: aDecoder)
     }
 
+    func updateStarColors(fullStarColor: UIColor, emptyStarColor: UIColor) {
+        emptyStarImageView.tintColor = emptyStarColor
+        starImageView.tintColor = fullStarColor
+    }
+
     func setFullStarImage(fullStarImage: UIImage, emptyStarImage: UIImage) {
         emptyStarImageView.image = emptyStarImage
         starImageView.image = fullStarImage
@@ -219,4 +234,6 @@ fileprivate enum Defaults {
     static let maxStars = CGFloat(5.0)
     static let padding  = CGFloat(0.0)
     static let height = CGFloat(10.0)
+    static let fullStarTintColor = UIColor.text
+    static let emptyStarTintColor = UIColor.text
 }

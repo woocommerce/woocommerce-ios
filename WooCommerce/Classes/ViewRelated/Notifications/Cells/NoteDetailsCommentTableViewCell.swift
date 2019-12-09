@@ -245,6 +245,7 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Star rating view
     ///
     func configureStarView() {
+        starRatingView.configureStarColors(fullStarTintColor: Star.filledColor, emptyStarTintColor: Star.emptyColor)
         starRatingView.starImage = Star.filledImage
         starRatingView.emptyStarImage = Star.emptyImage
         starRatingView.isHidden = (starRating == nil)
@@ -326,8 +327,8 @@ private struct Approve {
 //
 private struct Star {
     static let size        = Double(18)
-    static let filledImage = UIImage.starImage(size: Star.size,
-                                               tintColor: .warning)
-    static let emptyImage = UIImage.starImage(size: Star.size,
-                                              tintColor: UIColor.listIcon)
+    static let filledImage = UIImage.starImage(size: Star.size)
+    static let emptyImage = UIImage.starImage(size: Star.size)
+    static let filledColor = UIColor.warning
+    static let emptyColor = UIColor.systemColor(.systemGray4)
 }

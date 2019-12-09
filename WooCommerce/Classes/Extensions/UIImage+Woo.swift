@@ -274,32 +274,28 @@ extension UIImage {
         return Gridicon.iconOfType(.spam)
     }
 
-    /// Returns a star icon with the given size and color
+    /// Returns a star icon with the given size
     ///
     /// - Parameters:
     ///   - size: desired size of the resulting star icon
-    ///   - tintColor: desired tint color of the resulting icon
     /// - Returns: a bitmap image
     ///
-    static func starImage(size: Double, tintColor: UIColor) -> UIImage {
+    static func starImage(size: Double) -> UIImage {
         let starSize = CGSize(width: size, height: size)
         return Gridicon.iconOfType(.star,
                                    withSize: starSize)
-            .imageWithTintColor(tintColor)!
     }
 
-    /// Returns a star outline icon with the given size and color
+    /// Returns a star outline icon with the given size
     ///
     /// - Parameters:
     ///   - size: desired size of the resulting star icon
-    ///   - tintColor: desired tint color of the resulting icon
     /// - Returns: a bitmap image
     ///
-    static func starOutlineImage(size: Double, tintColor: UIColor) -> UIImage {
+    static func starOutlineImage(size: Double) -> UIImage {
         let starSize = CGSize(width: size, height: size)
         return Gridicon.iconOfType(.starOutline,
                                    withSize: starSize)
-            .imageWithTintColor(tintColor)!
     }
 
     /// Stats Icon

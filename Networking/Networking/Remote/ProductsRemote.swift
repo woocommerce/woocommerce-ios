@@ -15,17 +15,23 @@ public class ProductsRemote: Remote {
     ///                determines fields present in response. Default is view.
     ///     - pageNumber: Number of page that should be retrieved.
     ///     - pageSize: Number of products to be retrieved per page.
+    ///     - orderBy: the key to order the remote products. Default to product name.
+    ///     - order: ascending or descending order. Default to ascending.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func loadAllProducts(for siteID: Int,
                                 context: String? = nil,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
+                                orderBy: OrderKey = .name,
+                                order: Order = .ascending,
                                 completion: @escaping ([Product]?, Error?) -> Void) {
         let parameters = [
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
-            ParameterKey.contextKey: context ?? Default.context
+            ParameterKey.contextKey: context ?? Default.context,
+            ParameterKey.orderBy: orderBy.value,
+            ParameterKey.order: order.value
         ]
 
         let path = Path.products
@@ -126,6 +132,15 @@ public class ProductsRemote: Remote {
 // MARK: - Constants
 //
 public extension ProductsRemote {
+    enum OrderKey {
+        case name
+    }
+
+    enum Order {
+        case ascending
+        case descending
+    }
+
     enum Default {
         public static let pageSize: Int   = 25
         public static let pageNumber: Int = 1
@@ -142,5 +157,27 @@ public extension ProductsRemote {
         static let contextKey: String = "context"
         static let include: String    = "include"
         static let search: String     = "search"
+        static let orderBy: String    = "orderby"
+        static let order: String      = "order"
+    }
+}
+
+private extension ProductsRemote.OrderKey {
+    var value: String {
+        switch self {
+        case .name:
+            return "title"
+        }
+    }
+}
+
+private extension ProductsRemote.Order {
+    var value: String {
+        switch self {
+        case .ascending:
+            return "asc"
+        case .descending:
+            return "desc"
+        }
     }
 }

@@ -81,12 +81,16 @@ private extension ProductStore {
         }
     }
 
-    /// Synchronizes the products associated with a given Site ID (if any!).
+    /// Synchronizes the products associated with a given Site ID, sorted by ascending name.
     ///
     func synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
-        remote.loadAllProducts(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (products, error) in
+        remote.loadAllProducts(for: siteID,
+                               pageNumber: pageNumber,
+                               pageSize: pageSize,
+                               orderBy: .name,
+                               order: .ascending) { [weak self] (products, error) in
             guard let products = products else {
                 onCompletion(error)
                 return

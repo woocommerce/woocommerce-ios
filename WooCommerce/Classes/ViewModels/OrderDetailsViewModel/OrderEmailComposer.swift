@@ -4,15 +4,17 @@ import MessageUI
 /// Encapsulates logic to share an Order via email
 ///
 final class OrderEmailComposer: NSObject, MFMailComposeViewControllerDelegate {
-    func displayEmailComposerIfPossible(for order: Order, from: UIViewController) {
+    func displayEmailComposerIfPossible(for order: Order, from: UIViewController) -> Bool {
         guard let email = order.billingAddress?.email, MFMailComposeViewController.canSendMail() else {
-            return
+            return false
         }
 
         displayEmailComposer(for: email, from: from)
         ServiceLocator.analytics.track(.orderContactAction, withProperties: ["id": order.orderID,
                                                                         "status": order.statusKey,
                                                                         "type": "email"])
+
+        return MFMailComposeViewController.canSendMail()
     }
 
     private func displayEmailComposer(for email: String, from: UIViewController) {

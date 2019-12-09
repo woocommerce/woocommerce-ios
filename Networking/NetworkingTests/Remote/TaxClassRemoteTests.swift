@@ -63,10 +63,3 @@ final class TaxClassRemoteTests: XCTestCase {
     }
 
 }
-
-private extension ProductVariationsRemoteTests {
-    func dateFromGMT(_ dateStringInGMT: String) -> Date {
-        let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
-        return dateFormatter.date(from: dateStringInGMT)!
-    }
-}

@@ -279,6 +279,16 @@ extension UIColor {
 }
 
 
+// MARK: - Borders.
+extension UIColor {
+    /// Default border color.
+    ///
+    static var border: UIColor {
+        return .systemColor(.systemGray4)
+    }
+}
+
+
 // MARK: - Table Views.
 extension UIColor {
     /// List Icon. Gray-20 (< iOS 13) and `UIColor.secondaryLabel` (> iOS 13)

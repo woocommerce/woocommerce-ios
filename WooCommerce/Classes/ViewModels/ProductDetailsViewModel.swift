@@ -316,6 +316,7 @@ extension ProductDetailsViewModel {
     func configurePermalink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View product on store",
                                                  comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
+        cell.bodyLabel.applyActionableStyle()
         cell.accessoryImage = .externalImage
     }
 
@@ -324,6 +325,7 @@ extension ProductDetailsViewModel {
     func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View affiliate product",
                                                  comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
+        cell.bodyLabel.applyActionableStyle()
         cell.accessoryImage = .externalImage
     }
 

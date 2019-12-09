@@ -46,7 +46,7 @@ final class MockProduct {
                        downloadExpiry: -1,
                        externalURL: "http://somewhere.com",
                        taxStatusKey: "taxable",
-                       taxClass: "",
+                       taxClass: "standard",
                        manageStock: false,
                        stockQuantity: stockQuantity,
                        stockStatusKey: stockStatus.rawValue,

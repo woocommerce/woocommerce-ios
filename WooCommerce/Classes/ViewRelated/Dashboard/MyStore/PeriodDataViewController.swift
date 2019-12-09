@@ -219,7 +219,7 @@ private extension PeriodDataViewController {
 
     func configureView() {
         view.backgroundColor = .listForeground
-        
+
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
         visitorsTitle.applyFootnoteStyle()

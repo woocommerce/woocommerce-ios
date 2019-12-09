@@ -33,7 +33,7 @@ final class TaxClassRemoteTests: XCTestCase {
             XCTAssertNil(error)
             XCTAssertNotNil(taxClasses)
             XCTAssertEqual(taxClasses?.count, 3)
-            
+
             // Validates on Tax Class with slug "standard"
             let expectedSlug = "standard"
             guard let expectedTaxClass = taxClasses?.first(where: { $0.slug == expectedSlug }) else {

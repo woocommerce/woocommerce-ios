@@ -11,7 +11,7 @@ class TaxClassListMapperTest: XCTestCase {
     func testTaxClassFieldsAreProperlyParsed() {
         let taxClasses = mapLoadAllTaxClassResponse()
         XCTAssertEqual(taxClasses.count, 3)
-        
+
 
         let firstTaxClass = taxClasses[0]
         XCTAssertEqual(firstTaxClass.slug, "standard")

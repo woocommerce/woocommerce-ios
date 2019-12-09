@@ -141,7 +141,6 @@ class ZendeskManager: NSObject {
 
             let requestConfig = self.createRequest(supportSourceTag: sourceTag)
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
-            
             self.showZendeskView(requestListController, from: controller)
         }
     }

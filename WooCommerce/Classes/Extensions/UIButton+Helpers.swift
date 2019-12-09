@@ -82,7 +82,7 @@ extension UIButton {
         setTitleColor(.accentDark, for: .highlighted)
     }
 
-    /// Applies the single-color Icon Button Style: accent/accent dark tint color
+    /// Applies the Single-Color Icon Button Style: accent/accent dark tint color
     ///
     func applyIconButtonStyle(icon: UIImage) {
         let normalImage = icon.applyTintColor(.accent)

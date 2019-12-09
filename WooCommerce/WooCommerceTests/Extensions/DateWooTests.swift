@@ -29,18 +29,35 @@ final class DateWooTests: XCTestCase {
 
     func testUpdateStringWorksForIntervalsOneDayOrLess() {
 
-        let minutesAgo = NSLocalizedString("Updated 2 minutes ago",
-                                           comment: "A unit test string for time intervals")
-        let almostHourAgo = NSLocalizedString("Updated 59 minutes ago",
-                                              comment: "A unit test string for a plural time interval in minutes")
-        let hourAgo = NSLocalizedString("Updated 1 hour ago",
-                                        comment: "A unit test string for a singular time interval")
-        let nineAgo = NSLocalizedString("Updated 9 hours ago",
-                                        comment: "A unit test string for a plural time interval in hours")
-        let almostDayAgo = NSLocalizedString("Updated 23 hours ago",
-                                             comment: "A unit test string for time interval just under 1 day")
-        let dayAgo = NSLocalizedString("Updated 24 hours ago",
-                                       comment: "A unit test string for 1 day, represented as plural time interval in hours")
+        let minutesAgo = String.localizedStringWithFormat(
+            NSLocalizedString("Updated %ld minutes ago",
+                              comment: "A unit test string for time intervals"),
+            2)
+
+        let almostHourAgo = String.localizedStringWithFormat(
+            NSLocalizedString("Updated %ld minutes ago",
+                              comment: "A unit test string for a plural time interval in minutes"),
+            59)
+
+        let hourAgo = String.localizedStringWithFormat(
+            NSLocalizedString("Updated %ld hour ago",
+                              comment: "A unit test string for a singular time interval"),
+            1)
+
+        let nineAgo = String.localizedStringWithFormat(
+            NSLocalizedString("Updated %ld hours ago",
+                              comment: "A unit test string for a plural time interval in hours"),
+            9)
+
+        let almostDayAgo = String.localizedStringWithFormat(
+            NSLocalizedString("Updated %ld hours ago",
+                              comment: "A unit test string for time interval just under 1 day"),
+            23)
+
+        let dayAgo = String.localizedStringWithFormat(
+            NSLocalizedString("Updated %ld hours ago",
+                              comment: "A unit test string for 1 day, represented as plural time interval in hours"),
+            24)
 
         // 2 minutes
         let twoMinutesAgo = Calendar.current.date(byAdding: .minute, value: -2, to: Date())!
@@ -76,23 +93,23 @@ final class DateWooTests: XCTestCase {
 
         // Skip verifying the time part of the resulting string because of TZ madness
 
-        // Create and translate the exact phrase for the expected result
-        let updatedOct = NSLocalizedString("Updated on Oct 10, 2018",
-                                           comment: "A unit test string that checks the string date formatter works properly." +
-            "Please translate this using your language's medium-length date abbreviation (if you have one).")
-        let updatedFeb = NSLocalizedString("Updated on Feb 2, 2016",
-                                           comment: "A unit test string that checks the string date formatter works properly." +
-            "Please translate this using your language's medium-length date abbreviation (if you have one).")
-
         // Oct 10,2018
         let dateComponents1 = DateComponents(calendar: Calendar.current, year: 2018, month: 10, day: 10)
         let specificPastDate1 = Calendar.current.date(from: dateComponents1)!
-        XCTAssertTrue(specificPastDate1.relativelyFormattedUpdateString.contains(updatedOct))
+        let octDate = specificPastDate1.toString(dateStyle: .medium, timeStyle: .short)
+        let updatedOct = NSLocalizedString("Updated on %@",
+                                           comment: "Updated on <date>")
+        let octExpected = String.localizedStringWithFormat(updatedOct, octDate)
+        XCTAssertEqual(specificPastDate1.relativelyFormattedUpdateString, octExpected)
 
         // Feb 2, 2016
         let dateComponents2 = DateComponents(calendar: Calendar.current, year: 2016, month: 2, day: 2)
         let specificPastDate2 = Calendar.current.date(from: dateComponents2)!
-        XCTAssertTrue(specificPastDate2.relativelyFormattedUpdateString.contains(updatedFeb))
+        let febDate = specificPastDate2.toString(dateStyle: .medium, timeStyle: .short)
+        let updatedFeb = NSLocalizedString("Updated on %@",
+                                           comment: "Updated on <date>")
+        let febExpected = String.localizedStringWithFormat(updatedFeb, febDate)
+        XCTAssertEqual(specificPastDate2.relativelyFormattedUpdateString, febExpected)
     }
 
     func testUpdateStringWorksForFutureIntervals() {

@@ -124,7 +124,7 @@ public class CurrencySettings {
 
 
     /// Convenience Initializer:
-    /// Provides sane defaults for when site settings aren't available
+    /// Provides some defaults for when site settings aren't available
     ///
     convenience init() {
         self.init(currencyCode: CurrencySettings.Default.code,

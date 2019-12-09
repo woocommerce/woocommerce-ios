@@ -266,8 +266,8 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = .basicBackground
-        settings.style.buttonBarItemBackgroundColor = .basicBackground
+        settings.style.buttonBarBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        settings.style.buttonBarItemBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
         settings.style.selectedBarBackgroundColor = .primary
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight

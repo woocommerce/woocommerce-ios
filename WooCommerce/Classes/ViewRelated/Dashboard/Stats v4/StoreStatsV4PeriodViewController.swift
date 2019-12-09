@@ -242,10 +242,10 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func configureView() {
-        view.backgroundColor = .listForeground
-        containerStackView.backgroundColor = .listForeground
-        timeRangeBarView.backgroundColor = .systemColor(.systemBackground)
-        visitorsStackView.backgroundColor = .listForeground
+        view.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        containerStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        timeRangeBarView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        visitorsStackView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
 
         // Time range bar bottom border view
         timeRangeBarBottomBorderView.backgroundColor = .systemColor(.separator)

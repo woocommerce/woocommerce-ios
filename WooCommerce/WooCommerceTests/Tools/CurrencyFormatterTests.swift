@@ -1,10 +1,26 @@
 import XCTest
 @testable import WooCommerce
+@testable import Networking
 
 
 /// Currency Formatter Tests - Decimals
 ///
 class CurrencyFormatterTests: XCTestCase {
+
+    /// Sample Site Settings
+    ///
+    func setUpSampleSiteSettings() -> [SiteSetting] {
+        let settings = mapLoadGeneralSiteSettingsResponse()
+        var siteSettings = [SiteSetting]()
+
+        siteSettings.append(settings[14])
+        siteSettings.append(settings[15])
+        siteSettings.append(settings[16])
+        siteSettings.append(settings[17])
+        siteSettings.append(settings[18])
+
+        return siteSettings
+    }
 
     /// Verifies that the string value returns an accurate decimal value
     ///
@@ -203,8 +219,7 @@ class CurrencyFormatterTests: XCTestCase {
 
         let decimal = CurrencyFormatter().convertToDecimal(from: stringAmount)
         guard let decimalAmount = decimal else {
-            DDLogError("Error: invalid string amount. Cannot convert to decimal.")
-            XCTFail()
+            XCTFail("Error: invalid string amount. Cannot convert to decimal.")
             return
         }
 
@@ -264,9 +279,13 @@ class CurrencyFormatterTests: XCTestCase {
 
 
     func testFormatHumanReadableWithRoundingWorksUsingSmallDecimalValue() {
+        // Create a "standard" set of currency settings for the human readable formatter tests
+        _ = CurrencySettings(siteSettings: setUpSampleSiteSettings())
+        let formatter = CurrencyFormatter()
+
         let inputValue = "97.64"
         let expectedResult = "$97"
-        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue)
+        let amount = formatter.formatHumanReadableAmount(inputValue)
         XCTAssertEqual(amount, expectedResult)
     }
 
@@ -329,7 +348,7 @@ class CurrencyFormatterTests: XCTestCase {
     func testFormatHumanReadableWorksUsingLargeNegativeDecimalValue() {
         let inputValue = "-7867818684.64"
         let expectedResult = "-$7.9b"
-        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue)
+        let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with:"USD")
         XCTAssertEqual(amount, expectedResult)
     }
 
@@ -345,5 +364,23 @@ class CurrencyFormatterTests: XCTestCase {
         let expectedResult = "-£7.9b"
         let amount = CurrencyFormatter().formatHumanReadableAmount(inputValue, with: "GBP")
         XCTAssertEqual(amount, expectedResult)
+    }
+}
+
+extension CurrencyFormatterTests {
+    /// Returns the SiteSettings output upon receiving `filename` (Data Encoded)
+    ///
+    func mapGeneralSettings(from filename: String) -> [SiteSetting] {
+        guard let response = Loader.contentsOf(filename) else {
+            return []
+        }
+
+        return try! SiteSettingsMapper(siteID: 123, settingsGroup: SiteSettingGroup.general).map(response: response)
+    }
+
+    /// Returns the OrderNotesMapper output upon receiving `settings-general`
+    ///
+    func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
+        return mapGeneralSettings(from: "settings-general")
     }
 }

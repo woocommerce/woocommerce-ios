@@ -44,17 +44,17 @@ private extension TaxClassesStore {
 
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
-    func retriveTaxClasses(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
+    func retriveTaxClasses(siteID: Int, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
         let remote = TaxClassesRemote(network: network)
 
         remote.loadAllTaxClasses(for: Int64(siteID)) { [weak self] (taxClasses, error) in
             guard let taxClasses = taxClasses else {
-                onCompletion(error)
+                onCompletion(nil, error)
                 return
             }
 
             self?.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
-                onCompletion(nil)
+                onCompletion(taxClasses, nil)
             }
         }
     }
@@ -72,9 +72,9 @@ private extension TaxClassesStore {
 
     /// Synchronizes the Tax Class found in a specified Product.
     ///
-    func requestMissingTaxClasses(for product: Product, onCompletion: @escaping (Error?) -> Void) {
+    func requestMissingTaxClasses(for product: Product, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
         guard let taxClassFromStorage = product.taxClass else {
-            onCompletion(nil)
+            onCompletion(nil, nil)
             return
         }
 
@@ -85,17 +85,21 @@ private extension TaxClassesStore {
             let remote = TaxClassesRemote(network: network)
             remote.loadAllTaxClasses(for: Int64(product.siteID)) { [weak self] (taxClasses, error) in
                 guard let taxClasses = taxClasses else {
-                    onCompletion(error)
+                    onCompletion(nil, error)
                     return
                 }
 
                 self?.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
-                    onCompletion(nil)
+                    onCompletion(taxClasses, nil)
                 }
             }
         }
         else {
-            onCompletion(nil)
+            guard let taxClass = storageTaxClass?.toReadOnly() else {
+                onCompletion(nil, nil)
+                return
+            }
+            onCompletion([taxClass], nil)
             return
         }
     }

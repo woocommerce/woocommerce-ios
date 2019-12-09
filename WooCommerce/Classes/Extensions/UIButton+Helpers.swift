@@ -20,12 +20,16 @@ extension UIButton {
         setTitleColor(.primaryButtonTitle, for: .normal)
         setTitleColor(.primaryButtonTitle, for: .highlighted)
         setTitleColor(.buttonDisabledTitle, for: .disabled)
-        setBackgroundImage(UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground,
-                                                         border: .primaryButtonDownBorder),
-                           for: .highlighted)
-        setBackgroundImage(UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
-                                                         border: .buttonDisabledBorder),
-                           for: .disabled)
+
+        let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground,
+                                                                       border: .primaryButtonDownBorder)
+            .applyTintColorToiOS13(.primaryButtonDownBackground)
+        setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
+
+        let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
+                                                                    border: .buttonDisabledBorder)
+            .applyTintColorToiOS13(.buttonDisabledBackground)
+        setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
     /// Applies the Secondary Button Style: Clear BG / Bordered Outline
@@ -43,12 +47,16 @@ extension UIButton {
         setTitleColor(.secondaryButtonTitle, for: .normal)
         setTitleColor(.secondaryButtonTitle, for: .highlighted)
         setTitleColor(.buttonDisabledTitle, for: .disabled)
-        setBackgroundImage(UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
-                                                         border: .clear),
-                           for: .highlighted)
-        setBackgroundImage(UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
-                                                         border: .clear),
-                           for: .disabled)
+
+        let highlightedBackgroundImage = UIImage.renderBackgroundImage(fill: .secondaryButtonDownBackground,
+                                                                       border: .secondaryButtonDownBorder)
+            .applyTintColorToiOS13(.secondaryButtonDownBackground)
+        setBackgroundImage(highlightedBackgroundImage, for: .highlighted)
+
+        let disabledBackgroundImage = UIImage.renderBackgroundImage(fill: .buttonDisabledBackground,
+                                                                    border: .buttonDisabledBorder)
+            .applyTintColorToiOS13(.buttonDisabledBackground)
+        setBackgroundImage(disabledBackgroundImage, for: .disabled)
     }
 
     /// Applies the Tertiary Button Style: Clear BG / Top Outline

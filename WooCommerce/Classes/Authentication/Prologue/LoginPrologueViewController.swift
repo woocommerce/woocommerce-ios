@@ -92,7 +92,8 @@ private extension LoginPrologueViewController {
     }
 
     func setupSlantedRectangle() {
-        slantedRectangle.image = UIImage.slantedRectangle.imageWithTintColor(.init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80)))
+        slantedRectangle.image = UIImage.slantedRectangle.withRenderingMode(.alwaysTemplate)
+        slantedRectangle.tintColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
     }
 
     func setupJetpackImage() {
@@ -114,14 +115,11 @@ private extension LoginPrologueViewController {
         let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
         loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
         loginButton.setTitle(title, for: .normal)
-        loginButton.setTitleColor(.black, for: .normal)
-        loginButton.setTitleColor(.white, for: .highlighted)
-        loginButton.titleLabel?.font = StyleManager.headlineSemiBold
-        loginButton.setBackgroundImage(UIImage.renderBackgroundImage(fill: .white, border: .white), for: .normal)
-        loginButton.setBackgroundImage(UIImage.renderBackgroundImage(fill: .primaryButtonDownBackground,
-                                                                     border: .primaryButtonDownBackground),
-                                       for: .highlighted)
-        loginButton.layer.cornerRadius = Settings.buttonCornerRadius
+        loginButton.applySecondaryButtonStyle()
+        // This is an exception where we always show the Log In button in the Light color scheme to have a better constrast to the background.
+        if #available(iOS 13.0, *) {
+            loginButton.overrideUserInterfaceStyle = .light
+        }
     }
 }
 

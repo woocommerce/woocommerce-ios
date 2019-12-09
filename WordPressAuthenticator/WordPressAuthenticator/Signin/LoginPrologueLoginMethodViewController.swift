@@ -13,6 +13,9 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     open var selfHostedTapped: (() -> Void)?
     open var appleTapped: (() -> Void)?
 
+    /// The big transparent dismiss button behind the dialog
+    @IBOutlet weak var dismissButton: UIButton!
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
@@ -84,5 +87,4 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         dismiss(animated: true)
         appleTapped?()
     }
-
 }

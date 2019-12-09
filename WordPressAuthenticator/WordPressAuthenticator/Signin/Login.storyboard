@@ -1450,6 +1450,9 @@
                             <constraint firstAttribute="trailing" secondItem="Ueg-Bw-KU6" secondAttribute="trailing" id="nXh-Tu-veg"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="dismissButton" destination="Ueg-Bw-KU6" id="icp-fM-bz4"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rrd-X3-roK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

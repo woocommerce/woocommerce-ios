@@ -162,6 +162,7 @@ private extension FulfillViewController {
             CustomerInfoTableViewCell.self,
             CustomerNoteTableViewCell.self,
             LeftImageTableViewCell.self,
+            TopLeftImageTableViewCell.self,
             EditableOrderTrackingTableViewCell.self,
             PickListTableViewCell.self
         ]
@@ -324,7 +325,7 @@ private extension FulfillViewController {
         case .product(let item):
             setupProductCell(cell, with: item)
         case .note(let text):
-            setupNoteCell(cell, with: text)
+            setupCustomerNoteCell(cell, with: text)
         case .address(let shipping):
             setupAddressCell(cell, with: shipping)
         case .shippingMethod:
@@ -349,25 +350,18 @@ private extension FulfillViewController {
         cell.configure(item: viewModel)
     }
 
-    /// Setup: Note Cell
+    /// Setup: Customer Note Cell
     ///
-    private func setupNoteCell(_ cell: UITableViewCell, with note: String) {
-        guard let cell = cell as? LeftImageTableViewCell else {
+    private func setupCustomerNoteCell(_ cell: UITableViewCell, with note: String) {
+        guard let cell = cell as? TopLeftImageTableViewCell else {
             fatalError()
         }
 
-        cell.leftImage = UIImage.quoteImage.imageWithTintColor(.black)
-        cell.labelText = note
+        cell.imageView?.image = UIImage.quoteImage.imageWithTintColor(.black)
+        cell.textLabel?.text = note
 
         cell.isAccessibilityElement = true
-
-        cell.accessibilityHint = NSLocalizedString(
-            "Adds a note to an order",
-            comment: "VoiceOver accessibility hint, informing the user that the button can be used to add an order note."
-        )
-
         cell.accessibilityLabel = note
-        cell.accessibilityTraits = .button
     }
 
     /// Setup: Address Cell
@@ -726,7 +720,7 @@ private enum Row {
         case .shippingMethod:
             return CustomerNoteTableViewCell.self
         case .note:
-            return LeftImageTableViewCell.self
+            return TopLeftImageTableViewCell.self
         case .product:
             return PickListTableViewCell.self
         case .trackingAdd:

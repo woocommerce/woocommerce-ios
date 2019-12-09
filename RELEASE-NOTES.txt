@@ -1,5 +1,6 @@
 3.3
 -----
+- bugfix: View Billing Information > Contact Details: the email button wouldn't do anything if you don't have an email account configured in the Mail app. Now an option to copy the email address is presented instead of doing nothing.
  
 3.2
 -----

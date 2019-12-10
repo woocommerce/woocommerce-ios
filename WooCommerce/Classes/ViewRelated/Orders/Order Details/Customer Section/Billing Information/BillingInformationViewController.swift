@@ -170,12 +170,12 @@ private extension BillingInformationViewController {
         }
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .primary
+        actionSheet.view.tintColor = .text
 
         actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
         actionSheet.addDefaultActionWithTitle(ContactAction.copyEmail) { [weak self] _ in
             ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
-            self?.sendToPasteboard(email)
+            self?.sendToPasteboard(email, includeTrailingNewline: false)
         }
 
         let popoverController = actionSheet.popoverPresentationController

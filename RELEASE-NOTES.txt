@@ -1,5 +1,7 @@
 3.3
 -----
+- bugfix: Fulfill Order screen now displays full customer provided note, instead of cutting it to a single line.
+ 
 - bugfix: Fixed clipped content on section headings with larger font sizes
 
 3.2

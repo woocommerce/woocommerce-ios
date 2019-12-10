@@ -89,7 +89,14 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         appleTapped?()
     }
 
+    // MARK: - Accessibility
+
     private func configureForAccessibility() {
         dismissButton.accessibilityLabel = NSLocalizedString("Dismiss", comment: "Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.")
+    }
+
+    override func accessibilityPerformEscape() -> Bool {
+        dismiss(animated: true)
+        return true
     }
 }

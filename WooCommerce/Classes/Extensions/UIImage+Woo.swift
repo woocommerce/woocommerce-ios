@@ -130,7 +130,8 @@ extension UIImage {
     ///
     static var giftWithTopRightRedDotImage: UIImage {
         guard let image = Gridicon.iconOfType(.gift, withSize: CGSize(width: 24, height: 24))
-            .imageWithTintColor(.textSubtle)?
+            // Applies a constant gray color that looks fine in both Light/Dark modes, since we are generating an image with multiple colors.
+            .applyTintColor(.gray(.shade30))?
             .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
                                   finalSize: CGSize(width: 26, height: 26)) else {
                                     fatalError()
@@ -171,11 +172,7 @@ extension UIImage {
     /// Info Icon
     ///
     static var infoImage: UIImage {
-        guard let image = Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
-            .imageWithTintColor(.textSubtle) else {
-                fatalError()
-        }
-        return image
+        return Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
     }
 
     /// Invisible Image

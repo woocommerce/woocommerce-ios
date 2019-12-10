@@ -74,6 +74,8 @@ private extension TopBannerView {
         addSubview(topLevelView)
         pinSubviewToAllEdges(topLevelView)
 
+        iconImageView.tintColor = .textSubtle
+
         titleLabel.applyHeadlineStyle()
         titleLabel.numberOfLines = 0
 
@@ -115,7 +117,7 @@ private extension TopBannerView {
     }
 
     func configureBackground() {
-        backgroundColor = .basicBackground
+        backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
     func createContentView() -> UIView {

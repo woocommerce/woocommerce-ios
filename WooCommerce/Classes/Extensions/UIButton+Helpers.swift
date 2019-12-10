@@ -75,11 +75,21 @@ extension UIButton {
     func applyLinkButtonStyle() {
         backgroundColor = .clear
         contentEdgeInsets = Style.defaultEdgeInsets
-        tintColor = .primary
+        tintColor = .accent
         titleLabel?.applyBodyStyle()
         titleLabel?.textAlignment = .natural
-        setTitleColor(.primary, for: .normal)
-        setTitleColor(UIColor.primary.withAlphaComponent(0.5), for: .highlighted)
+        setTitleColor(.accent, for: .normal)
+        setTitleColor(.accentDark, for: .highlighted)
+    }
+
+    /// Applies the Single-Color Icon Button Style: accent/accent dark tint color
+    ///
+    func applyIconButtonStyle(icon: UIImage) {
+        let normalImage = icon.applyTintColor(.accent)
+        let highlightedImage = icon.applyTintColor(.accentDark)
+        setImage(normalImage, for: .normal)
+        setImage(highlightedImage, for: .highlighted)
+        tintColor = .accent
     }
 
     /// Supports title of multiple lines, either from longer text than allocated width or text with line breaks.

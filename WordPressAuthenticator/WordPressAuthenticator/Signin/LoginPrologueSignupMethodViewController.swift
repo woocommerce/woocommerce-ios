@@ -86,8 +86,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     }
 
     @IBAction func dismissTapped() {
-        WordPressAuthenticator.track(.signupCancelled)
-        dismiss(animated: true)
+        trackCancellationAndThenDismiss()
     }
 
     @objc func handleAppleButtonTapped() {
@@ -97,9 +96,19 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
         appleTapped?()
     }
 
+    private func trackCancellationAndThenDismiss() {
+        WordPressAuthenticator.track(.signupCancelled)
+        dismiss(animated: true)
+    }
+
     // MARK: - Accessibility
 
     private func configureForAccessibility() {
         dismissButton.accessibilityLabel = NSLocalizedString("Dismiss", comment: "Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.")
+    }
+
+    override func accessibilityPerformEscape() -> Bool {
+        trackCancellationAndThenDismiss()
+        return true
     }
 }

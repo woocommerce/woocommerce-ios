@@ -329,6 +329,6 @@ private struct Star {
     static let size        = Double(18)
     static let filledImage = UIImage.starImage(size: Star.size)
     static let emptyImage = UIImage.starImage(size: Star.size)
-    static let filledColor = UIColor.warning
-    static let emptyColor = UIColor.systemColor(.systemGray4)
+    static let filledColor = UIColor.ratingStarFilled
+    static let emptyColor = UIColor.ratingStarEmpty
 }

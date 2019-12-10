@@ -136,6 +136,13 @@ extension UIColor {
 
         return .gray(.shade30)
     }
+
+    /// Cancel Action Text Color.
+    ///
+    static var modalCancelAction: UIColor {
+        return UIColor(light: .accent,
+                       dark: .systemColor(.label))
+    }
 }
 
 

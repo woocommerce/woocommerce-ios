@@ -26,6 +26,9 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     @IBOutlet private var tableView: UITableView!
 
+
+    @IBOutlet private weak var bordersView: BordersView!
+
     /// Footer "Loading More" Spinner.
     ///
     private lazy var footerSpinnerView = {
@@ -100,10 +103,12 @@ where Cell.SearchModel == Command.CellViewModel {
         registerTableViewCells()
 
         configureSyncingCoordinator()
+        configureCancelButton()
         configureActions()
         configureEmptyStateLabel()
         configureMainView()
         configureSearchBar()
+        configureSearchBarBordersView()
         configureTableView()
         configureResultsController()
 
@@ -210,12 +215,23 @@ private extension SearchViewController {
         searchBar.tintColor = .black
     }
 
+    /// Setup: Search Bar Borders
+    ///
+    func configureSearchBarBordersView() {
+        bordersView.bottomColor = .systemColor(.separator)
+    }
+
+    /// Setup: Cancel Button
+    ///
+    func configureCancelButton() {
+        cancelButton.applyModalCancelButtonStyle()
+    }
+
     /// Setup: Actions
     ///
     func configureActions() {
         let title = NSLocalizedString("Cancel", comment: "")
         cancelButton.setTitle(title, for: .normal)
-        cancelButton.titleLabel?.font = UIFont.body
     }
 
     /// Setup: No Results

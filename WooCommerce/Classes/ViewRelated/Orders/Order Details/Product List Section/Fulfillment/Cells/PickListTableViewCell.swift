@@ -78,6 +78,10 @@ final class PickListTableViewCell: UITableViewCell {
         setupQuantityLabel()
         setupSkuLabel()
     }
+
+    override func prepareForReuse() {
+        setupSkuLabel()
+    }
 }
 
 
@@ -88,7 +92,13 @@ extension PickListTableViewCell {
         productImageView.setImage(with: item.imageURL?.absoluteString, placeholder: UIImage.productPlaceholderImage)
         name = item.name
         quantity = item.quantity
-        sku = item.sku
+
+        guard let skuText = item.sku else {
+            skuLabel.isHidden = true
+            return
+        }
+
+        sku = skuText
     }
 }
 
@@ -99,7 +109,7 @@ private extension PickListTableViewCell {
     func configureBackground() {
         applyDefaultBackgroundStyle()
 
-        //Background when selected
+        // Background when selected
         selectedBackgroundView = UIView()
         selectedBackgroundView?.backgroundColor = .listBackground
     }
@@ -123,6 +133,7 @@ private extension PickListTableViewCell {
 
     func setupSkuLabel() {
         skuLabel.applySecondaryFootnoteStyle()
+        skuLabel?.isHidden = false
         skuLabel?.text = ""
     }
 }

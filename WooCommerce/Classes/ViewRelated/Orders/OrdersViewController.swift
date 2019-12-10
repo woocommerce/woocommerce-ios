@@ -562,7 +562,7 @@ private extension OrdersViewController {
         ghostableTableView.isHidden = true
         ghostableTableView.stopGhostAnimation()
         ghostableTableView.removeGhostContent()
-        
+
         resultsController.startForwardingEvents(to: self.tableView)
         tableView.reloadData()
     }

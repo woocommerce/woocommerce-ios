@@ -23,6 +23,7 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         configureNameLabel()
         configureDetailsLabel()
         configureProductImageView()
+        configureAccessoryType()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -106,5 +107,9 @@ private extension ProductsTabProductTableViewCell {
             productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),
             productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor)
             ])
+    }
+
+    func configureAccessoryType() {
+        accessoryType = .disclosureIndicator
     }
 }

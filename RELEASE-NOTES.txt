@@ -1,6 +1,7 @@
 3.3
 -----
 - bugfix: add some padding to an order item image in the Fulfillment view, when no SKU exists
+- bugfix: Fixed clipped content on section headings with larger font sizes
 
 3.2
 -----

@@ -14,6 +14,9 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     open var googleTapped: (() -> Void)?
     open var appleTapped: (() -> Void)?
 
+    /// The big transparent (dismiss) button behind the buttons
+    @IBOutlet weak var dismissButton: UIButton!
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 

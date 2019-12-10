@@ -66,6 +66,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="dismissButton" destination="gpM-nW-lFQ" id="8iA-TH-TF4"/>
                         <segue destination="fwZ-QE-5et" kind="show" identifier="showEmailLogin" id="1xT-tL-sp6"/>
                     </connections>
                 </viewController>

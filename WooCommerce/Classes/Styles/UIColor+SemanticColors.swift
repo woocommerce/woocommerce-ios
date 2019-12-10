@@ -276,6 +276,19 @@ extension UIColor {
         return UIColor(light: .systemColor(.systemGray6),
                        dark: .systemColor(.systemGray5))
     }
+
+    /// Rating star filled color.
+    ///
+    static var ratingStarFilled: UIColor {
+        return UIColor(light: .withColorStudio(.yellow, shade: .shade30),
+                       dark: .withColorStudio(.yellow, shade: .shade50))
+    }
+
+    /// Rating star empty color.
+    ///
+    static var ratingStarEmpty: UIColor {
+        return .systemColor(.systemGray4)
+    }
 }
 
 // MARK: - UI elements.

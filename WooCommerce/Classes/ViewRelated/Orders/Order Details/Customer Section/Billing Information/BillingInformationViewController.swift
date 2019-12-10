@@ -175,7 +175,7 @@ private extension BillingInformationViewController {
         actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
         actionSheet.addDefaultActionWithTitle(ContactAction.copyEmail) { [weak self] _ in
             ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
-            self?.sendToPasteboard(self?.order.billingAddress?.email)
+            self?.sendToPasteboard(email)
         }
 
         let popoverController = actionSheet.popoverPresentationController
@@ -184,7 +184,7 @@ private extension BillingInformationViewController {
 
         from.present(actionSheet, animated: true)
 
-        ServiceLocator.analytics.track(.orderDetailCustomerPhoneMenuTapped)
+        ServiceLocator.analytics.track(.orderDetailCustomerEmailMenuTapped)
     }
 }
 

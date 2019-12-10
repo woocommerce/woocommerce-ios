@@ -8,8 +8,8 @@ final class AddManualTrackingViewModelTests: XCTestCase {
 
     private struct MockData {
         static let order = MockOrders().sampleOrder()
-        static let title = "Add Tracking"
-        static let primaryActionTitle = "Add"
+        static let title = NSLocalizedString("Add Tracking", comment: "A title used for a shipment tracking unit test")
+        static let primaryActionTitle = NSLocalizedString("Add", comment: "A button title used for a shipment tracking unit test")
         static let sectionCount = 1
         static let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
                                                          .trackingNumber,

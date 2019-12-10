@@ -268,7 +268,7 @@
 		B56DB3CA2049BFAA00D4AA8E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */; };
 		B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3CD2049BFAA00D4AA8E /* Main.storyboard */; };
 		B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */; };
-		B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */; };
+		B56DB3D72049BFAA00D4AA8E /* Launch Screen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B56DB3D52049BFAA00D4AA8E /* Launch Screen.storyboard */; };
 		B5718D6521B56B400026C9F0 /* PushNotificationsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5718D6421B56B3F0026C9F0 /* PushNotificationsManagerTests.swift */; };
 		B573B1A0219DC2690081C78C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B573B19D219DC2690081C78C /* Localizable.strings */; };
 		B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B67892107546E00AF8905 /* Address+Woo.swift */; };
@@ -813,7 +813,7 @@
 		B56DB3C92049BFAA00D4AA8E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B56DB3CE2049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		B56DB3D32049BFAA00D4AA8E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		B56DB3D62049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		B56DB3D62049BFAA00D4AA8E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = "Base.lproj/Launch Screen.storyboard"; sourceTree = "<group>"; };
 		B56DB3D82049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B56DB3DD2049BFAA00D4AA8E /* WooCommerceTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B56DB3E32049BFAA00D4AA8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -1821,7 +1821,7 @@
 				B5D1AFB320BC445900DB0E8C /* Images.xcassets */,
 				B573B19D219DC2690081C78C /* Localizable.strings */,
 				B56DB3D82049BFAA00D4AA8E /* Info.plist */,
-				B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */,
+				B56DB3D52049BFAA00D4AA8E /* Launch Screen.storyboard */,
 				B56C721921B5F65E00E5E85B /* Woo-Debug.entitlements */,
 				B56C721A21B5F65E00E5E85B /* Woo-Release.entitlements */,
 				D8915DBE23729CFB00F63762 /* ColorPalette.xcassets */,
@@ -2604,7 +2604,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B56DB3D72049BFAA00D4AA8E /* LaunchScreen.storyboard in Resources */,
+				B56DB3D72049BFAA00D4AA8E /* Launch Screen.storyboard in Resources */,
 				CE583A0C2107937F00D73C1C /* TextViewTableViewCell.xib in Resources */,
 				D843D5CC22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib in Resources */,
 				B560D68A2195BD100027BB7E /* NoteDetailsCommentTableViewCell.xib in Resources */,
@@ -3309,12 +3309,12 @@
 			name = Main.storyboard;
 			sourceTree = "<group>";
 		};
-		B56DB3D52049BFAA00D4AA8E /* LaunchScreen.storyboard */ = {
+		B56DB3D52049BFAA00D4AA8E /* Launch Screen.storyboard */ = {
 			isa = PBXVariantGroup;
 			children = (
 				B56DB3D62049BFAA00D4AA8E /* Base */,
 			);
-			name = LaunchScreen.storyboard;
+			name = "Launch Screen.storyboard";
 			sourceTree = "<group>";
 		};
 		B573B19D219DC2690081C78C /* Localizable.strings */ = {

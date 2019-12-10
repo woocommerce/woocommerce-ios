@@ -573,20 +573,10 @@ extension ProductDetailsViewModel {
     /// Rebuild the section struct.
     ///
     func reloadSections() {
-        let photo = configureProductImages()
         let summary = configureSummary()
         let pricingAndInventory = configurePricingAndInventory()
         let purchaseDetails = configurePurchaseDetails()
-        sections = [photo, summary, pricingAndInventory, purchaseDetails].compactMap { $0 }
-    }
-
-    /// Product Images section
-    ///
-    func configureProductImages() -> Section? {
-        guard product.images.count > 0 else {
-            return nil
-        }
-        return Section(row: .productImages)
+        sections = [summary, pricingAndInventory, purchaseDetails].compactMap { $0 }
     }
 
     /// Summary section.
@@ -597,11 +587,17 @@ extension ProductDetailsViewModel {
             return Section(rows: affiliateRows)
         }
 
-        let rows: [Row]
+        var rows = [Row]()
+
+        // Product Images row
+        if product.images.count > 0 {
+            rows.append(.productImages)
+        }
+
         if shouldShowProductVariantsInfo() {
-            rows = [.productName, .totalOrders, .reviews, .productVariants, .permalink]
+            rows += [.productName, .totalOrders, .reviews, .productVariants, .permalink]
         } else {
-            rows = [.productName, .totalOrders, .reviews, .permalink]
+            rows += [.productName, .totalOrders, .reviews, .permalink]
         }
 
         return Section(rows: rows)

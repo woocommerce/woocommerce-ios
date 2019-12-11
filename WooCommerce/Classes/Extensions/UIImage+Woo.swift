@@ -107,6 +107,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Empty Reviews Icon
+    ///
+    static var emptyReviewsImage: UIImage {
+        return UIImage(named: "woo-empty-reviews")!
+    }
+
     /// Error State Image
     ///
     static var errorStateImage: UIImage {

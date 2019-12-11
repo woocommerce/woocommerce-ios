@@ -128,7 +128,9 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
 
-        let action = ProductAction.synchronizeProducts(siteID: siteID1, pageNumber: ProductStore.Constants.firstPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: siteID1,
+                                                       pageNumber: ProductStore.Constants.firstPageNumber,
+                                                       pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
 
             // The previously upserted Product for siteID1 should be deleted.

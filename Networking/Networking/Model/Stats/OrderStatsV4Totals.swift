@@ -90,7 +90,7 @@ private extension OrderStatsV4Totals {
     enum CodingKeys: String, CodingKey {
         case ordersCount = "orders_count"
         case itemsSold = "num_items_sold"
-        case grossRevenue = "gross_revenue"
+        case grossRevenue = "total_sales"
         case couponDiscount = "coupons"
         case coupons = "coupons_count"
         case refunds

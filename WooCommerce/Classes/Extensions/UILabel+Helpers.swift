@@ -64,4 +64,8 @@ extension UILabel {
         font = .body
         textColor = .textQuaternary
     }
+
+    func applyActionableStyle() {
+        textColor = .accent
+    }
 }

@@ -99,7 +99,7 @@ enum ProductImagesCellConfig {
 /// Private Methods
 private extension ProductImagesHeaderTableViewCell {
     func configureBackground() {
-        applyDefaultBackgroundStyle()
+        backgroundColor = .systemColor(.secondarySystemGroupedBackground)
     }
 
     func configureSeparator() {
@@ -109,7 +109,7 @@ private extension ProductImagesHeaderTableViewCell {
     func configureCollectionView(config: ProductImagesCellConfig) {
         collectionView.delegate = self
         collectionView.dataSource = dataSource
-        collectionView.backgroundColor = .listBackground
+        collectionView.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
         collectionView.showsHorizontalScrollIndicator = false
         switch config {
         case .extendedAddImages:

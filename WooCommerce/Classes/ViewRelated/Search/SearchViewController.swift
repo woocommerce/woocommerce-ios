@@ -122,6 +122,13 @@ where Cell.SearchModel == Command.CellViewModel {
         searchBar.becomeFirstResponder()
     }
 
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // Note: configuring the search bar text color does not work in `viewDidLoad` and `viewWillAppear`.
+        configureSearchBar()
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
@@ -212,7 +219,7 @@ private extension SearchViewController {
     ///
     func configureSearchBar() {
         searchBar.placeholder = searchUICommand.searchBarPlaceholder
-        searchBar.tintColor = .black
+        searchBar.searchTextField.textColor = .systemColor(.label)
     }
 
     /// Setup: Search Bar Borders

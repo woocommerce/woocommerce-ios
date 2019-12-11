@@ -83,6 +83,7 @@ final class ProductsViewController: UIViewController {
         registerTableViewCells()
 
         startListeningToNotifications()
+        syncingCoordinator.resynchronize()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -93,7 +94,6 @@ final class ProductsViewController: UIViewController {
             return
         }
         updateResultsController(siteID: siteID)
-        syncingCoordinator.synchronizeFirstPage()
 
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
@@ -360,7 +360,7 @@ private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-        syncingCoordinator.synchronizeFirstPage {
+        syncingCoordinator.resynchronize {
             sender.endRefreshing()
         }
     }

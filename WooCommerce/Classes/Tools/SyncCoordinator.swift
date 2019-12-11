@@ -1,5 +1,5 @@
 import Foundation
-
+import Yosemite
 
 
 /// SyncingCoordinatorDelegate: Delegate that's expected to provide Sync'ing Services per Page.
@@ -24,7 +24,7 @@ class SyncingCoordinator {
     /// Default Settings
     ///
     enum Defaults {
-        static let pageFirstIndex = 1
+        static let pageFirstIndex = ProductStore.Constants.firstPageNumber
         static let pageSize = 25
         static let pageTTLInSeconds = TimeInterval(3 * 60)
     }

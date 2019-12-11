@@ -110,6 +110,76 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that ProductAction.synchronizeProducts for the first page deletes stored Products for the given site ID.
+    ///
+    func testSyncingProductsOnTheFirstPageResetsStoredProducts() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // Upserts some Products into the storage with two site IDs.
+        let siteID1 = 134
+        let siteID2 = 591
+
+        let productID = 123
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID1, productID: productID), in: viewStorage)
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID2, productID: productID), in: viewStorage)
+
+        let expectation = self.expectation(description: "Persist product list")
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
+
+        let action = ProductAction.synchronizeProducts(siteID: siteID1, pageNumber: ProductStore.Constants.firstPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNil(error)
+
+            // The previously upserted Product for siteID1 should be deleted.
+            let storedProductForSite1 = self.viewStorage.loadProduct(siteID: siteID1, productID: productID)
+            XCTAssertNil(storedProductForSite1)
+
+            // The previously upserted Product for siteID2 should stay in storage.
+            let storedProductForSite2 = self.viewStorage.loadProduct(siteID: siteID2, productID: productID)
+            XCTAssertNotNil(storedProductForSite2)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that ProductAction.synchronizeProducts after the first page does not delete stored Products for the given
+    /// site ID.
+    ///
+    func testSyncingProductsAfterTheFirstPage() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // Upserts some Products into the storage.
+        let siteID = 134
+
+        // This product ID should not exist in the network response.
+        let productID = 888
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID, productID: productID), in: viewStorage)
+
+        let expectation = self.expectation(description: "Persist product list")
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+
+        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: 3, pageSize: defaultPageSize) { error in
+            XCTAssertNil(error)
+
+            // The previously upserted Product's should stay in storage.
+            let storedProductForSite1 = self.viewStorage.loadProduct(siteID: siteID, productID: productID)
+            XCTAssertNotNil(storedProductForSite1)
+
+            XCTAssertGreaterThan(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveProductsReturnsErrorUponReponseError() {

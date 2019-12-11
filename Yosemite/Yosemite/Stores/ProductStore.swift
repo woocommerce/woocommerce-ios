@@ -96,6 +96,10 @@ private extension ProductStore {
                 return
             }
 
+            if pageNumber == 1 {
+                self?.deleteStoredProducts(siteID: siteID)
+            }
+
             self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
                 onCompletion(nil)
             }
@@ -202,6 +206,14 @@ private extension ProductStore {
         }
 
         storage.deleteObject(product)
+        storage.saveIfNeeded()
+    }
+
+    /// Deletes any Storage.Product with the specified `siteID`
+    ///
+    func deleteStoredProducts(siteID: Int) {
+        let storage = storageManager.viewStorage
+        storage.deleteProducts(siteID: siteID)
         storage.saveIfNeeded()
     }
 
@@ -440,5 +452,14 @@ extension ProductStore {
     ///
     func upsertStoredProduct(readOnlyProduct: Networking.Product, in storage: StorageType) {
         upsertStoredProducts(readOnlyProducts: [readOnlyProduct], in: storage)
+    }
+}
+
+// MARK: - Constants!
+//
+public extension ProductStore {
+
+    enum Constants {
+        public static let firstPageNumber: Int = ProductsRemote.Default.pageNumber
     }
 }

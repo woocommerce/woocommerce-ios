@@ -82,6 +82,15 @@ extension UIButton {
         setTitleColor(.accentDark, for: .highlighted)
     }
 
+    /// Applies the Modal Cancel Button Style
+    ///
+    func applyModalCancelButtonStyle() {
+        backgroundColor = .clear
+        titleLabel?.applyBodyStyle()
+        titleLabel?.textAlignment = .natural
+        setTitleColor(.modalCancelAction, for: .normal)
+    }
+
     /// Applies the Single-Color Icon Button Style: accent/accent dark tint color
     ///
     func applyIconButtonStyle(icon: UIImage) {

@@ -180,6 +180,39 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that ProductAction.synchronizeProducts for the first page does not delete stored Products if the API call fails.
+    ///
+    func testSyncingProductsOnTheFirstPageDoesNotDeleteStoredProductsUponResponseError() {
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // Upserts some Products into the storage.
+        let siteID = 134
+
+        // This product ID should not exist in the network response.
+        let productID = 888
+        productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID, productID: productID), in: viewStorage)
+
+        let expectation = self.expectation(description: "Retrieve products error response")
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+
+        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: ProductStore.Constants.firstPageNumber, pageSize: defaultPageSize) { error in
+            XCTAssertNotNil(error)
+
+            // The previously upserted Product's should stay in storage.
+            let storedProductForSite1 = self.viewStorage.loadProduct(siteID: siteID, productID: productID)
+            XCTAssertNotNil(storedProductForSite1)
+
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Product.self), 1)
+
+            expectation.fulfill()
+        }
+
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveProductsReturnsErrorUponReponseError() {

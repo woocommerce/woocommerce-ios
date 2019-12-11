@@ -28,6 +28,7 @@ class FooterSpinnerView: UIView {
     ///
     private func setupSubviews() {
         addSubview(activityIndicatorView)
+        activityIndicatorView.color = .systemColor(.label)
         activityIndicatorView.hidesWhenStopped = true
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
 

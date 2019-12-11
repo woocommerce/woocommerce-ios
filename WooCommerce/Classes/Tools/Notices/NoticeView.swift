@@ -7,7 +7,7 @@ class NoticeView: UIView {
     private let contentStackView = UIStackView()
 
     private let backgroundContainerView = UIView()
-    private let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+    private let backgroundView: UIVisualEffectView
     private let actionBackgroundView = UIView()
     private let shadowLayer = CAShapeLayer()
     private let shadowMaskLayer = CAShapeLayer()
@@ -31,6 +31,12 @@ class NoticeView: UIView {
     ///
     init(notice: Notice) {
         self.notice = notice
+
+        if #available(iOS 13.0, *) {
+            self.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemThickMaterial))
+        } else {
+            self.backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .extraLight))
+        }
 
         super.init(frame: .zero)
 
@@ -209,10 +215,10 @@ private extension NoticeView {
     }
 
     enum Appearance {
-        static let actionBackgroundColor = UIColor.basicBackground.withAlphaComponent(0.5)
+        static let actionBackgroundColor = UIColor.systemColor(.secondarySystemGroupedBackground)
         static let actionColor: UIColor = .primaryButtonBackground
         static let shadowColor: UIColor = .black
-        static let shadowOpacity: Float = 0.25
+        static let shadowOpacity: Float = 0.2
         static let shadowRadius: CGFloat = 8.0
         static let shadowOffset = CGSize(width: 0.0, height: 2.0)
         static let titleColor: UIColor = .text

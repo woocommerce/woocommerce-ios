@@ -1,2 +1,2 @@
 @import CocoaLumberjack;
-extern int ddLogLevel;
+extern DDLogLevel ddLogLevel;

@@ -1,2 +1,2 @@
 #import "WPAuthenticatorLoggingPrivate.h"
-int ddLogLevel = DDLogLevelWarning;
+DDLogLevel ddLogLevel = DDLogLevelWarning;

@@ -6,7 +6,7 @@ import Yosemite
 ///
 final class CurrencySettingsTests: XCTestCase {
 
-    private var moneyFormat = CurrencySettings()
+    private var moneyFormat: CurrencySettings?
     private var siteSettings: [SiteSetting] = []
 
     override func setUp() {
@@ -14,7 +14,7 @@ final class CurrencySettingsTests: XCTestCase {
     }
 
     override func tearDown() {
-        moneyFormat = CurrencySettings()
+        moneyFormat = nil
         siteSettings = []
         super.tearDown()
     }
@@ -22,11 +22,11 @@ final class CurrencySettingsTests: XCTestCase {
     func testInitDefault() {
         moneyFormat = CurrencySettings()
 
-        XCTAssertEqual(.USD, moneyFormat.currencyCode)
-        XCTAssertEqual(.left, moneyFormat.currencyPosition)
-        XCTAssertEqual(".", moneyFormat.decimalSeparator)
-        XCTAssertEqual(2, moneyFormat.numberOfDecimals)
-        XCTAssertEqual(",", moneyFormat.thousandSeparator)
+        XCTAssertEqual(.USD, moneyFormat?.currencyCode)
+        XCTAssertEqual(.left, moneyFormat?.currencyPosition)
+        XCTAssertEqual(".", moneyFormat?.decimalSeparator)
+        XCTAssertEqual(2, moneyFormat?.numberOfDecimals)
+        XCTAssertEqual(",", moneyFormat?.thousandSeparator)
     }
 
     func testInitWithIndividualParameters() {
@@ -36,22 +36,22 @@ final class CurrencySettingsTests: XCTestCase {
                                        decimalSeparator: "X",
                                        numberOfDecimals: 10)
 
-        XCTAssertEqual(.USD, moneyFormat.currencyCode)
-        XCTAssertEqual(.right, moneyFormat.currencyPosition)
-        XCTAssertEqual("X", moneyFormat.decimalSeparator)
-        XCTAssertEqual(10, moneyFormat.numberOfDecimals)
-        XCTAssertEqual("M", moneyFormat.thousandSeparator)
+        XCTAssertEqual(.USD, moneyFormat?.currencyCode)
+        XCTAssertEqual(.right, moneyFormat?.currencyPosition)
+        XCTAssertEqual("X", moneyFormat?.decimalSeparator)
+        XCTAssertEqual(10, moneyFormat?.numberOfDecimals)
+        XCTAssertEqual("M", moneyFormat?.thousandSeparator)
     }
 
     func testInitWithSiteSettingsEmptyArray() {
         siteSettings = []
         moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
-        XCTAssertEqual(.USD, moneyFormat.currencyCode)
-        XCTAssertEqual(.left, moneyFormat.currencyPosition)
-        XCTAssertEqual(".", moneyFormat.decimalSeparator)
-        XCTAssertEqual(2, moneyFormat.numberOfDecimals)
-        XCTAssertEqual(",", moneyFormat.thousandSeparator)
+        XCTAssertEqual(.USD, moneyFormat?.currencyCode)
+        XCTAssertEqual(.left, moneyFormat?.currencyPosition)
+        XCTAssertEqual(".", moneyFormat?.decimalSeparator)
+        XCTAssertEqual(2, moneyFormat?.numberOfDecimals)
+        XCTAssertEqual(",", moneyFormat?.thousandSeparator)
     }
 
     func testInitWithSiteSettings() {
@@ -98,11 +98,11 @@ final class CurrencySettingsTests: XCTestCase {
 
         moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
-        XCTAssertEqual(.SHP, moneyFormat.currencyCode)
-        XCTAssertEqual(.right, moneyFormat.currencyPosition)
-        XCTAssertEqual("Y", moneyFormat.decimalSeparator)
-        XCTAssertEqual(3, moneyFormat.numberOfDecimals)
-        XCTAssertEqual("X", moneyFormat.thousandSeparator)
+        XCTAssertEqual(.SHP, moneyFormat?.currencyCode)
+        XCTAssertEqual(.right, moneyFormat?.currencyPosition)
+        XCTAssertEqual("Y", moneyFormat?.decimalSeparator)
+        XCTAssertEqual(3, moneyFormat?.numberOfDecimals)
+        XCTAssertEqual("X", moneyFormat?.thousandSeparator)
     }
 
     func testInitWithIncompleteSiteSettings() {
@@ -143,11 +143,11 @@ final class CurrencySettingsTests: XCTestCase {
 
         moneyFormat = CurrencySettings(siteSettings: siteSettings)
 
-        XCTAssertEqual(.SHP, moneyFormat.currencyCode)
-        XCTAssertEqual(.right, moneyFormat.currencyPosition)
-        XCTAssertEqual("Y", moneyFormat.decimalSeparator)
-        XCTAssertEqual(2, moneyFormat.numberOfDecimals)
-        XCTAssertEqual("X", moneyFormat.thousandSeparator)
+        XCTAssertEqual(.SHP, moneyFormat?.currencyCode)
+        XCTAssertEqual(.right, moneyFormat?.currencyPosition)
+        XCTAssertEqual("Y", moneyFormat?.decimalSeparator)
+        XCTAssertEqual(2, moneyFormat?.numberOfDecimals)
+        XCTAssertEqual("X", moneyFormat?.thousandSeparator)
     }
 
     /// Test currency symbol lookup returns correctly encoded symbol.

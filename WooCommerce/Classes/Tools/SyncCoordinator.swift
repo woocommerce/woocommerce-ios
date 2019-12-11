@@ -92,9 +92,9 @@ class SyncingCoordinator {
 
     /// Resets Internal State + (RE)synchronizes the first page in the collection.
     ///
-    func resynchronize() {
+    func resynchronize(onCompletion: (() -> Void)? = nil) {
         resetInternalState()
-        synchronizeFirstPage()
+        synchronizeFirstPage(onCompletion: onCompletion)
     }
 
     /// Synchronizes the First Page in the collection.

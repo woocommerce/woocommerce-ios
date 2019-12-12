@@ -42,7 +42,7 @@ class AboutViewController: UIViewController {
         configureTableViewFooter()
         registerTableViewCells()
     }
-    
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateFooterHeight()
@@ -79,6 +79,13 @@ private extension AboutViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
+
+        guard let tabBarHeight = tabBarController?.tabBar.frame.height else {
+            return
+        }
+        let adjustForTabbarInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight, right: 0)
+        self.tableView.contentInset = adjustForTabbarInsets
+        self.tableView.scrollIndicatorInsets = adjustForTabbarInsets
     }
 
     /// Setup the tableview header.
@@ -198,7 +205,7 @@ extension AboutViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
-    
+
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }

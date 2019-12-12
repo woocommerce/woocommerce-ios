@@ -542,11 +542,9 @@ extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    /// Renders the Placeholder Orders
     ///
     func displayPlaceholderOrders() {
-        resultsController.stopForwardingEvents()
-
         let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
 
         // If the ghostable table view gets stuck for any reason,
@@ -564,8 +562,6 @@ private extension OrdersViewController {
         ghostableTableView.isHidden = true
         ghostableTableView.stopGhostAnimation()
         ghostableTableView.removeGhostContent()
-
-        resultsController.startForwardingEvents(to: self.tableView)
         tableView.reloadData()
     }
 

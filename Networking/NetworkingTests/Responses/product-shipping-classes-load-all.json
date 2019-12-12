@@ -1,0 +1,61 @@
+{
+    "data": [
+        {
+            "id": 94,
+            "name": "Free Shipping",
+            "slug": "free-shipping",
+            "description": "Limited offer!",
+            "count": 3,
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://shop.com/shipping_classes/94"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://shop.com/wp-json/wc/v3/products/shipping_classes"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 66,
+            "name": "Full Product Size",
+            "slug": "full-product-size",
+            "description": "",
+            "count": 1,
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://shop.com/wp-json/wc/v3/products/shipping_classes/66"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://shop.com/wp-json/wc/v3/products/shipping_classes"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 95,
+            "name": "Machine Shipping",
+            "slug": "machine-shipping",
+            "description": "",
+            "count": 0,
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://shop.com/wp-json/wc/v3/products/shipping_classes/95"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://shop.com/wp-json/wc/v3/products/shipping_classes"
+                    }
+                ]
+            }
+        }
+    ]
+}

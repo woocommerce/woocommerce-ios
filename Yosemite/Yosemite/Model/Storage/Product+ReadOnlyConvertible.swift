@@ -17,6 +17,8 @@ extension Storage.Product: ReadOnlyConvertible {
         permalink = product.permalink
         dateCreated = product.dateCreated
         dateModified = product.dateModified
+        dateOnSaleStart = product.dateOnSaleStart
+        dateOnSaleEnd = product.dateOnSaleEnd
         statusKey = product.statusKey
         featured = product.featured
         catalogVisibilityKey = product.catalogVisibilityKey
@@ -77,6 +79,7 @@ extension Storage.Product: ReadOnlyConvertible {
         let productImages = images?.map { $0.toReadOnly() } ?? [Yosemite.ProductImage]()
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
+        let productShippingClassModel = productShippingClass?.toReadOnly()
 
         var quantity: Int?
         if let stockQuantity = stockQuantity {
@@ -90,6 +93,8 @@ extension Storage.Product: ReadOnlyConvertible {
                        permalink: permalink,
                        dateCreated: dateCreated,
                        dateModified: dateModified,
+                       dateOnSaleStart: dateOnSaleStart,
+                       dateOnSaleEnd: dateOnSaleEnd,
                        productTypeKey: productTypeKey,
                        statusKey: statusKey,
                        featured: featured,
@@ -124,6 +129,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        shippingTaxable: shippingTaxable,
                        shippingClass: shippingClass,
                        shippingClassID: Int(shippingClassID),
+                       productShippingClass: productShippingClassModel,
                        reviewsAllowed: reviewsAllowed,
                        averageRating: averageRating,
                        ratingCount: Int(ratingCount),

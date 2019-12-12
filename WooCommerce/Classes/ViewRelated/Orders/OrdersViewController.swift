@@ -538,7 +538,7 @@ extension OrdersViewController {
 }
 
 
-// MARK: - Placeholders
+// MARK: - Placeholders & Ghostable Table
 //
 private extension OrdersViewController {
 
@@ -549,6 +549,8 @@ private extension OrdersViewController {
 
         let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
 
+        // If the ghostable table view gets stuck for any reason,
+        // let's reset the state before using it again
         ghostableTableView.removeGhostContent()
         ghostableTableView.displayGhostContent(options: options,
                                                style: .wooDefaultGhostStyle)

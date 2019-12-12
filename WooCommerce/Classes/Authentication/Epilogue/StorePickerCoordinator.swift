@@ -61,10 +61,10 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
         finalizeStoreSelection(storeID)
         presentStoreSwitchedNotice()
-        
+
         // Reload orders badge
         NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-        
+
         onDismiss?()
     }
 }

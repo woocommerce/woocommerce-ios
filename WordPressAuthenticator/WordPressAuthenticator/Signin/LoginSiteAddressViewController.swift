@@ -37,6 +37,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     override func viewDidLoad() {
         super.viewDidLoad()
         localizeControls()
+        configureForAccessibility()
     }
 
 
@@ -90,6 +91,10 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         siteAddressHelpButton.titleLabel?.numberOfLines = 0
     }
 
+    private func configureForAccessibility() {
+        siteURLField.accessibilityLabel =
+            NSLocalizedString("Site address", comment: "Accessibility label of the site address field shown when adding a self-hosted site.")
+    }
 
     /// Configures the content of the text fields based on what is saved in `loginFields`.
     ///

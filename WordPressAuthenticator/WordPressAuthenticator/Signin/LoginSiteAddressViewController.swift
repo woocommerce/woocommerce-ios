@@ -91,6 +91,8 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         siteAddressHelpButton.titleLabel?.numberOfLines = 0
     }
 
+    /// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
+    ///
     private func configureForAccessibility() {
         siteURLField.accessibilityLabel =
             NSLocalizedString("Site address", comment: "Accessibility label of the site address field shown when adding a self-hosted site.")

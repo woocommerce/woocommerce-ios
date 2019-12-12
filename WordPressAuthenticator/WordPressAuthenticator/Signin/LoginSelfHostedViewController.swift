@@ -36,6 +36,7 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         localizeControls()
         setupOnePasswordButtonIfNeeded()
         displayLoginMessage("")
+        configureForAcessibility()
     }
 
 
@@ -87,6 +88,16 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         forgotPasswordButton.setTitle(forgotPasswordTitle, for: .normal)
         forgotPasswordButton.setTitle(forgotPasswordTitle, for: .highlighted)
         forgotPasswordButton.titleLabel?.numberOfLines = 0
+    }
+
+
+    /// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
+    ///
+    private func configureForAcessibility() {
+        usernameField.accessibilityLabel =
+            NSLocalizedString("Username", comment: "Accessibility label for the username text field in the self-hosted login page.")
+        passwordField.accessibilityLabel =
+            NSLocalizedString("Password", comment: "Accessibility label for the password text field in the self-hosted login page.")
     }
 
 

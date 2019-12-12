@@ -13,6 +13,9 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     open var selfHostedTapped: (() -> Void)?
     open var appleTapped: (() -> Void)?
 
+    /// The big transparent (dismiss) button behind the buttons
+    @IBOutlet private weak var dismissButton: UIButton!
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
@@ -24,6 +27,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureButtonVC()
+        configureForAccessibility()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -85,4 +89,23 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         appleTapped?()
     }
 
+    // MARK: - Accessibility
+
+    private func configureForAccessibility() {
+        dismissButton.accessibilityLabel = NSLocalizedString("Dismiss", comment: "Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog.")
+
+        // Ensure that the first button (in buttonViewController) is automatically selected by
+        // VoiceOver instead of the dismiss button.
+        if buttonViewController?.isViewLoaded == true, let buttonsView = buttonViewController?.view {
+            view.accessibilityElements = [
+                buttonsView,
+                dismissButton
+            ]
+        }
+    }
+
+    override func accessibilityPerformEscape() -> Bool {
+        dismiss(animated: true)
+        return true
+    }
 }

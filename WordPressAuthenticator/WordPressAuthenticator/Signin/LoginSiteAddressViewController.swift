@@ -180,10 +180,17 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             WordPressAuthenticator.track(.loginFailed, error: error)
             self.configureViewLoading(false)
 
+            let displayAndFocusOnErrorLabel: (String) -> () = { message in
+                if let errorLabel = self.errorLabel {
+                    UIAccessibility.post(notification: .layoutChanged, argument: self.errorLabel)
+                }
+                self.displayError(message: message)
+            }
+
             let err = self.originalErrorOrError(error: error as NSError)
 
             if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
-                self.displayError(message: xmlrpcValidatorError.localizedDescription)
+                displayAndFocusOnErrorLabel(xmlrpcValidatorError.localizedDescription)
 
             } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
                 (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
@@ -191,7 +198,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 let msg = NSLocalizedString(
                     "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.",
                     comment: "Error message shown a URL does not point to an existing site.")
-                self.displayError(message: msg)
+                displayAndFocusOnErrorLabel(msg)
 
             } else {
                 self.displayError(error as NSError, sourceTag: self.sourceTag)

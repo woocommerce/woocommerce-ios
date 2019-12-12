@@ -42,6 +42,11 @@ class AboutViewController: UIViewController {
         configureTableViewFooter()
         registerTableViewCells()
     }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateFooterHeight()
+    }
 }
 
 
@@ -191,6 +196,10 @@ extension AboutViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
 

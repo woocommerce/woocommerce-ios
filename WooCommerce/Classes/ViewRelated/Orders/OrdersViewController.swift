@@ -16,7 +16,7 @@ class OrdersViewController: UIViewController {
 
     /// Ghostable TableView.
     ///
-    private(set) var ghostableTableView = UITableView()
+    private(set) let ghostableTableView = UITableView()
 
     /// Pull To Refresh Support.
     ///

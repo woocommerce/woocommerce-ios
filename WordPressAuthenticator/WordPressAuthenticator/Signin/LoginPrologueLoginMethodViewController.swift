@@ -14,7 +14,7 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
     open var appleTapped: (() -> Void)?
 
     /// The big transparent (dismiss) button behind the buttons
-    @IBOutlet weak var dismissButton: UIButton!
+    @IBOutlet private weak var dismissButton: UIButton!
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)

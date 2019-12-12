@@ -47,6 +47,9 @@ final class OrdersBadgeController {
         case .vertical:
             xOffset = showsNinePlusText ? Constants.xOffsetForNinePlus: Constants.xOffset
             yOffset = showsNinePlusText ? Constants.yOffsetForNinePlus: Constants.yOffset
+        @unknown default:
+            xOffset = showsNinePlusText ? Constants.xOffsetForNinePlusLandscape: Constants.xOffsetLandscape
+            yOffset = showsNinePlusText ? Constants.yOffsetForNinePlusLandscape: Constants.yOffsetLandscape
         }
 
         badgeLabel.frame.origin = CGPoint(x: xOffset, y: yOffset)

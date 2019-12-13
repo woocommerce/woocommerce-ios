@@ -26,6 +26,9 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     @IBOutlet private var tableView: UITableView!
 
+
+    @IBOutlet private weak var bordersView: BordersView!
+
     /// Footer "Loading More" Spinner.
     ///
     private lazy var footerSpinnerView = {
@@ -100,10 +103,12 @@ where Cell.SearchModel == Command.CellViewModel {
         registerTableViewCells()
 
         configureSyncingCoordinator()
+        configureCancelButton()
         configureActions()
         configureEmptyStateLabel()
         configureMainView()
         configureSearchBar()
+        configureSearchBarBordersView()
         configureTableView()
         configureResultsController()
 
@@ -115,6 +120,13 @@ where Cell.SearchModel == Command.CellViewModel {
 
         navigationController?.setNavigationBarHidden(true, animated: true)
         searchBar.becomeFirstResponder()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        // Note: configuring the search bar text color does not work in `viewDidLoad` and `viewWillAppear`.
+        configureSearchBar()
     }
 
     override func viewWillDisappear(_ animated: Bool) {
@@ -207,7 +219,19 @@ private extension SearchViewController {
     ///
     func configureSearchBar() {
         searchBar.placeholder = searchUICommand.searchBarPlaceholder
-        searchBar.tintColor = .black
+        searchBar.searchTextField.textColor = .text
+    }
+
+    /// Setup: Search Bar Borders
+    ///
+    func configureSearchBarBordersView() {
+        bordersView.bottomColor = .systemColor(.separator)
+    }
+
+    /// Setup: Cancel Button
+    ///
+    func configureCancelButton() {
+        cancelButton.applyModalCancelButtonStyle()
     }
 
     /// Setup: Actions
@@ -215,7 +239,6 @@ private extension SearchViewController {
     func configureActions() {
         let title = NSLocalizedString("Cancel", comment: "")
         cancelButton.setTitle(title, for: .normal)
-        cancelButton.titleLabel?.font = UIFont.body
     }
 
     /// Setup: No Results

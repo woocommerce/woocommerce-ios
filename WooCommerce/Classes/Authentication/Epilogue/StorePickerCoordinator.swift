@@ -61,6 +61,10 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
         finalizeStoreSelection(storeID)
         presentStoreSwitchedNotice()
+
+        // Reload orders badge
+        NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+
         onDismiss?()
     }
 }
@@ -73,6 +77,7 @@ private extension StorePickerCoordinator {
         switch selectedConfiguration {
         case .standard:
             let wrapper = UINavigationController(rootViewController: storePicker)
+            wrapper.modalPresentationStyle = .fullScreen
             navigationController.present(wrapper, animated: true)
         case .switchingStores:
             let wrapper = UINavigationController(rootViewController: storePicker)

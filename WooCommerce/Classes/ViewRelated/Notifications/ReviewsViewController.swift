@@ -325,7 +325,7 @@ private extension ReviewsViewController {
     ///
     func displayEmptyUnfilteredOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = .waitingForCustomersImage
+        overlayView.messageImage = .emptyReviewsImage
         overlayView.messageText = NSLocalizedString("No Reviews Yet!", comment: "Empty Reviews List Message")
         overlayView.actionText = NSLocalizedString("Share your Store", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in

@@ -81,7 +81,7 @@ private extension AboutViewController {
         tableView.backgroundColor = .listBackground
         configureTableViewInsets()
     }
-    
+
     func configureTableViewInsets() {
         guard let tabBarHeight = tabBarController?.tabBar.frame.height else {
             return

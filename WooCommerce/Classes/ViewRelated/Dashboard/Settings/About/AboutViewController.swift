@@ -79,13 +79,16 @@ private extension AboutViewController {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
-
+        configureTableViewInsets()
+    }
+    
+    func configureTableViewInsets() {
         guard let tabBarHeight = tabBarController?.tabBar.frame.height else {
             return
         }
         let adjustForTabbarInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight, right: 0)
-        self.tableView.contentInset = adjustForTabbarInsets
-        self.tableView.scrollIndicatorInsets = adjustForTabbarInsets
+        tableView.contentInset = adjustForTabbarInsets
+        tableView.scrollIndicatorInsets = adjustForTabbarInsets
     }
 
     /// Setup the tableview header.

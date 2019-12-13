@@ -23,7 +23,7 @@ final class TitleAndEditableValueTableViewCellTests: XCTestCase {
         let title = cell?.title
 
         XCTAssertEqual(title?.font, UIFont.footnote)
-        XCTAssertEqual(title?.textColor, .text)
+        XCTAssertEqual(title?.textColor, .systemColor(.secondaryLabel))
     }
 
     func testValueHasBodyStyleApplied() {

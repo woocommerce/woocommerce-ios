@@ -261,6 +261,7 @@ private extension OrderDetailsDataSource {
             "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete.",
             comment: "Shipping notice row label when there is more than one shipping method")
         cell.imageView?.image = Icons.shippingNoticeIcon
+        cell.imageView?.tintColor = .accent
         cell.textLabel?.text = cellTextContent
         cell.selectionStyle = .none
 
@@ -274,6 +275,7 @@ private extension OrderDetailsDataSource {
 
     private func configureNewNote(cell: LeftImageTableViewCell) {
         cell.leftImage = Icons.addNoteIcon
+        cell.imageView?.tintColor = .accent
         cell.labelText = Titles.addNoteText
 
         cell.accessibilityTraits = .button
@@ -387,6 +389,7 @@ private extension OrderDetailsDataSource {
     private func configureNewTracking(cell: LeftImageTableViewCell) {
         let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
         cell.leftImage = .addOutlineImage
+        cell.imageView?.tintColor = .accent
         cell.labelText = cellTextContent
 
         cell.accessibilityTraits = .button

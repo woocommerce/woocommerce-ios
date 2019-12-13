@@ -8,7 +8,7 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let searchBarPlaceholder = NSLocalizedString("Search all products", comment: "Products Search Placeholder")
 
-    let emptyStateText = NSLocalizedString("No products yet", comment: "Search Products (Empty State)")
+    let emptyStateText = NSLocalizedString("No products found", comment: "Search Products (Empty State)")
 
     private let siteID: Int
 

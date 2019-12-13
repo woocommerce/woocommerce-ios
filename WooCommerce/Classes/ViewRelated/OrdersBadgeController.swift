@@ -82,6 +82,7 @@ private extension OrdersBadgeController {
 
     enum Constants {
         static let borderWidth  = CGFloat(1)
+        static let borderColor  = UIColor.basicBackground
         static let cornerRadius = CGFloat(8)
 
         static let width = CGFloat(18)
@@ -118,7 +119,9 @@ private extension OrdersBadgeController {
             horizontalPadding = Constants.horizontalPadding
         }
 
-        let returnValue = BadgeLabel(frame: CGRect(x: Constants.xOffset,
+        let returnValue = BadgeLabel(borderWidth: Constants.borderWidth,
+                                     borderColor: Constants.borderColor,
+                                     frame: CGRect(x: Constants.xOffset,
                                                    y: Constants.yOffset,
                                                    width: width,
                                                    height: Constants.height))
@@ -126,8 +129,6 @@ private extension OrdersBadgeController {
         returnValue.tag = badgeTag(for: tab)
         returnValue.text = text
         returnValue.font = StyleManager.badgeFont
-        returnValue.borderColor = UIColor.basicBackground
-        returnValue.borderWidth = Constants.borderWidth
         returnValue.textColor = .textInverted
         returnValue.horizontalPadding = horizontalPadding
         returnValue.cornerRadius = Constants.cornerRadius
@@ -135,7 +136,7 @@ private extension OrdersBadgeController {
         // BUGFIX: Don't add the backgroundColor property, use this!
         // Labels with rounded borders and a background color will end
         // up with a fuzzy shadow / outline outside of the border color.
-        returnValue.fillColor = .accent
+        returnValue.fillColor = .primary
 
         returnValue.isHidden = true
         returnValue.adjustsFontForContentSizeCategory = false

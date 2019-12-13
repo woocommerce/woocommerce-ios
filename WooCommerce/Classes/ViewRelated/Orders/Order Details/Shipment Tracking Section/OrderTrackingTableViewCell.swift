@@ -70,11 +70,10 @@ final class OrderTrackingTableViewCell: UITableViewCell {
     }
 
     private func configureActionButton() {
-        let deleteIcon = UIImage.moreImage
+        let moreIcon = UIImage.moreImage
             .imageFlippedForRightToLeftLayoutDirection()
-            .imageWithTintColor(.primary)
 
-        ellipsisButton.setImage(deleteIcon!, for: .normal)
+        ellipsisButton.applyIconButtonStyle(icon: moreIcon)
         ellipsisButton.addTarget(self, action: #selector(iconTapped), for: .touchUpInside)
 
         self.accessoryView = ellipsisButton

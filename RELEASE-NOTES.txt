@@ -13,6 +13,7 @@
 - Experimental: if a Product has variations, the variants info are shown on the Product Details that navigates to a list of variations with each price or visibility shown.
 - Enhancement: Support for dark mode
 - bugfix: Settings no longer convert to partial dark mode.
+- Experimental: Support the latest wc-admin plugin release, v0.23.0 and up
  
 3.1
 -----

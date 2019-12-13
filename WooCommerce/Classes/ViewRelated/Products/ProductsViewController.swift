@@ -83,6 +83,7 @@ final class ProductsViewController: UIViewController {
         registerTableViewCells()
 
         startListeningToNotifications()
+        syncingCoordinator.resynchronize()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -93,7 +94,6 @@ final class ProductsViewController: UIViewController {
             return
         }
         updateResultsController(siteID: siteID)
-        syncingCoordinator.synchronizeFirstPage()
 
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
@@ -272,7 +272,7 @@ private extension ProductsViewController {
     func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let descriptor = NSSortDescriptor(key: "name", ascending: true)
+        let descriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCompare(_:)))
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
@@ -360,7 +360,7 @@ private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-        syncingCoordinator.synchronizeFirstPage {
+        syncingCoordinator.resynchronize {
             sender.endRefreshing()
         }
     }

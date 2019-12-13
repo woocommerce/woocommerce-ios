@@ -416,7 +416,7 @@ private extension OrderDetailsViewController {
         }
 
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .primary
+        actionSheet.view.tintColor = .text
 
         actionSheet.addCancelActionWithTitle(TrackingAction.dismiss)
 

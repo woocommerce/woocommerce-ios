@@ -106,6 +106,8 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
             usernameField.placeholder = nil
             passwordField.placeholder = nil
         }
+
+        forgotPasswordButton.accessibilityTraits = .link
     }
 
 

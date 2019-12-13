@@ -315,7 +315,9 @@ extension LoginSelfHostedViewController {
         configureViewLoading(false)
         let err = error as NSError
         if err.code == 403 {
-            displayError(message: NSLocalizedString("It looks like this username/password isn't associated with this site.", comment: "An error message shown during log in when the username or password is incorrect."))
+            let message = NSLocalizedString("It looks like this username/password isn't associated with this site.",
+                                            comment: "An error message shown during log in when the username or password is incorrect.")
+            displayError(message: message, moveVoiceOverFocus: true)
         } else {
             displayError(error as NSError, sourceTag: sourceTag)
         }

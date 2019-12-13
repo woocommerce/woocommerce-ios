@@ -43,6 +43,12 @@ class AboutViewController: UIViewController {
         registerTableViewCells()
     }
 
+    /// Manage device rotation
+    ///
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        configureTableViewInsets()
+    }
+
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         tableView.updateFooterHeight()

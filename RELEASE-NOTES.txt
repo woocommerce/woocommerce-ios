@@ -6,6 +6,8 @@
 - bugfix: Fixed clipped content on section headings with larger font sizes
 - bugfix: Fixed footer overlapping the last row in Settings > About with larger font sizes
 - bugfix: the Orders badge on tab bar now is correctly refreshed after switching stores
+- bugfix: the order detail status and "Begin fulfillment" button now are correctly updated when the order status changes
+- bugfix: after adding a new order note, now it appear correctly inside the order detail
 
 3.2
 -----

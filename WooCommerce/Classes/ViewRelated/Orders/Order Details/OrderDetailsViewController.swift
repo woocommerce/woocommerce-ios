@@ -63,8 +63,7 @@ final class OrderDetailsViewController: UIViewController {
                 self?.viewModel.trackingIsReachable = true
             }
 
-            self?.reloadSections()
-            self?.tableView.reloadData()
+            self?.reloadTableViewSectionsAndData()
         }
     }
 }
@@ -104,7 +103,7 @@ private extension OrderDetailsViewController {
                 return
             }
             self.viewModel.updateOrderStatus(order: order)
-            self.tableView.reloadData()
+            self.reloadTableViewSectionsAndData()
         }
         entityListener.onDelete = { [weak self] in
             guard let self = self else {

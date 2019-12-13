@@ -3,7 +3,7 @@
         "totals": {
             "orders_count": 3,
             "num_items_sold": 5,
-            "gross_revenue": 800,
+            "total_sales": 800,
             "coupons": 0,
             "coupons_count": 0,
             "refunds": 0,
@@ -23,7 +23,7 @@
                 "subtotals": {
                     "orders_count": 3,
                     "num_items_sold": 5,
-                    "gross_revenue": 800,
+                    "total_sales": 800,
                     "coupons": 0,
                     "coupons_count": 0,
                     "refunds": 0,

@@ -222,9 +222,9 @@ private extension StoreStatsAndTopPerformersViewController {
     func createBorderView() -> UIView {
         let view = UIView(frame: .zero)
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .listSmallIcon
+        view.backgroundColor = .systemColor(.separator)
         NSLayoutConstraint.activate([
-            view.heightAnchor.constraint(equalToConstant: 1)
+            view.heightAnchor.constraint(equalToConstant: 0.5)
             ])
         return view
     }
@@ -239,7 +239,7 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func configureView() {
-        view.backgroundColor = .listBackground
+        view.backgroundColor = .systemColor(.systemGroupedBackground)
         configureButtonBarBottomBorder()
 
         // Disables any content inset adjustment since `XLPagerTabStrip` doesn't seem to support safe area insets.
@@ -266,8 +266,8 @@ private extension StoreStatsAndTopPerformersViewController {
     }
 
     func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = .basicBackground
-        settings.style.buttonBarItemBackgroundColor = .basicBackground
+        settings.style.buttonBarBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        settings.style.buttonBarItemBackgroundColor = .systemColor(.secondarySystemGroupedBackground)
         settings.style.selectedBarBackgroundColor = .primary
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight

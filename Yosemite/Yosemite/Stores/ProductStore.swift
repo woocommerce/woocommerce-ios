@@ -81,15 +81,23 @@ private extension ProductStore {
         }
     }
 
-    /// Synchronizes the products associated with a given Site ID (if any!).
+    /// Synchronizes the products associated with a given Site ID, sorted by ascending name.
     ///
     func synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
-        remote.loadAllProducts(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (products, error) in
+        remote.loadAllProducts(for: siteID,
+                               pageNumber: pageNumber,
+                               pageSize: pageSize,
+                               orderBy: .name,
+                               order: .ascending) { [weak self] (products, error) in
             guard let products = products else {
                 onCompletion(error)
                 return
+            }
+
+            if pageNumber == 1 {
+                self?.deleteStoredProducts(siteID: siteID)
             }
 
             self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
@@ -198,6 +206,14 @@ private extension ProductStore {
         }
 
         storage.deleteObject(product)
+        storage.saveIfNeeded()
+    }
+
+    /// Deletes any Storage.Product with the specified `siteID`
+    ///
+    func deleteStoredProducts(siteID: Int) {
+        let storage = storageManager.viewStorage
+        storage.deleteProducts(siteID: siteID)
         storage.saveIfNeeded()
     }
 
@@ -448,5 +464,14 @@ extension ProductStore {
     ///
     func upsertStoredProduct(readOnlyProduct: Networking.Product, in storage: StorageType) {
         upsertStoredProducts(readOnlyProducts: [readOnlyProduct], in: storage)
+    }
+}
+
+// MARK: - Constants!
+//
+public extension ProductStore {
+
+    enum Constants {
+        public static let firstPageNumber: Int = ProductsRemote.Default.pageNumber
     }
 }

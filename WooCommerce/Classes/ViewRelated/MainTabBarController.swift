@@ -111,8 +111,6 @@ final class MainTabBarController: UITabBarController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
-
-        reloadProductListVisibility()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -125,6 +123,8 @@ final class MainTabBarController: UITabBarController {
         startListeningToBadgeUpdatesIfNeeded()
         startListeningToOrdersBadge()
         startListeningToProductsVisibilityChanges()
+
+        reloadProductListVisibility()
     }
 
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {

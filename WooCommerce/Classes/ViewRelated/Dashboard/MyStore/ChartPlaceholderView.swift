@@ -18,6 +18,7 @@ class ChartPlaceholderView: UIView {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        setupView()
         setupSubviews()
     }
 }
@@ -26,6 +27,11 @@ class ChartPlaceholderView: UIView {
 // MARK: - Private Methods
 //
 private extension ChartPlaceholderView {
+    /// Applies color to the view.
+    ///
+    func setupView() {
+        backgroundColor = .listForeground
+    }
 
     /// Applies Rounded Style to the upper views.
     ///

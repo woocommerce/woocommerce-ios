@@ -4,6 +4,7 @@
 - bugfix: View Billing Information > Contact Details: the email button wouldn't do anything if you don't have an email account configured in the Mail app. Now an option to copy the email address is presented instead of doing nothing.
 - bugfix: Fulfill Order screen now displays full customer provided note, instead of cutting it to a single line.
 - bugfix: Fixed clipped content on section headings with larger font sizes
+- bugfix: Fixed footer overlapping the last row in Settings > About with larger font sizes
 - bugfix: the Orders badge on tab bar now is correctly refreshed after switching stores
 
 3.2

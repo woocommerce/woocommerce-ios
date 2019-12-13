@@ -98,6 +98,14 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
             NSLocalizedString("Username", comment: "Accessibility label for the username text field in the self-hosted login page.")
         passwordField.accessibilityLabel =
             NSLocalizedString("Password", comment: "Accessibility label for the password text field in the self-hosted login page.")
+
+        if UIAccessibility.isVoiceOverRunning {
+            // Remove the placeholder if VoiceOver is running. VoiceOver speaks the label and the
+            // placeholder together. In this case, both labels and placeholders are the same so it's
+            // like VoiceOver is reading the same thing twice.
+            usernameField.placeholder = nil
+            passwordField.placeholder = nil
+        }
     }
 
 

@@ -5,6 +5,7 @@
 - bugfix: Fulfill Order screen now displays full customer provided note, instead of cutting it to a single line.
 - bugfix: Fixed clipped content on section headings with larger font sizes
 - bugfix: Fixed footer overlapping the last row in Settings > About with larger font sizes
+- bugfix: the Orders badge on tab bar now is correctly refreshed after switching stores
 
 3.2
 -----

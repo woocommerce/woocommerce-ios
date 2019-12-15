@@ -1,6 +1,11 @@
 3.3
 -----
  
+ 3.2.1
+ -----
+ - bugfix: the order detail status and "Begin fulfillment" button now are correctly updated when the order status changes
+ - bugfix: after adding a new order note, now it appear correctly inside the order detail
+ 
 3.2
 -----
 - Experimental: a Products feature switch is visible in Settings > Experimental Features that shows/hides the Products tab with a Work In Progress banner at the top.

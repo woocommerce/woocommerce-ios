@@ -50,7 +50,15 @@ private extension UnitInputTableViewCell {
     func configureInputTextField() {
         inputTextField.borderStyle = .none
         inputTextField.applyBodyStyle()
-        inputTextField.textAlignment = .right
+        if traitCollection.layoutDirection == .rightToLeft {
+            // swiftlint:disable:next natural_text_alignment
+            inputTextField.textAlignment = .left
+            // swiftlint:enable:next natural_text_alignment
+        } else {
+            // swiftlint:disable:next inverse_text_alignment
+            inputTextField.textAlignment = .right
+            // swiftlint:enable:next inverse_text_alignment
+        }
         inputTextField.keyboardType = .decimalPad
         inputTextField.delegate = self
         inputTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)

@@ -6,16 +6,16 @@ public struct TaxClass: Decodable {
 
     /// Tax class name.
     ///
-    public let name: String?
+    public let name: String
 
     /// Unique identifier for the resource.
     ///
-    public let slug: String?
+    public let slug: String
 
 
     /// Default initializer for TaxClass.
     ///
-    public init(name: String?, slug: String?) {
+    public init(name: String, slug: String) {
         self.name = name
         self.slug = slug
     }
@@ -26,8 +26,8 @@ public struct TaxClass: Decodable {
     public init(from decoder: Decoder) throws {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let name = try container.decodeIfPresent(String.self, forKey: .name)
-        let slug = try container.decodeIfPresent(String.self, forKey: .slug)
+        let name = try container.decode(String.self, forKey: .name)
+        let slug = try container.decode(String.self, forKey: .slug)
 
         self.init(name: name, slug: slug)
     }

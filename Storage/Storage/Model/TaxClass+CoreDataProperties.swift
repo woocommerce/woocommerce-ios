@@ -8,6 +8,6 @@ extension TaxClass {
         return NSFetchRequest<TaxClass>(entityName: "TaxClass")
     }
 
-    @NSManaged public var name: String?
-    @NSManaged public var slug: String?
+    @NSManaged public var name: String
+    @NSManaged public var slug: String
 }

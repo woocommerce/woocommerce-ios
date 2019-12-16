@@ -68,6 +68,11 @@ class NewNoteViewController: UIViewController {
                 self?.configureForEditingNote()
                 return
             }
+
+                                                    if let orderNote = orderNote {
+                                                                  self?.viewModel.orderNotes.insert(orderNote, at: 0)
+                                                              }
+
             ServiceLocator.analytics.track(.orderNoteAddSuccess)
             self?.dismiss(animated: true, completion: nil)
         }

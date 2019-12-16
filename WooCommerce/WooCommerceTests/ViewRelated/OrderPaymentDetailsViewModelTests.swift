@@ -4,70 +4,134 @@ import XCTest
 
 final class OrderPaymentDetailsViewModelTests: XCTestCase {
     private var order: Order!
-    private var subject: OrderPaymentDetailsViewModel!
+    private var viewModel: OrderPaymentDetailsViewModel!
+
+    /// Broken Orders
+    ///
+    private var brokenOrder: Order!
+    private var anotherBrokenOrder: Order!
+    private var brokenOrderViewModel: OrderPaymentDetailsViewModel!
+    private var anotherBrokenOrderViewModel: OrderPaymentDetailsViewModel!
 
     override func setUp() {
         super.setUp()
         order = MockOrders().sampleOrder()
-        subject = OrderPaymentDetailsViewModel(order: order!)
+        viewModel = OrderPaymentDetailsViewModel(order: order!)
+
+        brokenOrder = MockOrders().brokenOrder()
+        brokenOrderViewModel = OrderPaymentDetailsViewModel(order: brokenOrder)
+
+        anotherBrokenOrder = MockOrders().unpaidOrder()
+        anotherBrokenOrderViewModel = OrderPaymentDetailsViewModel(order: anotherBrokenOrder)
     }
 
     override func tearDown() {
-        subject = nil
+        anotherBrokenOrderViewModel = nil
+        anotherBrokenOrder = nil
+        brokenOrderViewModel = nil
+        brokenOrder = nil
+        viewModel = nil
         order = nil
         super.tearDown()
     }
 
     func testSubtotalMatchesExpectation() {
-        XCTAssertEqual(subject.subtotal, 0)
+        XCTAssertEqual(viewModel.subtotal, 0)
     }
 
     func testSubtotalValueMatchesExpectation() {
         let expectedValue = CurrencyFormatter().formatAmount(0, with: order.currency) ?? String()
-        XCTAssertEqual(subject.subtotalValue, expectedValue)
+        XCTAssertEqual(viewModel.subtotalValue, expectedValue)
     }
 
     func testDiscountTextMatchesExpectation() {
-        XCTAssertNil(subject.discountText)
+        XCTAssertNil(viewModel.discountText)
     }
 
     func testDiscountValueMatchesExpectation() {
         let expectedValue = "-" + CurrencyFormatter().formatAmount(order.discountTotal, with: order.currency)!
-        XCTAssertEqual(subject.discountValue, expectedValue)
+        XCTAssertEqual(viewModel.discountValue, expectedValue)
     }
 
     func testShippingValueMatchesExpectation() {
         let expectedValue = CurrencyFormatter().formatAmount(order.shippingTotal, with: order.currency)
-        XCTAssertEqual(subject.shippingValue, expectedValue)
+        XCTAssertEqual(viewModel.shippingValue, expectedValue)
     }
 
     func testTaxesValueMatchesExpectation() {
         let expectedValue = CurrencyFormatter().formatAmount(order.totalTax, with: order.currency)
-        XCTAssertEqual(subject.taxesValue, expectedValue)
+        XCTAssertEqual(viewModel.taxesValue, expectedValue)
     }
 
     func testTotalValueMatchedExpectation() {
         let expectedValue = CurrencyFormatter().formatAmount(order.total,
                                                              with: order.currency)
-        XCTAssertEqual(subject.totalValue, expectedValue)
+        XCTAssertEqual(viewModel.totalValue, expectedValue)
     }
 
     func testPaymentTotalMatchedExpectation() {
         let expectedValue = CurrencyFormatter().formatAmount(order.total,
                                                              with: order.currency)
-        XCTAssertEqual(subject.totalValue, expectedValue)
+        XCTAssertEqual(viewModel.totalValue, expectedValue)
     }
 
-    func testPaymentSummaryMatchesExpectation() {
-        let datePaid = order.datePaid!.toString(dateStyle: .medium, timeStyle: .none)
-        let expectedValue = NSLocalizedString(
-            "\(datePaid) via \(order.paymentMethodTitle)",
-            comment: "Payment on <date> received via (payment method title)"
+    /// Test the `paymentSummary` calculated property
+    /// returns nil if the payment method title is an empty string
+    ///
+    func testOrderPaymentMethodTitleReturnsNilIfPaymentMethodTitleIsBlank() {
+        let expected = ""
+        XCTAssertEqual(brokenOrder.paymentMethodTitle, expected)
+        XCTAssertNil(brokenOrderViewModel.paymentSummary)
+    }
+
+    /// The `paymentMethodTitle` is used in the `paymentSummary`.
+    /// Test that the `paymentSummary` calculated property
+    /// does not return nil as long as the `paymentMethodTitle` is present
+    ///
+    func testOrderPaymentMethodTitleDoesNotReturnNilWhenPresentAndNotBlank() {
+        guard !order.paymentMethodTitle.isEmpty else {
+            XCTFail("Expected a payment_method_title, not a blank or nil value")
+            return
+        }
+
+        XCTAssertNotNil(viewModel.paymentSummary)
+    }
+
+    func testPaymentSummaryContainsAwaitingPaymentMessageWhenDatePaidIsNull() {
+        let awaitingPayment = String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Awaiting payment via %@",
+                comment: "A unit test string. It reads: " +
+                "Awaiting payment via <payment method title>." +
+                "A payment method example is: 'Credit Card (Stripe)'"
+            ),
+            anotherBrokenOrder.paymentMethodTitle
         )
-        XCTAssertEqual(subject.paymentSummary, expectedValue)
+
+        XCTAssertEqual(anotherBrokenOrder.paymentMethodTitle, "Cash on Delivery")
+        XCTAssertNil(anotherBrokenOrder.datePaid)
+
+        guard let paymentSummary = anotherBrokenOrderViewModel.paymentSummary else {
+            XCTFail("The payment summary should not be nil or blank.")
+            return
+        }
+
+        XCTAssertTrue(paymentSummary.contains(awaitingPayment))
     }
 
     func testCouponLinesMatchesExpectation() {
-        XCTAssertEqual(subject.couponLines, order.coupons)
+        XCTAssertEqual(viewModel.couponLines, order.coupons)
+    }
+}
+
+/// Private Methods.
+///
+private extension OrderPaymentDetailsViewModelTests {
+
+    /// Returns the OrderMapper output upon receiving `filename` (Data Encoded)
+    ///
+    func mapOrder(from filename: String) throws -> Order {
+        let response = Loader.contentsOf(filename)!
+        return try OrderMapper(siteID: 545).map(response: response)
     }
 }

@@ -327,6 +327,23 @@ public extension StorageType {
         return firstObject(ofType: ProductReview.self, matching: predicate)
     }
 
+    /// Retrieves all of the stored ProductShippingClass's for the provided siteID.
+    /// Sorted by name, ascending
+    ///
+    func loadProductShippingClasses(siteID: Int64) -> [ProductShippingClass]? {
+        let predicate = NSPredicate(format: "siteID = %lld", siteID)
+        let descriptor = NSSortDescriptor(keyPath: \ProductShippingClass.name, ascending: true)
+        return allObjects(ofType: ProductShippingClass.self, matching: predicate, sortedBy: [descriptor])
+    }
+
+    /// Retrieves all of the stored ProductShippingClass's for the provided siteID.
+    /// Sorted by name, ascending
+    ///
+    func loadProductShippingClass(siteID: Int64, remoteID: Int64) -> ProductShippingClass? {
+        let predicate = NSPredicate(format: "siteID = %lld AND shippingClassID = %lld", siteID, remoteID)
+        return firstObject(ofType: ProductShippingClass.self, matching: predicate)
+    }
+
     /// Retrieves all of the stored ProductVariation's for the provided siteID and productID.
     /// Sorted by dateCreated, descending
     ///
@@ -341,6 +358,24 @@ public extension StorageType {
     func loadProductVariation(siteID: Int64, productVariationID: Int64) -> ProductVariation? {
         let predicate = NSPredicate(format: "siteID = %lld AND productVariationID = %lld", siteID, productVariationID)
         return firstObject(ofType: ProductVariation.self, matching: predicate)
+    }
+
+    /// Retrieves a stored TaxClass for the provided tax slug.
+    ///
+    func loadTaxClass(slug: String?) -> TaxClass? {
+        guard let slug = slug else {
+            return nil
+        }
+
+        let predicate = NSPredicate(format: "slug = %@", slug)
+        return firstObject(ofType: TaxClass.self, matching: predicate)
+    }
+
+    /// Retrieves all of the stored TaxClasses
+    ///
+    func loadTaxClasses() -> [TaxClass]? {
+        let predicate = NSPredicate()
+        return allObjects(ofType: TaxClass.self, matching: predicate, sortedBy: nil)
     }
 
     // MARK: - Refunds

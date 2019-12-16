@@ -100,8 +100,8 @@ private extension BillingInformationViewController {
 // MARK: - Initiate communication with a customer (i.e. via email, phone call, sms)
 //
 private extension BillingInformationViewController {
-    func displayEmailComposerIfPossible(from: UIViewController) {
-        emailComposer.displayEmailComposerIfPossible(for: order, from: from)
+    func displayEmailComposerIfPossible(from: UIViewController) -> Bool {
+        return emailComposer.displayEmailComposerIfPossible(for: order, from: from)
     }
 
     /// Displays an alert that offers several contact methods to reach the customer: [Phone / Message]
@@ -160,6 +160,31 @@ private extension BillingInformationViewController {
     ///
     func displayMessageComposerIfPossible(from: UIViewController) {
         messageComposer.displayMessageComposerIfPossible(order: order, from: from)
+    }
+
+    /// Create an action sheet that offers the option to copy the email address
+    ///
+    func displayEmailCopyAlert(from: UIViewController) {
+        guard let sourceView = from.view, let email = order.billingAddress?.email else {
+            return
+        }
+
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(ContactAction.dismiss)
+        actionSheet.addDefaultActionWithTitle(ContactAction.copyEmail) { [weak self] _ in
+            ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
+            self?.sendToPasteboard(email, includeTrailingNewline: false)
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = sourceView
+        popoverController?.sourceRect = sourceView.bounds
+
+        from.present(actionSheet, animated: true)
+
+        ServiceLocator.analytics.track(.orderDetailCustomerEmailMenuTapped)
     }
 }
 
@@ -229,7 +254,11 @@ extension BillingInformationViewController: UITableViewDelegate {
 
         case .billingEmail:
             ServiceLocator.analytics.track(.orderDetailCustomerEmailTapped)
-            displayEmailComposerIfPossible(from: self)
+            guard displayEmailComposerIfPossible(from: self) else {
+                displayEmailCopyAlert(from: self)
+                return
+            }
+
             break
         default:
             break
@@ -479,6 +508,7 @@ private extension BillingInformationViewController {
         static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
         static let call = NSLocalizedString("Call", comment: "Call phone number button title")
         static let message = NSLocalizedString("Message", comment: "Message phone number button title")
+        static let copyEmail = NSLocalizedString("Copy email address", comment: "Copy email address button title")
     }
 
     enum Constants {

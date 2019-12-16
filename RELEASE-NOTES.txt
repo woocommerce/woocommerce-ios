@@ -1,11 +1,17 @@
 3.3
 -----
+- bugfix: add some padding to an order item image in the Fulfillment view, when no SKU exists
+- bugfix: View Billing Information > Contact Details: the email button wouldn't do anything if you don't have an email account configured in the Mail app. Now an option to copy the email address is presented instead of doing nothing.
+- bugfix: Fulfill Order screen now displays full customer provided note, instead of cutting it to a single line.
+- bugfix: Fixed clipped content on section headings with larger font sizes
+- bugfix: Fixed footer overlapping the last row in Settings > About with larger font sizes
+- bugfix: the Orders badge on tab bar now is correctly refreshed after switching stores
  
- 3.2.1
- -----
- - bugfix: the order detail status and "Begin fulfillment" button now are correctly updated when the order status changes
- - bugfix: after adding a new order note, now it appear correctly inside the order detail
- 
+3.2.1
+-----
+- bugfix: the order detail status and "Begin fulfillment" button now are correctly updated when the order status changes
+- bugfix: after adding a new order note, now it appear correctly inside the order detail
+
 3.2
 -----
 - Experimental: a Products feature switch is visible in Settings > Experimental Features that shows/hides the Products tab with a Work In Progress banner at the top.

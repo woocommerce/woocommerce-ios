@@ -14,7 +14,7 @@ public class TaxClassStore: Store {
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
-        dispatcher.register(processor: self, for: ProductAction.self)
+        dispatcher.register(processor: self, for: TaxClassAction.self)
     }
 
     /// Receives and executes Actions.

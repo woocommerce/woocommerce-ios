@@ -71,6 +71,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         loginFields.meta.userIsDotCom = true
 
         configureEmailField()
+        configureAlternativeLabel()
         configureSubmitButton()
         configureViewForEditingIfNeeded()
         configureForWPComOnlyIfNeeded()

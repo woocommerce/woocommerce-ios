@@ -14,6 +14,9 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     open var googleTapped: (() -> Void)?
     open var appleTapped: (() -> Void)?
 
+    /// The big transparent (dismiss) button behind the buttons
+    @IBOutlet private weak var dismissButton: UIButton!
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         super.prepare(for: segue, sender: sender)
 
@@ -25,6 +28,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureButtonVC()
+        configureForAccessibility()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -82,8 +86,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
     }
 
     @IBAction func dismissTapped() {
-        WordPressAuthenticator.track(.signupCancelled)
-        dismiss(animated: true)
+        trackCancellationAndThenDismiss()
     }
 
     @objc func handleAppleButtonTapped() {
@@ -91,5 +94,30 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
         
         dismiss(animated: true)
         appleTapped?()
+    }
+
+    private func trackCancellationAndThenDismiss() {
+        WordPressAuthenticator.track(.signupCancelled)
+        dismiss(animated: true)
+    }
+
+    // MARK: - Accessibility
+
+    private func configureForAccessibility() {
+        dismissButton.accessibilityLabel = NSLocalizedString("Dismiss", comment: "Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog.")
+
+        // Ensure that the first button (in buttonViewController) is automatically selected by
+        // VoiceOver instead of the dismiss button.
+        if buttonViewController?.isViewLoaded == true, let buttonsView = buttonViewController?.view {
+            view.accessibilityElements = [
+                buttonsView,
+                dismissButton
+            ]
+        }
+    }
+
+    override func accessibilityPerformEscape() -> Bool {
+        trackCancellationAndThenDismiss()
+        return true
     }
 }

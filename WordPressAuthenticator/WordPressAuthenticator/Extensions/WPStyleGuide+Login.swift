@@ -71,6 +71,13 @@ extension WPStyleGuide {
         onePasswordButton.addTarget(target, action: selector, for: .touchUpInside)
     }
 
+    /// Configures a plain text button with default styles.
+    ///
+    class func configureTextButton(_ button: UIButton) {
+        button.setTitleColor(WordPressAuthenticator.shared.style.textButtonColor, for: .normal)
+        button.setTitleColor(WordPressAuthenticator.shared.style.textButtonHighlightColor, for: .highlighted)
+    }
+
     ///
     ///
     class func colorForErrorView(_ opaque: Bool) -> UIColor {

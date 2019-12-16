@@ -66,6 +66,7 @@
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="dismissButton" destination="gpM-nW-lFQ" id="8iA-TH-TF4"/>
                         <segue destination="fwZ-QE-5et" kind="show" identifier="showEmailLogin" id="1xT-tL-sp6"/>
                     </connections>
                 </viewController>
@@ -1450,6 +1451,9 @@
                             <constraint firstAttribute="trailing" secondItem="Ueg-Bw-KU6" secondAttribute="trailing" id="nXh-Tu-veg"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="dismissButton" destination="Ueg-Bw-KU6" id="icp-fM-bz4"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Rrd-X3-roK" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>

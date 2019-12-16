@@ -40,6 +40,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         super.viewWillAppear(animated)
 
         configureViewForEditingIfNeeded()
+        styleSendCodeButton()
     }
 
 
@@ -78,6 +79,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
     private func styleSendCodeButton() {
         sendCodeButton.titleLabel?.adjustsFontForContentSizeCategory = true
         sendCodeButton.titleLabel?.adjustsFontSizeToFitWidth = true
+        WPStyleGuide.configureTextButton(sendCodeButton)
     }
 
     // MARK: Configuration Methods

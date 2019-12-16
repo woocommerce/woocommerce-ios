@@ -79,9 +79,12 @@ private extension TaxClassStore {
         }
 
         let storage = storageManager.viewStorage
-        let storageTaxClass = storage.loadTaxClass(slug: taxClassFromStorage)
 
-        if storageTaxClass == nil {
+        if let storageTaxClass = storage.loadTaxClass(slug: taxClassFromStorage) {
+            onCompletion(storageTaxClass.toReadOnly(), nil)
+            return
+        }
+        else {
             let remote = TaxClassRemote(network: network)
             remote.loadAllTaxClasses(for: Int64(product.siteID)) { [weak self] (taxClasses, error) in
                 guard let taxClasses = taxClasses else {
@@ -94,14 +97,6 @@ private extension TaxClassStore {
                     onCompletion(taxClass, nil)
                 }
             }
-        }
-        else {
-            guard let taxClass = storageTaxClass?.toReadOnly() else {
-                onCompletion(nil, nil)
-                return
-            }
-            onCompletion(taxClass, nil)
-            return
         }
     }
 }

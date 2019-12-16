@@ -14,6 +14,10 @@ class OrdersViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
+    /// Ghostable TableView.
+    ///
+    private(set) var ghostableTableView = UITableView()
+
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {
@@ -126,6 +130,7 @@ class OrdersViewController: UIViewController {
         configureSyncingCoordinator()
         configureNavigation()
         configureTableView()
+        configureGhostableTableView()
         configureResultsControllers()
 
         startListeningToNotifications()
@@ -275,6 +280,25 @@ private extension OrdersViewController {
         tableView.tableFooterView = footerSpinnerView
     }
 
+    /// Setup: Ghostable TableView
+    ///
+    func configureGhostableTableView() {
+        view.addSubview(ghostableTableView)
+        ghostableTableView.isHidden = true
+
+        ghostableTableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            ghostableTableView.widthAnchor.constraint(equalTo: tableView.widthAnchor),
+            ghostableTableView.heightAnchor.constraint(equalTo: tableView.heightAnchor),
+            ghostableTableView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            ghostableTableView.topAnchor.constraint(equalTo: tableView.topAnchor)
+        ])
+
+        view.backgroundColor = .listBackground
+        ghostableTableView.backgroundColor = .listBackground
+        ghostableTableView.isScrollEnabled = false
+    }
+
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells() {
@@ -282,6 +306,7 @@ private extension OrdersViewController {
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+            ghostableTableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
     }
 }
@@ -513,25 +538,30 @@ extension OrdersViewController {
 }
 
 
-// MARK: - Placeholders
+// MARK: - Placeholders & Ghostable Table
 //
 private extension OrdersViewController {
 
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    /// Renders the Placeholder Orders
     ///
     func displayPlaceholderOrders() {
         let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options,
-                                      style: .wooDefaultGhostStyle)
 
-        resultsController.stopForwardingEvents()
+        // If the ghostable table view gets stuck for any reason,
+        // let's reset the state before using it again
+        ghostableTableView.removeGhostContent()
+        ghostableTableView.displayGhostContent(options: options,
+                                               style: .wooDefaultGhostStyle)
+        ghostableTableView.startGhostAnimation()
+        ghostableTableView.isHidden = false
     }
 
     /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderOrders() {
-        tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: self.tableView)
+        ghostableTableView.isHidden = true
+        ghostableTableView.stopGhostAnimation()
+        ghostableTableView.removeGhostContent()
         tableView.reloadData()
     }
 

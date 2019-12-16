@@ -126,7 +126,7 @@ extension ProductShippingSettingsViewController: UITableViewDataSource {
 //
 extension ProductShippingSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
+        // TODO-1422: navigate to shipping class selector.
     }
 }
 
@@ -215,7 +215,6 @@ private extension ProductShippingSettingsViewController {
             case .weight, .length, .width, .height:
                 return UnitInputTableViewCell.self
             case .shippingClass:
-                // TODO-1422: update cell type after the reusable cell is built
                 return SettingTitleAndValueTableViewCell.self
             }
         }

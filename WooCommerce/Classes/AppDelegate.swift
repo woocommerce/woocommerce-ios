@@ -241,9 +241,7 @@ private extension AppDelegate {
     /// Sets up the current Log Leve.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
-        let rawLevel = Int32(level.rawValue)
-        WPSharedSetLoggingLevel(rawLevel)
-
+        WPSharedSetLoggingLevel(level)
         WPAuthenticatorSetLoggingLevel(level)
         WPKitSetLoggingLevel(level)
     }

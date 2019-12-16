@@ -116,6 +116,7 @@ private extension ProductDetailsViewController {
     ///
     func configureTableView() {
         tableView.backgroundColor = .listBackground
+        tableView.separatorColor = .systemColor(.separator)
         tableView.estimatedSectionHeaderHeight = viewModel.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl

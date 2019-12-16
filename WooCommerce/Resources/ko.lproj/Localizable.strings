@@ -1,9 +1,12 @@
-/* Translation-Revision-Date: 2019-10-17 00:54:51+0000 */
+/* Translation-Revision-Date: 2019-12-12 00:54:56+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
 
 /* No comment provided by engineer. */
+"%1$@ (%2$ld options)" = "%1$@(옵션 %2$ld개)";
+
+/* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@(비공개)";
 
 /* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
@@ -26,6 +29,9 @@
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
+
+/* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
+"%1$@ via %2$@ – %3$@" = "%1$@, %2$@ – %3$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld 재고 있음";
@@ -79,6 +85,9 @@
    Button text for adding a new order note */
 "Add a note" = "메모 추가";
 
+/* Cell text in Add / Edit product when there are no images. */
+"Add a product image" = "제품 이미지 추가";
+
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "추적 추가";
 
@@ -91,12 +100,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "앱 상태를 검토하는 고급 도구";
 
-/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
-   Name of the All filter on the Order List screen - it means all orders will be displayed. */
+/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "모든";
-
-/* Mark all notifications as read notice */
-"All notifications marked as read" = "모든 알림이 읽음으로 표시됨";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "모든 리뷰가 읽음으로 표시됨";
@@ -169,15 +174,17 @@
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "처리 시작";
 
-/* Beta features navigation title
-   Navigates to Beta features screen */
-"Beta Features" = "베타 기능";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "청구 주소";
 
 /* Billing Information view Title */
 "Billing Information" = "청구지 정보";
+
+/* Accessibility label for block quote button on formatting toolbar. */
+"Block Quote" = "인용 차단";
+
+/* Accessibility label for bold button on formatting toolbar. */
+"Bold" = "굵게";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "가입하려면 _서비스 약관_에 동의해야 합니다.";
@@ -299,6 +306,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "일";
 
+/* Description of the default paragraph formatting style in the editor. */
+"Default" = "기본";
+
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "삭제";
 
@@ -309,11 +319,27 @@
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
 "Deletes a shipment's tracking information." = "배송 추적 정보를 삭제합니다.";
 
+/* Placeholder in the Product description row on Product form screen. */
+"Describe your product" = "제품 설명";
+
+/* The navigation bar title of the Aztec editor screen.
+   Title in the Product description row on Product form screen when the description is non-empty. */
+"Description" = "설명";
+
 /* The row label to tap for a detailed product list */
 "Details" = "세부사항";
 
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "주문 #(viewModel.order.number) 상세 정보";
+
+/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
+"Dimensions: %1$@ x %2$@ x %3$@%4$@" = "크기: %1$@ x %2$@ x %3$@%4$@";
+
+/* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
+"Dimensions: %1$@ x %2$@%3$@" = "크기: %1$@ x %2$@%3$@";
+
+/* Format of one dimension on the Shipping Settings row - dimension[unit] */
+"Dimensions: %1$@%2$@" = "크기: %1$@%2$@";
 
 /* Discount label for payment view */
 "Discount" = "할인";
@@ -379,6 +405,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "빈 URL";
 
+/* The text placeholder for the Text Editor screen */
+"Enter a title..." = "제목을 입력하세요...";
+
 /* Error message shown when a URL is invalid. */
 "Enter a valid URL eg. example.com." = "유효한 URL을 입력하세요(예: example.com).";
 
@@ -403,6 +432,10 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "비밀번호를 입력하세요.";
+
+/* Experimental features navigation title
+   Navigates to experimental features screen */
+"Experimental Features" = "실험 특성";
 
 /* Expiry: 1 day */
 "Expiry: %ld day" = "만료: %ld일";
@@ -443,6 +476,49 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "어떻게 도와드릴까요?";
 
+/* Accessibility label for HTML button on formatting toolbar.
+   HTML Attachment Label */
+"HTML" = "HTML";
+
+/* Post HTML content */
+"HTML Content" = "HTML 콘텐츠";
+
+/* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
+"Header 1" = "헤더 1";
+
+/* Accessibility label for selecting h2 paragraph style button on the formatting toolbar. */
+"Header 2" = "헤더 2";
+
+/* Accessibility label for selecting h3 paragraph style button on the formatting toolbar. */
+"Header 3" = "헤더 3";
+
+/* Accessibility label for selecting h4 paragraph style button on the formatting toolbar. */
+"Header 4" = "헤더 4";
+
+/* Accessibility label for selecting h5 paragraph style button on the formatting toolbar. */
+"Header 5" = "헤더 5";
+
+/* Accessibility label for selecting h6 paragraph style button on the formatting toolbar. */
+"Header 6" = "헤더 6";
+
+/* H1 Aztec Style */
+"Heading 1" = "헤딩요소 1";
+
+/* H2 Aztec Style */
+"Heading 2" = "헤딩요소 2";
+
+/* H3 Aztec Style */
+"Heading 3" = "헤딩요소 3";
+
+/* H4 Aztec Style */
+"Heading 4" = "헤딩요소 4";
+
+/* H5 Aztec Style */
+"Heading 5" = "헤딩 5";
+
+/* H6 Aztec Style */
+"Heading 6" = "헤딩 6";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "도움말";
@@ -456,10 +532,13 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "앱 개선 지원";
 
+/* Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+"Hidden" = "숨김";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "해제된 경우 메모는 비공개가 됩니다.";
 
-/* My Store > Settings > Beta features > Switch stats version */
+/* My Store > Settings > Experimental features > Switch stats version */
 "Improved stats" = "향상된 통계";
 
 /* Display label for the product's inventory stock status
@@ -481,6 +560,15 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "사용자명이나 비밀번호가 올바르지 않습니다. 로그인 정보를 다시 입력해 주세요.";
 
+/* Label action for inserting a link on the editor */
+"Insert" = "삽입";
+
+/* Accessibility label for insert horizontal ruler button on formatting toolbar. */
+"Insert Horizontal Ruler" = "가로 눈금자 삽입";
+
+/* Accessibility label for insert link button on formatting toolbar. */
+"Insert Link" = "링크 삽입";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "유효하지 않은 사이트 주소";
 
@@ -497,7 +585,7 @@
 "Invalid username" = "유효하지 않은 사용자명";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "재고";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -506,11 +594,17 @@
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "잘못된 비밀번호를 입력하신 것 같습니다. 다시 시도해보시겠어요?";
 
+/* Accessibility label for italic button on formatting toolbar. */
+"Italic" = "이탤릭체";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "최근 24시간";
 
 /* Last 7 days section header */
 "Last 7 days" = "지난 7일간";
+
+/* Opens an internal library called Wormholy. Not visible to users. */
+"Launch Wormholy debug" = "Wormholy 디버그 시작";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
    The action of the top banner on Dashboard that indicates new stats is unavailable */
@@ -527,6 +621,13 @@
 
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "제한: %ld회 다운로드";
+
+/* Title for screen in editor that allows to configure link options */
+"Link Settings" = "링크 설정";
+
+/* Label for the text of a link in the editor
+   Navigation bar title for editing the text of a text link */
+"Link Text" = "링크 텍스트";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "주문 로드 중";
@@ -584,15 +685,11 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "매핑된 도메인";
 
-/* Accessibility label for the Mark All Notifications as Read Button
-   Accessibility label for the Mark All Reviews as Read Button */
+/* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "모두 읽음으로 표시";
 
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "주문을 완료로 표시";
-
-/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
-"Marks Every Notification as Read" = "모든 알림을 읽음으로 표시";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "모든 리뷰를 읽음으로 표시";
@@ -612,7 +709,8 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "월";
 
-/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
+   Accessibility label for the More button on formatting toolbar. */
 "More" = "더 보기";
 
 /* Spam Action Spoken hint. */
@@ -643,6 +741,9 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "더 많은 도움이 필요하세요?";
 
+/* The title for the net amount paid cell */
+"Net" = "최종 금액";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "다음";
@@ -662,6 +763,9 @@
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "사용 가능한 데이터 없음";
+
+/* The text on the placeholder overlay when there are no product variations on the Products tab */
+"No product variations yet" = "아직 제품 변형이 없습니다.";
 
 /* Search Products (Empty State)
    The text on the placeholder overlay when there are no products on the Products tab */
@@ -719,6 +823,9 @@
 /* Navigates to screen about open source licenses */
 "Open Source Licenses" = "오픈 소스 라이선스";
 
+/* Label for the description of openening a link using a new window */
+"Open in a new Window\/Tab" = "새 창\/탭에서 열기";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "사용 가능한 상태 목록을 엽니다.";
 
@@ -750,8 +857,11 @@
 /* Order status update success notice */
 "Order status updated" = "주문 상태 업데이트됨";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Accessibility label for Ordered list button on formatting toolbar. */
+"Ordered List" = "순서 있는 목록";
+
+/* Orders stat label on dashboard - should be plural.
+   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "주문";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -773,6 +883,9 @@
    Password placeholder */
 "Password" = "비밀번호";
 
+/* Paste without Formatting Menu Item */
+"Paste without Formatting" = "서식없이 붙여넣기";
+
 /* Payment section title */
 "Payment" = "결제";
 
@@ -792,6 +905,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "이메일을 확인하세요.";
 
+/* Placeholder for editing the URL of a text link */
+"Please enter a URL" = "URL을 입력하세요.";
+
 /* No comment provided by engineer. */
 "Please enter a site address." = "사이트 주소를 입력해주세요.";
 
@@ -800,6 +916,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "유효한 이메일 주소를 입력해주세요.";
+
+/* Placeholder for editing the text of a text link */
+"Please enter some text" = "텍스트를 입력하세요.";
 
 /* No comment provided by engineer. */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Apple ID로 로그인하려면 워드프레스닷컴 계정의 비밀번호를 입력하세요.";
@@ -822,7 +941,8 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "이메일 앱을 열고 워드프레스닷컴에서 보낸 이메일을 찾으세요.";
 
-/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
+   Title of the Price Settings row on Product main screen */
 "Price" = "가격";
 
 /* Product Details - pricing and inventory section title */
@@ -854,8 +974,8 @@
 /* Product Total label for payment view */
 "Product Total" = "제품 합계";
 
-/* Title of the Products tab — plural form of Product
-   Title that appears on top of the Product List screen (plural form of the word Product). */
+/* My Store > Settings > Experimental features > Switch Products
+   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "상품";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -884,6 +1004,9 @@
    Section header title - abbreviation for quantity */
 "Qty" = "수량";
 
+/* Format of the stock quantity on the Inventory Settings row */
+"Quantity: %ld" = "수량: %ld";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "해피니스 엔지니어에게 문의하여 어려운 질문에 대한 답변 받기";
 
@@ -893,14 +1016,23 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "개인정보 취급방침 읽기";
 
+/* The title for the refunded amount cell */
+"Refunded" = "환불됨";
+
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "등록된 도메인";
 
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "정상 가격:";
 
+/* Format of the regular price on the Price Settings row */
+"Regular price: %@" = "정상 가격: %@";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "필터 제거";
+
+/* Label action for removing a link from the editor */
+"Remove Link" = "링크 제거";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "충돌 보고";
@@ -924,9 +1056,12 @@
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "리뷰를 %@(으)로 표시했습니다.";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
+/* Reviews descriptive label
+   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "검토";
+
+/* Post Rich content */
+"Rich Content" = "풍부한 콘텐츠";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
 "SKU" = "SKU";
@@ -935,11 +1070,20 @@
    A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "SKU:";
 
+/* Format of the SKU on the Inventory Settings row */
+"SKU: %@" = "SKU: %@";
+
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 전송됨";
 
+/* Format of the sale period on the Price Settings row */
+"Sale dates: %1$@-%2$@" = "판매 날짜: %1$@~%2$@";
+
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "할인 가격:";
+
+/* Format of the sale price on the Price Settings row */
+"Sale price: %@" = "할인 가격: %@";
 
 /* Orders Search Placeholder */
 "Search all orders" = "모든 주문 검색";
@@ -955,6 +1099,9 @@
 
 /* Page title for the select a different store screen */
 "Select Store" = "스토어 선택";
+
+/* Accessibility label for selecting paragraph style button on formatting toolbar. */
+"Select paragraph style" = "단락 스타일 선택";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "선택한 스토어";
@@ -983,8 +1130,11 @@
 "Shipped %@" = "%@에 배송됨";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view */
+   Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "배송";
+
+/* Shipping method title for customer info cell */
+"Shipping Method" = "배송 방법";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "배송 업체";
@@ -994,6 +1144,9 @@
 
 /* Shipping title for customer info cell */
 "Shipping details" = "배송 상세 내역";
+
+/* VoiceOver accessibility label for the shipping notice about the order */
+"Shipping notice about the order" = "주문 관련 배송 알림";
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "배송 업체";
@@ -1077,6 +1230,9 @@
    Verb, spam a comment */
 "Spam" = "스팸";
 
+/* Aztec's Text Placeholder */
+"Start writing..." = "글쓰기 시작...";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "시작 기간 %1$@, 종료 기간 %2$@";
 
@@ -1085,6 +1241,9 @@
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "재고 상태:";
+
+/* Format of the stock status on the Inventory Settings row */
+"Stock status: %@" = "재고 상태: %@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "스토어 수입 차트";
@@ -1098,11 +1257,89 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "스토어 수입 차트: Y축";
 
+/* Accessibility label for strikethrough button on formatting toolbar. */
+"Strike Through" = "취소선";
+
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "스토어 전환";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "(newStoreName)(으)로 전환했습니다. 이 스토어에서만 알림을 받습니다.";
+
+/* Accessibility Identifier for the H1 Aztec Style */
+"Switches to the Heading 1 font size" = "제목 1 글꼴 크기로 전환";
+
+/* Accessibility Identifier for the H2 Aztec Style */
+"Switches to the Heading 2 font size" = "제목 2 글꼴 크기로 전환";
+
+/* Accessibility Identifier for the H3 Aztec Style */
+"Switches to the Heading 3 font size" = "제목 3 글꼴 크기로 전환";
+
+/* Accessibility Identifier for the H4 Aztec Style */
+"Switches to the Heading 4 font size" = "제목 4 글꼴 크기로 전환";
+
+/* Accessibility Identifier for the H5 Aztec Style */
+"Switches to the Heading 5 font size" = "제목 5 글꼴 크기로 전환";
+
+/* Accessibility Identifier for the H6 Aztec Style */
+"Switches to the Heading 6 font size" = "제목 6 글꼴 크기로 전환";
+
+/* Accessibility Identifier for the Default Font Aztec Style. */
+"Switches to the default Font Size" = "기본 글꼴 크기로 전환";
+
+/* Accessibility hint for the More button on formatting toolbar. */
+"Tap for more formatting options" = "더 많은 서식 옵션을 보려면 누르세요.";
+
+/* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
+"Tap to insert a Horizontal Ruler" = "가로 눈금자를 삽입하려면 누르세요.";
+
+/* Accessibility hint for insert link button on formatting toolbar. */
+"Tap to insert a Link" = "링크를 삽입하려면 누르세요.";
+
+/* Accessibility hint for block quote button on formatting toolbar. */
+"Tap to toggle Block Quote" = "인용 차단을 전환하려면 누르세요.";
+
+/* Accessibility hint for bold button on formatting toolbar. */
+"Tap to toggle Bold text" = "굵은 텍스트를 전환하려면 누르세요.";
+
+/* Accessibility hint for HTML button on formatting toolbar. */
+"Tap to toggle HTML mode" = "HTML 모드를 전환하려면 누르세요.";
+
+/* Accessibility hint for selecting h1 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 1" = "헤더 1을 전환하려면 누르세요.";
+
+/* Accessibility hint for selecting h2 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 2" = "헤더 2를 전환하려면 누르세요.";
+
+/* Accessibility hint for selecting h3 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 3" = "헤더 3을 전환하려면 누르세요.";
+
+/* Accessibility hint for selecting h4 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 4" = "헤더 4를 전환하려면 누르세요.";
+
+/* Accessibility hint for selecting h5 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 5" = "헤더 5를 전환하려면 누르세요.";
+
+/* Accessibility hint for selecting h6 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 6" = "헤더 6을 전환하려면 누르세요.";
+
+/* Accessibility hint for italic button on formatting toolbar. */
+"Tap to toggle Italic text" = "기울임꼴 텍스트를 전환하려면 누르세요.";
+
+/* Accessibility hint for Ordered list button on formatting toolbar. */
+"Tap to toggle Ordered List" = "순서있는 목록을 전환하려면 누르세요.";
+
+/* Accessibility hint for strikethrough button on formatting toolbar. */
+"Tap to toggle Strike Through" = "취소선을 전환하려면 누르세요.";
+
+/* Accessibility hint for underline button on formatting toolbar. */
+"Tap to toggle Underline" = "밑줄을 전환하려면 누르세요.";
+
+/* Accessibility hint for unordered list button on formatting toolbar. */
+"Tap to toggle Unordered List" = "순서 없는 목록을 전환하려면 누르세요.";
+
+/* Accessibility hint for selecting paragraph style button on formatting toolbar. */
+"Tap to toggle paragraph style" = "단락 스타일을 전환하려면 누르세요.";
 
 /* Tax label for total taxes line */
 "Tax:" = "세금:";
@@ -1112,6 +1349,9 @@
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "서비스 약관";
+
+/* My Store > Settings > Experimental features > Products description */
+"Test out the new products section as we get ready to launch" = "출시 준비가 완료되면 새 제품 섹션을 테스트하세요.";
 
 /* Button title */
 "Text me a code instead" = "코드를 문자로 대신 받기";
@@ -1148,9 +1388,6 @@
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "이 서버의 인증서가 올바르지 않습니다. “%@”(으)로 사칭한 서버에 연결 중일 수 있습니다. 기밀 정보가 노출될 수 있습니다.\n\n그래도 인증서를 신뢰하시겠어요?";
-
-/* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed" = "알림이 제거되었습니다!";
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "리뷰가 제거되었습니다.";
@@ -1200,11 +1437,19 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "이 정보는 개인정보 취급방침에 명시된 것처럼 제품을 개선하고, 보다 관련된 마케팅을 제공하며, 워드프레스닷컴 환경을 개인 설정하는 데 도움을 줍니다.";
 
+/* Accessibility label for the Shipping notice
+   Shipping notice row label when there is more than one shipping method */
+"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "이 주문은 확장을 사용하여 배송 요금을 계산합니다. 표시된 배송 방법이 불완전할 수 있습니다.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "이 제품을 로드할 수 없음";
 
-/* Product details screen — product title descriptive label */
+/* Product details screen — product title descriptive label
+   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
 "Title" = "제목";
+
+/* Placeholder in the Product Title row on Product form screen. */
+"Title (required)" = "제목(필수)";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "새 워드프레스닷컴 계정을 만들려면 이메일 주소를 입력하세요.";
@@ -1218,6 +1463,12 @@
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
 "Today" = "오늘";
+
+/* Accessibility Identifier for the Aztec Ordered List Style. */
+"Toggles the ordered list style" = "순서 있는 목록 스타일 전환";
+
+/* Accessibility Identifier for the Aztec Unordered List Style */
+"Toggles the unordered list style" = "순서 없는 목록 스타일 전환";
 
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "최고 인기 상품";
@@ -1265,7 +1516,7 @@
 /* The title of the top banner on Dashboard that indicates new stats is available */
 "Try our improved stats" = "향상된 통계를 사용해 보세요.";
 
-/* My Store > Settings > Beta features > Stats version description */
+/* My Store > Settings > Experimental features > Stats version description */
 "Try the new stats available with the WooCommerce Admin plugin" = "WooCommerce 관리자 플러그인과 함께 사용할 수 있는 새 통계 사용해 보기";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
@@ -1273,6 +1524,10 @@
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "사이트 주소로 시도";
+
+/* Navigation bar title for editing the URL of a text link
+   URL text field placeholder */
+"URL" = "URL";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "연결할 수 없음";
@@ -1325,11 +1580,14 @@
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "댓글 승인 취소";
 
+/* Accessibility label for underline button on formatting toolbar. */
+"Underline" = "밑줄";
+
 /* Undo Action */
 "Undo" = "실행 취소";
 
 /* Unknown Application State
-   Unknown product name, displayed in a review */
+   Unknown product name, displayed in a review - Unknown Tag Name */
 "Unknown" = "알 수 없음";
 
 /* No comment provided by engineer. */
@@ -1337,6 +1595,9 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "알려지지 않은 에러";
+
+/* Accessibility label for unordered list button on formatting toolbar. */
+"Unordered List" = "순서 없는 목록";
 
 /* Display label for the review's unspam status */
 "Unspam" = "스팸 해제";
@@ -1346,6 +1607,9 @@
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "최대 7일 상당의 로그가 저장됩니다.";
+
+/* Label action for updating a link on the editor */
+"Update" = "업데이트";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
 "Update %@ to WooCommerce 3.5" = "%@을(를) WooCommerce 3.5로 업데이트";
@@ -1384,6 +1648,10 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "사용자명은 최소한 4글자 이상이어야 합니다.";
 
+/* Product Details > descriptive label for the Product Variants cell.
+   Title that appears on top of the Product Variation List screen. */
+"Variations" = "변형";
+
 /* two factor code placeholder */
 "Verification code" = "확인 코드";
 
@@ -1399,6 +1667,9 @@
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "제휴 제품 보기";
+
+/* This text is linked so the user can view refund details. */
+"View details" = "상세 보기";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "이전에 제출한 지원 티켓 보기";
@@ -1425,7 +1696,7 @@
 "Watch readers from around the world read and interact with your site — in real time." = "전 세계 독자들이 회원님의 사이트를 읽고 상호 작용하는 것을 실시간으로 지켜보세요.";
 
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats as we couldn’t find the WooCommerce Admin plugin" = "WooCommerce 관리자 플러그인을 찾을 수 없어 기존 통계로 되돌렸습니다.";
+"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.22 or higher" = "이전 통계로 되돌렸습니다. 베타 통계를 사용하려면 버전 0.22 이상으로 WooCommerce Admin 플러그인을 활성화하세요.";
 
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "매직 가입 링크를 보냈습니다! 이 장치에서 이메일을 확인하고 이메일의 링크를 눌러 가입을 완료하세요.";
@@ -1451,6 +1722,12 @@
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "무게:";
 
+/* Format of the weight on the Shipping Settings row - weight[unit] */
+"Weight: %1$@%2$@" = "무게: %1$@%2$@";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀" = "최선을 다해 이번 새로운 제품 섹션을 준비하고 있습니다. 출시 준비 과정에서 일부 변경 사항을 확인하실 수도 있습니다. 🚀";
+
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "WooCommerce 관리자 플러그인을 사용하여 스토어 통계 개선을 점진적으로 실시합니다.";
 
@@ -1471,6 +1748,9 @@
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "워드프레스 버전이 너무 오래됐습니다. %1$@의 사이트는 워드프레스 %2$@을(를) 사용합니다. 최신 버전 또는 %3$@ 이상으로 업데이트하세요.";
+
+/* The title of the Work In Progress top banner on the Products tab */
+"Work in progress!" = "작업 진행 중!";
 
 /* Statistical unit - a single year */
 "Year" = "년";
@@ -1496,6 +1776,9 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Safari에서 사이트를 방문하면 화면 위쪽의 표시줄에 사이트 주소가 표시됩니다.";
 
+/* Comment Attachment Label */
+"[COMMENT]" = "[댓글]";
+
 /* Backorders status. Example: 'Backorders: allowed' */
 "allowed" = "허용됨";
 
@@ -1507,6 +1790,9 @@
 
 /* Later today */
 "later today" = "오늘 중";
+
+/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
+"manual refund" = "수동 환불";
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "허용되지 않음";

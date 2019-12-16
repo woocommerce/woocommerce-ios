@@ -119,7 +119,7 @@ private extension SummaryTableViewCell {
     }
 
     func configureIcon() {
-        updateStatusButton.setImage(.pencilImage, for: .normal)
+        updateStatusButton.applyIconButtonStyle(icon: .pencilImage)
 
         updateStatusButton.addTarget(self, action: #selector(editWasTapped), for: .touchUpInside)
 

@@ -33,7 +33,6 @@ class PeriodDataViewController: UIViewController {
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var barChartView: BarChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
-    @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
     @IBOutlet private weak var chartAccessibilityView: UIView!
@@ -220,7 +219,6 @@ private extension PeriodDataViewController {
 
     func configureView() {
         view.backgroundColor = .listForeground
-        borderView.backgroundColor = .listSmallIcon
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
@@ -335,9 +333,9 @@ extension PeriodDataViewController: ChartViewDelegate {
         }
 
         let marker = ChartMarker(chartView: chartView,
-                                 color: .accentDark,
+                                 color: .chartDataBarHighlighted,
                                  font: StyleManager.chartLabelFont,
-                                 textColor: .text,
+                                 textColor: .systemColor(.systemGray6),
                                  insets: Constants.chartMarkerInsets)
         marker.minimumSize = Constants.chartMarkerMinimumSize
         marker.arrowSize = Constants.chartMarkerArrowSize
@@ -368,7 +366,8 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 yAxisMaximum = value.humanReadableString()
                 return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
                                                           at: CurrencySettings.shared.currencyPosition,
-                                                          with: currencySymbol)
+                                                          with: currencySymbol,
+                                                          isNegative: value.sign == .minus)
             }
         }
     }
@@ -548,7 +547,7 @@ private extension PeriodDataViewController {
                                                                                 with: orderStats.currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
-            barColors.append(.accent)
+            barColors.append(.chartDataBar)
             dataEntries.append(entry)
             barCount += 1
         }
@@ -556,7 +555,7 @@ private extension PeriodDataViewController {
         let dataSet =  BarChartDataSet(entries: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
-        dataSet.highlightColor = .accentDark
+        dataSet.highlightColor = .chartDataBarHighlighted
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)

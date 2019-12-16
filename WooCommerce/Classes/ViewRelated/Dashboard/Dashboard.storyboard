@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15400" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="z1L-hy-XB6">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="z1L-hy-XB6">
     <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15404"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -20,14 +20,14 @@
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="PBm-IO-eju">
-                                        <rect key="frame" x="0.0" y="0.0" width="375" height="1"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="0.5"/>
                                         <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="1" id="hCW-AU-C7N"/>
+                                            <constraint firstAttribute="height" constant="0.5" id="hCW-AU-C7N"/>
                                         </constraints>
                                     </view>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="V2w-p4-txW" customClass="ButtonBarView" customModule="XLPagerTabStrip">
-                                        <rect key="frame" x="0.0" y="1" width="375" height="48"/>
+                                        <rect key="frame" x="0.0" y="0.5" width="375" height="48"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="48" id="3Mv-YT-dTc"/>
@@ -41,20 +41,20 @@
                                         <cells/>
                                     </collectionView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cMR-ex-E4c">
-                                        <rect key="frame" x="0.0" y="49" width="375" height="1"/>
+                                        <rect key="frame" x="0.0" y="48.5" width="375" height="0.5"/>
                                         <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="1" id="8O6-Qx-Y7L"/>
+                                            <constraint firstAttribute="height" constant="0.5" id="8O6-Qx-Y7L"/>
                                         </constraints>
                                     </view>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="iZC-Gc-okA">
-                                        <rect key="frame" x="0.0" y="50" width="375" height="616"/>
+                                        <rect key="frame" x="0.0" y="49" width="375" height="617.5"/>
                                     </scrollView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Kbr-bQ-njj">
-                                        <rect key="frame" x="0.0" y="666" width="375" height="1"/>
+                                        <rect key="frame" x="0.0" y="666.5" width="375" height="0.5"/>
                                         <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="1" id="Co8-ct-oPM"/>
+                                            <constraint firstAttribute="height" constant="0.5" id="Co8-ct-oPM"/>
                                         </constraints>
                                     </view>
                                 </subviews>
@@ -323,14 +323,14 @@
                                         </constraints>
                                     </view>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dgI-UY-ci0">
-                                        <rect key="frame" x="0.0" y="55.5" width="375" height="1"/>
+                                        <rect key="frame" x="0.0" y="55.5" width="375" height="0.5"/>
                                         <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="1" id="Ye0-Bd-X6z"/>
+                                            <constraint firstAttribute="height" constant="0.5" id="Ye0-Bd-X6z"/>
                                         </constraints>
                                     </view>
                                     <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="2o3-iX-FHW" customClass="ButtonBarView" customModule="XLPagerTabStrip">
-                                        <rect key="frame" x="0.0" y="56.5" width="375" height="48"/>
+                                        <rect key="frame" x="0.0" y="56" width="375" height="48"/>
                                         <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="48" id="mns-9X-6F7"/>
@@ -344,14 +344,14 @@
                                         <cells/>
                                     </collectionView>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Een-oy-QEG">
-                                        <rect key="frame" x="0.0" y="104.5" width="375" height="1"/>
+                                        <rect key="frame" x="0.0" y="104" width="375" height="1"/>
                                         <color key="backgroundColor" red="0.98541599999999996" green="0.0" blue="0.98173999999999995" alpha="1" colorSpace="calibratedRGB"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="xg4-Of-Qx7"/>
                                         </constraints>
                                     </view>
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="r3q-NT-5cw">
-                                        <rect key="frame" x="0.0" y="105.5" width="375" height="561.5"/>
+                                        <rect key="frame" x="0.0" y="105" width="375" height="562"/>
                                     </scrollView>
                                 </subviews>
                             </stackView>
@@ -395,9 +395,9 @@
                         </subviews>
                         <constraints>
                             <constraint firstItem="ibP-Y7-8cn" firstAttribute="trailing" secondItem="BsY-oa-k6u" secondAttribute="trailing" id="2ck-f3-BSs"/>
+                            <constraint firstItem="ibP-Y7-8cn" firstAttribute="bottom" secondItem="BsY-oa-k6u" secondAttribute="bottom" id="69q-a2-QAu"/>
                             <constraint firstItem="ibP-Y7-8cn" firstAttribute="leading" secondItem="BsY-oa-k6u" secondAttribute="leading" id="QKN-1I-cNm"/>
-                            <constraint firstAttribute="bottomMargin" secondItem="ibP-Y7-8cn" secondAttribute="bottom" id="XsC-5D-hY1"/>
-                            <constraint firstItem="ibP-Y7-8cn" firstAttribute="top" secondItem="ivz-5E-TEz" secondAttribute="topMargin" id="xJa-xJ-qrP"/>
+                            <constraint firstItem="ibP-Y7-8cn" firstAttribute="top" secondItem="BsY-oa-k6u" secondAttribute="top" id="qyY-cu-ksZ"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="BsY-oa-k6u"/>
                     </view>

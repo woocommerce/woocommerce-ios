@@ -360,6 +360,24 @@ public extension StorageType {
         return firstObject(ofType: ProductVariation.self, matching: predicate)
     }
 
+    /// Retrieves a stored TaxClass for the provided tax slug.
+    ///
+    func loadTaxClass(slug: String?) -> TaxClass? {
+        guard let slug = slug else {
+            return nil
+        }
+
+        let predicate = NSPredicate(format: "slug = %@", slug)
+        return firstObject(ofType: TaxClass.self, matching: predicate)
+    }
+
+    /// Retrieves all of the stored TaxClasses
+    ///
+    func loadTaxClasses() -> [TaxClass]? {
+        let predicate = NSPredicate()
+        return allObjects(ofType: TaxClass.self, matching: predicate, sortedBy: nil)
+    }
+
     // MARK: - Refunds
 
     /// Retrieves a stored Refund for the provided siteID, orderID, and refundID.

@@ -198,7 +198,7 @@ class StorePickerViewController: UIViewController {
 private extension StorePickerViewController {
 
     func setupMainView() {
-        view.backgroundColor = .basicBackground
+        view.backgroundColor = .listBackground
     }
 
     func setupTableView() {
@@ -211,7 +211,7 @@ private extension StorePickerViewController {
             tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
 
-        tableView.backgroundColor = .basicBackground
+        tableView.backgroundColor = .listBackground
     }
 
     func setupAccountHeader() {

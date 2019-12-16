@@ -1,7 +1,2 @@
-- Progrès : la vue présentant les détails de la commande mentionne désormais le mode de livraison de la commande.
-- Amélioration : l'onglet Avis présente désormais tous les avis sur le produit.
-- Modification : nous avons mis à jour l'apparence des détails de la commande et provisoirement désactivé le mode sombre.
-- Résolution de bug : résolution d'un bug au niveau de l'apparence de l'interface utilisateur dans les cellules de la liste des commandes lors de la saisie en mode sombre.
-- Résolution de bug : les avis ne sont plus convertis en mode partiellement sombre. Le mode sombre sera bientôt disponible.
-- Résolution de bug : l'espace entre les cellules dans les détails de la commande est désormais de taille adéquate.
-- Résolution de bug : les réglages ne sont plus convertis en mode partiellement sombre.
+- Adeptes du mode sombre, réjouissez-vous ! Il est là.
+- Adeptes de la prévisualisation, réjouissez-vous également ! Nous savons qu'un onglet Produits intéresse fortement les utilisateurs. Bien que nous ne soyons pas encore tout à fait prêts à lancer une version complète de l'application intégrant cette fonctionnalité, vous pouvez désormais apercevoir l'onglet Produits disponible bientôt. Accédez à Paramètres dans l'application pour l'activer.

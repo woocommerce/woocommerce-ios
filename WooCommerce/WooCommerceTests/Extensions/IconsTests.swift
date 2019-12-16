@@ -62,6 +62,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.ellipsisImage)
     }
 
+    func testEmptyReviewsImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.emptyReviewsImage)
+    }
+
     func testErrorStateImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.errorStateImage)
     }
@@ -151,18 +155,18 @@ final class IconsTests: XCTestCase {
     }
 
     func testStarImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.starImage(size: 1, tintColor: .clear))
+        XCTAssertNotNil(UIImage.starImage(size: 1))
     }
 
     func testStarImageMatchesExpectedSize() {
         let size = Double(1)
-        let starImage = UIImage.starImage(size: size, tintColor: .clear)
+        let starImage = UIImage.starImage(size: size)
         XCTAssertEqual(starImage.size, CGSize(width: size, height: size))
     }
 
     func testStarOutlineImageMatchesExpectedSize() {
         let size = Double(1)
-        let starOutlineImage = UIImage.starOutlineImage(size: size, tintColor: .clear)
+        let starOutlineImage = UIImage.starOutlineImage(size: size)
         XCTAssertEqual(starOutlineImage.size, CGSize(width: size, height: size))
     }
 

@@ -64,6 +64,7 @@ public typealias SiteSetting = Networking.SiteSetting
 public typealias SiteSettingGroup = Networking.SiteSettingGroup
 public typealias SiteVisitStats = Networking.SiteVisitStats
 public typealias SiteVisitStatsItem = Networking.SiteVisitStatsItem
+public typealias TaxClass = Networking.TaxClass
 public typealias TopEarnerStats = Networking.TopEarnerStats
 public typealias TopEarnerStatsItem = Networking.TopEarnerStatsItem
 public typealias WooAPIVersion = Networking.WooAPIVersion

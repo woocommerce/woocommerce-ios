@@ -1,2 +1,3 @@
-- Fans of dark mode, rejoice! It’s here.
-- Fans of previewing things, you can rejoice too! We know a Products tab is high on people’s wish lists. While we’re not ready to fully release a version of the app that includes it, you can preview the coming-soon Products tab right now — head to Settings in the app to enable it.
+- Fulfill Order screen now displays full customer provided note instead of cutting it to a single line.
+- The Orders badge on the tab bar now correctly refreshes after switching stores.
+- Bug fixes to make a bunch of visual quirks go away when changing system font sizes.

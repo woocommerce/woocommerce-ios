@@ -127,10 +127,12 @@ private extension TaxClassStore {
     ///     - storage: Where we should save all the things!
     ///
     func upsertStoredTaxClasses(readOnlyTaxClasses: [Networking.TaxClass], in storage: StorageType) {
-        for readOnlyTaxClass in readOnlyTaxClasses {
-            let storageTaxClass = storage.loadTaxClass(slug: readOnlyTaxClass.slug) ?? storage.insertNewObject(ofType: Storage.TaxClass.self)
+        resetStoredTaxClasses {
+            for readOnlyTaxClass in readOnlyTaxClasses {
+                let storageTaxClass = storage.loadTaxClass(slug: readOnlyTaxClass.slug) ?? storage.insertNewObject(ofType: Storage.TaxClass.self)
 
-            storageTaxClass.update(with: readOnlyTaxClass)
+                storageTaxClass.update(with: readOnlyTaxClass)
+            }
         }
     }
 

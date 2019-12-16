@@ -28,7 +28,6 @@
 		02BA23CA22EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json in Resources */ = {isa = PBXBuildFile; fileRef = 02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */; };
 		21DB5B99C4107CF69C0A57EC /* Pods_NetworkingTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 69314EDE650855CAF927057E /* Pods_NetworkingTests.framework */; };
 		450106852399A7CB00E24722 /* TaxClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106842399A7CB00E24722 /* TaxClass.swift */; };
-		4501068D2399AE3A00E24722 /* TaxClassMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068C2399AE3A00E24722 /* TaxClassMapper.swift */; };
 		4501068F2399B19500E24722 /* TaxClassesRemote.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4501068E2399B19500E24722 /* TaxClassesRemote.swift */; };
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
 		457FC68C2382B2FD00B41B02 /* product-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 457FC68B2382B2FD00B41B02 /* product-update.json */; };
@@ -324,7 +323,6 @@
 		02BA23C722EEF62C009539E7 /* order-stats-v4-wcadmin-deactivated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-wcadmin-deactivated.json"; sourceTree = "<group>"; };
 		02BA23C822EEF62C009539E7 /* order-stats-v4-wcadmin-activated.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-stats-v4-wcadmin-activated.json"; sourceTree = "<group>"; };
 		450106842399A7CB00E24722 /* TaxClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClass.swift; sourceTree = "<group>"; };
-		4501068C2399AE3A00E24722 /* TaxClassMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassMapper.swift; sourceTree = "<group>"; };
 		4501068E2399B19500E24722 /* TaxClassesRemote.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassesRemote.swift; sourceTree = "<group>"; };
 		450106902399B2C800E24722 /* TaxClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapper.swift; sourceTree = "<group>"; };
 		457FC68B2382B2FD00B41B02 /* product-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-update.json"; sourceTree = "<group>"; };
@@ -1014,7 +1012,6 @@
 				74046E1E217A6B70007DD7BF /* SiteSettingsMapper.swift */,
 				74A1D26C21189DFE00931DFA /* SiteVisitStatsMapper.swift */,
 				B53EF53B21814900003E146F /* SuccessResultMapper.swift */,
-				4501068C2399AE3A00E24722 /* TaxClassMapper.swift */,
 				450106902399B2C800E24722 /* TaxClassListMapper.swift */,
 				74ABA1D2213F25AE00FFAD30 /* TopEarnerStatsMapper.swift */,
 				026CF61D237D6985009563D4 /* ProductVariationListMapper.swift */,
@@ -1457,7 +1454,6 @@
 				74159625224D4045003C21CF /* SiteSettingGroup.swift in Sources */,
 				D8FBFF1122D3B3FC006E3336 /* OrderStatsV4Mapper.swift in Sources */,
 				D823D905223746CE00C90817 /* NewShipmentTrackingMapper.swift in Sources */,
-				4501068D2399AE3A00E24722 /* TaxClassMapper.swift in Sources */,
 				743057B5218B6ACD00441A76 /* Queue.swift in Sources */,
 				74A1D26821189A7100931DFA /* SiteVisitStats.swift in Sources */,
 				B557DA0320975500005962F4 /* Remote.swift in Sources */,

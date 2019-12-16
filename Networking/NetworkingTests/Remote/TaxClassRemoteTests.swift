@@ -24,7 +24,7 @@ final class TaxClassRemoteTests: XCTestCase {
     /// Verifies that loadAllTaxClasses properly parses the `taxes-classes` sample response.
     ///
     func testLoadAllTaxClassesProperlyReturnsParsedData() {
-        let remote = TaxClassesRemote(network: network)
+        let remote = TaxClassRemote(network: network)
         let expectation = self.expectation(description: "Load All Tax Classes")
 
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
@@ -50,7 +50,7 @@ final class TaxClassRemoteTests: XCTestCase {
     /// Verifies that loadAllTaxClasses properly relays Networking Layer errors.
     ///
     func testLoadAllTaxClassesProperlyRelaysNetwokingErrors() {
-        let remote = TaxClassesRemote(network: network)
+        let remote = TaxClassRemote(network: network)
         let expectation = self.expectation(description: "Load All Tax Classes returns error")
 
         remote.loadAllTaxClasses(for: sampleSiteID) { (taxClasses, error) in

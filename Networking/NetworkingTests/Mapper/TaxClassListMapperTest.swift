@@ -4,7 +4,7 @@ import XCTest
 
 /// TaxClassListMapper Unit Tests
 ///
-class TaxClassListMapperTest: XCTestCase {
+final class TaxClassListMapperTest: XCTestCase {
 
     /// Verifies that all of the Tax Class Fields are parsed correctly.
     ///

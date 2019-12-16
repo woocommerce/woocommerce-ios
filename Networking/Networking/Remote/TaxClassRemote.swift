@@ -1,11 +1,11 @@
 import Foundation
 import Alamofire
 
-/// Tax Classes: Remote Endpoints
+/// Tax Class: Remote Endpoints
 ///
-public class TaxClassesRemote: Remote {
+public class TaxClassRemote: Remote {
 
-    // MARK: - Tax Classes
+    // MARK: - Tax Class
 
     /// Retrieves all of the `Tax Classes` available.
     ///
@@ -26,7 +26,7 @@ public class TaxClassesRemote: Remote {
 
 // MARK: - Constants
 //
-public extension TaxClassesRemote {
+public extension TaxClassRemote {
 
     private enum Path {
         static let taxes   = "taxes"

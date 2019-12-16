@@ -3,9 +3,9 @@ import Networking
 import Storage
 
 
-// MARK: - TaxClassesStore
+// MARK: - TaxClassStore
 //
-public class TaxClassesStore: Store {
+public class TaxClassStore: Store {
 
     private lazy var sharedDerivedStorage: StorageType = {
         return storageManager.newDerivedStorage()
@@ -20,8 +20,8 @@ public class TaxClassesStore: Store {
     /// Receives and executes Actions.
     ///
     override public func onAction(_ action: Action) {
-        guard let action = action as? TaxClassesAction else {
-            assertionFailure("TaxClassesStore received an unsupported action")
+        guard let action = action as? TaxClassAction else {
+            assertionFailure("TaxClassStore received an unsupported action")
             return
         }
 
@@ -40,12 +40,12 @@ public class TaxClassesStore: Store {
 
 // MARK: - Services!
 //
-private extension TaxClassesStore {
+private extension TaxClassStore {
 
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
     func retriveTaxClasses(siteID: Int, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
-        let remote = TaxClassesRemote(network: network)
+        let remote = TaxClassRemote(network: network)
 
         remote.loadAllTaxClasses(for: Int64(siteID)) { [weak self] (taxClasses, error) in
             guard let taxClasses = taxClasses else {
@@ -82,7 +82,7 @@ private extension TaxClassesStore {
         let storageTaxClass = storage.loadTaxClass(slug: taxClassFromStorage)
 
         if storageTaxClass == nil {
-            let remote = TaxClassesRemote(network: network)
+            let remote = TaxClassRemote(network: network)
             remote.loadAllTaxClasses(for: Int64(product.siteID)) { [weak self] (taxClasses, error) in
                 guard let taxClasses = taxClasses else {
                     onCompletion(nil, error)
@@ -108,7 +108,7 @@ private extension TaxClassesStore {
 
 // MARK: - Storage: TaxClass
 //
-private extension TaxClassesStore {
+private extension TaxClassStore {
 
     /// Updates (OR Inserts) the specified ReadOnly TaxClass Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
@@ -143,7 +143,7 @@ private extension TaxClassesStore {
 
 // MARK: - Unit Testing Helpers
 //
-extension TaxClassesStore {
+extension TaxClassStore {
 
     /// Unit Testing Helper: Updates or Inserts the specified ReadOnly Product in a given Storage Layer.
     ///

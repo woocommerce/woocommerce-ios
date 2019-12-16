@@ -5,10 +5,19 @@ import Foundation
 ///
 struct TaxClassListMapper: Mapper {
 
+    /// Site Identifier associated to the API information that will be parsed.
+    /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't return the SiteID.
+    ///
+    let siteID: Int
+
     /// (Attempts) to convert a dictionary into [TaxClass].
     ///
     func map(response: Data) throws -> [TaxClass] {
         let decoder = JSONDecoder()
+        decoder.userInfo = [
+            .siteID: siteID
+        ]
+
         return try decoder.decode(TaxClassListEnvelope.self, from: response).taxClasses
     }
 }

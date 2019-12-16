@@ -6,6 +6,10 @@ import XCTest
 ///
 final class TaxClassListMapperTest: XCTestCase {
 
+    /// Testing SiteID
+    ///
+    private let sampleSiteID = 123
+
     /// Verifies that all of the Tax Class Fields are parsed correctly.
     ///
     func testTaxClassFieldsAreProperlyParsed() {
@@ -14,6 +18,7 @@ final class TaxClassListMapperTest: XCTestCase {
 
 
         let firstTaxClass = taxClasses[0]
+        XCTAssertEqual(firstTaxClass.siteID, sampleSiteID)
         XCTAssertEqual(firstTaxClass.slug, "standard")
         XCTAssertEqual(firstTaxClass.name, "Standard Rate")
     }
@@ -31,7 +36,7 @@ private extension TaxClassListMapperTest {
             return []
         }
 
-        return try! TaxClassListMapper().map(response: response)
+        return try! TaxClassListMapper(siteID: sampleSiteID).map(response: response)
     }
 
     /// Returns the TaxClassListMapper output upon receiving `taxes-classes`

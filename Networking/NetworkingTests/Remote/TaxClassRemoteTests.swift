@@ -29,7 +29,11 @@ final class TaxClassRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
 
-        remote.loadAllTaxClasses(for: sampleSiteID) { (taxClasses, error) in
+        remote.loadAllTaxClasses(for: sampleSiteID) { [weak self] (taxClasses, error) in
+            guard let self = self else {
+                expectation.fulfill()
+                return
+            }
             XCTAssertNil(error)
             XCTAssertNotNil(taxClasses)
             XCTAssertEqual(taxClasses?.count, 3)
@@ -40,6 +44,7 @@ final class TaxClassRemoteTests: XCTestCase {
                 XCTFail("Tax Class with slug \(expectedSlug) should exist")
                 return
             }
+            XCTAssertEqual(expectedTaxClass.siteID, Int(self.sampleSiteID))
             XCTAssertEqual(expectedTaxClass.name, "Standard Rate")
             expectation.fulfill()
         }

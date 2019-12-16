@@ -18,7 +18,7 @@ public class TaxClassRemote: Remote {
 
         let path = Path.taxes + "/classes"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: Int(siteID), path: path, parameters: nil)
-        let mapper = TaxClassListMapper()
+        let mapper = TaxClassListMapper(siteID: Int(siteID))
 
         enqueue(request, mapper: mapper, completion: completion)
     }

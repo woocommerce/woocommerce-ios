@@ -215,12 +215,14 @@ final class TaxClassStoreTests: XCTestCase {
 private extension TaxClassStoreTests {
 
     func sampleTaxClass() -> Networking.TaxClass {
-        return Networking.TaxClass(name: "Standard Rate",
+        return Networking.TaxClass(siteID: sampleSiteID,
+                                   name: "Standard Rate",
                                    slug: "standard")
     }
 
     func sampleTaxClassMutated() -> Networking.TaxClass {
-        return Networking.TaxClass(name: "Standard Rate Mutated",
+        return Networking.TaxClass(siteID: sampleSiteID,
+                                   name: "Standard Rate Mutated",
                                    slug: "standard")
     }
 }

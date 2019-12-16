@@ -482,6 +482,7 @@
     </entity>
     <entity name="TaxClass" representedClassName="TaxClass" syncable="YES" codeGenerationType="class">
         <attribute name="name" attributeType="String"/>
+        <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="slug" attributeType="String"/>
     </entity>
     <entity name="TopEarnerStats" representedClassName="TopEarnerStats" syncable="YES">
@@ -543,7 +544,7 @@
         <element name="SiteSetting" positionX="-360.41015625" positionY="214.8515625" width="128" height="133"/>
         <element name="SiteVisitStats" positionX="134.515625" positionY="224.62109375" width="128" height="90"/>
         <element name="SiteVisitStatsItem" positionX="308.1328125" positionY="251.91796875" width="128" height="90"/>
-        <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="73"/>
+        <element name="TaxClass" positionX="-529.7734375" positionY="-56.109375" width="128" height="88"/>
         <element name="TopEarnerStats" positionX="135.3828125" positionY="28.91015625" width="128" height="105"/>
         <element name="TopEarnerStatsItem" positionX="308.53125" positionY="29.1484375" width="128" height="165"/>
     </elements>

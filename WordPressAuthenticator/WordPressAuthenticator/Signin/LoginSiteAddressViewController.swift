@@ -37,6 +37,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
     override func viewDidLoad() {
         super.viewDidLoad()
         localizeControls()
+        configureForAccessibility()
     }
 
 
@@ -90,6 +91,12 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
         siteAddressHelpButton.titleLabel?.numberOfLines = 0
     }
 
+    /// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
+    ///
+    private func configureForAccessibility() {
+        siteURLField.accessibilityLabel =
+            NSLocalizedString("Site address", comment: "Accessibility label of the site address field shown when adding a self-hosted site.")
+    }
 
     /// Configures the content of the text fields based on what is saved in `loginFields`.
     ///
@@ -178,7 +185,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
             let err = self.originalErrorOrError(error: error as NSError)
 
             if let xmlrpcValidatorError = err as? WordPressOrgXMLRPCValidatorError {
-                self.displayError(message: xmlrpcValidatorError.localizedDescription)
+                self.displayError(message: xmlrpcValidatorError.localizedDescription, moveVoiceOverFocus: true)
 
             } else if (err.domain == NSURLErrorDomain && err.code == NSURLErrorCannotFindHost) ||
                 (err.domain == NSURLErrorDomain && err.code == NSURLErrorNetworkConnectionLost) {
@@ -186,7 +193,7 @@ class LoginSiteAddressViewController: LoginViewController, NUXKeyboardResponder 
                 let msg = NSLocalizedString(
                     "The site at this address is not a WordPress site. For us to connect to it, the site must use WordPress.",
                     comment: "Error message shown a URL does not point to an existing site.")
-                self.displayError(message: msg)
+                self.displayError(message: msg, moveVoiceOverFocus: true)
 
             } else {
                 self.displayError(error as NSError, sourceTag: self.sourceTag)

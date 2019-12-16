@@ -82,7 +82,13 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     }
 
     /// Sets the text of the error label.
-    func displayError(message: String) {
+    ///
+    /// - Parameter message: The message to display in the `errorLabel`. If empty, the `errorLabel`
+    ///     will be hidden.
+    /// - Parameter moveVoiceOverFocus: If `true`, moves the VoiceOver focus to the `errorLabel`.
+    ///     You will want to set this to `true` if the error was caused after pressing a button
+    ///     (e.g. Next button).
+    func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         guard message.count > 0 else {
             errorLabel?.isHidden = true
             return
@@ -90,6 +96,10 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         errorLabel?.isHidden = false
         errorLabel?.text = message
         errorToPresent = nil
+
+        if moveVoiceOverFocus, let errorLabel = errorLabel {
+            UIAccessibility.post(notification: .layoutChanged, argument: errorLabel)
+        }
     }
 
     private func mustShowLoginEpilogue() -> Bool {

@@ -47,6 +47,9 @@ extension WPStyleGuide {
         onePasswordButton.setImage(.onePasswordImage, for: .normal)
         onePasswordButton.sizeToFit()
 
+        onePasswordButton.accessibilityLabel =
+            NSLocalizedString("Fill with password manager", comment: "The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). ")
+
         textField.rightView = onePasswordButton
         textField.rightViewMode = .always
 

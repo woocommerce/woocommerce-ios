@@ -36,6 +36,7 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         localizeControls()
         setupOnePasswordButtonIfNeeded()
         displayLoginMessage("")
+        configureForAcessibility()
     }
 
 
@@ -87,6 +88,26 @@ class LoginSelfHostedViewController: LoginViewController, NUXKeyboardResponder {
         forgotPasswordButton.setTitle(forgotPasswordTitle, for: .normal)
         forgotPasswordButton.setTitle(forgotPasswordTitle, for: .highlighted)
         forgotPasswordButton.titleLabel?.numberOfLines = 0
+    }
+
+
+    /// Sets up necessary accessibility labels and attributes for the all the UI elements in self.
+    ///
+    private func configureForAcessibility() {
+        usernameField.accessibilityLabel =
+            NSLocalizedString("Username", comment: "Accessibility label for the username text field in the self-hosted login page.")
+        passwordField.accessibilityLabel =
+            NSLocalizedString("Password", comment: "Accessibility label for the password text field in the self-hosted login page.")
+
+        if UIAccessibility.isVoiceOverRunning {
+            // Remove the placeholder if VoiceOver is running. VoiceOver speaks the label and the
+            // placeholder together. In this case, both labels and placeholders are the same so it's
+            // like VoiceOver is reading the same thing twice.
+            usernameField.placeholder = nil
+            passwordField.placeholder = nil
+        }
+
+        forgotPasswordButton.accessibilityTraits = .link
     }
 
 
@@ -294,7 +315,9 @@ extension LoginSelfHostedViewController {
         configureViewLoading(false)
         let err = error as NSError
         if err.code == 403 {
-            displayError(message: NSLocalizedString("It looks like this username/password isn't associated with this site.", comment: "An error message shown during log in when the username or password is incorrect."))
+            let message = NSLocalizedString("It looks like this username/password isn't associated with this site.",
+                                            comment: "An error message shown during log in when the username or password is incorrect.")
+            displayError(message: message, moveVoiceOverFocus: true)
         } else {
             displayError(error as NSError, sourceTag: sourceTag)
         }

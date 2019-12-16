@@ -58,6 +58,8 @@ private extension ProductShippingSettingsViewController {
 
     func configureNavigationBar() {
         title = NSLocalizedString("Shipping", comment: "Product Shipping Settings navigation title")
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
     }
 
     func configureMainView() {
@@ -78,6 +80,14 @@ private extension ProductShippingSettingsViewController {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
+    }
+}
+
+// MARK: - Navigation actions handling
+//
+private extension ProductShippingSettingsViewController {
+    @objc func completeUpdating() {
+        // TODO-1422: update shipping settings
     }
 }
 

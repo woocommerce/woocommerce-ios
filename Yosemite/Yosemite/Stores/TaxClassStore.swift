@@ -26,8 +26,8 @@ public class TaxClassStore: Store {
         }
 
         switch action {
-        case .retriveTaxClasses(let siteID, let onCompletion):
-            retriveTaxClasses(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveTaxClasses(let siteID, let onCompletion):
+            retrieveTaxClasses(siteID: siteID, onCompletion: onCompletion)
         case .resetStoredTaxClasses(let onCompletion):
             resetStoredTaxClasses(onCompletion: onCompletion)
         case .requestMissingTaxClasses(let product, let onCompletion):
@@ -44,7 +44,7 @@ private extension TaxClassStore {
 
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
-    func retriveTaxClasses(siteID: Int, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
+    func retrieveTaxClasses(siteID: Int, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
         let remote = TaxClassRemote(network: network)
 
         remote.loadAllTaxClasses(for: Int64(siteID)) { [weak self] (taxClasses, error) in

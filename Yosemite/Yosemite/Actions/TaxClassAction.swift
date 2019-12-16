@@ -8,7 +8,7 @@ public enum TaxClassAction: Action {
 
     /// Retrieve and synchronizes Tax Classes matching the specified criteria.
     ///
-    case retriveTaxClasses(siteID: Int, onCompletion: ([TaxClass]?, Error?) -> Void)
+    case retrieveTaxClasses(siteID: Int, onCompletion: ([TaxClass]?, Error?) -> Void)
 
     /// Deletes all of the cached tax classes.
     ///

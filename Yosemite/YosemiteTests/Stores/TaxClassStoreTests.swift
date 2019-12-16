@@ -56,9 +56,9 @@ final class TaxClassStoreTests: XCTestCase {
     }
 
 
-    // MARK: - TaxClassAction.retriveTaxClasses
+    // MARK: - TaxClassAction.retrieveTaxClasses
 
-    /// Verifies that `TaxClassAction.retriveTaxClasses` effectively persists any retrieved tax class.
+    /// Verifies that `TaxClassAction.retrieveTaxClasses` effectively persists any retrieved tax class.
     ///
     func testRetrieveTaxClassesEffectivelyPersistsRetrievedTaxClasses() {
         let expectation = self.expectation(description: "Retrieve tax class list")
@@ -66,7 +66,7 @@ final class TaxClassStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 0)
 
-        let action = TaxClassAction.retriveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TaxClass.self), 3)
             XCTAssertNil(error)
 
@@ -77,7 +77,7 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `TaxClassAction.retriveTaxClasses` effectively persists all of the fields
+    /// Verifies that `TaxClassAction.retrieveTaxClasses` effectively persists all of the fields
     /// correctly across all of the related `TaxClass` entities
     ///
     func testRetrieveTaxClassesEffectivelyPersistsTaxClassFields() {
@@ -88,7 +88,7 @@ final class TaxClassStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 0)
 
-        let action = TaxClassAction.retriveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertNil(error)
 
             let storedTaxClass = self.viewStorage.loadTaxClass(slug: remoteTaxClass.slug)
@@ -104,14 +104,14 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `TaxClassAction.retriveTaxClasses` returns an error whenever there is an error response from the backend.
+    /// Verifies that `TaxClassAction.retrieveTaxClasses` returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveTaxClassesReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve tax class error response")
 
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "generic_error")
 
-        let action = TaxClassAction.retriveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -120,12 +120,12 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `TaxClassAction.retriveTaxClasses` returns an error whenever there is no backend response.
+    /// Verifies that `TaxClassAction.retrieveTaxClasses` returns an error whenever there is no backend response.
     ///
     func testRetrieveTaxClassesReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve tax class empty response")
 
-        let action = TaxClassAction.retriveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -134,14 +134,14 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that `TaxClassAction.retriveTaxClasses` returns the expected `TaxClass`.
+    /// Verifies that `TaxClassAction.retrieveTaxClasses` returns the expected `TaxClass`.
     ///
     func testRetrieveTaxClassesReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve single tax class")
         let remoteTaxClass = sampleTaxClass()
 
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
-        let action = TaxClassAction.retriveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxClassAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(taxClasses?.first)
             XCTAssertEqual(taxClasses?.first, remoteTaxClass)

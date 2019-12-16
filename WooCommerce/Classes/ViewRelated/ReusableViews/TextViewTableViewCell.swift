@@ -53,5 +53,6 @@ private extension TextViewTableViewCell {
 
     func configureTextView() {
         noteTextView.delegate = self
+        noteTextView.backgroundColor = .listForeground
     }
 }

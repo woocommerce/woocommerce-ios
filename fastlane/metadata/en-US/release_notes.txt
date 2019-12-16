@@ -1,7 +1,2 @@
-- Improved: Order detail view now includes the order’s shipping method.
-- Enhancement: Reviews tab now shows all Product Reviews.
-- Modified: We updated the appearance of Order Details and temporarily disabled dark mode.
-- Bug fix: Fixed UI appearance on cells of Order List when tapping with dark mode enabled.
-- Bug fix: Reviews no longer convert to partial dark mode. Dark mode is coming soon!
-- Bug fix: Order Details now has the correct space between cells.
-- Bug fix: Settings no longer convert to partial dark mode.
+- Fans of dark mode, rejoice! It’s here.
+- Fans of previewing things, you can rejoice too! We know a Products tab is high on people’s wish lists. While we’re not ready to fully release a version of the app that includes it, you can preview the coming-soon Products tab right now — head to Settings in the app to enable it.

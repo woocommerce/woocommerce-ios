@@ -1,7 +1,2 @@
-- Mejora: La vista de detalles del pedido ahora incluye el método de envío.
-- Mejora: La pestaña Reseñas muestra todas las reseñas de los productos.
-- Modificación: Hemos actualizado la apariencia de la página Detalles del pedido y hemos desactivado temporalmente el modo oscuro.
-- Corrección de error: Hemos corregido la apariencia de las celdas de la interfaz de usuario Lista de pedidos al tocarlas con el modo oscuro activado.
-- Corrección de error: Las reseñas ya no se convierten al modo oscuro parcial. ¡El modo oscuro estará disponible próximamente!
-- Corrección de error: La página Detalles del pedido ahora tiene el espacio adecuado entre celdas.
-- Corrección de error: La página Configuración ya no se convierte al modo oscuro parcial.
+- Amantes del modo oscuro, ¡estáis de enhorabuena! Ya ha llegado.
+- Amantes de las vistas previas, ¡también estáis de enhorabuena! Sabemos que muchos una pestaña Productos está en la lista de deseos de muchos. Aunque no estamos listos para lanzar una versión completa de la aplicación que la incluya, puedes obtener una vista previa de la pestaña Productos, que se lanzará pronto. Dirígete a Configuración en la aplicación ahora mismo para activarla.

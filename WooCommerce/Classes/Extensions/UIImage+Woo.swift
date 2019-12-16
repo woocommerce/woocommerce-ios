@@ -107,6 +107,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Empty Reviews Icon
+    ///
+    static var emptyReviewsImage: UIImage {
+        return UIImage(named: "woo-empty-reviews")!
+    }
+
     /// Error State Image
     ///
     static var errorStateImage: UIImage {
@@ -130,7 +136,8 @@ extension UIImage {
     ///
     static var giftWithTopRightRedDotImage: UIImage {
         guard let image = Gridicon.iconOfType(.gift, withSize: CGSize(width: 24, height: 24))
-            .imageWithTintColor(.textSubtle)?
+            // Applies a constant gray color that looks fine in both Light/Dark modes, since we are generating an image with multiple colors.
+            .applyTintColor(.gray(.shade30))?
             .imageWithTopRightDot(imageOrigin: CGPoint(x: 0, y: 2),
                                   finalSize: CGSize(width: 26, height: 26)) else {
                                     fatalError()
@@ -171,11 +178,7 @@ extension UIImage {
     /// Info Icon
     ///
     static var infoImage: UIImage {
-        guard let image = Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
-            .imageWithTintColor(.textSubtle) else {
-                fatalError()
-        }
-        return image
+        return Gridicon.iconOfType(.info, withSize: CGSize(width: 24, height: 24))
     }
 
     /// Invisible Image
@@ -274,32 +277,28 @@ extension UIImage {
         return Gridicon.iconOfType(.spam)
     }
 
-    /// Returns a star icon with the given size and color
+    /// Returns a star icon with the given size
     ///
     /// - Parameters:
     ///   - size: desired size of the resulting star icon
-    ///   - tintColor: desired tint color of the resulting icon
     /// - Returns: a bitmap image
     ///
-    static func starImage(size: Double, tintColor: UIColor) -> UIImage {
+    static func starImage(size: Double) -> UIImage {
         let starSize = CGSize(width: size, height: size)
         return Gridicon.iconOfType(.star,
                                    withSize: starSize)
-            .imageWithTintColor(tintColor)!
     }
 
-    /// Returns a star outline icon with the given size and color
+    /// Returns a star outline icon with the given size
     ///
     /// - Parameters:
     ///   - size: desired size of the resulting star icon
-    ///   - tintColor: desired tint color of the resulting icon
     /// - Returns: a bitmap image
     ///
-    static func starOutlineImage(size: Double, tintColor: UIColor) -> UIImage {
+    static func starOutlineImage(size: Double) -> UIImage {
         let starSize = CGSize(width: size, height: size)
         return Gridicon.iconOfType(.starOutline,
                                    withSize: starSize)
-            .imageWithTintColor(tintColor)!
     }
 
     /// Stats Icon

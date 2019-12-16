@@ -136,6 +136,13 @@ extension UIColor {
 
         return .gray(.shade30)
     }
+
+    /// Cancel Action Text Color.
+    ///
+    static var modalCancelAction: UIColor {
+        return UIColor(light: .accent,
+                       dark: .systemColor(.label))
+    }
 }
 
 
@@ -184,20 +191,72 @@ extension UIColor {
     ///
     static var primaryButtonBackground = accent
 
-    /// Primary Button Border. Resolves to `accent`
+    /// Primary Button Title.
     ///
-    static var primaryButtonBorder = accent
-
-    /// Primary Button Down Background. Pink-80 (< iOS 13 and Light Mode) and Pink-50 (Dark Mode)
-    ///
-    static var primaryButtonDownBackground: UIColor {
-        return UIColor(light: .withColorStudio(.pink, shade: .shade80),
-                       dark: .withColorStudio(.pink, shade: .shade50))
+    static var primaryButtonTitle: UIColor {
+        return .white
     }
 
-    /// Primary Button Down Border. Resolves to `primaryButtonDownBackground`
+    /// Primary Button Border.
     ///
-    static var primaryButtonDownBorder = primaryButtonDownBackground
+    static var primaryButtonBorder = UIColor.clear
+
+    /// Primary Button Highlighted Background.
+    ///
+    static var primaryButtonDownBackground = accentDark
+
+    /// Primary Button Highlighted Border.
+    ///
+    static var primaryButtonDownBorder = accentDark
+
+    /// Secondary Button Background.
+    ///
+    static var secondaryButtonBackground: UIColor {
+        return UIColor(light: .white,
+                       dark: .systemColor(.systemGray5))
+    }
+
+    /// Secondary Button Title.
+    ///
+    static var secondaryButtonTitle: UIColor {
+        return .systemColor(.label)
+    }
+
+    /// Secondary Button Border.
+    ///
+    static var secondaryButtonBorder: UIColor {
+        return .systemColor(.systemGray3)
+    }
+
+    /// Secondary Button Highlighted Background.
+    ///
+    static var secondaryButtonDownBackground: UIColor {
+        return .systemColor(.systemGray3)
+    }
+
+    /// Secondary Button Highlighted Border.
+    ///
+    static var secondaryButtonDownBorder: UIColor {
+        return .systemColor(.systemGray3)
+    }
+
+    /// Button Disabled Background.
+    ///
+    static var buttonDisabledBackground: UIColor {
+        return .clear
+    }
+
+    /// Button Disabled Title.
+    ///
+    static var buttonDisabledTitle: UIColor {
+        return .systemColor(.quaternaryLabel)
+    }
+
+    /// Button Disabled Border.
+    ///
+    static var buttonDisabledBorder: UIColor {
+        return .systemColor(.systemGray3)
+    }
 
     /// Filter Bar Selected. `primary` (< iOS 13 and Light Mode) and `UIColor.label` (Dark Mode)
     ///
@@ -216,6 +275,51 @@ extension UIColor {
     static var filterBarBackground: UIColor {
         return UIColor(light: .white,
                        dark: .withColorStudio(.gray, shade: .shade90))
+    }
+
+    /// Ghost cell animation end color. `Gray-5` (Light Mode) and Gray-10 (Dark Mode)
+    ///
+    static var ghostCellAnimationEndColor: UIColor {
+        return UIColor(light: .systemColor(.systemGray6),
+                       dark: .systemColor(.systemGray5))
+    }
+
+    /// Rating star filled color.
+    ///
+    static var ratingStarFilled: UIColor {
+        return UIColor(light: .withColorStudio(.yellow, shade: .shade30),
+                       dark: .withColorStudio(.yellow, shade: .shade50))
+    }
+
+    /// Rating star empty color.
+    ///
+    static var ratingStarEmpty: UIColor {
+        return .systemColor(.systemGray4)
+    }
+}
+
+// MARK: - UI elements.
+extension UIColor {
+    /// Stats chart data bar color.
+    ///
+    static var chartDataBar: UIColor {
+        return .accent
+    }
+
+    /// Stats chart data bar highlighted color.
+    ///
+    static var chartDataBarHighlighted: UIColor {
+        return UIColor(light: .withColorStudio(.pink, shade: .shade70),
+                       dark: .withColorStudio(.pink, shade: .shade10))
+    }
+}
+
+// MARK: - Borders.
+extension UIColor {
+    /// Default border color.
+    ///
+    static var border: UIColor {
+        return .systemColor(.systemGray4)
     }
 }
 

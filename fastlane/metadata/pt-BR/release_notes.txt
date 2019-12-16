@@ -1,7 +1,2 @@
-- Aprimorado: agora a visualização “Detalhes do pedido” inclui o método de envio.
-- Melhoria: agora a guia “Avaliações” exibe todas as avaliações de produtos.
-- Modificado: atualizamos a aparência dos “Detalhes do pedido” e desativamos temporariamente o modo escuro.
-- Correção de bug: corrigida a aparência da interface do usuário nas células da “Lista de pedidos” ao tocar no modo escuro ativado.
-- Correção de bug: as avaliações não são mais convertidas para o modo escuro parcial. O modo escuro estará disponível em breve!
-- Correção de bug: agora “Detalhes do pedido” tem o espaço correto entre as células.
-- Correção de bug: as configurações não são mais convertidas para o modo escuro parcial.
+- Fãs do modo noturno, podem comemorar! Ele está disponível.
+- Fãs de prévias, comemorem também! Sabemos que a guia "Produtos" é um dos principais pedidos. Enquanto a versão do aplicativo com essa guia não é lançada por completo, você pode já visualizar uma prévia. Acesse "Configurações" no aplicativo para ativá-la.

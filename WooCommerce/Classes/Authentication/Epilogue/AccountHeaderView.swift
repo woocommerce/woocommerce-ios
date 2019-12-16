@@ -19,7 +19,7 @@ class AccountHeaderView: UIView {
     ///
     @IBOutlet private var fullnameLabel: UILabel! {
         didSet {
-            fullnameLabel.textColor = .textSubtle
+            fullnameLabel.textColor = .systemColor(.label)
         }
     }
 
@@ -27,7 +27,7 @@ class AccountHeaderView: UIView {
     ///
     @IBOutlet private var usernameLabel: UILabel! {
         didSet {
-            usernameLabel.textColor = .textSubtle
+            usernameLabel.textColor = .systemColor(.secondaryLabel)
         }
     }
 

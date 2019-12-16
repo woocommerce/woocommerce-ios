@@ -1,7 +1,2 @@
-- Verbessert: Die Ansicht mit den Auftragsdetails beinhaltet jetzt die Versandmethode für den Auftrag.
-- Verbesserung: Auf dem Tab „Rezensionen“ werden jetzt alle Produktrezensionen angezeigt.
-- Geändert: Wir haben das Design der Auftragsdetails aktualisiert und den dunklen Modus vorübergehend deaktiviert.
-- Fehlerkorrektur: Wir haben das Design der Benutzeroberfläche in den Zellen der Bestellliste behoben, wenn sie im dunklen Modus angetippt wurden.
-- Fehlerkorrektur: Rezensionen werden nicht mehr in den partiellen dunklen Modus konvertiert. Bald kommt der dunkle Modus!
-- Fehlerkorrektur: In den Auftragsdetails ist jetzt der richtige Abstand zwischen den Zellen.
-- Fehlerkorrektur: Einstellungen werden nicht mehr in den partiellen dunklen Modus konvertiert.
+- Freunde des dunklen Modus dürfen sich freuen! Hier ist er.
+- Auch wer sich gerne eine Vorschau ansieht, darf sich freuen! Viele wünschen sich einen Produkte-Tab. Zwar ist die Entwicklung der neuen App-Version mit einem solchen Tab noch nicht abgeschlossen, aber den künftigen Produkte-Tab kannst du dir jetzt schon in der Vorschau ansehen.

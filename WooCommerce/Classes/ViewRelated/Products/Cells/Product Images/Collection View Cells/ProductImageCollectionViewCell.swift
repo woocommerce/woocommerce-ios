@@ -10,6 +10,12 @@ final class ProductImageCollectionViewCell: UICollectionViewCell {
         configureImageView()
         configureCellAppearance()
     }
+
+    override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
+        super.traitCollectionDidChange(previousTraitCollection)
+        // Border color is not automatically updated on trait collection changes and thus manually updated here.
+        contentView.layer.borderColor = Colors.borderColor.cgColor
+    }
 }
 
 /// Private Methods
@@ -27,7 +33,7 @@ private extension ProductImageCollectionViewCell {
     func configureCellAppearance() {
         contentView.layer.cornerRadius = Constants.cornerRadius
         contentView.layer.borderWidth = Constants.borderWidth
-        contentView.layer.borderColor = Colors.borderColor
+        contentView.layer.borderColor = Colors.borderColor.cgColor
         contentView.layer.masksToBounds = Settings.maskToBounds
     }
 }
@@ -41,7 +47,7 @@ private extension ProductImageCollectionViewCell {
     }
 
     enum Colors {
-        static let borderColor = UIColor.listBackground.cgColor
+        static let borderColor = UIColor.systemColor(.systemGray4)
     }
 
     enum Settings {

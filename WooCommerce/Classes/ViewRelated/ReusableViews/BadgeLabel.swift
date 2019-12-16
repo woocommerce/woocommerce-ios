@@ -11,16 +11,20 @@ final class BadgeLabel: UILabel {
 
     @IBInspectable var fillColor: UIColor = .primary
 
+    private let borderWidth: CGFloat
+    private let borderColor: UIColor
+
     // MARK: Initialization
 
-    override init(frame: CGRect) {
+    init(borderWidth: CGFloat, borderColor: UIColor, frame: CGRect) {
+        self.borderWidth = borderWidth
+        self.borderColor = borderColor
         super.init(frame: frame)
         setupView()
     }
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupView()
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     private func setupView() {
@@ -41,6 +45,10 @@ final class BadgeLabel: UILabel {
         fillColor.setFill()
         path.fill()
 
+        path.lineWidth = borderWidth
+        borderColor.setStroke()
+        path.stroke()
+
         let insets = UIEdgeInsets.init(top: 0, left: horizontalPadding, bottom: 0, right: horizontalPadding)
         super.drawText(in: rect.inset(by: insets))
     }
@@ -52,24 +60,6 @@ final class BadgeLabel: UILabel {
     }
 
     // MARK: Computed Properties
-
-    @IBInspectable var borderColor: UIColor {
-        get {
-            return UIColor(cgColor: layer.borderColor!)
-        }
-        set {
-            layer.borderColor = newValue.cgColor
-        }
-    }
-
-    @IBInspectable var borderWidth: CGFloat {
-        get {
-            return layer.borderWidth
-        }
-        set {
-            layer.borderWidth = newValue
-        }
-    }
 
     @IBInspectable var cornerRadius: CGFloat {
         get {

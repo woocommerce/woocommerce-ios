@@ -28,20 +28,20 @@ class AuthenticationManager: Authentication {
                                                 primaryNormalBorderColor: .primaryButtonDownBackground,
                                                 primaryHighlightBackgroundColor: .primaryButtonDownBackground,
                                                 primaryHighlightBorderColor: .primaryButtonDownBorder,
-                                                secondaryNormalBackgroundColor: .primaryButtonDownBackground,
-                                                secondaryNormalBorderColor: .primaryButtonDownBorder,
-                                                secondaryHighlightBackgroundColor: .primaryButtonDownBackground,
-                                                secondaryHighlightBorderColor: .primaryButtonDownBorder,
-                                                disabledBackgroundColor: .textSubtle,
-                                                disabledBorderColor: .textSubtle,
-                                                primaryTitleColor: .text,
-                                                secondaryTitleColor: .textTertiary,
+                                                secondaryNormalBackgroundColor: .secondaryButtonBackground,
+                                                secondaryNormalBorderColor: .secondaryButtonBorder,
+                                                secondaryHighlightBackgroundColor: .secondaryButtonDownBackground,
+                                                secondaryHighlightBorderColor: .secondaryButtonDownBorder,
+                                                disabledBackgroundColor: .buttonDisabledBackground,
+                                                disabledBorderColor: .gray(.shade30),
+                                                primaryTitleColor: .primaryButtonTitle,
+                                                secondaryTitleColor: .secondaryButtonTitle,
                                                 disabledTitleColor: .textSubtle,
-                                                textButtonColor: .primary,
-                                                textButtonHighlightColor: .primaryDark,
+                                                textButtonColor: .accent,
+                                                textButtonHighlightColor: .accentDark,
                                                 instructionColor: .textSubtle,
-                                                subheadlineColor: .textSubtle,
-                                                placeholderColor: .textPlaceholder,
+                                                subheadlineColor: .systemColor(.secondaryLabel),
+                                                placeholderColor: .gray(.shade20),
                                                 viewControllerBackgroundColor: .listBackground,
                                                 textFieldBackgroundColor: .listForeground,
                                                 navBarImage: StyleManager.navBarImage,
@@ -100,6 +100,9 @@ class AuthenticationManager: Authentication {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+    func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
+        // Sign in with Apple is not supported yet.
+    }
 
     var allowWPComLogin: Bool {
         return true

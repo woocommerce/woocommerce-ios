@@ -175,9 +175,9 @@ private extension StoreStatsViewController {
 
     func configureView() {
         view.backgroundColor = .listForeground
-        topBorder.backgroundColor = .divider
-        middleBorder.backgroundColor = .divider
-        bottomBorder.backgroundColor = .divider
+        topBorder.backgroundColor = .systemColor(.separator)
+        middleBorder.backgroundColor = .systemColor(.separator)
+        bottomBorder.backgroundColor = .systemColor(.separator)
     }
 
     func configurePeriodViewControllers() {

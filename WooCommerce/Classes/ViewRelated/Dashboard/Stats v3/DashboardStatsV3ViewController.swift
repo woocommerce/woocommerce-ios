@@ -21,13 +21,13 @@ class DashboardStatsV3ViewController: UIViewController {
 
     private var scrollView: UIScrollView = {
         let returnValue = UIScrollView(frame: .zero)
-        returnValue.backgroundColor = .basicBackground
+        returnValue.backgroundColor = .systemColor(.systemGroupedBackground)
         return returnValue
     }()
 
     private var stackView: UIStackView = {
         let returnValue = UIStackView(arrangedSubviews: [])
-        returnValue.backgroundColor = .basicBackground
+        returnValue.backgroundColor = .systemColor(.systemGroupedBackground)
         return returnValue
     }()
 
@@ -198,7 +198,7 @@ private extension DashboardStatsV3ViewController {
     func configureContainerViews() {
         view.addSubview(scrollView)
         view.pinSubviewToAllEdges(scrollView)
-        view.backgroundColor = .basicBackground
+        view.backgroundColor = .systemColor(.systemGroupedBackground)
 
         scrollView.addSubview(stackView)
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -212,6 +212,7 @@ private extension DashboardStatsV3ViewController {
     func configureChildViewControllerContainerViews() {
         // Top spacer view.
         let topSpacerView = UIView(frame: .zero)
+        topSpacerView.backgroundColor = .systemColor(.systemGroupedBackground)
         NSLayoutConstraint.activate([
             topSpacerView.heightAnchor.constraint(equalToConstant: 18),
             ])

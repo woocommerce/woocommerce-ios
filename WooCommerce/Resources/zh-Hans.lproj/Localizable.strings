@@ -1,9 +1,12 @@
-/* Translation-Revision-Date: 2019-10-16 00:55:09+0000 */
+/* Translation-Revision-Date: 2019-12-13 00:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
 
 /* No comment provided by engineer. */
+"%1$@ (%2$ld options)" = "%1$@（%2$ld 个选项）";
+
+/* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@（私密）";
 
 /* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
@@ -26,6 +29,9 @@
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ 对 %2$@ 发表了评论";
+
+/* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
+"%1$@ via %2$@ – %3$@" = "%1$@，通过 %2$@ – %3$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld有货";
@@ -79,6 +85,9 @@
    Button text for adding a new order note */
 "Add a note" = "添加备注";
 
+/* Cell text in Add / Edit product when there are no images. */
+"Add a product image" = "添加产品图片";
+
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "添加跟踪";
 
@@ -91,12 +100,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "用于查看应用程序状态的高级工具";
 
-/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
-   Name of the All filter on the Order List screen - it means all orders will be displayed. */
+/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "全部";
-
-/* Mark all notifications as read notice */
-"All notifications marked as read" = "所有通知标为已读";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "所有评论均已标记为已读";
@@ -169,15 +174,17 @@
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "开始履行";
 
-/* Beta features navigation title
-   Navigates to Beta features screen */
-"Beta Features" = "测试版功能";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "账单地址";
 
 /* Billing Information view Title */
 "Billing Information" = "账单信息";
+
+/* Accessibility label for block quote button on formatting toolbar. */
+"Block Quote" = "区块引用";
+
+/* Accessibility label for bold button on formatting toolbar. */
+"Bold" = "粗体";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "注册即表示您同意我们的_服务条款_。";
@@ -299,6 +306,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "日";
 
+/* Description of the default paragraph formatting style in the editor. */
+"Default" = "默认";
+
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "删除";
 
@@ -309,11 +319,27 @@
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
 "Deletes a shipment's tracking information." = "删除配送跟踪信息。";
 
+/* Placeholder in the Product description row on Product form screen. */
+"Describe your product" = "描述您的产品";
+
+/* The navigation bar title of the Aztec editor screen.
+   Title in the Product description row on Product form screen when the description is non-empty. */
+"Description" = "描述";
+
 /* The row label to tap for a detailed product list */
 "Details" = "详情";
 
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "详细的订单号 (viewModel.order.number)";
+
+/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
+"Dimensions: %1$@ x %2$@ x %3$@%4$@" = "尺寸：%1$@ x %2$@ x %3$@%4$@";
+
+/* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
+"Dimensions: %1$@ x %2$@%3$@" = "尺寸：%1$@ x %2$@%3$@";
+
+/* Format of one dimension on the Shipping Settings row - dimension[unit] */
+"Dimensions: %1$@%2$@" = "尺寸：%1$@%2$@";
 
 /* Discount label for payment view */
 "Discount" = "折扣";
@@ -379,6 +405,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空 URL";
 
+/* The text placeholder for the Text Editor screen */
+"Enter a title..." = "输入标题...";
+
 /* Error message shown when a URL is invalid. */
 "Enter a valid URL eg. example.com." = "请输入有效的 URL，例如 example.com。";
 
@@ -403,6 +432,10 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "改为输入密码。";
+
+/* Experimental features navigation title
+   Navigates to experimental features screen */
+"Experimental Features" = "实验功能";
 
 /* Expiry: 1 day */
 "Expiry: %ld day" = "到期日期：%ld 天";
@@ -443,6 +476,49 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "您希望我们如何为您提供帮助？";
 
+/* Accessibility label for HTML button on formatting toolbar.
+   HTML Attachment Label */
+"HTML" = "HTML";
+
+/* Post HTML content */
+"HTML Content" = "HTML 内容";
+
+/* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
+"Header 1" = "标题 1";
+
+/* Accessibility label for selecting h2 paragraph style button on the formatting toolbar. */
+"Header 2" = "标题 2";
+
+/* Accessibility label for selecting h3 paragraph style button on the formatting toolbar. */
+"Header 3" = "标题 3";
+
+/* Accessibility label for selecting h4 paragraph style button on the formatting toolbar. */
+"Header 4" = "标题 4";
+
+/* Accessibility label for selecting h5 paragraph style button on the formatting toolbar. */
+"Header 5" = "标题 5";
+
+/* Accessibility label for selecting h6 paragraph style button on the formatting toolbar. */
+"Header 6" = "标题 6";
+
+/* H1 Aztec Style */
+"Heading 1" = "一级标题";
+
+/* H2 Aztec Style */
+"Heading 2" = "二级标题";
+
+/* H3 Aztec Style */
+"Heading 3" = "三级标题";
+
+/* H4 Aztec Style */
+"Heading 4" = "四级标题";
+
+/* H5 Aztec Style */
+"Heading 5" = "五级标题";
+
+/* H6 Aztec Style */
+"Heading 6" = "六级标题";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "帮助";
@@ -456,10 +532,13 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "帮助改进应用程序";
 
+/* Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+"Hidden" = "已隐藏";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "如果禁用，备注将不会公开";
 
-/* My Store > Settings > Beta features > Switch stats version */
+/* My Store > Settings > Experimental features > Switch stats version */
 "Improved stats" = "经改进的统计功能";
 
 /* Display label for the product's inventory stock status
@@ -481,6 +560,15 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "用户名或密码有误。请尝试再次输入您的登录详细信息。";
 
+/* Label action for inserting a link on the editor */
+"Insert" = "插入";
+
+/* Accessibility label for insert horizontal ruler button on formatting toolbar. */
+"Insert Horizontal Ruler" = "插入水平标尺";
+
+/* Accessibility label for insert link button on formatting toolbar. */
+"Insert Link" = "插入链接";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "无效站点地址";
 
@@ -497,7 +585,7 @@
 "Invalid username" = "无效用户名";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "库存";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -506,11 +594,17 @@
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "您可能输入了错误的密码。是否想重试？";
 
+/* Accessibility label for italic button on formatting toolbar. */
+"Italic" = "斜体";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "过去 24 小时";
 
 /* Last 7 days section header */
 "Last 7 days" = "过去 7 天";
+
+/* Opens an internal library called Wormholy. Not visible to users. */
+"Launch Wormholy debug" = "启动 Wormholy 调试";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
    The action of the top banner on Dashboard that indicates new stats is unavailable */
@@ -527,6 +621,13 @@
 
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "限制：%ld 次下载";
+
+/* Title for screen in editor that allows to configure link options */
+"Link Settings" = "链接设置";
+
+/* Label for the text of a link in the editor
+   Navigation bar title for editing the text of a text link */
+"Link Text" = "链接文本";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "正在加载命令";
@@ -584,15 +685,11 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "已映射的域";
 
-/* Accessibility label for the Mark All Notifications as Read Button
-   Accessibility label for the Mark All Reviews as Read Button */
+/* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "全部标为已读";
 
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "将订单标记为完成";
-
-/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
-"Marks Every Notification as Read" = "将所有通知标为已读";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "将所有评论标为已读";
@@ -612,7 +709,8 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "月";
 
-/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
+   Accessibility label for the More button on formatting toolbar. */
 "More" = "更多";
 
 /* Spam Action Spoken hint. */
@@ -643,6 +741,9 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "需要更多帮助？";
 
+/* The title for the net amount paid cell */
+"Net" = "净额";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "下一步";
@@ -662,6 +763,9 @@
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "无可用数据";
+
+/* The text on the placeholder overlay when there are no product variations on the Products tab */
+"No product variations yet" = "尚无产品变体";
 
 /* Search Products (Empty State)
    The text on the placeholder overlay when there are no products on the Products tab */
@@ -719,6 +823,9 @@
 /* Navigates to screen about open source licenses */
 "Open Source Licenses" = "开源许可证";
 
+/* Label for the description of openening a link using a new window */
+"Open in a new Window\/Tab" = "在新窗口\/标签页中打开";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "打开可用状态列表。";
 
@@ -750,8 +857,11 @@
 /* Order status update success notice */
 "Order status updated" = "订单状态已更新";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Accessibility label for Ordered list button on formatting toolbar. */
+"Ordered List" = "有序列表";
+
+/* Orders stat label on dashboard - should be plural.
+   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "订单";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -773,6 +883,9 @@
    Password placeholder */
 "Password" = "密码";
 
+/* Paste without Formatting Menu Item */
+"Paste without Formatting" = "不带格式粘贴";
+
 /* Payment section title */
 "Payment" = "付款";
 
@@ -792,6 +905,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "请检查电子邮件";
 
+/* Placeholder for editing the URL of a text link */
+"Please enter a URL" = "请输入 URL";
+
 /* No comment provided by engineer. */
 "Please enter a site address." = "请输入站点地址。";
 
@@ -800,6 +916,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "请输入一个合法的 E-mail 地址。";
+
+/* Placeholder for editing the text of a text link */
+"Please enter some text" = "请输入一段文本";
 
 /* No comment provided by engineer. */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "请输入您的 WordPress.com 帐户密码，以使用 Apple ID 登录。";
@@ -822,7 +941,8 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "请打开电子邮件应用程序，查找来自 WordPress.com 的电子邮件。";
 
-/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
+   Title of the Price Settings row on Product main screen */
 "Price" = "价格";
 
 /* Product Details - pricing and inventory section title */
@@ -854,8 +974,8 @@
 /* Product Total label for payment view */
 "Product Total" = "产品总计";
 
-/* Title of the Products tab — plural form of Product
-   Title that appears on top of the Product List screen (plural form of the word Product). */
+/* My Store > Settings > Experimental features > Switch Products
+   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "产品";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -884,6 +1004,9 @@
    Section header title - abbreviation for quantity */
 "Qty" = "数量";
 
+/* Format of the stock quantity on the Inventory Settings row */
+"Quantity: %ld" = "数量：%ld";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "请与我们快乐的工程师联系，他们可以帮助解答棘手的问题";
 
@@ -893,14 +1016,23 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "阅读隐私政策";
 
+/* The title for the refunded amount cell */
+"Refunded" = "已退款";
+
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已注册的域";
 
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "正常价格：";
 
+/* Format of the regular price on the Price Settings row */
+"Regular price: %@" = "正常价格：%@";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "删除过滤器";
+
+/* Label action for removing a link from the editor */
+"Remove Link" = "移除链接";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "报告崩溃问题";
@@ -924,9 +1056,12 @@
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "评论已标记为%@";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
+/* Reviews descriptive label
+   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "评论";
+
+/* Post Rich content */
+"Rich Content" = "丰富的内容";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
 "SKU" = "SKU";
@@ -935,11 +1070,20 @@
    A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "SKU：";
 
+/* Format of the SKU on the Inventory Settings row */
+"SKU: %@" = "SKU：%@";
+
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "短信已发送";
 
+/* Format of the sale period on the Price Settings row */
+"Sale dates: %1$@-%2$@" = "促销日期：%1$@-%2$@";
+
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "促销价格：";
+
+/* Format of the sale price on the Price Settings row */
+"Sale price: %@" = "促销价格：%@";
 
 /* Orders Search Placeholder */
 "Search all orders" = "搜索所有订单";
@@ -955,6 +1099,9 @@
 
 /* Page title for the select a different store screen */
 "Select Store" = "选择商店";
+
+/* Accessibility label for selecting paragraph style button on formatting toolbar. */
+"Select paragraph style" = "选择段落样式";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "已选商店";
@@ -983,8 +1130,11 @@
 "Shipped %@" = "配送日期：%@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view */
+   Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "配送";
+
+/* Shipping method title for customer info cell */
+"Shipping Method" = "配送方式";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "配送服务提供商";
@@ -994,6 +1144,9 @@
 
 /* Shipping title for customer info cell */
 "Shipping details" = "配送详情";
+
+/* VoiceOver accessibility label for the shipping notice about the order */
+"Shipping notice about the order" = "关于订单的配送通知";
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "配送服务提供商";
@@ -1077,6 +1230,9 @@
    Verb, spam a comment */
 "Spam" = "发表垃圾评论";
 
+/* Aztec's Text Placeholder */
+"Start writing..." = "开始撰写...";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "起始日期：%1$@；结束日期：%2$@";
 
@@ -1085,6 +1241,9 @@
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "库存状态：";
+
+/* Format of the stock status on the Inventory Settings row */
+"Stock status: %@" = "库存状态：%@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "商店收益图表";
@@ -1098,11 +1257,89 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "商店收益图表：Y 轴";
 
+/* Accessibility label for strikethrough button on formatting toolbar. */
+"Strike Through" = "删除";
+
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "切换商店";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "切换至 (newStoreName)。您只会收到来自此商店的通知。";
+
+/* Accessibility Identifier for the H1 Aztec Style */
+"Switches to the Heading 1 font size" = "切换为标题 1 号字";
+
+/* Accessibility Identifier for the H2 Aztec Style */
+"Switches to the Heading 2 font size" = "切换为标题 2 号字";
+
+/* Accessibility Identifier for the H3 Aztec Style */
+"Switches to the Heading 3 font size" = "切换为标题 3 号字";
+
+/* Accessibility Identifier for the H4 Aztec Style */
+"Switches to the Heading 4 font size" = "切换为标题 4 号字";
+
+/* Accessibility Identifier for the H5 Aztec Style */
+"Switches to the Heading 5 font size" = "切换为标题 5 号字";
+
+/* Accessibility Identifier for the H6 Aztec Style */
+"Switches to the Heading 6 font size" = "切换为标题 6 号字";
+
+/* Accessibility Identifier for the Default Font Aztec Style. */
+"Switches to the default Font Size" = "切换为默认字体大小";
+
+/* Accessibility hint for the More button on formatting toolbar. */
+"Tap for more formatting options" = "轻点以查看更多格式选项";
+
+/* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
+"Tap to insert a Horizontal Ruler" = "轻点以插入水平标尺";
+
+/* Accessibility hint for insert link button on formatting toolbar. */
+"Tap to insert a Link" = "轻点以插入链接";
+
+/* Accessibility hint for block quote button on formatting toolbar. */
+"Tap to toggle Block Quote" = "轻点以切换区块引用";
+
+/* Accessibility hint for bold button on formatting toolbar. */
+"Tap to toggle Bold text" = "轻点以切换粗体文本";
+
+/* Accessibility hint for HTML button on formatting toolbar. */
+"Tap to toggle HTML mode" = "轻点以切换 HTML 模式";
+
+/* Accessibility hint for selecting h1 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 1" = "轻点以切换标题 1";
+
+/* Accessibility hint for selecting h2 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 2" = "轻点以切换标题 2";
+
+/* Accessibility hint for selecting h3 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 3" = "轻点以切换标题 3";
+
+/* Accessibility hint for selecting h4 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 4" = "轻点以切换标题 4";
+
+/* Accessibility hint for selecting h5 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 5" = "轻点以切换标题 5";
+
+/* Accessibility hint for selecting h6 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 6" = "轻点以切换标题 6";
+
+/* Accessibility hint for italic button on formatting toolbar. */
+"Tap to toggle Italic text" = "轻点以切换斜体文本";
+
+/* Accessibility hint for Ordered list button on formatting toolbar. */
+"Tap to toggle Ordered List" = "轻点以切换有序列表";
+
+/* Accessibility hint for strikethrough button on formatting toolbar. */
+"Tap to toggle Strike Through" = "轻点以切换删除线";
+
+/* Accessibility hint for underline button on formatting toolbar. */
+"Tap to toggle Underline" = "轻点以切换下划线";
+
+/* Accessibility hint for unordered list button on formatting toolbar. */
+"Tap to toggle Unordered List" = "轻点以切换无序列表";
+
+/* Accessibility hint for selecting paragraph style button on formatting toolbar. */
+"Tap to toggle paragraph style" = "轻点以切换段落样式";
 
 /* Tax label for total taxes line */
 "Tax:" = "税费：";
@@ -1112,6 +1349,9 @@
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "服务条款";
+
+/* My Store > Settings > Experimental features > Products description */
+"Test out the new products section as we get ready to launch" = "在我们准备发布新产品时测试一下新的“产品”部分";
 
 /* Button title */
 "Text me a code instead" = "通过短信向我发送代码";
@@ -1148,9 +1388,6 @@
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此服务器的证书无效。您所连接的服务器伪装成了“%@”，这可能会给您的凭证信息带来危险。\n\n仍然信任此证书吗？";
-
-/* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed" = "通知已被删除！";
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "已删除评论";
@@ -1200,11 +1437,19 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "该信息有助于我们改善产品、开展与您更加相关的营销活动、个性化您的 WordPress.com 体验等，请参阅隐私政策以了解详情。";
 
+/* Accessibility label for the Shipping notice
+   Shipping notice row label when there is more than one shipping method */
+"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "此订单正使用扩展程序计算配送。所显示的配送方式可能不完整。";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "无法加载此产品";
 
-/* Product details screen — product title descriptive label */
+/* Product details screen — product title descriptive label
+   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
 "Title" = "标题";
+
+/* Placeholder in the Product Title row on Product form screen. */
+"Title (required)" = "标题（如需要）";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "要创建新的 WordPress.com 帐户，请输入您的电子邮件地址。";
@@ -1218,6 +1463,12 @@
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
 "Today" = "今天";
+
+/* Accessibility Identifier for the Aztec Ordered List Style. */
+"Toggles the ordered list style" = "切换有序的列表样式";
+
+/* Accessibility Identifier for the Aztec Unordered List Style */
+"Toggles the unordered list style" = "切换无序的列表样式";
 
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "热销产品";
@@ -1265,7 +1516,7 @@
 /* The title of the top banner on Dashboard that indicates new stats is available */
 "Try our improved stats" = "试用经改进的统计页面";
 
-/* My Store > Settings > Beta features > Stats version description */
+/* My Store > Settings > Experimental features > Stats version description */
 "Try the new stats available with the WooCommerce Admin plugin" = "借助 WooCommerce Admin 插件试用新的统计功能";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
@@ -1273,6 +1524,10 @@
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "试试站点地址";
+
+/* Navigation bar title for editing the URL of a text link
+   URL text field placeholder */
+"URL" = "URL";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "无法连接";
@@ -1325,11 +1580,14 @@
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "不批准评论";
 
+/* Accessibility label for underline button on formatting toolbar. */
+"Underline" = "下划线";
+
 /* Undo Action */
 "Undo" = "撤消";
 
 /* Unknown Application State
-   Unknown product name, displayed in a review */
+   Unknown product name, displayed in a review - Unknown Tag Name */
 "Unknown" = "未知";
 
 /* No comment provided by engineer. */
@@ -1337,6 +1595,9 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "未知错误";
+
+/* Accessibility label for unordered list button on formatting toolbar. */
+"Unordered List" = "无序列表";
 
 /* Display label for the review's unspam status */
 "Unspam" = "不标记为垃圾评论";
@@ -1346,6 +1607,9 @@
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "最多保存七天的日志。";
+
+/* Label action for updating a link on the editor */
+"Update" = "更新";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
 "Update %@ to WooCommerce 3.5" = "将 %@ 更新到 WooCommerce 3.5";
@@ -1384,6 +1648,10 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "用户名至少要求4位。";
 
+/* Product Details > descriptive label for the Product Variants cell.
+   Title that appears on top of the Product Variation List screen. */
+"Variations" = "变体";
+
 /* two factor code placeholder */
 "Verification code" = "验证码";
 
@@ -1399,6 +1667,9 @@
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "查看关联产品";
+
+/* This text is linked so the user can view refund details. */
+"View details" = "查看详情";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "查看之前提交的支持申请单";
@@ -1425,7 +1696,7 @@
 "Watch readers from around the world read and interact with your site — in real time." = "实时观看世界各地的读者阅读您的站点以及与您的站点交互。";
 
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats as we couldn’t find the WooCommerce Admin plugin" = "由于无法找到 WooCommerce Admin 插件，因此已恢复旧版统计页面";
+"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.22 or higher" = "我们已还原为旧统计信息。要使用测试版统计信息，请激活 0.22 或更高版本的 WooCommerce Admin 插件";
 
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "我们向您发送了一个免密注册链接！请在该设备上检查电子邮件，并轻点电子邮件中的免密注册链接以完成注册。";
@@ -1451,6 +1722,12 @@
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "重量：";
 
+/* Format of the weight on the Shipping Settings row - weight[unit] */
+"Weight: %1$@%2$@" = "重量：%1$@%2$@";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀" = "我们正在努力开发此新的“产品”部分，因此，在我们准备发布时，您可能会看到一些更改 🚀";
+
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "我们正面向使用了 WooCommerce Admin 插件的商店推出经改进的统计页面";
 
@@ -1471,6 +1748,9 @@
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress 版本过旧。%1$@ 上的站点采用 WordPress %2$@。我们建议更新至最新版本或至少更新为 %3$@";
+
+/* The title of the Work In Progress top banner on the Products tab */
+"Work in progress!" = "工作进行中！";
 
 /* Statistical unit - a single year */
 "Year" = "年";
@@ -1496,6 +1776,9 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "在您使用 Safari 访问自己的站点时，站点地址显示在屏幕顶部的地址栏中。";
 
+/* Comment Attachment Label */
+"[COMMENT]" = "[评论]";
+
 /* Backorders status. Example: 'Backorders: allowed' */
 "allowed" = "允许";
 
@@ -1507,6 +1790,9 @@
 
 /* Later today */
 "later today" = "稍后再说";
+
+/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
+"manual refund" = "手动退款";
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "不允许";

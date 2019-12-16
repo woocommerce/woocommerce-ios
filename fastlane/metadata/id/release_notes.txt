@@ -1,7 +1,2 @@
-- Disempurnakan: Tampilan detail pemesanan kini menyertakan metode pengiriman pemesanan.
-- Penyempurnaan: Tab ulasan kini menampilkan seluruh Ulasan Produk.
-- Diubah: Kami memperbarui tampilan Detail Pemesanan dan menonaktifkan mode gelap untuk sementara.
-- Perbaikan bug: Memperbaiki tampilan UI di sel Daftar Pesanan saat mengetuk dengan mode gelap diaktifkan.
-- Perbaikan bug: Ulasan kini tidak lagi beralih ke mode gelap sebagian. Mode gelap akan segera kembali!
-- Perbaikan bug: Detail Pesanan kini memiliki jarak yang tepat antar sel.
-- Perbaikan bug: Pengaturan kini tidak lagi beralih ke mode gelap sebagian.
+- Penggemar mode gelap, bergembiralah! Mode ini sudah tersedia.
+- Penggemar pratinjau, Anda juga bisa bergembira! Kami tahu bahwa tab Produk merupakan keinginan dari banyak pihak. Meskipun kami belum siap untuk sepenuhnya merilis versi aplikasi yang menyertakannya, Anda masih bisa mempratinjau tab Produk yang akan hadir sekarang — buka Pengaturan di aplikasi untuk mengaktifkannya.

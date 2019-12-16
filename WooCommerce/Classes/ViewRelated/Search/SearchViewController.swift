@@ -219,7 +219,9 @@ private extension SearchViewController {
     ///
     func configureSearchBar() {
         searchBar.placeholder = searchUICommand.searchBarPlaceholder
-        searchBar.searchTextField.textColor = .text
+        if #available(iOS 13.0, *) {
+            searchBar.searchTextField.textColor = .text
+        }
     }
 
     /// Setup: Search Bar Borders

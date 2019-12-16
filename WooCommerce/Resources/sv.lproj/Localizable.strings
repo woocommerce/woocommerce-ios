@@ -1,9 +1,12 @@
-/* Translation-Revision-Date: 2019-10-16 00:55:11+0000 */
+/* Translation-Revision-Date: 2019-12-12 00:54:55+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
 
 /* No comment provided by engineer. */
+"%1$@ (%2$ld options)" = "%1$@ (%2$ld alternativ)";
+
+/* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (Privat)";
 
 /* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
@@ -26,6 +29,9 @@
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ lämnade en recension om %2$@";
+
+/* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
+"%1$@ via %2$@ – %3$@" = "%1$@ via %2$@ – %3$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld i lager";
@@ -79,6 +85,9 @@
    Button text for adding a new order note */
 "Add a note" = "Lägg till en notering";
 
+/* Cell text in Add / Edit product when there are no images. */
+"Add a product image" = "Lägg till en produktbild";
+
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Lägg till en spårning";
 
@@ -91,12 +100,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Avancerat verktyg för att granska appens status";
 
-/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
-   Name of the All filter on the Order List screen - it means all orders will be displayed. */
+/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "Alla";
-
-/* Mark all notifications as read notice */
-"All notifications marked as read" = "Alla meddelanden markerade som lästa";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alla recensioner har markerats som lästa";
@@ -169,15 +174,17 @@
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "Börja uppfylla kraven";
 
-/* Beta features navigation title
-   Navigates to Beta features screen */
-"Beta Features" = "Betafunktioner";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "Faktureringsadress";
 
 /* Billing Information view Title */
 "Billing Information" = "Faktureringsinformation";
+
+/* Accessibility label for block quote button on formatting toolbar. */
+"Block Quote" = "Citatblock";
+
+/* Accessibility label for bold button on formatting toolbar. */
+"Bold" = "Fetstil";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Genom att registrera dig godkänner du våra _användarvillkor_.";
@@ -299,6 +306,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Dagar";
 
+/* Description of the default paragraph formatting style in the editor. */
+"Default" = "Standard";
+
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "Ta bort";
 
@@ -309,11 +319,27 @@
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
 "Deletes a shipment's tracking information." = "Raderar spårningsinformationen för en försändning.";
 
+/* Placeholder in the Product description row on Product form screen. */
+"Describe your product" = "Beskriv din produkt";
+
+/* The navigation bar title of the Aztec editor screen.
+   Title in the Product description row on Product form screen when the description is non-empty. */
+"Description" = "Beskrivning";
+
 /* The row label to tap for a detailed product list */
 "Details" = "Detaljer";
 
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "Detaljer för order med nummer (viewModel.order.number)";
+
+/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
+"Dimensions: %1$@ x %2$@ x %3$@%4$@" = "Dimensioner: %1$@ x %2$@ x %3$@%4$@";
+
+/* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
+"Dimensions: %1$@ x %2$@%3$@" = "Dimensioner: %1$@ x %2$@%3$@";
+
+/* Format of one dimension on the Shipping Settings row - dimension[unit] */
+"Dimensions: %1$@%2$@" = "Dimensioner: %1$@%2$@";
 
 /* Discount label for payment view */
 "Discount" = "Rabatt";
@@ -379,6 +405,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL ej angiven";
 
+/* The text placeholder for the Text Editor screen */
+"Enter a title..." = "Skriv en rubrik...";
+
 /* Error message shown when a URL is invalid. */
 "Enter a valid URL eg. example.com." = "Ange en giltig URL, t.ex. exempel.com.";
 
@@ -403,6 +432,10 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Skriv in ditt lösenord istället.";
+
+/* Experimental features navigation title
+   Navigates to experimental features screen */
+"Experimental Features" = "Experimentella funktioner";
 
 /* Expiry: 1 day */
 "Expiry: %ld day" = "Går ut: %ld dag";
@@ -443,6 +476,49 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "HUR KAN VI HJÄLPA TILL?";
 
+/* Accessibility label for HTML button on formatting toolbar.
+   HTML Attachment Label */
+"HTML" = "HTML";
+
+/* Post HTML content */
+"HTML Content" = "HTML-innehåll";
+
+/* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
+"Header 1" = "Rubrik 1";
+
+/* Accessibility label for selecting h2 paragraph style button on the formatting toolbar. */
+"Header 2" = "Rubrik 2";
+
+/* Accessibility label for selecting h3 paragraph style button on the formatting toolbar. */
+"Header 3" = "Rubrik 3";
+
+/* Accessibility label for selecting h4 paragraph style button on the formatting toolbar. */
+"Header 4" = "Rubrik 4";
+
+/* Accessibility label for selecting h5 paragraph style button on the formatting toolbar. */
+"Header 5" = "Rubrik 5";
+
+/* Accessibility label for selecting h6 paragraph style button on the formatting toolbar. */
+"Header 6" = "Rubrik 6";
+
+/* H1 Aztec Style */
+"Heading 1" = "Rubrik 1";
+
+/* H2 Aztec Style */
+"Heading 2" = "Rubrik 2";
+
+/* H3 Aztec Style */
+"Heading 3" = "Rubrik 3";
+
+/* H4 Aztec Style */
+"Heading 4" = "Rubrik 4";
+
+/* H5 Aztec Style */
+"Heading 5" = "Rubrik 5";
+
+/* H6 Aztec Style */
+"Heading 6" = "Rubrik 6";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "Hjälp";
@@ -456,10 +532,13 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Hjälp till att förbättra appen";
 
+/* Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+"Hidden" = "Dold";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Om detta inaktiveras kommer noteringen att vara privat";
 
-/* My Store > Settings > Beta features > Switch stats version */
+/* My Store > Settings > Experimental features > Switch stats version */
 "Improved stats" = "Förbättrad statistik";
 
 /* Display label for the product's inventory stock status
@@ -481,6 +560,15 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Felaktigt användarnamn eller lösenord. Vänligen ange dina inloggningsuppgifter igen.";
 
+/* Label action for inserting a link on the editor */
+"Insert" = "Infoga";
+
+/* Accessibility label for insert horizontal ruler button on formatting toolbar. */
+"Insert Horizontal Ruler" = "Placera in horisontell linje";
+
+/* Accessibility label for insert link button on formatting toolbar. */
+"Insert Link" = "Infoga länk";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Ogiltig adress till webbplatsen";
 
@@ -497,7 +585,7 @@
 "Invalid username" = "Ogiltigt användarnamn";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "Lagersaldo";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -506,11 +594,17 @@
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Du verkar ha skrivit fel lösenord. Vill du försöka en gång till?";
 
+/* Accessibility label for italic button on formatting toolbar. */
+"Italic" = "Kursivering";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "Senaste 24 timmarna";
 
 /* Last 7 days section header */
 "Last 7 days" = "Senaste 7 dagarna";
+
+/* Opens an internal library called Wormholy. Not visible to users. */
+"Launch Wormholy debug" = "Starta Wormholy-felsökning";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
    The action of the top banner on Dashboard that indicates new stats is unavailable */
@@ -527,6 +621,13 @@
 
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "Gräns: %ld nedladdningar";
+
+/* Title for screen in editor that allows to configure link options */
+"Link Settings" = "Länkinställningar";
+
+/* Label for the text of a link in the editor
+   Navigation bar title for editing the text of a text link */
+"Link Text" = "Länktext";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Hämtar beställning";
@@ -584,15 +685,11 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Ompekad domän";
 
-/* Accessibility label for the Mark All Notifications as Read Button
-   Accessibility label for the Mark All Reviews as Read Button */
+/* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "Markera alla som lästa";
 
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Markera ordern som slutförd";
-
-/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
-"Marks Every Notification as Read" = "Markerar varje avisering som läst";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "Markerar varje recension som läst";
@@ -612,7 +709,8 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "Månader";
 
-/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
+   Accessibility label for the More button on formatting toolbar. */
 "More" = "Mer";
 
 /* Spam Action Spoken hint. */
@@ -643,6 +741,9 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Behöver du mer hjälp?";
 
+/* The title for the net amount paid cell */
+"Net" = "Netto";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "Nästa";
@@ -662,6 +763,9 @@
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Inga data tillgängliga";
+
+/* The text on the placeholder overlay when there are no product variations on the Products tab */
+"No product variations yet" = "Inga produktvarianter ännu";
 
 /* Search Products (Empty State)
    The text on the placeholder overlay when there are no products on the Products tab */
@@ -719,6 +823,9 @@
 /* Navigates to screen about open source licenses */
 "Open Source Licenses" = "Öppen källkodslicens";
 
+/* Label for the description of openening a link using a new window */
+"Open in a new Window\/Tab" = "Öppna i nytt fönster\/ny flik";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Öppnar en lista med tillgängliga statusar.";
 
@@ -750,8 +857,11 @@
 /* Order status update success notice */
 "Order status updated" = "Orderstatus uppdaterad";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Accessibility label for Ordered list button on formatting toolbar. */
+"Ordered List" = "Sorterad lista";
+
+/* Orders stat label on dashboard - should be plural.
+   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Ordrar";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -773,6 +883,9 @@
    Password placeholder */
 "Password" = "Lösenord";
 
+/* Paste without Formatting Menu Item */
+"Paste without Formatting" = "Klistra in utan formatering";
+
 /* Payment section title */
 "Payment" = "Betalning";
 
@@ -792,6 +905,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "Kolla din e-post";
 
+/* Placeholder for editing the URL of a text link */
+"Please enter a URL" = "Ange en URL";
+
 /* No comment provided by engineer. */
 "Please enter a site address." = "Vänligen ange en adress till webbplatsen.";
 
@@ -800,6 +916,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "Vänligen ange en giltig e-postadress.";
+
+/* Placeholder for editing the text of a text link */
+"Please enter some text" = "Skriv in lite text";
 
 /* No comment provided by engineer. */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Ange lösenordet för ditt WordPress.com-konto eller logga in med ditt Apple-ID.";
@@ -822,7 +941,8 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Öppna ditt e-postprogram och hitta ett brev från WordPress.com.";
 
-/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
+   Title of the Price Settings row on Product main screen */
 "Price" = "Pris";
 
 /* Product Details - pricing and inventory section title */
@@ -854,8 +974,8 @@
 /* Product Total label for payment view */
 "Product Total" = "Produktbelopp";
 
-/* Title of the Products tab — plural form of Product
-   Title that appears on top of the Product List screen (plural form of the word Product). */
+/* My Store > Settings > Experimental features > Switch Products
+   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produkter";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -884,6 +1004,9 @@
    Section header title - abbreviation for quantity */
 "Qty" = "Antal";
 
+/* Format of the stock quantity on the Inventory Settings row */
+"Quantity: %ld" = "Antal: %ld";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Kontakta våra supporttekniker för att få svar på svåra frågor";
 
@@ -893,14 +1016,23 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Läs integritetspolicyn";
 
+/* The title for the refunded amount cell */
+"Refunded" = "Återbetalad";
+
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registrerad domän";
 
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Ordinarie pris:";
 
+/* Format of the regular price on the Price Settings row */
+"Regular price: %@" = "Ordinarie pris: %@";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "Ta bort filter";
+
+/* Label action for removing a link from the editor */
+"Remove Link" = "Ta bort länken";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Rapportera krascher";
@@ -924,9 +1056,12 @@
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Recension markerad som %@";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
+/* Reviews descriptive label
+   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Recensioner";
+
+/* Post Rich content */
+"Rich Content" = "Formaterat innehåll";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
 "SKU" = "Artikelnr";
@@ -935,11 +1070,20 @@
    A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "Artikelnr:";
 
+/* Format of the SKU on the Inventory Settings row */
+"SKU: %@" = "Artikelnr: %@";
+
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS skickat";
 
+/* Format of the sale period on the Price Settings row */
+"Sale dates: %1$@-%2$@" = "Försäljningsdatum: %1$@-%2$@";
+
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "Reapris:";
+
+/* Format of the sale price on the Price Settings row */
+"Sale price: %@" = "Reapris: %@";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Sök alla ordrar";
@@ -955,6 +1099,9 @@
 
 /* Page title for the select a different store screen */
 "Select Store" = "Välj butik";
+
+/* Accessibility label for selecting paragraph style button on formatting toolbar. */
+"Select paragraph style" = "Välj styckeformatering";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Vald butik";
@@ -983,8 +1130,11 @@
 "Shipped %@" = "Skickad %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view */
+   Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Frakt";
+
+/* Shipping method title for customer info cell */
+"Shipping Method" = "Fraktmetod";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Transportleverantörer";
@@ -994,6 +1144,9 @@
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Leveransadress";
+
+/* VoiceOver accessibility label for the shipping notice about the order */
+"Shipping notice about the order" = "Fraktmeddelande om beställningen";
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Transportleverantör";
@@ -1077,6 +1230,9 @@
    Verb, spam a comment */
 "Spam" = "Skräppost";
 
+/* Aztec's Text Placeholder */
+"Start writing..." = "Börja skriva...";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Startperiod %1$@, slutperiod %2$@";
 
@@ -1085,6 +1241,9 @@
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "Lagerstatus:";
+
+/* Format of the stock status on the Inventory Settings row */
+"Stock status: %@" = "Lagerstatus: %@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Diagram över butiksintäkter";
@@ -1098,11 +1257,89 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Diagram över butiksintäkter: Y-axel";
 
+/* Accessibility label for strikethrough button on formatting toolbar. */
+"Strike Through" = "Genomstrykning";
+
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Växla butik";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "Växlade till (newStoreName). Du kommer endast att få meddelanden från den här butiken.";
+
+/* Accessibility Identifier for the H1 Aztec Style */
+"Switches to the Heading 1 font size" = "Ändrar till teckensnittsstorleken för Rubrik 1";
+
+/* Accessibility Identifier for the H2 Aztec Style */
+"Switches to the Heading 2 font size" = "Ändrar till teckensnittsstorleken för Rubrik 2";
+
+/* Accessibility Identifier for the H3 Aztec Style */
+"Switches to the Heading 3 font size" = "Ändrar till teckensnittsstorleken för Rubrik 3";
+
+/* Accessibility Identifier for the H4 Aztec Style */
+"Switches to the Heading 4 font size" = "Ändrar till teckensnittsstorleken för Rubrik 4";
+
+/* Accessibility Identifier for the H5 Aztec Style */
+"Switches to the Heading 5 font size" = "Ändrar till teckensnittsstorleken för Rubrik 5";
+
+/* Accessibility Identifier for the H6 Aztec Style */
+"Switches to the Heading 6 font size" = "Ändrar till teckensnittsstorleken för Rubrik 6";
+
+/* Accessibility Identifier for the Default Font Aztec Style. */
+"Switches to the default Font Size" = "Växlar till teckensnitt med standardstorlek";
+
+/* Accessibility hint for the More button on formatting toolbar. */
+"Tap for more formatting options" = "Tryck för fler formateringsalternativ";
+
+/* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
+"Tap to insert a Horizontal Ruler" = "Tryck för att infoga en vågrät linjal";
+
+/* Accessibility hint for insert link button on formatting toolbar. */
+"Tap to insert a Link" = "Tryck för att infoga en länk";
+
+/* Accessibility hint for block quote button on formatting toolbar. */
+"Tap to toggle Block Quote" = "Tryck för att ändra Citatblock";
+
+/* Accessibility hint for bold button on formatting toolbar. */
+"Tap to toggle Bold text" = "Tryck för att ändra Fet text";
+
+/* Accessibility hint for HTML button on formatting toolbar. */
+"Tap to toggle HTML mode" = "Tryck för att ändra HTML-läge";
+
+/* Accessibility hint for selecting h1 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 1" = "Tryck för att ändra Rubrik 1";
+
+/* Accessibility hint for selecting h2 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 2" = "Tryck för att ändra Rubrik 2";
+
+/* Accessibility hint for selecting h3 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 3" = "Tryck för att ändra Rubrik 3";
+
+/* Accessibility hint for selecting h4 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 4" = "Tryck för att ändra Rubrik 4";
+
+/* Accessibility hint for selecting h5 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 5" = "Tryck för att ändra Rubrik 5";
+
+/* Accessibility hint for selecting h6 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 6" = "Tryck för att ändra Rubrik 6";
+
+/* Accessibility hint for italic button on formatting toolbar. */
+"Tap to toggle Italic text" = "Tryck för att ändra Kursiv text";
+
+/* Accessibility hint for Ordered list button on formatting toolbar. */
+"Tap to toggle Ordered List" = "Tryck för att ändra Sorterad lista";
+
+/* Accessibility hint for strikethrough button on formatting toolbar. */
+"Tap to toggle Strike Through" = "Tryck för att ändra Genomstrykning";
+
+/* Accessibility hint for underline button on formatting toolbar. */
+"Tap to toggle Underline" = "Tryck för att ändra Understrykning";
+
+/* Accessibility hint for unordered list button on formatting toolbar. */
+"Tap to toggle Unordered List" = "Tryck för att ändra Osorterad lista";
+
+/* Accessibility hint for selecting paragraph style button on formatting toolbar. */
+"Tap to toggle paragraph style" = "Tryck för att ändra styckeformat";
 
 /* Tax label for total taxes line */
 "Tax:" = "Moms:";
@@ -1112,6 +1349,9 @@
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Användarvillkor";
+
+/* My Store > Settings > Experimental features > Products description */
+"Test out the new products section as we get ready to launch" = "Testa sektionen nya produkter när vi börjar närma oss lansering";
 
 /* Button title */
 "Text me a code instead" = "Skicka mig en kod via SMS i stället";
@@ -1148,9 +1388,6 @@
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Certifikatet för den här servern är inte giltigt. Det kan hända att du ansluter till en server som påstår sig vara \"%@\", vilket kan försätta din sekretessbelagda information i fara.\n\nVill du lita på certifikatet i alla fall?";
-
-/* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed" = "Meddelandet har tagits bort!";
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "Recensionen har tagits bort";
@@ -1200,11 +1437,19 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Denna information hjälper oss att förbättra våra produkter, se till att marknadsföringen till dig är mer relevant, anpassa din upplevelse av WordPress.com och annat som finns beskrivet i vår integritetspolicy.";
 
+/* Accessibility label for the Shipping notice
+   Shipping notice row label when there is more than one shipping method */
+"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "Den här beställningen använder tillägg för att beräkna frakten. De fraktmetoder som visas kan vara ofullständiga.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Det gick inte att hämta produkten";
 
-/* Product details screen — product title descriptive label */
+/* Product details screen — product title descriptive label
+   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
 "Title" = "Rubrik";
+
+/* Placeholder in the Product Title row on Product form screen. */
+"Title (required)" = "Rubrik (krävs)";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Fyll i din e-postadress för att skapa ditt nya WordPress.com-konto.";
@@ -1218,6 +1463,12 @@
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
 "Today" = "Idag";
+
+/* Accessibility Identifier for the Aztec Ordered List Style. */
+"Toggles the ordered list style" = "Slå av eller på stilen för numrerad lista";
+
+/* Accessibility Identifier for the Aztec Unordered List Style */
+"Toggles the unordered list style" = "Slå av eller på stilen för osorterad lista";
 
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "Toppresterande";
@@ -1265,7 +1516,7 @@
 /* The title of the top banner on Dashboard that indicates new stats is available */
 "Try our improved stats" = "Prova vår förbättrade statistik";
 
-/* My Store > Settings > Beta features > Stats version description */
+/* My Store > Settings > Experimental features > Stats version description */
 "Try the new stats available with the WooCommerce Admin plugin" = "Prova den nya statistiken som är tillgänglig med WooCommerce Admin-tillägget";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
@@ -1273,6 +1524,10 @@
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Prova med webbplatsens adress";
+
+/* Navigation bar title for editing the URL of a text link
+   URL text field placeholder */
+"URL" = "URL";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Kan inte ansluta";
@@ -1325,11 +1580,14 @@
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "Kommentaren godkänns inte";
 
+/* Accessibility label for underline button on formatting toolbar. */
+"Underline" = "Understrykning";
+
 /* Undo Action */
 "Undo" = "Ångra";
 
 /* Unknown Application State
-   Unknown product name, displayed in a review */
+   Unknown product name, displayed in a review - Unknown Tag Name */
 "Unknown" = "Okänd";
 
 /* No comment provided by engineer. */
@@ -1337,6 +1595,9 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "Okänt fel";
+
+/* Accessibility label for unordered list button on formatting toolbar. */
+"Unordered List" = "Osorterad lista";
 
 /* Display label for the review's unspam status */
 "Unspam" = "Avmarkera skräppost";
@@ -1346,6 +1607,9 @@
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Upp till sju dagar med loggar sparas.";
+
+/* Label action for updating a link on the editor */
+"Update" = "Uppdatera";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
 "Update %@ to WooCommerce 3.5" = "Uppdatera %@ till WooCommerce 3.5";
@@ -1384,6 +1648,10 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Användarnamnet måste vara minst 4 tecken långt.";
 
+/* Product Details > descriptive label for the Product Variants cell.
+   Title that appears on top of the Product Variation List screen. */
+"Variations" = "Varianter";
+
 /* two factor code placeholder */
 "Verification code" = "Verifieringskod";
 
@@ -1399,6 +1667,9 @@
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Visa relaterad produkt";
+
+/* This text is linked so the user can view refund details. */
+"View details" = "Visa detaljer";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visa tidigare inskickade supportärenden";
@@ -1425,7 +1696,7 @@
 "Watch readers from around the world read and interact with your site — in real time." = "Ha koll på hur läsare från hela världen läser och interagerar med din webbplats – i realtid.";
 
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats as we couldn’t find the WooCommerce Admin plugin" = "Vi har återgått till gammal statistik eftersom vi inte kunde hitta adminplugin-programmet WooCommerce";
+"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.22 or higher" = "Vi har återgått till den gamla statistiken. För att använda betastatistiken, aktivera WooCommerce Admin-tillägget med version 0.22 eller senare";
 
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Vi har skickat en magisk registreringslänk! Kolla din e-post på denna enhet och knacka på länken i e-postmeddelandet för att fullfölja registreringen.";
@@ -1451,6 +1722,12 @@
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "Vikt:";
 
+/* Format of the weight on the Shipping Settings row - weight[unit] */
+"Weight: %1$@%2$@" = "Vikt: %1$@%2$@";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀" = "Vi jobbar hårt på den nya Produkter-sektionen så du kan se några ändringar när vi närmar oss lanseringen 🚀";
+
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "Vi lanserar förbättringar av statistik för butiker som använder adminplugin-programmet WooCommerce";
 
@@ -1471,6 +1748,9 @@
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress-versionen är för gammal. Webbplatsen %1$@ använder WordPress %2$@. Vi rekommenderar att du uppdaterar till den senaste versionen, dock allra minst %3$@.";
+
+/* The title of the Work In Progress top banner on the Products tab */
+"Work in progress!" = "Arbete pågår!";
 
 /* Statistical unit - a single year */
 "Year" = "År";
@@ -1496,6 +1776,9 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Din webbplatsadress visas i listen längst upp på skärmen när du besöker din webbplats i Safari.";
 
+/* Comment Attachment Label */
+"[COMMENT]" = "[COMMENT]";
+
 /* Backorders status. Example: 'Backorders: allowed' */
 "allowed" = "tillåtet";
 
@@ -1507,6 +1790,9 @@
 
 /* Later today */
 "later today" = "senare idag";
+
+/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
+"manual refund" = "manuell återbetalning";
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "inte tillåtet";

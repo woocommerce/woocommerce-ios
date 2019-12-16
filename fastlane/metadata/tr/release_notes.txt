@@ -1,7 +1,2 @@
-- İyileştirme: Sipariş ayrıntıları görünümünde artık siparişin sevkiyat yöntemi görüntüleniyor.
-- Geliştirme: :Yorumlar sekmesinde artık tüm Ürün Yorumları gösteriliyor.
-- Değiştirildi: Sipariş Ayrıntıları'nın görünümü güncellendi ve karanlık mod geçici olarak devre dışı bırakıldı.
-- Hata düzeltmesi: Karanlık mod etkinken dokunduğunuzda Sipariş Listesi hücrelerindeki kullanıcı arayüzü görünümü düzeltildi.
-- Hata düzeltmesi: Yorumlar artık kısmi karanlık moda geçmiyor. Karanlık mod yakında hizmetinizde!
-- Hata düzeltmesi: Sipariş Ayrıntıları'ndaki hücreler arasında artık doğru ebatta boşluk var.
-- Hata düzeltmesi: Ayarlar artık kısmi karanlık moda geçmiyor.
+- Karanlık modu sevenler, sevinin! İşte karanlık mod.
+- Önizleme görüntülemeyi sevenleri de düşündük! Ürünler sekmesini herkesin heyecanla beklediğini biliyoruz. Bu özelliği içeren uygulama sürümünü yayımlamaya hazır olmasak da, şimdi yakında gelecek olan Ürünler sekmesinin önizlemesini görebilirsiniz - etkinleştirmek için uygulamadaki Ayarlar'a gidin.

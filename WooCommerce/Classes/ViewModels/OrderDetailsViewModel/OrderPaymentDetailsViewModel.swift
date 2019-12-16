@@ -129,6 +129,32 @@ final class OrderPaymentDetailsViewModel {
         return refundAttrText
     }
 
+    /// Format the refund amount with the correct currency
+    ///
+    var refundAmount: String? {
+        guard let fullRefund = refund else {
+            return nil
+        }
+
+        let refundLookUp = order.refunds.filter { $0.refundID == fullRefund.refundID }.first
+        guard let condensedRefund = refundLookUp else {
+            return nil
+        }
+
+        // We want the condensed refund total because it's reported as a negative value
+        return currencyFormatter.formatAmount(condensedRefund.total, with: order.currency)
+    }
+
+    /// Format the net amount with the correct currency
+    ///
+    var netAmount: String? {
+        guard let netDecimal = calculateNetAmount() else {
+            return nil
+        }
+
+        return currencyFormatter.formatAmount(netDecimal, with: order.currency)
+    }
+
     var couponLines: [OrderCouponLine] {
         return order.coupons
     }
@@ -153,5 +179,27 @@ final class OrderPaymentDetailsViewModel {
         }
 
         return NSLocalizedString("Discount", comment: "Discount label for payment view") + " (" + output + ")"
+    }
+
+    /// Calculate the net amount after refunds
+    ///
+    private func calculateNetAmount() -> NSDecimalNumber? {
+        guard let orderTotal = currencyFormatter.convertToDecimal(from: order.total) else {
+            return .zero
+        }
+
+        let refunds = order.refunds.map {
+            currencyFormatter.convertToDecimal(from: $0.total)
+        }
+
+        // Can't use .reduce(0,+) here because we're working with NSDecimalNumber.
+        var refundTotal: NSDecimalNumber = .zero
+        for r in refunds {
+            if let refund = r {
+                refundTotal = refundTotal.adding(refund)
+            }
+        }
+
+        return orderTotal.adding(refundTotal)
     }
 }

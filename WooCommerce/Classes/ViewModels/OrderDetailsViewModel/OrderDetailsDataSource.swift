@@ -336,14 +336,15 @@ private extension OrderDetailsDataSource {
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
         cell.leftText = Titles.refunded
-        cell.rightText = refund?.amount
+        cell.rightText = paymentViewModel.refundAmount
         cell.updateFootnoteAttributedText(paymentViewModel.refundSummary)
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
-        // TODO-thuy: add configuration for Net Amount cell.
-        // Temporarily displays fake info.
+        let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
+
         cell.leftText = Titles.netAmount
+        cell.rightText = paymentViewModel.netAmount
         cell.hideFootnote()
     }
 

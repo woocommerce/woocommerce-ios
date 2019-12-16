@@ -4,10 +4,10 @@ import Yosemite
 
 /// CurrencySettings Tests
 ///
-class CurrencySettingsTests: XCTestCase {
+final class CurrencySettingsTests: XCTestCase {
 
-    var moneyFormat: CurrencySettings?
-    var siteSettings: [SiteSetting] = []
+    private var moneyFormat: CurrencySettings?
+    private var siteSettings: [SiteSetting] = []
 
     override func setUp() {
         super.setUp()

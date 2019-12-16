@@ -16,5 +16,5 @@ public enum TaxClassAction: Action {
 
     /// Request the Tax Class found in a specified Product.
     ///
-    case requestMissingTaxClasses(for: Product, onCompletion: ([TaxClass]?, Error?) -> Void)
+    case requestMissingTaxClasses(for: Product, onCompletion: (TaxClass?, Error?) -> Void)
 }

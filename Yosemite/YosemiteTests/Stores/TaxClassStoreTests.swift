@@ -179,10 +179,8 @@ final class TaxClassStoreTests: XCTestCase {
 
         let product = MockProduct().product()
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
-        let action = TaxClassAction.requestMissingTaxClasses(for: product) { (taxClasses, error) in
+        let action = TaxClassAction.requestMissingTaxClasses(for: product) { (taxClass, error) in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TaxClass.self), 3)
-
-            let taxClass = taxClasses?.first(where: { $0.slug == product.taxClass })
 
             XCTAssertEqual(taxClass?.slug, product.taxClass)
             XCTAssertEqual(taxClass?.name, "Standard Rate")

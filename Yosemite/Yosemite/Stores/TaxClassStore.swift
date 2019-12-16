@@ -72,7 +72,7 @@ private extension TaxClassStore {
 
     /// Synchronizes the Tax Class found in a specified Product.
     ///
-    func requestMissingTaxClasses(for product: Product, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
+    func requestMissingTaxClasses(for product: Product, onCompletion: @escaping (TaxClass?, Error?) -> Void) {
         guard let taxClassFromStorage = product.taxClass else {
             onCompletion(nil, nil)
             return
@@ -90,7 +90,8 @@ private extension TaxClassStore {
                 }
 
                 self?.upsertStoredTaxClassesInBackground(readOnlyTaxClasses: taxClasses) {
-                    onCompletion(taxClasses, nil)
+                    let taxClass = taxClasses.first(where: { $0.slug == product.taxClass } )
+                    onCompletion(taxClass, nil)
                 }
             }
         }
@@ -99,7 +100,7 @@ private extension TaxClassStore {
                 onCompletion(nil, nil)
                 return
             }
-            onCompletion([taxClass], nil)
+            onCompletion(taxClass, nil)
             return
         }
     }

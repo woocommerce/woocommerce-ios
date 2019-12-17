@@ -6,9 +6,9 @@ import Yosemite
 final class ProductEditPriceSettingsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-    
+
     private let product: Product
-    
+
     /// Table Sections to be rendered
     ///
     private let sections: [Section] = [
@@ -16,7 +16,7 @@ final class ProductEditPriceSettingsViewController: UIViewController {
         Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
         Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass]),
     ]
-    
+
     /// Init
     ///
     init(product: Product) {
@@ -24,11 +24,11 @@ final class ProductEditPriceSettingsViewController: UIViewController {
 
         super.init(nibName: nil, bundle: nil)
     }
-    
+
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()
@@ -67,7 +67,7 @@ private extension ProductEditPriceSettingsViewController {
         let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
         tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
     }
-    
+
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
@@ -111,15 +111,15 @@ extension ProductEditPriceSettingsViewController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         // TODO-1423: navigate to tax class selector
     }
-    
+
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         if sections[section].title == nil {
             return UITableView.automaticDimension
         }
-        
+
         return Constants.sectionHeight
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         guard let leftText = sections[section].title else {
             return nil
@@ -132,7 +132,7 @@ extension ProductEditPriceSettingsViewController: UITableViewDelegate {
 
         headerView.leftText = leftText
         headerView.rightText = nil
-        
+
         return headerView
     }
 }
@@ -153,13 +153,13 @@ private extension ProductEditPriceSettingsViewController {
             break
         }
     }
-    
+
     func configurePrice(cell: UnitInputTableViewCell) {
-        
+
     }
-    
+
     func configureSalePrice(cell: UnitInputTableViewCell) {
-        
+
     }
 }
 
@@ -188,11 +188,11 @@ private extension ProductEditPriceSettingsViewController {
     enum Row: CaseIterable {
         case price
         case salePrice
-        
+
         case scheduleSale
         case scheduleSaleFrom
         case scheduleSaleTo
-        
+
         case taxStatus
         case taxClass
 

@@ -203,7 +203,7 @@ private extension ProductFormViewController {
         let priceSettingsViewController = ProductEditPriceSettingsViewController(product: product)
         navigationController?.pushViewController(priceSettingsViewController, animated: true)
     }
-    
+
     func editShippingSettings() {
         let shippingSettingsViewController = ProductShippingSettingsViewController(product: product)
         navigationController?.pushViewController(shippingSettingsViewController, animated: true)

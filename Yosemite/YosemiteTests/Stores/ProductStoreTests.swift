@@ -729,6 +729,8 @@ class ProductStoreTests: XCTestCase {
         let expectedProductID = 847
         let expectedProductName = "This is my new product name!"
         let expectedProductDescription = "Learn something!"
+        let expectedProductShippingClassID = 96987515
+        let expectedProductShippingClassSlug = "two-days"
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
@@ -738,6 +740,8 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(product?.productID, expectedProductID)
             XCTAssertEqual(product?.name, expectedProductName)
             XCTAssertEqual(product?.fullDescription, expectedProductDescription)
+            XCTAssertEqual(product?.shippingClassID, expectedProductShippingClassID)
+            XCTAssertEqual(product?.shippingClass, expectedProductShippingClassSlug)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
@@ -766,6 +770,16 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
+        // Inserts the expected shipping class model.
+        let existingShippingClass = ProductShippingClass(count: 2020,
+                                                         descriptionHTML: "Arriving in 2 days!",
+                                                         name: "2 Days",
+                                                         shippingClassID: 96987515,
+                                                         siteID: Int64(sampleSiteID),
+                                                         slug: "2-days")
+        let existingStorageShippingClass = viewStorage.insertNewObject(ofType: StorageProductShippingClass.self)
+        existingStorageShippingClass.update(with: existingShippingClass)
+
         let product = sampleProduct(productID: expectedProductID)
         let action = ProductAction.updateProduct(product: product) { (product, error) in
             XCTAssertNotNil(product)
@@ -777,11 +791,15 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 5)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
             XCTAssertNotNil(storedProduct)
             XCTAssertNotNil(readOnlyStoredProduct)
+
+            // Asserts updated relationships.
+            XCTAssertEqual(readOnlyStoredProduct?.productShippingClass, existingShippingClass)
 
             expectation.fulfill()
         }

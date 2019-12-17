@@ -109,7 +109,7 @@ extension ProductEditPriceSettingsViewController: UITableViewDataSource {
 extension ProductEditPriceSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
-
+        // TODO-1423: navigate to tax class selector
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {

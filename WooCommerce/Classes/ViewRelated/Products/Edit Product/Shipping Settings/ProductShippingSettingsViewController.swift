@@ -61,6 +61,7 @@ final class ProductShippingSettingsViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+        retrieveProductShippingClass()
     }
 }
 
@@ -93,13 +94,24 @@ private extension ProductShippingSettingsViewController {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
     }
+
+    func retrieveProductShippingClass() {
+        guard product.shippingClass?.isEmpty == false && product.shippingClassID > 0 else {
+            return
+        }
+
+        let action = ProductShippingClassAction.retrieveProductShippingClass(product: product) { [weak self] (shippingClass, error) in
+            self?.shippingClass = shippingClass
+            self?.tableView.reloadData()
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
 }
 
 // MARK: - Navigation actions handling
 //
 private extension ProductShippingSettingsViewController {
     @objc func completeUpdating() {
-        // TODO-1422: update shipping settings
         let dimensions = ProductDimensions(length: length ?? "",
                                            width: width ?? "",
                                            height: height ?? "")
@@ -154,7 +166,26 @@ extension ProductShippingSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        // TODO-1422: navigate to shipping class selector.
+        let row = rowAtIndexPath(indexPath)
+        switch row {
+        case .shippingClass:
+            let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: product, selected: shippingClass)
+            let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: NSLocalizedString("Shipping classes", comment: "Navigation bar title of the Product shipping class selector screen"),
+                                                                     noResultsPlaceholderText: NSLocalizedString("No shipping classes yet",
+                                                                                                                 comment: "The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker"))
+            let selectorViewController =
+                PaginatedListSelectorViewController(viewProperties: viewProperties,
+                                                    dataSource: dataSource) { [weak self] selected in
+                                                        guard let self = self else {
+                                                            return
+                                                        }
+                                                        self.shippingClass = selected
+                                                        self.tableView.reloadData()
+            }
+            navigationController?.pushViewController(selectorViewController, animated: true)
+        default:
+            return
+        }
     }
 }
 

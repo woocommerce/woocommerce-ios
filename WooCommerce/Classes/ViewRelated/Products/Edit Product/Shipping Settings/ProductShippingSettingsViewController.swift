@@ -98,16 +98,16 @@ private extension ProductShippingSettingsViewController {
         self.weight = weight
     }
 
-    func handleLengthChange(weight: String?) {
-        self.length = weight
+    func handleLengthChange(length: String?) {
+        self.length = length
     }
 
-    func handleWidthChange(weight: String?) {
-        self.width = weight
+    func handleWidthChange(width: String?) {
+        self.width = width
     }
 
-    func handleHeightChange(weight: String?) {
-        self.height = weight
+    func handleHeightChange(height: String?) {
+        self.height = height
     }
 }
 
@@ -136,6 +136,8 @@ extension ProductShippingSettingsViewController: UITableViewDataSource {
 //
 extension ProductShippingSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
         // TODO-1422: navigate to shipping class selector.
     }
 }
@@ -163,29 +165,29 @@ private extension ProductShippingSettingsViewController {
     }
 
     func configureWeight(cell: UnitInputTableViewCell) {
-        let viewModel = product.createShippingWeightCellViewModel(shippingSettingsService: shippingSettingsService) { [weak self] value in
+        let viewModel = product.createShippingWeightViewModel(using: shippingSettingsService) { [weak self] value in
             self?.handleWeightChange(weight: value)
         }
         cell.configure(viewModel: viewModel)
     }
 
     func configureLength(cell: UnitInputTableViewCell) {
-        let viewModel = product.createShippingLengthCellViewModel(shippingSettingsService: shippingSettingsService) { [weak self] value in
-            self?.handleLengthChange(weight: value)
+        let viewModel = product.createShippingLengthViewModel(using: shippingSettingsService) { [weak self] value in
+            self?.handleLengthChange(length: value)
         }
         cell.configure(viewModel: viewModel)
     }
 
     func configureWidth(cell: UnitInputTableViewCell) {
-        let viewModel = product.createShippingWidthCellViewModel(shippingSettingsService: shippingSettingsService) { [weak self] value in
-            self?.handleWidthChange(weight: value)
+        let viewModel = product.createShippingWidthViewModel(using: shippingSettingsService) { [weak self] value in
+            self?.handleWidthChange(width: value)
         }
         cell.configure(viewModel: viewModel)
     }
 
     func configureHeight(cell: UnitInputTableViewCell) {
-        let viewModel = product.createShippingHeightCellViewModel(shippingSettingsService: shippingSettingsService) { [weak self] value in
-            self?.handleHeightChange(weight: value)
+        let viewModel = product.createShippingHeightViewModel(using: shippingSettingsService) { [weak self] value in
+            self?.handleHeightChange(height: value)
         }
         cell.configure(viewModel: viewModel)
     }

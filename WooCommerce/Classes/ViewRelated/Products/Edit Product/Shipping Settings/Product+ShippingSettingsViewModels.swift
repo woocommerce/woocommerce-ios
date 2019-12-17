@@ -1,8 +1,8 @@
 import Yosemite
 
 extension Product {
-    func createShippingWeightCellViewModel(shippingSettingsService: ShippingSettingsService,
-                                           onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+    func createShippingWeightViewModel(using shippingSettingsService: ShippingSettingsService,
+                                       onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Weight", comment: "Title of the cell in Product Shipping Settings > Weight")
         let unit = shippingSettingsService.weightUnit ?? ""
         let value = weight == nil || weight?.isEmpty == true ? "0": weight
@@ -13,8 +13,8 @@ extension Product {
                                   onInputChange: onInputChange)
     }
 
-    func createShippingLengthCellViewModel(shippingSettingsService: ShippingSettingsService,
-                                           onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+    func createShippingLengthViewModel(using shippingSettingsService: ShippingSettingsService,
+                                       onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Length", comment: "Title of the cell in Product Shipping Settings > Length")
         let unit = shippingSettingsService.dimensionUnit ?? ""
         return UnitInputViewModel(title: title,
@@ -24,8 +24,8 @@ extension Product {
                                   onInputChange: onInputChange)
     }
 
-    func createShippingWidthCellViewModel(shippingSettingsService: ShippingSettingsService,
-                                           onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+    func createShippingWidthViewModel(using shippingSettingsService: ShippingSettingsService,
+                                      onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Width", comment: "Title of the cell in Product Shipping Settings > Width")
         let unit = shippingSettingsService.dimensionUnit ?? ""
         return UnitInputViewModel(title: title,
@@ -35,8 +35,8 @@ extension Product {
                                   onInputChange: onInputChange)
     }
 
-    func createShippingHeightCellViewModel(shippingSettingsService: ShippingSettingsService,
-                                           onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+    func createShippingHeightViewModel(using shippingSettingsService: ShippingSettingsService,
+                                       onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Height", comment: "Title of the cell in Product Shipping Settings > Height")
         let unit = shippingSettingsService.dimensionUnit ?? ""
         return UnitInputViewModel(title: title,

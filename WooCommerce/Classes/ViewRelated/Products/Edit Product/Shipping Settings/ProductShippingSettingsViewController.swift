@@ -170,9 +170,11 @@ extension ProductShippingSettingsViewController: UITableViewDelegate {
         switch row {
         case .shippingClass:
             let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: product, selected: shippingClass)
-            let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: NSLocalizedString("Shipping classes", comment: "Navigation bar title of the Product shipping class selector screen"),
-                                                                     noResultsPlaceholderText: NSLocalizedString("No shipping classes yet",
-                                                                                                                 comment: "The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker"))
+            let navigationBarTitle = NSLocalizedString("Shipping classes", comment: "Navigation bar title of the Product shipping class selector screen")
+            let noResultsPlaceholderText = NSLocalizedString("No shipping classes yet",
+            comment: "The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker")
+            let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: navigationBarTitle,
+                                                                     noResultsPlaceholderText: noResultsPlaceholderText)
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in

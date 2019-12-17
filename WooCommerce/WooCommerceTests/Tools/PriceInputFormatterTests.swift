@@ -17,13 +17,13 @@ final class PriceInputFormatterTests: XCTestCase {
         XCTAssertFalse(formatter.isValid(input: input))
     }
 
-    func testDecimalInputIsValid() {
-        let input = "9990,52"
+    func testDecimalInputWithPointIsValid() {
+        let input = "9990.52"
         XCTAssertTrue(formatter.isValid(input: input))
     }
     
-    func testPriceInputIsValid() {
-        let input = "9990.52"
+    func testDecimalInputWithCommaIsValid() {
+        let input = "9990,52"
         XCTAssertTrue(formatter.isValid(input: input))
     }
 
@@ -36,26 +36,36 @@ final class PriceInputFormatterTests: XCTestCase {
         let input = "."
         XCTAssertFalse(formatter.isValid(input: input))
     }
+    
+    func testLeadingCommaInputIsInvalid() {
+        let input = ","
+        XCTAssertFalse(formatter.isValid(input: input))
+    }
 
     // MARK: test cases for `format(input:)`
 
     func testFormattingEmptyInput() {
         let input = ""
-        XCTAssertEqual(formatter.format(input: input), "0.00")
+        XCTAssertEqual(formatter.format(input: input), "0")
     }
 
     func testFormattingInputWithLeadingZeros() {
         let input = "00123.91"
-        XCTAssertEqual(formatter.format(input: input), "123.91")
+        XCTAssertEqual(formatter.format(input: input), "123.91".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
     }
 
-    func testFormattingDecimalInput() {
+    func testFormattingDecimalInputWithPoint() {
         let input = "0.314"
-        XCTAssertEqual(formatter.format(input: input), "0.314")
+        XCTAssertEqual(formatter.format(input: input), "0.314".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
+    }
+    
+    func testFormattingDecimalInputWithComma() {
+        let input = "0,314"
+        XCTAssertEqual(formatter.format(input: input), "0,314".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
     }
 
     func testFormattingIntegerInput() {
         let input = "314200"
-        XCTAssertEqual(formatter.format(input: input), "314200")
+        XCTAssertEqual(formatter.format(input: input), "314200".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
     }
 }

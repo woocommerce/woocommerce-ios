@@ -158,6 +158,7 @@
 		45AE582D230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */; };
 		45B9C63E23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C63C23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.swift */; };
 		45B9C63F23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45B9C63D23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.xib */; };
+		45B9C64123A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C64023A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift */; };
 		45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2562313FA570002FA77 /* CustomerNoteTableViewCell.swift */; };
 		45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */; };
 		45C8B25B231521510002FA77 /* CustomerNoteTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B25A231521510002FA77 /* CustomerNoteTableViewCellTests.swift */; };
@@ -706,6 +707,7 @@
 		45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderNoteHeaderTableViewCell.xib; sourceTree = "<group>"; };
 		45B9C63C23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductEditPriceSettingsViewController.swift; sourceTree = "<group>"; };
 		45B9C63D23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductEditPriceSettingsViewController.xib; sourceTree = "<group>"; };
+		45B9C64023A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+PriceSettingsViewModels.swift"; sourceTree = "<group>"; };
 		45C8B2562313FA570002FA77 /* CustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
 		45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerNoteTableViewCell.xib; sourceTree = "<group>"; };
 		45C8B25A231521510002FA77 /* CustomerNoteTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCellTests.swift; sourceTree = "<group>"; };
@@ -1500,6 +1502,7 @@
 			children = (
 				45B9C63C23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.swift */,
 				45B9C63D23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.xib */,
+				45B9C64023A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift */,
 			);
 			path = "Edit Price";
 			sourceTree = "<group>";
@@ -3194,6 +3197,7 @@
 				025FDD3423717D4900824006 /* AztecEditorViewController.swift in Sources */,
 				453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */,
 				45B9C63E23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.swift in Sources */,
+				45B9C64123A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift in Sources */,
 				743EDD9F214B05350039071B /* TopEarnerStatsItem+Woo.swift in Sources */,
 				B5BBD6DE21B1703700E3207E /* PushNotificationsManager.swift in Sources */,
 				CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */,

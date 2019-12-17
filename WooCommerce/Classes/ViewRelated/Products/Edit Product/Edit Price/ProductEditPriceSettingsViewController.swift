@@ -9,6 +9,11 @@ final class ProductEditPriceSettingsViewController: UIViewController {
 
     private let product: Product
 
+    // Editable data
+    //
+    private var regularPrice: String?
+    private var salePrice: String?
+
     /// Table Sections to be rendered
     ///
     private let sections: [Section] = [
@@ -21,7 +26,8 @@ final class ProductEditPriceSettingsViewController: UIViewController {
     ///
     init(product: Product) {
         self.product = product
-
+        regularPrice = product.regularPrice
+        salePrice = product.salePrice
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -80,6 +86,18 @@ private extension ProductEditPriceSettingsViewController {
 private extension ProductEditPriceSettingsViewController {
     @objc func completeUpdating() {
         // TODO-1423: update price settings
+    }
+}
+
+// MARK: - Input changes handling
+//
+private extension ProductEditPriceSettingsViewController {
+    func handleRegularPriceChange(regularPrice: String?) {
+        self.regularPrice = regularPrice
+    }
+
+    func handleSalePriceChange(salePrice: String?) {
+        self.salePrice = salePrice
     }
 }
 
@@ -155,11 +173,19 @@ private extension ProductEditPriceSettingsViewController {
     }
 
     func configurePrice(cell: UnitInputTableViewCell) {
-
+        let viewModel = product.createRegularPriceViewModel(using: CurrencySettings.shared) { [weak self] value in
+            self?.handleRegularPriceChange(regularPrice: value)
+        }
+        cell.selectionStyle = .none
+        cell.configure(viewModel: viewModel)
     }
 
     func configureSalePrice(cell: UnitInputTableViewCell) {
-
+        let viewModel = product.createSalePriceViewModel(using: CurrencySettings.shared) { [weak self] value in
+            self?.handleSalePriceChange(salePrice: value)
+        }
+        cell.selectionStyle = .none
+        cell.configure(viewModel: viewModel)
     }
 }
 

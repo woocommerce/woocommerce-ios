@@ -159,6 +159,8 @@
 		45B9C63E23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C63C23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.swift */; };
 		45B9C63F23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45B9C63D23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.xib */; };
 		45B9C64123A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C64023A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift */; };
+		45B9C64323A91CB6007FC4C5 /* PriceInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C64223A91CB6007FC4C5 /* PriceInputFormatter.swift */; };
+		45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C64423A945C0007FC4C5 /* PriceInputFormatterTests.swift */; };
 		45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2562313FA570002FA77 /* CustomerNoteTableViewCell.swift */; };
 		45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */; };
 		45C8B25B231521510002FA77 /* CustomerNoteTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B25A231521510002FA77 /* CustomerNoteTableViewCellTests.swift */; };
@@ -708,6 +710,8 @@
 		45B9C63C23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductEditPriceSettingsViewController.swift; sourceTree = "<group>"; };
 		45B9C63D23A8E50D007FC4C5 /* ProductEditPriceSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductEditPriceSettingsViewController.xib; sourceTree = "<group>"; };
 		45B9C64023A9139A007FC4C5 /* Product+PriceSettingsViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+PriceSettingsViewModels.swift"; sourceTree = "<group>"; };
+		45B9C64223A91CB6007FC4C5 /* PriceInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputFormatter.swift; sourceTree = "<group>"; };
+		45B9C64423A945C0007FC4C5 /* PriceInputFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriceInputFormatterTests.swift; sourceTree = "<group>"; };
 		45C8B2562313FA570002FA77 /* CustomerNoteTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCell.swift; sourceTree = "<group>"; };
 		45C8B2572313FA570002FA77 /* CustomerNoteTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CustomerNoteTableViewCell.xib; sourceTree = "<group>"; };
 		45C8B25A231521510002FA77 /* CustomerNoteTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomerNoteTableViewCellTests.swift; sourceTree = "<group>"; };
@@ -1380,6 +1384,7 @@
 			children = (
 				02913E9423A774C500707A0C /* UnitInputFormatter.swift */,
 				02913E9623A774E600707A0C /* DecimalInputFormatter.swift */,
+				45B9C64223A91CB6007FC4C5 /* PriceInputFormatter.swift */,
 			);
 			path = UnitInputFormatter;
 			sourceTree = "<group>";
@@ -1705,6 +1710,7 @@
 				024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */,
 				02BA23BF22EE9DAF009539E7 /* AsyncDictionaryTests.swift */,
 				0247AAA123A3C5A6007F967E /* DecimalInputFormatterTests.swift */,
+				45B9C64423A945C0007FC4C5 /* PriceInputFormatterTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -3094,6 +3100,7 @@
 				45FBDF3A238D3F8B00127F77 /* ExtendedAddProductImageCollectionViewCell.swift in Sources */,
 				02482A8B237BE8C7007E73ED /* LinkSettingsViewController.swift in Sources */,
 				CE227097228F152400C0626C /* WooBasicTableViewCell.swift in Sources */,
+				45B9C64323A91CB6007FC4C5 /* PriceInputFormatter.swift in Sources */,
 				B5FD111621D3F13700560344 /* BordersView.swift in Sources */,
 				0262DA5B23A244830029AF30 /* Product+ShippingSettingsViewModels.swift in Sources */,
 				0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */,
@@ -3328,6 +3335,7 @@
 				02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */,
 				D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
+				45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */,
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
 				024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */,
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,

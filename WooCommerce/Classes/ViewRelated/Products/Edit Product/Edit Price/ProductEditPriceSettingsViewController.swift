@@ -56,12 +56,18 @@ private extension ProductEditPriceSettingsViewController {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
 
+        registerTableViewHeaderSections()
         registerTableViewCells()
 
         tableView.dataSource = self
         tableView.delegate = self
     }
 
+    func registerTableViewHeaderSections() {
+        let headerNib = UINib(nibName: TwoColumnSectionHeaderView.reuseIdentifier, bundle: nil)
+        tableView.register(headerNib, forHeaderFooterViewReuseIdentifier: TwoColumnSectionHeaderView.reuseIdentifier)
+    }
+    
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
@@ -104,7 +110,30 @@ extension ProductEditPriceSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
-        // TODO-1422: navigate to shipping class selector.
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        if sections[section].title == nil {
+            return UITableView.automaticDimension
+        }
+        
+        return Constants.sectionHeight
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let leftText = sections[section].title else {
+            return nil
+        }
+
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
+            fatalError()
+        }
+
+        headerView.leftText = leftText
+        headerView.rightText = nil
+        
+        return headerView
     }
 }
 
@@ -141,6 +170,12 @@ private extension ProductEditPriceSettingsViewController {
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
+}
+
+// MARK: - Private Types
+//
+private struct Constants {
+    static let sectionHeight = CGFloat(44)
 }
 
 private extension ProductEditPriceSettingsViewController {

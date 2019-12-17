@@ -1,12 +1,24 @@
 import UIKit
 import Yosemite
 
-class ProductEditPriceSettingsViewController: UIViewController {
+// MARK: - ProductEditPriceSettingsViewController
+//
+final class ProductEditPriceSettingsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     
     private let product: Product
     
+    /// Table Sections to be rendered
+    ///
+    private let sections: [Section] = [
+        Section(title: NSLocalizedString("Price", comment: "Section header title for product price"), rows: [.price, .salePrice]),
+        Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
+        Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass]),
+    ]
+    
+    /// Init
+    ///
     init(product: Product) {
         self.product = product
 
@@ -19,8 +31,147 @@ class ProductEditPriceSettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        configureNavigationBar()
+        configureMainView()
+        configureTableView()
     }
 
+}
 
+// MARK: - View Configuration
+//
+private extension ProductEditPriceSettingsViewController {
+
+    func configureNavigationBar() {
+        title = NSLocalizedString("Price", comment: "Product Price Settings navigation title")
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeUpdating))
+    }
+
+    func configureMainView() {
+        view.backgroundColor = .listBackground
+    }
+
+    func configureTableView() {
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.backgroundColor = .listBackground
+
+        registerTableViewCells()
+
+        tableView.dataSource = self
+        tableView.delegate = self
+    }
+
+    func registerTableViewCells() {
+        for row in Row.allCases {
+            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+        }
+    }
+}
+
+// MARK: - Navigation actions handling
+//
+private extension ProductEditPriceSettingsViewController {
+    @objc func completeUpdating() {
+        // TODO-1423: update price settings
+    }
+}
+
+// MARK: - UITableViewDataSource Conformance
+//
+extension ProductEditPriceSettingsViewController: UITableViewDataSource {
+
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return sections.count
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return sections[section].rows.count
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let row = rowAtIndexPath(indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+        configure(cell, for: row, at: indexPath)
+
+        return cell
+    }
+}
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension ProductEditPriceSettingsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        // TODO-1422: navigate to shipping class selector.
+    }
+}
+
+// MARK: - Cell configuration
+//
+private extension ProductEditPriceSettingsViewController {
+    /// Cells currently configured in the order they appear on screen
+    ///
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as UnitInputTableViewCell where row == .price:
+            configurePrice(cell: cell)
+        case let cell as UnitInputTableViewCell where row == .salePrice:
+            configureSalePrice(cell: cell)
+        default:
+            //fatalError()
+            break
+        }
+    }
+    
+    func configurePrice(cell: UnitInputTableViewCell) {
+        
+    }
+    
+    func configureSalePrice(cell: UnitInputTableViewCell) {
+        
+    }
+}
+
+// MARK: - Convenience Methods
+//
+private extension ProductEditPriceSettingsViewController {
+
+    func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
+        return sections[indexPath.section].rows[indexPath.row]
+    }
+}
+
+private extension ProductEditPriceSettingsViewController {
+
+    struct Section {
+        let title: String?
+        let rows: [Row]
+    }
+
+    enum Row: CaseIterable {
+        case price
+        case salePrice
+        
+        case scheduleSale
+        case scheduleSaleFrom
+        case scheduleSaleTo
+        
+        case taxStatus
+        case taxClass
+
+        var type: UITableViewCell.Type {
+            switch self {
+            case .price, .salePrice:
+                return UnitInputTableViewCell.self
+            default:
+                return SettingTitleAndValueTableViewCell.self
+            }
+        }
+
+        var reuseIdentifier: String {
+            return type.reuseIdentifier
+        }
+    }
 }

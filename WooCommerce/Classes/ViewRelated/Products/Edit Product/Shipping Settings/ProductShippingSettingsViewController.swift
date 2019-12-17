@@ -13,7 +13,13 @@ final class ProductShippingSettingsViewController: UIViewController {
     private var length: String?
     private var width: String?
     private var height: String?
-    private var shippingClassSlug: String?
+    private var shippingClassSlug: String? {
+        return shippingClass?.slug
+    }
+
+    // Internal data for rendering UI
+    //
+    private var shippingClass: ProductShippingClass?
 
     /// Table Sections to be rendered
     ///
@@ -22,19 +28,25 @@ final class ProductShippingSettingsViewController: UIViewController {
         Section(rows: [.shippingClass])
     ]
 
+    typealias Completion = (_ weight: String?, _ dimensions: ProductDimensions, _ shippingClass: ProductShippingClass?) -> Void
+    private let onCompletion: Completion
+
     private let product: Product
     private let shippingSettingsService: ShippingSettingsService
 
     init(product: Product,
-         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService) {
+         shippingSettingsService: ShippingSettingsService = ServiceLocator.shippingSettingsService,
+         completion: @escaping Completion) {
         self.product = product
         self.shippingSettingsService = shippingSettingsService
+        self.onCompletion = completion
 
         self.weight = product.weight
         self.length = product.dimensions.length
         self.width = product.dimensions.width
         self.height = product.dimensions.height
-        self.shippingClassSlug = product.shippingClass
+
+        self.shippingClass = product.productShippingClass
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -88,6 +100,10 @@ private extension ProductShippingSettingsViewController {
 private extension ProductShippingSettingsViewController {
     @objc func completeUpdating() {
         // TODO-1422: update shipping settings
+        let dimensions = ProductDimensions(length: length ?? "",
+                                           width: width ?? "",
+                                           height: height ?? "")
+        onCompletion(weight, dimensions, shippingClass)
     }
 }
 
@@ -194,8 +210,7 @@ private extension ProductShippingSettingsViewController {
 
     func configureShippingClass(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Shipping class", comment: "Title of the cell in Product Shipping Settings > Shipping class")
-        // TODO-1422: update slug to name once the model is fetched
-        cell.updateUI(title: title, value: product.shippingClass)
+        cell.updateUI(title: title, value: shippingClass?.name)
         cell.accessoryType = .disclosureIndicator
     }
 }

@@ -214,28 +214,32 @@ private extension ProductShippingSettingsViewController {
     }
 
     func configureWeight(cell: UnitInputTableViewCell) {
-        let viewModel = product.createShippingWeightViewModel(using: shippingSettingsService) { [weak self] value in
+        let viewModel = Product.createShippingWeightViewModel(weight: weight,
+                                                              using: shippingSettingsService) { [weak self] value in
             self?.handleWeightChange(weight: value)
         }
         cell.configure(viewModel: viewModel)
     }
 
     func configureLength(cell: UnitInputTableViewCell) {
-        let viewModel = product.createShippingLengthViewModel(using: shippingSettingsService) { [weak self] value in
+        let viewModel = Product.createShippingLengthViewModel(length: length ?? "",
+                                                              using: shippingSettingsService) { [weak self] value in
             self?.handleLengthChange(length: value)
         }
         cell.configure(viewModel: viewModel)
     }
 
     func configureWidth(cell: UnitInputTableViewCell) {
-        let viewModel = product.createShippingWidthViewModel(using: shippingSettingsService) { [weak self] value in
+        let viewModel = Product.createShippingWidthViewModel(width: width ?? "",
+                                                             using: shippingSettingsService) { [weak self] value in
             self?.handleWidthChange(width: value)
         }
         cell.configure(viewModel: viewModel)
     }
 
     func configureHeight(cell: UnitInputTableViewCell) {
-        let viewModel = product.createShippingHeightViewModel(using: shippingSettingsService) { [weak self] value in
+        let viewModel = Product.createShippingHeightViewModel(height: height ?? "",
+                                                              using: shippingSettingsService) { [weak self] value in
             self?.handleHeightChange(height: value)
         }
         cell.configure(viewModel: viewModel)

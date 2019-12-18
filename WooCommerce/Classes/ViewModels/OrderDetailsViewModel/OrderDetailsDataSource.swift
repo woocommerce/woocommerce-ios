@@ -335,7 +335,7 @@ private extension OrderDetailsDataSource {
         let condensedRefund = condensedRefunds[index]
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
-        
+
         cell.leftText = Titles.refunded
         cell.leftTextIsActive(true)
         cell.rightText = paymentViewModel.refundAmount

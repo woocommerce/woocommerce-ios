@@ -47,7 +47,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (1.10.5-beta.2):
+  - WordPressAuthenticator (1.10.5):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.3)
     - CocoaLumberjack (~> 3.5)
@@ -56,17 +56,17 @@ PODS:
     - lottie-ios (= 2.5.2)
     - "NSURL+IDN (= 0.3)"
     - SVProgressHUD (= 2.2.5)
-    - WordPressKit (~> 4.5.4)
+    - WordPressKit (~> 4.5.5)
     - WordPressShared (~> 1.8)
     - WordPressUI (~> 1.4-beta.1)
-  - WordPressKit (4.5.4):
+  - WordPressKit (4.5.5):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.3)
     - UIDeviceIdentifier (~> 1)
     - WordPressShared (~> 1.8.0)
     - wpxmlrpc (= 0.8.4)
-  - WordPressShared (1.8.9):
+  - WordPressShared (1.8.10):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
   - WordPressUI (1.5.0)
@@ -93,7 +93,7 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (~> 1.10.5-beta)
+  - WordPressAuthenticator (~> 1.10.5)
   - WordPressShared (~> 1.8.2)
   - WordPressUI (~> 1.4)
   - Wormholy (~> 1.5.1)
@@ -154,15 +154,15 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 8ae7f6973b4aaae551d1ba985c0194ed40692224
-  WordPressKit: 1d365775fac17903a76ad5723bc146ab1739ec82
-  WordPressShared: 914ec1f855d74755e42d76e83c98b2d2d0e66218
+  WordPressAuthenticator: c07d36f36ce73f77f468db665973faab6392ff43
+  WordPressKit: 8029cb93a89de79442254c346523da11c2706d7b
+  WordPressShared: 5561910e9b6635874abeb10e450b7d2a29f23838
   WordPressUI: 4a4adafd2b052e94e4846c0a0203761773dc4fd5
   Wormholy: f01b096b449a9fcab864a10f7e5b5693b1225c88
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: 99679d8420a6d862773e2ddef0ebcc51b282317d
 
-PODFILE CHECKSUM: e63c90f8731bc4f2191aa389836880db13097af0
+PODFILE CHECKSUM: a9a49f6751af290016b65aba1145692984a7ef56
 
 COCOAPODS: 1.8.4

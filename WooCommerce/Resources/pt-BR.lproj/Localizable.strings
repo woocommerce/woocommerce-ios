@@ -1,9 +1,12 @@
-/* Translation-Revision-Date: 2019-10-16 00:55:20+0000 */
+/* Translation-Revision-Date: 2019-12-11 00:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
 
 /* No comment provided by engineer. */
+"%1$@ (%2$ld options)" = "%1$@ (%2$ld opções)";
+
+/* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
 "%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (particular)";
 
 /* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
@@ -26,6 +29,9 @@
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ fez uma avaliação sobre %2$@";
+
+/* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
+"%1$@ via %2$@ – %3$@" = "%1$@ por %2$@ – %3$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld em estoque";
@@ -79,6 +85,9 @@
    Button text for adding a new order note */
 "Add a note" = "Adicionar nota";
 
+/* Cell text in Add / Edit product when there are no images. */
+"Add a product image" = "Adicione uma imagem do produto";
+
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Adicionar um rastreamento";
 
@@ -91,12 +100,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Ferramenta avançada para revisar o status do aplicativo";
 
-/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
-   Name of the All filter on the Order List screen - it means all orders will be displayed. */
+/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "Tudo";
-
-/* Mark all notifications as read notice */
-"All notifications marked as read" = "Todas as notificações marcadas como lidas";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Todas as avaliações marcadas como lidas";
@@ -169,15 +174,17 @@
 /* Begin fulfill order button title */
 "Begin Fulfillment" = "Iniciar conclusão";
 
-/* Beta features navigation title
-   Navigates to Beta features screen */
-"Beta Features" = "Funcionalidades Beta";
-
 /* Section header title for billing address in billing information */
 "Billing Address" = "Endereço de cobrança";
 
 /* Billing Information view Title */
 "Billing Information" = "Informações de cobrança";
+
+/* Accessibility label for block quote button on formatting toolbar. */
+"Block Quote" = "Bloco de citação";
+
+/* Accessibility label for bold button on formatting toolbar. */
+"Bold" = "Negrito";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Ao cadastrar-se, você concorda com os nossos _Termos de serviço_.";
@@ -299,6 +306,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Dias";
 
+/* Description of the default paragraph formatting style in the editor. */
+"Default" = "Padrão";
+
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "Excluir";
 
@@ -309,11 +319,27 @@
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
 "Deletes a shipment's tracking information." = "Exclui as informações de rastreamento de um envio.";
 
+/* Placeholder in the Product description row on Product form screen. */
+"Describe your product" = "Descreva o produto";
+
+/* The navigation bar title of the Aztec editor screen.
+   Title in the Product description row on Product form screen when the description is non-empty. */
+"Description" = "Descrição";
+
 /* The row label to tap for a detailed product list */
 "Details" = "Detalhes";
 
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "Detalhes do pedido nº (viewModel.order.number)";
+
+/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
+"Dimensions: %1$@ x %2$@ x %3$@%4$@" = "Dimensões: %1$@ x %2$@ x %3$@ %4$@";
+
+/* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
+"Dimensions: %1$@ x %2$@%3$@" = "Dimensões: %1$@ x %2$@ %3$@";
+
+/* Format of one dimension on the Shipping Settings row - dimension[unit] */
+"Dimensions: %1$@%2$@" = "Dimensões: %1$@%2$@";
 
 /* Discount label for payment view */
 "Discount" = "Desconto";
@@ -379,6 +405,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL vazia";
 
+/* The text placeholder for the Text Editor screen */
+"Enter a title..." = "Insira um título...";
+
 /* Error message shown when a URL is invalid. */
 "Enter a valid URL eg. example.com." = "Insira uma URL válida, como exemplo.com.";
 
@@ -403,6 +432,10 @@
 /* Title of a button on the magic link screen.
    Title of a button. */
 "Enter your password instead." = "Digitar sua senha.";
+
+/* Experimental features navigation title
+   Navigates to experimental features screen */
+"Experimental Features" = "Recursos experimentais";
 
 /* Expiry: 1 day */
 "Expiry: %ld day" = "Expira em: %ld dia";
@@ -443,6 +476,49 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "COMO PODEMOS AJUDAR?";
 
+/* Accessibility label for HTML button on formatting toolbar.
+   HTML Attachment Label */
+"HTML" = "HTML";
+
+/* Post HTML content */
+"HTML Content" = "Conteúdo HTML";
+
+/* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
+"Header 1" = "Cabeçalho 1";
+
+/* Accessibility label for selecting h2 paragraph style button on the formatting toolbar. */
+"Header 2" = "Cabeçalho 2";
+
+/* Accessibility label for selecting h3 paragraph style button on the formatting toolbar. */
+"Header 3" = "Cabeçalho 3";
+
+/* Accessibility label for selecting h4 paragraph style button on the formatting toolbar. */
+"Header 4" = "Cabeçalho 4";
+
+/* Accessibility label for selecting h5 paragraph style button on the formatting toolbar. */
+"Header 5" = "Cabeçalho 5";
+
+/* Accessibility label for selecting h6 paragraph style button on the formatting toolbar. */
+"Header 6" = "Cabeçalho 6";
+
+/* H1 Aztec Style */
+"Heading 1" = "Título 1";
+
+/* H2 Aztec Style */
+"Heading 2" = "Título 2";
+
+/* H3 Aztec Style */
+"Heading 3" = "Título 3";
+
+/* H4 Aztec Style */
+"Heading 4" = "Título 4";
+
+/* H5 Aztec Style */
+"Heading 5" = "Título 5";
+
+/* H6 Aztec Style */
+"Heading 6" = "Título 6";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "Ajuda";
@@ -456,10 +532,13 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Ajude a melhorar o aplicativo";
 
+/* Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+"Hidden" = "Oculta";
+
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Se estiverem desativadas, a observação será em caráter privado";
 
-/* My Store > Settings > Beta features > Switch stats version */
+/* My Store > Settings > Experimental features > Switch stats version */
 "Improved stats" = "Estatísticas aprimoradas";
 
 /* Display label for the product's inventory stock status
@@ -481,6 +560,15 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Nome de usuário ou senha incorretos. Tente digitar seus dados de login novamente.";
 
+/* Label action for inserting a link on the editor */
+"Insert" = "Inserir";
+
+/* Accessibility label for insert horizontal ruler button on formatting toolbar. */
+"Insert Horizontal Ruler" = "Inserir linha horizontal";
+
+/* Accessibility label for insert link button on formatting toolbar. */
+"Insert Link" = "Inserir link";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Endereço do site inválido";
 
@@ -497,7 +585,7 @@
 "Invalid username" = "Nome de usuário inválido";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "Estoque";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -506,11 +594,17 @@
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Parece que você digitou com uma senha incorreta. Quer tentar novamente?";
 
+/* Accessibility label for italic button on formatting toolbar. */
+"Italic" = "Itálico";
+
 /* Last 24 hours section header */
 "Last 24 hours" = "Últimas 24 horas";
 
 /* Last 7 days section header */
 "Last 7 days" = "Últimos sete dias";
+
+/* Opens an internal library called Wormholy. Not visible to users. */
+"Launch Wormholy debug" = "Iniciar depuração do Wormholy";
 
 /* Settings > Privacy Settings. A text link to the cookie policy.
    The action of the top banner on Dashboard that indicates new stats is unavailable */
@@ -527,6 +621,13 @@
 
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "Limite: %ld downloads";
+
+/* Title for screen in editor that allows to configure link options */
+"Link Settings" = "Configurações de links";
+
+/* Label for the text of a link in the editor
+   Navigation bar title for editing the text of a text link */
+"Link Text" = "Texto do link";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Carregando pedido";
@@ -584,15 +685,11 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domínio mapeado";
 
-/* Accessibility label for the Mark All Notifications as Read Button
-   Accessibility label for the Mark All Reviews as Read Button */
+/* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "Marcar todas como lidas";
 
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Marcar pedido como concluído";
-
-/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
-"Marks Every Notification as Read" = "Marca todas as notificações como lidas";
 
 /* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
 "Marks Every Review as Read" = "Marca todas as avaliações como lidas";
@@ -612,7 +709,8 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "Meses";
 
-/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
+   Accessibility label for the More button on formatting toolbar. */
 "More" = "Mais";
 
 /* Spam Action Spoken hint. */
@@ -643,6 +741,9 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Precisa de ajuda?";
 
+/* The title for the net amount paid cell */
+"Net" = "Valor líquido";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "Próximo";
@@ -662,6 +763,9 @@
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Não há dados disponíveis";
+
+/* The text on the placeholder overlay when there are no product variations on the Products tab */
+"No product variations yet" = "Ainda não há variações de produto";
 
 /* Search Products (Empty State)
    The text on the placeholder overlay when there are no products on the Products tab */
@@ -719,6 +823,9 @@
 /* Navigates to screen about open source licenses */
 "Open Source Licenses" = "Licenças de código aberto";
 
+/* Label for the description of openening a link using a new window */
+"Open in a new Window\/Tab" = "Abrir em nova janela\/guia";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Abre uma lista de status disponíveis.";
 
@@ -750,8 +857,11 @@
 /* Order status update success notice */
 "Order status updated" = "Status do pedido atualizado";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Accessibility label for Ordered list button on formatting toolbar. */
+"Ordered List" = "Lista ordenada";
+
+/* Orders stat label on dashboard - should be plural.
+   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Pedidos";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -773,6 +883,9 @@
    Password placeholder */
 "Password" = "Senha";
 
+/* Paste without Formatting Menu Item */
+"Paste without Formatting" = "Colar sem formatação";
+
 /* Payment section title */
 "Payment" = "Pagamento";
 
@@ -792,6 +905,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "Confira seu e-mail";
 
+/* Placeholder for editing the URL of a text link */
+"Please enter a URL" = "Insira uma URL";
+
 /* No comment provided by engineer. */
 "Please enter a site address." = "Entre o endereço de um site.";
 
@@ -800,6 +916,9 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "Digite um endereço de e-mail válido.";
+
+/* Placeholder for editing the text of a text link */
+"Please enter some text" = "Insira algum texto";
 
 /* No comment provided by engineer. */
 "Please enter the password for your WordPress.com account to log in with your Apple ID." = "Insira a senha para sua conta do WordPress.com para fazer login com sua Apple ID.";
@@ -822,7 +941,8 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Acesse seu aplicativo de e-mails e procure por um e-mail do WordPress.com.";
 
-/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
+   Title of the Price Settings row on Product main screen */
 "Price" = "Preço";
 
 /* Product Details - pricing and inventory section title */
@@ -854,8 +974,8 @@
 /* Product Total label for payment view */
 "Product Total" = "Total de produtos";
 
-/* Title of the Products tab — plural form of Product
-   Title that appears on top of the Product List screen (plural form of the word Product). */
+/* My Store > Settings > Experimental features > Switch Products
+   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produtos";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
@@ -884,6 +1004,9 @@
    Section header title - abbreviation for quantity */
 "Qty" = "Qtd";
 
+/* Format of the stock quantity on the Inventory Settings row */
+"Quantity: %ld" = "Quantidade: %ld";
+
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Fale com a nossa equipe de suporte, que pode ajudá-lo nas suas dúvidas mais difíceis";
 
@@ -893,14 +1016,23 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Ler política de privacidade";
 
+/* The title for the refunded amount cell */
+"Refunded" = "Reembolsado";
+
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Domínio registrado";
 
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Preço normal:";
 
+/* Format of the regular price on the Price Settings row */
+"Regular price: %@" = "Preço normal: %@";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "Remover filtros";
+
+/* Label action for removing a link from the editor */
+"Remove Link" = "Remover link";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Reportar travamentos";
@@ -924,9 +1056,12 @@
 /* Review moderation success notice message. It reads: Review marked as {new status} */
 "Review marked as %@" = "Avaliação marcada como %@";
 
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label - Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
+/* Reviews descriptive label
+   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Avaliações";
+
+/* Post Rich content */
+"Rich Content" = "Conteúdo avançado";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
 "SKU" = "SKU";
@@ -935,11 +1070,20 @@
    A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "SKU:";
 
+/* Format of the SKU on the Inventory Settings row */
+"SKU: %@" = "SKU: %@";
+
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS enviado";
 
+/* Format of the sale period on the Price Settings row */
+"Sale dates: %1$@-%2$@" = "Datas da venda: %1$@-%2$@";
+
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "Preço promocional:";
+
+/* Format of the sale price on the Price Settings row */
+"Sale price: %@" = "Preço promocional: %@";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Pesquise todos os pedidos";
@@ -955,6 +1099,9 @@
 
 /* Page title for the select a different store screen */
 "Select Store" = "Selecionar loja";
+
+/* Accessibility label for selecting paragraph style button on formatting toolbar. */
+"Select paragraph style" = "Selecione o estilo do parágrafo";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Loja selecionada";
@@ -983,8 +1130,11 @@
 "Shipped %@" = "Enviado em %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view */
+   Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Envio";
+
+/* Shipping method title for customer info cell */
+"Shipping Method" = "Método de envio";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Transportadoras";
@@ -994,6 +1144,9 @@
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Detalhes de envio";
+
+/* VoiceOver accessibility label for the shipping notice about the order */
+"Shipping notice about the order" = "Aviso de envio sobre o pedido";
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Transportadora";
@@ -1077,6 +1230,9 @@
    Verb, spam a comment */
 "Spam" = "Spam";
 
+/* Aztec's Text Placeholder */
+"Start writing..." = "Comece a escrever...";
+
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Período inicial %1$@, período final %2$@";
 
@@ -1085,6 +1241,9 @@
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "Status do estoque:";
+
+/* Format of the stock status on the Inventory Settings row */
+"Stock status: %@" = "Status do estoque: %@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Gráfico com a receita da loja";
@@ -1098,11 +1257,89 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Gráfico com a receita da loja: Eixo Y";
 
+/* Accessibility label for strikethrough button on formatting toolbar. */
+"Strike Through" = "Tachado";
+
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Alterar loja";
 
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "Alterado para (newStoreName). Você receberá apenas notificações desta loja.";
+
+/* Accessibility Identifier for the H1 Aztec Style */
+"Switches to the Heading 1 font size" = "Alterna para o tamanho Título 1";
+
+/* Accessibility Identifier for the H2 Aztec Style */
+"Switches to the Heading 2 font size" = "Alterna para o tamanho Título 2";
+
+/* Accessibility Identifier for the H3 Aztec Style */
+"Switches to the Heading 3 font size" = "Alterna para o tamanho Título 3";
+
+/* Accessibility Identifier for the H4 Aztec Style */
+"Switches to the Heading 4 font size" = "Alterna para o tamanho Título 4";
+
+/* Accessibility Identifier for the H5 Aztec Style */
+"Switches to the Heading 5 font size" = "Alterna para o tamanho Título 5";
+
+/* Accessibility Identifier for the H6 Aztec Style */
+"Switches to the Heading 6 font size" = "Alterna para o tamanho Título 6";
+
+/* Accessibility Identifier for the Default Font Aztec Style. */
+"Switches to the default Font Size" = "Alterna para o tamanho padrão";
+
+/* Accessibility hint for the More button on formatting toolbar. */
+"Tap for more formatting options" = "Toque para mais opções de formatação";
+
+/* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
+"Tap to insert a Horizontal Ruler" = "Toque para inserir uma linha horizontal";
+
+/* Accessibility hint for insert link button on formatting toolbar. */
+"Tap to insert a Link" = "Toque para inserir um link";
+
+/* Accessibility hint for block quote button on formatting toolbar. */
+"Tap to toggle Block Quote" = "Toque para alternar Bloco de citação";
+
+/* Accessibility hint for bold button on formatting toolbar. */
+"Tap to toggle Bold text" = "Toque para alternar Texto em negrito";
+
+/* Accessibility hint for HTML button on formatting toolbar. */
+"Tap to toggle HTML mode" = "Toque para alternar Modo HTML";
+
+/* Accessibility hint for selecting h1 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 1" = "Toque para alternar Cabeçalho 1";
+
+/* Accessibility hint for selecting h2 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 2" = "Toque para alternar Cabeçalho 2";
+
+/* Accessibility hint for selecting h3 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 3" = "Toque para alternar Cabeçalho 3";
+
+/* Accessibility hint for selecting h4 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 4" = "Toque para alternar Cabeçalho 4";
+
+/* Accessibility hint for selecting h5 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 5" = "Toque para alternar Cabeçalho 5";
+
+/* Accessibility hint for selecting h6 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 6" = "Toque para alternar Cabeçalho 6";
+
+/* Accessibility hint for italic button on formatting toolbar. */
+"Tap to toggle Italic text" = "Toque para alternar Texto em itálico";
+
+/* Accessibility hint for Ordered list button on formatting toolbar. */
+"Tap to toggle Ordered List" = "Toque para alternar Lista ordenada";
+
+/* Accessibility hint for strikethrough button on formatting toolbar. */
+"Tap to toggle Strike Through" = "Toque para alternar Tachado";
+
+/* Accessibility hint for underline button on formatting toolbar. */
+"Tap to toggle Underline" = "Toque para alternar Sublinhar";
+
+/* Accessibility hint for unordered list button on formatting toolbar. */
+"Tap to toggle Unordered List" = "Toque para alternar Lista fora de ordem";
+
+/* Accessibility hint for selecting paragraph style button on formatting toolbar. */
+"Tap to toggle paragraph style" = "Toque para alternar Estilo do parágrafo";
 
 /* Tax label for total taxes line */
 "Tax:" = "Imposto:";
@@ -1112,6 +1349,9 @@
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Termos de serviço";
+
+/* My Store > Settings > Experimental features > Products description */
+"Test out the new products section as we get ready to launch" = "Teste a nova seção de produtos enquanto preparamos o lançamento";
 
 /* Button title */
 "Text me a code instead" = "Envie-me o código por SMS";
@@ -1148,9 +1388,6 @@
 
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "O certificado para este servidor é inválido. Você talvez esteja conectando a um servidor que está fingindo ser \"%@\", o que poderia colocar suas informações confidenciais em risco.";
-
-/* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed" = "A notificação foi removida!";
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "A avaliação foi removida";
@@ -1200,11 +1437,19 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Essa informação nos ajuda a melhorar nossos produtos, tornar anúncios mais relevantes, personalizar sua experiência no WordPress.com e outras opções descritas em nossa política de privacidade.";
 
+/* Accessibility label for the Shipping notice
+   Shipping notice row label when there is more than one shipping method */
+"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "Este pedido está usando extensões para calcular o envio. Os métodos de envio exibidos podem estar incompletos.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Não foi possível carregar este produto";
 
-/* Product details screen — product title descriptive label */
+/* Product details screen — product title descriptive label
+   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
 "Title" = "Titulo";
+
+/* Placeholder in the Product Title row on Product form screen. */
+"Title (required)" = "Título (obrigatório)";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Para criar sua nova conta WordPress.com, digite seu endereço de e-mail.";
@@ -1218,6 +1463,12 @@
 /* Tab selector title that shows the statistics for today
    Today Section Header - Top Performers section title - today */
 "Today" = "Hoje";
+
+/* Accessibility Identifier for the Aztec Ordered List Style. */
+"Toggles the ordered list style" = "Alterna o estilo de lista ordenada";
+
+/* Accessibility Identifier for the Aztec Unordered List Style */
+"Toggles the unordered list style" = "Alterna o estilo de lista fora de ordem";
 
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "Os melhores desempenhos";
@@ -1265,7 +1516,7 @@
 /* The title of the top banner on Dashboard that indicates new stats is available */
 "Try our improved stats" = "Experimente nossas estatísticas aprimoradas";
 
-/* My Store > Settings > Beta features > Stats version description */
+/* My Store > Settings > Experimental features > Stats version description */
 "Try the new stats available with the WooCommerce Admin plugin" = "Experimente as novas estatísticas disponíveis com o plugin WooCommerce Admin!";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
@@ -1273,6 +1524,10 @@
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Tentar com o endereço do site";
+
+/* Navigation bar title for editing the URL of a text link
+   URL text field placeholder */
+"URL" = "URL";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Não foi possível conectar";
@@ -1325,11 +1580,14 @@
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "Não aprova o comentário";
 
+/* Accessibility label for underline button on formatting toolbar. */
+"Underline" = "Sublinhar";
+
 /* Undo Action */
 "Undo" = "Desfazer";
 
 /* Unknown Application State
-   Unknown product name, displayed in a review */
+   Unknown product name, displayed in a review - Unknown Tag Name */
 "Unknown" = "Desconhecido";
 
 /* No comment provided by engineer. */
@@ -1337,6 +1595,9 @@
 
 /* No comment provided by engineer. */
 "Unknown error" = "Erro desconhecido";
+
+/* Accessibility label for unordered list button on formatting toolbar. */
+"Unordered List" = "Lista fora de ordem";
 
 /* Display label for the review's unspam status */
 "Unspam" = "Não é spam";
@@ -1346,6 +1607,9 @@
 
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Dados equivalentes a sete dias de registros foram salvos.";
+
+/* Label action for updating a link on the editor */
+"Update" = "Atualizar";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
 "Update %@ to WooCommerce 3.5" = "Atualizar %@ para o WooCommerce 3.5";
@@ -1384,6 +1648,10 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "O nome de usuário deve ter pelo menos 4 caracteres.";
 
+/* Product Details > descriptive label for the Product Variants cell.
+   Title that appears on top of the Product Variation List screen. */
+"Variations" = "Variações";
+
 /* two factor code placeholder */
 "Verification code" = "Código de verificação";
 
@@ -1399,6 +1667,9 @@
 
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Visualizar produto afiliado";
+
+/* This text is linked so the user can view refund details. */
+"View details" = "Visualizar detalhes";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visualizar tíquetes de suporte enviados anteriormente";
@@ -1425,7 +1696,7 @@
 "Watch readers from around the world read and interact with your site — in real time." = "Veja leitores do mundo inteiro lerem e interagirem com seu site - em tempo real.";
 
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats as we couldn’t find the WooCommerce Admin plugin" = "Retornamos para as estatísticas antigas, já que não encontramos o plugin WooCommerce Admin";
+"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.22 or higher" = "Retornamos para as estatísticas antigas. Para usar as estatísticas beta, ative o plugin WooCommerce Admin com a versão 0.22 ou superior";
 
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Enviamos para você um endereço mágico para cadastro! Confira seu e-mail neste dispositivo e toque no endereço no e-mail para finalizar seu cadastro.";
@@ -1451,6 +1722,12 @@
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "Peso:";
 
+/* Format of the weight on the Shipping Settings row - weight[unit] */
+"Weight: %1$@%2$@" = "Peso: %1$@%2$@";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀" = "Como estamos trabalhando nessa nova seção de produtos, talvez você veja algumas mudanças enquanto preparamos o lançamento de 🚀";
+
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "Estamos aprimorando estatísticas para lojas que usam o plugin WooCommerce Admin";
 
@@ -1471,6 +1748,9 @@
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "Versão muito antiga do WordPress. O site em %1$@ usa o WordPress %2$@. Recomendamos a atualização para a última versão ou pelo menos, a versão %3$@.";
+
+/* The title of the Work In Progress top banner on the Products tab */
+"Work in progress!" = "Trabalho em andamento!";
 
 /* Statistical unit - a single year */
 "Year" = "Ano";
@@ -1496,6 +1776,9 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "O endereço do seu site aparece na barra superior quando você visita o site pelo Safari.";
 
+/* Comment Attachment Label */
+"[COMMENT]" = "[COMENTÁRIO]";
+
 /* Backorders status. Example: 'Backorders: allowed' */
 "allowed" = "permitidos";
 
@@ -1507,6 +1790,9 @@
 
 /* Later today */
 "later today" = "mais tarde hoje";
+
+/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
+"manual refund" = "reembolso manual";
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "não permitidos";

@@ -114,11 +114,18 @@ extension ProductFormViewController: UITableViewDelegate {
             case .description:
                 editProductDescription()
             }
-        case .settings:
-            // TODO-1422: Shipping Settings
-            // TODO-1423: Price Settings
-            // TODO-1424: Inventory Settings
-            return
+        case .settings(let rows):
+            let row = rows[indexPath.row]
+            switch row {
+            case .shipping:
+                editShippingSettings()
+            case .price:
+                // TODO-1423: Price Settings
+                return
+            case .inventory:
+                // TODO-1424: Inventory Settings
+                return
+            }
         }
     }
 
@@ -190,6 +197,11 @@ private extension ProductFormViewController {
             return
         }
         self.product = productUpdater.descriptionUpdated(description: newDescription)
+    }
+
+    func editShippingSettings() {
+        let shippingSettingsViewController = ProductShippingSettingsViewController(product: product)
+        navigationController?.pushViewController(shippingSettingsViewController, animated: true)
     }
 }
 

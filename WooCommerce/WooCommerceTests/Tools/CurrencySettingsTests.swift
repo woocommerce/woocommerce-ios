@@ -6,7 +6,7 @@ import Yosemite
 ///
 final class CurrencySettingsTests: XCTestCase {
 
-    private var moneyFormat = CurrencySettings?
+    private var moneyFormat: CurrencySettings?
     private var siteSettings: [SiteSetting] = []
 
     override func setUp() {

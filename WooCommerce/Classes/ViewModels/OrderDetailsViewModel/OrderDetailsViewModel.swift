@@ -331,5 +331,7 @@ private extension OrderDetailsViewModel {
     enum Constants {
         static let productDetailsSegue = "ShowProductListViewController"
         static let orderStatusListSegue = "ShowOrderStatusListViewController"
+        static let paymentSummaryCell = 1
+        static let paidByCustomerCell = 1
     }
 }

@@ -331,8 +331,8 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
-        // TODO-thuy: create a `lookUpCondensedRefunds()` method and show why minus two rows.
-        let condensedRefund = condensedRefunds[indexPath.row - 2] // TODO-thuy: minus two should be constants
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let condensedRefund = condensedRefunds[index]
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
         cell.leftText = Titles.refunded
@@ -581,8 +581,8 @@ extension OrderDetailsDataSource {
     }
 
     func noteHeader(at indexPath: IndexPath) -> Date? {
-        // We need to subtract 1 here because the first order note row is the "Add Order" cell
-        let noteHeaderIndex = indexPath.row - 1
+        // We need to subtract by one because the first order note row is the "Add Order" cell
+        let noteHeaderIndex = indexPath.row - Constants.addOrderCell
         guard orderNotesSections.indices.contains(noteHeaderIndex) else {
             return nil
         }
@@ -591,8 +591,8 @@ extension OrderDetailsDataSource {
     }
 
     func note(at indexPath: IndexPath) -> OrderNote? {
-        // We need to subtract 1 here because the first order note row is the "Add Order" cell
-        let noteIndex = indexPath.row - 1
+        // We need to subtract by one because the first order note row is the "Add Order" cell
+        let noteIndex = indexPath.row - Constants.addOrderCell
         guard orderNotesSections.indices.contains(noteIndex) else {
             return nil
         }
@@ -825,5 +825,11 @@ extension OrderDetailsDataSource {
         case fulfill
         case tracking
         case summary
+    }
+
+    struct Constants {
+        static let addOrderCell = 1
+        static let paymentCell = 1
+        static let paidByCustomerCell = 1
     }
 }

@@ -11,6 +11,10 @@ final class RefundDetailsDataSource: NSObject {
     ///
     private(set) var refund: Refund
 
+    /// Order
+    ///
+    private(set) var order: Order
+
     /// Sections to be rendered
     ///
     private(set) var sections = [Section]()
@@ -28,14 +32,15 @@ final class RefundDetailsDataSource: NSObject {
 
     /// Refunds initializer.
     ///
-    init(refund: Refund) {
+    init(refund: Refund, order: Order) {
         self.refund = refund
+        self.order = order
     }
 
     /// The results controllers used to display a refund
     ///
     private lazy var resultsControllers: RefundDetailsResultControllers = {
-        return RefundDetailsResultControllers(refund: self.refund)
+        return RefundDetailsResultControllers()
     }()
 
     /// Set up results controllers
@@ -60,7 +65,7 @@ extension RefundDetailsDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-//        configure(cell, for: row, at: indexPath)
+        configure(cell, for: row, at: indexPath)
         return cell
     }
 }
@@ -87,6 +92,43 @@ extension RefundDetailsDataSource {
         return headerView
     }
 }
+
+// MARK: - Support for UITableViewDataSource
+//
+private extension RefundDetailsDataSource {
+    /// Configure cellForRowAtIndexPath:
+    ///
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as PickListTableViewCell:
+            configureOrderItem(cell, at: indexPath)
+        default:
+            fatalError("Unidentified refund details row type")
+        }
+    }
+
+    /// Setup: Product Cell
+    ///
+    private func configureOrderItem(_ cell: PickListTableViewCell, at indexPath: IndexPath) {
+        let item = items[indexPath.row]
+        let product = lookUpProduct(by: item.productID)
+        let itemViewModel = OrderItemRefundViewModel(item: item,
+                                                     currency: order.currency,
+                                                     product: product)
+        cell.selectionStyle = .default
+        cell.configure(item: itemViewModel)
+    }
+}
+
+
+// MARK: - Lookup products
+//
+extension RefundDetailsDataSource {
+    func lookUpProduct(by productID: Int) -> Product? {
+        return products.filter({ $0.productID == productID }).first
+    }
+}
+
 
 // MARK: - Sections
 //

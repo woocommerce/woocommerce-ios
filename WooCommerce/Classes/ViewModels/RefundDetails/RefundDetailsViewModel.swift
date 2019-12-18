@@ -35,7 +35,7 @@ final class RefundDetailsViewModel {
     /// The datasource that will be used to render the Refund Details screen
     ///
     private(set) lazy var dataSource: RefundDetailsDataSource = {
-        return RefundDetailsDataSource(refund: self.refund)
+        return RefundDetailsDataSource(refund: self.refund, order: self.order)
     }()
 }
 

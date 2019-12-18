@@ -438,6 +438,7 @@
 		CE5F462723AAC8C0006B1A5C /* RefundDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */; };
 		CE5F462A23AACA0A006B1A5C /* RefundDetailsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */; };
 		CE5F462C23AACBC4006B1A5C /* RefundDetailsResultControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE5F462B23AACBC4006B1A5C /* RefundDetailsResultControllers.swift */; };
+		CE7E780E23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE7E780D23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift */; };
 		CE85535D209B5BB700938BDC /* OrderDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */; };
 		CE855365209BA6A700938BDC /* CustomerInfoTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */; };
 		CE855366209BA6A700938BDC /* CustomerInfoTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */; };
@@ -1018,6 +1019,7 @@
 		CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsDataSource.swift; sourceTree = "<group>"; };
 		CE5F462B23AACBC4006B1A5C /* RefundDetailsResultControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundDetailsResultControllers.swift; sourceTree = "<group>"; };
+		CE7E780D23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemRefundViewModel.swift; sourceTree = "<group>"; };
 		CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsViewModel.swift; sourceTree = "<group>"; };
 		CE855361209BA6A700938BDC /* CustomerInfoTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CustomerInfoTableViewCell.xib; sourceTree = "<group>"; };
 		CE855362209BA6A700938BDC /* CustomerInfoTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomerInfoTableViewCell.swift; sourceTree = "<group>"; };
@@ -2358,6 +2360,7 @@
 				CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */,
 				CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */,
 				CE5F462B23AACBC4006B1A5C /* RefundDetailsResultControllers.swift */,
+				CE7E780D23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift */,
 			);
 			path = RefundDetails;
 			sourceTree = "<group>";
@@ -2998,6 +3001,7 @@
 				B57C743D20F5493300EEFC87 /* AccountHeaderView.swift in Sources */,
 				D8C251D2230CA90200F49782 /* StoresManager.swift in Sources */,
 				024DF31F23743045006658FE /* Header+AztecFormatting.swift in Sources */,
+				CE7E780E23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift in Sources */,
 				B50911312049E27A007D25DC /* OrdersViewController.swift in Sources */,
 				B5A8F8AD20B88D9900D211DE /* LoginPrologueViewController.swift in Sources */,
 				B5D1AFC620BC7B7300DB0E8C /* StorePickerViewController.swift in Sources */,

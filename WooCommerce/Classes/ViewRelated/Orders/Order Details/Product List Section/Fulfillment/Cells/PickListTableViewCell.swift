@@ -88,7 +88,24 @@ final class PickListTableViewCell: UITableViewCell {
 /// MARK: - Public Methods
 ///
 extension PickListTableViewCell {
+    /// Configure an order item
+    ///
     func configure(item: OrderItemViewModel) {
+        productImageView.setImage(with: item.imageURL?.absoluteString, placeholder: UIImage.productPlaceholderImage)
+        name = item.name
+        quantity = item.quantity
+
+        guard let skuText = item.sku else {
+            skuLabel.isHidden = true
+            return
+        }
+
+        sku = skuText
+    }
+
+    /// Configure a refunded order item
+    ///
+    func configure(item: OrderItemRefundViewModel) {
         productImageView.setImage(with: item.imageURL?.absoluteString, placeholder: UIImage.productPlaceholderImage)
         name = item.name
         quantity = item.quantity

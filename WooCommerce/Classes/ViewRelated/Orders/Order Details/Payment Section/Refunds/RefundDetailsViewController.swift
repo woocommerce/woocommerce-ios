@@ -116,7 +116,7 @@ extension RefundDetailsViewModel {
     ///
     func registerTableViewCells(_ tableView: UITableView) {
         let cells = [
-            LeftImageTableViewCell.self,
+            PickListTableViewCell.self,
         ]
 
         for cell in cells {

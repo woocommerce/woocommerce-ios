@@ -5,10 +5,6 @@ import Yosemite
 /// Results controllers used to render the Refund Details view
 ///
 final class RefundDetailsResultControllers {
-    /// The refund in question.
-    ///
-    private let refund: Refund
-
     /// Product ResultsController.
     ///
     private lazy var productResultsController: ResultsController<StorageProduct> = {
@@ -23,12 +19,6 @@ final class RefundDetailsResultControllers {
     ///
     var products: [Product] {
         return productResultsController.fetchedObjects
-    }
-
-    /// Initializer for Refund(s)
-    ///
-    init(refund: Refund) {
-        self.refund = refund
     }
 
     /// Configure the result controller(s)

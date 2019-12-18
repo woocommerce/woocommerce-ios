@@ -34,6 +34,30 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         }
     }
 
+    /// Left Title Label: sets the style to a type of "active" color,
+    /// to indicate that the cell is tappable.
+    ///
+    func leftTextIsActive(_ active: Bool) {
+        if active {
+            leftTitleLabel.applyPrimaryHeadlineStyle()
+            return
+        }
+
+        leftTitleLabel.applyBodyStyle()
+    }
+
+    /// Right Title Label: sets the style to a type of "active" color,
+    /// to indicate that the cell is tappable.
+    ///
+    func rightTextIsActive(_ active: Bool) {
+        if active {
+            rightTitleLabel.applyPrimaryHeadlineStyle()
+            return
+        }
+
+        rightTitleLabel.applyBodyStyle()
+    }
+
     /// Footnote: attributed text option
     ///
     func updateFootnoteAttributedText(_ attributedString: NSAttributedString?) {
@@ -67,6 +91,7 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         super.prepareForReuse()
 
         footnoteLabel.isHidden = false
+        configureLabels()
     }
 }
 

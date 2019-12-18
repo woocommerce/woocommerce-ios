@@ -96,11 +96,13 @@ private extension ProductShippingSettingsViewController {
     }
 
     func retrieveProductShippingClass() {
-        guard product.shippingClass?.isEmpty == false && product.shippingClassID > 0 else {
+        guard let shippingClass = shippingClass else {
             return
         }
 
-        let action = ProductShippingClassAction.retrieveProductShippingClass(product: product) { [weak self] (shippingClass, error) in
+        let action = ProductShippingClassAction
+            .retrieveProductShippingClass(siteID: Int64(product.siteID),
+                                          remoteID: shippingClass.shippingClassID) { [weak self] (shippingClass, error) in
             self?.shippingClass = shippingClass
             self?.tableView.reloadData()
         }

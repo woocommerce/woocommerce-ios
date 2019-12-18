@@ -10,9 +10,14 @@ final class RefundDetailsViewModel {
     ///
     private(set) var refund: Refund
 
+    /// Order
+    ///
+    private(set) var order: Order
+
     /// Designated Initializer
     ///
-    init(refund: Refund) {
+    init(order: Order, refund: Refund) {
+        self.order = order
         self.refund = refund
     }
 
@@ -32,4 +37,42 @@ final class RefundDetailsViewModel {
     private(set) lazy var dataSource: RefundDetailsDataSource = {
         return RefundDetailsDataSource(refund: self.refund)
     }()
+}
+
+
+// MARK: - Configuring results controllers
+//
+extension RefundDetailsViewModel {
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        dataSource.configureResultsControllers(onReload: onReload)
+    }
+}
+
+
+// MARK: - UITableViewDelegate methods
+//
+extension RefundDetailsViewModel {
+    /// Reload the section data
+    ///
+    func reloadSections() {
+        dataSource.reloadSections()
+    }
+
+    /// Handle taps on cells
+    ///
+    func tableView(_ tableView: UITableView,
+                   in viewController: UIViewController,
+                   didSelectRowAt indexPath: IndexPath) {
+        switch dataSource.sections[indexPath.section].rows[indexPath.row] {
+
+        case .orderItem:
+            let item = refund.items[indexPath.row]
+            let productID = item.variationID == 0 ? item.productID : item.variationID
+            let loaderViewController = ProductLoaderViewController(productID: productID,
+                                                                   siteID: refund.siteID,
+                                                                   currency: order.currency)
+            let navController = WooNavigationController(rootViewController: loaderViewController)
+            viewController.present(navController, animated: true, completion: nil)
+        }
+    }
 }

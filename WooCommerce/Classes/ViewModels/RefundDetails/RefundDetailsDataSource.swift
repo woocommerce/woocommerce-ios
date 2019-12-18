@@ -88,10 +88,37 @@ extension RefundDetailsDataSource {
     }
 }
 
+// MARK: - Sections
+//
+extension RefundDetailsDataSource {
+    /// Setup: Sections
+    ///
+    func reloadSections() {
+        let products: Section? = {
+            guard items.isEmpty == false else {
+                return nil
+            }
+
+            let rows: [Row] = Array(repeating: .orderItem, count: items.count)
+
+            return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)
+        }()
+
+        sections = [products].compactMap { $0 }
+    }
+}
+
 
 // MARK: - Constants
 //
 extension RefundDetailsDataSource {
+    /// Section Titles
+    ///
+    enum SectionTitle {
+        static let product = NSLocalizedString("Product", comment: "Product section title")
+        static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+    }
+
     /// Table Rows
     ///
     enum Row {

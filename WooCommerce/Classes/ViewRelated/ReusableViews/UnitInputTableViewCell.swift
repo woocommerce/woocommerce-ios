@@ -22,6 +22,7 @@ final class UnitInputTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureSelectionStyle()
         configureTitleLabel()
         configureInputAndUnitStackView()
         configureInputTextField()
@@ -39,6 +40,10 @@ final class UnitInputTableViewCell: UITableViewCell {
 }
 
 private extension UnitInputTableViewCell {
+    func configureSelectionStyle() {
+        selectionStyle = .none
+    }
+
     func configureTitleLabel() {
         titleLabel.applyBodyStyle()
     }

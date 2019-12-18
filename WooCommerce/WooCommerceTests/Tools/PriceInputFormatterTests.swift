@@ -21,7 +21,7 @@ final class PriceInputFormatterTests: XCTestCase {
         let input = "9990.52"
         XCTAssertTrue(formatter.isValid(input: input))
     }
-    
+
     func testDecimalInputWithCommaIsValid() {
         let input = "9990,52"
         XCTAssertTrue(formatter.isValid(input: input))
@@ -36,7 +36,7 @@ final class PriceInputFormatterTests: XCTestCase {
         let input = "."
         XCTAssertFalse(formatter.isValid(input: input))
     }
-    
+
     func testLeadingCommaInputIsInvalid() {
         let input = ","
         XCTAssertFalse(formatter.isValid(input: input))
@@ -58,7 +58,7 @@ final class PriceInputFormatterTests: XCTestCase {
         let input = "0.314"
         XCTAssertEqual(formatter.format(input: input), "0.314".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
     }
-    
+
     func testFormattingDecimalInputWithComma() {
         let input = "0,314"
         XCTAssertEqual(formatter.format(input: input), "0,314".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))

@@ -14,6 +14,9 @@ final class ProductEditPriceSettingsViewController: UIViewController {
     private var regularPrice: String?
     private var salePrice: String?
 
+    private var dateOnSaleStart: Date?
+    private var dateOnSaleEnd: Date?
+
     /// Table Sections to be rendered
     ///
     private let sections: [Section] = [
@@ -28,6 +31,8 @@ final class ProductEditPriceSettingsViewController: UIViewController {
         self.product = product
         regularPrice = product.regularPrice
         salePrice = product.salePrice
+        dateOnSaleStart = product.dateOnSaleStart
+        dateOnSaleEnd = product.dateOnSaleEnd
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -166,6 +171,8 @@ private extension ProductEditPriceSettingsViewController {
             configurePrice(cell: cell)
         case let cell as UnitInputTableViewCell where row == .salePrice:
             configureSalePrice(cell: cell)
+        case let cell as SwitchTableViewCell where row == .scheduleSale:
+            configureScheduleSale(cell: cell)
         default:
             //fatalError()
             break
@@ -186,6 +193,17 @@ private extension ProductEditPriceSettingsViewController {
         }
         cell.selectionStyle = .none
         cell.configure(viewModel: viewModel)
+    }
+
+    func configureScheduleSale(cell: SwitchTableViewCell) {
+
+        cell.selectionStyle = .none
+        cell.title = NSLocalizedString("Schedule sale", comment: "Title of the cell in Product Price Settings > Schedule sale")
+        cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "Subtitle of the cell in Product Price Settings > Schedule sale")
+        cell.isOn = (dateOnSaleStart != nil && dateOnSaleEnd != nil) ? true : false
+        cell.onChange = { isOn in
+            
+        }
     }
 }
 
@@ -226,6 +244,8 @@ private extension ProductEditPriceSettingsViewController {
             switch self {
             case .price, .salePrice:
                 return UnitInputTableViewCell.self
+            case .scheduleSale:
+                return SwitchTableViewCell.self
             default:
                 return SettingTitleAndValueTableViewCell.self
             }

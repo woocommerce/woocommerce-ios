@@ -337,7 +337,7 @@ private extension OrderDetailsDataSource {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
         cell.leftText = Titles.refunded
         cell.rightText = paymentViewModel.refundAmount
-        cell.updateFootnoteAttributedText(paymentViewModel.refundSummary)
+        cell.updateFootnoteText(paymentViewModel.refundSummary)
 
         cell.accessibilityTraits = .button
         cell.accessibilityLabel = NSLocalizedString(

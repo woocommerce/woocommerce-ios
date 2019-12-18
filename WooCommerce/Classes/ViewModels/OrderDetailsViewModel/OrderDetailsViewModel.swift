@@ -201,6 +201,12 @@ extension OrderDetailsViewModel {
         case .details:
             ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        case .refund:
+            ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
+            let index = indexPath.row - Constants.paymentSummaryCell - Constants.paidByCustomerCell
+            let refund = refunds[index]
+            let refundDetailsViewController = RefundDetailsViewController(refund: refund)
+            viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
         default:
             break
         }

@@ -95,6 +95,10 @@ public struct Product: Codable {
         return ProductType(rawValue: productTypeKey)
     }
 
+    public var backordersSetting: ProductBackordersSetting {
+        return ProductBackordersSetting(rawValue: backordersKey)
+    }
+
     /// Product struct initializer.
     ///
     public init(siteID: Int,

@@ -27,12 +27,9 @@ final class ProductInventorySettingsViewController: UIViewController {
         self.manageStockEnabled = product.manageStock
         self.soldIndividually = product.soldIndividually
 
-        if manageStockEnabled {
-            self.stockQuantity = product.stockQuantity
-            self.backordersSetting = product.backordersSetting
-        } else {
-            self.stockStatus = product.productStockStatus
-        }
+        self.stockQuantity = product.stockQuantity
+        self.backordersSetting = product.backordersSetting
+        self.stockStatus = product.productStockStatus
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -107,7 +104,7 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     @objc func completeUpdating() {
-        // TODO-1424: update shipping settings
+        // TODO-1424: update inventory settings
     }
 }
 

@@ -1,5 +1,4 @@
 import UIKit
-import Networking
 import Yosemite
 
 final class ProductInventorySettingsViewController: UIViewController {

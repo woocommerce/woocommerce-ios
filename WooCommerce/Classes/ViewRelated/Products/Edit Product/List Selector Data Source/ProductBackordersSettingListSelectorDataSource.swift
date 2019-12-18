@@ -1,5 +1,4 @@
 import UIKit
-import Networking
 import Yosemite
 
 /// `ListSelectorDataSource` for selecting a Product Backorders Setting.

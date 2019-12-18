@@ -338,6 +338,16 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.refunded
         cell.rightText = paymentViewModel.refundAmount
         cell.updateFootnoteAttributedText(paymentViewModel.refundSummary)
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+            "View refund details",
+            comment: "Accessibility label for the 'View details' refund button"
+        )
+        cell.accessibilityHint = NSLocalizedString(
+            "Show refund details for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information."
+        )
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {

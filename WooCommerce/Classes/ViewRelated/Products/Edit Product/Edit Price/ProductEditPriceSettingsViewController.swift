@@ -19,11 +19,7 @@ final class ProductEditPriceSettingsViewController: UIViewController {
 
     /// Table Sections to be rendered
     ///
-    private let sections: [Section] = [
-        Section(title: NSLocalizedString("Price", comment: "Section header title for product price"), rows: [.price, .salePrice]),
-        Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
-        Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass]),
-    ]
+    private var sections: [Section] = []
 
     /// Init
     ///
@@ -44,6 +40,7 @@ final class ProductEditPriceSettingsViewController: UIViewController {
         super.viewDidLoad()
         configureNavigationBar()
         configureMainView()
+        configureSections()
         configureTableView()
     }
 
@@ -196,7 +193,6 @@ private extension ProductEditPriceSettingsViewController {
     }
 
     func configureScheduleSale(cell: SwitchTableViewCell) {
-
         cell.selectionStyle = .none
         cell.title = NSLocalizedString("Schedule sale", comment: "Title of the cell in Product Price Settings > Schedule sale")
         cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "Subtitle of the cell in Product Price Settings > Schedule sale")
@@ -213,6 +209,14 @@ private extension ProductEditPriceSettingsViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
+    }
+    
+    func configureSections() {
+        sections = [
+        Section(title: NSLocalizedString("Price", comment: "Section header title for product price"), rows: [.price, .salePrice]),
+        Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
+        Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass])
+        ]
     }
 }
 
@@ -246,6 +250,8 @@ private extension ProductEditPriceSettingsViewController {
                 return UnitInputTableViewCell.self
             case .scheduleSale:
                 return SwitchTableViewCell.self
+            case .scheduleSaleFrom, .scheduleSaleTo:
+                return SettingTitleAndValueTableViewCell.self
             default:
                 return SettingTitleAndValueTableViewCell.self
             }

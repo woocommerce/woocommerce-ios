@@ -26,6 +26,14 @@ final class ProductEditPriceSettingsViewController: UIViewController {
     private var datePickerSaleFromVisible: Bool = false
     private var datePickerSaleToVisible: Bool = false
 
+    // Today at the start of the day
+    //
+    lazy private var defaultStartDate = Date().startOfDay(timezone: timezoneForScheduleSaleDates)
+
+    // Tomorrow at the end of the day
+    //
+    lazy private var defaultEndDate = Calendar.current.date(byAdding: .day, value: 1, to: Date().endOfDay(timezone: timezoneForScheduleSaleDates))
+
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
@@ -179,6 +187,16 @@ extension ProductEditPriceSettingsViewController: UITableViewDelegate {
 
         return headerView
     }
+
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        let row = rowAtIndexPath(indexPath)
+
+        if row == .datePickerSaleFrom || row == .datePickerSaleTo {
+            return Constants.pickerRowHeight
+        }
+
+        return UITableView.automaticDimension
+    }
 }
 
 // MARK: - Cell configuration
@@ -234,15 +252,9 @@ private extension ProductEditPriceSettingsViewController {
                 return
             }
 
-            // Today at the start of the day
-            let startDate = Date().startOfDay(timezone: self.timezoneForScheduleSaleDates)
-
-            // Tomorrow at the end of the day
-            let endDate = Calendar.current.date(byAdding: .day, value: 1, to: Date().endOfDay(timezone: self.timezoneForScheduleSaleDates))
-
             if isOn {
-                self.dateOnSaleStart = self.product.dateOnSaleStart ?? startDate
-                self.dateOnSaleEnd = self.product.dateOnSaleEnd ?? endDate
+                self.dateOnSaleStart = self.dateOnSaleStart != nil ? self.dateOnSaleStart : self.product.dateOnSaleStart ?? self.defaultStartDate
+                self.dateOnSaleEnd = self.dateOnSaleEnd != nil ? self.dateOnSaleEnd : self.product.dateOnSaleEnd ?? self.defaultEndDate
                 self.refreshViewContent()
             }
             else {
@@ -260,7 +272,16 @@ private extension ProductEditPriceSettingsViewController {
     }
 
     func configureSaleFromPicker(cell: DatePickerTableViewCell) {
-
+        if let dateOnSaleStart = dateOnSaleStart {
+            cell.getPicker().setDate(dateOnSaleStart, animated: false)
+        }
+        cell.onDateSelected = { [weak self] date in
+            guard let self = self else {
+                return
+            }
+            self.dateOnSaleStart = date.startOfDay(timezone: self.timezoneForScheduleSaleDates)
+            self.refreshViewContent()
+        }
     }
 
     func configureScheduleSaleTo(cell: SettingTitleAndValueTableViewCell) {
@@ -270,7 +291,16 @@ private extension ProductEditPriceSettingsViewController {
     }
 
     func configureSaleToPicker(cell: DatePickerTableViewCell) {
-
+        if let dateOnSaleEnd = dateOnSaleEnd {
+            cell.getPicker().setDate(dateOnSaleEnd, animated: false)
+        }
+        cell.onDateSelected = { [weak self] date in
+            guard let self = self else {
+                return
+            }
+            self.dateOnSaleEnd = date.endOfDay(timezone: self.timezoneForScheduleSaleDates)
+            self.refreshViewContent()
+        }
     }
 }
 

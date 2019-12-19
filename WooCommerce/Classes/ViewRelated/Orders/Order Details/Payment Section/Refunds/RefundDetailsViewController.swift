@@ -28,11 +28,11 @@ class RefundDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setUpNavigation()
+        configureNavigation()
     }
 
-    func setUpNavigation() {
-        let refundTitle = NSLocalizedString("Refund #%ld", comment: "It reads: Refund #<refund ID>")
-        title = String.localizedStringWithFormat(refundTitle, refund.refundID)
+    func configureNavigation() {
+        let refundTitle = NSLocalizedString("Refund #%@", comment: "It reads: Refund #<refund ID>")
+        title = String.localizedStringWithFormat(refundTitle, String(refund.refundID))
     }
 }

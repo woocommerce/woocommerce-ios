@@ -16,11 +16,16 @@ final class ProductEditPriceSettingsViewController: UIViewController {
 
     private var dateOnSaleStart: Date?
     private var dateOnSaleEnd: Date?
-    
+
     // When the site time zone can be correctly fetched, consider using the site time zone
     // for Product schedule sale (#1375).
     private let timezoneForScheduleSaleDates = TimeZone.current
-    
+
+    // Date Pickers status
+    //
+    private var datePickerSaleFromVisible: Bool = false
+    private var datePickerSaleToVisible: Bool = false
+
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
@@ -133,6 +138,21 @@ extension ProductEditPriceSettingsViewController: UITableViewDataSource {
 extension ProductEditPriceSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
+        let row = rowAtIndexPath(indexPath)
+
+        switch row {
+        case .scheduleSaleFrom:
+            datePickerSaleFromVisible = !datePickerSaleFromVisible
+            refreshViewContent()
+            break
+        case .scheduleSaleTo:
+            datePickerSaleToVisible = !datePickerSaleToVisible
+            refreshViewContent()
+            break
+        default:
+            break
+        }
+
         // TODO-1423: navigate to tax class selector
     }
 
@@ -176,8 +196,12 @@ private extension ProductEditPriceSettingsViewController {
             configureScheduleSale(cell: cell)
         case let cell as SettingTitleAndValueTableViewCell where row == .scheduleSaleFrom:
             configureScheduleSaleFrom(cell: cell)
+        case let cell as DatePickerTableViewCell where row == .datePickerSaleFrom:
+            configureSaleFromPicker(cell: cell)
         case let cell as SettingTitleAndValueTableViewCell where row == .scheduleSaleTo:
             configureScheduleSaleTo(cell: cell)
+            case let cell as DatePickerTableViewCell where row == .datePickerSaleTo:
+            configureSaleToPicker(cell: cell)
         default:
             //fatalError()
             break
@@ -209,13 +233,13 @@ private extension ProductEditPriceSettingsViewController {
             guard let self = self else {
                 return
             }
-            
+
             // Today at the start of the day
             let startDate = Date().startOfDay(timezone: self.timezoneForScheduleSaleDates)
-            
+
             // Tomorrow at the end of the day
             let endDate = Calendar.current.date(byAdding: .day, value: 1, to: Date().endOfDay(timezone: self.timezoneForScheduleSaleDates))
-            
+
             if isOn {
                 self.dateOnSaleStart = self.product.dateOnSaleStart ?? startDate
                 self.dateOnSaleEnd = self.product.dateOnSaleEnd ?? endDate
@@ -228,17 +252,25 @@ private extension ProductEditPriceSettingsViewController {
             }
         }
     }
-    
+
     func configureScheduleSaleFrom(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale From a certain date")
         let value = dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none)
         cell.updateUI(title: title, value: value)
     }
-    
+
+    func configureSaleFromPicker(cell: DatePickerTableViewCell) {
+
+    }
+
     func configureScheduleSaleTo(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale To a certain date")
         let value = dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none)
         cell.updateUI(title: title, value: value)
+    }
+
+    func configureSaleToPicker(cell: DatePickerTableViewCell) {
+
     }
 }
 
@@ -250,18 +282,24 @@ private extension ProductEditPriceSettingsViewController {
         configureSections()
         tableView.reloadData()
     }
-    
+
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
-    
+
     func configureSections() {
-        
         var saleScheduleRows: [Row] = [.scheduleSale]
         if dateOnSaleStart != nil && dateOnSaleEnd != nil {
-            saleScheduleRows.append(contentsOf: [.scheduleSaleFrom, .scheduleSaleTo])
+            saleScheduleRows.append(contentsOf: [.scheduleSaleFrom])
+            if datePickerSaleFromVisible {
+                saleScheduleRows.append(contentsOf: [.datePickerSaleFrom])
+            }
+            saleScheduleRows.append(contentsOf: [.scheduleSaleTo])
+            if datePickerSaleToVisible {
+                saleScheduleRows.append(contentsOf: [.datePickerSaleTo])
+            }
         }
-        
+
         sections = [
         Section(title: NSLocalizedString("Price", comment: "Section header title for product price"), rows: [.price, .salePrice]),
         Section(title: nil, rows: saleScheduleRows),
@@ -285,7 +323,9 @@ private extension ProductEditPriceSettingsViewController {
 
         case scheduleSale
         case scheduleSaleFrom
+        case datePickerSaleFrom
         case scheduleSaleTo
+        case datePickerSaleTo
 
         case taxStatus
         case taxClass
@@ -298,6 +338,8 @@ private extension ProductEditPriceSettingsViewController {
                 return SwitchTableViewCell.self
             case .scheduleSaleFrom, .scheduleSaleTo:
                 return SettingTitleAndValueTableViewCell.self
+            case .datePickerSaleFrom, .datePickerSaleTo:
+                return DatePickerTableViewCell.self
             default:
                 return SettingTitleAndValueTableViewCell.self
             }
@@ -311,4 +353,5 @@ private extension ProductEditPriceSettingsViewController {
 
 private struct Constants {
     static let sectionHeight = CGFloat(44)
+    static let pickerRowHeight = CGFloat(216)
 }

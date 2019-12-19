@@ -478,7 +478,7 @@ public extension ProductStore {
 
 /// An error that occurs while updating a Product.
 ///
-/// - invalidSKU: the user has no permission to view site stats.
+/// - invalidSKU: the SKU is invalid or duplicated.
 /// - unknown: other error cases.
 ///
 public enum ProductUpdateError: Error {

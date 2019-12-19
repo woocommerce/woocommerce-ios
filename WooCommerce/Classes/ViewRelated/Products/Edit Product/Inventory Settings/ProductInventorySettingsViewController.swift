@@ -162,7 +162,7 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
             }
             navigationController?.pushViewController(listSelectorViewController, animated: true)
         case .backorders:
-            let title = NSLocalizedString("Allow backorders?", comment: "Product backorders setting list selector navigation title")
+            let title = NSLocalizedString("Backorders", comment: "Product backorders setting list selector navigation title")
             let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
             let dataSource = ProductBackordersSettingListSelectorDataSource(selected: backordersSetting)
             let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,

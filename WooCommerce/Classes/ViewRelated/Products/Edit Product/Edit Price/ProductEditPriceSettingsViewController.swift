@@ -161,7 +161,7 @@ extension ProductEditPriceSettingsViewController: UITableViewDelegate {
             break
         }
 
-        // TODO-1423: navigate to tax class selector
+        // TODO-1423: navigate to tax status & tax class selector
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -218,8 +218,12 @@ private extension ProductEditPriceSettingsViewController {
             configureSaleFromPicker(cell: cell)
         case let cell as SettingTitleAndValueTableViewCell where row == .scheduleSaleTo:
             configureScheduleSaleTo(cell: cell)
-            case let cell as DatePickerTableViewCell where row == .datePickerSaleTo:
+        case let cell as DatePickerTableViewCell where row == .datePickerSaleTo:
             configureSaleToPicker(cell: cell)
+        case let cell as SettingTitleAndValueTableViewCell where row == .taxStatus:
+            configureTaxStatus(cell: cell)
+        case let cell as SettingTitleAndValueTableViewCell where row == .taxClass:
+            configureTaxClass(cell: cell)
         default:
             //fatalError()
             break
@@ -302,6 +306,20 @@ private extension ProductEditPriceSettingsViewController {
             self.refreshViewContent()
         }
     }
+
+    func configureTaxStatus(cell: SettingTitleAndValueTableViewCell) {
+        let title = NSLocalizedString("Tax status", comment: "Title of the cell in Product Price Settings > Tax status")
+        //TODO: set the tax status
+        cell.updateUI(title: title, value: nil)
+        cell.accessoryType = .disclosureIndicator
+    }
+
+    func configureTaxClass(cell: SettingTitleAndValueTableViewCell) {
+        let title = NSLocalizedString("Tax class", comment: "Title of the cell in Product Price Settings > Tax class")
+        //TODO: set the tax class
+        cell.updateUI(title: title, value: nil)
+        cell.accessoryType = .disclosureIndicator
+    }
 }
 
 // MARK: - Convenience Methods
@@ -370,7 +388,7 @@ private extension ProductEditPriceSettingsViewController {
                 return SettingTitleAndValueTableViewCell.self
             case .datePickerSaleFrom, .datePickerSaleTo:
                 return DatePickerTableViewCell.self
-            default:
+            case .taxStatus, .taxClass:
                 return SettingTitleAndValueTableViewCell.self
             }
         }

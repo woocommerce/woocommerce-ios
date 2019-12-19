@@ -16,7 +16,7 @@ final class ProductEditPriceSettingsViewController: UIViewController {
 
     private var dateOnSaleStart: Date?
     private var dateOnSaleEnd: Date?
-
+    
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
@@ -170,6 +170,10 @@ private extension ProductEditPriceSettingsViewController {
             configureSalePrice(cell: cell)
         case let cell as SwitchTableViewCell where row == .scheduleSale:
             configureScheduleSale(cell: cell)
+        case let cell as SettingTitleAndValueTableViewCell where row == .scheduleSaleFrom:
+            configureScheduleSaleFrom(cell: cell)
+        case let cell as SettingTitleAndValueTableViewCell where row == .scheduleSaleTo:
+            configureScheduleSaleTo(cell: cell)
         default:
             //fatalError()
             break
@@ -197,9 +201,30 @@ private extension ProductEditPriceSettingsViewController {
         cell.title = NSLocalizedString("Schedule sale", comment: "Title of the cell in Product Price Settings > Schedule sale")
         cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "Subtitle of the cell in Product Price Settings > Schedule sale")
         cell.isOn = (dateOnSaleStart != nil && dateOnSaleEnd != nil) ? true : false
-        cell.onChange = { isOn in
-            
+        cell.onChange = { [weak self] isOn in
+            if isOn {
+                self?.dateOnSaleStart = self?.product.dateOnSaleStart ?? Date()
+                self?.dateOnSaleEnd = self?.product.dateOnSaleEnd ?? Calendar.current.date(byAdding: .day, value: 1, to: Date())
+                self?.refreshViewContent()
+            }
+            else {
+                self?.dateOnSaleStart = nil
+                self?.dateOnSaleEnd = nil
+                self?.refreshViewContent()
+            }
         }
+    }
+    
+    func configureScheduleSaleFrom(cell: SettingTitleAndValueTableViewCell) {
+        let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale From a certain date")
+        let value = dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none)
+        cell.updateUI(title: title, value: value)
+    }
+    
+    func configureScheduleSaleTo(cell: SettingTitleAndValueTableViewCell) {
+        let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale To a certain date")
+        let value = dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none)
+        cell.updateUI(title: title, value: value)
     }
 }
 
@@ -207,14 +232,25 @@ private extension ProductEditPriceSettingsViewController {
 //
 private extension ProductEditPriceSettingsViewController {
 
+    func refreshViewContent() {
+        configureSections()
+        tableView.reloadData()
+    }
+    
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
     }
     
     func configureSections() {
+        
+        var saleScheduleRows: [Row] = [.scheduleSale]
+        if dateOnSaleStart != nil && dateOnSaleEnd != nil {
+            saleScheduleRows.append(contentsOf: [.scheduleSaleFrom, .scheduleSaleTo])
+        }
+        
         sections = [
         Section(title: NSLocalizedString("Price", comment: "Section header title for product price"), rows: [.price, .salePrice]),
-        Section(title: nil, rows: [.scheduleSale, .scheduleSaleFrom, .scheduleSaleTo]),
+        Section(title: nil, rows: saleScheduleRows),
         Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass])
         ]
     }

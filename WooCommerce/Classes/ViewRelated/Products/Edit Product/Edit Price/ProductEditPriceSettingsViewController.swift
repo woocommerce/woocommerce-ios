@@ -222,10 +222,6 @@ private extension ProductEditPriceSettingsViewController {
 
 // MARK: - Private Types
 //
-private struct Constants {
-    static let sectionHeight = CGFloat(44)
-}
-
 private extension ProductEditPriceSettingsViewController {
 
     struct Section {
@@ -261,4 +257,8 @@ private extension ProductEditPriceSettingsViewController {
             return type.reuseIdentifier
         }
     }
+}
+
+private struct Constants {
+    static let sectionHeight = CGFloat(44)
 }

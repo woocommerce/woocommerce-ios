@@ -17,6 +17,10 @@ final class ProductEditPriceSettingsViewController: UIViewController {
     private var dateOnSaleStart: Date?
     private var dateOnSaleEnd: Date?
     
+    // When the site time zone can be correctly fetched, consider using the site time zone
+    // for Product schedule sale (#1375).
+    private let timezoneForScheduleSaleDates = TimeZone.current
+    
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
@@ -202,15 +206,25 @@ private extension ProductEditPriceSettingsViewController {
         cell.subtitle = NSLocalizedString("Automatically start and end a sale", comment: "Subtitle of the cell in Product Price Settings > Schedule sale")
         cell.isOn = (dateOnSaleStart != nil && dateOnSaleEnd != nil) ? true : false
         cell.onChange = { [weak self] isOn in
+            guard let self = self else {
+                return
+            }
+            
+            // Today at the start of the day
+            let startDate = Date().startOfDay(timezone: self.timezoneForScheduleSaleDates)
+            
+            // Tomorrow at the end of the day
+            let endDate = Calendar.current.date(byAdding: .day, value: 1, to: Date().endOfDay(timezone: self.timezoneForScheduleSaleDates))
+            
             if isOn {
-                self?.dateOnSaleStart = self?.product.dateOnSaleStart ?? Date()
-                self?.dateOnSaleEnd = self?.product.dateOnSaleEnd ?? Calendar.current.date(byAdding: .day, value: 1, to: Date())
-                self?.refreshViewContent()
+                self.dateOnSaleStart = self.product.dateOnSaleStart ?? startDate
+                self.dateOnSaleEnd = self.product.dateOnSaleEnd ?? endDate
+                self.refreshViewContent()
             }
             else {
-                self?.dateOnSaleStart = nil
-                self?.dateOnSaleEnd = nil
-                self?.refreshViewContent()
+                self.dateOnSaleStart = nil
+                self.dateOnSaleEnd = nil
+                self.refreshViewContent()
             }
         }
     }

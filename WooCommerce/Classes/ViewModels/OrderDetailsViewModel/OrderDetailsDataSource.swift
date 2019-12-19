@@ -337,9 +337,9 @@ private extension OrderDetailsDataSource {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
 
         cell.leftText = Titles.refunded
-        cell.leftTextIsActive(true)
+        cell.setLeftTitleToLinkStyle(true)
         cell.rightText = paymentViewModel.refundAmount
-        cell.rightTextIsActive(true)
+        cell.setRightTitleToLinkStyle(true)
         cell.updateFootnoteText(paymentViewModel.refundSummary)
 
         cell.accessibilityTraits = .button

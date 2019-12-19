@@ -34,24 +34,24 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         }
     }
 
-    /// Left Title Label: sets the style to a type of "active" color,
+    /// Left Title Label: sets the style to the accent color,
     /// to indicate that the cell is tappable.
     ///
-    func leftTextIsActive(_ active: Bool) {
+    func setLeftTitleToLinkStyle(_ active: Bool) {
         if active {
-            leftTitleLabel.applyPrimaryHeadlineStyle()
+            leftTitleLabel.applyLinkHeadlineStyle()
             return
         }
 
         leftTitleLabel.applyBodyStyle()
     }
 
-    /// Right Title Label: sets the style to a type of "active" color,
+    /// Right Title Label: sets the style to the accent color,
     /// to indicate that the cell is tappable.
     ///
-    func rightTextIsActive(_ active: Bool) {
+    func setRightTitleToLinkStyle(_ active: Bool) {
         if active {
-            rightTitleLabel.applyPrimaryHeadlineStyle()
+            rightTitleLabel.applyLinkHeadlineStyle()
             return
         }
 

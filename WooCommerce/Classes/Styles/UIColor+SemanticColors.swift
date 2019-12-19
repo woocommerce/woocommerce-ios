@@ -80,6 +80,12 @@ extension UIColor {
 
 // MARK: - Text Colors.
 extension UIColor {
+    /// Text link. Pink-50
+    ///
+    static var textLink: UIColor {
+        return .accent
+    }
+
     /// Text. Gray-80 (< iOS 13) and `UIColor.label` (> iOS 13)
     ///
     static var text: UIColor {

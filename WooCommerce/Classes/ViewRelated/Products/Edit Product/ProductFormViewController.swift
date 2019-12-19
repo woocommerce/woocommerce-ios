@@ -87,6 +87,7 @@ private extension ProductFormViewController {
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
                 DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                self?.displayError(error: error)
                 return
             }
             self?.product = product
@@ -95,6 +96,34 @@ private extension ProductFormViewController {
             self?.dismiss(animated: true)
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func displayError(error: ProductUpdateError?) {
+        let title = NSLocalizedString("Cannot update Product", comment: "The title of the alert when there is an error updating the product")
+
+        let message: String?
+        switch error {
+        case .invalidSKU:
+            message = NSLocalizedString("The SKU is used for another product or invalid. Please check the inventory settings.",
+                                        comment: "The message of the alert when there is an error updating the product SKU")
+        default:
+            message = nil
+        }
+
+        displayErrorAlert(title: title, message: message)
+    }
+
+    func displayErrorAlert(title: String?, message: String?) {
+        let alert = UIAlertController(title: title,
+                                      message: message,
+                                      preferredStyle: .alert)
+        let cancel = UIAlertAction(title: NSLocalizedString(
+            "OK",
+            comment: "Dismiss button on the alert when there is an error updating the product"
+        ), style: .cancel, handler: nil)
+        alert.addAction(cancel)
+
+        present(alert, animated: true, completion: nil)
     }
 }
 

@@ -1,3 +1,7 @@
+3.4
+-----
+- bugfix: on the Order Details screen, the product quantity title in the 2-column header view aligns to the right now
+
 3.3
 -----
 - bugfix: add some padding to an order item image in the Fulfillment view, when no SKU exists

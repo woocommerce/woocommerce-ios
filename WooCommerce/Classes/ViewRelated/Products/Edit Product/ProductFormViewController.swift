@@ -120,7 +120,6 @@ extension ProductFormViewController: UITableViewDelegate {
             switch row {
             case .price:
                 editPriceSettings()
-                return
             case .shipping:
                 editShippingSettings()
             case .inventory:

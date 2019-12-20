@@ -480,7 +480,7 @@
         <attribute name="visitors" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="stats" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="SiteVisitStats" inverseName="items" inverseEntity="SiteVisitStats"/>
     </entity>
-    <entity name="TaxClass" representedClassName="TaxClass" syncable="YES" codeGenerationType="class">
+    <entity name="TaxClass" representedClassName="TaxClass" syncable="YES">
         <attribute name="name" attributeType="String"/>
         <attribute name="siteID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="slug" attributeType="String"/>

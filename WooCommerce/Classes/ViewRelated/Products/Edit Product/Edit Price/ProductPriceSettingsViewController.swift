@@ -258,12 +258,12 @@ private extension ProductPriceSettingsViewController {
                 self.dateOnSaleStart = self.dateOnSaleStart != nil ? self.dateOnSaleStart : self.product.dateOnSaleStart ?? self.defaultStartDate
                 self.dateOnSaleEnd = self.dateOnSaleEnd != nil ? self.dateOnSaleEnd : self.product.dateOnSaleEnd ?? self.defaultEndDate
                 self.refreshViewContent()
+                return
             }
-            else {
-                self.dateOnSaleStart = nil
-                self.dateOnSaleEnd = nil
-                self.refreshViewContent()
-            }
+            
+            self.dateOnSaleStart = nil
+            self.dateOnSaleEnd = nil
+            self.refreshViewContent()
         }
     }
 

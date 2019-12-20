@@ -15,8 +15,8 @@ struct ProductStockStatusListSelectorDataSource: ListSelectorDataSource {
 
     var selected: ProductStockStatus?
 
-    init(product: Product) {
-        selected = product.productStockStatus
+    init(selected: ProductStockStatus?) {
+        self.selected = selected
     }
 
     func configureCell(cell: BasicTableViewCell, model: ProductStockStatus) {

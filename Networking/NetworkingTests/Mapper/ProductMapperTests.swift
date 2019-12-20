@@ -72,6 +72,7 @@ class ProductMapperTests: XCTestCase {
         XCTAssertEqual(product.stockStatusKey, "instock")
 
         XCTAssertEqual(product.backordersKey, "no")
+        XCTAssertEqual(product.backordersSetting, .notAllowed)
         XCTAssertFalse(product.backordersAllowed)
         XCTAssertFalse(product.backordered)
 

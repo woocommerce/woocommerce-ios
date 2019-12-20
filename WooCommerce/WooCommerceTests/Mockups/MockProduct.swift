@@ -9,6 +9,7 @@ final class MockProduct {
 
     func product(name: String = "Hogsmeade",
                  productShippingClass: ProductShippingClass? = nil,
+                 backordersSetting: ProductBackordersSetting = .notAllowed,
                  stockQuantity: Int? = nil,
                  stockStatus: ProductStockStatus = .inStock,
                  variations: [Int] = [],
@@ -52,7 +53,7 @@ final class MockProduct {
                    manageStock: false,
                    stockQuantity: stockQuantity,
                    stockStatusKey: stockStatus.rawValue,
-                   backordersKey: "no",
+                   backordersKey: backordersSetting.rawValue,
                    backordersAllowed: false,
                    backordered: false,
                    soldIndividually: true,

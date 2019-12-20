@@ -10,6 +10,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
+                                  keyboardType: .decimalPad,
                                   inputFormatter: DecimalInputFormatter(),
                                   onInputChange: onInputChange)
     }
@@ -22,6 +23,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: length.isEmpty ? "0": length,
+                                  keyboardType: .decimalPad,
                                   inputFormatter: DecimalInputFormatter(),
                                   onInputChange: onInputChange)
     }
@@ -34,6 +36,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: width.isEmpty ? "0": width,
+                                  keyboardType: .decimalPad,
                                   inputFormatter: DecimalInputFormatter(),
                                   onInputChange: onInputChange)
     }
@@ -46,6 +49,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: height.isEmpty ? "0": height,
+                                  keyboardType: .decimalPad,
                                   inputFormatter: DecimalInputFormatter(),
                                   onInputChange: onInputChange)
     }

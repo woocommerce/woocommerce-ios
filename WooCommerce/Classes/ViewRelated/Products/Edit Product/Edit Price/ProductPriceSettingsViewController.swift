@@ -28,11 +28,11 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     // Today at the start of the day
     //
-    lazy private var defaultStartDate = Date().startOfDay(timezone: timezoneForScheduleSaleDates)
+    private lazy var defaultStartDate = Date().startOfDay(timezone: timezoneForScheduleSaleDates)
 
     // Tomorrow at the end of the day
     //
-    lazy private var defaultEndDate = Calendar.current.date(byAdding: .day, value: 1, to: Date().endOfDay(timezone: timezoneForScheduleSaleDates))
+    private lazy var defaultEndDate = Calendar.current.date(byAdding: .day, value: 1, to: Date().endOfDay(timezone: timezoneForScheduleSaleDates))
 
     /// Table Sections to be rendered
     ///

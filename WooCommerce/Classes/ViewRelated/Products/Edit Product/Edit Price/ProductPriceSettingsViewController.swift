@@ -260,7 +260,7 @@ private extension ProductPriceSettingsViewController {
                 self.refreshViewContent()
                 return
             }
-            
+
             self.dateOnSaleStart = nil
             self.dateOnSaleEnd = nil
             self.refreshViewContent()

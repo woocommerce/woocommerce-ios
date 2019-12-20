@@ -226,7 +226,7 @@ private extension ProductEditPriceSettingsViewController {
         case let cell as SettingTitleAndValueTableViewCell where row == .taxClass:
             configureTaxClass(cell: cell)
         default:
-            //fatalError()
+            fatalError()
             break
         }
     }

@@ -277,6 +277,7 @@ private extension ProductPriceSettingsViewController {
         guard let dateOnSaleStart = dateOnSaleStart, let dateOnSaleEnd = dateOnSaleEnd else {
             return
         }
+
         cell.getPicker().setDate(dateOnSaleStart, animated: false)
         cell.onDateSelected = { [weak self] date in
             guard let self = self else {

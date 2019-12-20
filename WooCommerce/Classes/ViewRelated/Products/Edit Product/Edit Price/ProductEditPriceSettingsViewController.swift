@@ -5,7 +5,7 @@ import Yosemite
 //
 final class ProductEditPriceSettingsViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak private var tableView: UITableView!
 
     private let product: Product
 

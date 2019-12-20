@@ -1,9 +1,9 @@
 import UIKit
 import Yosemite
 
-// MARK: - ProductEditPriceSettingsViewController
+// MARK: - ProductPriceSettingsViewController
 //
-final class ProductEditPriceSettingsViewController: UIViewController {
+final class ProductPriceSettingsViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
 
@@ -65,7 +65,7 @@ final class ProductEditPriceSettingsViewController: UIViewController {
 
 // MARK: - View Configuration
 //
-private extension ProductEditPriceSettingsViewController {
+private extension ProductPriceSettingsViewController {
 
     func configureNavigationBar() {
         title = NSLocalizedString("Price", comment: "Product Price Settings navigation title")
@@ -103,7 +103,7 @@ private extension ProductEditPriceSettingsViewController {
 
 // MARK: - Navigation actions handling
 //
-private extension ProductEditPriceSettingsViewController {
+private extension ProductPriceSettingsViewController {
     @objc func completeUpdating() {
         // TODO-1423: update price settings
     }
@@ -111,7 +111,7 @@ private extension ProductEditPriceSettingsViewController {
 
 // MARK: - Input changes handling
 //
-private extension ProductEditPriceSettingsViewController {
+private extension ProductPriceSettingsViewController {
     func handleRegularPriceChange(regularPrice: String?) {
         self.regularPrice = regularPrice
     }
@@ -123,7 +123,7 @@ private extension ProductEditPriceSettingsViewController {
 
 // MARK: - UITableViewDataSource Conformance
 //
-extension ProductEditPriceSettingsViewController: UITableViewDataSource {
+extension ProductPriceSettingsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
         return sections.count
@@ -144,7 +144,7 @@ extension ProductEditPriceSettingsViewController: UITableViewDataSource {
 
 // MARK: - UITableViewDelegate Conformance
 //
-extension ProductEditPriceSettingsViewController: UITableViewDelegate {
+extension ProductPriceSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         let row = rowAtIndexPath(indexPath)
@@ -202,7 +202,7 @@ extension ProductEditPriceSettingsViewController: UITableViewDelegate {
 
 // MARK: - Cell configuration
 //
-private extension ProductEditPriceSettingsViewController {
+private extension ProductPriceSettingsViewController {
     /// Cells currently configured in the order they appear on screen
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
@@ -337,7 +337,7 @@ private extension ProductEditPriceSettingsViewController {
 
 // MARK: - Convenience Methods
 //
-private extension ProductEditPriceSettingsViewController {
+private extension ProductPriceSettingsViewController {
 
     func refreshViewContent() {
         configureSections()
@@ -371,7 +371,7 @@ private extension ProductEditPriceSettingsViewController {
 
 // MARK: - Private Types
 //
-private extension ProductEditPriceSettingsViewController {
+private extension ProductPriceSettingsViewController {
 
     struct Section {
         let title: String?

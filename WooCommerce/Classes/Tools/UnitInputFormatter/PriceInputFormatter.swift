@@ -1,6 +1,6 @@
 import Foundation
 
-/// `UnitInputFormatter` implementation for decimal number input.
+/// `UnitInputFormatter` implementation for decimal price input.
 ///
 struct PriceInputFormatter: UnitInputFormatter {
 

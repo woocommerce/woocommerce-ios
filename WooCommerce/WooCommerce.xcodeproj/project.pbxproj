@@ -37,6 +37,12 @@
 		02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02162728237965E8000208D2 /* ProductFormTableViewModel.swift */; };
 		0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */; };
 		0219B03723964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */; };
+		021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1523A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift */; };
+		021E2A1823A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 021E2A1623A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib */; };
+		021E2A1A23AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1923AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift */; };
+		021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift */; };
+		021E2A1E23AA24C600B1DE07 /* StringInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1D23AA24C600B1DE07 /* StringInputFormatter.swift */; };
+		021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift */; };
 		021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */; };
 		021FAFCF23556D2B00B99241 /* UIView+SubviewsAxis.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */; };
 		02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */; };
@@ -585,6 +591,12 @@
 		02162728237965E8000208D2 /* ProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormTableViewModel.swift; sourceTree = "<group>"; };
 		0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductFormTableViewModel.swift; sourceTree = "<group>"; };
 		0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSource.swift; sourceTree = "<group>"; };
+		021E2A1523A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventorySettingsViewController.swift; sourceTree = "<group>"; };
+		021E2A1623A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductInventorySettingsViewController.xib; sourceTree = "<group>"; };
+		021E2A1923AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+InventorySettingsViewModels.swift"; sourceTree = "<group>"; };
+		021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorDataSource.swift; sourceTree = "<group>"; };
+		021E2A1D23AA24C600B1DE07 /* StringInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StringInputFormatter.swift; sourceTree = "<group>"; };
+		021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductBackordersSettingListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		021FAFCC2355621E00B99241 /* UIView+SubviewsAxisTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxisTests.swift"; sourceTree = "<group>"; };
 		021FAFCE23556D2B00B99241 /* UIView+SubviewsAxis.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+SubviewsAxis.swift"; sourceTree = "<group>"; };
 		02279583237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecUnorderedListFormatBarCommand.swift; sourceTree = "<group>"; };
@@ -1160,6 +1172,7 @@
 			isa = PBXGroup;
 			children = (
 				02F4F50C237AFBB700E13A9C /* Cells */,
+				021E2A1223A9FBF200B1DE07 /* Inventory Settings */,
 				02E262CA238D0D0500B79588 /* List Selector Data Source */,
 				0262DA5523A23AA40029AF30 /* Shipping Settings */,
 				45B9C63B23A8E4DB007FC4C5 /* Edit Price */,
@@ -1173,6 +1186,16 @@
 				02784A04238BA85500BDD6A8 /* UIImage+ProductForm.swift */,
 			);
 			path = "Edit Product";
+			sourceTree = "<group>";
+		};
+		021E2A1223A9FBF200B1DE07 /* Inventory Settings */ = {
+			isa = PBXGroup;
+			children = (
+				021E2A1523A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift */,
+				021E2A1623A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib */,
+				021E2A1923AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift */,
+			);
+			path = "Inventory Settings";
 			sourceTree = "<group>";
 		};
 		0227958E237A5D5200787C63 /* Editor */ = {
@@ -1375,6 +1398,7 @@
 			children = (
 				0290E27D238E5B5C00B5C466 /* ProductStockStatusListSelectorDataSourceTests.swift */,
 				02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */,
+				021E2A1F23AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift */,
 			);
 			path = ListSelector;
 			sourceTree = "<group>";
@@ -1385,6 +1409,7 @@
 				02913E9423A774C500707A0C /* UnitInputFormatter.swift */,
 				02913E9623A774E600707A0C /* DecimalInputFormatter.swift */,
 				45B9C64223A91CB6007FC4C5 /* PriceInputFormatter.swift */,
+				021E2A1D23AA24C600B1DE07 /* StringInputFormatter.swift */,
 			);
 			path = UnitInputFormatter;
 			sourceTree = "<group>";
@@ -1452,6 +1477,7 @@
 			children = (
 				02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift */,
 				0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */,
+				021E2A1B23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift */,
 			);
 			path = "List Selector Data Source";
 			sourceTree = "<group>";
@@ -2745,6 +2771,7 @@
 				B5FD110E21D3CB8500560344 /* OrderTableViewCell.xib in Resources */,
 				D83C129F22250BF0004CA04C /* OrderTrackingTableViewCell.xib in Resources */,
 				B59D1EE121907304009D1978 /* ProductReviewTableViewCell.xib in Resources */,
+				021E2A1823A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib in Resources */,
 				0290E270238E3CE400B5C466 /* ListSelectorViewController.xib in Resources */,
 				B59D1EE821908A08009D1978 /* Noticons.ttf in Resources */,
 				D81F2D35225F0CF70084BF9C /* EmptyListMessageWithActionView.xib in Resources */,
@@ -3010,6 +3037,7 @@
 				B5A8F8A920B84D3F00D211DE /* ApiCredentials.swift in Sources */,
 				02305352237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift in Sources */,
 				B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */,
+				021E2A1A23AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift in Sources */,
 				02E4FD7A230688BA0049610C /* OrderStatsV4Interval+Chart.swift in Sources */,
 				0262DA5823A23AC80029AF30 /* ProductShippingSettingsViewController.swift in Sources */,
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,
@@ -3047,6 +3075,7 @@
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
 				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,
+				021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */,
 				020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */,
 				02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */,
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,
@@ -3060,6 +3089,7 @@
 				CE1EC8F120B8A408009762BF /* OrderNoteTableViewCell.swift in Sources */,
 				D8C11A5E22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift in Sources */,
 				0282DD9A233CA32D006A5FDB /* OrderSearchCellViewModel.swift in Sources */,
+				021E2A1E23AA24C600B1DE07 /* StringInputFormatter.swift in Sources */,
 				D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */,
 				CE583A0421076C0100D73C1C /* NewNoteViewController.swift in Sources */,
 				02FE89CB231FB36600E85EF8 /* DefaultFeatureFlagService.swift in Sources */,
@@ -3171,6 +3201,7 @@
 				CE1F51272064345B00C6C810 /* UIColor+Helpers.swift in Sources */,
 				934CB123224EAB150005CCB9 /* main.swift in Sources */,
 				02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */,
+				021E2A1C23AA0DD100B1DE07 /* ProductBackordersSettingListSelectorDataSource.swift in Sources */,
 				45C8B2582313FA570002FA77 /* CustomerNoteTableViewCell.swift in Sources */,
 				7493BB8E2149852A003071A9 /* TopPerformersHeaderView.swift in Sources */,
 				D88CA756237CE515005D2F44 /* UITabBar+Appearance.swift in Sources */,
@@ -3306,6 +3337,7 @@
 				CEEC9B6621E7C5200055EEF0 /* AppRatingManagerTests.swift in Sources */,
 				02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */,
 				B555531121B57E6F00449E71 /* MockupApplicationAdapter.swift in Sources */,
+				021E2A2023AA274700B1DE07 /* ProductBackordersSettingListSelectorDataSourceTests.swift in Sources */,
 				CE4DA5C821DD759400074607 /* CurrencyFormatterTests.swift in Sources */,
 				B57C745120F56EE900EEFC87 /* UITableViewCellHelpersTests.swift in Sources */,
 				D85136C9231E12B600DD0539 /* ReviewViewModelTests.swift in Sources */,

@@ -47,6 +47,7 @@ final class ProductFormViewController: UIViewController {
 private extension ProductFormViewController {
     func configureNavigationBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+        removeNavigationBackBarButtonText()
     }
 
     func configureTableView() {
@@ -123,8 +124,7 @@ extension ProductFormViewController: UITableViewDelegate {
             case .shipping:
                 editShippingSettings()
             case .inventory:
-                // TODO-1424: Inventory Settings
-                return
+                editInventorySettings()
             }
         }
     }
@@ -207,6 +207,15 @@ private extension ProductFormViewController {
     func editShippingSettings() {
         let shippingSettingsViewController = ProductShippingSettingsViewController(product: product)
         navigationController?.pushViewController(shippingSettingsViewController, animated: true)
+    }
+}
+
+// MARK: Action - Edit Product Inventory Settings
+//
+private extension ProductFormViewController {
+    func editInventorySettings() {
+        let inventorySettingsViewController = ProductInventorySettingsViewController(product: product)
+        navigationController?.pushViewController(inventorySettingsViewController, animated: true)
     }
 }
 

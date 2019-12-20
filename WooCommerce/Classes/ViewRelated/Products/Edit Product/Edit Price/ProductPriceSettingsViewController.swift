@@ -60,7 +60,6 @@ final class ProductPriceSettingsViewController: UIViewController {
         configureSections()
         configureTableView()
     }
-
 }
 
 // MARK: - View Configuration
@@ -153,11 +152,9 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
         case .scheduleSaleFrom:
             datePickerSaleFromVisible = !datePickerSaleFromVisible
             refreshViewContent()
-            break
         case .scheduleSaleTo:
             datePickerSaleToVisible = !datePickerSaleToVisible
             refreshViewContent()
-            break
         default:
             break
         }

@@ -1,7 +1,8 @@
 import Yosemite
 
 extension Product {
-    func createRegularPriceViewModel(using currencySettings: CurrencySettings,
+    static func createRegularPriceViewModel(regularPrice: String?,
+                                            using currencySettings: CurrencySettings,
                                        onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Price", comment: "Title of the cell in Product Price Settings > Price")
 
@@ -18,7 +19,8 @@ extension Product {
                                   onInputChange: onInputChange)
     }
 
-    func createSalePriceViewModel(using currencySettings: CurrencySettings,
+    static func createSalePriceViewModel(salePrice: String?,
+                                         using currencySettings: CurrencySettings,
                                        onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Sale price", comment: "Title of the cell in Product Price Settings > Sale price")
 

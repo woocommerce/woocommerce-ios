@@ -18,7 +18,7 @@ final class ProductPriceSettingsViewController: UIViewController {
     private var dateOnSaleEnd: Date?
 
     // When the site time zone can be correctly fetched, consider using the site time zone
-    // for Product schedule sale (#1375).
+    // for Product schedule sale (https://github.com/woocommerce/woocommerce-ios/issues/1375).
     private let timezoneForScheduleSaleDates = TimeZone.current
 
     // Date Pickers status

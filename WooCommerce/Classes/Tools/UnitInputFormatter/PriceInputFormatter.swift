@@ -40,10 +40,8 @@ struct PriceInputFormatter: UnitInputFormatter {
             return "0"
         }
 
-        // Replace point or comma with the current decimal separator configured on website
-        var formattedText = text.replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator)
-        formattedText = formattedText.replacingOccurrences(of: ",", with: CurrencySettings.shared.decimalSeparator)
-        formattedText = formattedText.replacingOccurrences(of: "^0+([1-9]+)", with: "$1", options: .regularExpression)
+        // Replace any characters not in the set of 0-9 with the current decimal separator configured on website
+        let formattedText = text.replacingOccurrences(of: "[^0-9]", with: CurrencySettings.shared.decimalSeparator, options: .regularExpression)
         return formattedText
     }
 }

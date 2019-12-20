@@ -77,6 +77,7 @@ private extension SwitchTableViewCell {
 
         detailTextLabel?.text = String()
         detailTextLabel?.applyFootnoteStyle()
+        detailTextLabel?.numberOfLines = 0
     }
 
     func setupSwitch() {

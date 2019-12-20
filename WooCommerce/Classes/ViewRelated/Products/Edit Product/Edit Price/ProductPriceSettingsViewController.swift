@@ -23,8 +23,8 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     // Date Pickers status
     //
-    private var datePickerSaleFromVisible: Bool = false
-    private var datePickerSaleToVisible: Bool = false
+    private var datePickerSaleFromVisible = false
+    private var datePickerSaleToVisible = false
 
     // Today at the start of the day
     //

@@ -47,6 +47,7 @@ final class ProductFormViewController: UIViewController {
 private extension ProductFormViewController {
     func configureNavigationBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+        removeNavigationBackBarButtonText()
     }
 
     func configureTableView() {

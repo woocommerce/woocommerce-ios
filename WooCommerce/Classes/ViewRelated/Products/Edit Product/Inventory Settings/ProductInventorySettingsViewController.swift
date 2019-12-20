@@ -111,11 +111,11 @@ private extension ProductInventorySettingsViewController {
 // MARK: - Input changes handling
 //
 private extension ProductInventorySettingsViewController {
-    func handleSKUChange(sku: String?) {
+    func handleSKUChange(_ sku: String?) {
         self.sku = sku
     }
 
-    func handleStockQuantityChange(stockQuantity: String?) {
+    func handleStockQuantityChange(_ stockQuantity: String?) {
         guard let stockQuantity = stockQuantity else {
             return
         }
@@ -203,7 +203,7 @@ private extension ProductInventorySettingsViewController {
 
     func configureSKU(cell: UnitInputTableViewCell) {
         let viewModel = Product.createSKUViewModel(sku: sku) { [weak self] value in
-            self?.handleSKUChange(sku: value)
+            self?.handleSKUChange(value)
         }
         cell.configure(viewModel: viewModel)
     }
@@ -229,7 +229,7 @@ private extension ProductInventorySettingsViewController {
 
     func configureStockQuantity(cell: UnitInputTableViewCell) {
         let viewModel = Product.createStockQuantityViewModel(stockQuantity: stockQuantity) { [weak self] value in
-            self?.handleStockQuantityChange(stockQuantity: value)
+            self?.handleStockQuantityChange(value)
         }
         cell.configure(viewModel: viewModel)
     }

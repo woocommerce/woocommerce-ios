@@ -272,7 +272,7 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        let originalData = ProductInventoryEditableData(product: self.product)
+        let originalData = ProductInventoryEditableData(product: product)
         guard originalData != data else {
             return
         }

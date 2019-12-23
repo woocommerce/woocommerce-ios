@@ -408,6 +408,14 @@ public struct Product: Codable {
         try container.encode(weight, forKey: .weight)
         try container.encode(dimensions, forKey: .dimensions)
         try container.encode(shippingClass, forKey: .shippingClass)
+
+        // Inventory Settings.
+        try container.encode(sku, forKey: .sku)
+        try container.encode(manageStock, forKey: .manageStock)
+        try container.encode(soldIndividually, forKey: .soldIndividually)
+        try container.encode(stockQuantity, forKey: .stockQuantity)
+        try container.encode(backordersKey, forKey: .backordersKey)
+        try container.encode(stockStatusKey, forKey: .stockStatusKey)
     }
 }
 

@@ -22,7 +22,12 @@ final class ProductInventorySettingsViewController: UIViewController {
     ///
     private var sections: [Section] = []
 
-    init(product: Product) {
+    typealias Completion = (_ data: ProductInventoryEditableData) -> Void
+    private let onCompletion: Completion
+
+    init(product: Product, completion: @escaping Completion) {
+        self.onCompletion = completion
+
         self.sku = product.sku
         self.manageStockEnabled = product.manageStock
         self.soldIndividually = product.soldIndividually
@@ -104,7 +109,13 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     @objc func completeUpdating() {
-        // TODO-1424: update inventory settings
+        let data = ProductInventoryEditableData(sku: sku,
+                                                manageStock: manageStockEnabled,
+                                                soldIndividually: soldIndividually,
+                                                stockQuantity: stockQuantity,
+                                                backordersSetting: backordersSetting,
+                                                stockStatus: stockStatus)
+        onCompletion(data)
     }
 }
 

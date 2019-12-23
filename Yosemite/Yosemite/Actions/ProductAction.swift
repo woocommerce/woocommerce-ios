@@ -32,5 +32,5 @@ public enum ProductAction: Action {
 
     /// Updates a specified Product.
     ///
-    case updateProduct(product: Product, onCompletion: (Product?, Error?) -> Void)
+    case updateProduct(product: Product, onCompletion: (Product?, ProductUpdateError?) -> Void)
 }

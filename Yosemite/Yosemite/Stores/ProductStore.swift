@@ -176,12 +176,12 @@ private extension ProductStore {
 
     /// Updates the product.
     ///
-    func updateProduct(product: Product, onCompletion: @escaping (Product?, Error?) -> Void) {
+    func updateProduct(product: Product, onCompletion: @escaping (Product?, ProductUpdateError?) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product else {
-                onCompletion(nil, error)
+                onCompletion(nil, error.map({ ProductUpdateError(error: $0) }))
                 return
             }
 
@@ -473,5 +473,43 @@ public extension ProductStore {
 
     enum Constants {
         public static let firstPageNumber: Int = ProductsRemote.Default.pageNumber
+    }
+}
+
+/// An error that occurs while updating a Product.
+///
+/// - invalidSKU: the SKU is invalid or duplicated.
+/// - unknown: other error cases.
+///
+public enum ProductUpdateError: Error {
+    case invalidSKU
+    case unknown
+
+    init(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            self = .unknown
+            return
+        }
+        switch dotcomError {
+        case .unknown(let code, _):
+            guard let errorCode = ErrorCode(rawValue: code) else {
+                self = .unknown
+                return
+            }
+            self = errorCode.error
+        default:
+            self = .unknown
+        }
+    }
+
+    private enum ErrorCode: String {
+        case invalidSKU = "product_invalid_sku"
+
+        var error: ProductUpdateError {
+            switch self {
+            case .invalidSKU:
+                return .invalidSKU
+            }
+        }
     }
 }

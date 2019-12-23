@@ -39,6 +39,32 @@ final class Product_UpdaterTestCases: XCTestCase {
         XCTAssertEqual(Int64(updatedProduct.shippingClassID), newShippingClass.shippingClassID)
         XCTAssertEqual(updatedProduct.productShippingClass, newShippingClass)
     }
+
+    func testUpdatingInventorySettings() {
+        let product = sampleProduct()
+        let newSKU = "94115"
+        let newManageStock = !product.manageStock
+        let newSoldIndividually = !product.soldIndividually
+        let newStockQuantity = 17
+        let newBackordersSetting = ProductBackordersSetting.allowedAndNotifyCustomer
+        let newStockStatus = ProductStockStatus.onBackOrder
+        let updatedProduct = product.inventorySettingsUpdated(sku: newSKU,
+                                                              manageStock: newManageStock,
+                                                              soldIndividually: newSoldIndividually,
+                                                              stockQuantity: newStockQuantity,
+                                                              backordersSetting: newBackordersSetting,
+                                                              stockStatus: newStockStatus)
+        // Sanity check on unchanged properties.
+        XCTAssertEqual(updatedProduct.fullDescription, product.fullDescription)
+        XCTAssertEqual(updatedProduct.name, product.name)
+        // Inventory settings.
+        XCTAssertEqual(updatedProduct.sku, newSKU)
+        XCTAssertEqual(updatedProduct.manageStock, newManageStock)
+        XCTAssertEqual(updatedProduct.soldIndividually, newSoldIndividually)
+        XCTAssertEqual(updatedProduct.stockQuantity, newStockQuantity)
+        XCTAssertEqual(updatedProduct.backordersSetting, newBackordersSetting)
+        XCTAssertEqual(updatedProduct.productStockStatus, newStockStatus)
+    }
 }
 
 // MARK: - Private Helpers

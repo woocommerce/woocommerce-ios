@@ -204,8 +204,20 @@ private extension ProductFormViewController {
     }
 
     func editShippingSettings() {
-        let shippingSettingsViewController = ProductShippingSettingsViewController(product: product)
+        let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) { [weak self] (weight, dimensions, shippingClass) in
+            self?.onEditShippingSettingsCompletion(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
+        }
         navigationController?.pushViewController(shippingSettingsViewController, animated: true)
+    }
+
+    func onEditShippingSettingsCompletion(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        guard weight != self.product.weight || dimensions != self.product.dimensions || shippingClass != product.productShippingClass else {
+            return
+        }
+        self.product = productUpdater.shippingSettingsUpdated(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
     }
 }
 

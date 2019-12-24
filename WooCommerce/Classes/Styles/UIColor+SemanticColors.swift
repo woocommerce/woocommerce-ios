@@ -163,7 +163,7 @@ extension UIColor {
     static var appBar: UIColor {
         if #available(iOS 13, *) {
             return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                           dark: .systemBackground)
+                           dark: .systemColor(.secondarySystemGroupedBackground))
         }
 
 

@@ -24,6 +24,8 @@
 		0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B68C23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift */; };
 		0202B6922387AB0C00F3EBE0 /* WooTab+Tag.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6912387AB0C00F3EBE0 /* WooTab+Tag.swift */; };
 		0202B6952387AD1B00F3EBE0 /* UITabBar+Order.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0202B6942387AD1B00F3EBE0 /* UITabBar+Order.swift */; };
+		020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */; };
+		020BE74E23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */; };
 		020DD48A23229495005822B1 /* ProductsTabProductTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DD48923229495005822B1 /* ProductsTabProductTableViewCell.swift */; };
 		020DD48D2322A617005822B1 /* ProductsTabProductViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DD48C2322A617005822B1 /* ProductsTabProductViewModel.swift */; };
 		020DD48F232392C9005822B1 /* UIViewController+AppReview.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020DD48E232392C9005822B1 /* UIViewController+AppReview.swift */; };
@@ -578,6 +580,8 @@
 		0202B68C23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductsTabProductViewModel+ProductVariation.swift"; sourceTree = "<group>"; };
 		0202B6912387AB0C00F3EBE0 /* WooTab+Tag.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WooTab+Tag.swift"; sourceTree = "<group>"; };
 		0202B6942387AD1B00F3EBE0 /* UITabBar+Order.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UITabBar+Order.swift"; sourceTree = "<group>"; };
+		020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndTextFieldTableViewCell.swift; sourceTree = "<group>"; };
+		020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndTextFieldTableViewCell.xib; sourceTree = "<group>"; };
 		020DD48923229495005822B1 /* ProductsTabProductTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTabProductTableViewCell.swift; sourceTree = "<group>"; };
 		020DD48C2322A617005822B1 /* ProductsTabProductViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductsTabProductViewModel.swift; sourceTree = "<group>"; };
 		020DD48E232392C9005822B1 /* UIViewController+AppReview.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+AppReview.swift"; sourceTree = "<group>"; };
@@ -2491,6 +2495,8 @@
 				CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */,
 				0262DA5123A238460029AF30 /* UnitInputTableViewCell.swift */,
 				0262DA5223A238460029AF30 /* UnitInputTableViewCell.xib */,
+				020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */,
+				020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -2754,6 +2760,7 @@
 				B5F355F121CD504400A7077A /* SearchViewController.xib in Resources */,
 				CE1EC8F020B8A408009762BF /* OrderNoteTableViewCell.xib in Resources */,
 				B55D4BFD20B5CDE700D7A50F /* replace_secrets.rb in Resources */,
+				020BE74E23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.xib in Resources */,
 				74A95B5821C403EA00FEE953 /* pure-min.css in Resources */,
 				0262DA5423A238460029AF30 /* UnitInputTableViewCell.xib in Resources */,
 				B5BE75DD213F1D3D00909A14 /* OverlayMessageView.xib in Resources */,
@@ -3265,6 +3272,7 @@
 				74AFF2EA211B9B1B0038153A /* StoreStatsViewController.swift in Sources */,
 				029D444922F13F8A00DEFA8A /* DashboardUIFactory.swift in Sources */,
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
+				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,
 				B56C721221B5B44000E5E85B /* PushNotificationsConfiguration.swift in Sources */,

@@ -184,7 +184,7 @@ private extension ProductInventorySettingsViewController {
     ///
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as UnitInputTableViewCell where row == .sku:
+        case let cell as TitleAndTextFieldTableViewCell where row == .sku:
             configureSKU(cell: cell)
         case let cell as SwitchTableViewCell where row == .manageStock:
             configureManageStock(cell: cell)
@@ -201,7 +201,7 @@ private extension ProductInventorySettingsViewController {
         }
     }
 
-    func configureSKU(cell: UnitInputTableViewCell) {
+    func configureSKU(cell: TitleAndTextFieldTableViewCell) {
         let viewModel = Product.createSKUViewModel(sku: sku) { [weak self] value in
             self?.handleSKUChange(value)
         }
@@ -277,8 +277,7 @@ private extension ProductInventorySettingsViewController {
         var type: UITableViewCell.Type {
             switch self {
             case .sku:
-                // TODO-1424: update with a input cell without a unit
-                return UnitInputTableViewCell.self
+                return TitleAndTextFieldTableViewCell.self
             case .manageStock, .limitOnePerOrder:
                 return SwitchTableViewCell.self
             case .stockQuantity:

@@ -466,12 +466,8 @@ private extension ProductsViewController {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
-        case .syncing(let withExistingData):
-            if withExistingData {
-                ensureFooterSpinnerIsStarted()
-            } else {
-                displayPlaceholderProducts()
-            }
+        case .syncing:
+            displayPlaceholderProducts()
         case .results:
             break
         }

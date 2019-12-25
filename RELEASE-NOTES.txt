@@ -1,6 +1,7 @@
 3.4
 -----
 - bugfix: on the Order Details screen, the product quantity title in the 2-column header view aligns to the right now
+- bugfix: the deleted Product Variations should not show up after syncing anymore.
 
 3.3
 -----

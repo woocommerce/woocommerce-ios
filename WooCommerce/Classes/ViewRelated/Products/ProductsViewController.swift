@@ -140,6 +140,7 @@ private extension ProductsViewController {
         }
         updateResultsController(siteID: siteID)
         tableView.reloadData()
+        syncingCoordinator.resynchronize()
     }
 }
 
@@ -432,7 +433,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
             return
         }
 
-        transitionToSyncingState()
+        transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductAction
             .synchronizeProducts(siteID: siteID,
@@ -466,8 +467,12 @@ private extension ProductsViewController {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
-        case .syncing:
-            displayPlaceholderProducts()
+        case .syncing(let pageNumber):
+            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
+                displayPlaceholderProducts()
+            } else {
+                ensureFooterSpinnerIsStarted()
+            }
         case .results:
             break
         }
@@ -485,8 +490,8 @@ private extension ProductsViewController {
         }
     }
 
-    func transitionToSyncingState() {
-        stateCoordinator.transitionToSyncingState(withExistingData: !isEmpty)
+    func transitionToSyncingState(pageNumber: Int) {
+        stateCoordinator.transitionToSyncingState(pageNumber: pageNumber)
     }
 
     func transitionToResultsUpdatedState() {

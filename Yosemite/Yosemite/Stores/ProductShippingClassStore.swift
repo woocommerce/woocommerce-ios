@@ -43,7 +43,7 @@ private extension ProductShippingClassStore {
     func synchronizeProductShippingClassModels(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductShippingClassRemote(network: network)
 
-        remote.loadAll(for: siteID) { [weak self] (models, error) in
+        remote.loadAll(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (models, error) in
             guard let models = models else {
                 onCompletion(error)
                 return

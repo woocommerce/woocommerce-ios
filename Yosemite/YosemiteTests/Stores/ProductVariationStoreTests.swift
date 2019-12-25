@@ -165,7 +165,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that syncing for the first page deletes stored models for the given site ID and product ID.
     ///
-    func testSyncingProductVariationsOnTheFirstPageResetsStoredProducts() {
+    func testSyncingProductVariationsOnTheFirstPageResetsStoredModels() {
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // Inserts a Product Variation into the storage with two site IDs.

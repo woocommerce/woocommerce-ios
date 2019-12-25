@@ -49,6 +49,10 @@ private extension ProductShippingClassStore {
                 return
             }
 
+            if pageNumber == Default.firstPageNumber {
+                self?.deleteStoredProductShippingClassModels(siteID: siteID)
+            }
+
             self?.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: models,
                                                                      siteID: siteID) {
                                                                         onCompletion(nil)
@@ -72,6 +76,14 @@ private extension ProductShippingClassStore {
                                                         onCompletion(model, nil)
             }
         }
+    }
+
+    /// Deletes any Storage.ProductShippingClass with the specified `siteID` and `productID`
+    ///
+    func deleteStoredProductShippingClassModels(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProductShippingClasses(siteID: siteID)
+        storage.saveIfNeeded()
     }
 }
 

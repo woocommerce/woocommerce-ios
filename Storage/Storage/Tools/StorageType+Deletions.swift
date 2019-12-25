@@ -29,4 +29,15 @@ public extension StorageType {
             deleteObject(productVariation)
         }
     }
+
+    /// Deletes all of the stored Product Shipping Class models for the provided siteID.
+    ///
+    func deleteProductShippingClasses(siteID: Int64) {
+        guard let shippingClasses = loadProductShippingClasses(siteID: siteID) else {
+                                                                return
+        }
+        for shippingClass in shippingClasses {
+            deleteObject(shippingClass)
+        }
+    }
 }

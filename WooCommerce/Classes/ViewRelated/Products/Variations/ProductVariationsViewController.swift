@@ -195,6 +195,7 @@ extension ProductVariationsViewController: UITableViewDataSource {
                                                     currency: currency)
         cell.update(viewModel: viewModel)
         cell.selectionStyle = .none
+        cell.accessoryType = .none
 
         return cell
     }

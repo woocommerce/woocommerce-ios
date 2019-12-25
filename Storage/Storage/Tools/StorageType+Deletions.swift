@@ -17,4 +17,16 @@ public extension StorageType {
             deleteObject(product)
         }
     }
+
+    /// Deletes all of the stored Product Variations for the provided siteID and productID.
+    ///
+    func deleteProductVariations(siteID: Int64, productID: Int64) {
+        guard let productVariations = loadProductVariations(siteID: siteID,
+                                                            productID: productID) else {
+                                                                return
+        }
+        for productVariation in productVariations {
+            deleteObject(productVariation)
+        }
+    }
 }

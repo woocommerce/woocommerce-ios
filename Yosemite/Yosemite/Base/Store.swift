@@ -58,3 +58,12 @@ open class Store: ActionsProcessor {
         fatalError("Override me!")
     }
 }
+
+// MARK: - Default!
+//
+public extension Store {
+
+    enum Default {
+        public static let firstPageNumber: Int = Remote.Default.firstPageNumber
+    }
+}

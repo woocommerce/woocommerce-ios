@@ -138,6 +138,7 @@ private extension ProductsViewController {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
+        navigationController?.popToRootViewController(animated: false)
         updateResultsController(siteID: siteID)
         tableView.reloadData()
     }

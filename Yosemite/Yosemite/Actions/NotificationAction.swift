@@ -15,10 +15,6 @@ public enum NotificationAction: Action {
                         defaultStoreID: Int,
                         onCompletion: (DotcomDevice?, Error?) -> Void)
 
-    /// Loads a Note with note ID.
-    ///
-    case loadNote(noteID: Int, onCompletion: (Note?) -> Void)
-
     /// Unregisters a device for Push Notifications Delivery.
     ///
     case unregisterDevice(deviceId: String, onCompletion: (Error?) -> Void)

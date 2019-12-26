@@ -340,6 +340,23 @@ extension OrdersViewController {
 }
 
 
+// MARK: - Push Notification Handling
+//
+extension OrdersViewController {
+    /// Presents the Details for the Notification with the specified Identifier.
+    ///
+    func presentDetails(for note: Note) {
+        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteId)] lacks its OrderID!")
+            return
+        }
+
+        let loaderViewController = OrderLoaderViewController(note: note, orderID: orderID, siteID: siteID)
+        navigationController?.pushViewController(loaderViewController, animated: true)
+    }
+}
+
+
 // MARK: - Actions
 //
 extension OrdersViewController {

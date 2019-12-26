@@ -26,8 +26,17 @@ class WooBasicTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         configureSelectionStyle()
         configureLabel()
+    }
+
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+
+        //Background when selected
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 
     /// Set up the cell selection style
@@ -40,14 +49,18 @@ class WooBasicTableViewCell: UITableViewCell {
     ///
     func configureLabel() {
         bodyLabel?.applyBodyStyle()
-        bodyLabel?.textColor = StyleManager.wooCommerceBrandColor
+        bodyLabel?.textColor = .primary
     }
 
     /// Add the accessoryView image, if any
     ///
     func configureAccessoryView() {
+        guard let accessoryImage = accessoryImage else {
+            accessoryView = nil
+            return
+        }
         let accessoryImageView = UIImageView(image: accessoryImage)
-        accessoryImageView.tintColor = StyleManager.buttonPrimaryColor
+        accessoryImageView.tintColor = .primaryButtonBackground
         accessoryView = accessoryImageView
     }
 }

@@ -2,9 +2,9 @@
 /// v4 API
 public struct OrderStatsV4Interval: Decodable {
     public let interval: String
-    /// Interval start date string in GMT.
+    /// Interval start date string in the site time zone.
     public let dateStart: String
-    /// Interval end date string in GMT.
+    /// Interval end date string in the site time zone.
     public let dateEnd: String
     public let subtotals: OrderStatsV4Totals
 
@@ -55,8 +55,8 @@ extension OrderStatsV4Interval: Comparable {
 private extension OrderStatsV4Interval {
     enum CodingKeys: String, CodingKey {
         case interval = "interval"
-        case dateStart = "date_start_gmt"
-        case dateEnd = "date_end_gmt"
+        case dateStart = "date_start"
+        case dateEnd = "date_end"
         case subtotals = "subtotals"
     }
 }

@@ -20,11 +20,13 @@ At the time of writing this document, these are the subclasses of `Remote`:
 * `OrderStatsRemote`. Loads stats associated to an order
 * `OrderStatsRemoteV4`. Loads stats associated to an order, provided by the V4 API.
 * `ProductsRemote`Loads all Products and a single Product
+* `RefundsRemote`. Provides api to load refunds, and to send a refund
 * `ReportRemote`. Loads an order totals report and all known order statuses
 * `ShipmentsRemote` All things Shipment Tracking, from tracking providers to actual tracking associated to an order
 * `SiteAPIRemote` Loads the API information associated to a site.
 * `SiteSettingsRemote` Loads a site’s settings
 * `SiteVisitStatsremote` fetches visitor stats for a given site
+* `TaxClassesRemote` fetches tax classes for a given site.
 * `TopEarnersStatsRemote`fetches the top earner stats for a given site.
 
 ## Network
@@ -38,7 +40,7 @@ A protocol the abstracts the actual URL requests.
 At the moment, we provide three implementations of `URLRequestConvertible`:
 * `DotcomRequest` models requests to WordPress.com
 * `JetpackRequest` represents a Jetpack-Tunneled WordPress.com 
-* `AuthencitatedRequest` Wraps up a URLRequestConvertible Instance, and injects credentials (username and token) when required
+* `AuthenticatedRequest` Wraps up a URLRequestConvertible Instance, and injects credentials (username and token) when required
 
 ## Mapper
 A protocol that abstracts the different parsers.

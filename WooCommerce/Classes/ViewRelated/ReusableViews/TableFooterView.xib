@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -36,6 +34,7 @@
                 <constraint firstItem="qck-6N-xeW" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="3mL-e7-4IU"/>
                 <constraint firstItem="qck-6N-xeW" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="4mN-2A-P26"/>
                 <constraint firstItem="rC7-Y4-ujS" firstAttribute="top" secondItem="qck-6N-xeW" secondAttribute="bottom" constant="4" id="6QX-Rw-ukm"/>
+                <constraint firstItem="rC7-Y4-ujS" firstAttribute="top" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="G4n-zX-VFc"/>
                 <constraint firstItem="rC7-Y4-ujS" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="VCe-0w-MuS"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="rC7-Y4-ujS" secondAttribute="bottom" constant="20" id="Y7B-XW-EQ0"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="rC7-Y4-ujS" secondAttribute="trailing" constant="20" id="gR3-Ym-ZLn"/>

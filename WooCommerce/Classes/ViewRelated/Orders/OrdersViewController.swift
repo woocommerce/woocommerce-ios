@@ -14,6 +14,10 @@ class OrdersViewController: UIViewController {
     ///
     @IBOutlet private var tableView: UITableView!
 
+    /// Ghostable TableView.
+    ///
+    private(set) var ghostableTableView = UITableView()
+
     /// Pull To Refresh Support.
     ///
     private lazy var refreshControl: UIRefreshControl = {
@@ -24,7 +28,9 @@ class OrdersViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = FooterSpinnerView()
+    private lazy var footerSpinnerView = {
+        return FooterSpinnerView(tableViewStyle: tableView.style)
+    }()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
     ///
@@ -102,10 +108,6 @@ class OrdersViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    deinit {
-        stopListeningToNotifications()
-    }
-
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         fatalError()
     }
@@ -128,6 +130,7 @@ class OrdersViewController: UIViewController {
         configureSyncingCoordinator()
         configureNavigation()
         configureTableView()
+        configureGhostableTableView()
         configureResultsControllers()
 
         startListeningToNotifications()
@@ -215,7 +218,6 @@ private extension OrdersViewController {
                                          style: .plain,
                                          target: self,
                                          action: #selector(displaySearchOrders))
-            button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
             button.accessibilityHint = NSLocalizedString(
@@ -231,7 +233,6 @@ private extension OrdersViewController {
                                                  style: .plain,
                                                  target: self,
                                                  action: #selector(displayFiltersAlert))
-            button.tintColor = .white
             button.accessibilityTraits = .button
             button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
             button.accessibilityHint = NSLocalizedString(
@@ -273,10 +274,29 @@ private extension OrdersViewController {
     /// Setup: TableView
     ///
     func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+    }
+
+    /// Setup: Ghostable TableView
+    ///
+    func configureGhostableTableView() {
+        view.addSubview(ghostableTableView)
+        ghostableTableView.isHidden = true
+
+        ghostableTableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            ghostableTableView.widthAnchor.constraint(equalTo: tableView.widthAnchor),
+            ghostableTableView.heightAnchor.constraint(equalTo: tableView.heightAnchor),
+            ghostableTableView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            ghostableTableView.topAnchor.constraint(equalTo: tableView.topAnchor)
+        ])
+
+        view.backgroundColor = .listBackground
+        ghostableTableView.backgroundColor = .listBackground
+        ghostableTableView.isScrollEnabled = false
     }
 
     /// Registers all of the available TableViewCells
@@ -286,6 +306,7 @@ private extension OrdersViewController {
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+            ghostableTableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
     }
 }
@@ -329,7 +350,10 @@ extension OrdersViewController {
         }
 
         ServiceLocator.analytics.track(.ordersListSearchTapped)
-        let searchViewController = OrderSearchViewController(storeID: storeID)
+
+        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
+                                                                                                  command: OrderSearchUICommand(),
+                                                                                                  cellType: OrderTableViewCell.self)
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
@@ -338,7 +362,7 @@ extension OrdersViewController {
     @IBAction func displayFiltersAlert() {
         ServiceLocator.analytics.track(.ordersListFilterTapped)
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
+        actionSheet.view.tintColor = .text
 
         actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
         actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
@@ -417,7 +441,7 @@ private extension OrdersViewController {
             return
         }
 
-        if currentSiteStatuses.contains(statusFilter) == false {
+        if !currentSiteStatuses.contains(where: { $0.name == statusFilter.name && $0.slug == statusFilter.slug }) {
             self.statusFilter = nil
         }
     }
@@ -442,7 +466,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                                                    statusKey: statusFilter?.slug,
                                                    pageNumber: pageNumber,
                                                    pageSize: pageSize) { [weak self] error in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -514,24 +538,30 @@ extension OrdersViewController {
 }
 
 
-// MARK: - Placeholders
+// MARK: - Placeholders & Ghostable Table
 //
 private extension OrdersViewController {
 
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    /// Renders the Placeholder Orders
     ///
     func displayPlaceholderOrders() {
         let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
 
-        resultsController.stopForwardingEvents()
+        // If the ghostable table view gets stuck for any reason,
+        // let's reset the state before using it again
+        ghostableTableView.removeGhostContent()
+        ghostableTableView.displayGhostContent(options: options,
+                                               style: .wooDefaultGhostStyle)
+        ghostableTableView.startGhostAnimation()
+        ghostableTableView.isHidden = false
     }
 
     /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderOrders() {
-        tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: self.tableView)
+        ghostableTableView.isHidden = true
+        ghostableTableView.stopGhostAnimation()
+        ghostableTableView.removeGhostContent()
         tableView.reloadData()
     }
 
@@ -593,24 +623,6 @@ private extension OrdersViewController {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
-    }
-}
-
-// MARK: - App Store Review Prompt
-//
-private extension OrdersViewController {
-    func displayRatingPrompt() {
-        defer {
-            if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                ServiceLocator.analytics.track(wooEvent)
-            }
-        }
-
-        // Show the app store ratings alert
-        // Note: Optimistically assuming our prompting succeeds since we try to stay
-        // in line and not prompt more than two times a year
-        AppRatingManager.shared.ratedCurrentVersion()
-        SKStoreReviewController.requestReview()
     }
 }
 

@@ -20,6 +20,10 @@ final class ProductLoaderViewController: UIViewController {
     ///
     private let siteID: Int
 
+    /// The Target Product's Currency
+    ///
+    private let currency: String
+
     /// UI Active State
     ///
     private var state: State = .loading {
@@ -31,9 +35,10 @@ final class ProductLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(productID: Int, siteID: Int) {
+    init(productID: Int, siteID: Int, currency: String) {
         self.productID = productID
         self.siteID = siteID
+        self.currency = currency
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -70,7 +75,7 @@ private extension ProductLoaderViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
         view.addSubview(activityIndicator)
         view.pinSubviewAtCenter(activityIndicator)
     }
@@ -90,7 +95,6 @@ private extension ProductLoaderViewController {
                                             style: .plain,
                                             target: self,
                                             action: #selector(dismissButtonTapped))
-        leftBarButton.tintColor = .white
         navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 }
@@ -168,7 +172,7 @@ private extension ProductLoaderViewController {
     /// Presents the ProductDetailsViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
-        let detailsViewModel = ProductDetailsViewModel(product: product)
+        let detailsViewModel = ProductDetailsViewModel(product: product, currency: currency)
         let detailsViewController = ProductDetailsViewController(viewModel: detailsViewModel)
 
         // Attach

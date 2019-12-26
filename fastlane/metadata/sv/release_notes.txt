@@ -1,3 +1,2 @@
-Kopiera spårningsnummer! Det är nu enklare att hålla koll på din leverans utan att öppna appen. I Beställningsinformation > Leveransspårning > Mer finns det en ny åtgärd för att kopiera ditt spårningsnummer att använda närhelst du vill.
-
-Hejdå statistikfelmeddelandet! Om din webbplats inte har Jetpack-modulen webbplatsstatistik eller om du inte har behörighet att visa statistik så kommer du inte se statistiksidan. Du behöver inte se ett irriterande felmeddelande så vi har tagit bort det.
+– Alla som älskar dark-mode kan glädja sig! Det är här.
+– Alla som älskar att förhandsgranska saker kan också glädja sig! Vi vet att Produkter-fliken ligger högt på allas önskelistor. Även om vi inte är helt klara att släppa en version av appen som har den så kan du förhandsgranska den kommande Produkter-fliken redan nu. Gå till Inställningar i appen för att aktivera den.

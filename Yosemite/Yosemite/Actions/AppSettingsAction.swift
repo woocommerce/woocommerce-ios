@@ -1,4 +1,5 @@
 import Foundation
+import Storage
 
 // MARK: - AppSettingsAction: Defines all of the Actions supported by the AppSettingsStore.
 //
@@ -29,4 +30,51 @@ public enum AppSettingsAction: Action {
     /// Clears the stored providers
     ///
     case resetStoredProviders(onCompletion: ((Error?) -> Void)?)
+
+    // MARK: - Stats version
+
+    /// Loads the stats version to be shown given the latest app settings associated with the `siteID`
+    ///
+    case loadInitialStatsVersionToShow(siteID: Int,
+        onCompletion: (StatsVersion?) -> Void)
+
+    /// Loads whether a stats verion banner should be shown
+    ///
+    case loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, onCompletion: (Bool) -> Void)
+
+    /// Loads the eligible stats version given the latest app settings associated with the `siteID`
+    ///
+    case loadStatsVersionEligible(siteID: Int,
+        onCompletion: (StatsVersion?) -> Void)
+
+    /// Sets whether a stats version banner should be shown
+    ///
+    case setStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner, shouldShowBanner: Bool)
+
+    /// Sets the latest highest eligible stats version associated with the `siteID`
+    ///
+    case setStatsVersionEligible(siteID: Int,
+        statsVersion: StatsVersion)
+
+    /// Sets the last shown stats version associated with the `siteID`
+    ///
+    case setStatsVersionLastShown(siteID: Int,
+        statsVersion: StatsVersion)
+
+    /// Sets the user preferred stats version associated with the `siteID`
+    ///
+    case setStatsVersionPreference(siteID: Int,
+        statsVersion: StatsVersion)
+
+    /// Loads the user preferred Product Features visibility given the latest app settings
+    ///
+    case loadProductsVisibility(onCompletion: (Bool) -> Void)
+
+    /// Sets the user preferred Product Features visibility
+    ///
+    case setProductsVisibility(isVisible: Bool, onCompletion: () -> Void)
+
+    /// Clears all the states related to stats version
+    ///
+    case resetStatsVersionStates
 }

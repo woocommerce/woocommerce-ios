@@ -6,11 +6,19 @@ class OrderStatsV4Interval_DateTests: XCTestCase {
                                                            refunds: 0, taxes: 0, shipping: 0, netRevenue: 0, totalProducts: nil)
 
     func testDateStartAndDateEnd() {
-        let dateInGMT = "2019-08-08 10:45:00"
-        // GMT: Thursday, August 8, 2019 10:45:00 AM
-        let expectedDate = Date(timeIntervalSince1970: 1565261100)
-        let interval = OrderStatsV4Interval(interval: "hour", dateStart: dateInGMT, dateEnd: dateInGMT, subtotals: mockIntervalSubtotals)
-        XCTAssertEqual(interval.dateStart(), expectedDate)
-        XCTAssertEqual(interval.dateEnd(), expectedDate)
+        let dateStringInSiteTimeZone = "2019-08-08 10:45:00"
+        let interval = OrderStatsV4Interval(interval: "hour",
+                                            dateStart: dateStringInSiteTimeZone,
+                                            dateEnd: dateStringInSiteTimeZone,
+                                            subtotals: mockIntervalSubtotals)
+        [interval.dateStart(), interval.dateEnd()].forEach { date in
+            let dateComponents = Calendar.current.dateComponents(in: .current, from: date)
+            XCTAssertEqual(dateComponents.year, 2019)
+            XCTAssertEqual(dateComponents.month, 8)
+            XCTAssertEqual(dateComponents.day, 8)
+            XCTAssertEqual(dateComponents.hour, 10)
+            XCTAssertEqual(dateComponents.minute, 45)
+            XCTAssertEqual(dateComponents.second, 0)
+        }
     }
 }

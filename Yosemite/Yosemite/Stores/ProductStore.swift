@@ -32,10 +32,14 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
+        case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
+            searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .requestMissingProducts(let order, let onCompletion):
             requestMissingProducts(for: order, onCompletion: onCompletion)
+        case .updateProduct(let product, let onCompletion):
+            updateProduct(product: product, onCompletion: onCompletion)
         }
     }
 }
@@ -56,15 +60,44 @@ private extension ProductStore {
         onCompletion()
     }
 
-    /// Synchronizes the products associated with a given Site ID (if any!).
+    /// Searches all of the products that contain a given Keyword.
+    ///
+    func searchProducts(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+        remote.searchProducts(for: siteID,
+                              keyword: keyword,
+                              pageNumber: pageNumber,
+                              pageSize: pageSize) { [weak self] (products, error) in
+                                guard let products = products else {
+                                    onCompletion(error)
+                                    return
+                                }
+
+                                self?.upsertSearchResultsInBackground(siteID: siteID,
+                                                                      keyword: keyword,
+                                                                      readOnlyProducts: products) {
+                                    onCompletion(nil)
+                                }
+        }
+    }
+
+    /// Synchronizes the products associated with a given Site ID, sorted by ascending name.
     ///
     func synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
-        remote.loadAllProducts(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (products, error) in
+        remote.loadAllProducts(for: siteID,
+                               pageNumber: pageNumber,
+                               pageSize: pageSize,
+                               orderBy: .name,
+                               order: .ascending) { [weak self] (products, error) in
             guard let products = products else {
                 onCompletion(error)
                 return
+            }
+
+            if pageNumber == 1 {
+                self?.deleteStoredProducts(siteID: siteID)
             }
 
             self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
@@ -140,6 +173,23 @@ private extension ProductStore {
             }
         }
     }
+
+    /// Updates the product.
+    ///
+    func updateProduct(product: Product, onCompletion: @escaping (Product?, ProductUpdateError?) -> Void) {
+        let remote = ProductsRemote(network: network)
+
+        remote.updateProduct(product: product) { [weak self] (product, error) in
+            guard let product = product else {
+                onCompletion(nil, error.map({ ProductUpdateError(error: $0) }))
+                return
+            }
+
+            self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) {
+                onCompletion(product, nil)
+            }
+        }
+    }
 }
 
 
@@ -156,6 +206,14 @@ private extension ProductStore {
         }
 
         storage.deleteObject(product)
+        storage.saveIfNeeded()
+    }
+
+    /// Deletes any Storage.Product with the specified `siteID`
+    ///
+    func deleteStoredProducts(siteID: Int) {
+        let storage = storageManager.viewStorage
+        storage.deleteProducts(siteID: siteID)
         storage.saveIfNeeded()
     }
 
@@ -185,6 +243,7 @@ private extension ProductStore {
                 storage.insertNewObject(ofType: Storage.Product.self)
 
             storageProduct.update(with: readOnlyProduct)
+            handleProductShippingClass(storageProduct: storageProduct, storage)
             handleProductDimensions(readOnlyProduct, storageProduct, storage)
             handleProductAttributes(readOnlyProduct, storageProduct, storage)
             handleProductDefaultAttributes(readOnlyProduct, storageProduct, storage)
@@ -203,6 +262,17 @@ private extension ProductStore {
             let newStorageDimensions = storage.insertNewObject(ofType: Storage.ProductDimensions.self)
             newStorageDimensions.update(with: readOnlyProduct.dimensions)
             storageProduct.dimensions = newStorageDimensions
+        }
+    }
+
+    /// Updates the provided StorageProduct's productShippingClass using the existing `ProductShippingClass` in storage, if any
+    ///
+    func handleProductShippingClass(storageProduct: Storage.Product, _ storage: StorageType) {
+        if let existingStorageShippingClass = storage.loadProductShippingClass(siteID: Int64(storageProduct.siteID),
+                                                                               remoteID: Int64(storageProduct.shippingClassID)) {
+            storageProduct.productShippingClass = existingStorageShippingClass
+        } else {
+            storageProduct.productShippingClass = nil
         }
     }
 
@@ -351,6 +421,41 @@ private extension ProductStore {
 }
 
 
+// MARK: - Storage: Search Results
+//
+private extension ProductStore {
+
+    /// Upserts the Products, and associates them to the SearchResults Entity (in Background)
+    ///
+    private func upsertSearchResultsInBackground(siteID: Int, keyword: String, readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
+            self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyProducts: readOnlyProducts, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)
+    ///
+    private func upsertStoredResults(siteID: Int, keyword: String, readOnlyProducts: [Networking.Product], in storage: StorageType) {
+        let searchResults = storage.loadProductSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.ProductSearchResults.self)
+        searchResults.keyword = keyword
+
+        for readOnlyProduct in readOnlyProducts {
+            guard let storedProduct = storage.loadProduct(siteID: siteID, productID: readOnlyProduct.productID) else {
+                continue
+            }
+
+            searchResults.addToProducts(storedProduct)
+        }
+    }
+}
+
+
 // MARK: - Unit Testing Helpers
 //
 extension ProductStore {
@@ -359,5 +464,52 @@ extension ProductStore {
     ///
     func upsertStoredProduct(readOnlyProduct: Networking.Product, in storage: StorageType) {
         upsertStoredProducts(readOnlyProducts: [readOnlyProduct], in: storage)
+    }
+}
+
+// MARK: - Constants!
+//
+public extension ProductStore {
+
+    enum Constants {
+        public static let firstPageNumber: Int = ProductsRemote.Default.pageNumber
+    }
+}
+
+/// An error that occurs while updating a Product.
+///
+/// - invalidSKU: the SKU is invalid or duplicated.
+/// - unknown: other error cases.
+///
+public enum ProductUpdateError: Error {
+    case invalidSKU
+    case unknown
+
+    init(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            self = .unknown
+            return
+        }
+        switch dotcomError {
+        case .unknown(let code, _):
+            guard let errorCode = ErrorCode(rawValue: code) else {
+                self = .unknown
+                return
+            }
+            self = errorCode.error
+        default:
+            self = .unknown
+        }
+    }
+
+    private enum ErrorCode: String {
+        case invalidSKU = "product_invalid_sku"
+
+        var error: ProductUpdateError {
+            switch self {
+            case .invalidSKU:
+                return .invalidSKU
+            }
+        }
     }
 }

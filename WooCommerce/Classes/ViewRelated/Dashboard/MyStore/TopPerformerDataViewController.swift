@@ -116,8 +116,11 @@ extension TopPerformerDataViewController {
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func displayGhostContent() {
-        let options = GhostOptions(reuseIdentifier: ProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        let options = GhostOptions(displaysSectionHeader: false,
+                                   reuseIdentifier: ProductTableViewCell.reuseIdentifier,
+                                   rowsPerSection: Constants.placeholderRowsPerSection)
+        tableView.displayGhostContent(options: options,
+                                      style: .wooDefaultGhostStyle)
     }
 
     /// Removes the Placeholder Content.
@@ -135,15 +138,14 @@ extension TopPerformerDataViewController {
 private extension TopPerformerDataViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .basicBackground
     }
 
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.separatorColor = StyleManager.cellSeparatorColor
+        tableView.backgroundColor = .basicBackground
+        tableView.separatorColor = .divider
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
-        tableView.estimatedSectionHeaderHeight = Constants.estimatedSectionHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = Constants.emptyView
     }
@@ -227,6 +229,9 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension TopPerformerDataViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return Constants.estimatedSectionHeight
+    }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension

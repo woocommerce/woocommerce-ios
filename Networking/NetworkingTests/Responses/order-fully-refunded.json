@@ -1,0 +1,272 @@
+{
+    "data": {
+        "id": 609,
+        "parent_id": 0,
+        "number": "609",
+        "order_key": "wc_order_599f3d991a53e",
+        "created_via": "checkout",
+        "version": "3.1.2",
+        "status": "refunded",
+        "currency": "USD",
+        "date_created": "2017-08-24T16:56:57",
+        "date_created_gmt": "2017-08-24T20:56:57",
+        "date_modified": "2017-09-20T16:27:11",
+        "date_modified_gmt": "2017-09-20T20:27:11",
+        "discount_total": "0.00",
+        "discount_tax": "0.00",
+        "shipping_total": "43.71",
+        "shipping_tax": "0.00",
+        "cart_tax": "0.00",
+        "total": "223.71",
+        "total_tax": "0.00",
+        "prices_include_tax": false,
+        "customer_id": 1,
+        "customer_ip_address": "108.30.4.3",
+        "customer_user_agent": "mozilla/5.0 (macintosh; intel mac os x 10_12_6) applewebkit/537.36 (khtml, like gecko) chrome/60.0.3112.90 safari/537.36",
+        "customer_note": "",
+        "billing": {
+            "first_name": "Sara",
+            "last_name": "Doe",
+            "company": "",
+            "address_1": "123 Street",
+            "address_2": "",
+            "city": "Los Angeles",
+            "state": "MA",
+            "postcode": "01904",
+            "country": "US",
+            "email": "julia.amosova@gmail.com",
+            "phone": "333-333-3333"
+        },
+        "shipping": {
+            "first_name": "Sara",
+            "last_name": "Doe",
+            "company": "South Estate, LLC",
+            "address_1": "500 Ground St",
+            "address_2": "",
+            "city": "Los Angeles",
+            "state": "CA",
+            "postcode": "90210",
+            "country": "US"
+        },
+        "payment_method": "stripe",
+        "payment_method_title": "Credit Card (Stripe)",
+        "transaction_id": "ch_1AuSNqJK48mSkzFLotmV4n6U",
+        "date_paid": "2017-08-24T16:56:58",
+        "date_paid_gmt": "2017-08-24T20:56:58",
+        "date_completed": null,
+        "date_completed_gmt": null,
+        "cart_hash": "6e523cd8d013089223dece68494961ac",
+        "meta_data": [
+            {
+                "id": 18100,
+                "key": "_wc_customer_order_csv_export_is_exported",
+                "value": "1"
+            },
+            {
+                "id": 18101,
+                "key": "_wc_customer_order_csv_export_customer_is_exported",
+                "value": "0"
+            },
+            {
+                "id": 18146,
+                "key": "_shipping_method",
+                "value": [
+                    "ups:03"
+                ]
+            },
+            {
+                "id": 18147,
+                "key": "_shipping_phone",
+                "value": "555-666-7777"
+            },
+            {
+                "id": 18148,
+                "key": "Viewed Currency",
+                "value": "USD"
+            },
+            {
+                "id": 18149,
+                "key": "Converted Order Total",
+                "value": "223.71 USD"
+            },
+            {
+                "id": 18150,
+                "key": "_shipping_packages",
+                "value": [
+                    {
+                        "contents": {
+                            "54400c98d773f646e8820238244a729a": {
+                                "addons": [],
+                                "product_id": 379,
+                                "variation_id": 0,
+                                "variation": [],
+                                "quantity": 2,
+                                "line_total": 180,
+                                "line_subtotal": 180,
+                                "line_tax": 0,
+                                "line_subtotal_tax": 0,
+                                "line_tax_data": {
+                                    "total": [],
+                                    "subtotal": []
+                                },
+                                "data": {}
+                            }
+                        },
+                        "contents_cost": 180,
+                        "applied_coupons": [],
+                        "user": {
+                            "ID": 1
+                        },
+                        "destination": {
+                            "country": "US",
+                            "state": "CA",
+                            "postcode": "90210",
+                            "city": "Los Angeles",
+                            "address": "500 Ground St",
+                            "address_2": ""
+                        },
+                        "cart_subtotal": "180"
+                    }
+                ]
+            },
+            {
+                "id": 18151,
+                "key": "_shipping_methods",
+                "value": [
+                    {
+                        "id": "ups:03",
+                        "label": "Ground (UPS)"
+                    }
+                ]
+            },
+            {
+                "id": 18152,
+                "key": "_order_number",
+                "value": "1018"
+            },
+            {
+                "id": 18153,
+                "key": "_order_number_formatted",
+                "value": "WC-1018-ZZ"
+            },
+            {
+                "id": 18154,
+                "key": "_order_number_meta",
+                "value": {
+                    "prefix": "WC-",
+                    "suffix": "-ZZ",
+                    "length": "4"
+                }
+            },
+            {
+                "id": 18155,
+                "key": "_stripe_card_id",
+                "value": "tok_1AuSNoJK48mSkzFL1iFkc16X"
+            },
+            {
+                "id": 18156,
+                "key": "_stripe_charge_id",
+                "value": "ch_1AuSNqJK48mSkzFLotmV4n6U"
+            },
+            {
+                "id": 18157,
+                "key": "_stripe_charge_captured",
+                "value": "yes"
+            },
+            {
+                "id": 18158,
+                "key": "Stripe Fee",
+                "value": "6.79"
+            },
+            {
+                "id": 18159,
+                "key": "Net Revenue From Stripe",
+                "value": "216.92"
+            },
+            {
+                "id": 18163,
+                "key": "_pip_invoice_number",
+                "value": "WC-1018-ZZ"
+            },
+            {
+                "id": 18164,
+                "key": "_wc_pip_invoice_email_count",
+                "value": "1"
+            },
+            {
+                "id": 18165,
+                "key": "_wc_pip_packing_list_email_count",
+                "value": "1"
+            },
+            {
+                "id": 18167,
+                "key": "_shipstation_exported",
+                "value": "yes"
+            }
+        ],
+        "line_items": [
+            {
+                "id": 667,
+                "name": "Yellow Pants (H&M)",
+                "product_id": 379,
+                "variation_id": 0,
+                "quantity": 2,
+                "tax_class": "",
+                "subtotal": "180.00",
+                "subtotal_tax": "0.00",
+                "total": "180.00",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": [
+                    {
+                        "id": 4778,
+                        "key": "_wcms_cart_key",
+                        "value": "54400c98d773f646e8820238244a729a"
+                    }
+                ],
+                "sku": "",
+                "price": 90
+            }
+        ],
+        "tax_lines": [],
+        "shipping_lines": [
+            {
+                "id": 668,
+                "method_title": "Ground (UPS)",
+                "method_id": "ups",
+                "instance_id": "03",
+                "total": "43.71",
+                "total_tax": "0.00",
+                "taxes": [],
+                "meta_data": []
+            }
+        ],
+        "fee_lines": [],
+        "coupon_lines": [],
+        "refunds": [
+            {
+                "id": 622,
+                "reason": "Order fully refunded",
+                "total": "-223.71"
+            }
+        ],
+        "currency_symbol": "$",
+        "_links": {
+            "self": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v3/orders/609"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v3/orders"
+                }
+            ],
+            "customer": [
+                {
+                    "href": "https://jamosova3.mystagingwebsite.com/wp-json/wc/v3/customers/1"
+                }
+            ]
+        }
+    }
+}

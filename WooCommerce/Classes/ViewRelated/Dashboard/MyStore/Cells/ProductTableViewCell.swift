@@ -45,6 +45,7 @@ class ProductTableViewCell: UITableViewCell {
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
         productImage.contentMode = .scaleAspectFit
+        contentView.backgroundColor = .listForeground
     }
 }
 
@@ -60,10 +61,6 @@ extension ProductTableViewCell {
         )
         priceText = statsItem?.formattedTotalString
 
-        if let productURLString = statsItem?.imageUrl {
-            productImage.downloadImage(from: URL(string: productURLString), placeholderImage: UIImage.productPlaceholderImage)
-        } else {
-            productImage.image = .productPlaceholderImage
-        }
+        productImage.setImage(with: statsItem?.imageUrl, placeholder: UIImage.productPlaceholderImage)
     }
 }

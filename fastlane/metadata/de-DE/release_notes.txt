@@ -1,3 +1,2 @@
-Kopiere Sendungsverfolgungsnummern! Es ist jetzt noch einfacher, deine Bestellung zu verfolgen, ohne dafür die App öffnen zu müssen. Unter Auftragsdetails > Sendungsverfolgung > Mehr gibt es eine neue Aktion zum Kopieren deiner Sendungsverfolgungsnummer.
-
-Keine Fehlermeldungen mehr bei Statistiken! Wenn deine Website nicht über das Jetpack-Modul für Website-Statistiken verfügt oder du keine Berechtigung zum Anzeigen von Statistiken hast, siehst du die Statistikseite ganz einfach nicht. Du erhältst keine nervigen Fehlermeldungen mehr.
+- Freunde des dunklen Modus dürfen sich freuen! Hier ist er.
+- Auch wer sich gerne eine Vorschau ansieht, darf sich freuen! Viele wünschen sich einen Produkte-Tab. Zwar ist die Entwicklung der neuen App-Version mit einem solchen Tab noch nicht abgeschlossen, aber den künftigen Produkte-Tab kannst du dir jetzt schon in der Vorschau ansehen.

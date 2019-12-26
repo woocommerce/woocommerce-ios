@@ -1,3 +1,2 @@
-Copie os números de rastreamento! Agora é mais fácil manter-se atento ao envio sem precisar abrir o aplicativo. Em Detalhes do pedido> Rastreamento do envio> Mais, há uma nova ação para copiar o número de rastreamento e usá-lo onde você quiser.
-
-Diga adeus às mensagens de erro de estatísticas! Se o seu site não tiver o módulo de estatísticas do site Jetpack ou se você não tiver permissão para visualizar as estatísticas, a página de estatísticas simplesmente não aparecerá. Não havia necessidade de mostrar uma mensagem de erro irritante, então a removemos.
+- Fãs do modo noturno, podem comemorar! Ele está disponível.
+- Fãs de prévias, comemorem também! Sabemos que a guia "Produtos" é um dos principais pedidos. Enquanto a versão do aplicativo com essa guia não é lançada por completo, você pode já visualizar uma prévia. Acesse "Configurações" no aplicativo para ativá-la.

@@ -6,7 +6,8 @@ import Yosemite
 final class OrderDetailsResultsControllers {
     private let order: Order
 
-    // Shipment Tracking ResultsController.
+    /// Shipment Tracking ResultsController.
+    ///
     private lazy var trackingResultsController: ResultsController<StorageShipmentTracking> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
@@ -37,6 +38,18 @@ final class OrderDetailsResultsControllers {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    /// Refund Results Controller.
+    ///
+    private lazy var refundResultsController: ResultsController<StorageRefund> = {
+        let storageManager = ServiceLocator.storageManager
+        let predicate = NSPredicate(format: "siteID = %ld AND orderID = %ld",
+                                    self.order.siteID,
+                                    self.order.orderID)
+        let descriptor = NSSortDescriptor(keyPath: \StorageRefund.dateCreated, ascending: true)
+
+        return ResultsController<StorageRefund>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }()
+
     /// Order shipment tracking list
     ///
     var orderTracking: [ShipmentTracking] {
@@ -55,6 +68,12 @@ final class OrderDetailsResultsControllers {
         return productResultsController.fetchedObjects
     }
 
+    /// Refunds in an Order
+    ///
+    var refunds: [Refund] {
+        return refundResultsController.fetchedObjects
+    }
+
     init(order: Order) {
         self.order = order
     }
@@ -63,6 +82,7 @@ final class OrderDetailsResultsControllers {
         configureStatusResultsController()
         configureTrackingResultsController(onReload: onReload)
         configureProductResultsController(onReload: onReload)
+        configureRefundResultsController(onReload: onReload)
     }
 }
 
@@ -96,5 +116,17 @@ private extension OrderDetailsResultsControllers {
         }
 
         try? productResultsController.performFetch()
+    }
+
+    private func configureRefundResultsController(onReload: @escaping () -> Void) {
+        refundResultsController.onDidChangeContent = {
+            onReload()
+        }
+
+        refundResultsController.onDidResetContent = {
+            onReload()
+        }
+
+        try? refundResultsController.performFetch()
     }
 }

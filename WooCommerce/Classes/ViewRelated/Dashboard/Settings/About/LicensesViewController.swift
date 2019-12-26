@@ -47,7 +47,7 @@ private extension LicensesViewController {
     /// Setup the main view
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Setup the web view

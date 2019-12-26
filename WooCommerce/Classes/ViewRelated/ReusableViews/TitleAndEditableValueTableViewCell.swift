@@ -6,6 +6,7 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
         configureAsNonSelectable()
         styleTitle()
         styleValue()
@@ -14,6 +15,10 @@ final class TitleAndEditableValueTableViewCell: UITableViewCell {
 
 
 private extension TitleAndEditableValueTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
     func configureAsNonSelectable() {
         selectionStyle = .none
     }

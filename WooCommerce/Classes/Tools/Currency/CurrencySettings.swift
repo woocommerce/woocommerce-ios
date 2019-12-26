@@ -124,7 +124,7 @@ public class CurrencySettings {
 
 
     /// Convenience Initializer:
-    /// Provides sane defaults for when site settings aren't available
+    /// Provides some defaults for when site settings aren't available
     ///
     convenience init() {
         self.init(currencyCode: CurrencySettings.Default.code,
@@ -522,10 +522,18 @@ extension CurrencySettings {
     }
 
     private func refreshResultsPredicate() {
-        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            DDLogError("Error: no siteID found when attempting to refresh CurrencySettings results predicate.")
+            return
+        }
+
+        let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.general.rawValue)
         resultsController.predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
         try? resultsController.performFetch()
+        resultsController.fetchedObjects.forEach {
+            updateCurrencyOptions(with: $0)
+        }
     }
 }
 

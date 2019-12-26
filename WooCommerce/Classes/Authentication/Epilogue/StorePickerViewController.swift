@@ -74,6 +74,18 @@ class StorePickerViewController: UIViewController {
         }
     }
 
+    /// Secondary Action Button.
+    ///
+    @IBOutlet private var secondaryActionButton: FancyAnimatedButton! {
+        didSet {
+            secondaryActionButton.backgroundColor = .clear
+            secondaryActionButton.titleFont = StyleManager.actionButtonTitleFont
+            secondaryActionButton.setTitle(NSLocalizedString("Try another account",
+                                                             comment: "Button to trigger connection to another account in store picker"),
+                                           for: .normal)
+        }
+    }
+
     /// No Results Placeholder Image
     ///
     @IBOutlet private var noResultsImageView: UIImageView!
@@ -83,7 +95,7 @@ class StorePickerViewController: UIViewController {
     @IBOutlet private var noResultsLabel: UILabel! {
         didSet {
             noResultsLabel.font = StyleManager.subheadlineFont
-            noResultsLabel.textColor = StyleManager.wooGreyTextMin
+            noResultsLabel.textColor = .textSubtle
         }
     }
 
@@ -153,8 +165,13 @@ class StorePickerViewController: UIViewController {
         setupTableView()
         refreshResults()
 
-        if configuration == .login {
+        switch configuration {
+        case .login:
             startListeningToNotifications()
+        case .switchingStores:
+            secondaryActionButton.isHidden = true
+        default:
+            break
         }
     }
 
@@ -181,7 +198,7 @@ class StorePickerViewController: UIViewController {
 private extension StorePickerViewController {
 
     func setupMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func setupTableView() {
@@ -193,6 +210,8 @@ private extension StorePickerViewController {
         for (reuseIdentifier, nib) in cells {
             tableView.register(nib, forCellReuseIdentifier: reuseIdentifier)
         }
+
+        tableView.backgroundColor = .listBackground
     }
 
     func setupAccountHeader() {
@@ -310,6 +329,13 @@ private extension StorePickerViewController {
     ///
     func reloadInterface() {
         actionButton.setTitle(state.actionTitle, for: .normal)
+        switch state {
+        case .empty:
+            updateActionButtonAndTableState(animating: false, enabled: false)
+        default:
+            break
+        }
+
         tableView.separatorStyle = state.separatorStyle
         tableView.reloadData()
     }
@@ -327,6 +353,16 @@ private extension StorePickerViewController {
         default:
             dismiss(animated: true)
         }
+    }
+
+    /// Toggles the dismiss button, if it exists
+    ///
+    func toggleDismissButton(enabled: Bool) {
+        guard let dismissButton = navigationItem.leftBarButtonItem else {
+            return
+        }
+
+        dismissButton.isEnabled = enabled
     }
 
     /// This method will reload the [Selected Row]
@@ -362,13 +398,18 @@ private extension StorePickerViewController {
     /// Re-initializes the Login Flow, forcing a logout. This may be required if the WordPress.com Account has no Stores available.
     ///
     func restartAuthentication() {
-        guard ServiceLocator.stores.needsDefaultStore, let navigationController = navigationController else {
+        guard ServiceLocator.stores.needsDefaultStore else {
+            return
+        }
+
+        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
+
+        guard let navigationController = navigationController else {
+            assertionFailure("Navigation error: one of the login / logout states is not correctly handling navigation. No navigationController found.")
             return
         }
 
         ServiceLocator.stores.deauthenticate()
-
-        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
         navigationController.setViewControllers([loginViewController], animated: true)
     }
 
@@ -379,15 +420,40 @@ private extension StorePickerViewController {
         RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (result, error) in
             switch result {
             case .validWCVersion:
-                self?.updateActionButtonAndTableState(animating: false, enabled: true)
+                self?.updateUIForValidSite()
             case .invalidWCVersion:
-                self?.updateActionButtonAndTableState(animating: false, enabled: false)
-                self?.displayFancyWCRequirementAlert(siteName: siteName)
+                self?.updateUIForInvalidSite(named: siteName)
             case .empty, .error:
-                self?.updateActionButtonAndTableState(animating: false, enabled: false)
-                self?.displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
+                self?.updateUIForEmptyOrErroredSite(named: siteName, with: siteID)
             }
         }
+    }
+
+    /// Update the UI upon receiving a response for a valid WC site
+    ///
+    func updateUIForValidSite() {
+        toggleDismissButton(enabled: true)
+        updateActionButtonAndTableState(animating: false, enabled: true)
+    }
+
+    /// Update the UI upon receiving a response for an invalid WC site
+    ///
+    func updateUIForInvalidSite(named siteName: String) {
+        toggleDismissButton(enabled: false)
+        switch state {
+        case .empty:
+            updateUIForNoSitesFound(named: siteName)
+        default:
+            updateUIForInvalidSiteFound(named: siteName)
+        }
+    }
+
+    /// Update the UI upon receiving an error or empty response instead of site info
+    ///
+    func updateUIForEmptyOrErroredSite(named siteName: String, with siteID: Int) {
+        toggleDismissButton(enabled: false)
+        updateActionButtonAndTableState(animating: false, enabled: false)
+        displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
     }
 
     /// Little helper func that helps manage the actionButton and Table state while checking on a
@@ -401,12 +467,36 @@ private extension StorePickerViewController {
         tableView.allowsSelection = !animating
     }
 
+    /// Update the UI when the user has a valid login but no WC sites.
+    ///
+    func updateUIForNoSitesFound(named siteName: String) {
+        hideActionButton()
+        displayFancyWCRequirementAlert(siteName: siteName)
+    }
+
+    /// Update the UI when the user has a valid login
+    /// but the currently selected WC site is not valid.
+    ///
+    func updateUIForInvalidSiteFound(named siteName: String) {
+        updateActionButtonAndTableState(animating: false, enabled: false)
+        displayFancyWCRequirementAlert(siteName: siteName)
+    }
+
+    /// Helper function that hides the "Continue" action button
+    /// upon finding a valid WP login and no valid WC sites.
+    func hideActionButton() {
+        actionButton.isHidden = true
+        actionButton.showActivityIndicator(false)
+    }
+
     /// Displays the Error Notice for the version check.
     ///
     func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
         let message = String.localizedStringWithFormat(
-            NSLocalizedString("Unable to successfully connect to %@",
-                              comment: "On the site picker screen, the error displayed when connecting to a site fails. It reads: Unable to successfully connect to {site name}"
+            NSLocalizedString(
+                "Unable to successfully connect to %@",
+                comment: "On the site picker screen, the error displayed when connecting to a site fails. " +
+                "It reads: Unable to successfully connect to {site name}"
             ),
             siteName
         )
@@ -436,7 +526,6 @@ extension StorePickerViewController {
     /// Proceeds with the Login Flow.
     ///
     @IBAction func actionWasPressed() {
-
         switch state {
         case .empty:
             restartAuthentication()
@@ -452,6 +541,12 @@ extension StorePickerViewController {
                 self?.cleanupAndDismiss()
             }
         }
+    }
+
+    /// Proceeds with the Logout Flow.
+    ///
+    @IBAction func secondaryActionWasPressed() {
+        restartAuthentication()
     }
 }
 
@@ -474,6 +569,7 @@ extension StorePickerViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let site = state.site(at: indexPath) else {
+            hideActionButton()
             return tableView.dequeueReusableCell(withIdentifier: EmptyStoresTableViewCell.reuseIdentifier, for: indexPath)
         }
         guard let cell = tableView.dequeueReusableCell(withIdentifier: StoreTableViewCell.reuseIdentifier, for: indexPath) as? StoreTableViewCell else {
@@ -578,12 +674,7 @@ private extension StorePickerState {
     /// Action Button's Title
     ///
     var actionTitle: String {
-        switch self {
-        case .empty:
-            return NSLocalizedString("Try another account", comment: "")
-        default:
             return NSLocalizedString("Continue", comment: "")
-        }
     }
 
     /// Results Table's Header Title

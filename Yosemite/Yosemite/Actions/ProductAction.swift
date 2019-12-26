@@ -6,6 +6,10 @@ import Networking
 ///
 public enum ProductAction: Action {
 
+    /// Searches products that contain a given keyword.
+    ///
+    case searchProducts(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+
     /// Synchronizes the Products matching the specified criteria.
     ///
     case synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
@@ -25,4 +29,8 @@ public enum ProductAction: Action {
     /// Requests the Products found in a specified Order.
     ///
     case requestMissingProducts(for: Order, onCompletion: (Error?) -> Void)
+
+    /// Updates a specified Product.
+    ///
+    case updateProduct(product: Product, onCompletion: (Product?, ProductUpdateError?) -> Void)
 }

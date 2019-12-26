@@ -61,9 +61,10 @@ class TopPerformersHeaderView: UITableViewHeaderFooterView {
         descriptionLabel.applyBodyStyle()
         leftColumn.applyFootnoteStyle()
         rightColumn.applyFootnoteStyle()
-        leftColumn.textColor = StyleManager.sectionTitleColor
-        rightColumn.textColor = StyleManager.sectionTitleColor
-        borderView.backgroundColor = StyleManager.wooGreyBorder
+        leftColumn.textColor = .listIcon
+        rightColumn.textColor = .listIcon
+        borderView.backgroundColor = .systemColor(.separator)
+        contentView.backgroundColor = .listForeground
     }
 }
 

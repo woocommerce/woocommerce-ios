@@ -31,7 +31,7 @@ final class ServiceLocatorTests: XCTestCase {
     func testNoticesDefaultsToNoticePresenter() {
         let notices = ServiceLocator.noticePresenter
 
-        XCTAssertTrue(notices is NoticePresenter)
+        XCTAssertTrue((notices as Any) is NoticePresenter)
     }
 
     func testServiceLocatorProvidesPushNotificationsManager() {
@@ -52,6 +52,10 @@ final class ServiceLocatorTests: XCTestCase {
         let authentication = ServiceLocator.authenticationManager
 
         XCTAssertTrue(authentication is AuthenticationManager)
+    }
+
+    func testServiceLocatorProvidesShippingSettingsService() {
+        XCTAssertNotNil(ServiceLocator.shippingSettingsService)
     }
 
     func testServiceLocatorProvidesStorageManager() {

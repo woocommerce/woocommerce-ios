@@ -123,7 +123,7 @@ private extension TopPerformersViewController {
     ///
     func displayGhostContent() {
         view.isUserInteractionEnabled = false
-        buttonBarView.startGhostAnimation()
+        buttonBarView.startGhostAnimation(style: .wooDefaultGhostStyle)
         visibleChildViewController.displayGhostContent()
     }
 
@@ -138,7 +138,7 @@ private extension TopPerformersViewController {
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
     ///
     func ensureGhostContentIsAnimated() {
-        view.restartGhostAnimation()
+        view.restartGhostAnimation(style: .wooDefaultGhostStyle)
     }
 }
 
@@ -148,11 +148,12 @@ private extension TopPerformersViewController {
 private extension TopPerformersViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        topBorder.backgroundColor = StyleManager.wooGreyBorder
-        middleBorder.backgroundColor = StyleManager.wooGreyBorder
+        view.backgroundColor = .listBackground
+        topBorder.backgroundColor = .systemColor(.separator)
+        middleBorder.backgroundColor = .divider
+        buttonBarView.backgroundColor = .listForeground
         headingLabel.applyFootnoteStyle()
-        headingLabel.textColor = StyleManager.sectionTitleColor
+        headingLabel.textColor = .listIcon
         headingLabel.textInsets = Constants.headerLabelInsets
         headingLabel.text =  NSLocalizedString("Top Performers", comment: "Header label for Top Performers section of My Store tab.").uppercased()
     }
@@ -170,12 +171,12 @@ private extension TopPerformersViewController {
     }
 
     func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = StyleManager.wooWhite
-        settings.style.buttonBarItemBackgroundColor = StyleManager.wooWhite
-        settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
+        settings.style.buttonBarBackgroundColor = .basicBackground
+        settings.style.buttonBarItemBackgroundColor = .basicBackground
+        settings.style.selectedBarBackgroundColor = .primary
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = StyleManager.defaultTextColor
+        settings.style.buttonBarItemTitleColor = .text
         settings.style.buttonBarItemsShouldFillAvailableWidth = false
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
 
@@ -187,8 +188,10 @@ private extension TopPerformersViewController {
             animated: Bool) -> Void in
 
             guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = StyleManager.defaultTextColor
-            newCell?.label.textColor = StyleManager.wooCommerceBrandColor
+            oldCell?.label.textColor = .textSubtle
+            newCell?.label.textColor = .primary
+            oldCell?.contentView.backgroundColor = .listForeground
+            newCell?.contentView.backgroundColor = .listForeground
         }
     }
 }

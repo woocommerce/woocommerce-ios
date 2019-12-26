@@ -1,3 +1,65 @@
+3.4
+-----
+- bugfix: on the Order Details screen, the product quantity title in the 2-column header view aligns to the right now
+
+3.3
+-----
+- bugfix: add some padding to an order item image in the Fulfillment view, when no SKU exists
+- bugfix: View Billing Information > Contact Details: the email button wouldn't do anything if you don't have an email account configured in the Mail app. Now an option to copy the email address is presented instead of doing nothing.
+- bugfix: Fulfill Order screen now displays full customer provided note, instead of cutting it to a single line.
+- bugfix: Fixed clipped content on section headings with larger font sizes
+- bugfix: Fixed footer overlapping the last row in Settings > About with larger font sizes
+- bugfix: the Orders badge on tab bar now is correctly refreshed after switching stores
+ 
+3.2.1
+-----
+- bugfix: the order detail status and "Begin fulfillment" button now are correctly updated when the order status changes
+- bugfix: after adding a new order note, now it appear correctly inside the order detail
+
+3.2
+-----
+- Experimental: a Products feature switch is visible in Settings > Experimental Features that shows/hides the Products tab with a Work In Progress banner at the top.
+- Experimental: if a Product has variations, the variants info are shown on the Product Details that navigates to a list of variations with each price or visibility shown.
+- Enhancement: Support for dark mode
+- bugfix: Settings no longer convert to partial dark mode.
+- Experimental: Support the latest wc-admin plugin release, v0.23.0 and up
+ 
+3.1
+-----
+- The order detail view now includes the shipping method of the order.
+- Enhancement: The Reviews tab now presents all the Product Reviews
+- Updated appearance of Order Details - temporarily disabling dark mode.
+- bugfix: fixed UI appearance on cells of Order List when tapping with dark mode enabled.
+- bugfix: Reviews no longer convert to partial dark mode. Dark mode coming soon!
+- bugfix: Order Details now has the right space between cells.
+- bugfix: update the new stats endpoint for WC Admin plugin version 0.22+, and notify the user about the minimum plugin version when they cannot see the new stats. It'd be great to also mention this in the App Store release notes: the new stats UI now requires WC Admin plugin version 0.22+.
+
+3.0
+-----
+- bugfix: for sites with empty site time zone in the API (usually with UTC specified in wp-admin settings) and when the site time zone is not GMT+0, the stats v4 data no longer has the wrong boundaries (example in #1357).
+- bugfix: fixed a UI appearance problem on mail composer on iOS 13.
+ 
+2.9
+-----
+- bugfix: the badge "9+" on the Orders tab doesn't overlap with the tab label on iPhone SE/8 landscape now, and polished based on design spec.
+- bugfix: the Top Performers in the new stats page should not have a dark header bar when launching the app in Dark mode.
+- Enhancement: preselect current Order status when editing the status with a list of order statuses.
+- bugfix: on Orders tab, the order status filter now stays after changing an Order status.
+ 
+2.8
+-----
+ 
+2.7
+-----
+- Enhancement: Enhancements to the Order Details screen, adding more customer information.
+- bugfix: the App Logs shouldn't be editable, only copy / paste.
+- bugfix: Reviews were not localized.
+- bugfix: On log in, some users would see the Continue button but be unable to Continue, due to errors with the account. A new "Try another account" button has been added as an option.
+- bugfix: Product Details page was displaying the Price in the wrong currency.
+- Enhancement: removed the "New Orders" card from the My store tab, now that the Orders tab displays the same information.
+- Added brand new stats page for user with the WooCommerce Admin plugin and provided an option for users to opt in or out directly from the Settings page.
+- bugfix: Order Details: icon on "Details" cell for fulfilled order can be wrong.
+ 
 2.6
 -----
 - bugfix: 9+ orders in the orders badge text is now easier to read

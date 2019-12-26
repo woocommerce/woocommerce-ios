@@ -157,7 +157,8 @@ def localize(paths, language):
     # Localization Loop
     target_folders = ' '.join(paths)
     find_cmd = 'find ' + target_folders + ' -name "*.m" -o -name "*.swift" | grep -v Vendor'
-    filelist = os.popen(find_cmd).read().replace("\n", " ")
+    filelist = os.popen(find_cmd).read().strip().split('\n')
+    filelist = '"{0}"'.format('" "'.join(filelist))
 
     if os.path.isfile(original):
         os.rename(original, old)

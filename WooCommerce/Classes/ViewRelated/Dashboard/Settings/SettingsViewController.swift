@@ -57,15 +57,10 @@ class SettingsViewController: UIViewController {
         refreshResultsController()
         configureNavigation()
         configureMainView()
-        configureSections()
         configureTableView()
         configureTableViewFooter()
         registerTableViewCells()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        tableView.reloadData()
+        refreshViewContent()
     }
 
     override func viewDidLayoutSubviews() {
@@ -91,13 +86,13 @@ private extension SettingsViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
     }
 
     func refreshResultsController() {
@@ -113,7 +108,7 @@ private extension SettingsViewController {
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
         footerView.iconImage = .heartOutlineImage
         footerView.footnote.attributedText = hiringAttributedText
-        footerView.iconColor = StyleManager.wooCommerceBrandColor
+        footerView.iconColor = .primary
         footerView.footnote.textAlignment = .center
         footerView.footnote.delegate = self
 
@@ -121,10 +116,16 @@ private extension SettingsViewController {
         footerContainer.addSubview(footerView)
     }
 
+    func refreshViewContent() {
+        configureSections()
+        tableView.reloadData()
+    }
+
     func configureSections() {
         let selectedStoreTitle = NSLocalizedString(
             "Selected Store",
-            comment: "My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username."
+            comment: "My Store > Settings > Selected Store information section. " +
+            "This is the heading listed above the information row that displays the store website and their username."
             ).uppercased()
         let improveTheAppTitle = NSLocalizedString("Help Improve The App", comment: "My Store > Settings > Privacy settings section").uppercased()
         let aboutSettingsTitle = NSLocalizedString("About the app", comment: "My Store > Settings > About app section").uppercased()
@@ -133,14 +134,54 @@ private extension SettingsViewController {
         let storeRows: [Row] = sites.count > 1 ?
             [.selectedStore, .switchStore] : [.selectedStore]
 
-        sections = [
-            Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
-            Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
-            Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
-            Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
-            Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude),
-            Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
-        ]
+        let otherSection: Section
+        #if DEBUG
+        otherSection = Section(title: otherTitle, rows: [.appSettings, .wormholy], footerHeight: CGFloat.leastNonzeroMagnitude)
+        #else
+        otherSection = Section(title: otherTitle, rows: [.appSettings], footerHeight: CGFloat.leastNonzeroMagnitude)
+        #endif
+
+        if couldShowBetaFeaturesRow() {
+            rowsForImproveTheAppSection { [weak self] improveTheAppRows in
+                self?.sections = [
+                    Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+                    Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+                    Section(title: improveTheAppTitle, rows: improveTheAppRows, footerHeight: UITableView.automaticDimension),
+                    Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+                    otherSection,
+                    Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+                ]
+            }
+        } else {
+            sections = [
+                Section(title: selectedStoreTitle, rows: storeRows, footerHeight: CGFloat.leastNonzeroMagnitude),
+                Section(title: nil, rows: [.support], footerHeight: UITableView.automaticDimension),
+                Section(title: improveTheAppTitle, rows: [.privacy, .featureRequest], footerHeight: UITableView.automaticDimension),
+                Section(title: aboutSettingsTitle, rows: [.about, .licenses], footerHeight: UITableView.automaticDimension),
+                otherSection,
+                Section(title: nil, rows: [.logout], footerHeight: CGFloat.leastNonzeroMagnitude)
+            ]
+        }
+    }
+
+    func rowsForImproveTheAppSection(onCompletion: @escaping (_ rows: [Row]) -> Void) {
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) {
+            onCompletion([.privacy, .betaFeatures, .featureRequest])
+            return
+        }
+
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("Cannot find store ID")
+            return
+        }
+        let action = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { eligibleStatsVersion in
+            guard eligibleStatsVersion == .v4 else {
+                onCompletion([.privacy, .featureRequest])
+                return
+            }
+            onCompletion([.privacy, .betaFeatures, .featureRequest])
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func registerTableViewCells() {
@@ -161,6 +202,8 @@ private extension SettingsViewController {
             configureSupport(cell: cell)
         case let cell as BasicTableViewCell where row == .privacy:
             configurePrivacy(cell: cell)
+        case let cell as BasicTableViewCell where row == .betaFeatures:
+            configureBetaFeatures(cell: cell)
         case let cell as BasicTableViewCell where row == .featureRequest:
             configureFeatureSuggestions(cell: cell)
         case let cell as BasicTableViewCell where row == .about:
@@ -169,6 +212,8 @@ private extension SettingsViewController {
             configureLicenses(cell: cell)
         case let cell as BasicTableViewCell where row == .appSettings:
             configureAppSettings(cell: cell)
+        case let cell as BasicTableViewCell where row == .wormholy:
+            configureWormholy(cell: cell)
         case let cell as BasicTableViewCell where row == .logout:
             configureLogout(cell: cell)
         default:
@@ -202,6 +247,12 @@ private extension SettingsViewController {
         cell.textLabel?.text = NSLocalizedString("Privacy Settings", comment: "Navigates to Privacy Settings screen")
     }
 
+    func configureBetaFeatures(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Experimental Features", comment: "Navigates to experimental features screen")
+    }
+
     func configureFeatureSuggestions(cell: BasicTableViewCell) {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -226,10 +277,17 @@ private extension SettingsViewController {
         cell.textLabel?.text = NSLocalizedString("Open Device Settings", comment: "Opens iOS's Device Settings for the app")
     }
 
+    func configureWormholy(cell: BasicTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString("Launch Wormholy debug",
+                                                 comment: "Opens an internal library called Wormholy. Not visible to users.")
+    }
+
     func configureLogout(cell: BasicTableViewCell) {
         cell.selectionStyle = .default
         cell.textLabel?.textAlignment = .center
-        cell.textLabel?.textColor = StyleManager.destructiveActionColor
+        cell.textLabel?.textColor = .error
         cell.textLabel?.text = NSLocalizedString("Log Out", comment: "Log out button title")
     }
 }
@@ -241,6 +299,11 @@ private extension SettingsViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
+    }
+
+    func couldShowBetaFeaturesRow() -> Bool {
+        let featureFlagService = ServiceLocator.featureFlagService
+        return featureFlagService.isFeatureFlagEnabled(.stats) || featureFlagService.isFeatureFlagEnabled(.productList)
     }
 }
 
@@ -277,6 +340,12 @@ private extension SettingsViewController {
         if let navigationController = navigationController {
             storePickerCoordinator = StorePickerCoordinator(navigationController, config: .switchingStores)
             storePickerCoordinator?.start()
+            storePickerCoordinator?.onDismiss = { [weak self] in
+                guard let self = self else {
+                    return
+                }
+                self.refreshViewContent()
+            }
         }
     }
 
@@ -300,6 +369,16 @@ private extension SettingsViewController {
         performSegue(withIdentifier: Segues.licensesSegue, sender: nil)
     }
 
+    func betaFeaturesWasPressed() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            assertionFailure("Cannot find store ID")
+            return
+        }
+        ServiceLocator.analytics.track(.settingsBetaFeaturesButtonTapped)
+        let betaFeaturesViewController = BetaFeaturesViewController(siteID: siteID)
+        navigationController?.pushViewController(betaFeaturesViewController, animated: true)
+    }
+
     func featureRequestWasPressed() {
         let safariViewController = SFSafariViewController(url: WooConstants.featureRequestURL)
         present(safariViewController, animated: true, completion: nil)
@@ -310,6 +389,11 @@ private extension SettingsViewController {
             return
         }
         UIApplication.shared.open(targetURL)
+    }
+
+    func wormholyWasPressed() {
+        // Fire a local notification, which fires Wormholy if enabled.
+        NotificationCenter.default.post(name: NSNotification.Name(rawValue: "wormholy_fire"), object: nil)
     }
 
     func logOutUser() {
@@ -399,6 +483,8 @@ extension SettingsViewController: UITableViewDelegate {
             supportWasPressed()
         case .privacy:
             privacyWasPressed()
+        case .betaFeatures:
+            betaFeaturesWasPressed()
         case .featureRequest:
             featureRequestWasPressed()
         case .about:
@@ -407,6 +493,8 @@ extension SettingsViewController: UITableViewDelegate {
             licensesWasPressed()
         case .appSettings:
             appSettingsWasPressed()
+        case .wormholy:
+            wormholyWasPressed()
         case .logout:
             logoutWasPressed()
         default:
@@ -435,10 +523,12 @@ private enum Row: CaseIterable {
     case support
     case logout
     case privacy
+    case betaFeatures
     case featureRequest
     case about
     case licenses
     case appSettings
+    case wormholy
 
     var type: UITableViewCell.Type {
         switch self {
@@ -452,6 +542,8 @@ private enum Row: CaseIterable {
             return BasicTableViewCell.self
         case .privacy:
             return BasicTableViewCell.self
+        case .betaFeatures:
+            return BasicTableViewCell.self
         case .featureRequest:
             return BasicTableViewCell.self
         case .about:
@@ -459,6 +551,8 @@ private enum Row: CaseIterable {
         case .licenses:
             return BasicTableViewCell.self
         case .appSettings:
+            return BasicTableViewCell.self
+        case .wormholy:
             return BasicTableViewCell.self
         }
     }
@@ -489,7 +583,7 @@ private extension SettingsViewController {
         )
         let hiringAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.footerLabelFont,
-            .foregroundColor: StyleManager.wooGreyMid
+            .foregroundColor: UIColor.textSubtle
         ]
 
         let hiringAttrText = NSMutableAttributedString()

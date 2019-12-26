@@ -1,3 +1,2 @@
-Volgnummer kopiëren! Het is nu gemakkelijker om een oogje te houden op je verzending zonder de app te openen. In de Bestellingsdetails > Verzending bijhouden > Meer, is er een nieuwe actie om je volgnummer te kopiëren zodat je die overal kunt gebruiken.
-
-Vaarwel foutmeldingen over statistieken! Als je site niet de Jetpack-module sitestatistieken heeft, of je geen toestemming hebt om statistieken weer te geven, kun je de statistiekenpagina niet zien. Je hoeft geen vervelende foutmelding te zien, daarom hebben we die weggehaald.
+- Fans van de nachtmodus kunnen verheugd zijn! Hij is nu beschikbaar.
+- Fans van voorbeeldweergaven kunnen ook verheugd zijn! We weten dat een tabblad met producten hoog op de lijst met gewenste functies staat. Hoewel we nog geen volledige versie van de app kunnen uitbrengen die deze functie bevat, kun we je nu een voorproefje geven van het tabblad Producten, dat binnenkort beschikbaar wordt. Ga naar Instellingen in de app om deze functie in te schakelen.

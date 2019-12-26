@@ -26,7 +26,17 @@ final class MockOrders {
                      items: [],
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: [])
+                     shippingLines: sampleShippingLines(),
+                     coupons: [],
+                     refunds: [])
+    }
+
+    func sampleShippingLines() -> [Networking.ShippingLine] {
+        return [ShippingLine(shippingID: 123,
+        methodTitle: "International Priority Mail Express Flat Rate",
+        methodID: "usps",
+        total: "133.00",
+        totalTax: "0.00")]
     }
 
     func sampleAddress() -> Networking.Address {
@@ -43,6 +53,92 @@ final class MockOrders {
                        email: "scrambled@scrambled.com")
     }
 
+    /// An order with broken elements, inspired by `broken-order.json`
+    ///
+    func brokenOrder() -> Order {
+        return Order(siteID: 545,
+                     orderID: 85,
+                     parentID: 0,
+                     customerID: 0,
+                     number: "85",
+                     statusKey: "draft",
+                     currency: "GBP",
+                     customerNote: "",
+                     dateCreated: Date(),
+                     dateModified: Date(),
+                     datePaid: nil, // there is no paid date
+                     discountTotal: "0.00",
+                     discountTax: "0.00",
+                     shippingTotal: "0.00",
+                     shippingTax: "0.00",
+                     total: "0.00",
+                     totalTax: "0.00",
+                     paymentMethodTitle: "", // broken in the sense that there should be a payment title
+                     items: [],
+                     billingAddress: brokenAddress(), // empty address
+                     shippingAddress: brokenAddress(),
+                     shippingLines: brokenShippingLines(), // empty shipping
+                     coupons: [],
+                     refunds: [])
+    }
+
+    /// An order with broken elements that hasn't been paid, inspired by `broken-order.json`
+    ///
+    func unpaidOrder() -> Order {
+        return Order(siteID: 545,
+                     orderID: 85,
+                     parentID: 0,
+                     customerID: 0,
+                     number: "85",
+                     statusKey: "draft",
+                     currency: "GBP",
+                     customerNote: "",
+                     dateCreated: Date(),
+                     dateModified: Date(),
+                     datePaid: nil, // there is no paid date
+                     discountTotal: "0.00",
+                     discountTax: "0.00",
+                     shippingTotal: "0.00",
+                     shippingTax: "0.00",
+                     total: "0.00",
+                     totalTax: "0.00",
+                     paymentMethodTitle: "Cash on Delivery",
+                     items: [],
+                     billingAddress: brokenAddress(), // empty address
+                     shippingAddress: brokenAddress(),
+                     shippingLines: brokenShippingLines(), // empty shipping
+                     coupons: [],
+                     refunds: [])
+    }
+
+    /// An address that may or may not be broken, that came from `broken-order.json`
+    ///
+    func brokenAddress() -> Networking.Address {
+        return Address(firstName: "",
+                       lastName: "",
+                       company: "",
+                       address1: "",
+                       address2: "",
+                       city: "",
+                       state: "",
+                       postcode: "",
+                       country: "",
+                       phone: "",
+                       email: "")
+    }
+
+    /// A shipping line that may or may not be broken, from `broken-order.json`
+    ///
+    func brokenShippingLines() -> [Networking.ShippingLine] {
+        return [ShippingLine(shippingID: 1,
+                            methodTitle: "Shipping",
+                            methodID: "",
+                            total: "0.00",
+                            totalTax: "0.00")]
+    }
+
+    /// Converts a date string to a date type
+    ///
     func date(with dateString: String) -> Date {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
             return Date()

@@ -33,7 +33,6 @@ class PeriodDataViewController: UIViewController {
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var barChartView: BarChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
-    @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
     @IBOutlet private weak var chartAccessibilityView: UIView!
@@ -168,7 +167,7 @@ extension PeriodDataViewController {
     ///
     func displayGhostContent() {
         ensurePlaceholderIsVisible()
-        placeholderChartsView.startGhostAnimation()
+        placeholderChartsView.startGhostAnimation(style: .wooDefaultGhostStyle)
     }
 
     /// Removes the Placeholder Content.
@@ -219,8 +218,7 @@ private extension PeriodDataViewController {
     }
 
     func configureView() {
-        view.backgroundColor = StyleManager.wooWhite
-        borderView.backgroundColor = StyleManager.wooGreyBorder
+        view.backgroundColor = .listForeground
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
@@ -237,7 +235,7 @@ private extension PeriodDataViewController {
 
         // Footer
         lastUpdated.font = UIFont.footnote
-        lastUpdated.textColor = StyleManager.wooGreyMid
+        lastUpdated.textColor = .textSubtle
 
         // Visibility
         updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
@@ -272,7 +270,7 @@ private extension PeriodDataViewController {
         barChartView.drawValueAboveBarEnabled = true
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
-        barChartView.noDataTextColor = StyleManager.wooSecondary
+        barChartView.noDataTextColor = .textSubtle
         barChartView.extraRightOffset = Constants.chartExtraRightOffset
         barChartView.extraTopOffset = Constants.chartExtraTopOffset
         barChartView.delegate = self
@@ -281,9 +279,9 @@ private extension PeriodDataViewController {
         xAxis.labelPosition = .bottom
         xAxis.setLabelCount(2, force: true)
         xAxis.labelFont = StyleManager.chartLabelFont
-        xAxis.labelTextColor = StyleManager.wooSecondary
-        xAxis.axisLineColor = StyleManager.wooGreyBorder
-        xAxis.gridColor = StyleManager.wooGreyBorder
+        xAxis.labelTextColor = .textSubtle
+        xAxis.axisLineColor = .listSmallIcon
+        xAxis.gridColor = .listSmallIcon
         xAxis.drawLabelsEnabled = true
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
@@ -293,10 +291,10 @@ private extension PeriodDataViewController {
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
-        yAxis.labelTextColor = StyleManager.wooSecondary
-        yAxis.axisLineColor = StyleManager.wooGreyBorder
-        yAxis.gridColor = StyleManager.wooGreyBorder
-        yAxis.zeroLineColor = StyleManager.wooGreyBorder
+        yAxis.labelTextColor = .textSubtle
+        yAxis.axisLineColor = .listSmallIcon
+        yAxis.gridColor = .listSmallIcon
+        yAxis.zeroLineColor = .listSmallIcon
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
         yAxis.drawAxisLineEnabled = false
@@ -335,9 +333,9 @@ extension PeriodDataViewController: ChartViewDelegate {
         }
 
         let marker = ChartMarker(chartView: chartView,
-                                 color: StyleManager.wooSecondary,
+                                 color: .chartDataBarHighlighted,
                                  font: StyleManager.chartLabelFont,
-                                 textColor: StyleManager.wooWhite,
+                                 textColor: .systemColor(.systemGray6),
                                  insets: Constants.chartMarkerInsets)
         marker.minimumSize = Constants.chartMarkerMinimumSize
         marker.arrowSize = Constants.chartMarkerArrowSize
@@ -368,7 +366,8 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 yAxisMaximum = value.humanReadableString()
                 return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
                                                           at: CurrencySettings.shared.currencyPosition,
-                                                          with: currencySymbol)
+                                                          with: currencySymbol,
+                                                          isNegative: value.sign == .minus)
             }
         }
     }
@@ -383,7 +382,8 @@ private extension PeriodDataViewController {
         yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Minimum value %@, maximum value %@",
-                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."
+                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. " +
+                "It reads: Minimum value {value}, maximum value {value}."
             ),
             yAxisMinimum,
             yAxisMaximum
@@ -418,7 +418,8 @@ private extension PeriodDataViewController {
             chartSummaryString += String.localizedStringWithFormat(
                 NSLocalizedString(
                     "Bar number %i, %@, ",
-                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."
+                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. " +
+                    "It reads: Bar number {bar number} {summary of bar}."
                 ),
                 i+1,
                 entrySummaryString
@@ -546,7 +547,7 @@ private extension PeriodDataViewController {
                                                                                 with: orderStats.currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
-            barColors.append(StyleManager.wooGreyMid)
+            barColors.append(.chartDataBar)
             dataEntries.append(entry)
             barCount += 1
         }
@@ -554,7 +555,7 @@ private extension PeriodDataViewController {
         let dataSet =  BarChartDataSet(entries: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
-        dataSet.highlightColor = StyleManager.wooCommerceBrandColor
+        dataSet.highlightColor = .chartDataBarHighlighted
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)

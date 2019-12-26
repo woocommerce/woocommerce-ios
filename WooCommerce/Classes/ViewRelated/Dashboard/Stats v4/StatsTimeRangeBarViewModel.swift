@@ -1,6 +1,18 @@
 import Yosemite
 
 private extension StatsTimeRangeV4 {
+    func timeRangeText(startDate: Date, endDate: Date, selectedDate: Date, timezone: TimeZone) -> String {
+        let selectedDateString = timeRangeSelectedDateFormatter(timezone: timezone).string(from: selectedDate)
+        switch self {
+        case .today, .thisYear:
+            let dateBreadcrumbFormat = NSLocalizedString("%1$@ › %2$@", comment: "Displays a time range followed by a specific date/time")
+            let timeRangeString = timeRangeText(startDate: startDate, endDate: endDate, timezone: timezone)
+            return String.localizedStringWithFormat(dateBreadcrumbFormat, timeRangeString, selectedDateString)
+        case .thisWeek, .thisMonth:
+            return selectedDateString
+        }
+    }
+
     func timeRangeText(startDate: Date, endDate: Date, timezone: TimeZone) -> String {
         let dateFormatter = timeRangeDateFormatter(timezone: timezone)
         switch self {
@@ -24,11 +36,24 @@ private extension StatsTimeRangeV4 {
         case .thisWeek:
             dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
         case .thisMonth:
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("MMMM")
-            dateFormatter = formatter
+            dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
         case .thisYear:
             dateFormatter = DateFormatter.Charts.chartAxisYearFormatter
+        }
+        dateFormatter.timeZone = timezone
+        return dateFormatter
+    }
+
+    /// Date formatter for a selected date for a time range.
+    func timeRangeSelectedDateFormatter(timezone: TimeZone) -> DateFormatter {
+        let dateFormatter: DateFormatter
+        switch self {
+        case .today:
+            dateFormatter = DateFormatter.Charts.chartAxisHourFormatter
+        case .thisWeek, .thisMonth:
+            dateFormatter = DateFormatter.Charts.chartAxisDayFormatter
+        case .thisYear:
+            dateFormatter = DateFormatter.Charts.chartAxisFullMonthFormatter
         }
         dateFormatter.timeZone = timezone
         return dateFormatter
@@ -45,6 +70,17 @@ struct StatsTimeRangeBarViewModel {
          timezone: TimeZone) {
         timeRangeText = timeRange.timeRangeText(startDate: startDate,
                                                 endDate: endDate,
+                                                timezone: timezone)
+    }
+
+    init(startDate: Date,
+         endDate: Date,
+         selectedDate: Date,
+         timeRange: StatsTimeRangeV4,
+         timezone: TimeZone) {
+        timeRangeText = timeRange.timeRangeText(startDate: startDate,
+                                                endDate: endDate,
+                                                selectedDate: selectedDate,
                                                 timezone: timezone)
     }
 }

@@ -32,6 +32,12 @@ public final class ProductReviewStore: Store {
             synchronizeProductReviews(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .retrieveProductReview(let siteID, let reviewID, let onCompletion):
             retrieveProductReview(siteID: siteID, reviewID: reviewID, onCompletion: onCompletion)
+        case .updateApprovalStatus(let siteID, let reviewID, let isApproved, let onCompletion):
+            updateApprovalStatus(siteID: siteID, reviewID: reviewID, isApproved: isApproved, onCompletion: onCompletion)
+        case .updateTrashStatus(let siteID, let reviewID, let isTrashed, let onCompletion):
+            updateTrashStatus(siteID: siteID, reviewID: reviewID, isTrashed: isTrashed, onCompletion: onCompletion)
+        case .updateSpamStatus(let siteID, let reviewID, let isSpam, let onCompletion):
+            updateSpamStatus(siteID: siteID, reviewID: reviewID, isSpam: isSpam, onCompletion: onCompletion)
         }
     }
 }
@@ -63,7 +69,7 @@ private extension ProductReviewStore {
                 return
             }
 
-            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: productReviews) {
+            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: productReviews, siteID: siteID) {
                 onCompletion(nil)
             }
         }
@@ -83,10 +89,31 @@ private extension ProductReviewStore {
                 return
             }
 
-            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: [productReview]) {
+            self?.upsertStoredProductReviewsInBackground(readOnlyProductReviews: [productReview], siteID: siteID) {
                 onCompletion(productReview, nil)
             }
         }
+    }
+
+    /// Updates the review's approval status
+    ///
+    func updateApprovalStatus(siteID: Int, reviewID: Int, isApproved: Bool, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
+        let newStatus = isApproved ? ProductReviewStatus.approved : ProductReviewStatus.hold
+        moderateReview(siteID: siteID, reviewID: reviewID, status: newStatus, onCompletion: onCompletion)
+    }
+
+    /// Updates the review's trash status
+    ///
+    func updateTrashStatus(siteID: Int, reviewID: Int, isTrashed: Bool, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
+        let newStatus = isTrashed ? ProductReviewStatus.trash : ProductReviewStatus.untrash
+        moderateReview(siteID: siteID, reviewID: reviewID, status: newStatus, onCompletion: onCompletion)
+    }
+
+    /// Updates the review's spam status
+    ///
+    func updateSpamStatus(siteID: Int, reviewID: Int, isSpam: Bool, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
+        let newStatus = isSpam ? ProductReviewStatus.spam : ProductReviewStatus.unspam
+        moderateReview(siteID: siteID, reviewID: reviewID, status: newStatus, onCompletion: onCompletion)
     }
 }
 
@@ -110,14 +137,31 @@ private extension ProductReviewStore {
     /// Updates (OR Inserts) the specified ReadOnly ProductReview Entities *in a background thread*. onCompletion will be called
     /// on the main thread!
     ///
-    func upsertStoredProductReviewsInBackground(readOnlyProductReviews: [Networking.ProductReview], onCompletion: @escaping () -> Void) {
+    func upsertStoredProductReviewsInBackground(readOnlyProductReviews: [Networking.ProductReview], siteID: Int, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
-            self.upsertStoredProductReviews(readOnlyProductReviews: readOnlyProductReviews, in: derivedStorage)
+            self.upsertStoredProductReviews(readOnlyProductReviews: readOnlyProductReviews, in: derivedStorage, siteID: siteID)
         }
 
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    func moderateReview(siteID: Int, reviewID: Int, status: ProductReviewStatus, onCompletion: @escaping (ProductReviewStatus?, Error?) -> Void) {
+        let remote = ProductReviewsRemote(network: network)
+        let storage = storageManager.viewStorage
+        remote.updateProductReviewStatus(for: siteID, reviewID: reviewID, statusKey: status.rawValue) { (productReview, error) in
+            guard let productReview = productReview else {
+                onCompletion(nil, error)
+                return
+            }
+
+            if let existingStorageProductReview = storage.loadProductReview(siteID: siteID, reviewID: reviewID) {
+                existingStorageProductReview.update(with: productReview)
+            }
+
+            onCompletion(productReview.status, nil)
         }
     }
 }
@@ -130,11 +174,11 @@ extension ProductReviewStore {
     ///     - readOnlyProductReviews: Remote ProductReviews to be persisted.
     ///     - storage: Where we should save all the things!
     ///
-    func upsertStoredProductReviews(readOnlyProductReviews: [Networking.ProductReview], in storage: StorageType) {
+    func upsertStoredProductReviews(readOnlyProductReviews: [Networking.ProductReview], in storage: StorageType, siteID: Int) {
+        // Upsert the Product reviews from the read-only reviews
         for readOnlyProductReview in readOnlyProductReviews {
-            let storageProductReview = storage.loadProductReview(siteID: readOnlyProductReview.siteID, reviewID: readOnlyProductReview.reviewID) ??
+            let storageProductReview = storage.loadProductReview(siteID: siteID, reviewID: readOnlyProductReview.reviewID) ??
                 storage.insertNewObject(ofType: Storage.ProductReview.self)
-
             storageProductReview.update(with: readOnlyProductReview)
         }
     }

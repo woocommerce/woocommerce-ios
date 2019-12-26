@@ -13,6 +13,7 @@ extension NSNotification.Name {
     static let ZDPNCleared = NSNotification.Name(rawValue: "ZDPNCleared")
 }
 
+
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
@@ -60,12 +61,6 @@ class ZendeskManager: NSObject {
     }
 
 
-    /// Deinitializer
-    ///
-    deinit {
-        stopListeningToNotifications()
-    }
-
     /// Designated Initialier
     ///
     private override init() {
@@ -89,7 +84,7 @@ class ZendeskManager: NSObject {
                            clientId: ApiCredentials.zendeskClientId,
                            zendeskUrl: ApiCredentials.zendeskUrl)
         SupportUI.initialize(withZendesk: Zendesk.instance)
-        CommonTheme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
+        CommonTheme.currentTheme.primaryColor = UIColor.primary
 
         haveUserIdentity = getUserProfile()
         zendeskEnabled = true
@@ -211,7 +206,6 @@ class ZendeskManager: NSObject {
         return tags
     }
 }
-
 
 // MARK: - Push Notifications
 //
@@ -432,17 +426,17 @@ private extension ZendeskManager {
 
         // Set form field values
         let ticketFields = [
-            ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: Bundle.main.version),
-            ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()),
-            ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()),
-            ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()),
-            ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()),
-            ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform),
-            ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: Locale.preferredLanguage),
-            ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory)
+            CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
+            CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
+            CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
+            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
+            CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
+            CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
+            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
         ].compactMap { $0 }
 
-        requestConfig.fields = ticketFields
+        requestConfig.customFields = ticketFields
 
         // Set tags
         requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
@@ -751,12 +745,6 @@ private extension ZendeskManager {
     }
 
 
-    /// Removes all of the Notification Hooks.
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     /// Handles (all of the) Zendesk Notifications
     ///
     @objc func zendeskNotification(_ notification: Notification) {
@@ -825,16 +813,16 @@ private extension ZendeskManager {
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).
     // Which means they then have to be converted to NSNumber when sending to Zendesk.
     struct TicketFieldIDs {
-        static let form: UInt64 = 360000010286
-        static let appVersion: UInt64 = 360000086866
-        static let allBlogs: UInt64 = 360000087183
-        static let deviceFreeSpace: UInt64 = 360000089123
-        static let networkInformation: UInt64 = 360000086966
-        static let logs: UInt64 = 22871957
-        static let currentSite: UInt64 = 360000103103
-        static let sourcePlatform: UInt64 = 360009311651
-        static let appLanguage: UInt64 = 360008583691
-        static let subcategory: UInt64 = 25176023
+        static let form: Int64 = 360000010286
+        static let appVersion: Int64 = 360000086866
+        static let allBlogs: Int64 = 360000087183
+        static let deviceFreeSpace: Int64 = 360000089123
+        static let networkInformation: Int64 = 360000086966
+        static let logs: Int64 = 22871957
+        static let currentSite: Int64 = 360000103103
+        static let sourcePlatform: Int64 = 360009311651
+        static let appLanguage: Int64 = 360008583691
+        static let subcategory: Int64 = 25176023
     }
 
     struct LocalizedText {

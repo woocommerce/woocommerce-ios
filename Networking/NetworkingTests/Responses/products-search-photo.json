@@ -1,0 +1,267 @@
+{
+    "data": [
+        {
+            "id": 67,
+            "name": "Photo",
+            "slug": "photo",
+            "permalink": "https://funtestingusa.wpcomstaging.com/product/photo/",
+            "date_created": "2019-06-11T11:49:12",
+            "date_created_gmt": "2019-06-11T03:49:12",
+            "date_modified": "2019-09-06T14:08:10",
+            "date_modified_gmt": "2019-09-06T06:08:10",
+            "type": "simple",
+            "status": "publish",
+            "featured": false,
+            "catalog_visibility": "visible",
+            "description": "<p>City lights.</p>\n<p>&nbsp;</p>\n<p><img class=\"alignnone size-full wp-image-14\" src=\"https://funtestingusa.wpcomstaging.com/wp-content/uploads/2019/04/pexels-photo-30732.jpg\" alt=\"\" width=\"1600\" height=\"953\" /></p>\n",
+            "short_description": "",
+            "sku": "",
+            "price": "",
+            "regular_price": "",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": "2019-10-15T21:30:00",
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": "2019-10-27T21:29:59",
+            "price_html": "",
+            "on_sale": false,
+            "purchasable": false,
+            "total_sales": 0,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "external_url": "",
+            "button_text": "",
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "sold_individually": false,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_required": true,
+            "shipping_taxable": true,
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "reviews_allowed": true,
+            "average_rating": "0.00",
+            "rating_count": 0,
+            "related_ids": [],
+            "upsell_ids": [],
+            "cross_sell_ids": [],
+            "parent_id": 0,
+            "purchase_note": "",
+            "categories": [],
+            "tags": [],
+            "images": [
+                {
+                    "id": 14,
+                    "date_created": "2019-04-19T07:53:40",
+                    "date_created_gmt": "2019-04-18T15:53:40",
+                    "date_modified": "2019-04-19T07:53:40",
+                    "date_modified_gmt": "2019-04-18T15:53:40",
+                    "src": "https://i1.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/04/pexels-photo-30732.jpg?fit=1600%2C953&ssl=1",
+                    "name": "Placeholder Image",
+                    "alt": ""
+                }
+            ],
+            "attributes": [],
+            "default_attributes": [],
+            "variations": [],
+            "grouped_products": [],
+            "menu_order": 0,
+            "meta_data": [
+                {
+                    "id": 210,
+                    "key": "_created_via",
+                    "value": "post-new"
+                },
+                {
+                    "id": 230,
+                    "key": "_yoast_wpseo_primary_product_cat",
+                    "value": ""
+                },
+                {
+                    "id": 231,
+                    "key": "_yoast_wpseo_content_score",
+                    "value": "60"
+                },
+                {
+                    "id": 232,
+                    "key": "_wpas_done_all",
+                    "value": "1"
+                }
+            ],
+            "jetpack_publicize_connections": [],
+            "jetpack_likes_enabled": true,
+            "jetpack_sharing_enabled": true,
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/67"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 37,
+            "name": "Photo - cactus in Penghu",
+            "slug": "photo-cactus-in-penghu",
+            "permalink": "https://funtestingusa.wpcomstaging.com/product/photo-cactus-in-penghu/",
+            "date_created": "2019-05-23T23:00:02",
+            "date_created_gmt": "2019-05-23T15:00:02",
+            "date_modified": "2019-05-23T23:00:40",
+            "date_modified_gmt": "2019-05-23T15:00:40",
+            "type": "simple",
+            "status": "publish",
+            "featured": false,
+            "catalog_visibility": "visible",
+            "description": "<p><img class=\"alignnone size-medium wp-image-38\" src=\"https://funtestingusa.wpcomstaging.com/wp-content/uploads/2019/05/penghu-6-of-10-300x200.jpg\" alt=\"cactus\" width=\"300\" height=\"200\" /></p>\n",
+            "short_description": "<p>Postcard of <strong>Cactus</strong> in Penghu</p>\n",
+            "sku": "",
+            "price": "0",
+            "regular_price": "0",
+            "sale_price": "",
+            "date_on_sale_from": null,
+            "date_on_sale_from_gmt": null,
+            "date_on_sale_to": null,
+            "date_on_sale_to_gmt": null,
+            "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;</span>0</span>",
+            "on_sale": false,
+            "purchasable": true,
+            "total_sales": 4,
+            "virtual": false,
+            "downloadable": false,
+            "downloads": [],
+            "download_limit": -1,
+            "download_expiry": -1,
+            "external_url": "",
+            "button_text": "",
+            "tax_status": "taxable",
+            "tax_class": "",
+            "manage_stock": false,
+            "stock_quantity": null,
+            "stock_status": "instock",
+            "backorders": "no",
+            "backorders_allowed": false,
+            "backordered": false,
+            "sold_individually": false,
+            "weight": "",
+            "dimensions": {
+                "length": "",
+                "width": "",
+                "height": ""
+            },
+            "shipping_required": true,
+            "shipping_taxable": true,
+            "shipping_class": "",
+            "shipping_class_id": 0,
+            "reviews_allowed": true,
+            "average_rating": "0.00",
+            "rating_count": 0,
+            "related_ids": [],
+            "upsell_ids": [],
+            "cross_sell_ids": [],
+            "parent_id": 0,
+            "purchase_note": "",
+            "categories": [
+                {
+                    "id": 96987500,
+                    "name": "photos",
+                    "slug": "photos"
+                }
+            ],
+            "tags": [
+                {
+                    "id": 96987501,
+                    "name": "cactus",
+                    "slug": "cactus"
+                },
+                {
+                    "id": 96987502,
+                    "name": "photo",
+                    "slug": "photo"
+                }
+            ],
+            "images": [
+                {
+                    "id": 38,
+                    "date_created": "2019-05-24T06:49:43",
+                    "date_created_gmt": "2019-05-23T14:49:43",
+                    "date_modified": "2019-05-24T06:50:00",
+                    "date_modified_gmt": "2019-05-23T14:50:00",
+                    "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/05/penghu-6-of-10.jpg?fit=5886%2C3924&ssl=1",
+                    "name": "Cactus flowers on Qimei Island (七美望安)",
+                    "alt": "cactus"
+                },
+                {
+                    "id": 38,
+                    "date_created": "2019-05-24T06:49:43",
+                    "date_created_gmt": "2019-05-23T14:49:43",
+                    "date_modified": "2019-05-24T06:50:00",
+                    "date_modified_gmt": "2019-05-23T14:50:00",
+                    "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/05/penghu-6-of-10.jpg?fit=5886%2C3924&ssl=1",
+                    "name": "Cactus flowers on Qimei Island (七美望安)",
+                    "alt": "cactus"
+                }
+            ],
+            "attributes": [],
+            "default_attributes": [],
+            "variations": [],
+            "grouped_products": [],
+            "menu_order": 0,
+            "meta_data": [
+                {
+                    "id": 119,
+                    "key": "_created_via",
+                    "value": "post-new"
+                },
+                {
+                    "id": 144,
+                    "key": "_yoast_wpseo_primary_product_cat",
+                    "value": "96987500"
+                },
+                {
+                    "id": 145,
+                    "key": "_yoast_wpseo_content_score",
+                    "value": "30"
+                },
+                {
+                    "id": 149,
+                    "key": "_wpas_done_all",
+                    "value": "1"
+                }
+            ],
+            "jetpack_publicize_connections": [],
+            "jetpack_likes_enabled": true,
+            "jetpack_sharing_enabled": true,
+            "_links": {
+                "self": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/37"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products"
+                    }
+                ]
+            }
+        }
+    ]
+}

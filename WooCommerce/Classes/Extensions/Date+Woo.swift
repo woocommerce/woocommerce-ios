@@ -80,19 +80,23 @@ private extension Date {
         )
         static let singularMinuteUpdateStatment = NSLocalizedString(
             "Updated %ld minute ago",
-            comment: "Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago"
+            comment: "Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. " +
+            "Usage example: Updated 1 minute ago"
         )
         static let pluralMinuteUpdateStatment = NSLocalizedString(
             "Updated %ld minutes ago",
-            comment: "Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago"
+            comment: "Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. " +
+            "Usage example: Updated 55 minutes ago"
         )
         static let singularHourUpdateStatment = NSLocalizedString(
             "Updated %ld hour ago",
-            comment: "Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago"
+            comment: "Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. " +
+            "Usage example: Updated 1 hour ago"
         )
         static let pluralHourUpdateStatment = NSLocalizedString(
             "Updated %ld hours ago",
-            comment: "Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago"
+            comment: "Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. " +
+            "Usage example: Updated 14 hours ago"
         )
         static let longFormUpdateStatement = NSLocalizedString(
             "Updated on %@",

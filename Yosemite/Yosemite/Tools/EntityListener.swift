@@ -29,13 +29,6 @@ public class EntityListener<T: ReadOnlyType> {
     public var onDelete: (() -> Void)?
 
 
-
-    /// Deinitializer
-    ///
-    deinit {
-        NotificationCenter.default.removeObserver(notificationsToken as Any)
-    }
-
     /// Designated Initializer.
     ///
     public init(viewContext: NSManagedObjectContext, readOnlyEntity: T) {

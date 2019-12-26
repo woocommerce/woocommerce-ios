@@ -34,9 +34,6 @@ public class WooAnalytics: Analytics {
         self.analyticsProvider = analyticsProvider
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
 }
 
 

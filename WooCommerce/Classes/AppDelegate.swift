@@ -8,6 +8,10 @@ import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
 
+#if DEBUG
+import Wormholy
+#endif
+
 
 // MARK: - Woo's App Delegate!
 //
@@ -51,6 +55,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNoticePresenter()
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
+        setupWormholy()
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -158,38 +163,41 @@ private extension AppDelegate {
         UINavigationBar.applyWooAppearance()
         UILabel.applyWooAppearance()
         UISearchBar.applyWooAppearance()
+        UITabBar.applyWooAppearance()
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
-        window?.tintColor = StyleManager.wooCommerceBrandColor
+        window?.tintColor = .primary
     }
 
     /// Sets up FancyAlert's UIAppearance.
     ///
     func setupFancyAlertAppearance() {
         let appearance = FancyAlertView.appearance()
-        appearance.bottomDividerColor = StyleManager.wooGreyBorder
-        appearance.topDividerColor = StyleManager.wooGreyBorder
+        appearance.bodyBackgroundColor = .listBackground
+        appearance.bottomBackgroundColor = .listBackground
+        appearance.bottomDividerColor = .listSmallIcon
+        appearance.topDividerColor = .listSmallIcon
 
-        appearance.titleTextColor = StyleManager.defaultTextColor
+        appearance.titleTextColor = .text
         appearance.titleFont = UIFont.title2
 
-        appearance.bodyTextColor = StyleManager.defaultTextColor
+        appearance.bodyTextColor = .text
         appearance.bodyFont = UIFont.body
 
         appearance.actionFont = UIFont.headline
         appearance.infoFont = UIFont.subheadline
-        appearance.infoTintColor = StyleManager.wooCommerceBrandColor
-        appearance.headerBackgroundColor = StyleManager.wooGreyLight
+        appearance.infoTintColor = .primary
+        appearance.headerBackgroundColor = .listSmallIcon
     }
 
     /// Sets up FancyButton's UIAppearance.
     ///
     func setupFancyButtonAppearance() {
         let appearance = FancyButton.appearance()
-        appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
-        appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.primaryNormalBackgroundColor = .primaryButtonBackground
+        appearance.primaryNormalBorderColor = .primaryButtonDownBorder
+        appearance.primaryHighlightBackgroundColor = .primaryButtonDownBackground
+        appearance.primaryHighlightBorderColor = .primaryButtonDownBorder
     }
 
     /// Sets up Crash Logging
@@ -233,11 +241,9 @@ private extension AppDelegate {
     /// Sets up the current Log Leve.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
-        let rawLevel = Int32(level.rawValue)
-
-        WPSharedSetLoggingLevel(rawLevel)
-        WPAuthenticatorSetLoggingLevel(rawLevel)
-        WPKitSetLoggingLevel(rawLevel)
+        WPSharedSetLoggingLevel(level)
+        WPAuthenticatorSetLoggingLevel(level)
+        WPKitSetLoggingLevel(level)
     }
 
     /// Setup: Notice Presenter
@@ -275,6 +281,15 @@ private extension AppDelegate {
         appRating.register(section: "notifications", significantEventCount: WooConstants.notificationEventCount)
         appRating.systemWideSignificantEventCountRequiredForPrompt = WooConstants.systemEventCount
         appRating.setVersion(version)
+    }
+
+    /// Set up Wormholy only in Debug build configuration
+    ///
+    func setupWormholy() {
+        #if DEBUG
+        /// We want to activate it programmatically, not using the shake.
+        Wormholy.shakeEnabled = false
+        #endif
     }
 }
 

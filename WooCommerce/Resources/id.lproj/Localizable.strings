@@ -1,10 +1,56 @@
-/* Translation-Revision-Date: 2019-08-08 00:54:04+0000 */
+/* Translation-Revision-Date: 2019-12-12 00:54:56+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
 
 /* No comment provided by engineer. */
+"%1$@ (%2$ld options)" = "%1$@ (Pilihan %2$ld)";
+
+/* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
+"%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (Pribadi)";
+
+/* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
+"%1$@ - %2$@ (System)" = "%1$@ - %2$@ (Sistem)";
+
+/* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
+"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (Untuk Pelanggan)";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
+"%1$@ left a review on %2$@" = "%1$@ memberikan ulasan tentang %2$@";
+
+/* Payment on <date> received via (payment method title) */
+"%1$@ via %2$@" = "%1$@ melalui %2$@";
+
+/* Displays a time range followed by a specific date/time */
+"%1$@ › %2$@" = "%1$@ › %2$@";
+
+/* Displays a date range for a stats interval */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
+"%1$@ left a review on %2$@" = "%1$@ memberikan ulasan tentang %2$@";
+
+/* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
+"%1$@ via %2$@ – %3$@" = "%1$@ melalui %2$@ – %3$@";
+
+/* Label about product's inventory stock status shown on Products tab */
+"%ld in stock" = "%ld tersedia";
+
+/* Label about one product variation shown on Products tab */
+"%ld variant" = "%ld varian";
+
+/* Label about number of variations shown on Products tab */
+"%ld variants" = "%ld varian";
+
+/* Payment on <date> received via (payment method title) */
+"(datePaid) via (order.paymentMethodTitle)" = "(datePaid) melalui (order.paymentMethodTitle)";
+
+/* Title for an untitled post, should match WP core */
 "(no title)" = "(tanpa judul)";
+
+/* A badge with the number of orders. More than nine new orders.
+   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+"9+" = "9+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Alamat email valid diperlukan untuk mengirimkan tautan autentikasi. Kembali ke layar sebelumnya dan berikan alamat email yang valid.";
@@ -35,14 +81,15 @@
    Add tracking screen - title. */
 "Add Tracking" = "Tambahkan Pelacakan";
 
-/* Button text for adding a new order note */
+/* Accessibility label for the 'Add a note' button
+   Button text for adding a new order note */
 "Add a note" = "Tambahkan catatan";
 
-/* Accessibility label for the 'Add a note' button */
-"Add a note button" = "Tambahkan Tombol Catatan";
+/* Cell text in Add / Edit product when there are no images. */
+"Add a product image" = "Tambahkan gambar produk";
 
 /* Accessibility label for the 'Add a tracking' button */
-"Add a tracking button" = "Tambahkan tombol pelacakan";
+"Add a tracking" = "Tambahkan pelacakan";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
 "Adds a note to an order" = "Menambahkan catatan ke pesanan";
@@ -53,12 +100,11 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Alat canggih untuk meninjau status aplikasi";
 
-/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
-   Name of the All filter on the Order List screen - it means all orders will be displayed. */
+/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "Semua";
 
-/* Mark all notifications as read notice */
-"All notifications marked as read" = "Semua pemberitahuan ditandai sudah dibaca";
+/* Mark all reviews as read notice */
+"All reviews marked as read" = "Semua ulasan ditandai sudah dibaca";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Hampir selesai! Masukkan kode verifikasi dari aplikasi pengautentikasi.";
@@ -90,7 +136,8 @@
 /* Approve a comment */
 "Approve" = "Setujui";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "Disetujui";
 
 /* Approves a comment. Spoken Hint. */
@@ -108,6 +155,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Dikelola secara otomatis di situs ini";
 
+/* Awaiting payment via (payment method title) */
+"Awaiting payment via %@" = "Menunggu pembayaran melalui %@";
+
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "Kembali";
 
@@ -117,11 +167,24 @@
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "Pesanan tunda:";
 
-/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
+   VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "Nomor bar %1$i, %2$@, ";
 
-/* Billing title for customer info cell */
-"Billing details" = "Detail tagihan";
+/* Begin fulfill order button title */
+"Begin Fulfillment" = "Mulai Pemenuhan";
+
+/* Section header title for billing address in billing information */
+"Billing Address" = "Alamat Penagihan";
+
+/* Billing Information view Title */
+"Billing Information" = "Informasi Tagihan";
+
+/* Accessibility label for block quote button on formatting toolbar. */
+"Block Quote" = "Blokir Kutipan";
+
+/* Accessibility label for bold button on formatting toolbar. */
+"Bold" = "Tebal";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "Dengan mendaftar, berarti Anda menyetujui _Ketentuan Layanan_ kami.";
@@ -163,6 +226,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "Menghubungkan ke WordPress.com";
 
+/* Section header title for contact details in billing information */
+"Contact Details" = "Detail Kontak";
+
 /* Contact Email title */
 "Contact Email" = "Hubungi via Email";
 
@@ -174,6 +240,15 @@
 
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "Lanjutkan membaca";
+
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "Lanjutkan dengan Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "Lanjutkan dengan WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "Melanjutkan dengan Apple";
 
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "Salin";
@@ -197,7 +272,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "Tidak dapat terhubung. Metode XML-RPC yang diperlukan tidak ditemukan di server.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Tidak dapat terhubung. Kami menerima error 403 saat mencoba mengakses titik akhir XMLRPC situs Anda. Aplikasi ini memerlukannya agar dapat berkomunikasi dengan situs Anda. Hubungi host Anda untuk mengatasi masalah ini.";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "Tidak dapat terhubung. Host Anda memblokir permintaan POST, dan aplikasi memerlukannya untuk berkomunikasi dengan situs Anda. Hubungi host Anda untuk mengatasi masalah ini.";
@@ -212,8 +287,10 @@
    Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "Penyedia Kustom";
 
-/* Customer info section title
-   Section title for the customer's billing and shipping address */
+/* Customer info section title */
+"Customer" = "Pelanggan";
+
+/* Section title for the customer's billing and shipping address */
 "Customer Information" = "Informasi Pelanggan";
 
 /* Customer note section title
@@ -229,6 +306,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "Hari";
 
+/* Description of the default paragraph formatting style in the editor. */
+"Default" = "Asal";
+
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "Hapus";
 
@@ -239,17 +319,33 @@
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
 "Deletes a shipment's tracking information." = "Menghapus informasi pelacakan pengiriman.";
 
+/* Placeholder in the Product description row on Product form screen. */
+"Describe your product" = "Deskripsikan produk Anda";
+
+/* The navigation bar title of the Aztec editor screen.
+   Title in the Product description row on Product form screen when the description is non-empty. */
+"Description" = "Deskripsi";
+
 /* The row label to tap for a detailed product list */
 "Details" = "Rincian";
 
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "Detail Pesanan #(viewModel.order.number)";
 
+/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
+"Dimensions: %1$@ x %2$@ x %3$@%4$@" = "Dimensi: %1$@ x %2$@ x %3$@%4$@";
+
+/* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
+"Dimensions: %1$@ x %2$@%3$@" = "Dimensi: %1$@ x %2$@%3$@";
+
+/* Format of one dimension on the Shipping Settings row - dimension[unit] */
+"Dimensions: %1$@%2$@" = "Dimensi: %1$@%2$@";
+
 /* Discount label for payment view */
 "Discount" = "Diskon";
 
 /* Add a note screen - button title for closing the view
-   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Hentikan";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -309,6 +405,9 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "URL Kosong";
 
+/* The text placeholder for the Text Editor screen */
+"Enter a title..." = "Masukkan judul...";
+
 /* Error message shown when a URL is invalid. */
 "Enter a valid URL eg. example.com." = "Masukkan URL yang valid mis. contoh.com.";
 
@@ -334,6 +433,10 @@
    Title of a button. */
 "Enter your password instead." = "Masukkan kata sandi saja.";
 
+/* Experimental features navigation title
+   Navigates to experimental features screen */
+"Experimental Features" = "Fitur Eksperimental";
+
 /* Expiry: 1 day */
 "Expiry: %ld day" = "Kedaluwarsa: %ld hari";
 
@@ -346,14 +449,8 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Permintaan Fitur";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "Saring pemberitahuan";
-
 /* Filter the orders list. */
 "Filter orders" = "Saring pesanan";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "Menyaring daftar pemberitahuan menurut jenis pemberitahuan.";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "Menyaring daftar pesanan menurut status pembayaran.";
@@ -363,9 +460,6 @@
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "Penuhi Pesanan #(order.number)";
-
-/* Fulfill order button title */
-"Fulfill order" = "Penuhi pesanan";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "Dapatkan informasi mengenai performa produk di toko Anda";
@@ -382,6 +476,49 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "APA YANG DAPAT KAMI BANTU?";
 
+/* Accessibility label for HTML button on formatting toolbar.
+   HTML Attachment Label */
+"HTML" = "HTML";
+
+/* Post HTML content */
+"HTML Content" = "Konten HTML";
+
+/* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
+"Header 1" = "Header 1";
+
+/* Accessibility label for selecting h2 paragraph style button on the formatting toolbar. */
+"Header 2" = "Header 2";
+
+/* Accessibility label for selecting h3 paragraph style button on the formatting toolbar. */
+"Header 3" = "Header 3";
+
+/* Accessibility label for selecting h4 paragraph style button on the formatting toolbar. */
+"Header 4" = "Header 4";
+
+/* Accessibility label for selecting h5 paragraph style button on the formatting toolbar. */
+"Header 5" = "Header 5";
+
+/* Accessibility label for selecting h6 paragraph style button on the formatting toolbar. */
+"Header 6" = "Header 6";
+
+/* H1 Aztec Style */
+"Heading 1" = "Judul 1";
+
+/* H2 Aztec Style */
+"Heading 2" = "Penajukan 2";
+
+/* H3 Aztec Style */
+"Heading 3" = "Penajukan 3";
+
+/* H4 Aztec Style */
+"Heading 4" = "Penajukan 4";
+
+/* H5 Aztec Style */
+"Heading 5" = "Penajukan 5";
+
+/* H6 Aztec Style */
+"Heading 6" = "Penajukan 6";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "Bantuan";
@@ -395,13 +532,17 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Bantu Meningkatkan Kualitas Aplikasi";
 
-/* Footer text to hide the billing cell */
-"Hide billing" = "Sembunyikan tagihan";
+/* Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+"Hidden" = "Tersembunyi";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "Jika dinonaktifkan, catatan akan diatur sebagai pribadi";
 
-/* Display label for the product's inventory stock status */
+/* My Store > Settings > Experimental features > Switch stats version */
+"Improved stats" = "Statistik yang disempurnakan";
+
+/* Display label for the product's inventory stock status
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "Tersedia";
 
 /* Application's Inactive State */
@@ -419,6 +560,15 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "Nama pengguna atau kata sandi salah. Silakan coba masukkan rincian masuk Anda kembali.";
 
+/* Label action for inserting a link on the editor */
+"Insert" = "Sisipkan";
+
+/* Accessibility label for insert horizontal ruler button on formatting toolbar. */
+"Insert Horizontal Ruler" = "Sisipkan Penggaris Horizontal";
+
+/* Accessibility label for insert link button on formatting toolbar. */
+"Insert Link" = "Sisipkan Tautan";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Alamat Situs Tak Sah";
 
@@ -435,7 +585,7 @@
 "Invalid username" = "Nama pengguna tidak sah";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "Persediaan";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -444,7 +594,20 @@
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Sepertinya Anda memasukkan kata sandi yang salah. Ingin mencoba lagi?";
 
-/* Settings > Privacy Settings. A text link to the cookie policy. */
+/* Accessibility label for italic button on formatting toolbar. */
+"Italic" = "Miring";
+
+/* Last 24 hours section header */
+"Last 24 hours" = "24 jam terakhir";
+
+/* Last 7 days section header */
+"Last 7 days" = "7 hari terakhir";
+
+/* Opens an internal library called Wormholy. Not visible to users. */
+"Launch Wormholy debug" = "Luncurkan debug Wormholy";
+
+/* Settings > Privacy Settings. A text link to the cookie policy.
+   The action of the top banner on Dashboard that indicates new stats is unavailable */
 "Learn more" = "Pelajari lebih lanjut";
 
 /* Licenses (information page title) */
@@ -458,6 +621,13 @@
 
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "Batas: %ld unduhan";
+
+/* Title for screen in editor that allows to configure link options */
+"Link Settings" = "Pengaturan Tautan";
+
+/* Label for the text of a link in the editor
+   Navigation bar title for editing the text of a text link */
+"Link Text" = "Teks Tautan";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "Memuat Pesanan";
@@ -483,10 +653,10 @@
 "Log in failed. Please try again." = "Login gagal. Silakan coba lagi.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "Login ke WordPress.com dengan alamat email untuk mengelola semua situs WordPress Anda.";
+"Log in to the WordPress.com account you used to connect Jetpack." = "Login ke akun WordPress.com yang Anda gunakan untuk menghubungkan Jetpack.";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "Login ke akun WordPress.com yang Anda gunakan untuk menghubungkan Jetpack.";
+"Log in to your WordPress.com account with your email address." = "Login ke akun WordPress.com Anda dengan alamat email.";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "Login dengan Jetpack";
@@ -515,14 +685,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "Domain Dipetakan";
 
-/* Accessibility label for the Mark All Notifications as Read Button */
+/* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "Tandai Semua sebagai Sudah Dibaca";
 
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "Tandai Pesanan Selesai";
 
-/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
-"Marks Every Notification as Read" = "Tandai Setiap Pemberitahuan sebagai Sudah Dibaca";
+/* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
+"Marks Every Review as Read" = "Tandai Semua Ulasan sebagai Sudah Dibaca";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "Media tidak memiliki file yang dikaitkan untuk diunggah.";
@@ -539,7 +709,8 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "Bulan";
 
-/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
+   Accessibility label for the More button on formatting toolbar. */
 "More" = "Lainnya";
 
 /* Spam Action Spoken hint. */
@@ -570,46 +741,50 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "Butuh bantuan lebih lanjut?";
 
+/* The title for the net amount paid cell */
+"Net" = "Net";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "Selanjutnya";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "Belum Ada Pemberitahuan!";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "Tidak Ada Pesanan yang ditemukan";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "Belum Ada Ulasan!";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "Tidak ada aktivitas dalam periode ini";
 
-/* Order details > customer info > billing details. This is where the address would normally display.
+/* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "Tidak ada alamat yang dicantumkan.";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "Tidak ada data yang tersedia";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* The text on the placeholder overlay when there are no product variations on the Products tab */
+"No product variations yet" = "Masih belum ada variasi produk";
+
+/* Search Products (Empty State)
+   The text on the placeholder overlay when there are no products on the Products tab */
+"No products yet" = "Belum ada produk";
+
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "Tidak ada hasil untuk kriteria yang dipilih";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
 "No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
 
+/* Text displayed when no order data are available for the selected time range. */
+"No revenue this period" = "Tidak ada pendapatan dalam periode ini";
+
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Belum dikirimkan";
 
-/* Labels an order note to let user know it's visible to the customer
-   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "Catatan untuk pelanggan";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "Notifications";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "Pemberitahuan: %@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "Jumlah file:";
@@ -623,6 +798,9 @@
 
 /* +2 Days Section Header */
 "Older than 2 days" = "Lebih dari 2 hari";
+
+/* +7 Days Section Header */
+"Older than 7 days" = "Lebih dari 7 hari";
 
 /* Months Section Header */
 "Older than a Month" = "Lebih dari satu Bulan";
@@ -645,11 +823,17 @@
 /* Navigates to screen about open source licenses */
 "Open Source Licenses" = "Lisensi sumber terbuka";
 
+/* Label for the description of openening a link using a new window */
+"Open in a new Window\/Tab" = "Buka di Jendela\/Tab baru";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Membuka daftar status yang tersedia.";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Informasi Pelacakan Opsional";
+
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "Atau login dengan _memasukkan alamat situs Anda_.";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
@@ -664,14 +848,20 @@
 /* Change order status screen - Screen title */
 "Order Status" = "Status Pesanan";
 
+/* Order Total label for payment view */
+"Order Total" = "Total Pesanan";
+
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "Pesanan ditandai sudah dipenuhi";
 
 /* Order status update success notice */
 "Order status updated" = "Status pesanan diperbarui";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Accessibility label for Ordered list button on formatting toolbar. */
+"Ordered List" = "Daftar Berurutan";
+
+/* Orders stat label on dashboard - should be plural.
+   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Pesanan";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -686,21 +876,25 @@
 /* Product section title */
 "PRODUCT" = "PRODUK";
 
+/* The title for the customer payment cell */
+"Paid By Customer" = "Dibayar Oleh Pelanggan";
+
 /* Login dialog password placeholder
    Password placeholder */
 "Password" = "Kata sandi";
 
+/* Paste without Formatting Menu Item */
+"Paste without Formatting" = "Tempel tanpa Format";
+
 /* Payment section title */
 "Payment" = "Pembayaran";
 
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (subject.totalValue) received via (order.paymentMethodTitle)" = "Pembayaran sebesar (subject.totalValue) diterima melalui (order.paymentMethodTitle)";
-
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (totalValue) received via (order.paymentMethodTitle)" = "Pembayaran sebesar (totalValue) diterima melalui (order.paymentMethodTitle)";
-
-/* Display label for the product's pending status */
+/* Display label for the product's pending status
+   Display label for the review's pending status */
 "Pending" = "Tertunda";
+
+/* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
+"Pending Review" = "Menunggu Peninjauan";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Nomor telepon: %@";
@@ -711,6 +905,9 @@
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "Periksa email Anda";
 
+/* Placeholder for editing the URL of a text link */
+"Please enter a URL" = "Harap Masukkan URL";
+
 /* No comment provided by engineer. */
 "Please enter a site address." = "Silahkan masukkan alamat situs.";
 
@@ -719,6 +916,12 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "Silahkan masukkan alamat surel yang sah.";
+
+/* Placeholder for editing the text of a text link */
+"Please enter some text" = "Harap ketik teks";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "Masukkan kata sandi akun WordPress.com Anda untuk login dengan ID Apple.";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "Masukkan kredensial Anda";
@@ -738,7 +941,8 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Buka aplikasi email Anda dan cari email dari WordPress.com";
 
-/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
+   Title of the Price Settings row on Product main screen */
 "Price" = "Harga";
 
 /* Product Details - pricing and inventory section title */
@@ -754,8 +958,7 @@
 /* Display label for the product's private status */
 "Private" = "Privat";
 
-/* Labels an order note to let the user know it's private and not seen by the customer
-   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Catatan privat";
 
 /* Description for Top Performers left column header
@@ -764,6 +967,16 @@
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "Produk %ld telah dihapus dari toko Anda";
+
+/* Title of the view containing a single Product Review */
+"Product Review" = "Ulasan Produk";
+
+/* Product Total label for payment view */
+"Product Total" = "Total Produk";
+
+/* My Store > Settings > Experimental features > Switch Products
+   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+"Products" = "Produk";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Berikan pilihan untuk menelepon atau mengirim pesan ke pelanggan tertagih.";
@@ -780,7 +993,8 @@
 /* Product Details - purchase details section title */
 "Purchase Details" = "Detail Pembelian";
 
-/* Product Details > Purchase Details > Purchase note cell title */
+/* Product Details > Purchase Details > Purchase note cell title
+   Title for purchase note alert. */
 "Purchase note" = "Catatan pembelian";
 
 /* Quantity abbreviation for section title */
@@ -789,6 +1003,9 @@
 /* Quantity abbreviation for section title
    Section header title - abbreviation for quantity */
 "Qty" = "Jml";
+
+/* Format of the stock quantity on the Inventory Settings row */
+"Quantity: %ld" = "Jumlah: %ld";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "Hubungi Happiness Engineer kami yang dapat membantu menjawab pertanyaan sulit";
@@ -799,15 +1016,23 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Baca kebijakan privasi";
 
+/* The title for the refunded amount cell */
+"Refunded" = "Dana dikembalikan";
+
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Domain Terdaftar";
 
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "Harga normal:";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Format of the regular price on the Price Settings row */
+"Regular price: %@" = "Harga normal: %@";
+
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "Hapus Penyaring";
+
+/* Label action for removing a link from the editor */
+"Remove Link" = "Buang Tautan";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Laporkan masalah crash";
@@ -818,6 +1043,9 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "Menerima daftar pesanan yang mengandung kata kunci tertentu.";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search products. */
+"Retrieves a list of products that contain a given keyword." = "Menerima daftar produk yang mengandung kata kunci tertentu.";
+
 /* Retry Action
    Retry the last action */
 "Retry" = "Coba Lagi";
@@ -826,14 +1054,14 @@
 "Revenue" = "Pendapatan";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
-"Review marked as %@" = "Review marked as %@";
+"Review marked as %@" = "Ulasan ditandai %@";
 
-/* Description text used on the UI element displayed when a user has pending orders to process. */
-"Review, prepare, and ship these pending orders" = "Tinjau, siapkan, dan kirimkan pesanan yang tertunda ini";
-
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+/* Reviews descriptive label
+   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "Ulasan";
+
+/* Post Rich content */
+"Rich Content" = "Konten Kaya";
 
 /* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
 "SKU" = "SKU";
@@ -842,20 +1070,38 @@
    A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "SKU:";
 
+/* Format of the SKU on the Inventory Settings row */
+"SKU: %@" = "SKU: %@";
+
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS Terkirim";
+
+/* Format of the sale period on the Price Settings row */
+"Sale dates: %1$@-%2$@" = "Tanggal penjualan: %1$@-%2$@";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "Harga obral:";
 
+/* Format of the sale price on the Price Settings row */
+"Sale price: %@" = "Harga obral: %@";
+
 /* Orders Search Placeholder */
 "Search all orders" = "Cari semua pesanan";
+
+/* Products Search Placeholder */
+"Search all products" = "Cari semua produk";
 
 /* Search Orders */
 "Search orders" = "Cari pesanan";
 
+/* Search Products */
+"Search products" = "Cari produk";
+
 /* Page title for the select a different store screen */
 "Select Store" = "Pilih Toko";
+
+/* Accessibility label for selecting paragraph style button on formatting toolbar. */
+"Select paragraph style" = "Pilih gaya paragraf";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "Toko yang Dipilih";
@@ -884,8 +1130,11 @@
 "Shipped %@" = "Dikirimkan %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view */
+   Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Pengiriman";
+
+/* Shipping method title for customer info cell */
+"Shipping Method" = "Metode Pengiriman";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Penyedia Pengiriman";
@@ -896,11 +1145,14 @@
 /* Shipping title for customer info cell */
 "Shipping details" = "Detail pengiriman";
 
+/* VoiceOver accessibility label for the shipping notice about the order */
+"Shipping notice about the order" = "Pemberitahuan pengiriman tentang pesanan";
+
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Penyedia pengiriman";
 
-/* Footer text to show the billing cell */
-"Show billing" = "Tampilkan tagihan";
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show the billing details for this order." = "Tampilkan detail tagihan untuk pesanan ini.";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Menampilkan lebih banyak pilihan.";
@@ -925,6 +1177,9 @@
 
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "Ukuran:";
+
+/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
+"Someone" = "Seseorang";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "Maaf, tapi nama pengguna Anda mengandung frase tak sah %@.";
@@ -971,8 +1226,12 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "Maaf, Anda tidak dapat menggunakan alamat situs tersebut.";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "Spam";
+
+/* Aztec's Text Placeholder */
+"Start writing..." = "Mulai menulis:";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "Periode awal %1$@, periode akhir %2$@";
@@ -982,6 +1241,9 @@
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "Status stok:";
+
+/* Format of the stock status on the Inventory Settings row */
+"Stock status: %@" = "Status stok: %@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "Diagram pendapatan toko";
@@ -995,8 +1257,8 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "Diagram pendapatan toko: Sumbu Y";
 
-/* Subtotal label for payment view */
-"Subtotal" = "Subtotal";
+/* Accessibility label for strikethrough button on formatting toolbar. */
+"Strike Through" = "Coretan";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Beralih Toko";
@@ -1004,8 +1266,80 @@
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "Beralih ke (newStoreName). Anda hanya akan menerima pemberitahuan dari toko ini.";
 
-/* Labels an order note to let user know it's a system status message */
-"System status" = "Status sistem";
+/* Accessibility Identifier for the H1 Aztec Style */
+"Switches to the Heading 1 font size" = "Beralih ke Judul ukuran font 1";
+
+/* Accessibility Identifier for the H2 Aztec Style */
+"Switches to the Heading 2 font size" = "Beralih ke Judul ukuran font 2";
+
+/* Accessibility Identifier for the H3 Aztec Style */
+"Switches to the Heading 3 font size" = "Beralih ke Judul ukuran font 3";
+
+/* Accessibility Identifier for the H4 Aztec Style */
+"Switches to the Heading 4 font size" = "Beralih ke Judul ukuran font 4";
+
+/* Accessibility Identifier for the H5 Aztec Style */
+"Switches to the Heading 5 font size" = "Beralih ke Judul ukuran font 5";
+
+/* Accessibility Identifier for the H6 Aztec Style */
+"Switches to the Heading 6 font size" = "Beralih ke Judul ukuran font 6";
+
+/* Accessibility Identifier for the Default Font Aztec Style. */
+"Switches to the default Font Size" = "Beralih ke Ukuran Font asal";
+
+/* Accessibility hint for the More button on formatting toolbar. */
+"Tap for more formatting options" = "Ketuk untuk melihat opsi pemformatan lainnya";
+
+/* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
+"Tap to insert a Horizontal Ruler" = "Ketuk untuk menyisipkan Penggaris Horizontal";
+
+/* Accessibility hint for insert link button on formatting toolbar. */
+"Tap to insert a Link" = "Ketuk untuk menyisipkan Tautan";
+
+/* Accessibility hint for block quote button on formatting toolbar. */
+"Tap to toggle Block Quote" = "Ketuk untuk mengaktifkan Blok Kutipan";
+
+/* Accessibility hint for bold button on formatting toolbar. */
+"Tap to toggle Bold text" = "Ketuk untuk mengaktifkan teks bercetak Tebal";
+
+/* Accessibility hint for HTML button on formatting toolbar. */
+"Tap to toggle HTML mode" = "Ketuk untuk mengaktifkan mode HTML";
+
+/* Accessibility hint for selecting h1 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 1" = "Ketuk untuk mengaktifkan Header 1";
+
+/* Accessibility hint for selecting h2 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 2" = "Ketuk untuk mengaktifkan Header 2";
+
+/* Accessibility hint for selecting h3 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 3" = "Ketuk untuk mengaktifkan Header 3";
+
+/* Accessibility hint for selecting h4 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 4" = "Ketuk untuk mengaktifkan Header 4";
+
+/* Accessibility hint for selecting h5 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 5" = "Ketuk untuk mengaktifkan Header 5";
+
+/* Accessibility hint for selecting h6 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 6" = "Ketuk untuk mengaktifkan Header 6";
+
+/* Accessibility hint for italic button on formatting toolbar. */
+"Tap to toggle Italic text" = "Ketuk untuk mengaktifkan teks miring";
+
+/* Accessibility hint for Ordered list button on formatting toolbar. */
+"Tap to toggle Ordered List" = "Ketuk untuk mengaktifkan Daftar Berurutan";
+
+/* Accessibility hint for strikethrough button on formatting toolbar. */
+"Tap to toggle Strike Through" = "Ketuk untuk mengaktifkan Coretan";
+
+/* Accessibility hint for underline button on formatting toolbar. */
+"Tap to toggle Underline" = "Ketuk untuk mengaktifkan Garis Bawah";
+
+/* Accessibility hint for unordered list button on formatting toolbar. */
+"Tap to toggle Unordered List" = "Ketuk untuk mengaktifkan Daftar Tidak Berurutan";
+
+/* Accessibility hint for selecting paragraph style button on formatting toolbar. */
+"Tap to toggle paragraph style" = "Ketuk untuk mengaktifkan gaya paragraf";
 
 /* Tax label for total taxes line */
 "Tax:" = "Pajak:";
@@ -1015,6 +1349,9 @@
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Ketentuan Layanan";
+
+/* My Store > Settings > Experimental features > Products description */
+"Test out the new products section as we get ready to launch" = "Uji bagian produk baru saat kami mempersiapkan peluncuran";
 
 /* Button title */
 "Text me a code instead" = "Kirimi saya kode saja";
@@ -1052,8 +1389,8 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "Sertifikat untuk server ini tidak sah. Anda mungkin tersambung dengan server yang menyamar sebagai “%@” yang bisa membuat informasi rahasia Anda beresiko,\n\nApakah Anda ingin mempercayai sertifikat itu?";
 
-/* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed" = "Pemberitahuan telah dihapus!";
+/* Displayed whenever a review that was onscreen got deleted. */
+"The review has been removed" = "Ulasan telah dihapus";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Server memberi respon kosong. Biasanya ini berarti Anda perlu meningkatkan batas memori situs Anda.";
@@ -1076,17 +1413,23 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "Terjadi masalah saat menghapus blokir untuk situs tertentu.";
 
-/* Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month
+   Top Performers section title - this month */
 "This Month" = "Bulan Ini";
 
-/* Top Performers section title - this week */
+/* Tab selector title that shows the statistics for this week
+   Top Performers section title - this week */
 "This Week" = "Minggu Ini";
 
-/* Top Performers section title - this year */
+/* Tab selector title that shows the statistics for this year
+   Top Performers section title - this year */
 "This Year" = "Tahun Ini";
 
 /* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "Aplikasi ini memerlukan Jetpack agar dapat terhubung ke Toko Anda. <br \/> Baca <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">petunjuk konfigurasi<\/a>.";
+
+/* Body text of alert warning users to upgrade to WC 3.5. */
+"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "Aplikasi ini mewajibkan Anda menginstal WooCommerce 3.5 di server Anda dan tidak berfungsi dengan semestinya jika Anda tidak menginstalnya. Perbarui sesegera mungkin untuk terus menggunakan aplikasi ini.";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "Alamat email ini tidak terdaftar di WordPress.com.";
@@ -1094,11 +1437,19 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "Informasi ini membantu kami menyempurnakan produk, membuat pemasaran kepada Anda jadi lebih relevan, menyesuaikan pengalaman WordPress.com Anda, dan lainnya seperti yang dijelaskan dalam kebijakan privasi kami.";
 
+/* Accessibility label for the Shipping notice
+   Shipping notice row label when there is more than one shipping method */
+"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "Pesanan ini menggunakan ekstensi untuk menghitung pengiriman. Metode pengiriman yang ditunjukkan mungkin tidak lengkap.";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "Produk ini tidak dapat dimuat";
 
-/* Product details screen — product title descriptive label */
+/* Product details screen — product title descriptive label
+   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
 "Title" = "Judul";
+
+/* Placeholder in the Product Title row on Product form screen. */
+"Title (required)" = "Judul (wajib diisi)";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Untuk membuat akun WordPress.com Anda yang baru, masukkan alamat email Anda.";
@@ -1109,18 +1460,21 @@
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "Untuk melanjutkan dengan akun Google ini, harap login terlebih dahulu dengan kata sandi WordPress.com Anda. Hal ini hanya akan ditanyakan sekali.";
 
-/* Today Section Header
-   Top Performers section title - today */
+/* Tab selector title that shows the statistics for today
+   Today Section Header - Top Performers section title - today */
 "Today" = "Hari ini";
+
+/* Accessibility Identifier for the Aztec Ordered List Style. */
+"Toggles the ordered list style" = "Mengaktifkan dan menonaktifkan gaya daftar yang diurutkan";
+
+/* Accessibility Identifier for the Aztec Unordered List Style */
+"Toggles the unordered list style" = "Mengaktifkan dan menonaktifkan gaya daftar yang tidak diurutkan";
 
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "Produk dengan Performa Tertinggi";
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "Topik tidak ditemukan untuk ID:";
-
-/* Total label for payment view */
-"Total" = "Total";
 
 /* Product details screen - total orders descriptive label */
 "Total Orders" = "Total Pesanan";
@@ -1146,20 +1500,34 @@
 /* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Nomor pelacakan %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "Buang";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Percayai";
 
-/* No comment provided by engineer. */
+/* The action of the top banner on Dashboard that indicates new stats is available */
+"Try It Now" = "Coba Sekarang";
+
+/* Button to trigger connection to another account in store picker */
 "Try another account" = "Coba akun lain";
+
+/* The title of the top banner on Dashboard that indicates new stats is available */
+"Try our improved stats" = "Cobalah statistik yang disempurnakan";
+
+/* My Store > Settings > Experimental features > Stats version description */
+"Try the new stats available with the WooCommerce Admin plugin" = "Coba statistik baru yang tersedia dengan plugin WooCommerce Admin";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "Coba dengan email lain";
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "Coba dengan alamat situs";
+
+/* Navigation bar title for editing the URL of a text link
+   URL text field placeholder */
+"URL" = "URL";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "Tidak Dapat Terhubung";
@@ -1192,7 +1560,7 @@
 "Unable to load content" = "Tidak dapat memuat konten";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
-"Unable to mark review as %@" = "Unable to mark review as %@";
+"Unable to mark review as %@" = "Tidak dapat menandai ulasan %@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Tidak dapat membaca situs WordPress dalam URL tersebut. Ketuk 'Butuh Bantuan?' untuk melihat FAQ.";
@@ -1212,10 +1580,14 @@
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "Tidak menyetujui komentar";
 
+/* Accessibility label for underline button on formatting toolbar. */
+"Underline" = "Garis Bawah";
+
 /* Undo Action */
 "Undo" = "Urungkan";
 
-/* Unknown Application State */
+/* Unknown Application State
+   Unknown product name, displayed in a review - Unknown Tag Name */
 "Unknown" = "Tidak diketahui";
 
 /* No comment provided by engineer. */
@@ -1224,11 +1596,32 @@
 /* No comment provided by engineer. */
 "Unknown error" = "Galat tak diketahui";
 
+/* Accessibility label for unordered list button on formatting toolbar. */
+"Unordered List" = "Daftar Tidak Berurut";
+
+/* Display label for the review's unspam status */
+"Unspam" = "Bukan spam";
+
+/* Display label for the review's untrash status */
+"Untrash" = "Batal buang";
+
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Log aktivitas hingga tujuh hari disimpan.";
 
+/* Label action for updating a link on the editor */
+"Update" = "Perbarui";
+
+/* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
+"Update %@ to WooCommerce 3.5" = "Perbarui %@ ke WooCommerce 3.5";
+
+/* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
+"Update Instructions" = "Petunjuk Pembaruan";
+
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "Perbarui Status Pesanan";
+
+/* Title of alert warning users to upgrade to WC 3.5. */
+"Update to WooCommerce 3.5 to keep using this app" = "Perbarui ke WooCommerce 3.5 untuk terus menggunakan aplikasi ini";
 
 /* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Diperbarui %ld jam lalu";
@@ -1255,6 +1648,10 @@
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "Nama pengguna harus sekurangnya 4 karakter.";
 
+/* Product Details > descriptive label for the Product Variants cell.
+   Title that appears on top of the Product Variation List screen. */
+"Variations" = "Variasi";
+
 /* two factor code placeholder */
 "Verification code" = "Kode verifikasi";
 
@@ -1264,8 +1661,15 @@
 /* View application log cell title */
 "View Application Log" = "Lihat Log Aplikasi";
 
+/* Accessibility label for the 'View Billing Information' button
+   Button on bottom of Customer's information to show the billing details */
+"View Billing Information" = "Lihat Informasi Tagihan";
+
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Lihat produk afiliasi";
+
+/* This text is linked so the user can view refund details. */
+"View details" = "Lihat rincian";
 
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Lihat tiket dukungan yang dikirimkan sebelumnya";
@@ -1291,6 +1695,9 @@
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "Lihat pembaca dari seluruh dunia membaca dan berinteraksi dengan situs Anda, secara real time.";
 
+/* The info of the top banner on Dashboard that indicates new stats is unavailable */
+"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.22 or higher" = "Kami telah mengembalikan ke statistik lama. Untuk menggunakan statistik beta, harap aktifkan plugin Admin WooCommerce Admin dengan versi 0.22 atau yang lebih tinggi";
+
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Kami mengirimkan tautan pendaftaran tanpa kata sandi kepada Anda! Periksa email Anda di perangkat ini, dan ketuk tautan pada email untuk menyelesaikan pendaftaran.";
 
@@ -1315,6 +1722,15 @@
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "Berat:";
 
+/* Format of the weight on the Shipping Settings row - weight[unit] */
+"Weight: %1$@%2$@" = "Berat: %1$@%2$@";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀" = "Kami bekerja keras dalam mengembangkan bagian Produk yang baru ini. Anda mungkin melihat beberapa perubahan saat kami mempersiapkan peluncurkan 🚀";
+
+/* The info of the top banner on Dashboard that indicates new stats is available */
+"We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "Kami merilis penyempurnaan untuk statistik toko yang menggunakan plugin Admin WooCommerce";
+
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "Apa alamat situs saya?";
 
@@ -1333,6 +1749,9 @@
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "Versi WordPress terlalu usang. Situs di %1$@ menggunakan WordPress %2$@. Kami merekomendasikan agar diperbarui ke versi terbaru, atau sekurang-kurangnya %3$@";
 
+/* The title of the Work In Progress top banner on the Products tab */
+"Work in progress!" = "Sedang dalam proses!";
+
 /* Statistical unit - a single year */
 "Year" = "Tahun";
 
@@ -1344,12 +1763,6 @@
 
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "Anda tidak dapat menggunakan alamat surel tersebut untuk pendaftaran. Kami mengalami masalah dengan mereka memblokir beberapa surel dari kami. Silahkan gunakan penyedia layanan surel lainnya.";
-
-/* Title text used on the My Store UI when a user has a _single_ pending order to process. */
-"You have %ld order to fulfill" = "Anda memiliki %ld pesanan untuk dipenuhi";
-
-/* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
-"You have %ld orders to fulfill" = "Anda memiliki %ld pesanan untuk dipenuhi";
 
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "Tampaknya Anda telah menginstal plugin seluler dari DudaMobile yang membuat aplikasi tidak dapat tersambung ke blog Anda";
@@ -1363,6 +1776,9 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "Alamat situs Anda ditampilkan di bilah bagian atas layar ketika Anda mengunjungi situs di Safari.";
 
+/* Comment Attachment Label */
+"[COMMENT]" = "[KOMENTAR]";
+
 /* Backorders status. Example: 'Backorders: allowed' */
 "allowed" = "diizinkan";
 
@@ -1374,6 +1790,9 @@
 
 /* Later today */
 "later today" = "belakangan hari ini";
+
+/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
+"manual refund" = "pengembalian dana manual";
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "tidak diizinkan";
@@ -1404,4 +1823,7 @@
 
 /* About View's Footer Text. The variable is the current year */
 "© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+
+/* Customer note, wrapped in quotes */
+"“%@”" = "“%@”";
 

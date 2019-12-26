@@ -10,7 +10,10 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    private var dashboardUI: DashboardUI!
+    private var siteID: Int?
+
+    private var dashboardUIFactory: DashboardUIFactory?
+    private var dashboardUI: DashboardUI?
 
     // MARK: Subviews
 
@@ -19,10 +22,6 @@ class DashboardViewController: UIViewController {
     }()
 
     // MARK: View Lifecycle
-
-    deinit {
-        stopListeningToNotifications()
-    }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -34,19 +33,19 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
-        configureDashboardUI()
+        configureDashboardUIContainer()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
-        reloadData()
+        reloadDashboardUIStatsVersion()
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        dashboardUI.view.frame = containerView.bounds
+        dashboardUI?.view.frame = containerView.bounds
     }
 }
 
@@ -56,7 +55,7 @@ class DashboardViewController: UIViewController {
 private extension DashboardViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureNavigation() {
@@ -87,7 +86,6 @@ private extension DashboardViewController {
                                              style: .plain,
                                              target: self,
                                              action: #selector(settingsTapped))
-        rightBarButton.tintColor = .white
         rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
         rightBarButton.accessibilityTraits = .button
         rightBarButton.accessibilityHint = NSLocalizedString(
@@ -105,24 +103,61 @@ private extension DashboardViewController {
         navigationItem.backBarButtonItem = backButton
     }
 
-    func configureDashboardUI() {
+    func configureDashboardUIContainer() {
         // A container view is added to respond to safe area insets from the view controller.
         // This is needed when the child view controller's view has to use a frame-based layout
         // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
         view.addSubview(containerView)
         containerView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToSafeArea(containerView)
+    }
 
-        dashboardUI = DashboardUIFactory.dashboardUI()
-        let contentView = dashboardUI.view!
-        addChild(dashboardUI)
+    func reloadDashboardUIStatsVersion() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        if siteID != self.siteID {
+            dashboardUIFactory = DashboardUIFactory(siteID: siteID)
+            self.siteID = siteID
+        }
+
+        dashboardUIFactory?.reloadDashboardUI(isFeatureFlagOn: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stats),
+                                              onUIUpdate: { [weak self] dashboardUI in
+                                                self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
+        })
+    }
+}
+
+// MARK: - Updates
+//
+private extension DashboardViewController {
+    func onDashboardUIUpdate(updatedDashboardUI: DashboardUI) {
+        defer {
+            // Reloads data of the updated dashboard UI at the end.
+            reloadData()
+        }
+
+        // No need to continue replacing the dashboard UI child view controller if the updated dashboard UI is the same as the currently displayed one.
+        guard dashboardUI !== updatedDashboardUI else {
+            return
+        }
+
+        // Tears down the previous child view controller.
+        if let previousDashboardUI = dashboardUI {
+            remove(previousDashboardUI)
+        }
+
+        dashboardUI = updatedDashboardUI
+
+        let contentView = updatedDashboardUI.view!
+        addChild(updatedDashboardUI)
         containerView.addSubview(contentView)
-        dashboardUI.didMove(toParent: self)
+        updatedDashboardUI.didMove(toParent: self)
 
-        dashboardUI.onPullToRefresh = { [weak self] in
+        updatedDashboardUI.onPullToRefresh = { [weak self] in
             self?.pullToRefresh()
         }
-        dashboardUI.displaySyncingErrorNotice = { [weak self] in
+        updatedDashboardUI.displaySyncingErrorNotice = { [weak self] in
             self?.displaySyncingErrorNotice()
         }
     }
@@ -139,12 +174,6 @@ extension DashboardViewController {
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
     }
 
-    /// Stops listening to all related Notifications
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
@@ -153,7 +182,7 @@ extension DashboardViewController {
         }
 
         resetTitle()
-        dashboardUI.defaultAccountDidUpdate()
+        dashboardUI?.defaultAccountDidUpdate()
     }
 }
 
@@ -177,7 +206,7 @@ private extension DashboardViewController {
 
     func pullToRefresh() {
         ServiceLocator.analytics.track(.dashboardPulledToRefresh)
-        reloadData()
+        reloadDashboardUIStatsVersion()
     }
 
     func displaySyncingErrorNotice() {
@@ -197,7 +226,7 @@ private extension DashboardViewController {
 private extension DashboardViewController {
     func reloadData() {
         DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        dashboardUI.reloadData(completion: { [weak self] in
+        dashboardUI?.reloadData(completion: { [weak self] in
             self?.configureTitle()
         })
     }

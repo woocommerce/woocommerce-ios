@@ -10,32 +10,43 @@ class FooterSpinnerView: UIView {
     ///
     private let activityIndicatorView = UIActivityIndicatorView(style: .gray)
 
+    private let tableViewStyle: UITableView.Style
+
     /// Designated Initializer
     ///
-    init() {
+    init(tableViewStyle: UITableView.Style) {
+        self.tableViewStyle = tableViewStyle
         super.init(frame: Settings.defaultFrame)
         setupSubviews()
     }
 
-    /// Required Initializer
-    ///
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-        setupSubviews()
+        fatalError("init(coder:) has not been implemented")
     }
 
     /// Setup: Subview Hierarchy
     ///
     private func setupSubviews() {
         addSubview(activityIndicatorView)
+        activityIndicatorView.color = .text
         activityIndicatorView.hidesWhenStopped = true
         activityIndicatorView.translatesAutoresizingMaskIntoConstraints = false
 
-        NSLayoutConstraint.activate([
-            leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
-            trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
-            topAnchor.constraint(equalTo: activityIndicatorView.topAnchor)
-            ])
+        switch tableViewStyle {
+        case .plain:
+            NSLayoutConstraint.activate([
+                leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
+                trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
+                topAnchor.constraint(equalTo: activityIndicatorView.topAnchor, constant: 10),
+                centerYAnchor.constraint(equalTo: activityIndicatorView.centerYAnchor)
+                ])
+        default:
+            NSLayoutConstraint.activate([
+                leadingAnchor.constraint(equalTo: activityIndicatorView.leadingAnchor),
+                trailingAnchor.constraint(equalTo: activityIndicatorView.trailingAnchor),
+                topAnchor.constraint(equalTo: activityIndicatorView.topAnchor)
+                ])
+        }
     }
 
     /// Starts the spinner animation

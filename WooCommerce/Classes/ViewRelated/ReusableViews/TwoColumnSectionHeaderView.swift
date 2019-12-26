@@ -42,10 +42,19 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
 
         tintColor = .clear
 
-        leftColumn.applyFootnoteStyle()
-        rightColumn.applyFootnoteStyle()
+        configureLabels()
+    }
+}
 
-        leftColumn.textColor = StyleManager.sectionTitleColor
-        rightColumn.textColor = StyleManager.sectionTitleColor
+/// Private methods
+///
+private extension TwoColumnSectionHeaderView {
+    func configureLabels() {
+        leftColumn.applyFootnoteStyle()
+        leftColumn.numberOfLines = 0
+        leftColumn.textColor = .listIcon
+        rightColumn.numberOfLines = 0
+        rightColumn.textColor = .listIcon
+        rightColumn.applyFootnoteStyle()
     }
 }

@@ -5,6 +5,7 @@ class BasicTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         textLabel?.applyBodyStyle()
     }
 
@@ -13,5 +14,16 @@ class BasicTableViewCell: UITableViewCell {
 
         textLabel?.applyBodyStyle()
         textLabel?.textAlignment = .natural
+    }
+}
+
+
+private extension BasicTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+
+        //Background when selected
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = .listBackground
     }
 }

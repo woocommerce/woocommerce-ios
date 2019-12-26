@@ -12,5 +12,6 @@ extension ProductDimensions {
     @NSManaged public var width: String
     @NSManaged public var height: String
     @NSManaged public var product: Product?
+    @NSManaged public var productVariation: ProductVariation?
 
 }

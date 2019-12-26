@@ -29,8 +29,9 @@ final class ManualTrackingViewControllerTests: XCTestCase {
 
     func testLeftBarButtonItemIsLabelledDismiss() {
         let leftBarButton = subject?.navigationItem.leftBarButtonItem
+        let dismiss = NSLocalizedString("Dismiss", comment: "A unit test string for a button title")
 
-        XCTAssertEqual(leftBarButton?.title, "Dismiss")
+        XCTAssertEqual(leftBarButton?.title, dismiss)
     }
 
     func testRightBarButtonItemIsLabelledAccordingToViewModel() {
@@ -60,6 +61,6 @@ final class ManualTrackingViewControllerTests: XCTestCase {
     }
 
     func testVCBackgroundColorIsSet() {
-        XCTAssertEqual(subject?.view.backgroundColor, StyleManager.tableViewBackgroundColor)
+        XCTAssertEqual(subject?.view.backgroundColor, UIColor.listBackground)
     }
 }

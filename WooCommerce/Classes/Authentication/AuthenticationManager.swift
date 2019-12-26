@@ -1,6 +1,5 @@
 import Foundation
 import WordPressAuthenticator
-import WordPressUI
 import Yosemite
 
 
@@ -24,22 +23,28 @@ class AuthenticationManager: Authentication {
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent)
 
-        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: StyleManager.buttonPrimaryColor,
-                                                primaryNormalBorderColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                primaryHighlightBackgroundColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                primaryHighlightBorderColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                secondaryNormalBackgroundColor: StyleManager.buttonSecondaryColor,
-                                                secondaryNormalBorderColor: StyleManager.buttonSecondaryHighlightedColor,
-                                                secondaryHighlightBackgroundColor: StyleManager.buttonSecondaryHighlightedColor,
-                                                secondaryHighlightBorderColor: StyleManager.buttonSecondaryHighlightedColor,
-                                                disabledBackgroundColor: StyleManager.buttonDisabledColor,
-                                                disabledBorderColor: StyleManager.buttonDisabledHighlightedColor,
-                                                primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
-                                                secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
-                                                disabledTitleColor: StyleManager.buttonDisabledTitleColor,
-                                                subheadlineColor: StyleManager.wooCommerceBrandColor,
-                                                viewControllerBackgroundColor: StyleManager.wooGreyLight,
-                                                navBarImage: StyleManager.navBarImage)
+        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
+                                                primaryNormalBorderColor: .primaryButtonDownBackground,
+                                                primaryHighlightBackgroundColor: .primaryButtonDownBackground,
+                                                primaryHighlightBorderColor: .primaryButtonDownBorder,
+                                                secondaryNormalBackgroundColor: .secondaryButtonBackground,
+                                                secondaryNormalBorderColor: .secondaryButtonBorder,
+                                                secondaryHighlightBackgroundColor: .secondaryButtonDownBackground,
+                                                secondaryHighlightBorderColor: .secondaryButtonDownBorder,
+                                                disabledBackgroundColor: .buttonDisabledBackground,
+                                                disabledBorderColor: .gray(.shade30),
+                                                primaryTitleColor: .primaryButtonTitle,
+                                                secondaryTitleColor: .secondaryButtonTitle,
+                                                disabledTitleColor: .textSubtle,
+                                                textButtonColor: .accent,
+                                                textButtonHighlightColor: .accentDark,
+                                                instructionColor: .textSubtle,
+                                                subheadlineColor: .systemColor(.secondaryLabel),
+                                                placeholderColor: .gray(.shade20),
+                                                viewControllerBackgroundColor: .listBackground,
+                                                textFieldBackgroundColor: .listForeground,
+                                                navBarImage: StyleManager.navBarImage,
+                                                navBarBadgeColor: .primary)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                      jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
@@ -94,6 +99,9 @@ class AuthenticationManager: Authentication {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+    func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
+        // Sign in with Apple is not supported yet.
+    }
 
     var allowWPComLogin: Bool {
         return true
@@ -137,7 +145,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let isSelfHosted = false
 
         guard let site = siteInfo, site.hasJetpack == true else {
-            let errorInfo = NSLocalizedString("Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.", comment: "Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps.")
+            let errorInfo = NSLocalizedString(
+                "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.",
+                comment: "Error message that displays on the 'Log in by entering your site address.' screen. " +
+                "Jetpack is required for logging into the WooCommerce mobile apps.")
             let error = NSError(domain: "WooCommerceAuthenticationErrorDomain",
                                 code: 555,
                                 userInfo: [NSLocalizedDescriptionKey: errorInfo])

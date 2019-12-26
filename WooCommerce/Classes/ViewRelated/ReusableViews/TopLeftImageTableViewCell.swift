@@ -7,14 +7,26 @@ class TopLeftImageTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        textLabel?.applyBodyStyle()
-        textLabel?.numberOfLines = 0
+        configureBackground()
+        configureTextLabel()
     }
 
     override func layoutSubviews() {
         super.layoutSubviews()
         imageView?.frame.size = CGSize(width: Constants.iconW, height: Constants.iconH)
         imageView?.frame.origin.y = Constants.iconY
+    }
+}
+
+
+private extension TopLeftImageTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureTextLabel() {
+        textLabel?.applyBodyStyle()
+        textLabel?.numberOfLines = 0
     }
 }
 

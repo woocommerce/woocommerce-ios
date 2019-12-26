@@ -1,3 +1,2 @@
-Takip numaralarını kopyalayın! Artık uygulamayı açmadan kargonuzu takip etmek daha kolay. Sipariş Detayları > Gönderim Takibi > Daha Fazla bölümünde, takip numaranızı istediğiniz yerde kullanmak üzere kopyalayabilmeniz için yeni bir eylem bulunur.
-
-İstatistiklerde hata mesajına elveda! Sitenizde Jetpack site istatistikleri modülü yoksa veya istatistikleri görüntüleme izniniz yoksa istatistik sayfasını görmezsiniz. Artık sinir bozucu hata mesajlarıyla karşılaşmayacaksınız.
+- Karanlık modu sevenler, sevinin! İşte karanlık mod.
+- Önizleme görüntülemeyi sevenleri de düşündük! Ürünler sekmesini herkesin heyecanla beklediğini biliyoruz. Bu özelliği içeren uygulama sürümünü yayımlamaya hazır olmasak da, şimdi yakında gelecek olan Ürünler sekmesinin önizlemesini görebilirsiniz - etkinleştirmek için uygulamadaki Ayarlar'a gidin.

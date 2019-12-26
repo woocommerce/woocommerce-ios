@@ -1,16 +1,93 @@
 version: 2.1
 
 orbs:
-  # This uses the Orbs located at https://github.com/wordpress-mobile/circleci-orbs
-  ios: wordpress-mobile/ios@0.0.25
+  # Using 1.0 of the Orbs means it will use the latest 1.0.x version from https://github.com/wordpress-mobile/circleci-orbs
+  ios: wordpress-mobile/ios@1.0
+  git: wordpress-mobile/git@1.0
+
+commands:
+  fix-circleci:
+    steps:
+      - run:
+          name: Fix CircleCI
+          command: |
+            # A placeholder command that fixes any issues present on the CircleCI box – there's often something wrong with it,
+            # so preserving this step (even if empty) makes the diffs simpler.
+            echo "No issues for this image – skipping".
+jobs:
+  Build Tests:
+    executor:
+      name: ios/default
+      xcode-version: "11.2.1"
+    steps:
+      - git/shallow-checkout
+      - fix-circleci
+      - ios/install-dependencies:
+            bundle-install: true
+            pod-install: true
+      - ios/xcodebuild:
+          command: build-for-testing
+          arguments: -workspace 'WooCommerce.xcworkspace' -scheme 'WooCommerce' -configuration 'Debug' -sdk iphonesimulator -derivedDataPath DerivedData
+      - persist_to_workspace:
+          root: ./
+          paths:
+            - DerivedData/Build/Products
+  
+  Unit Tests:
+    executor:
+      name: ios/default
+      xcode-version: "11.2.1"
+    steps:
+      - ios/boot-simulator:
+          xcode-version: "11.2.1"
+          device: iPhone 11
+      - attach_workspace:
+          at: ./
+      - ios/wait-for-simulator
+      - ios/xcodebuild:
+          command: test-without-building
+          arguments: -xctestrun DerivedData/Build/Products/WooCommerce_iphonesimulator13.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
+      - ios/save-xcodebuild-artifacts
+  Installable Build:
+    executor:
+      name: ios/default
+      xcode-version: "11.2.1"
+    steps:
+      - git/shallow-checkout
+      - fix-circleci
+      - ios/install-dependencies:
+            bundle-install: true
+            pod-install: true
+      - run:
+          name: Copy Secrets
+          command: bundle exec fastlane run configure_apply
+      - run:
+          name: Build
+          command: "bundle exec fastlane build_and_upload_installable_build build_number:$CIRCLE_BUILD_NUM"
+      - run:
+          name: Prepare Artifacts
+          command: |
+            mkdir -p Artifacts
+            mv "fastlane/comment.json" "Artifacts/comment.json"
+      - store_artifacts:
+          path: Artifacts
+          destination: Artifacts
 
 workflows:
   woocommerce_ios:
     jobs:
-      - ios/test:
-          name: Test
-          xcode-version: "10.2.0"
-          workspace: WooCommerce.xcworkspace
-          scheme: WooCommerce
-          device: iPhone XS
-          ios-version: "12.2"
+      - Build Tests
+      - Unit Tests:
+          requires: [ "Build Tests" ]
+  Installable Build:
+    jobs:
+      - Hold:
+          type: approval
+          filters:
+            branches:
+              ignore: /pull\/[0-9]+/
+      - Installable Build:
+          requires: [Hold]  
+          filters:
+            branches:
+              ignore: /pull\/[0-9]+/

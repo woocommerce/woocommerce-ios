@@ -47,11 +47,10 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v2.5-whats-new"
+msgctxt "v3.2-whats-new"
 msgid ""
-"- Notifications are shown under “Orders,” so the “Notifications” tab was in need of a new identity. Since it actually just displays reviews, we’ve cunningly renamed it “Reviews.”\n"
-"- There was a bug in the Order Details screen that created a weird UI with misplaced labels when you tried to refresh the information, and now there is not a bug there.\n"
-"- There’s now a badge in the bottom tab, overlapping the “Orders” icon, so you can quickly see the number of orders you have in process.\n"
+"- Fans of dark mode, rejoice! It’s here.\n"
+"- Fans of previewing things, you can rejoice too! We know a Products tab is high on people’s wish lists. While we’re not ready to fully release a version of the app that includes it, you can preview the coming-soon Products tab right now — head to Settings in the app to enable it.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

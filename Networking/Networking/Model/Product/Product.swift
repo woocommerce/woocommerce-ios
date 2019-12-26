@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a Product Entity.
 ///
-public struct Product: Decodable {
+public struct Product: Codable {
     public let siteID: Int
     public let productID: Int
     public let name: String
@@ -12,6 +12,8 @@ public struct Product: Decodable {
 
     public let dateCreated: Date        // gmt
     public let dateModified: Date?      // gmt
+    public let dateOnSaleStart: Date?   // gmt
+    public let dateOnSaleEnd: Date?     // gmt
 
     public let productTypeKey: String
     public let statusKey: String        // draft, pending, private, published
@@ -56,6 +58,7 @@ public struct Product: Decodable {
     public let shippingTaxable: Bool
     public let shippingClass: String?
     public let shippingClassID: Int
+    public let productShippingClass: ProductShippingClass?
 
     public let reviewsAllowed: Bool
     public let averageRating: String
@@ -92,6 +95,10 @@ public struct Product: Decodable {
         return ProductType(rawValue: productTypeKey)
     }
 
+    public var backordersSetting: ProductBackordersSetting {
+        return ProductBackordersSetting(rawValue: backordersKey)
+    }
+
     /// Product struct initializer.
     ///
     public init(siteID: Int,
@@ -101,6 +108,8 @@ public struct Product: Decodable {
                 permalink: String,
                 dateCreated: Date,
                 dateModified: Date?,
+                dateOnSaleStart: Date?,
+                dateOnSaleEnd: Date?,
                 productTypeKey: String,
                 statusKey: String,
                 featured: Bool,
@@ -135,6 +144,7 @@ public struct Product: Decodable {
                 shippingTaxable: Bool,
                 shippingClass: String?,
                 shippingClassID: Int,
+                productShippingClass: ProductShippingClass?,
                 reviewsAllowed: Bool,
                 averageRating: String,
                 ratingCount: Int,
@@ -158,6 +168,8 @@ public struct Product: Decodable {
         self.permalink = permalink
         self.dateCreated = dateCreated
         self.dateModified = dateModified
+        self.dateOnSaleStart = dateOnSaleStart
+        self.dateOnSaleEnd = dateOnSaleEnd
         self.productTypeKey = productTypeKey
         self.statusKey = statusKey
         self.featured = featured
@@ -192,6 +204,7 @@ public struct Product: Decodable {
         self.shippingTaxable = shippingTaxable
         self.shippingClass = shippingClass
         self.shippingClassID = shippingClassID
+        self.productShippingClass = productShippingClass
         self.reviewsAllowed = reviewsAllowed
         self.averageRating = averageRating
         self.ratingCount = ratingCount
@@ -226,6 +239,8 @@ public struct Product: Decodable {
 
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified) ?? Date()
+        let dateOnSaleStart = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleStart)
+        let dateOnSaleEnd = try container.decodeIfPresent(Date.self, forKey: .dateOnSaleEnd)
 
         let productTypeKey = try container.decode(String.self, forKey: .productTypeKey)
         let statusKey = try container.decode(String.self, forKey: .statusKey)
@@ -291,7 +306,7 @@ public struct Product: Decodable {
         let backordersAllowed = try container.decode(Bool.self, forKey: .backordersAllowed)
         let backordered = try container.decode(Bool.self, forKey: .backordered)
 
-        let soldIndividuallly = try container.decode(Bool.self, forKey: .soldIndividually)
+        let soldIndividually = try container.decode(Bool.self, forKey: .soldIndividually)
         let weight = try container.decodeIfPresent(String.self, forKey: .weight)
         let dimensions = try container.decode(ProductDimensions.self, forKey: .dimensions)
 
@@ -328,6 +343,8 @@ public struct Product: Decodable {
                   permalink: permalink,
                   dateCreated: dateCreated,
                   dateModified: dateModified,
+                  dateOnSaleStart: dateOnSaleStart,
+                  dateOnSaleEnd: dateOnSaleEnd,
                   productTypeKey: productTypeKey,
                   statusKey: statusKey,
                   featured: featured,
@@ -355,13 +372,14 @@ public struct Product: Decodable {
                   backordersKey: backordersKey,
                   backordersAllowed: backordersAllowed,
                   backordered: backordered,
-                  soldIndividually: soldIndividuallly,
+                  soldIndividually: soldIndividually,
                   weight: weight,
                   dimensions: dimensions,
                   shippingRequired: shippingRequired,
                   shippingTaxable: shippingTaxable,
                   shippingClass: shippingClass,
                   shippingClassID: shippingClassID,
+                  productShippingClass: nil,
                   reviewsAllowed: reviewsAllowed,
                   averageRating: averageRating,
                   ratingCount: ratingCount,
@@ -379,6 +397,18 @@ public struct Product: Decodable {
                   groupedProducts: groupedProducts,
                   menuOrder: menuOrder)
     }
+
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+
+        try container.encode(name, forKey: .name)
+        try container.encode(fullDescription, forKey: .fullDescription)
+
+        // Shipping Settings.
+        try container.encode(weight, forKey: .weight)
+        try container.encode(dimensions, forKey: .dimensions)
+        try container.encode(shippingClass, forKey: .shippingClass)
+    }
 }
 
 
@@ -394,6 +424,8 @@ private extension Product {
 
         case dateCreated  = "date_created_gmt"
         case dateModified = "date_modified_gmt"
+        case dateOnSaleStart  = "date_on_sale_from_gmt"
+        case dateOnSaleEnd = "date_on_sale_to_gmt"
 
         case productTypeKey         = "type"
         case statusKey              = "status"
@@ -473,6 +505,8 @@ extension Product: Comparable {
             lhs.permalink == rhs.permalink &&
             lhs.dateCreated == rhs.dateCreated &&
             lhs.dateModified == rhs.dateModified &&
+            lhs.dateOnSaleStart == rhs.dateOnSaleStart &&
+            lhs.dateOnSaleEnd == rhs.dateOnSaleEnd &&
             lhs.productTypeKey == rhs.productTypeKey &&
             lhs.statusKey == rhs.statusKey &&
             lhs.featured == rhs.featured &&
@@ -506,6 +540,7 @@ extension Product: Comparable {
             lhs.shippingTaxable == rhs.shippingTaxable &&
             lhs.shippingClass == rhs.shippingClass &&
             lhs.shippingClassID == rhs.shippingClassID &&
+            lhs.productShippingClass == rhs.productShippingClass &&
             lhs.reviewsAllowed == rhs.reviewsAllowed &&
             lhs.averageRating == rhs.averageRating &&
             lhs.ratingCount == rhs.ratingCount &&

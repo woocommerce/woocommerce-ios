@@ -1,3 +1,2 @@
-Copier le numéro de suivi ! Il est maintenant plus facile de garder un œil sur votre envoi sans ouvrir l’application. Dans Détails de la commande > Suivi de l’envoi > Plus, vous pouvez désormais copier votre numéro de suivi et l’utiliser où vous voulez.
-
-Adieu le message d’erreur des statistiques ! Si votre site n’a pas le module de statistiques de site Jetpack ou si vous n’avez pas l’autorisation de consulter les statistiques, vous ne verrez tout simplement pas la page de statistiques. Nous l’avons enlevée pour ne pas que vous rencontriez de message d’erreur.
+- Adeptes du mode sombre, réjouissez-vous ! Il est là.
+- Adeptes de la prévisualisation, réjouissez-vous également ! Nous savons qu'un onglet Produits intéresse fortement les utilisateurs. Bien que nous ne soyons pas encore tout à fait prêts à lancer une version complète de l'application intégrant cette fonctionnalité, vous pouvez désormais apercevoir l'onglet Produits disponible bientôt. Accédez à Paramètres dans l'application pour l'activer.

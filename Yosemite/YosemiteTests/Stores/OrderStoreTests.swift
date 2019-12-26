@@ -68,7 +68,8 @@ class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 2)
 
             expectation.fulfill()
         }
@@ -85,9 +86,11 @@ class OrderStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 0)
 
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 3)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 2)
             XCTAssertNil(error)
 
             expectation.fulfill()
@@ -107,6 +110,7 @@ class OrderStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 0)
 
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
@@ -216,6 +220,7 @@ class OrderStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 0)
 
         let action = OrderAction.searchOrders(siteID: sampleSiteID,
                                               keyword: defaultSearchKeyword,
@@ -253,7 +258,7 @@ class OrderStoreTests: XCTestCase {
                 XCTAssertEqual(order.searchResults?.first?.keyword, self.defaultSearchKeyword)
             }
 
-            XCTAssertEqual(context.firstObject(ofType: OrderSearchResults.self)?.orders?.count, 3)
+            XCTAssertEqual(context.firstObject(ofType: OrderSearchResults.self)?.orders?.count, 4)
             XCTAssertEqual(context.countObjects(ofType: OrderSearchResults.self), 1)
             XCTAssertNil(error)
 
@@ -332,11 +337,13 @@ class OrderStoreTests: XCTestCase {
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 0)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 1)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated(), in: viewStorage)
@@ -344,6 +351,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder1?.toReadOnly(), sampleOrderMutated())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 3)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 3)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 2)
 
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrderMutated2(), in: viewStorage)
@@ -351,6 +359,7 @@ class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder2?.toReadOnly(), sampleOrderMutated2())
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItem.self), 1)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderItemTax.self), 5)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderCoupon.self), 0)
     }
 
@@ -693,7 +702,9 @@ private extension OrderStoreTests {
                      items: sampleItems(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: sampleCoupons())
+                     shippingLines: sampleShippingLines(),
+                     coupons: sampleCoupons(),
+                     refunds: [])
     }
 
     func sampleOrderMutated() -> Networking.Order {
@@ -718,7 +729,9 @@ private extension OrderStoreTests {
                      items: sampleItemsMutated(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: sampleCouponsMutated())
+                     shippingLines: sampleShippingLines(),
+                     coupons: sampleCouponsMutated(),
+                     refunds: [])
     }
 
     func sampleOrderMutated2() -> Networking.Order {
@@ -743,7 +756,9 @@ private extension OrderStoreTests {
                      items: sampleItemsMutated2(),
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: [])
+                     shippingLines: sampleShippingLines(),
+                     coupons: [],
+                     refunds: [])
     }
 
     func sampleAddress() -> Networking.Address {
@@ -760,11 +775,20 @@ private extension OrderStoreTests {
                        email: "scrambled@scrambled.com")
     }
 
+    func sampleShippingLines() -> [Networking.ShippingLine] {
+        return [ShippingLine(shippingID: 123,
+        methodTitle: "International Priority Mail Express Flat Rate",
+        methodID: "usps",
+        total: "133.00",
+        totalTax: "0.00")]
+    }
+
     func sampleCoupons() -> [Networking.OrderCouponLine] {
         let coupon1 = OrderCouponLine(couponID: 894,
                                       code: "30$off",
                                       discount: "30",
                                       discountTax: "1.2")
+
         return [coupon1]
     }
 
@@ -777,6 +801,7 @@ private extension OrderStoreTests {
                                       code: "hithere!",
                                       discount: "50",
                                       discountTax: "0.66")
+
         return [coupon1, coupon2]
     }
 
@@ -784,27 +809,31 @@ private extension OrderStoreTests {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product)",
                               productID: 52,
+                              variationID: 0,
                               quantity: 2,
                               price: NSDecimalNumber(integerLiteral: 30),
                               sku: "",
                               subtotal: "50.00",
                               subtotalTax: "2.00",
                               taxClass: "",
+                              taxes: [],
                               total: "30.00",
-                              totalTax: "1.20",
-                              variationID: 0)
+                              totalTax: "1.20")
+
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle",
                               productID: 234,
-                              quantity: NSDecimalNumber(decimal: 1.5),
+                              variationID: 0,
+                              quantity: 1.5,
                               price: NSDecimalNumber(integerLiteral: 0),
                               sku: "5555-A",
                               subtotal: "10.00",
                               subtotalTax: "0.40",
                               taxClass: "",
+                              taxes: [],
                               total: "0.00",
-                              totalTax: "0.00",
-                              variationID: 0)
+                              totalTax: "0.00")
+
         return [item1, item2]
     }
 
@@ -812,39 +841,45 @@ private extension OrderStoreTests {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product) 2",
                               productID: 52,
+                              variationID: 0,
                               quantity: 10,
                               price: NSDecimalNumber(integerLiteral: 30),
                               sku: "",
                               subtotal: "60.00",
                               subtotalTax: "4.00",
                               taxClass: "",
+                              taxes: taxes(),
                               total: "64.00",
-                              totalTax: "4.00",
-                              variationID: 0)
+                              totalTax: "4.00")
+
         let item2 = OrderItem(itemID: 891,
                               name: "Fruits Bundle 2",
                               productID: 234,
+                              variationID: 0,
                               quantity: 3,
                               price: NSDecimalNumber(integerLiteral: 0),
                               sku: "5555-A",
                               subtotal: "30.00",
                               subtotalTax: "0.40",
                               taxClass: "",
+                              taxes: taxes(),
                               total: "30.40",
-                              totalTax: "0.40",
-                              variationID: 0)
+                              totalTax: "0.40")
+
         let item3 = OrderItem(itemID: 23,
                               name: "Some new product",
                               productID: 12,
+                              variationID: 0,
                               quantity: 1,
                               price: NSDecimalNumber(integerLiteral: 10),
                               sku: "QWE123",
                               subtotal: "130.00",
                               subtotalTax: "10.40",
                               taxClass: "",
+                              taxes: taxes(),
                               total: "140.40",
-                              totalTax: "10.40",
-                              variationID: 0)
+                              totalTax: "10.40")
+
         return [item1, item2, item3]
     }
 
@@ -852,15 +887,17 @@ private extension OrderStoreTests {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product) 2",
                               productID: 52,
+                              variationID: 0,
                               quantity: 10,
                               price: NSDecimalNumber(integerLiteral: 10),
                               sku: "",
                               subtotal: "60.00",
                               subtotalTax: "4.00",
                               taxClass: "",
+                              taxes: taxesMutated(),
                               total: "64.00",
-                              totalTax: "4.00",
-                              variationID: 0)
+                              totalTax: "4.00")
+
         return [item1]
     }
 
@@ -869,5 +906,14 @@ private extension OrderStoreTests {
             return Date()
         }
         return date
+    }
+
+    func taxes() -> [Networking.OrderItemTax] {
+        return [Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
+    }
+
+    func taxesMutated() -> [Networking.OrderItemTax] {
+        return [Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45"),
+                Networking.OrderItemTax(taxID: 73, subtotal: "0.9", total: "0.9")]
     }
 }

@@ -93,7 +93,7 @@ private extension RequirementsChecker {
     static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((RequirementCheckResult, Error?) -> Void)? = nil) -> SettingAction {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
             guard error == nil else {
-                DDLogError("⛔️ An error occured while fetching API info for siteID \(siteID): \(String(describing: error))")
+                DDLogError("⛔️ An error occurred while fetching API info for siteID \(siteID): \(String(describing: error))")
                 onCompletion?(.error, error)
                 return
             }

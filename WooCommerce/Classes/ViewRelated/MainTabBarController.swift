@@ -304,7 +304,7 @@ extension MainTabBarController {
         ordersViewController.statusFilter = statusFilter
     }
 
-    /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.
+    /// Syncs the notification given the ID, and handles the notification based on its notification kind.
     ///
     static func presentNotificationDetails(for noteID: Int) {
         let action = NotificationAction.synchronizeNotification(noteId: Int64(noteID)) { note, error in

@@ -15,7 +15,8 @@ import UIKit
 ///
 class WooBasicTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var bodyLabel: UILabel!
+    @IBOutlet private(set) weak var bodyLabel: UILabel!
+    @IBOutlet private(set) weak var bodyLabelTopMarginConstraint: NSLayoutConstraint!
 
     public var accessoryImage: UIImage? {
         didSet {

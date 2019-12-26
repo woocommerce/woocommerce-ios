@@ -240,7 +240,7 @@ private extension OrderDetailsDataSource {
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showBilling
-        cell.bodyLabel?.applyBodyStyle()
+        cell.applyPlainTextStyle()
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
 
@@ -324,7 +324,7 @@ private extension OrderDetailsDataSource {
 
     private func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Titles.productDetails
-        cell.bodyLabel?.applyBodyStyle()
+        cell.applyPlainTextStyle()
         cell.accessoryImage = nil
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default

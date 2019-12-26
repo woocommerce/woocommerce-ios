@@ -1,6 +1,7 @@
 3.4
 -----
 - bugfix: on the Order Details screen, the product quantity title in the 2-column header view aligns to the right now
+- bugfix: tapping on a new Order push notification, it used to go to the Reviews tab. Now it should go to the new Order screen
 
 3.3
 -----

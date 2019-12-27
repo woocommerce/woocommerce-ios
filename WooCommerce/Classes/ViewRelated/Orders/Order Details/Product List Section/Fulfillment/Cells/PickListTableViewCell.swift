@@ -89,7 +89,11 @@ final class PickListTableViewCell: UITableViewCell {
 ///
 extension PickListTableViewCell {
     func configure(item: OrderItemViewModel, imageService: ImageService) {
-        imageService.downloadAndCacheImageForImageView(productImageView, with: item.imageURL?.absoluteString, placeholder: .productPlaceholderImage, progressBlock: nil, completion: nil)
+        imageService.downloadAndCacheImageForImageView(productImageView,
+                                                       with: item.imageURL?.absoluteString,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
 
         name = item.name
         quantity = item.quantity

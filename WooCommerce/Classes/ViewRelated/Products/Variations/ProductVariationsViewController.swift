@@ -303,7 +303,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
         transitionToSyncingState()
 
         let action = ProductVariationAction
-            .synchronizeProductVariations(siteID: Int64(siteID), productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
                                     guard let self = self else {
                                         return
                                     }

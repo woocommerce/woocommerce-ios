@@ -268,8 +268,8 @@ private extension ProductStore {
     /// Updates the provided StorageProduct's productShippingClass using the existing `ProductShippingClass` in storage, if any
     ///
     func handleProductShippingClass(storageProduct: Storage.Product, _ storage: StorageType) {
-        if let existingStorageShippingClass = storage.loadProductShippingClass(siteID: Int64(storageProduct.siteID),
-                                                                               remoteID: Int64(storageProduct.shippingClassID)) {
+        if let existingStorageShippingClass = storage.loadProductShippingClass(siteID: storageProduct.siteID,
+                                                                               remoteID: storageProduct.shippingClassID) {
             storageProduct.productShippingClass = existingStorageShippingClass
         } else {
             storageProduct.productShippingClass = nil

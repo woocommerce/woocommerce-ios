@@ -93,7 +93,7 @@ private extension ProductVariationStore {
                                        in storage: StorageType,
                                        siteID: Int64,
                                        productID: Int64) {
-        let product = storage.loadProduct(siteID: Int64(siteID), productID: Int64(productID))
+        let product = storage.loadProduct(siteID: siteID, productID: productID)
 
         // Upserts the Product Variations from the read-only version
         for readOnlyProductVariation in readOnlyProductVariations {

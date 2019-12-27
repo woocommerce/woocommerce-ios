@@ -9,10 +9,10 @@ extension Storage.OrderItemRefund: ReadOnlyConvertible {
     /// Updates the Storage.OrderItemRefund with the ReadOnly.
     ///
     public func update(with orderItemRefund: Yosemite.OrderItemRefund) {
-        itemID = Int64(orderItemRefund.itemID)
+        itemID = orderItemRefund.itemID
         name = orderItemRefund.name
-        productID = Int64(orderItemRefund.productID)
-        variationID = Int64(orderItemRefund.variationID)
+        productID = orderItemRefund.productID
+        variationID = orderItemRefund.variationID
         quantity = NSDecimalNumber(decimal: orderItemRefund.quantity)
         price = orderItemRefund.price
         sku = orderItemRefund.sku
@@ -28,10 +28,10 @@ extension Storage.OrderItemRefund: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.OrderItemRefund {
         let orderItemTaxesRefund = taxes?.map { $0.toReadOnly() } ?? [Yosemite.OrderItemTaxRefund]()
 
-        return OrderItemRefund(itemID: Int64(itemID),
+        return OrderItemRefund(itemID: itemID,
                                name: name ?? "",
-                               productID: Int64(productID),
-                               variationID: Int64(variationID),
+                               productID: productID,
+                               variationID: variationID,
                                quantity: quantity?.decimalValue ?? Decimal.zero,
                                price: price ?? NSDecimalNumber(integerLiteral: 0),
                                sku: sku,

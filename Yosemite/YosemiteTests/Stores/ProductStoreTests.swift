@@ -775,7 +775,7 @@ class ProductStoreTests: XCTestCase {
                                                          descriptionHTML: "Arriving in 2 days!",
                                                          name: "2 Days",
                                                          shippingClassID: 96987515,
-                                                         siteID: Int64(sampleSiteID),
+                                                         siteID: sampleSiteID,
                                                          slug: "2-days")
         let existingStorageShippingClass = viewStorage.insertNewObject(ofType: StorageProductShippingClass.self)
         existingStorageShippingClass.update(with: existingShippingClass)

@@ -9,8 +9,8 @@ extension Storage.Product: ReadOnlyConvertible {
     /// Updates the Storage.Product with the ReadOnly.
     ///
     public func update(with product: Yosemite.Product) {
-        siteID = Int64(product.siteID)
-        productID = Int64(product.productID)
+        siteID = product.siteID
+        productID = product.productID
         productTypeKey = product.productTypeKey
         name = product.name
         slug = product.slug
@@ -52,17 +52,17 @@ extension Storage.Product: ReadOnlyConvertible {
         shippingRequired = product.shippingRequired
         shippingTaxable = product.shippingTaxable
         shippingClass = product.shippingClass
-        shippingClassID = Int64(product.shippingClassID)
+        shippingClassID = product.shippingClassID
         reviewsAllowed = product.reviewsAllowed
         averageRating = product.averageRating
         ratingCount = Int64(product.ratingCount)
-        relatedIDs = product.relatedIDs.map { Int64($0) }
-        upsellIDs = product.upsellIDs.map { Int64($0) }
-        crossSellIDs = product.crossSellIDs.map { Int64($0) }
-        parentID = Int64(product.parentID)
+        relatedIDs = product.relatedIDs
+        upsellIDs = product.upsellIDs
+        crossSellIDs = product.crossSellIDs
+        parentID = product.parentID
         purchaseNote = product.purchaseNote
-        variations = product.variations.map { Int64($0) }
-        groupedProducts = product.groupedProducts.map { Int64($0) }
+        variations = product.variations
+        groupedProducts = product.groupedProducts
         menuOrder = Int64(product.menuOrder)
         backordersKey = product.backordersKey
         backordersAllowed = product.backordersAllowed
@@ -86,8 +86,8 @@ extension Storage.Product: ReadOnlyConvertible {
             quantity = Int(stockQuantity)
         }
 
-        return Product(siteID: Int64(siteID),
-                       productID: Int64(productID),
+        return Product(siteID: siteID,
+                       productID: productID,
                        name: name,
                        slug: slug,
                        permalink: permalink,
@@ -128,7 +128,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        shippingRequired: shippingRequired,
                        shippingTaxable: shippingTaxable,
                        shippingClass: shippingClass,
-                       shippingClassID: Int64(shippingClassID),
+                       shippingClassID: shippingClassID,
                        productShippingClass: productShippingClassModel,
                        reviewsAllowed: reviewsAllowed,
                        averageRating: averageRating,
@@ -136,7 +136,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        relatedIDs: convertIDArray(relatedIDs),
                        upsellIDs: convertIDArray(upsellIDs),
                        crossSellIDs: convertIDArray(crossSellIDs),
-                       parentID: Int64(parentID),
+                       parentID: parentID,
                        purchaseNote: purchaseNote,
                        categories: productCategories.sorted(),
                        tags: productTags.sorted(),

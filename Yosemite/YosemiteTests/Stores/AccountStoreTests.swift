@@ -309,7 +309,7 @@ private extension AccountStoreTests {
     /// Verifies that the Storage.Account fields match with the specified Networking.Account.
     ///
     func compare(storageAccount: Storage.Account, remoteAccount: Networking.Account) {
-        XCTAssertEqual(storageAccount.userID, Int64(remoteAccount.userID))
+        XCTAssertEqual(storageAccount.userID, remoteAccount.userID)
         XCTAssertEqual(storageAccount.displayName, remoteAccount.displayName)
         XCTAssertEqual(storageAccount.email, remoteAccount.email)
         XCTAssertEqual(storageAccount.username, remoteAccount.username)

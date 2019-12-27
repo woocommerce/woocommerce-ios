@@ -12,14 +12,14 @@ extension Storage.Account: ReadOnlyConvertible {
         displayName = account.displayName
         email = account.email
         gravatarUrl = account.gravatarUrl
-        userID = Int64(account.userID)
+        userID = account.userID
         username = account.username
     }
 
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.Account {
-        return Account(userID: Int64(userID),
+        return Account(userID: userID,
                        displayName: displayName ?? "",
                        email: email ?? "",
                        username: username ?? "",

@@ -441,7 +441,7 @@ class OrderStoreTests: XCTestCase {
 
         XCTAssertEqual(storageSearchResults?.keyword, defaultSearchKeyword)
         XCTAssertEqual(storageSearchResults?.orders?.count, 1)
-        XCTAssertEqual(storageSearchResults?.orders?.first?.orderID, Int64(remoteOrder.orderID))
+        XCTAssertEqual(storageSearchResults?.orders?.first?.orderID, remoteOrder.orderID)
         XCTAssertEqual(storageOrder?.searchResults?.first?.keyword, defaultSearchKeyword)
     }
 

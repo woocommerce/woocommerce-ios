@@ -17,8 +17,8 @@ public class TaxClassRemote: Remote {
                                 completion: @escaping ([TaxClass]?, Error?) -> Void) {
 
         let path = Path.taxes + "/classes"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: Int64(siteID), path: path, parameters: nil)
-        let mapper = TaxClassListMapper(siteID: Int64(siteID))
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
+        let mapper = TaxClassListMapper(siteID: siteID)
 
         enqueue(request, mapper: mapper, completion: completion)
     }

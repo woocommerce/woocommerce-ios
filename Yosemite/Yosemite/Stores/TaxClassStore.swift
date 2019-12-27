@@ -47,7 +47,7 @@ private extension TaxClassStore {
     func retrieveTaxClasses(siteID: Int64, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
         let remote = TaxClassRemote(network: network)
 
-        remote.loadAllTaxClasses(for: Int64(siteID)) { [weak self] (taxClasses, error) in
+        remote.loadAllTaxClasses(for: siteID) { [weak self] (taxClasses, error) in
             guard let taxClasses = taxClasses else {
                 onCompletion(nil, error)
                 return
@@ -86,7 +86,7 @@ private extension TaxClassStore {
         }
         else {
             let remote = TaxClassRemote(network: network)
-            remote.loadAllTaxClasses(for: Int64(product.siteID)) { [weak self] (taxClasses, error) in
+            remote.loadAllTaxClasses(for: product.siteID) { [weak self] (taxClasses, error) in
                 guard let taxClasses = taxClasses else {
                     onCompletion(nil, error)
                     return

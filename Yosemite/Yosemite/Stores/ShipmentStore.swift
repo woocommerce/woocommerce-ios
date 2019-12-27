@@ -294,7 +294,7 @@ extension ShipmentStore {
         let provider = storage.insertNewObject(ofType: Storage.ShipmentTrackingProvider.self)
         provider.name = trackingProvider
         provider.url = trackingURL
-        provider.siteID = Int64(siteID)
+        provider.siteID = siteID
 
 
         let customProvidersGroup = customGroup(siteID: siteID, storage: storage)
@@ -339,7 +339,7 @@ extension ShipmentStore {
         let newCustomGroup = storage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
 
         newCustomGroup.name = customGroupName
-        newCustomGroup.siteID = Int64(siteID)
+        newCustomGroup.siteID = siteID
 
         return newCustomGroup
     }

@@ -10,8 +10,8 @@ extension Storage.Note: ReadOnlyConvertible {
     public func update(with note: Yosemite.Note) {
         let theSiteID = note.meta.identifier(forKey: .site) ?? Int64.min
 
-        siteID = Int64(theSiteID)
-        noteID = Int64(note.noteID)
+        siteID = theSiteID
+        noteID = note.noteID
         noteHash = Int64(note.hash)
         read = note.read
         icon = note.icon

@@ -9,13 +9,13 @@ extension Storage.Refund: ReadOnlyConvertible {
     /// Updates the Storage.Refund with the ReadOnly.
     ///
     public func update(with fullRefund: Yosemite.Refund) {
-        refundID = Int64(fullRefund.refundID)
-        orderID = Int64(fullRefund.orderID)
-        siteID = Int64(fullRefund.siteID)
+        refundID = fullRefund.refundID
+        orderID = fullRefund.orderID
+        siteID = fullRefund.siteID
         dateCreated = fullRefund.dateCreated
         amount = fullRefund.amount
         reason = fullRefund.reason
-        byUserID = Int64(fullRefund.refundedByUserID)
+        byUserID = fullRefund.refundedByUserID
 
         if let automated = fullRefund.isAutomated {
             isAutomated = automated
@@ -31,13 +31,13 @@ extension Storage.Refund: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.Refund {
         let orderItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderItemRefund]()
 
-        return Refund(refundID: Int64(refundID),
-                      orderID: Int64(orderID),
-                      siteID: Int64(siteID),
+        return Refund(refundID: refundID,
+                      orderID: orderID,
+                      siteID: siteID,
                       dateCreated: dateCreated ?? Date(),
                       amount: amount ?? "",
                       reason: reason ?? "",
-                      refundedByUserID: Int64(byUserID),
+                      refundedByUserID: byUserID,
                       isAutomated: isAutomated,
                       createAutomated: createAutomated,
                       items: orderItems)

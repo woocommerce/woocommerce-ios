@@ -397,6 +397,7 @@ private extension SettingsViewController {
     }
 
     func logOutUser() {
+        ServiceLocator.imageService.removeAllImagesFromCache()
         ServiceLocator.stores.deauthenticate()
         navigationController?.popToRootViewController(animated: true)
     }

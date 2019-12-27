@@ -10,11 +10,17 @@ private extension URL {
 /// Implements `ImageService` using `Kingfisher` library.
 ///
 struct DefaultImageService: ImageService {
-    private let imageDownloader = ImageDownloader(name: "WooCommerce")
-    private let imageCache = ImageCache.default
+    private let imageDownloader: ImageDownloader
+    private let imageCache: ImageCache
 
     private var defaultOptions: KingfisherOptionsInfo {
-        return [.originalCache(imageCache), .downloader(imageDownloader)]
+        return [.targetCache(imageCache), .downloader(imageDownloader)]
+    }
+
+    init(imageCache: ImageCache = ImageCache.default,
+         imageDownloader: ImageDownloader = ImageDownloader.default) {
+        self.imageCache = imageCache
+        self.imageDownloader = imageDownloader
     }
 
     func retrieveImageFromCache(with url: URL, completion: @escaping ImageCacheRetrievalCompletion) {
@@ -24,6 +30,7 @@ struct DefaultImageService: ImageService {
                 completion(value.image)
             case .failure(let error):
                 DDLogError("Error retriving image from cache: \(error.localizedDescription)")
+                completion(nil)
             }
         }
     }
@@ -67,4 +74,10 @@ struct DefaultImageService: ImageService {
             }
         }
     }
+
+    func removeAllImagesFromCache() {
+        imageCache.clearDiskCache()
+        imageCache.clearMemoryCache()
+    }
+
 }

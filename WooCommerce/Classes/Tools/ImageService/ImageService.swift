@@ -33,6 +33,9 @@ protocol ImageService {
                                            placeholder: UIImage?,
                                            progressBlock: ImageDownloadProgressBlock?,
                                            completion: ImageDownloadCompletion?)
+
+    /// Deletes all images from the cache.
+    func removeAllImagesFromCache()
 }
 
 // MARK: - Errors

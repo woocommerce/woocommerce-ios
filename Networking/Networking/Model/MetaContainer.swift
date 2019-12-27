@@ -19,8 +19,8 @@ public struct MetaContainer {
 
     /// Returns the Meta ID associated with the specified key (if any).
     ///
-    public func identifier(forKey key: Keys) -> Int64? {
-        let identifiers = container(ofType: [String: Int64].self, forKey: .ids)
+    public func identifier(forKey key: Keys) -> Int? {
+        let identifiers = container(ofType: [String: Int].self, forKey: .ids)
         return identifiers?[key.rawValue]
     }
 

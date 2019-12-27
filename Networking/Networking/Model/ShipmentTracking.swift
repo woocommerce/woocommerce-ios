@@ -36,7 +36,13 @@ public struct ShipmentTracking: Decodable {
 
     /// ShipmentTracking struct initializer.
     ///
-    public init(siteID: Int64, orderID: Int64, trackingID: String, trackingNumber: String, trackingProvider: String?, trackingURL: String?, dateShipped: Date?) {
+    public init(siteID: Int64,
+                orderID: Int64,
+                trackingID: String,
+                trackingNumber: String,
+                trackingProvider: String?,
+                trackingURL: String?,
+                dateShipped: Date?) {
         self.siteID = siteID
         self.orderID = orderID
         self.trackingID = trackingID

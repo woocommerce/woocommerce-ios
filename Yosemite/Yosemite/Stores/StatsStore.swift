@@ -103,7 +103,11 @@ private extension StatsStore {
 
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).
     ///
-    func retrieveSiteVisitStats(siteID: Int64, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
+    func retrieveSiteVisitStats(siteID: Int64,
+                                granularity: StatGranularity,
+                                latestDateToInclude: Date,
+                                quantity: Int,
+                                onCompletion: @escaping (Error?) -> Void) {
 
         let remote = SiteVisitStatsRemote(network: network)
 

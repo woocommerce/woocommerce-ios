@@ -97,7 +97,9 @@ public final class ShipmentsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    public func loadShipmentTrackingProviderGroups(for siteID: Int64, orderID: Int64, completion: @escaping ([ShipmentTrackingProviderGroup]?, Error?) -> Void) {
+    public func loadShipmentTrackingProviderGroups(for siteID: Int64,
+                                                   orderID: Int64,
+                                                   completion: @escaping ([ShipmentTrackingProviderGroup]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)

@@ -17,7 +17,7 @@ extension Storage.ProductCategory: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductCategory {
-        return ProductCategory(categoryID: Int(categoryID),
+        return ProductCategory(categoryID: Int64(categoryID),
                                name: name,
                                slug: slug)
     }

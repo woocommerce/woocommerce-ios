@@ -25,9 +25,9 @@ extension Storage.ProductReview: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductReview {
-        return ProductReview(siteID: Int(siteID),
-                             reviewID: Int(reviewID),
-                             productID: Int(productID),
+        return ProductReview(siteID: Int64(siteID),
+                             reviewID: Int64(reviewID),
+                             productID: Int64(productID),
                              dateCreated: dateCreated ?? Date(),
                              statusKey: statusKey ?? "",
                              reviewer: reviewer ?? "" ,

@@ -17,7 +17,7 @@ extension Storage.OrderRefundCondensed: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.OrderRefundCondensed {
-        return OrderRefundCondensed(refundID: Int(refundID),
+        return OrderRefundCondensed(refundID: Int64(refundID),
                                     reason: reason ?? "",
                                     total: total ?? "")
     }

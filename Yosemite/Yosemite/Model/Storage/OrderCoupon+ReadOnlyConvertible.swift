@@ -18,7 +18,7 @@ extension Storage.OrderCoupon: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.OrderCouponLine {
-        return OrderCouponLine(couponID: Int(couponID),
+        return OrderCouponLine(couponID: Int64(couponID),
                                code: code ?? "",
                                discount: discount ?? "",
                                discountTax: discountTax ?? "")

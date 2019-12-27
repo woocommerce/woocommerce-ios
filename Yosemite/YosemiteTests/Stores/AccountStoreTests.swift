@@ -114,7 +114,7 @@ class AccountStoreTests: XCTestCase {
         XCTAssert(viewStorage.countObjects(ofType: Storage.Account.self, matching: nil) == 1)
 
         let expectedAccount = sampleAccountUpdate()
-        let storageAccount = viewStorage.loadAccount(userId: expectedAccount.userID)!
+        let storageAccount = viewStorage.loadAccount(userID: expectedAccount.userID)!
         compare(storageAccount: storageAccount, remoteAccount: expectedAccount)
     }
 
@@ -124,10 +124,10 @@ class AccountStoreTests: XCTestCase {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteAccount = sampleAccountPristine()
 
-        XCTAssertNil(viewStorage.loadAccount(userId: remoteAccount.userID))
+        XCTAssertNil(viewStorage.loadAccount(userID: remoteAccount.userID))
         accountStore.upsertStoredAccount(readOnlyAccount: remoteAccount)
 
-        let storageAccount = viewStorage.loadAccount(userId: remoteAccount.userID)!
+        let storageAccount = viewStorage.loadAccount(userID: remoteAccount.userID)!
         compare(storageAccount: storageAccount, remoteAccount: remoteAccount)
     }
 

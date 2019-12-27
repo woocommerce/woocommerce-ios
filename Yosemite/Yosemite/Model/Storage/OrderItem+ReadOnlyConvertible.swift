@@ -28,10 +28,10 @@ extension Storage.OrderItem: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.OrderItem {
         let orderItemTaxes = taxes?.map { $0.toReadOnly() } ?? [Yosemite.OrderItemTax]()
 
-        return OrderItem(itemID: Int(itemID),
+        return OrderItem(itemID: Int64(itemID),
                          name: name ?? "",
-                         productID: Int(productID),
-                         variationID: Int(variationID),
+                         productID: Int64(productID),
+                         variationID: Int64(variationID),
                          quantity: quantity as Decimal,
                          price: price ?? NSDecimalNumber(integerLiteral: 0),
                          sku: sku,

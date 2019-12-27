@@ -153,7 +153,7 @@ class DefaultStoresManager: StoresManager {
 
     /// Updates the Default Store as specified.
     ///
-    func updateDefaultStore(storeID: Int) {
+    func updateDefaultStore(storeID: Int64) {
         sessionManager.defaultStoreID = storeID
         restoreSessionSiteIfPossible()
 
@@ -178,7 +178,7 @@ private extension DefaultStoresManager {
 
     /// Loads the specified accountID into the Session, if possible.
     ///
-    func restoreSessionAccount(with accountID: Int) {
+    func restoreSessionAccount(with accountID: Int64) {
         let action = AccountAction.loadAccount(userID: accountID) { [weak self] account in
             guard let `self` = self, let account = account else {
                 return
@@ -262,7 +262,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the settings for the specified site, if possible.
     ///
-    func synchronizeSettings(with siteID: Int, onCompletion: @escaping () -> Void) {
+    func synchronizeSettings(with siteID: Int64, onCompletion: @escaping () -> Void) {
         guard siteID != 0 else {
             // Just return if the siteID == 0 so we are not making extra requests
             return
@@ -301,7 +301,7 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the order statuses, if possible.
     ///
-    func retrieveOrderStatus(with siteID: Int) {
+    func retrieveOrderStatus(with siteID: Int64) {
         guard siteID != 0 else {
             // Just return if the siteID == 0 so we are not making extra requests
             return
@@ -333,7 +333,7 @@ private extension DefaultStoresManager {
 
     /// Loads the specified siteID into the Session, if possible.
     ///
-    func restoreSessionSite(with siteID: Int) {
+    func restoreSessionSite(with siteID: Int64) {
         let action = AccountAction.loadSite(siteID: siteID) { [weak self] site in
             guard let `self` = self, let site = site else {
                 return

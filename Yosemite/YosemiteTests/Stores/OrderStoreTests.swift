@@ -28,11 +28,11 @@ class OrderStoreTests: XCTestCase {
 
     /// Testing SiteID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     /// Testing OrderID
     ///
-    private let sampleOrderID = 963
+    private let sampleOrderID: Int64 = 963
 
     /// Testing Page Number
     ///

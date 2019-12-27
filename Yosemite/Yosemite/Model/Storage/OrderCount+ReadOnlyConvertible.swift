@@ -17,7 +17,7 @@ extension Storage.OrderCount: ReadOnlyConvertible {
     public func toReadOnly() -> Yosemite.OrderCount {
         let orderCountItems = items?.map { $0.toReadOnly() } ?? [Yosemite.OrderCountItem]()
 
-        return OrderCount(siteID: Int(siteID),
+        return OrderCount(siteID: Int64(siteID),
                           items: orderCountItems)
     }
 }

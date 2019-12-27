@@ -17,6 +17,6 @@ extension Storage.TaxClass: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.TaxClass {
-        return TaxClass(siteID: Int(siteID), name: name, slug: slug)
+        return TaxClass(siteID: Int64(siteID), name: name, slug: slug)
     }
 }

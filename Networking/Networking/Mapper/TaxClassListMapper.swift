@@ -8,7 +8,7 @@ struct TaxClassListMapper: Mapper {
     /// Site Identifier associated to the API information that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't return the SiteID.
     ///
-    let siteID: Int
+    let siteID: Int64
 
     /// (Attempts) to convert a dictionary into [TaxClass].
     ///

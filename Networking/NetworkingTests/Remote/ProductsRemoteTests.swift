@@ -12,11 +12,11 @@ class ProductsRemoteTests: XCTestCase {
 
     /// Dummy Site ID
     ///
-    let sampleSiteID = 1234
+    let sampleSiteID: Int64 = 1234
 
     /// Dummy Product ID
     ///
-    let sampleProductID = 282
+    let sampleProductID: Int64 = 282
 
     /// Repeat always!
     ///

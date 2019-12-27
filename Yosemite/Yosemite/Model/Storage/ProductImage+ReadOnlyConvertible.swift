@@ -20,7 +20,7 @@ extension Storage.ProductImage: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductImage {
-        return ProductImage(imageID: Int(imageID),
+        return ProductImage(imageID: Int64(imageID),
                             dateCreated: dateCreated,
                             dateModified: dateModified,
                             src: src,

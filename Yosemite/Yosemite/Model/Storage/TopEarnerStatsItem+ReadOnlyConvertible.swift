@@ -21,7 +21,7 @@ extension Storage.TopEarnerStatsItem: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: Int(productID),
+        return TopEarnerStatsItem(productID: Int64(productID),
                                   productName: productName ?? "",
                                   quantity: Int(quantity),
                                   price: price,

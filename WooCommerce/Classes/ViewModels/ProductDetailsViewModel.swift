@@ -51,7 +51,7 @@ final class ProductDetailsViewModel {
 
     /// Product ID
     ///
-    var productID: Int {
+    var productID: Int64 {
         return product.productID
     }
 

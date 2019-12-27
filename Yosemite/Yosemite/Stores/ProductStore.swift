@@ -62,7 +62,7 @@ private extension ProductStore {
 
     /// Searches all of the products that contain a given Keyword.
     ///
-    func searchProducts(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
         remote.searchProducts(for: siteID,
                               keyword: keyword,
@@ -83,7 +83,7 @@ private extension ProductStore {
 
     /// Synchronizes the products associated with a given Site ID, sorted by ascending name.
     ///
-    func synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeProducts(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.loadAllProducts(for: siteID,
@@ -113,7 +113,7 @@ private extension ProductStore {
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
         let storage = storageManager.viewStorage
-        var missingIDs = [Int]()
+        var missingIDs = [Int64]()
         for productID in productIDs {
             let storageProduct = storage.loadProduct(siteID: order.siteID, productID: productID)
             if storageProduct == nil {
@@ -137,8 +137,8 @@ private extension ProductStore {
     /// Retrieves multiple products with a given siteID + productIDs.
     /// - Note: This is NOT a wrapper for retrieving a single product.
     ///
-    func retrieveProducts(siteID: Int,
-                          productIDs: [Int],
+    func retrieveProducts(siteID: Int64,
+                          productIDs: [Int64],
                           onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
@@ -156,7 +156,7 @@ private extension ProductStore {
 
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
-    func retrieveProduct(siteID: Int, productID: Int, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
+    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.loadProduct(for: siteID, productID: productID) { [weak self] (product, error) in
@@ -199,7 +199,7 @@ private extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///
-    func deleteStoredProduct(siteID: Int, productID: Int) {
+    func deleteStoredProduct(siteID: Int64, productID: Int64) {
         let storage = storageManager.viewStorage
         guard let product = storage.loadProduct(siteID: siteID, productID: productID) else {
             return
@@ -211,7 +211,7 @@ private extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID`
     ///
-    func deleteStoredProducts(siteID: Int) {
+    func deleteStoredProducts(siteID: Int64) {
         let storage = storageManager.viewStorage
         storage.deleteProducts(siteID: siteID)
         storage.saveIfNeeded()
@@ -427,7 +427,7 @@ private extension ProductStore {
 
     /// Upserts the Products, and associates them to the SearchResults Entity (in Background)
     ///
-    private func upsertSearchResultsInBackground(siteID: Int, keyword: String, readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
+    private func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
@@ -441,7 +441,7 @@ private extension ProductStore {
 
     /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)
     ///
-    private func upsertStoredResults(siteID: Int, keyword: String, readOnlyProducts: [Networking.Product], in storage: StorageType) {
+    private func upsertStoredResults(siteID: Int64, keyword: String, readOnlyProducts: [Networking.Product], in storage: StorageType) {
         let searchResults = storage.loadProductSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.ProductSearchResults.self)
         searchResults.keyword = keyword
 

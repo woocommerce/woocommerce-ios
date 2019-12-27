@@ -93,7 +93,7 @@ private extension ProductVariationStore {
                                        in storage: StorageType,
                                        siteID: Int64,
                                        productID: Int64) {
-        let product = storage.loadProduct(siteID: Int(siteID), productID: Int(productID))
+        let product = storage.loadProduct(siteID: Int64(siteID), productID: Int64(productID))
 
         // Upserts the Product Variations from the read-only version
         for readOnlyProductVariation in readOnlyProductVariations {
@@ -122,7 +122,7 @@ private extension ProductVariationStore {
 
     /// Replaces the provided StorageProductVariation's attributes with the provided read-only
     /// ProductVariation's attributes.
-    /// Because all local Product attributes have ID = 0, they are not unique in Storage and we always replace the whole
+    /// Because all local Product attributes have ID: Int64 = 0, they are not unique in Storage and we always replace the whole
     /// attribute array.
     ///
     func handleProductVariationAttributes(_ readOnlyVariation: Networking.ProductVariation,

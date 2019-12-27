@@ -6,7 +6,7 @@ public struct AccountSettings: Decodable {
 
     /// Dotcom UserID
     ///
-    public let userID: Int
+    public let userID: Int64
 
     /// Tracks analytics opt out dotcom setting
     ///
@@ -15,7 +15,7 @@ public struct AccountSettings: Decodable {
 
     /// Default initializer for AccountSettings.
     ///
-    public init(userID: Int, tracksOptOut: Bool) {
+    public init(userID: Int64, tracksOptOut: Bool) {
         self.userID = userID
         self.tracksOptOut = tracksOptOut
     }
@@ -24,7 +24,7 @@ public struct AccountSettings: Decodable {
     /// The public initializer for AccountSettings.
     ///
     public init(from decoder: Decoder) throws {
-        guard let userID = decoder.userInfo[.userID] as? Int else {
+        guard let userID = decoder.userInfo[.userID] as? Int64 else {
             throw AccountSettingsDecodingError.missingUserID
         }
 

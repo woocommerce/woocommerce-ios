@@ -20,7 +20,7 @@ extension Storage.SiteSetting: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.SiteSetting {
-        return SiteSetting(siteID: Int(siteID),
+        return SiteSetting(siteID: Int64(siteID),
                            settingID: settingID ?? "",
                            label: label ?? "",
                            description: settingDescription ?? "",

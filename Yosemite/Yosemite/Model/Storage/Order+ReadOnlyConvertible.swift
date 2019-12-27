@@ -68,10 +68,10 @@ extension Storage.Order: ReadOnlyConvertible {
         let orderRefunds = refunds?.map { $0.toReadOnly() } ?? [Yosemite.OrderRefundCondensed]()
         let orderShippingLines = shippingLines?.map { $0.toReadOnly() } ?? [Yosemite.ShippingLine]()
 
-        return Order(siteID: Int(siteID),
-                     orderID: Int(orderID),
-                     parentID: Int(parentID),
-                     customerID: Int(customerID),
+        return Order(siteID: Int64(siteID),
+                     orderID: Int64(orderID),
+                     parentID: Int64(parentID),
+                     customerID: Int64(customerID),
                      number: number ?? "",
                      statusKey: statusKey,
                      currency: currency ?? "",

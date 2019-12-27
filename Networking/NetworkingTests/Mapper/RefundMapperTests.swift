@@ -8,11 +8,11 @@ final class RefundMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 33334444
+    private let dummySiteID: Int64 = 33334444
 
     /// Order ID.
     ///
-    private let orderID = 560
+    private let orderID: Int64 = 560
 
     /// Verifies that all of the Refund fields are parsed correctly.
     ///

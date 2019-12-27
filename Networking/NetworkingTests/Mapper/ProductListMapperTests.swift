@@ -7,7 +7,7 @@ import XCTest
 class ProductListMapperTests: XCTestCase {
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 33334444
+    private let dummySiteID: Int64 = 33334444
 
     /// Verifies that all of the Product Fields are parsed correctly.
     ///

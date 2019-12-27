@@ -17,7 +17,7 @@ extension Storage.OrderItemTax: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.OrderItemTax {
-        return OrderItemTax(taxID: Int(taxID),
+        return OrderItemTax(taxID: Int64(taxID),
                             subtotal: subtotal ?? "",
                             total: total ?? "")
     }

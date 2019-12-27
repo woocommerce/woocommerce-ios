@@ -5,10 +5,10 @@ import Foundation
 /// Each OrderCountItem represents the number of Orders for a given status
 ///
 public struct OrderCount {
-    public let siteID: Int
+    public let siteID: Int64
     public let items: [OrderCountItem]
 
-    public init(siteID: Int, items: [OrderCountItem]) {
+    public init(siteID: Int64, items: [OrderCountItem]) {
         self.siteID = siteID
         self.items = items
     }

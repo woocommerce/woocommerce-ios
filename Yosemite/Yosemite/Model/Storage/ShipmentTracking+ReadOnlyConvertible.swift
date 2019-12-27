@@ -21,8 +21,8 @@ extension Storage.ShipmentTracking: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ShipmentTracking {
-        return ShipmentTracking(siteID: Int(siteID),
-                                orderID: Int(orderID),
+        return ShipmentTracking(siteID: Int64(siteID),
+                                orderID: Int64(orderID),
                                 trackingID: trackingID,
                                 trackingNumber: trackingNumber ?? "",
                                 trackingProvider: trackingProvider,

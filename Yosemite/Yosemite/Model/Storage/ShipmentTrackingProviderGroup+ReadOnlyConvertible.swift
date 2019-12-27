@@ -16,6 +16,6 @@ extension Storage.ShipmentTrackingProviderGroup: ReadOnlyConvertible {
     ///
     public func toReadOnly() -> Yosemite.ShipmentTrackingProviderGroup {
         let groupProviders = providers?.map { $0.toReadOnly() } ?? [Yosemite.ShipmentTrackingProvider]()
-        return ShipmentTrackingProviderGroup(name: name ?? "", siteID: Int(siteID), providers: groupProviders )
+        return ShipmentTrackingProviderGroup(name: name ?? "", siteID: Int64(siteID), providers: groupProviders )
     }
 }

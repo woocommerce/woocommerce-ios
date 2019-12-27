@@ -579,7 +579,7 @@ extension ManualTrackingViewController: KeyboardScrollable {
 private extension ManualTrackingViewController {
     /// Displays the `Unable to Add tracking` Notice.
     ///
-    func displayAddErrorNotice(orderID: Int) {
+    func displayAddErrorNotice(orderID: Int64) {
         let title = NSLocalizedString(
             "Unable to add tracking to order #\(orderID)",
             comment: "Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number}"

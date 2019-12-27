@@ -28,7 +28,7 @@ class SettingStoreTests: XCTestCase {
 
     /// Dummy Site ID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
 
     override func setUp() {

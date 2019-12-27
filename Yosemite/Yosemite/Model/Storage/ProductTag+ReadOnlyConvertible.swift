@@ -17,7 +17,7 @@ extension Storage.ProductTag: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductTag {
-        return ProductTag(tagID: Int(tagID),
+        return ProductTag(tagID: Int64(tagID),
                           name: name,
                           slug: slug)
     }

@@ -18,7 +18,7 @@ public class TopEarnersStatsRemote: Remote {
     ///
     /// Note: `latestDateToInclude` string must be formatted appropriately given the `unit` param. See: `DateFormatter.Stats` extension for some helper funcs.
     ///
-    public func loadTopEarnersStats(for siteID: Int,
+    public func loadTopEarnersStats(for siteID: Int64,
                                     unit: StatGranularity,
                                     latestDateToInclude: String,
                                     limit: Int,

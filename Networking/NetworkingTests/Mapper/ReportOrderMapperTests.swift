@@ -8,7 +8,7 @@ class ReportOrderMapperTests: XCTestCase {
 
     /// Sample SiteID
     ///
-    let siteID = 1234
+    let siteID: Int64 = 1234
 
     /// Verifies that the broken response causes the mapper to return an unknown status
     ///

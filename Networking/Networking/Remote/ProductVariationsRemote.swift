@@ -30,7 +30,7 @@ public class ProductVariationsRemote: Remote {
         ]
 
         let path = "\(Path.products)/\(productID)/variations"
-        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: Int(siteID), path: path, parameters: parameters)
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: Int64(siteID), path: path, parameters: parameters)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
         enqueue(request, mapper: mapper, completion: completion)
     }

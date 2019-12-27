@@ -11,7 +11,7 @@ public enum StatsActionV4: Action {
 
     /// Synchronizes `OrderStats` for the provided siteID, time range, and date.
     ///
-    case retrieveStats(siteID: Int,
+    case retrieveStats(siteID: Int64,
         timeRange: StatsTimeRangeV4,
         earliestDateToInclude: Date,
         latestDateToInclude: Date,
@@ -20,7 +20,7 @@ public enum StatsActionV4: Action {
 
     /// Synchronizes `SiteVisitStats` for the provided siteID, time range, and date.
     ///
-    case retrieveSiteVisitStats(siteID: Int,
+    case retrieveSiteVisitStats(siteID: Int64,
         siteTimezone: TimeZone,
         timeRange: StatsTimeRangeV4,
         latestDateToInclude: Date,
@@ -28,7 +28,7 @@ public enum StatsActionV4: Action {
 
     /// Synchronizes `TopEarnerStats` for the provided siteID, time range, and date.
     ///
-    case retrieveTopEarnerStats(siteID: Int,
+    case retrieveTopEarnerStats(siteID: Int64,
         timeRange: StatsTimeRangeV4,
         latestDateToInclude: Date,
         onCompletion: (Error?) -> Void)

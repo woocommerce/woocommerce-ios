@@ -86,8 +86,8 @@ extension Storage.Product: ReadOnlyConvertible {
             quantity = Int(stockQuantity)
         }
 
-        return Product(siteID: Int(siteID),
-                       productID: Int(productID),
+        return Product(siteID: Int64(siteID),
+                       productID: Int64(productID),
                        name: name,
                        slug: slug,
                        permalink: permalink,
@@ -128,7 +128,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        shippingRequired: shippingRequired,
                        shippingTaxable: shippingTaxable,
                        shippingClass: shippingClass,
-                       shippingClassID: Int(shippingClassID),
+                       shippingClassID: Int64(shippingClassID),
                        productShippingClass: productShippingClassModel,
                        reviewsAllowed: reviewsAllowed,
                        averageRating: averageRating,
@@ -136,15 +136,15 @@ extension Storage.Product: ReadOnlyConvertible {
                        relatedIDs: convertIDArray(relatedIDs),
                        upsellIDs: convertIDArray(upsellIDs),
                        crossSellIDs: convertIDArray(crossSellIDs),
-                       parentID: Int(parentID),
+                       parentID: Int64(parentID),
                        purchaseNote: purchaseNote,
                        categories: productCategories.sorted(),
                        tags: productTags.sorted(),
                        images: productImages.sorted(),
                        attributes: productAttributes.sorted(),
                        defaultAttributes: productDefaultAttributes.sorted(),
-                       variations: convertIDArray(variations),
-                       groupedProducts: convertIDArray(groupedProducts),
+                       variations: variations ?? [],
+                       groupedProducts: groupedProducts ?? [],
                        menuOrder: Int(menuOrder))
     }
 
@@ -158,11 +158,11 @@ extension Storage.Product: ReadOnlyConvertible {
         return ProductDimensions(length: dimensions.length, width: dimensions.width, height: dimensions.height)
     }
 
-    private func convertIDArray(_ array: [Int64]? ) -> [Int] {
+    private func convertIDArray(_ array: [Int64]? ) -> [Int64] {
         guard let array = array else {
-            return [Int]()
+            return [Int64]()
         }
 
-        return array.map { Int($0) }
+        return array.map { Int64($0) }
     }
 }

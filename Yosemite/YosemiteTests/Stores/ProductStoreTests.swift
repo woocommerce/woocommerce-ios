@@ -28,19 +28,19 @@ class ProductStoreTests: XCTestCase {
 
     /// Testing SiteID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     /// Testing SiteID #2
     ///
-    private let sampleSiteID2 = 999
+    private let sampleSiteID2: Int64 = 999
 
     /// Testing ProductID
     ///
-    private let sampleProductID = 282
+    private let sampleProductID: Int64 = 282
 
     /// Testing Variation Type ProductID
     ///
-    private let sampleVariationTypeProductID = 295
+    private let sampleVariationTypeProductID: Int64 = 295
 
     /// Testing Page Number
     ///
@@ -116,10 +116,10 @@ class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // Upserts some Products into the storage with two site IDs.
-        let siteID1 = 134
-        let siteID2 = 591
+        let siteID1: Int64 = 134
+        let siteID2: Int64 = 591
 
-        let productID = 123
+        let productID: Int64 = 123
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID1, productID: productID), in: viewStorage)
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID2, productID: productID), in: viewStorage)
 
@@ -155,10 +155,10 @@ class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // Upserts some Products into the storage.
-        let siteID = 134
+        let siteID: Int64 = 134
 
         // This product ID should not exist in the network response.
-        let productID = 888
+        let productID: Int64 = 888
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID, productID: productID), in: viewStorage)
 
         let expectation = self.expectation(description: "Persist product list")
@@ -188,10 +188,10 @@ class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // Upserts some Products into the storage.
-        let siteID = 134
+        let siteID: Int64 = 134
 
         // This product ID should not exist in the network response.
-        let productID = 888
+        let productID: Int64 = 888
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID, productID: productID), in: viewStorage)
 
         let expectation = self.expectation(description: "Retrieve products error response")
@@ -602,7 +602,7 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
         // A product that is expected to be in the search results.
-        let expectedProductID = 67
+        let expectedProductID: Int64 = 67
         let expectedProductName = "Photo"
 
         let keyword = "photo"
@@ -726,10 +726,10 @@ class ProductStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Update product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let expectedProductID = 847
+        let expectedProductID: Int64 = 847
         let expectedProductName = "This is my new product name!"
         let expectedProductDescription = "Learn something!"
-        let expectedProductShippingClassID = 96987515
+        let expectedProductShippingClassID: Int64 = 96987515
         let expectedProductShippingClassSlug = "two-days"
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
@@ -765,7 +765,7 @@ class ProductStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Update product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let expectedProductID = 847
+        let expectedProductID: Int64 = 847
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
@@ -872,7 +872,7 @@ class ProductStoreTests: XCTestCase {
 //
 private extension ProductStoreTests {
 
-    func sampleProduct(_ siteID: Int? = nil, productID: Int? = nil) -> Networking.Product {
+    func sampleProduct(_ siteID: Int64? = nil, productID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,
@@ -1013,7 +1013,7 @@ private extension ProductStoreTests {
         return [download1, download2, download3]
     }
 
-    func sampleProductMutated(_ siteID: Int? = nil) -> Networking.Product {
+    func sampleProductMutated(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
 
         return Product(siteID: testSiteID,
@@ -1136,7 +1136,7 @@ private extension ProductStoreTests {
         return [defaultAttribute1]
     }
 
-    func sampleVariationTypeProduct(_ siteID: Int? = nil) -> Networking.Product {
+    func sampleVariationTypeProduct(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         return Product(siteID: testSiteID,
                        productID: sampleVariationTypeProductID,

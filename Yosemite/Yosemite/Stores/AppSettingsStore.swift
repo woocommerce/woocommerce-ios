@@ -127,7 +127,7 @@ public class AppSettingsStore: Store {
 // MARK: - Shipment tracking providers!
 //
 private extension AppSettingsStore {
-    func addTrackingProvider(siteID: Int,
+    func addTrackingProvider(siteID: Int64,
                              providerName: String,
                              onCompletion: (Error?) -> Void) {
         addProvider(siteID: siteID,
@@ -137,7 +137,7 @@ private extension AppSettingsStore {
 
     }
 
-    func addCustomTrackingProvider(siteID: Int,
+    func addCustomTrackingProvider(siteID: Int64,
                              providerName: String,
                              providerURL: String?,
                              onCompletion: (Error?) -> Void) {
@@ -148,7 +148,7 @@ private extension AppSettingsStore {
                     onCompletion: onCompletion)
     }
 
-    func addProvider(siteID: Int,
+    func addProvider(siteID: Int64,
                      providerName: String,
                      providerURL: String? = nil,
                      fileURL: URL,
@@ -180,7 +180,7 @@ private extension AppSettingsStore {
         }
     }
 
-    func loadTrackingProvider(siteID: Int,
+    func loadTrackingProvider(siteID: Int64,
                               onCompletion: (ShipmentTrackingProvider?, ShipmentTrackingProviderGroup?, Error?) -> Void) {
         guard let allSavedProviders = read(from: selectedProvidersURL) as [PreselectedProvider]? else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -206,7 +206,7 @@ private extension AppSettingsStore {
         onCompletion(provider?.toReadOnly(), provider?.group?.toReadOnly(), nil)
     }
 
-    func loadCustomTrackingProvider(siteID: Int,
+    func loadCustomTrackingProvider(siteID: Int64,
                               onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
         guard let allSavedProviders = read(from: customSelectedProvidersURL) as [PreselectedProvider]? else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -234,7 +234,7 @@ private extension AppSettingsStore {
         onCompletion(customProvider, nil)
     }
 
-    func upsertTrackingProvider(siteID: Int,
+    func upsertTrackingProvider(siteID: Int64,
                                 providerName: String,
                                 providerURL: String? = nil,
                                 preselectedData: [PreselectedProvider],
@@ -256,7 +256,7 @@ private extension AppSettingsStore {
         write(dataToSave, to: toFileURL, onCompletion: onCompletion)
     }
 
-    func insertNewProvider(siteID: Int,
+    func insertNewProvider(siteID: Int64,
                            providerName: String,
                            providerURL: String? = nil,
                            toFileURL: URL,
@@ -283,7 +283,7 @@ private extension AppSettingsStore {
 // MARK: - Stats version
 //
 private extension AppSettingsStore {
-    func setStatsVersionLastShownOrFromUserPreference(siteID: Int,
+    func setStatsVersionLastShownOrFromUserPreference(siteID: Int64,
                                                       statsVersion: StatsVersion) {
         set(statsVersion: statsVersion, for: siteID, to: statsVersionLastShownURL, onCompletion: { error in
             if let error = error {
@@ -292,7 +292,7 @@ private extension AppSettingsStore {
         })
     }
 
-    func setStatsVersionEligible(siteID: Int,
+    func setStatsVersionEligible(siteID: Int64,
                                  statsVersion: StatsVersion) {
         set(statsVersion: statsVersion, for: siteID, to: statsVersionEligibleURL, onCompletion: { error in
             if let error = error {
@@ -301,7 +301,7 @@ private extension AppSettingsStore {
         })
     }
 
-    func loadInitialStatsVersionToShow(siteID: Int, onCompletion: (StatsVersion?) -> Void) {
+    func loadInitialStatsVersionToShow(siteID: Int64, onCompletion: (StatsVersion?) -> Void) {
         guard let existingData: StatsVersionBySite = read(from: statsVersionLastShownURL),
             let statsVersion = existingData.statsVersionBySite[siteID] else {
             onCompletion(nil)
@@ -310,7 +310,7 @@ private extension AppSettingsStore {
         onCompletion(statsVersion)
     }
 
-    func loadStatsVersionEligible(siteID: Int, onCompletion: (StatsVersion?) -> Void) {
+    func loadStatsVersionEligible(siteID: Int64, onCompletion: (StatsVersion?) -> Void) {
         guard let existingData: StatsVersionBySite = read(from: statsVersionEligibleURL),
             let statsVersion = existingData.statsVersionBySite[siteID] else {
                 onCompletion(nil)
@@ -319,7 +319,7 @@ private extension AppSettingsStore {
         onCompletion(statsVersion)
     }
 
-    func set(statsVersion: StatsVersion, for siteID: Int, to fileURL: URL, onCompletion: (Error?) -> Void) {
+    func set(statsVersion: StatsVersion, for siteID: Int64, to fileURL: URL, onCompletion: (Error?) -> Void) {
         guard let existingData: StatsVersionBySite = read(from: fileURL) else {
             let statsVersionBySite: StatsVersionBySite = StatsVersionBySite(statsVersionBySite: [siteID: statsVersion])
             write(statsVersionBySite, to: fileURL, onCompletion: onCompletion)

@@ -7,7 +7,7 @@ public struct TopEarnerStatsItem: Decodable {
 
     /// Product ID
     ///
-    public let productID: Int
+    public let productID: Int64
 
     /// Product name
     ///
@@ -36,7 +36,7 @@ public struct TopEarnerStatsItem: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(productID: Int, productName: String?, quantity: Int, price: Double, total: Double, currency: String, imageUrl: String?) {
+    public init(productID: Int64, productName: String?, quantity: Int, price: Double, total: Double, currency: String, imageUrl: String?) {
         self.productID = productID
         self.productName = productName ?? ""
         self.quantity = quantity

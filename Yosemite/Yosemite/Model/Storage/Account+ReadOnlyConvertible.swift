@@ -19,7 +19,7 @@ extension Storage.Account: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.Account {
-        return Account(userID: Int(userID),
+        return Account(userID: Int64(userID),
                        displayName: displayName ?? "",
                        email: email ?? "",
                        username: username ?? "",

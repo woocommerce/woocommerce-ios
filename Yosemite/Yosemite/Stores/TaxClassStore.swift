@@ -44,7 +44,7 @@ private extension TaxClassStore {
 
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
-    func retrieveTaxClasses(siteID: Int, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
+    func retrieveTaxClasses(siteID: Int64, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
         let remote = TaxClassRemote(network: network)
 
         remote.loadAllTaxClasses(for: Int64(siteID)) { [weak self] (taxClasses, error) in

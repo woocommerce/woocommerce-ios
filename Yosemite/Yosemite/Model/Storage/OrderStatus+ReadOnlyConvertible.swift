@@ -18,6 +18,6 @@ extension Storage.OrderStatus: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.OrderStatus {
-        return OrderStatus(name: name, siteID: Int(siteID), slug: slug, total: Int(total))
+        return OrderStatus(name: name, siteID: Int64(siteID), slug: slug, total: Int(total))
     }
 }

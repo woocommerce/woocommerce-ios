@@ -40,7 +40,7 @@ final class ProductsViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
-        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         let resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in
             self?.tableView.reloadData()
@@ -262,14 +262,14 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
-    func updateResultsController(siteID: Int) {
+    func updateResultsController(siteID: Int64) {
         resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in
             self?.tableView.reloadData()
         }
     }
 
-    func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
+    func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCompare(_:)))

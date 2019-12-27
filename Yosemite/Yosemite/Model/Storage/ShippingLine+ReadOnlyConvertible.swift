@@ -19,7 +19,7 @@ extension Storage.ShippingLine: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ShippingLine {
-        return ShippingLine(shippingID: Int(shippingID),
+        return ShippingLine(shippingID: Int64(shippingID),
                             methodTitle: methodTitle ?? "",
                             methodID: methodID ?? "",
                             total: total ?? "",

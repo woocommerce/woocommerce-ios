@@ -22,7 +22,7 @@ extension Storage.Site: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.Site {
-        return Site(siteID: Int(siteID),
+        return Site(siteID: Int64(siteID),
                     name: name ?? "",
                     description: tagline ?? "",
                     url: url ?? "",

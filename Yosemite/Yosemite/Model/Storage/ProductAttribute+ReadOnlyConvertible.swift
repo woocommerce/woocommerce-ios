@@ -20,7 +20,7 @@ extension Storage.ProductAttribute: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductAttribute {
-        return ProductAttribute(attributeID: Int(attributeID),
+        return ProductAttribute(attributeID: Int64(attributeID),
                                 name: name,
                                 position: Int(position),
                                 visible: visible,

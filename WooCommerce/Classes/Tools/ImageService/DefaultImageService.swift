@@ -11,7 +11,7 @@ private extension URL {
 ///
 struct DefaultImageService: ImageService {
     private let imageDownloader = ImageDownloader(name: "WooCommerce")
-    private let imageCache = ImageCache(name: "WooCommerce")
+    private let imageCache = ImageCache.default
 
     private var defaultOptions: KingfisherOptionsInfo {
         return [.originalCache(imageCache), .downloader(imageDownloader)]

@@ -71,6 +71,8 @@ final class ProductsViewController: UIViewController {
         return stateCoordinator
     }()
 
+    private let imageService: ImageService = ServiceLocator.imageService
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -310,7 +312,7 @@ extension ProductsViewController: UITableViewDataSource {
 
         let product = resultsController.object(at: indexPath)
         let viewModel = ProductsTabProductViewModel(product: product)
-        cell.update(viewModel: viewModel)
+        cell.update(viewModel: viewModel, imageService: imageService)
 
         return cell
     }

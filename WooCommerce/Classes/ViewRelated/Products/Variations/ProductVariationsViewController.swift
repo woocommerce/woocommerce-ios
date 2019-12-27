@@ -62,6 +62,8 @@ final class ProductVariationsViewController: UIViewController {
     private let siteID: Int64
     private let productID: Int64
 
+    private let imageService: ImageService = ServiceLocator.imageService
+
     init(siteID: Int64, productID: Int64) {
         self.siteID = siteID
         self.productID = productID
@@ -193,7 +195,7 @@ extension ProductVariationsViewController: UITableViewDataSource {
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
         let viewModel = ProductsTabProductViewModel(productVariation: productVariation,
                                                     currency: currency)
-        cell.update(viewModel: viewModel)
+        cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none
 
         return cell

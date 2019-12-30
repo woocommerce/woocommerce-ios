@@ -21,6 +21,7 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
         }
         set {
             leftColumn.text = newValue?.uppercased()
+            leftColumn.isHidden = newValue == nil
         }
     }
 
@@ -32,6 +33,7 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
         }
         set {
             rightColumn.text = newValue?.uppercased()
+            rightColumn.isHidden = newValue == nil
         }
     }
 

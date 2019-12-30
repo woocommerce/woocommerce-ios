@@ -7,12 +7,14 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         let title: String?
         let text: String?
         let image: UIImage?
+        let imageTintColor: UIColor?
         let numberOfLinesForText: Int
 
-        init(title: String?, text: String?, image: UIImage? = nil, numberOfLinesForText: Int = 1) {
+        init(title: String?, text: String?, image: UIImage? = nil, imageTintColor: UIColor? = nil, numberOfLinesForText: Int = 1) {
             self.title = title
             self.text = text
             self.image = image
+            self.imageTintColor = imageTintColor
             self.numberOfLinesForText = numberOfLinesForText
         }
     }
@@ -29,6 +31,7 @@ final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
         configureImageView()
         configureContentStackView()
         configureTitleAndTextStackView()
+        applyDefaultBackgroundStyle()
     }
 }
 
@@ -44,6 +47,10 @@ extension ImageAndTitleAndTextTableViewCell {
         descriptionLabel.numberOfLines = viewModel.numberOfLinesForText
         contentImageView.image = viewModel.image
         contentImageView.isHidden = viewModel.image == nil
+
+        if let imageTintColor = viewModel.imageTintColor {
+            contentImageView.tintColor = viewModel.imageTintColor
+        }
     }
 }
 

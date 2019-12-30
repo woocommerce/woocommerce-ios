@@ -13,6 +13,7 @@ struct AztecFormatBarFactory {
         toolbar.disabledTintColor = .textTertiary
         toolbar.dividerTintColor = .divider
         toolbar.overflowToggleIcon = Gridicon.iconOfType(.ellipsis)
+        toolbar.backgroundColor = .systemColor(.secondarySystemBackground)
 
         updateToolbar(toolbar)
 

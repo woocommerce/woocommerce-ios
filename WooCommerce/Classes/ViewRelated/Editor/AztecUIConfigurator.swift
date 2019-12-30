@@ -76,6 +76,7 @@ private extension AztecUIConfigurator {
         textView.delegate = textViewDelegate
         textView.textAttachmentDelegate = textViewAttachmentDelegate
         textView.backgroundColor = .basicBackground
+        textView.textColor = .systemColor(.label)
         textView.linkTextAttributes = linkAttributes
 
         // We need this false to be able to set negative `scrollInset` values.

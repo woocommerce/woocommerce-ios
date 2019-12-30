@@ -337,9 +337,9 @@ private extension OrderDetailsDataSource {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
 
         cell.leftText = Titles.refunded
-        cell.leftTextIsActive(true)
+        cell.setLeftTitleToLinkStyle(true)
         cell.rightText = paymentViewModel.refundAmount
-        cell.rightTextIsActive(true)
+        cell.setRightTitleToLinkStyle(true)
         cell.updateFootnoteText(paymentViewModel.refundSummary)
 
         cell.accessibilityTraits = .button
@@ -569,6 +569,13 @@ extension OrderDetailsDataSource {
 
         sections = [summary, shippingNotice, products, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
+    }
+
+    func refund(at indexPath: IndexPath) -> Refund {
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let refund = refunds[index]
+
+        return refund
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {

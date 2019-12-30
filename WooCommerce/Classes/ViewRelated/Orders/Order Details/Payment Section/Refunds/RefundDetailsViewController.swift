@@ -35,7 +35,7 @@ final class RefundDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        setUpNavigation()
+        configureNavigation()
         configureTableView()
         registerTableViewCells()
         registerTableViewHeaderFooters()
@@ -44,9 +44,9 @@ final class RefundDetailsViewController: UIViewController {
 
     /// Setup: Navigation.
     ///
-    func setUpNavigation() {
-        let refundTitle = NSLocalizedString("Refund #%ld", comment: "It reads: Refund #<refund ID>")
-        title = String.localizedStringWithFormat(refundTitle, viewModel.refund.refundID)
+    func configureNavigation() {
+        let refundTitle = NSLocalizedString("Refund #%@", comment: "It reads: Refund #<refund ID>")
+        title = String.localizedStringWithFormat(refundTitle, String(refund.refundID))
     }
 
     /// Setup: TableView.

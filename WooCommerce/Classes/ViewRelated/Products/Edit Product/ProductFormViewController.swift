@@ -47,6 +47,7 @@ final class ProductFormViewController: UIViewController {
 private extension ProductFormViewController {
     func configureNavigationBar() {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+        removeNavigationBackBarButtonText()
     }
 
     func configureTableView() {
@@ -87,6 +88,7 @@ private extension ProductFormViewController {
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
                 DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                self?.displayError(error: error)
                 return
             }
             self?.product = product
@@ -95,6 +97,34 @@ private extension ProductFormViewController {
             self?.dismiss(animated: true)
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func displayError(error: ProductUpdateError?) {
+        let title = NSLocalizedString("Cannot update Product", comment: "The title of the alert when there is an error updating the product")
+
+        let message: String?
+        switch error {
+        case .invalidSKU:
+            message = NSLocalizedString("The SKU is used for another product or is invalid. Please check the inventory settings.",
+                                        comment: "The message of the alert when there is an error updating the product SKU")
+        default:
+            message = nil
+        }
+
+        displayErrorAlert(title: title, message: message)
+    }
+
+    func displayErrorAlert(title: String?, message: String?) {
+        let alert = UIAlertController(title: title,
+                                      message: message,
+                                      preferredStyle: .alert)
+        let cancel = UIAlertAction(title: NSLocalizedString(
+            "OK",
+            comment: "Dismiss button on the alert when there is an error updating the product"
+        ), style: .cancel, handler: nil)
+        alert.addAction(cancel)
+
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -117,14 +147,12 @@ extension ProductFormViewController: UITableViewDelegate {
         case .settings(let rows):
             let row = rows[indexPath.row]
             switch row {
+            case .price:
+                editPriceSettings()
             case .shipping:
                 editShippingSettings()
-            case .price:
-                // TODO-1423: Price Settings
-                return
             case .inventory:
-                // TODO-1424: Inventory Settings
-                return
+                editInventorySettings()
             }
         }
     }
@@ -199,9 +227,35 @@ private extension ProductFormViewController {
         self.product = productUpdater.descriptionUpdated(description: newDescription)
     }
 
+    func editPriceSettings() {
+        let priceSettingsViewController = ProductPriceSettingsViewController(product: product)
+        navigationController?.pushViewController(priceSettingsViewController, animated: true)
+    }
+
     func editShippingSettings() {
-        let shippingSettingsViewController = ProductShippingSettingsViewController(product: product)
+        let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) { [weak self] (weight, dimensions, shippingClass) in
+            self?.onEditShippingSettingsCompletion(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
+        }
         navigationController?.pushViewController(shippingSettingsViewController, animated: true)
+    }
+
+    func onEditShippingSettingsCompletion(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        guard weight != self.product.weight || dimensions != self.product.dimensions || shippingClass != product.productShippingClass else {
+            return
+        }
+        self.product = productUpdater.shippingSettingsUpdated(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
+    }
+}
+
+// MARK: Action - Edit Product Inventory Settings
+//
+private extension ProductFormViewController {
+    func editInventorySettings() {
+        let inventorySettingsViewController = ProductInventorySettingsViewController(product: product)
+        navigationController?.pushViewController(inventorySettingsViewController, animated: true)
     }
 }
 

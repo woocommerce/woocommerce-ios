@@ -95,6 +95,10 @@ public struct Product: Codable {
         return ProductType(rawValue: productTypeKey)
     }
 
+    public var backordersSetting: ProductBackordersSetting {
+        return ProductBackordersSetting(rawValue: backordersKey)
+    }
+
     /// Product struct initializer.
     ///
     public init(siteID: Int,
@@ -399,6 +403,11 @@ public struct Product: Codable {
 
         try container.encode(name, forKey: .name)
         try container.encode(fullDescription, forKey: .fullDescription)
+
+        // Shipping Settings.
+        try container.encode(weight, forKey: .weight)
+        try container.encode(dimensions, forKey: .dimensions)
+        try container.encode(shippingClass, forKey: .shippingClass)
     }
 }
 

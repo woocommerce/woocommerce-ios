@@ -11,5 +11,5 @@ public enum ProductShippingClassAction: Action {
 
     /// Retrieves the specified ProductShippingClass.
     ///
-    case retrieveProductShippingClass(product: Product, onCompletion: (ProductShippingClass?, Error?) -> Void)
+    case retrieveProductShippingClass(siteID: Int64, remoteID: Int64, onCompletion: (ProductShippingClass?, Error?) -> Void)
 }

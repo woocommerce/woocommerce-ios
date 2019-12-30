@@ -9,9 +9,9 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
 
     private let siteID: Int64
 
-    init(product: Product) {
+    init(product: Product, selected: ProductShippingClass?) {
         self.siteID = Int64(product.siteID)
-        self.selected = product.productShippingClass
+        self.selected = selected
     }
 
     func createResultsController() -> ResultsController<StorageProductShippingClass> {

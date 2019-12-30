@@ -4,6 +4,7 @@ struct UnitInputViewModel {
     let title: String
     let unit: String
     let value: String?
+    let keyboardType: UIKeyboardType
     let inputFormatter: UnitInputFormatter
     let onInputChange: ((_ input: String?) -> Void)?
 }
@@ -22,6 +23,7 @@ final class UnitInputTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureSelectionStyle()
         configureTitleLabel()
         configureInputAndUnitStackView()
         configureInputTextField()
@@ -32,13 +34,19 @@ final class UnitInputTableViewCell: UITableViewCell {
     func configure(viewModel: UnitInputViewModel) {
         titleLabel.text = viewModel.title
         unitLabel.text = viewModel.unit
+        unitLabel.isHidden = viewModel.unit.isEmpty
         inputTextField.text = viewModel.value
+        inputTextField.keyboardType = viewModel.keyboardType
         inputFormatter = viewModel.inputFormatter
         onInputChange = viewModel.onInputChange
     }
 }
 
 private extension UnitInputTableViewCell {
+    func configureSelectionStyle() {
+        selectionStyle = .none
+    }
+
     func configureTitleLabel() {
         titleLabel.applyBodyStyle()
     }
@@ -59,7 +67,6 @@ private extension UnitInputTableViewCell {
             inputTextField.textAlignment = .right
             // swiftlint:enable:next inverse_text_alignment
         }
-        inputTextField.keyboardType = .decimalPad
         inputTextField.delegate = self
         inputTextField.addTarget(self, action: #selector(textFieldDidChange(textField:)), for: .editingChanged)
     }

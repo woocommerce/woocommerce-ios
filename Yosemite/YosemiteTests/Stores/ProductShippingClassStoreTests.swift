@@ -187,7 +187,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         let action = ProductShippingClassAction
-            .retrieveProductShippingClass(product: product) { (shippingClass, error) in
+            .retrieveProductShippingClass(siteID: sampleSiteID, remoteID: sampleShippingClassID) { (shippingClass, error) in
                 XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
                 XCTAssertNil(error)
 
@@ -199,9 +199,6 @@ final class ProductShippingClassStoreTests: XCTestCase {
                 XCTAssertNotNil(readOnlyStoredProductShippingClass)
                 XCTAssertEqual(readOnlyStoredProductShippingClass,
                                self.sampleProductShippingClass(remoteID: self.sampleShippingClassID))
-
-                let storedProduct = self.viewStorage.loadProduct(siteID: product.siteID, productID: product.productID)
-                XCTAssertEqual(storedProduct?.productShippingClass, storedProductShippingClass)
 
                 expectation.fulfill()
         }
@@ -224,14 +221,14 @@ final class ProductShippingClassStoreTests: XCTestCase {
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         let action = ProductShippingClassAction
-            .retrieveProductShippingClass(product: product) { (shippingClass, error) in
+            .retrieveProductShippingClass(siteID: sampleSiteID, remoteID: sampleShippingClassID) { (shippingClass, error) in
                 XCTAssertNil(error)
 
                 let storedProductShippingClasses = self.viewStorage.loadProductShippingClasses(siteID: self.sampleSiteID)
                 XCTAssertEqual(storedProductShippingClasses?.count, 1)
 
                 let action = ProductShippingClassAction
-                    .retrieveProductShippingClass(product: product) { (model, error) in
+                    .retrieveProductShippingClass(siteID: self.sampleSiteID, remoteID: self.sampleShippingClassID) { (model, error) in
                         XCTAssertNil(error)
 
                         let storedProductShippingClasses = self.viewStorage
@@ -258,7 +255,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
         let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
-        let action = ProductShippingClassAction.retrieveProductShippingClass(product: product) { (model, error) in
+        let action = ProductShippingClassAction.retrieveProductShippingClass(siteID: sampleSiteID, remoteID: sampleShippingClassID) { (model, error) in
             XCTAssertNil(model)
             XCTAssertNotNil(error)
 
@@ -278,7 +275,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
         let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
-        let action = ProductShippingClassAction.retrieveProductShippingClass(product: product) { (model, error) in
+        let action = ProductShippingClassAction.retrieveProductShippingClass(siteID: sampleSiteID, remoteID: sampleShippingClassID) { (model, error) in
             XCTAssertNil(model)
             XCTAssertNotNil(error)
 

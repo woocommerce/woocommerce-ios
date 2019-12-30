@@ -84,6 +84,12 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     @objc func updateProduct() {
+        let title = NSLocalizedString("Publishing your product...", comment: "")
+        let message = NSLocalizedString("Please wait while we publish this product to your store", comment: "")
+        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
@@ -93,8 +99,8 @@ private extension ProductFormViewController {
             }
             self?.product = product
 
-            // Temporarily dismisses the Product form before the navigation is implemented.
-            self?.dismiss(animated: true)
+            // Dismisses the in-progress UI.
+            self?.navigationController?.dismiss(animated: true, completion: nil)
         }
         ServiceLocator.stores.dispatch(action)
     }

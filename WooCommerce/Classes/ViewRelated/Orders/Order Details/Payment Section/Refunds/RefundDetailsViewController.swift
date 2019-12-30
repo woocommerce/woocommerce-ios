@@ -46,7 +46,7 @@ final class RefundDetailsViewController: UIViewController {
     ///
     func configureNavigation() {
         let refundTitle = NSLocalizedString("Refund #%@", comment: "It reads: Refund #<refund ID>")
-        title = String.localizedStringWithFormat(refundTitle, String(refund.refundID))
+        title = String.localizedStringWithFormat(refundTitle, String(viewModel.refund.refundID))
     }
 
     /// Setup: TableView.

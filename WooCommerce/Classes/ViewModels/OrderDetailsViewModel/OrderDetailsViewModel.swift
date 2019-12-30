@@ -38,12 +38,6 @@ final class OrderDetailsViewModel {
         return dataSource.products
     }
 
-    /// Refunds
-    ///
-    var refunds: [Refund] {
-        return dataSource.refunds
-    }
-
     /// Indicates if we consider the shipment tracking plugin as reachable
     /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
     ///
@@ -203,8 +197,7 @@ extension OrderDetailsViewModel {
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
-            let index = indexPath.row - Constants.paymentSummaryCell - Constants.paidByCustomerCell
-            let refund = refunds[index]
+            let refund = dataSource.refund(at: indexPath)
             let refundDetailsViewController = RefundDetailsViewController(refund: refund)
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
         default:
@@ -337,7 +330,5 @@ private extension OrderDetailsViewModel {
     enum Constants {
         static let productDetailsSegue = "ShowProductListViewController"
         static let orderStatusListSegue = "ShowOrderStatusListViewController"
-        static let paymentSummaryCell = 1
-        static let paidByCustomerCell = 1
     }
 }

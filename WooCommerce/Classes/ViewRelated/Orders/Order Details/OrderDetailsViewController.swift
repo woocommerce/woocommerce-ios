@@ -124,7 +124,7 @@ private extension OrderDetailsViewController {
             self?.reloadTableViewSectionsAndData()
         }
 
-        viewModel.onCellAction = {[weak self] (actionType, indexPath) in
+        viewModel.onCellAction = { [weak self] (actionType, indexPath) in
             self?.handleCellAction(actionType, at: indexPath)
         }
     }

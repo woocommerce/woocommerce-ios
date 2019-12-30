@@ -34,6 +34,30 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         }
     }
 
+    /// Left Title Label: sets the style to the accent color,
+    /// to indicate that the cell is tappable.
+    ///
+    func setLeftTitleToLinkStyle(_ active: Bool) {
+        if active {
+            leftTitleLabel.applyLinkHeadlineStyle()
+            return
+        }
+
+        leftTitleLabel.applyBodyStyle()
+    }
+
+    /// Right Title Label: sets the style to the accent color,
+    /// to indicate that the cell is tappable.
+    ///
+    func setRightTitleToLinkStyle(_ active: Bool) {
+        if active {
+            rightTitleLabel.applyLinkHeadlineStyle()
+            return
+        }
+
+        rightTitleLabel.applyBodyStyle()
+    }
+
     /// Footnote: attributed text option
     ///
     func updateFootnoteAttributedText(_ attributedString: NSAttributedString?) {
@@ -67,6 +91,7 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         super.prepareForReuse()
 
         footnoteLabel.isHidden = false
+        configureLabels()
     }
 }
 

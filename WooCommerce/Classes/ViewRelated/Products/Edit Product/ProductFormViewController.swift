@@ -86,7 +86,8 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     @objc func updateProduct() {
         let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
-        let message = NSLocalizedString("Please wait while we publish this product to your store", comment: "Message of the in-progress UI while updating the Product remotely")
+        let message = NSLocalizedString("Please wait while we publish this product to your store",
+                                        comment: "Message of the in-progress UI while updating the Product remotely")
         let viewProperties = InProgressViewProperties(title: title, message: message)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         navigationController?.present(inProgressViewController, animated: true, completion: nil)

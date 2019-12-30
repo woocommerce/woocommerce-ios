@@ -34,6 +34,10 @@ final class ProductPriceSettingsViewController: UIViewController {
     //
     private lazy var defaultEndDate = Calendar.current.date(byAdding: .day, value: 1, to: Date().endOfDay(timezone: timezoneForScheduleSaleDates))
 
+    // Internal data for rendering UI
+    //
+    private var taxClass: TaxClass?
+
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
@@ -59,6 +63,7 @@ final class ProductPriceSettingsViewController: UIViewController {
         configureMainView()
         configureSections()
         configureTableView()
+        retrieveProductTaxClass()
     }
 }
 
@@ -97,6 +102,14 @@ private extension ProductPriceSettingsViewController {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
+    }
+
+    func retrieveProductTaxClass() {
+        let action = TaxClassAction.requestMissingTaxClasses(for: product) { (taxClass, error) in
+            self.taxClass = taxClass
+            self.refreshViewContent()
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -327,8 +340,7 @@ private extension ProductPriceSettingsViewController {
 
     func configureTaxClass(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax class", comment: "Title of the cell in Product Price Settings > Tax class")
-        //TODO: set the tax class
-        cell.updateUI(title: title, value: nil)
+        cell.updateUI(title: title, value: taxClass?.name)
         cell.accessoryType = .disclosureIndicator
     }
 }

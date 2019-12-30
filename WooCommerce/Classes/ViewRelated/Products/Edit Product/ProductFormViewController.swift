@@ -46,7 +46,8 @@ final class ProductFormViewController: UIViewController {
 
 private extension ProductFormViewController {
     func configureNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
         removeNavigationBackBarButtonText()
     }
 

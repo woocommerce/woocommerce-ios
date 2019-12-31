@@ -207,7 +207,7 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Description
+// MARK: Action - Edit Product Parameters
 //
 private extension ProductFormViewController {
     func editProductDescription() {

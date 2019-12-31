@@ -430,6 +430,7 @@ private extension FulfillViewController {
 
         let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
         cell.leftImage = .addOutlineImage
+        cell.imageView?.tintColor = .accent
         cell.labelText = cellTextContent
 
         cell.isAccessibilityElement = true

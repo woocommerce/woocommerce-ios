@@ -6,4 +6,5 @@ struct PaginatedListSelectorViewProperties {
     let navigationBarTitle: String?
     let noResultsPlaceholderText: String
     let noResultsPlaceholderImage: UIImage?
+    let noResultsPlaceholderImageTintColor: UIColor?
 }

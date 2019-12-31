@@ -38,6 +38,7 @@ extension UIImage {
     static var cameraImage: UIImage {
         return Gridicon.iconOfType(.camera)
             .imageFlippedForRightToLeftLayoutDirection()
+            .applyTintColor(.placeholderImage)!
     }
 
     /// Add Image icon

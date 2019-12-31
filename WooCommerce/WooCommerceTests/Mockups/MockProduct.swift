@@ -11,6 +11,7 @@ final class MockProduct {
                  productShippingClass: ProductShippingClass? = nil,
                  backordersSetting: ProductBackordersSetting = .notAllowed,
                  stockQuantity: Int? = nil,
+                 taxClass: String? = "",
                  stockStatus: ProductStockStatus = .inStock,
                  variations: [Int] = [],
                  images: [ProductImage] = []) -> Product {
@@ -49,7 +50,7 @@ final class MockProduct {
                    downloadExpiry: -1,
                    externalURL: "http://somewhere.com",
                    taxStatusKey: "taxable",
-                   taxClass: "",
+                   taxClass: taxClass,
                    manageStock: false,
                    stockQuantity: stockQuantity,
                    stockStatusKey: stockStatus.rawValue,

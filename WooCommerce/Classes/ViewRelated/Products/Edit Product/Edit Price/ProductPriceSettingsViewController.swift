@@ -51,6 +51,9 @@ final class ProductPriceSettingsViewController: UIViewController {
         salePrice = product.salePrice
         dateOnSaleStart = product.dateOnSaleStart
         dateOnSaleEnd = product.dateOnSaleEnd
+        if let productTaxClassSlug = product.taxClass {
+            taxClass = TaxClass(siteID: product.siteID, name: productTaxClassSlug, slug: productTaxClassSlug)
+        }
         taxStatus = product.productTaxStatus
         super.init(nibName: nil, bundle: nil)
     }

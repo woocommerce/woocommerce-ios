@@ -75,9 +75,4 @@ struct DefaultImageService: ImageService {
         }
     }
 
-    func removeAllImagesFromCache() {
-        imageCache.clearDiskCache()
-        imageCache.clearMemoryCache()
-    }
-
 }

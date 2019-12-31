@@ -18,12 +18,6 @@ final class DefaultImageServiceTests: XCTestCase {
         imageService = DefaultImageService(imageCache: mockCache, imageDownloader: mockDownloader)
     }
 
-    override func tearDown() {
-        imageService.removeAllImagesFromCache()
-
-        super.tearDown()
-    }
-
     func testDownloadingAndCachingAndRetrievingAnImageFromTheSameCache() {
         // Retrieves the image while the cache is empty.
         let waitForRetrievingImageFromEmptyCache = expectation(description: "Wait for retrieving image from an empty cache")
@@ -35,7 +29,6 @@ final class DefaultImageServiceTests: XCTestCase {
         // Downloads the image and retrieves it again.
         let waitForDownloadingAndCachingAnImage = expectation(description: "Wait for downloading and caching an image")
         let waitForRetrievingImageAfterDownload = expectation(description: "Wait for retrieving image after the previous download")
-        let waitForRetrievingImageRemovingAllImagesFromCache = expectation(description: "Wait for retrieving image after removing all images from the cache")
         imageService.downloadImage(with: url, shouldCacheImage: true) { (image, error) in
             XCTAssertNotNil(image)
             waitForDownloadingAndCachingAnImage.fulfill()
@@ -43,15 +36,6 @@ final class DefaultImageServiceTests: XCTestCase {
             self.imageService.retrieveImageFromCache(with: self.url) { image in
                 XCTAssertNotNil(image)
                 waitForRetrievingImageAfterDownload.fulfill()
-
-                // Removes all images from cache and then retrieves the image again.
-                self.imageService.removeAllImagesFromCache()
-                self.imageService.retrieveImageFromCache(with: self.url) { image in
-                    XCTAssertNil(image)
-                    waitForRetrievingImageRemovingAllImagesFromCache.fulfill()
-
-                    self.imageService.removeAllImagesFromCache()
-                }
             }
         }
 
@@ -135,14 +119,6 @@ final private class MockImageCache: ImageCache {
                         callbackQueue: CallbackQueue = .untouch,
                         completionHandler: ((CacheStoreResult) -> Void)? = nil) {
         imagesByKey[key] = image
-    }
-
-    override func clearMemoryCache() {
-        imagesByKey = [:]
-    }
-
-    override func clearDiskCache(completion handler: (() -> ())? = nil) {
-        imagesByKey = [:]
     }
 }
 

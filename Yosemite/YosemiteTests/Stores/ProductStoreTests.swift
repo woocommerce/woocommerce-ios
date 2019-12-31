@@ -740,6 +740,12 @@ class ProductStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
+
+        // Saves an existing Product into storage.
+        // Note: the fields to be tested should be different in the sample model and network response.
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
+
         let action = ProductAction.updateProduct(product: product) { (product, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(product)
@@ -761,9 +767,7 @@ class ProductStoreTests: XCTestCase {
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
             XCTAssertNotNil(storedProduct)
             XCTAssertNotNil(readOnlyStoredProduct)
-            XCTAssertEqual(readOnlyStoredProduct?.productID, expectedProductID)
-            XCTAssertEqual(readOnlyStoredProduct?.name, expectedProductName)
-            XCTAssertEqual(readOnlyStoredProduct?.fullDescription, expectedProductDescription)
+            XCTAssertEqual(readOnlyStoredProduct, product)
 
             expectation.fulfill()
         }

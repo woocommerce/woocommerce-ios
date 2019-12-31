@@ -49,7 +49,7 @@ extension ImageAndTitleAndTextTableViewCell {
         contentImageView.isHidden = viewModel.image == nil
 
         if let imageTintColor = viewModel.imageTintColor {
-            contentImageView.tintColor = viewModel.imageTintColor
+            contentImageView.tintColor = imageTintColor
         }
     }
 }

@@ -39,6 +39,24 @@ final class Product_UpdaterTestCases: XCTestCase {
         XCTAssertEqual(Int64(updatedProduct.shippingClassID), newShippingClass.shippingClassID)
         XCTAssertEqual(updatedProduct.productShippingClass, newShippingClass)
     }
+
+    func testUpdatingPriceSettings() {
+        let product = sampleProduct()
+        let newRegularPrice = "32.45"
+        let newSalePrice = "20.00"
+        let newDateOnSaleStart = Date()
+        let newDateOnSaleEnd = newDateOnSaleStart.addingTimeInterval(86400)
+        let newTaxStatus = ProductTaxStatus.taxable
+        let newTaxClass = TaxClass(siteID: product.siteID, name: "Reduced rate", slug: "reduced-rate")
+
+        let updatedProduct = product.priceSettingsUpdated(regularPrice: newRegularPrice, salePrice: newSalePrice, dateOnSaleStart: newDateOnSaleStart, dateOnSaleEnd: newDateOnSaleEnd, taxStatus: newTaxStatus, taxClass: newTaxClass)
+        XCTAssertEqual(updatedProduct.regularPrice, newRegularPrice)
+        XCTAssertEqual(updatedProduct.salePrice, newSalePrice)
+        XCTAssertEqual(updatedProduct.dateOnSaleStart, newDateOnSaleStart)
+        XCTAssertEqual(updatedProduct.dateOnSaleEnd, newDateOnSaleEnd)
+        XCTAssertEqual(updatedProduct.taxStatusKey, newTaxStatus.description)
+        XCTAssertEqual(updatedProduct.taxClass, newTaxClass.slug)
+    }
 }
 
 // MARK: - Private Helpers

@@ -28,11 +28,12 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
         self.selected = selected == self.selected ? nil: selected
     }
 
-    func configureCell(cell: BasicTableViewCell, model: ProductShippingClass) {
+    func configureCell(cell: WooBasicTableViewCell, model: ProductShippingClass) {
         cell.selectionStyle = .default
+        cell.applyListSelectorStyle()
 
         let bodyText = model.name
-        cell.textLabel?.text = bodyText
+        cell.bodyLabel.text = bodyText
     }
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {

@@ -239,7 +239,7 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
 
-        guard regularPrice != self.product.regularPrice || salePrice != self.product.salePrice || dateOnSaleStart != product.dateOnSaleStart || dateOnSaleEnd != product.dateOnSaleEnd || taxStatus != product.productTaxStatus || taxClass?.slug != product.taxClass else {
+        guard regularPrice != product.regularPrice || salePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart || dateOnSaleEnd != product.dateOnSaleEnd || taxStatus != product.productTaxStatus || taxClass?.slug != product.taxClass else {
             return
         }
         self.product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice, salePrice: salePrice, dateOnSaleStart: dateOnSaleStart, dateOnSaleEnd: dateOnSaleEnd, taxStatus: taxStatus, taxClass: taxClass)

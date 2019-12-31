@@ -139,7 +139,8 @@ private extension ProductPriceSettingsViewController {
 //
 private extension ProductPriceSettingsViewController {
     @objc func completeUpdating() {
-        onCompletion(regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+        let newSalePrice = salePrice == "0" ? nil : salePrice
+        onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
     }
 }
 

@@ -405,7 +405,7 @@ private extension ProductsViewController {
     ///
     func displayNoResultsOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = nil
+        overlayView.messageImage = .emptyProductsImage
         overlayView.messageText = NSLocalizedString("No products yet",
                                                     comment: "The text on the placeholder overlay when there are no products on the Products tab")
         overlayView.actionVisible = false

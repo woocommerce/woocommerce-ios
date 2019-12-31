@@ -41,7 +41,7 @@ extension Storage.Product: ReadOnlyConvertible {
         manageStock = product.manageStock
 
         var quantity: String? = nil
-        if let stockQuantity = stockQuantity {
+        if let stockQuantity = product.stockQuantity {
             quantity = String(stockQuantity)
         }
         stockQuantity = quantity

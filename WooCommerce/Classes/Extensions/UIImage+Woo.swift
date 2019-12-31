@@ -107,6 +107,12 @@ extension UIImage {
             .imageFlippedForRightToLeftLayoutDirection()
     }
 
+    /// Empty Products Icon
+    ///
+    static var emptyProductsImage: UIImage {
+        return UIImage(named: "woo-empty-products")!
+    }
+
     /// Empty Reviews Icon
     ///
     static var emptyReviewsImage: UIImage {

@@ -39,6 +39,10 @@ final class ProductPriceSettingsViewController: UIViewController {
     private var taxClass: TaxClass?
     private var taxStatus: ProductTaxStatus?
 
+    // The tax class configured by default, always present in a website
+    //
+    private let standardTaxClass: TaxClass
+    
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
@@ -51,8 +55,15 @@ final class ProductPriceSettingsViewController: UIViewController {
         salePrice = product.salePrice
         dateOnSaleStart = product.dateOnSaleStart
         dateOnSaleEnd = product.dateOnSaleEnd
-        if let productTaxClassSlug = product.taxClass {
+        
+        let taxClassName = NSLocalizedString("Standard", comment: "The name of the default Tax Class in Product Price Settings")
+        standardTaxClass = TaxClass(siteID: product.siteID, name: taxClassName, slug: "standard")
+        
+        if let productTaxClassSlug = product.taxClass, productTaxClassSlug.isEmpty == false {
             taxClass = TaxClass(siteID: product.siteID, name: productTaxClassSlug, slug: productTaxClassSlug)
+        }
+        else {
+            taxClass = standardTaxClass
         }
         taxStatus = product.productTaxStatus
         super.init(nibName: nil, bundle: nil)
@@ -110,9 +121,9 @@ private extension ProductPriceSettingsViewController {
     }
 
     func retrieveProductTaxClass() {
-        let action = TaxClassAction.requestMissingTaxClasses(for: product) { (taxClass, error) in
-            self.taxClass = taxClass
-            self.refreshViewContent()
+        let action = TaxClassAction.requestMissingTaxClasses(for: product) { [weak self] (taxClass, error) in
+            self?.taxClass = taxClass ?? self?.standardTaxClass
+            self?.refreshViewContent()
         }
         ServiceLocator.stores.dispatch(action)
     }

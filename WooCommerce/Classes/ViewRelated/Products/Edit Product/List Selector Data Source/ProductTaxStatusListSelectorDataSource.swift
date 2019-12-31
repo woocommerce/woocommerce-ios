@@ -21,6 +21,7 @@ struct ProductTaxStatusListSelectorDataSource: ListSelectorDataSource {
 
     func configureCell(cell: BasicTableViewCell, model: ProductTaxStatus) {
         cell.selectionStyle = .default
+        cell.isSelected = selected == model
         cell.textLabel?.text = model.description
     }
 

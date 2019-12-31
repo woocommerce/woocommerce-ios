@@ -25,12 +25,13 @@ struct ProductTaxClassListSelectorDataSource: PaginatedListSelectorDataSource {
     }
 
     mutating func handleSelectedChange(selected: TaxClass) {
-        self.selected = selected == self.selected ? nil: selected
+        self.selected = selected.slug == self.selected?.slug ? nil : selected
     }
 
     func configureCell(cell: BasicTableViewCell, model: TaxClass) {
         cell.selectionStyle = .default
-
+        cell.isSelected = model.slug == selected?.slug
+        
         let bodyText = model.name
         cell.textLabel?.text = bodyText
     }

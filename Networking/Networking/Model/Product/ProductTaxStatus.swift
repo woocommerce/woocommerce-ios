@@ -60,4 +60,3 @@ private enum Keys {
     static let shipping = "shipping"
     static let none     = "none"
 }
-

@@ -98,7 +98,7 @@ public struct Product: Codable {
     public var backordersSetting: ProductBackordersSetting {
         return ProductBackordersSetting(rawValue: backordersKey)
     }
-    
+
     public var productTaxStatus: ProductTaxStatus {
         return ProductTaxStatus(rawValue: taxStatusKey)
     }

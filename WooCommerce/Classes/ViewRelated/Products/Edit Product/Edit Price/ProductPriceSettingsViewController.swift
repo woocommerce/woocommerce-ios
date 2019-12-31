@@ -37,6 +37,7 @@ final class ProductPriceSettingsViewController: UIViewController {
     // Internal data for rendering UI
     //
     private var taxClass: TaxClass?
+    private var taxStatus: ProductTaxStatus?
 
     /// Table Sections to be rendered
     ///
@@ -50,6 +51,7 @@ final class ProductPriceSettingsViewController: UIViewController {
         salePrice = product.salePrice
         dateOnSaleStart = product.dateOnSaleStart
         dateOnSaleEnd = product.dateOnSaleEnd
+        taxStatus = product.productTaxStatus
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -168,6 +170,16 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
         case .scheduleSaleTo:
             datePickerSaleToVisible = !datePickerSaleToVisible
             refreshViewContent()
+        case .taxStatus:
+            let title = NSLocalizedString("Tax Status", comment: "Navigation bar title of the Product tax status selector screen")
+            let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
+            let dataSource = ProductTaxStatusListSelectorDataSource(selected: taxStatus)
+            let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
+                                                                        dataSource: dataSource) { [weak self] selected in
+                                                                            self?.taxStatus = selected
+                                                                            self?.refreshViewContent()
+            }
+            navigationController?.pushViewController(listSelectorViewController, animated: true)
         case .taxClass:
             let dataSource = ProductTaxClassListSelectorDataSource(product: product, selected: taxClass)
             let navigationBarTitle = NSLocalizedString("Tax classes", comment: "Navigation bar title of the Product tax class selector screen")
@@ -188,8 +200,6 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
         default:
             break
         }
-
-        // TODO-1423: navigate to tax status & tax class selector
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -350,8 +360,7 @@ private extension ProductPriceSettingsViewController {
 
     func configureTaxStatus(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax status", comment: "Title of the cell in Product Price Settings > Tax status")
-        //TODO: set the tax status
-        cell.updateUI(title: title, value: nil)
+        cell.updateUI(title: title, value: taxStatus?.description)
         cell.accessoryType = .disclosureIndicator
     }
 

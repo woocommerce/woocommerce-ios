@@ -8,7 +8,7 @@ extension UITabBar {
     ///
     class func applyWooAppearance() {
         let appearance = Self.appearance()
-        appearance.barTintColor = .basicBackground
+        appearance.barTintColor = .appTabBar
         appearance.tintColor = .text
     }
 }

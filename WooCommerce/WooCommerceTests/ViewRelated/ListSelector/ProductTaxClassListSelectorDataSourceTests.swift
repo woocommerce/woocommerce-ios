@@ -30,7 +30,7 @@ final class ProductTaxClassListSelectorDataSourceTests: XCTestCase {
             XCTFail()
             return
         }
-        
+
         dataSource.configureCell(cell: cell, model: taxClass)
 
         XCTAssertEqual(cell.textLabel?.text, taxClass.name)

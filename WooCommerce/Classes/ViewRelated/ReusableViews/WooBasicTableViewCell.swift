@@ -82,4 +82,3 @@ extension WooBasicTableViewCell {
         bodyLabelTopMarginConstraint.constant = 8
     }
 }
-

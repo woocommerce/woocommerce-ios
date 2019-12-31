@@ -22,6 +22,11 @@ final class ProductInventorySettingsViewController: UIViewController {
     ///
     private var sections: [Section] = []
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        return keyboardFrameObserver
+    }()
+
     typealias Completion = (_ data: ProductInventoryEditableData) -> Void
     private let onCompletion: Completion
 
@@ -46,10 +51,27 @@ final class ProductInventorySettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        startListeningToNotifications()
         configureNavigationBar()
         configureMainView()
         configureTableView()
         reloadSections()
+    }
+}
+
+// MARK: - Keyboard management
+//
+extension ProductInventorySettingsViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
+    }
+}
+
+private extension ProductInventorySettingsViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }
 

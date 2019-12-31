@@ -108,3 +108,4 @@ public typealias StorageSiteVisitStats = Storage.SiteVisitStats
 public typealias StorageSiteVisitStatsItem = Storage.SiteVisitStatsItem
 public typealias StorageTopEarnerStats = Storage.TopEarnerStats
 public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem
+public typealias StorageTaxClass = Storage.TaxClass

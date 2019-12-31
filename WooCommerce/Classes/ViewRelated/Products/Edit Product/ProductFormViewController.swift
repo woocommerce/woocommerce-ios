@@ -90,6 +90,10 @@ private extension ProductFormViewController {
                                         comment: "Message of the in-progress UI while updating the Product remotely")
         let viewProperties = InProgressViewProperties(title: title, message: message)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
 
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in

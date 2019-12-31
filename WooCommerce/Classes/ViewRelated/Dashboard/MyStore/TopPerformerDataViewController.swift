@@ -143,7 +143,7 @@ private extension TopPerformerDataViewController {
 
     func configureTableView() {
         tableView.backgroundColor = .basicBackground
-        tableView.separatorColor = .divider
+        tableView.separatorColor = .systemColor(.separator)
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension

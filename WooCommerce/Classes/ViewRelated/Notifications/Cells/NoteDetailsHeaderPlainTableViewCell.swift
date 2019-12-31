@@ -69,7 +69,7 @@ private extension NoteDetailsHeaderPlainTableViewCell {
     ///
     func configureImages() {
         imageView?.tintColor = .textSubtle
-        accessoryImageView.tintColor = .primary
+        accessoryImageView.tintColor = .accent
         accessoryView = accessoryImageView
     }
 

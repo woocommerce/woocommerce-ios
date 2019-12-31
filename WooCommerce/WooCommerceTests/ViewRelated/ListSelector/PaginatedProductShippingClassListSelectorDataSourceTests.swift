@@ -25,8 +25,8 @@ final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase
     func testCellConfiguration() {
         let product = MockProduct().product()
         let dataSource = PaginatedProductShippingClassListSelectorDataSource(product: product, selected: product.productShippingClass)
-        let nib = Bundle.main.loadNibNamed(BasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
-        guard let cell = nib?.first as? BasicTableViewCell else {
+        let nib = Bundle.main.loadNibNamed(WooBasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
+        guard let cell = nib?.first as? WooBasicTableViewCell else {
             XCTFail()
             return
         }
@@ -34,7 +34,7 @@ final class PaginatedProductShippingClassListSelectorDataSourceTests: XCTestCase
         let shippingClass = sampleProductShippingClass(remoteID: 134)
         dataSource.configureCell(cell: cell, model: shippingClass)
 
-        XCTAssertEqual(cell.textLabel?.text, shippingClass.name)
+        XCTAssertEqual(cell.bodyLabel.text, shippingClass.name)
     }
 
 }

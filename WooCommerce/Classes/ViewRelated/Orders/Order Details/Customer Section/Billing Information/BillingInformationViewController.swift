@@ -317,7 +317,7 @@ private extension BillingInformationViewController {
         }
 
         cell.bodyLabel?.text = phoneNumber
-        cell.bodyLabel?.applyBodyStyle()
+        cell.applyPlainTextStyle()
         cell.accessoryImage = .ellipsisImage
 
         cell.isAccessibilityElement = true
@@ -342,7 +342,7 @@ private extension BillingInformationViewController {
         }
 
         cell.bodyLabel?.text = email
-        cell.bodyLabel?.applyBodyStyle()
+        cell.applyPlainTextStyle()
         cell.accessoryImage = .mailImage
 
         cell.isAccessibilityElement = true

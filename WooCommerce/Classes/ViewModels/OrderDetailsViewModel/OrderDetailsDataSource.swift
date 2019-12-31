@@ -240,7 +240,7 @@ private extension OrderDetailsDataSource {
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showBilling
-        cell.bodyLabel?.applyBodyStyle()
+        cell.applyPlainTextStyle()
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
 
@@ -324,20 +324,33 @@ private extension OrderDetailsDataSource {
 
     private func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Titles.productDetails
-        cell.bodyLabel?.applyBodyStyle()
+        cell.applyPlainTextStyle()
         cell.accessoryImage = nil
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
-        // TODO-thuy: create a `lookUpCondensedRefunds()` method and show why minus two rows.
-        let condensedRefund = condensedRefunds[indexPath.row - 2] // TODO-thuy: minus two should be constants
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let condensedRefund = condensedRefunds[index]
         let refund = lookUpRefund(by: condensedRefund.refundID)
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order, refund: refund)
+
         cell.leftText = Titles.refunded
+        cell.setLeftTitleToLinkStyle(true)
         cell.rightText = paymentViewModel.refundAmount
-        cell.updateFootnoteAttributedText(paymentViewModel.refundSummary)
+        cell.setRightTitleToLinkStyle(true)
+        cell.updateFootnoteText(paymentViewModel.refundSummary)
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+            "View refund details",
+            comment: "Accessibility label for the 'View details' refund button"
+        )
+        cell.accessibilityHint = NSLocalizedString(
+            "Show refund details for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information."
+        )
     }
 
     private func configureNetAmount(cell: TwoColumnHeadlineFootnoteTableViewCell) {
@@ -558,6 +571,13 @@ extension OrderDetailsDataSource {
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
 
+    func refund(at indexPath: IndexPath) -> Refund {
+        let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
+        let refund = refunds[index]
+
+        return refund
+    }
+
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {
         orderNoteAsyncDictionary.clear()
         for orderNote in orderNotes {
@@ -581,8 +601,8 @@ extension OrderDetailsDataSource {
     }
 
     func noteHeader(at indexPath: IndexPath) -> Date? {
-        // We need to subtract 1 here because the first order note row is the "Add Order" cell
-        let noteHeaderIndex = indexPath.row - 1
+        // We need to subtract by one because the first order note row is the "Add Order" cell
+        let noteHeaderIndex = indexPath.row - Constants.addOrderCell
         guard orderNotesSections.indices.contains(noteHeaderIndex) else {
             return nil
         }
@@ -591,8 +611,8 @@ extension OrderDetailsDataSource {
     }
 
     func note(at indexPath: IndexPath) -> OrderNote? {
-        // We need to subtract 1 here because the first order note row is the "Add Order" cell
-        let noteIndex = indexPath.row - 1
+        // We need to subtract by one because the first order note row is the "Add Order" cell
+        let noteIndex = indexPath.row - Constants.addOrderCell
         guard orderNotesSections.indices.contains(noteIndex) else {
             return nil
         }
@@ -825,5 +845,11 @@ extension OrderDetailsDataSource {
         case fulfill
         case tracking
         case summary
+    }
+
+    struct Constants {
+        static let addOrderCell = 1
+        static let paymentCell = 1
+        static let paidByCustomerCell = 1
     }
 }

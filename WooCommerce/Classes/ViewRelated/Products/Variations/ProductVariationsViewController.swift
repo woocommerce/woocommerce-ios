@@ -195,6 +195,7 @@ extension ProductVariationsViewController: UITableViewDataSource {
                                                     currency: currency)
         cell.update(viewModel: viewModel)
         cell.selectionStyle = .none
+        cell.accessoryType = .none
 
         return cell
     }
@@ -300,7 +301,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Product Variations for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
-        transitionToSyncingState()
+        transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductVariationAction
             .synchronizeProductVariations(siteID: Int64(siteID), productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
@@ -333,11 +334,11 @@ private extension ProductVariationsViewController {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
-        case .syncing(let withExistingData):
-            if withExistingData {
-                ensureFooterSpinnerIsStarted()
-            } else {
+        case .syncing(let pageNumber):
+            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
                 displayPlaceholderProducts()
+            } else {
+                ensureFooterSpinnerIsStarted()
             }
         case .results:
             break
@@ -356,8 +357,8 @@ private extension ProductVariationsViewController {
         }
     }
 
-    func transitionToSyncingState() {
-        stateCoordinator.transitionToSyncingState(withExistingData: !isEmpty)
+    func transitionToSyncingState(pageNumber: Int) {
+        stateCoordinator.transitionToSyncingState(pageNumber: pageNumber)
     }
 
     func transitionToResultsUpdatedState() {

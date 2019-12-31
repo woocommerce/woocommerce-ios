@@ -80,6 +80,12 @@ extension UIColor {
 
 // MARK: - Text Colors.
 extension UIColor {
+    /// Text link. Pink-50
+    ///
+    static var textLink: UIColor {
+        return .accent
+    }
+
     /// Text. Gray-80 (< iOS 13) and `UIColor.label` (> iOS 13)
     ///
     static var text: UIColor {
@@ -158,16 +164,23 @@ extension UIColor {
         return .white
     }
 
-    /// App Bar. WooCommercePurple-60 (< iOS 13 and Light Mode) and `UIColor.systemThickMaterial` (Dark Mode)
+    /// App Navigation Bar. WooCommercePurple-60 (< iOS 13 and Light Mode) and `UIColor.systemThickMaterial` (Dark Mode)
     ///
     static var appBar: UIColor {
         if #available(iOS 13, *) {
             return UIColor(light: .withColorStudio(.wooCommercePurple, shade: .shade60),
-                           dark: .systemBackground)
+                           dark: .systemColor(.secondarySystemGroupedBackground))
         }
 
 
         return .withColorStudio(.wooCommercePurple, shade: .shade60)
+    }
+
+    /// App Tab Bar.
+    ///
+    static var appTabBar: UIColor {
+        return UIColor(light: .basicBackground,
+        dark: .systemColor(.secondarySystemGroupedBackground))
     }
 
     /// Tab Unselected. Gray-20 (< iOS 13 and Light Mode) and Gray-60 (Dark Mode)

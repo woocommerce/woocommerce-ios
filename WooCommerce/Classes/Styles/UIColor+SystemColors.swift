@@ -60,7 +60,7 @@ private extension SystemColor {
             case .tertiarySystemGroupedBackground: return .tertiarySystemGroupedBackground
             case .separator: return .separator
             case .opaqueSeparator: return .opaqueSeparator
-            case .link: return .link
+            case .link: return .textLink
             case .darkText: return .darkText
             case .lightText: return .lightText
             case .systemBlue: return .systemBlue
@@ -116,8 +116,8 @@ private extension SystemColor {
             return .init(red: 60/255.0, green: 60/255.0, blue: 67/255.0, alpha: 0.29)
         case .opaqueSeparator: // #c6c6c8ff    rgba(198.0, 198.0, 200.0, 1.0)
             return .init(red: 198/255.0, green: 198/255.0, blue: 200/255.0, alpha: 1)
-        case .link: // #007affff    rgba(0.0, 122.0, 255.0, 1.0)
-            return .init(red: 0/255.0, green: 122/255.0, blue: 255/255.0, alpha: 1)
+        case .link: // #c9356eff    rgba(0.0, 122.0, 255.0, 1.0)
+            return .init(red: 201/255.0, green: 53/255.0, blue: 110/255.0, alpha: 1)
         case .darkText: // #000000ff    rgba(0.0, 0.0, 0.0, 1.0)
             return .init(red: 0/255.0, green: 0/255.0, blue: 0/255.0, alpha: 1)
         case .lightText: // #ffffff99    rgba(255.0, 255.0, 255.0, 0.6)

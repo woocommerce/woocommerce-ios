@@ -91,7 +91,7 @@ final class OrderPaymentDetailsViewModel {
     /// - returns: A full sentence summary of the date the refund was created, which payment gateway it was refunded to, and a link to the detailed refund.
     /// Example: Oct 28, 2019 via Credit Card (Stripe)
     ///
-    var refundSummary: NSAttributedString? {
+    var refundSummary: String? {
         guard let refund = refund else {
             return nil
         }
@@ -109,24 +109,11 @@ final class OrderPaymentDetailsViewModel {
                 "(credit card or debit card was refunded)"
         )
 
-        let viewDetailsText = NSLocalizedString("View details",
-                                                comment: "This text is linked so the user can view refund details.")
-
-        let template = NSLocalizedString("%@ via %@ – %@",
+        let template = NSLocalizedString("%@ via %@",
                                          comment: "It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link.")
-        let refundText = String.localizedStringWithFormat(template, dateCreated, refundType, viewDetailsText)
+        let refundText = String.localizedStringWithFormat(template, dateCreated, refundType)
 
-        let refundAttrText = NSMutableAttributedString(string: refundText)
-        let location = refundAttrText.string.count - viewDetailsText.count
-        let viewDetailsRange = NSRange(location: location, length: viewDetailsText.count)
-
-         // Last, style the link text.
-        let linkAttributes: [NSAttributedString.Key: Any] = [
-            .foregroundColor: UIColor.primary
-        ]
-        refundAttrText.addAttributes(linkAttributes, range: viewDetailsRange)
-
-        return refundAttrText
+        return refundText
     }
 
     /// Format the refund amount with the correct currency

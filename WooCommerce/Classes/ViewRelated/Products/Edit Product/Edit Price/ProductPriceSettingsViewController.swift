@@ -34,6 +34,15 @@ final class ProductPriceSettingsViewController: UIViewController {
     //
     private lazy var defaultEndDate = Calendar.current.date(byAdding: .day, value: 1, to: Date().endOfDay(timezone: timezoneForScheduleSaleDates))
 
+    // Internal data for rendering UI
+    //
+    private var taxClass: TaxClass?
+    private var taxStatus: ProductTaxStatus?
+
+    // The tax class configured by default, always present in a website
+    //
+    private let standardTaxClass: TaxClass
+
     /// Table Sections to be rendered
     ///
     private var sections: [Section] = []
@@ -46,6 +55,17 @@ final class ProductPriceSettingsViewController: UIViewController {
         salePrice = product.salePrice
         dateOnSaleStart = product.dateOnSaleStart
         dateOnSaleEnd = product.dateOnSaleEnd
+
+        let taxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
+        standardTaxClass = TaxClass(siteID: product.siteID, name: taxClassName, slug: "standard")
+
+        if let productTaxClassSlug = product.taxClass, productTaxClassSlug.isEmpty == false {
+            taxClass = TaxClass(siteID: product.siteID, name: productTaxClassSlug, slug: productTaxClassSlug)
+        }
+        else {
+            taxClass = standardTaxClass
+        }
+        taxStatus = product.productTaxStatus
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -59,6 +79,7 @@ final class ProductPriceSettingsViewController: UIViewController {
         configureMainView()
         configureSections()
         configureTableView()
+        retrieveProductTaxClass()
     }
 }
 
@@ -97,6 +118,14 @@ private extension ProductPriceSettingsViewController {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
         }
+    }
+
+    func retrieveProductTaxClass() {
+        let action = TaxClassAction.requestMissingTaxClasses(for: product) { [weak self] (taxClass, error) in
+            self?.taxClass = taxClass ?? self?.standardTaxClass
+            self?.refreshViewContent()
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -155,11 +184,39 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
         case .scheduleSaleTo:
             datePickerSaleToVisible = !datePickerSaleToVisible
             refreshViewContent()
+        case .taxStatus:
+            let title = NSLocalizedString("Tax Status", comment: "Navigation bar title of the Product tax status selector screen")
+            let viewProperties = ListSelectorViewProperties(navigationBarTitle: title)
+            let dataSource = ProductTaxStatusListSelectorDataSource(selected: taxStatus)
+            let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
+                                                                        dataSource: dataSource) { [weak self] selected in
+                                                                            self?.taxStatus = selected
+                                                                            self?.refreshViewContent()
+            }
+            navigationController?.pushViewController(listSelectorViewController, animated: true)
+        case .taxClass:
+            let dataSource = ProductTaxClassListSelectorDataSource(product: product, selected: taxClass)
+            let navigationBarTitle = NSLocalizedString("Tax classes", comment: "Navigation bar title of the Product tax class selector screen")
+            let noResultsPlaceholderText = NSLocalizedString("No tax classes yet",
+            comment: "The text on the placeholder overlay when there are no tax classes on the Tax Class list picker")
+            let noResultsPlaceholderImage = UIImage.errorStateImage
+            let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: navigationBarTitle,
+                                                                     noResultsPlaceholderText: noResultsPlaceholderText,
+                                                                     noResultsPlaceholderImage: noResultsPlaceholderImage,
+                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20))
+            let selectorViewController =
+                PaginatedListSelectorViewController(viewProperties: viewProperties,
+                                                    dataSource: dataSource) { [weak self] selected in
+                                                        guard let self = self else {
+                                                            return
+                                                        }
+                                                        self.taxClass = selected
+                                                        self.refreshViewContent()
+            }
+            navigationController?.pushViewController(selectorViewController, animated: true)
         default:
             break
         }
-
-        // TODO-1423: navigate to tax status & tax class selector
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
@@ -320,15 +377,13 @@ private extension ProductPriceSettingsViewController {
 
     func configureTaxStatus(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax status", comment: "Title of the cell in Product Price Settings > Tax status")
-        //TODO: set the tax status
-        cell.updateUI(title: title, value: nil)
+        cell.updateUI(title: title, value: taxStatus?.description)
         cell.accessoryType = .disclosureIndicator
     }
 
     func configureTaxClass(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax class", comment: "Title of the cell in Product Price Settings > Tax class")
-        //TODO: set the tax class
-        cell.updateUI(title: title, value: nil)
+        cell.updateUI(title: title, value: taxClass?.name)
         cell.accessoryType = .disclosureIndicator
     }
 }

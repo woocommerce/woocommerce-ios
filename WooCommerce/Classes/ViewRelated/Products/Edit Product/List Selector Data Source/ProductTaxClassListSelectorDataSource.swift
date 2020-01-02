@@ -32,11 +32,12 @@ struct ProductTaxClassListSelectorDataSource: PaginatedListSelectorDataSource {
         return model.slug == selected?.slug
     }
 
-    func configureCell(cell: BasicTableViewCell, model: TaxClass) {
+    func configureCell(cell: WooBasicTableViewCell, model: TaxClass) {
         cell.selectionStyle = .default
+        cell.applyListSelectorStyle()
 
         let bodyText = model.name
-        cell.textLabel?.text = bodyText
+        cell.bodyLabel.text = bodyText
     }
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {

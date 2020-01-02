@@ -152,6 +152,15 @@ extension UIColor {
 }
 
 
+// MARK: - Image Colors.
+extension UIColor {
+    /// Placeholder image tint color.
+    ///
+    static var placeholderImage: UIColor {
+        return .gray(.shade20)
+    }
+}
+
 // MARK: - UI elements.
 extension UIColor {
     /// Basic Background. White (< iOS 13) and `UIColor.systemBackground` (> iOS 13)

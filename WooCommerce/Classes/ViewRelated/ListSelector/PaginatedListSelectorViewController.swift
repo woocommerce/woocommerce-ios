@@ -17,7 +17,7 @@ protocol PaginatedListSelectorDataSource {
     /// Called when a different model is selected.
     mutating func handleSelectedChange(selected: StorageModel.ReadOnlyType)
 
-    /// Called when a different model is selected.
+    /// Configures the selected UI.
     mutating func isSelected(model: StorageModel.ReadOnlyType) -> Bool
 
     /// Configures the cell with the given model.

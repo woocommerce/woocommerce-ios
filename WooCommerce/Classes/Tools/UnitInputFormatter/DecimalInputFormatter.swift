@@ -22,7 +22,11 @@ struct DecimalInputFormatter: UnitInputFormatter {
             return "0"
         }
 
-        let formattedText = text.replacingOccurrences(of: "^0+([1-9]+)", with: "$1", options: .regularExpression)
+        let formattedText = text
+            // Removes leading 0s before the digits.
+            .replacingOccurrences(of: "^0+([1-9]+)", with: "$1", options: .regularExpression)
+            // Maximum one leading 0.
+            .replacingOccurrences(of: "^(0+)", with: "0", options: .regularExpression)
         return formattedText
     }
 }

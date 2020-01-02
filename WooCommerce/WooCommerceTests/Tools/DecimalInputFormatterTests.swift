@@ -44,6 +44,11 @@ final class DecimalInputFormatterTests: XCTestCase {
         XCTAssertEqual(formatter.format(input: input), "123.91")
     }
 
+    func testFormattingInputWithLeadingZerosFollowedByDecimalPoint() {
+        let input = "000.91"
+        XCTAssertEqual(formatter.format(input: input), "0.91")
+    }
+
     func testFormattingDecimalInput() {
         let input = "0.314"
         XCTAssertEqual(formatter.format(input: input), "0.314")

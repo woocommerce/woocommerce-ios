@@ -38,11 +38,13 @@ struct OrderItemRefundViewModel {
     /// Always return a string, even for zero amounts.
     ///
     var price: String {
+        let positiveTotal = item.total.replacingOccurrences(of: "-", with: "")
+
         guard abs(item.quantity) > 1 else {
-            return currencyFormatter.formatAmount(item.total, with: currency) ?? String()
+            return currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
         }
 
-        let positiveTotal = item.total.replacingOccurrences(of: "-", with: "")
+
         let itemTotal = currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
         let itemSubtotal = currencyFormatter.formatAmount(item.price, with: currency) ?? String()
 

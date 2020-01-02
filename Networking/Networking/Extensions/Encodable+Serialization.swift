@@ -14,7 +14,10 @@ extension Encodable {
     /// Attempts to serialize to a dictionary from String to Any.
     ///
     func toDictionary() throws -> [String: Any] {
-        let data = try JSONEncoder().encode(self)
+        let jsonEncoder = JSONEncoder()
+        jsonEncoder.dateEncodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
+        let data = try jsonEncoder.encode(self)
+       
         do {
             guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
                 throw EncodableError.jsonSerializationType

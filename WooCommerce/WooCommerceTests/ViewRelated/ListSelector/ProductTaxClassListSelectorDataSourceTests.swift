@@ -4,7 +4,7 @@ import XCTest
 @testable import Yosemite
 
 final class ProductTaxClassListSelectorDataSourceTests: XCTestCase {
-    private let sampleSiteID: Int = 521
+    private let sampleSiteID: Int64 = 521
 
     func testSelectedTaxClass() {
         let product = MockProduct().product(taxClass: "reduced-rate")

@@ -11,7 +11,7 @@ final class RefundDetailsViewController: UIViewController {
 
     /// Refund to be rendered.
     ///
-    var viewModel: RefundDetailsViewModel {
+    var viewModel: RefundDetailsViewModel! {
         didSet {
             reloadTableViewSectionsAndData()
         }
@@ -40,6 +40,7 @@ final class RefundDetailsViewController: UIViewController {
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureViewModel()
+        reloadSections()
     }
 
     /// Setup: Navigation.
@@ -116,7 +117,7 @@ extension RefundDetailsViewModel {
     ///
     func registerTableViewCells(_ tableView: UITableView) {
         let cells = [
-            PickListTableViewCell.self,
+            ProductDetailsTableViewCell.self,
         ]
 
         for cell in cells {
@@ -134,6 +135,29 @@ extension RefundDetailsViewModel {
         for kind in headersAndFooters {
             tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
+    }
+}
+
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension RefundDetailsViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        viewModel.tableView(tableView, in: self, didSelectRowAt: indexPath)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return viewModel.dataSource.viewForHeaderInSection(section, tableView: tableView)
     }
 }
 

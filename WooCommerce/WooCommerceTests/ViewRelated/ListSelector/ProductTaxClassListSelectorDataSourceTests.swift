@@ -22,18 +22,18 @@ final class ProductTaxClassListSelectorDataSourceTests: XCTestCase {
     }
 
     func testCellConfiguration() {
-        let product = MockProduct().product()
+        let product = MockProduct().product(taxClass: "reduced-rate")
         let taxClass = TaxClass(siteID: sampleSiteID, name: "Reduced rate", slug: "reduced-rate")
         let dataSource = ProductTaxClassListSelectorDataSource(product: product, selected: taxClass)
-        let nib = Bundle.main.loadNibNamed(BasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
-        guard let cell = nib?.first as? BasicTableViewCell else {
+        let nib = Bundle.main.loadNibNamed(WooBasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
+        guard let cell = nib?.first as? WooBasicTableViewCell else {
             XCTFail()
             return
         }
 
         dataSource.configureCell(cell: cell, model: taxClass)
 
-        XCTAssertEqual(cell.textLabel?.text, taxClass.name)
+        XCTAssertEqual(cell.bodyLabel.text, taxClass.name)
     }
 
 }

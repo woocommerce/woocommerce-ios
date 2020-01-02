@@ -18,7 +18,7 @@ protocol PaginatedListSelectorDataSource {
     mutating func handleSelectedChange(selected: StorageModel.ReadOnlyType)
 
     /// Configures the selected UI.
-    mutating func isSelected(model: StorageModel.ReadOnlyType) -> Bool
+    func isSelected(model: StorageModel.ReadOnlyType) -> Bool
 
     /// Configures the cell with the given model.
     func configureCell(cell: Cell, model: StorageModel.ReadOnlyType)

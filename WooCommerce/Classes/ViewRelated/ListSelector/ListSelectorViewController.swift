@@ -16,7 +16,7 @@ protocol ListSelectorDataSource {
     mutating func handleSelectedChange(selected: Model)
 
     /// Configures the selected UI.
-    mutating func isSelected(model: Model) -> Bool
+    func isSelected(model: Model) -> Bool
 
     /// Configures the cell with the given model.
     func configureCell(cell: Cell, model: Model)

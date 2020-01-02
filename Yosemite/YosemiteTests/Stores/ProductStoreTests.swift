@@ -731,25 +731,43 @@ class ProductStoreTests: XCTestCase {
         let expectedProductDescription = "Learn something!"
         let expectedProductShippingClassID = 96987515
         let expectedProductShippingClassSlug = "two-days"
+        let expectedProductSKU = "94115"
+        let expectedProductManageStock = true
+        let expectedProductSoldIndividually = false
+        let expectedStockQuantity = 99
+        let expectedBackordersSetting = ProductBackordersSetting.allowed
+        let expectedStockStatus = ProductStockStatus.inStock
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
+
+        // Saves an existing Product into storage.
+        // Note: the fields to be tested should be different in the sample model and network response.
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
+
         let action = ProductAction.updateProduct(product: product) { (product, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(product)
             XCTAssertEqual(product?.productID, expectedProductID)
             XCTAssertEqual(product?.name, expectedProductName)
             XCTAssertEqual(product?.fullDescription, expectedProductDescription)
+            // Shipping settings.
             XCTAssertEqual(product?.shippingClassID, expectedProductShippingClassID)
             XCTAssertEqual(product?.shippingClass, expectedProductShippingClassSlug)
+            // Inventory settings.
+            XCTAssertEqual(product?.sku, expectedProductSKU)
+            XCTAssertEqual(product?.manageStock, expectedProductManageStock)
+            XCTAssertEqual(product?.soldIndividually, expectedProductSoldIndividually)
+            XCTAssertEqual(product?.stockQuantity, expectedStockQuantity)
+            XCTAssertEqual(product?.backordersSetting, expectedBackordersSetting)
+            XCTAssertEqual(product?.productStockStatus, expectedStockStatus)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
             XCTAssertNotNil(storedProduct)
             XCTAssertNotNil(readOnlyStoredProduct)
-            XCTAssertEqual(readOnlyStoredProduct?.productID, expectedProductID)
-            XCTAssertEqual(readOnlyStoredProduct?.name, expectedProductName)
-            XCTAssertEqual(readOnlyStoredProduct?.fullDescription, expectedProductDescription)
+            XCTAssertEqual(readOnlyStoredProduct, product)
 
             expectation.fulfill()
         }

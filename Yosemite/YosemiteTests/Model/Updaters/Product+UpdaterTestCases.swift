@@ -54,7 +54,7 @@ final class Product_UpdaterTestCases: XCTestCase {
         XCTAssertEqual(updatedProduct.salePrice, newSalePrice)
         XCTAssertEqual(updatedProduct.dateOnSaleStart, newDateOnSaleStart)
         XCTAssertEqual(updatedProduct.dateOnSaleEnd, newDateOnSaleEnd)
-        XCTAssertEqual(updatedProduct.taxStatusKey, newTaxStatus.description)
+        XCTAssertEqual(updatedProduct.taxStatusKey, newTaxStatus.rawValue)
         XCTAssertEqual(updatedProduct.taxClass, newTaxClass.slug)
     }
 

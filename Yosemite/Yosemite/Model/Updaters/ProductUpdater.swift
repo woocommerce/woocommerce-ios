@@ -232,7 +232,7 @@ extension Product: ProductUpdater {
         downloadLimit: downloadLimit,
         downloadExpiry: downloadExpiry,
         externalURL: externalURL,
-        taxStatusKey: taxStatus.description,
+        taxStatusKey: taxStatus.rawValue,
         taxClass: taxClass?.slug,
         manageStock: manageStock,
         stockQuantity: stockQuantity,

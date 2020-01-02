@@ -54,7 +54,6 @@ final class ProductDetailsViewController: UIViewController {
 
         // prepare UI
         configureNavigationTitle()
-        configureNavigationActions()
         configureEntityListener()
         configureMainView()
         configureTableView()
@@ -76,14 +75,6 @@ private extension ProductDetailsViewController {
     ///
     func configureNavigationTitle() {
         title = viewModel.title
-    }
-
-    /// Setup: Navigation Actions
-    ///
-    func configureNavigationActions() {
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: #selector(editProduct))
-        }
     }
 
     /// Setup: EntityListener
@@ -200,15 +191,6 @@ private extension ProductDetailsViewController {
             }
             self?.refreshControl.endRefreshing()
         }
-    }
-
-    @objc func editProduct() {
-        let product = viewModel.product
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let productForm = ProductFormViewController(product: product, currency: currency)
-        let navController = WooNavigationController(rootViewController: productForm)
-        navigationController?.present(navController, animated: true)
     }
 }
 

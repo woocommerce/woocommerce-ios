@@ -93,7 +93,7 @@ private extension ProductFormViewController {
             }
             self?.product = product
 
-            // Temporarily dismisses the Product form before the navigation is implemented.
+            // TODO-1671: temporarily dismisses the Product form before the navigation is implemented.
             self?.dismiss(animated: true)
         }
         ServiceLocator.stores.dispatch(action)

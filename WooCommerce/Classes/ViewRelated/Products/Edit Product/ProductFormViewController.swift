@@ -249,6 +249,7 @@ private extension ProductFormViewController {
         self.product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice, salePrice: salePrice, dateOnSaleStart: dateOnSaleStart, dateOnSaleEnd: dateOnSaleEnd, taxStatus: taxStatus, taxClass: taxClass)
     }
 }
+
 // MARK: Action - Edit Product Shipping Settings
 //
 private extension ProductFormViewController {
@@ -297,7 +298,7 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Description
+// MARK: Constants
 //
 private extension ProductFormViewController {
     enum Constants {

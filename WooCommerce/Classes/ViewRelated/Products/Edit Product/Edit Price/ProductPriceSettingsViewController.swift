@@ -140,6 +140,8 @@ private extension ProductPriceSettingsViewController {
 private extension ProductPriceSettingsViewController {
     @objc func completeUpdating() {
         let newSalePrice = salePrice == "0" ? nil : salePrice
+        //The backend for the standard tax class return "standard", but it accept only an empty string "" in the POST request
+        let taxClass = taxClass == standardTaxClass ? TaxClass(siteID: standardTaxClass.siteID, name: standardTaxClass.name, slug: "") : taxClass
         onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
     }
 }

@@ -196,6 +196,12 @@ private extension ProductStore {
     /// Validates the Product SKU against other Products in storage.
     ///
     func validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
+        guard let sku = sku, sku.isEmpty == false else {
+            // It is valid to not have a sku.
+            onCompletion(true)
+            return
+        }
+
         guard let products = storageManager.viewStorage.loadProducts(siteID: siteID) else {
             onCompletion(true)
             return

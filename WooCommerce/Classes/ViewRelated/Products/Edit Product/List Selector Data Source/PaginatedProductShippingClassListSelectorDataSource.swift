@@ -28,6 +28,10 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
         self.selected = selected == self.selected ? nil: selected
     }
 
+    func isSelected(model: ProductShippingClass) -> Bool {
+        return model == self.selected ? true : false
+    }
+
     func configureCell(cell: WooBasicTableViewCell, model: ProductShippingClass) {
         cell.selectionStyle = .default
         cell.applyListSelectorStyle()

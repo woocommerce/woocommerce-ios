@@ -28,9 +28,12 @@ struct ProductTaxClassListSelectorDataSource: PaginatedListSelectorDataSource {
         self.selected = selected
     }
 
+    func isSelected(model: TaxClass) -> Bool {
+        return model.slug == selected?.slug
+    }
+
     func configureCell(cell: BasicTableViewCell, model: TaxClass) {
         cell.selectionStyle = .default
-        cell.isSelected = model.slug == selected?.slug
 
         let bodyText = model.name
         cell.textLabel?.text = bodyText

@@ -56,7 +56,7 @@ final class ProductPriceSettingsViewController: UIViewController {
         dateOnSaleStart = product.dateOnSaleStart
         dateOnSaleEnd = product.dateOnSaleEnd
 
-        let taxClassName = NSLocalizedString("Standard", comment: "The name of the default Tax Class in Product Price Settings")
+        let taxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
         standardTaxClass = TaxClass(siteID: product.siteID, name: taxClassName, slug: "standard")
 
         if let productTaxClassSlug = product.taxClass, productTaxClassSlug.isEmpty == false {

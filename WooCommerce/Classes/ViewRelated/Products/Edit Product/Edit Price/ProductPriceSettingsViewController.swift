@@ -202,7 +202,8 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             let noResultsPlaceholderImage = UIImage.errorStateImage
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: navigationBarTitle,
                                                                      noResultsPlaceholderText: noResultsPlaceholderText,
-                                                                     noResultsPlaceholderImage: noResultsPlaceholderImage, noResultsPlaceholderImageTintColor: .gray(.shade20))
+                                                                     noResultsPlaceholderImage: noResultsPlaceholderImage,
+                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20))
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in

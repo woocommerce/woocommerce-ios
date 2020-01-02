@@ -10,7 +10,7 @@ struct ProductTaxClassListSelectorDataSource: PaginatedListSelectorDataSource {
     private let siteID: Int64
 
     init(product: Product, selected: TaxClass?) {
-        self.siteID = Int64(product.siteID)
+        self.siteID = product.siteID
         self.selected = selected
     }
 
@@ -28,16 +28,20 @@ struct ProductTaxClassListSelectorDataSource: PaginatedListSelectorDataSource {
         self.selected = selected
     }
 
-    func configureCell(cell: BasicTableViewCell, model: TaxClass) {
+    func isSelected(model: TaxClass) -> Bool {
+        return model.slug == selected?.slug
+    }
+
+    func configureCell(cell: WooBasicTableViewCell, model: TaxClass) {
         cell.selectionStyle = .default
-        cell.isSelected = model.slug == selected?.slug
+        cell.applyListSelectorStyle()
 
         let bodyText = model.name
-        cell.textLabel?.text = bodyText
+        cell.bodyLabel.text = bodyText
     }
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
-        let action = TaxClassAction.retrieveTaxClasses(siteID: Int(siteID)) { (taxClasses, error) in
+        let action = TaxClassAction.retrieveTaxClasses(siteID: siteID) { (taxClasses, error) in
             if let error = error {
                 DDLogError("⛔️ Error synchronizing tax classes: \(error)")
             }

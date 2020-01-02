@@ -21,11 +21,14 @@ struct ProductTaxStatusListSelectorDataSource: ListSelectorDataSource {
 
     func configureCell(cell: BasicTableViewCell, model: ProductTaxStatus) {
         cell.selectionStyle = .default
-        cell.isSelected = selected == model
         cell.textLabel?.text = model.description
     }
 
     mutating func handleSelectedChange(selected: ProductTaxStatus) {
         self.selected = selected
+    }
+
+    mutating func isSelected(model: ProductTaxStatus) -> Bool {
+        return selected == model
     }
 }

@@ -10,7 +10,7 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    private var siteID: Int?
+    private var siteID: Int64?
 
     private var dashboardUIFactory: DashboardUIFactory?
     private var dashboardUI: DashboardUI?

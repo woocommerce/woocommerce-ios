@@ -16,11 +16,11 @@ protocol StorePickerViewControllerDelegate: AnyObject {
     /// - Parameter storeID: ID of the store selected by the user
     /// - Returns: a closure to be executed prior to store selection
     ///
-    func willSelectStore(with storeID: Int, onCompletion: @escaping SelectStoreClosure)
+    func willSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure)
 
     /// Notifies the delegate that the store selection is complete
     ///
-    func didSelectStore(with storeID: Int)
+    func didSelectStore(with storeID: Int64)
 }
 
 
@@ -415,7 +415,7 @@ private extension StorePickerViewController {
 
     /// If the provided site's WC version is not valid, display a warning to the user.
     ///
-    func displaySiteWCRequirementWarningIfNeeded(siteID: Int, siteName: String) {
+    func displaySiteWCRequirementWarningIfNeeded(siteID: Int64, siteName: String) {
         updateActionButtonAndTableState(animating: true, enabled: false)
         RequirementsChecker.checkMinimumWooVersion(for: siteID) { [weak self] (result, error) in
             switch result {
@@ -450,7 +450,7 @@ private extension StorePickerViewController {
 
     /// Update the UI upon receiving an error or empty response instead of site info
     ///
-    func updateUIForEmptyOrErroredSite(named siteName: String, with siteID: Int) {
+    func updateUIForEmptyOrErroredSite(named siteName: String, with siteID: Int64) {
         toggleDismissButton(enabled: false)
         updateActionButtonAndTableState(animating: false, enabled: false)
         displayVersionCheckErrorNotice(siteID: siteID, siteName: siteName)
@@ -491,7 +491,7 @@ private extension StorePickerViewController {
 
     /// Displays the Error Notice for the version check.
     ///
-    func displayVersionCheckErrorNotice(siteID: Int, siteName: String) {
+    func displayVersionCheckErrorNotice(siteID: Int64, siteName: String) {
         let message = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Unable to successfully connect to %@",
@@ -737,7 +737,7 @@ private extension StorePickerState {
 
     /// Returns the IndexPath for the specified Site.
     ///
-    func indexPath(for siteID: Int) -> IndexPath? {
+    func indexPath(for siteID: Int64) -> IndexPath? {
         guard case let .available(sites) = self else {
             return nil
         }

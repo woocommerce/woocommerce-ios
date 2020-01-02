@@ -306,7 +306,7 @@ extension MainTabBarController {
 
     /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.
     ///
-    static func presentNotificationDetails(for noteID: Int) {
+    static func presentNotificationDetails(for noteID: Int64) {
         switchToReviewsTab {
             guard let reviewsViewController: ReviewsViewController = childViewController() else {
                 return

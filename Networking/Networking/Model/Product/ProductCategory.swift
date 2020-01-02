@@ -4,13 +4,13 @@ import Foundation
 /// Represents a ProductCategory entity.
 ///
 public struct ProductCategory: Decodable {
-    public let categoryID: Int
+    public let categoryID: Int64
     public let name: String
     public let slug: String
 
     /// ProductCategory initializer.
     ///
-    public init(categoryID: Int,
+    public init(categoryID: Int64,
                 name: String,
                 slug: String) {
         self.categoryID = categoryID
@@ -23,7 +23,7 @@ public struct ProductCategory: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let categoryID = try container.decode(Int.self, forKey: .categoryID)
+        let categoryID = try container.decode(Int64.self, forKey: .categoryID)
         let name = try container.decode(String.self, forKey: .name)
         let slug = try container.decode(String.self, forKey: .slug)
 

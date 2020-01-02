@@ -28,11 +28,11 @@ class OrderStoreTests: XCTestCase {
 
     /// Testing SiteID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     /// Testing OrderID
     ///
-    private let sampleOrderID = 963
+    private let sampleOrderID: Int64 = 963
 
     /// Testing Page Number
     ///
@@ -441,7 +441,7 @@ class OrderStoreTests: XCTestCase {
 
         XCTAssertEqual(storageSearchResults?.keyword, defaultSearchKeyword)
         XCTAssertEqual(storageSearchResults?.orders?.count, 1)
-        XCTAssertEqual(storageSearchResults?.orders?.first?.orderID, Int64(remoteOrder.orderID))
+        XCTAssertEqual(storageSearchResults?.orders?.first?.orderID, remoteOrder.orderID)
         XCTAssertEqual(storageOrder?.searchResults?.first?.keyword, defaultSearchKeyword)
     }
 

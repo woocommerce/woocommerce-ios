@@ -21,13 +21,13 @@ protocol DashboardUI: UIViewController {
 }
 
 final class DashboardUIFactory {
-    private let siteID: Int
+    private let siteID: Int64
     private let stateCoordinator: StatsVersionStateCoordinator
 
     private var lastStatsV3DashboardUI: (DashboardUI & TopBannerPresenter)?
     private var lastStatsV4DashboardUI: DashboardUI?
 
-    init(siteID: Int) {
+    init(siteID: Int64) {
         self.siteID = siteID
         self.stateCoordinator = StatsVersionStateCoordinator(siteID: siteID)
     }

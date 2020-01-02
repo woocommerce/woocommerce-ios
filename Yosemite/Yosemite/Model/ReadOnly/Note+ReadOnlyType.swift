@@ -13,6 +13,6 @@ extension Yosemite.Note: ReadOnlyType {
             return false
         }
 
-        return storageNote.noteID == noteId
+        return storageNote.noteID == noteID
     }
 }

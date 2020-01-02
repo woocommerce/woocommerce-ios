@@ -13,7 +13,7 @@ public final class ShipmentsRemote: Remote {
     ///   - orderID: Identifier of the Order
     ///   - completion: Closure to be executed upon completion
     ///
-    public func loadShipmentTrackings(for siteID: Int, orderID: Int, completion: @escaping ([ShipmentTracking]?, Error?) -> Void) {
+    public func loadShipmentTrackings(for siteID: Int64, orderID: Int64, completion: @escaping ([ShipmentTracking]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/"
 
         // 2019-2-15 — We are using the v2 endpoint here because this endpoint does not support v3 yet
@@ -32,8 +32,8 @@ public final class ShipmentsRemote: Remote {
     ///   - trackingNumber: The tracking number
     ///   - completion: Closure to be executed upon completion
     ///
-    public func createShipmentTracking(for siteID: Int,
-                                       orderID: Int,
+    public func createShipmentTracking(for siteID: Int64,
+                                       orderID: Int64,
                                        trackingProvider: String,
                                        dateShipped: String,
                                        trackingNumber: String,
@@ -60,8 +60,8 @@ public final class ShipmentsRemote: Remote {
     ///   - trackingLink: The custom url offered by this provider to track shipments
     ///   - completion: Closure to be executed upon completion
     ///
-    public func createShipmentTrackingWithCustomProvider(for siteID: Int,
-                                                         orderID: Int,
+    public func createShipmentTrackingWithCustomProvider(for siteID: Int64,
+                                                         orderID: Int64,
                                                          trackingProvider: String,
                                                          trackingNumber: String,
                                                          trackingURL: String,
@@ -88,7 +88,7 @@ public final class ShipmentsRemote: Remote {
     ///   - trackingID: The tracking identifier
     ///   - completion: Closure to be executed upon completion
     ///
-    public func deleteShipmentTracking(for siteID: Int, orderID: Int, trackingID: String, completion: @escaping (ShipmentTracking?, Error?) -> Void) {
+    public func deleteShipmentTracking(for siteID: Int64, orderID: Int64, trackingID: String, completion: @escaping (ShipmentTracking?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/" + trackingID
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .delete, siteID: siteID, path: path, parameters: nil)
@@ -97,7 +97,9 @@ public final class ShipmentsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    public func loadShipmentTrackingProviderGroups(for siteID: Int, orderID: Int, completion: @escaping ([ShipmentTrackingProviderGroup]?, Error?) -> Void) {
+    public func loadShipmentTrackingProviderGroups(for siteID: Int64,
+                                                   orderID: Int64,
+                                                   completion: @escaping ([ShipmentTrackingProviderGroup]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.shipmentPath)/\(Constants.providersPath)"
 
         let request = JetpackRequest(wooApiVersion: .mark2, method: .get, siteID: siteID, path: path, parameters: nil)

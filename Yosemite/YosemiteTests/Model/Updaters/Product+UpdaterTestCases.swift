@@ -28,7 +28,7 @@ final class Product_UpdaterTestCases: XCTestCase {
                                                     descriptionHTML: "Arriving in 2 days!",
                                                     name: "2 Days",
                                                     shippingClassID: 2022,
-                                                    siteID: Int64(product.siteID),
+                                                    siteID: product.siteID,
                                                     slug: "2-days")
         let updatedProduct = product.shippingSettingsUpdated(weight: newWeight, dimensions: newDimensions, shippingClass: newShippingClass)
         XCTAssertEqual(updatedProduct.fullDescription, product.fullDescription)
@@ -36,7 +36,7 @@ final class Product_UpdaterTestCases: XCTestCase {
         XCTAssertEqual(updatedProduct.weight, newWeight)
         XCTAssertEqual(updatedProduct.dimensions, newDimensions)
         XCTAssertEqual(updatedProduct.shippingClass, newShippingClass.slug)
-        XCTAssertEqual(Int64(updatedProduct.shippingClassID), newShippingClass.shippingClassID)
+        XCTAssertEqual(updatedProduct.shippingClassID, newShippingClass.shippingClassID)
         XCTAssertEqual(updatedProduct.productShippingClass, newShippingClass)
     }
 
@@ -56,6 +56,32 @@ final class Product_UpdaterTestCases: XCTestCase {
         XCTAssertEqual(updatedProduct.dateOnSaleEnd, newDateOnSaleEnd)
         XCTAssertEqual(updatedProduct.taxStatusKey, newTaxStatus.description)
         XCTAssertEqual(updatedProduct.taxClass, newTaxClass.slug)
+    }
+
+    func testUpdatingInventorySettings() {
+        let product = sampleProduct()
+        let newSKU = "94115"
+        let newManageStock = !product.manageStock
+        let newSoldIndividually = !product.soldIndividually
+        let newStockQuantity = 17
+        let newBackordersSetting = ProductBackordersSetting.allowedAndNotifyCustomer
+        let newStockStatus = ProductStockStatus.onBackOrder
+        let updatedProduct = product.inventorySettingsUpdated(sku: newSKU,
+                                                              manageStock: newManageStock,
+                                                              soldIndividually: newSoldIndividually,
+                                                              stockQuantity: newStockQuantity,
+                                                              backordersSetting: newBackordersSetting,
+                                                              stockStatus: newStockStatus)
+        // Sanity check on unchanged properties.
+        XCTAssertEqual(updatedProduct.fullDescription, product.fullDescription)
+        XCTAssertEqual(updatedProduct.name, product.name)
+        // Inventory settings.
+        XCTAssertEqual(updatedProduct.sku, newSKU)
+        XCTAssertEqual(updatedProduct.manageStock, newManageStock)
+        XCTAssertEqual(updatedProduct.soldIndividually, newSoldIndividually)
+        XCTAssertEqual(updatedProduct.stockQuantity, newStockQuantity)
+        XCTAssertEqual(updatedProduct.backordersSetting, newBackordersSetting)
+        XCTAssertEqual(updatedProduct.productStockStatus, newStockStatus)
     }
 }
 

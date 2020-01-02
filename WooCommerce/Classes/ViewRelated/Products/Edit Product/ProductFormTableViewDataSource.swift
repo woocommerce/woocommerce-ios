@@ -6,6 +6,7 @@ private extension ProductFormSection.SettingsRow.ViewModel {
         return ImageAndTitleAndTextTableViewCell.ViewModel(title: title,
                                                            text: details,
                                                            image: icon,
+                                                           imageTintColor: .textSubtle,
                                                            numberOfLinesForText: 0)
     }
 }

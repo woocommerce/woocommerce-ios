@@ -115,8 +115,10 @@ private extension RefundDetailsDataSource {
         let itemViewModel = OrderItemRefundViewModel(item: item,
                                                      currency: order.currency,
                                                      product: product)
+        let imageService = ServiceLocator.imageService
+
         cell.selectionStyle = .default
-        cell.configure(item: itemViewModel)
+        cell.configure(item: itemViewModel, imageService: imageService)
     }
 }
 
@@ -124,7 +126,7 @@ private extension RefundDetailsDataSource {
 // MARK: - Lookup products
 //
 extension RefundDetailsDataSource {
-    func lookUpProduct(by productID: Int) -> Product? {
+    func lookUpProduct(by productID: Int64) -> Product? {
         return products.filter({ $0.productID == productID }).first
     }
 }

@@ -108,8 +108,12 @@ extension PickListTableViewCell {
 
     /// Configure a refunded order item
     ///
-    func configure(item: OrderItemRefundViewModel) {
-        productImageView.setImage(with: item.imageURL?.absoluteString, placeholder: UIImage.productPlaceholderImage)
+    func configure(item: OrderItemRefundViewModel, imageService: ImageService) {
+        imageService.downloadAndCacheImageForImageView(productImageView,
+                                                       with: item.imageURL?.absoluteString,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
         name = item.name
         quantity = item.quantity
 

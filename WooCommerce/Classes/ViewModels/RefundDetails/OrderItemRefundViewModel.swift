@@ -31,7 +31,7 @@ struct OrderItemRefundViewModel {
     /// Item's Quantity
     ///
     var quantity: String {
-        return item.quantity.description
+        return abs(item.quantity).description
     }
 
     /// Item's Price
@@ -42,7 +42,8 @@ struct OrderItemRefundViewModel {
             return currencyFormatter.formatAmount(item.total, with: currency) ?? String()
         }
 
-        let itemTotal = currencyFormatter.formatAmount(item.total, with: currency) ?? String()
+        let positiveTotal = item.total.replacingOccurrences(of: "-", with: "")
+        let itemTotal = currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
         let itemSubtotal = currencyFormatter.formatAmount(item.price, with: currency) ?? String()
 
         return itemTotal + " (" + itemSubtotal + " × " + quantity + ")"

@@ -15,6 +15,9 @@ protocol ListSelectorDataSource {
     /// Called when a different model is selected.
     mutating func handleSelectedChange(selected: Model)
 
+    /// Configures the selected UI.
+    func isSelected(model: Model) -> Bool
+
     /// Configures the cell with the given model.
     func configureCell(cell: Cell, model: Model)
 }
@@ -75,7 +78,7 @@ UIViewController, UITableViewDataSource, UITableViewDelegate where DataSource.Mo
         let model = dataSource.data[indexPath.row]
         dataSource.configureCell(cell: cell, model: model)
 
-        cell.accessoryType = model == dataSource.selected ? .checkmark: .none
+        cell.accessoryType = dataSource.isSelected(model: model) ? .checkmark: .none
 
         return cell
     }

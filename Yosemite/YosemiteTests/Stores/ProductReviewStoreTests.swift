@@ -32,15 +32,15 @@ final class ProductReviewStoreTests: XCTestCase {
 
     /// Testing SiteID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     /// Testing ReviewID
     ///
-    private let sampleReviewID = 173
+    private let sampleReviewID: Int64 = 173
 
     /// Testing ProductID
     ///
-    private let sampleProductID = 32
+    private let sampleProductID: Int64 = 32
 
     /// Testing Page Number
     ///

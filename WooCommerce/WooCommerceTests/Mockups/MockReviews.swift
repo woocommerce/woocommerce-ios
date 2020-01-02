@@ -3,9 +3,9 @@ import Foundation
 
 
 final class MockReviews {
-    let siteID          = 123
-    let reviewID        = 1234
-    let productID       = 12345
+    let siteID: Int64 = 123
+    let reviewID: Int64 = 1234
+    let productID: Int64 = 12345
     let productName     = "Book the Green Room"
     let dateCreated     = Date()
     let statusKey       = "hold"
@@ -16,7 +16,7 @@ final class MockReviews {
     let rating          = 4
     let verified        = true
 
-    let sampleVariationTypeProductID = 295
+    let sampleVariationTypeProductID: Int64 = 295
 
     func review() -> Networking.ProductReview {
         return ProductReview(siteID: siteID,
@@ -49,7 +49,7 @@ final class MockReviews {
 
 
 extension MockReviews {
-    func product(_ siteID: Int? = nil) -> Networking.Product {
+    func product(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? self.siteID
         return Product(siteID: testSiteID,
                        productID: productID,
@@ -189,7 +189,7 @@ extension MockReviews {
         return [download1, download2, download3]
     }
 
-    func sampleProductMutated(_ siteID: Int? = nil) -> Networking.Product {
+    func sampleProductMutated(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? self.siteID
 
         return Product(siteID: testSiteID,
@@ -312,7 +312,7 @@ extension MockReviews {
         return [defaultAttribute1]
     }
 
-    func sampleVariationTypeProduct(_ siteID: Int? = nil) -> Networking.Product {
+    func sampleVariationTypeProduct(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? self.siteID
         return Product(siteID: testSiteID,
                        productID: sampleVariationTypeProductID,
@@ -421,7 +421,7 @@ extension MockReviews {
 extension MockReviews {
     func emptyNotification() -> Note {
         let data = Data()
-        return Note(noteId: 0,
+        return Note(noteID: 0,
                     hash: 0,
                     read: false,
                     icon: nil,

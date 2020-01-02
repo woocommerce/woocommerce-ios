@@ -14,11 +14,11 @@ final class ProductLoaderViewController: UIViewController {
 
     /// Target ProductID
     ///
-    private let productID: Int
+    private let productID: Int64
 
     /// Target Product's SiteID
     ///
-    private let siteID: Int
+    private let siteID: Int64
 
     /// The Target Product's Currency
     ///
@@ -35,7 +35,7 @@ final class ProductLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(productID: Int, siteID: Int, currency: String) {
+    init(productID: Int64, siteID: Int64, currency: String) {
         self.productID = productID
         self.siteID = siteID
         self.currency = currency

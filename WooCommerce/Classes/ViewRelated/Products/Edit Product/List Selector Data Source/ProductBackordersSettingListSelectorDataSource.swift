@@ -27,4 +27,8 @@ struct ProductBackordersSettingListSelectorDataSource: ListSelectorDataSource {
     mutating func handleSelectedChange(selected: ProductBackordersSetting) {
         self.selected = selected
     }
+
+    func isSelected(model: ProductBackordersSetting) -> Bool {
+        return model == selected
+    }
 }

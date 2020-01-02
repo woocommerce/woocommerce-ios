@@ -8,7 +8,7 @@ public struct Note {
 
     /// Notification's Primary Key.
     ///
-    public let noteId: Int64
+    public let noteID: Int64
 
     /// Notification's Hash.
     ///
@@ -97,7 +97,7 @@ public struct Note {
 
     /// Designed Initializer.
     ///
-    public init(noteId: Int64,
+    public init(noteID: Int64,
                 hash: Int64,
                 read: Bool,
                 icon: String?,
@@ -112,7 +112,7 @@ public struct Note {
                 body: Data,
                 meta: Data) {
 
-        self.noteId = noteId
+        self.noteID = noteID
         self.hash = hash
         self.read = read
         self.icon = icon
@@ -175,7 +175,7 @@ extension Note: Decodable {
         let rawMetaAsData = container.failsafeDecodeIfPresent([String: AnyCodable].self, forKey: .meta) ?? [:]
         let metaAsData = try JSONEncoder().encode(rawMetaAsData)
 
-        self.init(noteId: noteID,
+        self.init(noteID: noteID,
                   hash: hash,
                   read: read,
                   icon: icon,

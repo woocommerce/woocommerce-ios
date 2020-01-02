@@ -45,7 +45,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// Search Store ID
     ///
-    private let storeID: Int
+    private let storeID: Int64
 
     /// Indicates if there are no results onscreen.
     ///
@@ -78,7 +78,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// Designated Initializer
     ///
-    init(storeID: Int,
+    init(storeID: Int64,
          command: Command,
          cellType: Cell.Type) {
         self.resultsController = command.createResultsController()

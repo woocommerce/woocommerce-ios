@@ -17,7 +17,7 @@ public final class ProductReviewsRemote: Remote {
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllProductReviews(for siteID: Int,
+    public func loadAllProductReviews(for siteID: Int64,
                                 context: String? = nil,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
@@ -43,7 +43,7 @@ public final class ProductReviewsRemote: Remote {
     ///     - reviewID: Identifier of the ProductReview.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProductReview(for siteID: Int, reviewID: Int, completion: @escaping (ProductReview?, Error?) -> Void) {
+    public func loadProductReview(for siteID: Int64, reviewID: Int64, completion: @escaping (ProductReview?, Error?) -> Void) {
         let path = "\(Path.reviews)/\(reviewID)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ProductReviewMapper(siteID: siteID)
@@ -59,7 +59,7 @@ public final class ProductReviewsRemote: Remote {
     ///     - statusKey: The new status
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateProductReviewStatus(for siteID: Int, reviewID: Int, statusKey: String, completion: @escaping (ProductReview?, Error?) -> Void) {
+    public func updateProductReviewStatus(for siteID: Int64, reviewID: Int64, statusKey: String, completion: @escaping (ProductReview?, Error?) -> Void) {
         let path = "\(Path.reviews)/\(reviewID)"
         let parameters = [ParameterKey.status: statusKey]
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: siteID, path: path, parameters: parameters)

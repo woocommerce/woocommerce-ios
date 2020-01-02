@@ -21,7 +21,7 @@ public class AccountRemote: Remote {
     /// - Parameters:
     ///   - for: The dotcom user ID - used primarily for persistence not on the actual network call
     ///
-    public func loadAccountSettings(for userID: Int, completion: @escaping (AccountSettings?, Error?) -> Void) {
+    public func loadAccountSettings(for userID: Int64, completion: @escaping (AccountSettings?, Error?) -> Void) {
         let path = "me/settings"
         let parameters = [
             "fields": "tracks_opt_out"
@@ -36,7 +36,7 @@ public class AccountRemote: Remote {
     /// - Parameters:
     ///   - userID: The dotcom user ID - used primarily for persistence not on the actual network call
     ///
-    public func updateAccountSettings(for userID: Int, tracksOptOut: Bool, completion: @escaping (AccountSettings?, Error?) -> Void) {
+    public func updateAccountSettings(for userID: Int64, tracksOptOut: Bool, completion: @escaping (AccountSettings?, Error?) -> Void) {
         let path = "me/settings"
         let parameters = [
             "fields": "tracks_opt_out",
@@ -67,7 +67,7 @@ public class AccountRemote: Remote {
 
     /// Loads the site plan for the default site associated with the WordPress.com user.
     ///
-    public func loadSitePlan(for siteID: Int, completion: @escaping (SitePlan?, Error?) -> Void) {
+    public func loadSitePlan(for siteID: Int64, completion: @escaping (SitePlan?, Error?) -> Void) {
         let path = "sites/\(siteID)"
         let parameters = [
             "fields": "ID,plan"

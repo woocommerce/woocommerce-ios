@@ -7,6 +7,26 @@ final class AztecTextViewAttachmentHandler: TextViewAttachmentDelegate {
                   imageAt url: URL,
                   onSuccess success: @escaping (UIImage) -> Void,
                   onFailure failure: @escaping () -> Void) {
+        switch attachment {
+        case is ImageAttachment:
+            let imageService = ServiceLocator.imageService
+
+            imageService.retrieveImageFromCache(with: url) { image in
+                if let image = image {
+                    success(image)
+                }
+            }
+
+            imageService.downloadImage(with: url, shouldCacheImage: true) { image, error in
+                guard let image = image else {
+                    failure()
+                    return
+                }
+                success(image)
+            }
+        default:
+            return
+        }
     }
 
     func textView(_ textView: TextView, urlFor imageAttachment: ImageAttachment) -> URL? {

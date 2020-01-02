@@ -44,7 +44,7 @@ final class TaxClassRemoteTests: XCTestCase {
                 XCTFail("Tax Class with slug \(expectedSlug) should exist")
                 return
             }
-            XCTAssertEqual(expectedTaxClass.siteID, Int(self.sampleSiteID))
+            XCTAssertEqual(expectedTaxClass.siteID, self.sampleSiteID)
             XCTAssertEqual(expectedTaxClass.name, "Standard Rate")
             expectation.fulfill()
         }

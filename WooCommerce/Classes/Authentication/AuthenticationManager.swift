@@ -40,7 +40,7 @@ class AuthenticationManager: Authentication {
                                                 textButtonHighlightColor: .accentDark,
                                                 instructionColor: .textSubtle,
                                                 subheadlineColor: .systemColor(.secondaryLabel),
-                                                placeholderColor: .gray(.shade20),
+                                                placeholderColor: .placeholderImage,
                                                 viewControllerBackgroundColor: .listBackground,
                                                 textFieldBackgroundColor: .listForeground,
                                                 navBarImage: StyleManager.navBarImage,

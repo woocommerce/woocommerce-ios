@@ -6,6 +6,8 @@ extension ProductsTabProductViewModel {
         imageUrl = productVariation.image?.src
         name = productVariation.attributes.map({ $0.option }).joined(separator: " - ")
         detailsAttributedString = productVariation.createDetailsAttributedString(currency: currency)
+
+        imageService = ServiceLocator.imageService
     }
 }
 

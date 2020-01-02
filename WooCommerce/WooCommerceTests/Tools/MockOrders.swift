@@ -1,8 +1,8 @@
 @testable import Networking
 
 final class MockOrders {
-    let siteID = 1234
-    let orderID = 5678
+    let siteID: Int64 = 1234
+    let orderID: Int64 = 5678
 
     func sampleOrder() -> Networking.Order {
         return Order(siteID: siteID,

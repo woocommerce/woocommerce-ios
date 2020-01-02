@@ -38,6 +38,7 @@ extension UIImage {
     static var cameraImage: UIImage {
         return Gridicon.iconOfType(.camera)
             .imageFlippedForRightToLeftLayoutDirection()
+            .applyTintColor(.placeholderImage)!
     }
 
     /// Add Image icon
@@ -105,6 +106,12 @@ extension UIImage {
     static var ellipsisImage: UIImage {
         return Gridicon.iconOfType(.ellipsis)
             .imageFlippedForRightToLeftLayoutDirection()
+    }
+
+    /// Empty Products Icon
+    ///
+    static var emptyProductsImage: UIImage {
+        return UIImage(named: "woo-empty-products")!
     }
 
     /// Empty Reviews Icon
@@ -269,6 +276,12 @@ extension UIImage {
     ///
     static var shippingImage: UIImage {
         return Gridicon.iconOfType(.shipping, withSize: CGSize(width: 24, height: 24))
+    }
+
+    /// Shipping class list selector empty icon
+    ///
+    static var shippingClassListSelectorEmptyImage: UIImage {
+        return Gridicon.iconOfType(.shipping, withSize: CGSize(width: 80, height: 80))
     }
 
     /// Spam Icon

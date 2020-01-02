@@ -23,19 +23,19 @@ public struct NoteRange: Equatable {
 
     /// Comment ID, if any.
     ///
-    private(set) public var commentID: Int?
+    private(set) public var commentID: Int64?
 
     /// Post ID, if any.
     ///
-    private(set) public var postID: Int?
+    private(set) public var postID: Int64?
 
     /// Site ID, if any.
     ///
-    private(set) public var siteID: Int?
+    private(set) public var siteID: Int64?
 
     /// User ID, if any.
     ///
-    private(set) public var userID: Int?
+    private(set) public var userID: Int64?
 
     /// String Payload, if any.
     ///
@@ -45,7 +45,7 @@ public struct NoteRange: Equatable {
 
     /// Designated Initializer.
     ///
-    init(type: String?, range: NSRange, url: URL?, identifier: Int?, postID: Int?, siteID: Int?, value: String?) {
+    init(type: String?, range: NSRange, url: URL?, identifier: Int64?, postID: Int64?, siteID: Int64?, value: String?) {
         self.kind = NoteRange.kind(forType: type, siteID: siteID, url: url)
         self.type = type
         self.range = range
@@ -86,9 +86,9 @@ extension NoteRange: Decodable {
         let type = try container.decodeIfPresent(String.self, forKey: .type)
         let range = try container.decode(arrayEncodedRangeForKey: .indices)
         let url = try container.decodeIfPresent(URL.self, forKey: .url)
-        let identifier = try container.decodeIfPresent(Int.self, forKey: .id)
-        let postID = try container.decodeIfPresent(Int.self, forKey: .postId)
-        let siteID = try container.decodeIfPresent(Int.self, forKey: .siteId)
+        let identifier = try container.decodeIfPresent(Int64.self, forKey: .id)
+        let postID = try container.decodeIfPresent(Int64.self, forKey: .postId)
+        let siteID = try container.decodeIfPresent(Int64.self, forKey: .siteId)
         let value = try container.decodeIfPresent(String.self, forKey: .value)
 
         self.init(type: type, range: range, url: url, identifier: identifier, postID: postID, siteID: siteID, value: value)
@@ -102,7 +102,7 @@ private extension NoteRange {
 
     /// Parses the NoteRange.Type field into a Swift Native enum. Returns .unknown on failure.
     ///
-    static func kind(forType type: String?, siteID: Int?, url: URL?) -> Kind {
+    static func kind(forType type: String?, siteID: Int64?, url: URL?) -> Kind {
         if let type = type, let kind = Kind(rawValue: type) {
             return kind
         }

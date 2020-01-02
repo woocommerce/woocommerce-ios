@@ -88,10 +88,13 @@ final class PickListTableViewCell: UITableViewCell {
 /// MARK: - Public Methods
 ///
 extension PickListTableViewCell {
-    /// Configure an order item
-    ///
-    func configure(item: OrderItemViewModel) {
-        productImageView.setImage(with: item.imageURL?.absoluteString, placeholder: UIImage.productPlaceholderImage)
+    func configure(item: OrderItemViewModel, imageService: ImageService) {
+        imageService.downloadAndCacheImageForImageView(productImageView,
+                                                       with: item.imageURL?.absoluteString,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
+
         name = item.name
         quantity = item.quantity
 

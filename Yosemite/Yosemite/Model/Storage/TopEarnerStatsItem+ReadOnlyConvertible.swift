@@ -9,7 +9,7 @@ extension Storage.TopEarnerStatsItem: ReadOnlyConvertible {
     /// Updates the Storage.TopEarnerStatsItem with the ReadOnly.
     ///
     public func update(with statsItem: Yosemite.TopEarnerStatsItem) {
-        productID = Int64(statsItem.productID)
+        productID = statsItem.productID
         productName = statsItem.productName
         quantity = Int64(statsItem.quantity)
         price = statsItem.price
@@ -21,7 +21,7 @@ extension Storage.TopEarnerStatsItem: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.TopEarnerStatsItem {
-        return TopEarnerStatsItem(productID: Int(productID),
+        return TopEarnerStatsItem(productID: productID,
                                   productName: productName ?? "",
                                   quantity: Int(quantity),
                                   price: price,

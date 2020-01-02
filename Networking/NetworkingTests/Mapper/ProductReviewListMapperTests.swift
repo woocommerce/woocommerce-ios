@@ -5,7 +5,7 @@ import XCTest
 final class ProductReviewListMapperTests: XCTestCase {
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 33334444
+    private let dummySiteID: Int64 = 33334444
 
     /// Verifies that all of the ProductReview Fields are parsed correctly.
     ///

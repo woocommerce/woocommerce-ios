@@ -67,6 +67,8 @@ final class FulfillViewController: UIViewController {
     ///
     private var trackingIsReachable: Bool = false
 
+    private let imageService: ImageService = ServiceLocator.imageService
+
     /// Designated Initializer
     ///
     init(order: Order, products: [Product]?) {
@@ -347,7 +349,7 @@ private extension FulfillViewController {
         let product = lookUpProduct(by: item.productID)
         let viewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
         cell.selectionStyle = .default
-        cell.configure(item: viewModel)
+        cell.configure(item: viewModel, imageService: imageService)
     }
 
     /// Setup: Customer Note Cell

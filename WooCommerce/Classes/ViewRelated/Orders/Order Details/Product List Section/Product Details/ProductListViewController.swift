@@ -9,6 +9,8 @@ class ProductListViewController: UIViewController {
     var viewModel: OrderDetailsViewModel!
     var products: [Product]? = []
 
+    private let imageService: ImageService = ServiceLocator.imageService
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -76,7 +78,7 @@ extension ProductListViewController: UITableViewDataSource {
             fatalError()
         }
         cell.selectionStyle = .default
-        cell.configure(item: itemViewModel)
+        cell.configure(item: itemViewModel, imageService: imageService)
 
         return cell
     }

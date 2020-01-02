@@ -25,6 +25,10 @@ final class ServiceLocator {
     ///
     private static var _featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
 
+    /// ImageService
+    ///
+    private static var _imageService: ImageService = DefaultImageService()
+
     /// In-App Notifications Presenter
     ///
     private static var _noticePresenter: NoticePresenter = DefaultNoticePresenter()
@@ -58,6 +62,12 @@ final class ServiceLocator {
     /// - Returns: An implementation of the FeatureFlagService protocol. It defaults to DefaultFeatureFlagService
     static var featureFlagService: FeatureFlagService {
         return _featureFlagService
+    }
+
+    /// Provides the access point to the image service.
+    /// - Returns: An implementation of the ImageService protocol. It defaults to DefaultImageService
+    static var imageService: ImageService {
+        return _imageService
     }
 
     /// Provides the access point to the stores.

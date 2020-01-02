@@ -129,6 +129,8 @@ final class OrderDetailsDataSource: NSObject {
         return AsyncDictionary()
     }()
 
+    private let imageService: ImageService = ServiceLocator.imageService
+
     init(order: Order) {
         self.order = order
         self.couponLines = order.coupons
@@ -366,7 +368,7 @@ private extension OrderDetailsDataSource {
         let product = lookUpProduct(by: item.productID)
         let itemViewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
         cell.selectionStyle = .default
-        cell.configure(item: itemViewModel)
+        cell.configure(item: itemViewModel, imageService: imageService)
     }
 
     private func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {

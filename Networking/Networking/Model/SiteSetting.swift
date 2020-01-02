@@ -4,7 +4,7 @@ import Foundation
 /// Represents a specific setting entity for a specific site.
 ///
 public struct SiteSetting: Decodable {
-    public let siteID: Int
+    public let siteID: Int64
     public let settingID: String
     public let label: String
     public let settingDescription: String
@@ -19,7 +19,7 @@ public struct SiteSetting: Decodable {
 
     /// OrderNote struct initializer.
     ///
-    public init(siteID: Int, settingID: String, label: String, description: String, value: String, settingGroupKey: String) {
+    public init(siteID: Int64, settingID: String, label: String, description: String, value: String, settingGroupKey: String) {
         self.siteID = siteID
         self.settingID = settingID
         self.label = label
@@ -31,7 +31,7 @@ public struct SiteSetting: Decodable {
     /// The public initializer for SiteSetting.
     ///
     public init(from decoder: Decoder) throws {
-        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw SiteSettingError.missingSiteID
         }
         guard let settingGroupKey = decoder.userInfo[.settingGroupKey] as? String else {

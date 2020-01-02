@@ -3,9 +3,9 @@ import Foundation
 /// Represents a ProductReview Entity.
 ///
 public struct ProductReview: Decodable {
-    public let siteID: Int
-    public let reviewID: Int
-    public let productID: Int
+    public let siteID: Int64
+    public let reviewID: Int64
+    public let productID: Int64
 
     public let dateCreated: Date        // gmt
 
@@ -26,9 +26,9 @@ public struct ProductReview: Decodable {
 
     /// ProductReview struct initializer.
     ///
-    public init(siteID: Int,
-                reviewID: Int,
-                productID: Int,
+    public init(siteID: Int64,
+                reviewID: Int64,
+                productID: Int64,
                 dateCreated: Date,
                 statusKey: String,
                 reviewer: String,
@@ -53,14 +53,14 @@ public struct ProductReview: Decodable {
     /// The public initializer for ProductReview.
     ///
     public init(from decoder: Decoder) throws {
-        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw ProductReviewDecodingError.missingSiteID
         }
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let reviewID = try container.decode(Int.self, forKey: .reviewID)
-        let productID = try container.decode(Int.self, forKey: .productID)
+        let reviewID = try container.decode(Int64.self, forKey: .reviewID)
+        let productID = try container.decode(Int64.self, forKey: .productID)
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let statusKey = try container.decode(String.self, forKey: .status)
         let reviewer = try container.decode(String.self, forKey: .reviewer)

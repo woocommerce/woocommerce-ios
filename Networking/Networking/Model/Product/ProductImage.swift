@@ -4,7 +4,7 @@ import Foundation
 /// Represents a ProductImage entity.
 ///
 public struct ProductImage: Decodable {
-    public let imageID: Int
+    public let imageID: Int64
     public let dateCreated: Date    // gmt
     public let dateModified: Date?  // gmt
     public let src: String
@@ -13,7 +13,7 @@ public struct ProductImage: Decodable {
 
     /// ProductImage initializer.
     ///
-    public init(imageID: Int,
+    public init(imageID: Int64,
                 dateCreated: Date,
                 dateModified: Date?,
                 src: String,
@@ -32,7 +32,7 @@ public struct ProductImage: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let imageID = try container.decode(Int.self, forKey: .imageID)
+        let imageID = try container.decode(Int64.self, forKey: .imageID)
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let dateModified = try container.decodeIfPresent(Date.self, forKey: .dateModified)
         let src = try container.decode(String.self, forKey: .src)

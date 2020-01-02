@@ -4,8 +4,8 @@ import Foundation
 /// Represents a Product Entity.
 ///
 public struct Product: Codable {
-    public let siteID: Int
-    public let productID: Int
+    public let siteID: Int64
+    public let productID: Int64
     public let name: String
     public let slug: String
     public let permalink: String
@@ -57,17 +57,17 @@ public struct Product: Codable {
     public let shippingRequired: Bool
     public let shippingTaxable: Bool
     public let shippingClass: String?
-    public let shippingClassID: Int
+    public let shippingClassID: Int64
     public let productShippingClass: ProductShippingClass?
 
     public let reviewsAllowed: Bool
     public let averageRating: String
     public let ratingCount: Int
 
-    public let relatedIDs: [Int]
-    public let upsellIDs: [Int]
-    public let crossSellIDs: [Int]
-    public let parentID: Int
+    public let relatedIDs: [Int64]
+    public let upsellIDs: [Int64]
+    public let crossSellIDs: [Int64]
+    public let parentID: Int64
 
     public let purchaseNote: String?
     public let categories: [ProductCategory]
@@ -76,8 +76,8 @@ public struct Product: Codable {
 
     public let attributes: [ProductAttribute]
     public let defaultAttributes: [ProductDefaultAttribute]
-    public let variations: [Int]
-    public let groupedProducts: [Int]
+    public let variations: [Int64]
+    public let groupedProducts: [Int64]
 
     public let menuOrder: Int
 
@@ -101,8 +101,8 @@ public struct Product: Codable {
 
     /// Product struct initializer.
     ///
-    public init(siteID: Int,
-                productID: Int,
+    public init(siteID: Int64,
+                productID: Int64,
                 name: String,
                 slug: String,
                 permalink: String,
@@ -143,23 +143,23 @@ public struct Product: Codable {
                 shippingRequired: Bool,
                 shippingTaxable: Bool,
                 shippingClass: String?,
-                shippingClassID: Int,
+                shippingClassID: Int64,
                 productShippingClass: ProductShippingClass?,
                 reviewsAllowed: Bool,
                 averageRating: String,
                 ratingCount: Int,
-                relatedIDs: [Int],
-                upsellIDs: [Int],
-                crossSellIDs: [Int],
-                parentID: Int,
+                relatedIDs: [Int64],
+                upsellIDs: [Int64],
+                crossSellIDs: [Int64],
+                parentID: Int64,
                 purchaseNote: String?,
                 categories: [ProductCategory],
                 tags: [ProductTag],
                 images: [ProductImage],
                 attributes: [ProductAttribute],
                 defaultAttributes: [ProductDefaultAttribute],
-                variations: [Int],
-                groupedProducts: [Int],
+                variations: [Int64],
+                groupedProducts: [Int64],
                 menuOrder: Int) {
         self.siteID = siteID
         self.productID = productID
@@ -226,13 +226,13 @@ public struct Product: Codable {
     /// The public initializer for Product.
     ///
     public init(from decoder: Decoder) throws {
-        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw ProductDecodingError.missingSiteID
         }
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let productID = try container.decode(Int.self, forKey: .productID)
+        let productID = try container.decode(Int64.self, forKey: .productID)
         let name = try container.decode(String.self, forKey: .name)
         let slug = try container.decode(String.self, forKey: .slug)
         let permalink = try container.decode(String.self, forKey: .permalink)
@@ -313,16 +313,16 @@ public struct Product: Codable {
         let shippingRequired = try container.decode(Bool.self, forKey: .shippingRequired)
         let shippingTaxable = try container.decode(Bool.self, forKey: .shippingTaxable)
         let shippingClass = try container.decodeIfPresent(String.self, forKey: .shippingClass)
-        let shippingClassID = try container.decode(Int.self, forKey: .shippingClassID)
+        let shippingClassID = try container.decode(Int64.self, forKey: .shippingClassID)
 
         let reviewsAllowed = try container.decode(Bool.self, forKey: .reviewsAllowed)
         let averageRating = try container.decode(String.self, forKey: .averageRating)
         let ratingCount = try container.decode(Int.self, forKey: .ratingCount)
 
-        let relatedIDs = try container.decode([Int].self, forKey: .relatedIDs)
-        let upsellIDs = try container.decode([Int].self, forKey: .upsellIDs)
-        let crossSellIDs = try container.decode([Int].self, forKey: .crossSellIDs)
-        let parentID = try container.decode(Int.self, forKey: .parentID)
+        let relatedIDs = try container.decode([Int64].self, forKey: .relatedIDs)
+        let upsellIDs = try container.decode([Int64].self, forKey: .upsellIDs)
+        let crossSellIDs = try container.decode([Int64].self, forKey: .crossSellIDs)
+        let parentID = try container.decode(Int64.self, forKey: .parentID)
 
         let purchaseNote = try container.decodeIfPresent(String.self, forKey: .purchaseNote)
         let categories = try container.decode([ProductCategory].self, forKey: .categories)
@@ -331,8 +331,8 @@ public struct Product: Codable {
 
         let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
         let defaultAttributes = try container.decode([ProductDefaultAttribute].self, forKey: .defaultAttributes)
-        let variations = try container.decode([Int].self, forKey: .variations)
-        let groupedProducts = try container.decode([Int].self, forKey: .groupedProducts)
+        let variations = try container.decode([Int64].self, forKey: .variations)
+        let groupedProducts = try container.decode([Int64].self, forKey: .groupedProducts)
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 
@@ -408,6 +408,14 @@ public struct Product: Codable {
         try container.encode(weight, forKey: .weight)
         try container.encode(dimensions, forKey: .dimensions)
         try container.encode(shippingClass, forKey: .shippingClass)
+
+        // Inventory Settings.
+        try container.encode(sku, forKey: .sku)
+        try container.encode(manageStock, forKey: .manageStock)
+        try container.encode(soldIndividually, forKey: .soldIndividually)
+        try container.encode(stockQuantity, forKey: .stockQuantity)
+        try container.encode(backordersKey, forKey: .backordersKey)
+        try container.encode(stockStatusKey, forKey: .stockStatusKey)
     }
 }
 

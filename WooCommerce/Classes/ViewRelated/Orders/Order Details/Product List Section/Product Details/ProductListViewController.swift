@@ -116,13 +116,13 @@ private extension ProductListViewController {
         return items[indexPath.row]
     }
 
-    func lookUpProduct(by productID: Int) -> Product? {
+    func lookUpProduct(by productID: Int64) -> Product? {
         return products?.filter({ $0.productID == productID }).first
     }
 
     /// Displays the product detail screen for the provided ProductID
     ///
-    func productWasPressed(for productID: Int) {
+    func productWasPressed(for productID: Int64) {
         let loaderViewController = ProductLoaderViewController(productID: productID,
                                                                siteID: viewModel.order.siteID,
                                                                currency: viewModel.order.currency)

@@ -9,7 +9,7 @@ struct ProductReviewMapper: Mapper {
     ///
     /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Product Endpoints.
     ///
-    let siteID: Int
+    let siteID: Int64
 
 
     /// (Attempts) to convert a dictionary into ProductReview.

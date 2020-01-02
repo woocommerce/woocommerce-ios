@@ -4,7 +4,7 @@ import Foundation
 /// Represents a Shipping Line Entity.
 ///
 public struct ShippingLine: Decodable {
-    public let shippingID: Int
+    public let shippingID: Int64
     public let methodTitle: String
     public let methodID: String
     public let total: String
@@ -12,7 +12,7 @@ public struct ShippingLine: Decodable {
 
     /// Shipping Method struct initializer.
     ///
-    public init(shippingID: Int,
+    public init(shippingID: Int64,
                 methodTitle: String,
                 methodID: String,
                 total: String,
@@ -31,7 +31,7 @@ public struct ShippingLine: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let shippingID = try container.decode(Int.self, forKey: .shippingID)
+        let shippingID = try container.decode(Int64.self, forKey: .shippingID)
         let methodTitle = try container.decode(String.self, forKey: .methodTitle)
         let methodID = try container.decode(String.self, forKey: .methodID)
         let total = try container.decode(String.self, forKey: .total)

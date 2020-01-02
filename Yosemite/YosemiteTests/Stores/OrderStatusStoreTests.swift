@@ -28,7 +28,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Dummy Site ID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     // MARK: - Overridden Methods
 

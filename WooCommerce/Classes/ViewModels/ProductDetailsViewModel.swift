@@ -51,7 +51,7 @@ final class ProductDetailsViewModel {
 
     /// Product ID
     ///
-    var productID: Int {
+    var productID: Int64 {
         return product.productID
     }
 
@@ -316,7 +316,7 @@ extension ProductDetailsViewModel {
     func configurePermalink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View product on store",
                                                  comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
-        cell.bodyLabel.applyActionableStyle()
+        cell.applyActionableStyle()
         cell.accessoryImage = .externalImage
     }
 
@@ -325,7 +325,7 @@ extension ProductDetailsViewModel {
     func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View affiliate product",
                                                  comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
-        cell.bodyLabel.applyActionableStyle()
+        cell.applyActionableStyle()
         cell.accessoryImage = .externalImage
     }
 
@@ -719,8 +719,8 @@ extension ProductDetailsViewModel {
             WebviewHelper.launch(product.externalURL, with: sender)
         case .productVariants:
             ServiceLocator.analytics.track(.productDetailsProductVariantsTapped)
-            let variationsViewController = ProductVariationsViewController(siteID: Int64(product.siteID),
-                                                                           productID: Int64(product.productID))
+            let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
+                                                                           productID: product.productID)
             sender.navigationController?.pushViewController(variationsViewController, animated: true)
         default:
             break

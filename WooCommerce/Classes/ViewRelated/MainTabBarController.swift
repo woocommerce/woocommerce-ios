@@ -306,8 +306,8 @@ extension MainTabBarController {
 
     /// Syncs the notification given the ID, and handles the notification based on its notification kind.
     ///
-    static func presentNotificationDetails(for noteID: Int) {
-        let action = NotificationAction.synchronizeNotification(noteId: Int64(noteID)) { note, error in
+    static func presentNotificationDetails(for noteID: Int64) {
+        let action = NotificationAction.synchronizeNotification(noteID: noteID) { note, error in
             guard let note = note else {
                 return
             }
@@ -330,7 +330,7 @@ extension MainTabBarController {
                 guard let reviewsViewController: ReviewsViewController = childViewController() else {
                     return
                 }
-                reviewsViewController.presentDetails(for: Int(note.noteId))
+                reviewsViewController.presentDetails(for: note.noteID)
             }
         default:
             break

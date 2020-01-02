@@ -17,8 +17,8 @@ public final class RefundsRemote: Remote {
     ///     - pageSize: Number of Refunds to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllRefunds(for siteID: Int,
-                               by orderID: Int,
+    public func loadAllRefunds(for siteID: Int64,
+                               by orderID: Int64,
                                context: String = Default.context,
                                pageNumber: Int = Default.pageNumber,
                                pageSize: Int = Default.pageSize,
@@ -46,7 +46,7 @@ public final class RefundsRemote: Remote {
     ///     - refundIDs: The array of refund IDs that are requested.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadRefunds(for siteID: Int, by orderID: Int, with refundIDs: [Int], completion: @escaping ([Refund]?, Error?) -> Void) {
+    public func loadRefunds(for siteID: Int64, by orderID: Int64, with refundIDs: [Int64], completion: @escaping ([Refund]?, Error?) -> Void) {
         let stringOfRefundIDs = refundIDs.sortedUniqueIntToString()
         let parameters = [ ParameterKey.include: stringOfRefundIDs ]
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"
@@ -64,9 +64,9 @@ public final class RefundsRemote: Remote {
     ///     - refundID: Unique identifier for the refund we're searching for.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadRefund(siteID: Int,
-                           orderID: Int,
-                           refundID: Int,
+    public func loadRefund(siteID: Int64,
+                           orderID: Int64,
+                           refundID: Int64,
                            completion: @escaping (Refund?, Error?) -> Void) {
         let path = Path.orders + "/" + String(orderID) + "/" + Path.refunds + "/" + String(refundID)
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
@@ -83,8 +83,8 @@ public final class RefundsRemote: Remote {
     ///     - refund: The Refund model used to create the custom entity for the request.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func createRefund(for siteID: Int,
-                             by orderID: Int,
+    public func createRefund(for siteID: Int64,
+                             by orderID: Int64,
                              refund: Refund,
                              completion: @escaping (Refund?, Error?) -> Void) {
         let path = "\(Path.orders)/" + String(orderID) + "/" + "\(Path.refunds)"

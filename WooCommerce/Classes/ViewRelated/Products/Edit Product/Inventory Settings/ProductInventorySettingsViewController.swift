@@ -22,7 +22,17 @@ final class ProductInventorySettingsViewController: UIViewController {
     ///
     private var sections: [Section] = []
 
-    init(product: Product) {
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        return keyboardFrameObserver
+    }()
+
+    typealias Completion = (_ data: ProductInventoryEditableData) -> Void
+    private let onCompletion: Completion
+
+    init(product: Product, completion: @escaping Completion) {
+        self.onCompletion = completion
+
         self.sku = product.sku
         self.manageStockEnabled = product.manageStock
         self.soldIndividually = product.soldIndividually
@@ -41,10 +51,27 @@ final class ProductInventorySettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        startListeningToNotifications()
         configureNavigationBar()
         configureMainView()
         configureTableView()
         reloadSections()
+    }
+}
+
+// MARK: - Keyboard management
+//
+extension ProductInventorySettingsViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
+    }
+}
+
+private extension ProductInventorySettingsViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }
 
@@ -104,7 +131,13 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     @objc func completeUpdating() {
-        // TODO-1424: update inventory settings
+        let data = ProductInventoryEditableData(sku: sku,
+                                                manageStock: manageStockEnabled,
+                                                soldIndividually: soldIndividually,
+                                                stockQuantity: stockQuantity,
+                                                backordersSetting: backordersSetting,
+                                                stockStatus: stockStatus)
+        onCompletion(data)
     }
 }
 

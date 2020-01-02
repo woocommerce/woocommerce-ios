@@ -8,7 +8,7 @@ class SiteSettingsMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 242424
+    private let dummySiteID: Int64 = 242424
 
     /// Verifies the SiteSetting fields are parsed correctly.
     ///

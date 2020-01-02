@@ -12,7 +12,7 @@ public enum NotificationAction: Action {
     case registerDevice(device: APNSDevice,
                         applicationId: String,
                         applicationVersion: String,
-                        defaultStoreID: Int,
+                        defaultStoreID: Int64,
                         onCompletion: (DotcomDevice?, Error?) -> Void)
 
     /// Unregisters a device for Push Notifications Delivery.
@@ -25,7 +25,7 @@ public enum NotificationAction: Action {
 
     /// Synchronizes a specified Notification.
     ///
-    case synchronizeNotification(noteId: Int64, onCompletion: (Note?, Error?) -> Void)
+    case synchronizeNotification(noteID: Int64, onCompletion: (Note?, Error?) -> Void)
 
     /// Updates the WordPress.com Last Seen field.
     ///
@@ -33,10 +33,10 @@ public enum NotificationAction: Action {
 
     /// Updates a given Notification's read flag.
     ///
-    case updateReadStatus(noteId: Int64, read: Bool, onCompletion: (Error?) -> Void)
+    case updateReadStatus(noteID: Int64, read: Bool, onCompletion: (Error?) -> Void)
 
     /// Updates, in batch, the Notification's read flag.
     ///
-    case updateMultipleReadStatus(noteIds: [Int64], read: Bool, onCompletion: (Error?) -> Void)
-    case updateLocalDeletedStatus(noteId: Int64, deleteInProgress: Bool, onCompletion: (Error?) -> Void)
+    case updateMultipleReadStatus(noteIDs: [Int64], read: Bool, onCompletion: (Error?) -> Void)
+    case updateLocalDeletedStatus(noteID: Int64, deleteInProgress: Bool, onCompletion: (Error?) -> Void)
 }

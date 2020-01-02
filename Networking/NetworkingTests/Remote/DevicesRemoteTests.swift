@@ -104,6 +104,6 @@ private enum Parameters {
                                         identifierForVendor: "1234")
     static let applicationId = "9"
     static let applicationVersion = "99"
-    static let defaultStoreID = 1234
+    static let defaultStoreID: Int64 = 1234
     static let dotcomDeviceID = "1234"
 }

@@ -29,7 +29,7 @@ final public class AvailabilityStore: Store {
 private extension AvailabilityStore {
     /// Checks if Stats v4 is available for the site.
     ///
-    func checkStatsV4Availability(siteID: Int,
+    func checkStatsV4Availability(siteID: Int64,
                                   onCompletion: @escaping (_ isStatsV4Available: Bool) -> Void) {
         let date = String(describing: Date().timeIntervalSinceReferenceDate)
         let remote = OrderStatsRemoteV4(network: network)

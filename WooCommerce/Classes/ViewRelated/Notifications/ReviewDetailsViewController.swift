@@ -163,7 +163,7 @@ private extension ReviewDetailsViewController {
 
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
-    func synchronizeReview(reviewID: Int, onCompletion: @escaping () -> Void) {
+    func synchronizeReview(reviewID: Int64, onCompletion: @escaping () -> Void) {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
@@ -419,7 +419,7 @@ private extension ReviewDetailsViewController {
 // MARK: - Moderation actions
 //
 private extension ReviewDetailsViewController {
-    func moderateReview(siteID: Int, reviewID: Int, doneStatus: ProductReviewStatus, undoStatus: ProductReviewStatus) {
+    func moderateReview(siteID: Int64, reviewID: Int64, doneStatus: ProductReviewStatus, undoStatus: ProductReviewStatus) {
         guard let undo = moderateReviewAction(siteID: siteID, reviewID: reviewID, status: undoStatus, onCompletion: { error in
             guard let error = error else {
                 ServiceLocator.analytics.track(.notificationReviewActionSuccess)
@@ -456,7 +456,7 @@ private extension ReviewDetailsViewController {
 
     /// Returns an comment moderation action that will result in the specified comment being updated accordingly.
     ///
-    func moderateReviewAction(siteID: Int, reviewID: Int, status: ProductReviewStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
+    func moderateReviewAction(siteID: Int64, reviewID: Int64, status: ProductReviewStatus, onCompletion: @escaping (Error?) -> Void) -> [Action]? {
 
         switch status {
         case .approved:
@@ -501,9 +501,9 @@ private extension ReviewDetailsViewController {
 
         ServiceLocator.analytics.track(.reviewMarkRead,
                                        withProperties: ["remote_review_id": productReview.reviewID,
-                                                        "remote_note_id": note.noteId])
+                                                        "remote_note_id": note.noteID])
 
-        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
+        let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
                 ServiceLocator.analytics.track(.reviewMarkReadFailed,

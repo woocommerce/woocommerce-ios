@@ -76,7 +76,7 @@ public extension StatsStoreV4 {
 
     /// Retrieves the order stats associated with the provided Site ID (if any!).
     ///
-    func retrieveStats(siteID: Int,
+    func retrieveStats(siteID: Int64,
                        timeRange: StatsTimeRangeV4,
                        earliestDateToInclude: Date,
                        latestDateToInclude: Date,
@@ -104,7 +104,7 @@ public extension StatsStoreV4 {
 
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).
     ///
-    func retrieveSiteVisitStats(siteID: Int,
+    func retrieveSiteVisitStats(siteID: Int64,
                                 siteTimezone: TimeZone,
                                 timeRange: StatsTimeRangeV4,
                                 latestDateToInclude: Date,
@@ -130,7 +130,7 @@ public extension StatsStoreV4 {
 
     /// Retrieves the top earner stats associated with the provided Site ID (if any!).
     ///
-    func retrieveTopEarnerStats(siteID: Int,
+    func retrieveTopEarnerStats(siteID: Int64,
                                 timeRange: StatsTimeRangeV4,
                                 latestDateToInclude: Date,
                                 onCompletion: @escaping (Error?) -> Void) {

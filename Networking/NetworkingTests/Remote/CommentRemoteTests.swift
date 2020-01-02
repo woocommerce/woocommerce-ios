@@ -12,11 +12,11 @@ class CommentRemoteTests: XCTestCase {
 
     /// Dummy Site ID
     ///
-    let sampleSiteID = 1234
+    let sampleSiteID: Int64 = 1234
 
     /// Dummy Order ID
     ///
-    let sampleCommentID = 2
+    let sampleCommentID: Int64 = 2
 
     /// Repeat always!
     ///

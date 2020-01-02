@@ -61,14 +61,14 @@ private extension ProductShippingClassStore {
     func retrieveProductShippingClass(siteID: Int64, remoteID: Int64, onCompletion: @escaping (ProductShippingClass?, Error?) -> Void) {
         let remote = ProductShippingClassRemote(network: network)
 
-        remote.loadOne(for: Int64(siteID), remoteID: remoteID) { [weak self] (model, error) in
+        remote.loadOne(for: siteID, remoteID: remoteID) { [weak self] (model, error) in
             guard let model = model else {
                 onCompletion(nil, error)
                 return
             }
 
             self?.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: [model],
-                                                                     siteID: Int64(siteID)) {
+                                                                     siteID: siteID) {
                                                         onCompletion(model, nil)
             }
         }

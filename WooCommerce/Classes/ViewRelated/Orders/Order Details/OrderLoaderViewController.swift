@@ -18,11 +18,11 @@ class OrderLoaderViewController: UIViewController {
 
     /// Target OrderID
     ///
-    private let orderID: Int
+    private let orderID: Int64
 
     /// Target Order's SiteID
     ///
-    private let siteID: Int
+    private let siteID: Int64
 
     /// UI Active State
     ///
@@ -50,7 +50,7 @@ class OrderLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(note: Note, orderID: Int, siteID: Int) {
+    init(note: Note, orderID: Int64, siteID: Int64) {
         self.note = note
         self.orderID = orderID
         self.siteID = siteID
@@ -248,7 +248,7 @@ private extension OrderLoaderViewController {
             return
         }
 
-        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
+        let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
             }

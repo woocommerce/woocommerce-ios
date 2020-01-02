@@ -298,7 +298,8 @@ private extension PaginatedListSelectorViewController {
     ///
     func displayNoResultsOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = nil
+        overlayView.messageImage = viewProperties.noResultsPlaceholderImage
+        overlayView.messageImageTintColor = viewProperties.noResultsPlaceholderImageTintColor
         overlayView.messageText = viewProperties.noResultsPlaceholderText
         overlayView.actionVisible = false
         overlayView.attach(to: view)

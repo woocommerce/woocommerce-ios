@@ -150,6 +150,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.shippingImage)
     }
 
+    func testShippingClassListSelectorEmptyImageIsNotNil() {
+        XCTAssertNotNil(UIImage.shippingClassListSelectorEmptyImage)
+    }
+
     func testSpamImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.spamImage)
     }

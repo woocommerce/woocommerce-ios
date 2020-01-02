@@ -271,6 +271,12 @@ extension UIImage {
         return Gridicon.iconOfType(.shipping, withSize: CGSize(width: 24, height: 24))
     }
 
+    /// Shipping class list selector empty icon
+    ///
+    static var shippingClassListSelectorEmptyImage: UIImage {
+        return Gridicon.iconOfType(.shipping, withSize: CGSize(width: 80, height: 80))
+    }
+
     /// Spam Icon
     ///
     static var spamImage: UIImage {

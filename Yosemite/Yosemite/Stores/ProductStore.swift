@@ -40,6 +40,8 @@ public class ProductStore: Store {
             requestMissingProducts(for: order, onCompletion: onCompletion)
         case .updateProduct(let product, let onCompletion):
             updateProduct(product: product, onCompletion: onCompletion)
+        case .validateProductSKU(let sku, let siteID, let onCompletion):
+            validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -189,6 +191,17 @@ private extension ProductStore {
                 onCompletion(product, nil)
             }
         }
+    }
+
+    /// Validates the Product SKU against other Products in storage.
+    ///
+    func validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
+        guard let products = storageManager.viewStorage.loadProducts(siteID: siteID) else {
+            onCompletion(true)
+            return
+        }
+        let anyProductHasTheSameSKU = products.compactMap({ $0.sku }).contains(sku)
+        onCompletion(anyProductHasTheSameSKU == false)
     }
 }
 

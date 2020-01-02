@@ -51,7 +51,7 @@ final class ProductDetailsViewModel {
 
     /// Product ID
     ///
-    var productID: Int {
+    var productID: Int64 {
         return product.productID
     }
 
@@ -719,8 +719,8 @@ extension ProductDetailsViewModel {
             WebviewHelper.launch(product.externalURL, with: sender)
         case .productVariants:
             ServiceLocator.analytics.track(.productDetailsProductVariantsTapped)
-            let variationsViewController = ProductVariationsViewController(siteID: Int64(product.siteID),
-                                                                           productID: Int64(product.productID))
+            let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
+                                                                           productID: product.productID)
             sender.navigationController?.pushViewController(variationsViewController, animated: true)
         default:
             break

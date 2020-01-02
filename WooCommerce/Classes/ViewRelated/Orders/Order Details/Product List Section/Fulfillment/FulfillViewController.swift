@@ -220,7 +220,7 @@ private extension FulfillViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
+    func updateOrderAction(siteID: Int64, orderID: Int64, statusKey: String) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
@@ -247,7 +247,7 @@ private extension FulfillViewController {
 
     /// Displays the `Unable to Fulfill Order` Notice.
     ///
-    func displayErrorNotice(orderID: Int) {
+    func displayErrorNotice(orderID: Int64) {
         let title = NSLocalizedString(
             "Unable to fulfill order #\(orderID)",
             comment: "Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}"
@@ -262,7 +262,7 @@ private extension FulfillViewController {
 
     /// Displays the product detail screen for the provided ProductID
     ///
-    func productWasPressed(for productID: Int) {
+    func productWasPressed(for productID: Int64) {
         let loaderViewController = ProductLoaderViewController(productID: productID,
                                                                siteID: order.siteID,
                                                                currency: order.currency)
@@ -538,7 +538,7 @@ private extension FulfillViewController {
 
     /// Displays the `Unable to delete tracking` Notice.
     ///
-    func displayDeleteErrorNotice(orderID: Int, tracking: ShipmentTracking) {
+    func displayDeleteErrorNotice(orderID: Int64, tracking: ShipmentTracking) {
         let title = NSLocalizedString(
             "Unable to delete tracking for order #\(orderID)",
             comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
@@ -600,7 +600,7 @@ private extension FulfillViewController {
         return orderTracking[orderIndex]
     }
 
-    func lookUpProduct(by productID: Int) -> Product? {
+    func lookUpProduct(by productID: Int64) -> Product? {
         return products?.filter({ $0.productID == productID }).first
     }
 }

@@ -28,7 +28,7 @@ final class Product_UpdaterTestCases: XCTestCase {
                                                     descriptionHTML: "Arriving in 2 days!",
                                                     name: "2 Days",
                                                     shippingClassID: 2022,
-                                                    siteID: Int64(product.siteID),
+                                                    siteID: product.siteID,
                                                     slug: "2-days")
         let updatedProduct = product.shippingSettingsUpdated(weight: newWeight, dimensions: newDimensions, shippingClass: newShippingClass)
         XCTAssertEqual(updatedProduct.fullDescription, product.fullDescription)
@@ -36,7 +36,7 @@ final class Product_UpdaterTestCases: XCTestCase {
         XCTAssertEqual(updatedProduct.weight, newWeight)
         XCTAssertEqual(updatedProduct.dimensions, newDimensions)
         XCTAssertEqual(updatedProduct.shippingClass, newShippingClass.slug)
-        XCTAssertEqual(Int64(updatedProduct.shippingClassID), newShippingClass.shippingClassID)
+        XCTAssertEqual(updatedProduct.shippingClassID, newShippingClass.shippingClassID)
         XCTAssertEqual(updatedProduct.productShippingClass, newShippingClass)
     }
 

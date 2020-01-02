@@ -5,13 +5,13 @@ struct NewShipmentTrackingMapper: Mapper {
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't
     /// really return the siteID for the shipment tracking endpoint
     ///
-    let siteID: Int
+    let siteID: Int64
 
     /// Order Identifier associated to the shipment trackings that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't
     /// really return the orderID for the shipment tracking endpoint
     ///
-    let orderID: Int
+    let orderID: Int64
 
     /// (Attempts) to convert a dictionary into an ShipmentTracking entity.
     ///

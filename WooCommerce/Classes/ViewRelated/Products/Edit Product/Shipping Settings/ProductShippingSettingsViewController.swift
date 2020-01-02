@@ -101,7 +101,7 @@ private extension ProductShippingSettingsViewController {
         }
 
         let action = ProductShippingClassAction
-            .retrieveProductShippingClass(siteID: Int64(product.siteID),
+            .retrieveProductShippingClass(siteID: product.siteID,
                                           remoteID: shippingClass.shippingClassID) { [weak self] (shippingClass, error) in
             self?.shippingClass = shippingClass
             self?.tableView.reloadData()

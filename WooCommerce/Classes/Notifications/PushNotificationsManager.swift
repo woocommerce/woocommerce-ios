@@ -122,7 +122,7 @@ extension PushNotificationsManager {
     ///     - tokenData: APNS's Token Data
     ///     - defaultStoreID: Default WooCommerce Store ID
     ///
-    func registerDeviceToken(with tokenData: Data, defaultStoreID: Int) {
+    func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64) {
         let newToken = tokenData.hexString
 
         if let _ = deviceToken, deviceToken != newToken {
@@ -261,12 +261,12 @@ private extension PushNotificationsManager {
     /// - Returns: True when handled. False otherwise
     ///
     func handleInactiveNotification(_ userInfo: [AnyHashable: Any], completionHandler: (UIBackgroundFetchResult) -> Void) -> Bool {
-        guard applicationState == .inactive, let notificationId = userInfo.integer(forKey: APNSKey.identifier) else {
+        guard applicationState == .inactive, let notificationID = userInfo.integer(forKey: APNSKey.identifier) else {
             return false
         }
 
         DDLogVerbose("📱 Handling Notification in Inactive State")
-        configuration.application.presentNotificationDetails(for: notificationId)
+        configuration.application.presentNotificationDetails(for: Int64(notificationID))
         completionHandler(.newData)
 
         return true
@@ -299,7 +299,7 @@ private extension PushNotificationsManager {
 
     /// Registers an APNS DeviceToken in the WordPress.com backend.
     ///
-    func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
+    func registerDotcomDevice(with deviceToken: String, defaultStoreID: Int64, onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let device = APNSDevice(deviceToken: deviceToken)
         let action = NotificationAction.registerDevice(device: device,
                                                        applicationId: WooConstants.pushApplicationID,
@@ -355,8 +355,8 @@ private extension PushNotificationsManager {
     func trackNotification(with userInfo: [AnyHashable: Any]) {
         var properties = [String: String]()
 
-        if let noteId = userInfo.string(forKey: APNSKey.identifier) {
-            properties[AnalyticKey.identifier] = noteId
+        if let noteID = userInfo.string(forKey: APNSKey.identifier) {
+            properties[AnalyticKey.identifier] = noteID
         }
 
         if let type = userInfo.string(forKey: APNSKey.type) {

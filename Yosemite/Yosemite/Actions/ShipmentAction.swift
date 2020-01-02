@@ -8,16 +8,16 @@ public enum ShipmentAction: Action {
 
     /// Synchronizes all the shipment tracking data associated with the provided `siteID` and `orderID`
     ///
-    case synchronizeShipmentTrackingData(siteID: Int, orderID: Int, onCompletion: (Error?) -> Void)
+    case synchronizeShipmentTrackingData(siteID: Int64, orderID: Int64, onCompletion: (Error?) -> Void)
 
     /// Synchronizes all the shipment tracking providers associated with the provided `siteID` and `orderID`
     ///
-    case synchronizeShipmentTrackingProviders(siteID: Int, orderID: Int, onCompletion: (Error?) -> Void)
+    case synchronizeShipmentTrackingProviders(siteID: Int64, orderID: Int64, onCompletion: (Error?) -> Void)
 
     /// Adds a shipment tracking with `trackingID` associated with the provided `siteID` and `orderID`
     ///
-    case addTracking(siteID: Int,
-        orderID: Int,
+    case addTracking(siteID: Int64,
+        orderID: Int64,
         providerGroupName: String,
         providerName: String,
         dateShipped: String,
@@ -27,8 +27,8 @@ public enum ShipmentAction: Action {
     /// Adds a custom shipment tracking with `trackingProvider`, `trackingNumber`
     /// and `trackingURL` associated with the provided `siteID` and `orderID`
     ///
-    case addCustomTracking(siteID: Int,
-        orderID: Int,
+    case addCustomTracking(siteID: Int64,
+        orderID: Int64,
         trackingProvider: String,
         trackingNumber: String,
         trackingURL: String,
@@ -37,5 +37,5 @@ public enum ShipmentAction: Action {
 
     /// Removes a shipment tracking with `trackingID` associated with the provided `siteID` and `orderID`
     ///
-    case deleteTracking(siteID: Int, orderID: Int, trackingID: String, onCompletion: (Error?) -> Void)
+    case deleteTracking(siteID: Int64, orderID: Int64, trackingID: String, onCompletion: (Error?) -> Void)
 }

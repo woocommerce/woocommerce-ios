@@ -88,8 +88,8 @@ final class ServiceLocator {
     ///
     static var shippingSettingsService: ShippingSettingsService {
         guard let shippingSettingsService = _shippingSettingsService else {
-            let siteID = stores.sessionManager.defaultStoreID ?? Int.min
-            let service = StorageShippingSettingsService(siteID: Int64(siteID),
+            let siteID = stores.sessionManager.defaultStoreID ?? Int64.min
+            let service = StorageShippingSettingsService(siteID: siteID,
                                                          storageManager: storageManager)
             _shippingSettingsService = service
             return service

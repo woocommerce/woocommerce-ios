@@ -182,7 +182,7 @@ extension Product: ProductUpdater {
                        shippingRequired: shippingRequired,
                        shippingTaxable: shippingTaxable,
                        shippingClass: shippingClass?.slug,
-                       shippingClassID: shippingClass.flatMap({ Int($0.shippingClassID) }) ?? Int.min,
+                       shippingClassID: shippingClass?.shippingClassID ?? 0,
                        productShippingClass: shippingClass,
                        reviewsAllowed: reviewsAllowed,
                        averageRating: averageRating,

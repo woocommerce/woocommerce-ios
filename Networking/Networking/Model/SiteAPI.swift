@@ -7,7 +7,7 @@ public struct SiteAPI: Decodable {
 
     /// Site Identifier.
     ///
-    public let siteID: Int
+    public let siteID: Int64
 
     /// Available API namespaces
     ///
@@ -30,7 +30,7 @@ public struct SiteAPI: Decodable {
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
-        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw SiteAPIError.missingSiteID
         }
 
@@ -42,7 +42,7 @@ public struct SiteAPI: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int, namespaces: [String]) {
+    public init(siteID: Int64, namespaces: [String]) {
         self.siteID = siteID
         self.namespaces = namespaces
     }

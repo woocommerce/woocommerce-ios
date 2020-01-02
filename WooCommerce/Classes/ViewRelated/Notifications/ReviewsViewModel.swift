@@ -69,7 +69,7 @@ final class ReviewsViewModel {
         markAsRead(notes: unreadNotifications, onCompletion: onCompletion)
     }
 
-    func loadReview(for noteId: Int, onCompletion: @escaping () -> Void) {
+    func loadReview(for noteID: Int64, onCompletion: @escaping () -> Void) {
         synchronizeReviews() {
             onCompletion()
         }
@@ -187,7 +187,7 @@ private extension ReviewsViewModel {
             return
         }
 
-        let action = NotificationAction.updateReadStatus(noteId: note.noteId, read: true) { (error) in
+        let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { (error) in
             if let error = error {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
             }
@@ -198,8 +198,8 @@ private extension ReviewsViewModel {
     /// Marks the specified collection of Notifications as Read.
     ///
     func markAsRead(notes: [Note], onCompletion: @escaping (Error?) -> Void) {
-        let identifiers = notes.map { $0.noteId }
-        let action = NotificationAction.updateMultipleReadStatus(noteIds: identifiers, read: true, onCompletion: onCompletion)
+        let identifiers = notes.map { $0.noteID }
+        let action = NotificationAction.updateMultipleReadStatus(noteIDs: identifiers, read: true, onCompletion: onCompletion)
 
         ServiceLocator.stores.dispatch(action)
     }

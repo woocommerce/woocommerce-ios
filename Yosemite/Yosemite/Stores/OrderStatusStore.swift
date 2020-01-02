@@ -43,7 +43,7 @@ private extension OrderStatusStore {
 
     /// Retrieves the order statuses associated with the provided Site ID (if any!).
     ///
-    func retrieveOrderStatuses(siteID: Int, onCompletion: @escaping ([OrderStatus]?, Error?) -> Void) {
+    func retrieveOrderStatuses(siteID: Int64, onCompletion: @escaping ([OrderStatus]?, Error?) -> Void) {
         let remote = ReportRemote(network: network)
         remote.loadOrderStatuses(for: siteID) { [weak self] (orderStatuses, error) in
             guard let orderStatuses = orderStatuses else {
@@ -77,7 +77,7 @@ extension OrderStatusStore {
     /// Updates (OR Inserts) the specified ReadOnly Order Status Entities
     /// *in a background thread*. onCompletion will be called on the main thread!
     ///
-    func upsertStatusesInBackground(siteID: Int, readOnlyOrderStatuses: [Networking.OrderStatus], onCompletion: @escaping () -> Void) {
+    func upsertStatusesInBackground(siteID: Int64, readOnlyOrderStatuses: [Networking.OrderStatus], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             for readOnlyItem in readOnlyOrderStatuses {

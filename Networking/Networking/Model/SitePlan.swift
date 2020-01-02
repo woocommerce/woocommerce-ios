@@ -7,7 +7,7 @@ public struct SitePlan: Decodable {
 
     /// WordPress.com Site Identifier.
     ///
-    public let siteID: Int
+    public let siteID: Int64
 
     /// Short name for the site's plan.
     ///
@@ -18,7 +18,7 @@ public struct SitePlan: Decodable {
     ///
     public init(from decoder: Decoder) throws {
         let sitePlanContainer = try decoder.container(keyedBy: PlanKeys.self)
-        let siteID = try sitePlanContainer.decode(Int.self, forKey: .siteID)
+        let siteID = try sitePlanContainer.decode(Int64.self, forKey: .siteID)
 
         let planContainer = try sitePlanContainer.nestedContainer(keyedBy: PlanKeys.self, forKey: .plan)
         let shortName = try planContainer.decode(String.self, forKey: .shortName)
@@ -29,7 +29,7 @@ public struct SitePlan: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int, shortName: String) {
+    public init(siteID: Int64, shortName: String) {
         self.siteID = siteID
         self.shortName = shortName
     }

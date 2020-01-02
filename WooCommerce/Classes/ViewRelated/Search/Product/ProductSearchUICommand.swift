@@ -10,9 +10,9 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let emptyStateText = NSLocalizedString("No products found", comment: "Search Products (Empty State)")
 
-    private let siteID: Int
+    private let siteID: Int64
 
-    init(siteID: Int) {
+    init(siteID: Int64) {
         self.siteID = siteID
     }
 
@@ -30,7 +30,7 @@ final class ProductSearchUICommand: SearchUICommand {
 
     /// Synchronizes the Products matching a given Keyword
     ///
-    func synchronizeModels(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+    func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
                                                   pageNumber: pageNumber,

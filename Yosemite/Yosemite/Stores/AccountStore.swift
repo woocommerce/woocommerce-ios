@@ -71,7 +71,7 @@ private extension AccountStore {
     /// Synchronizes the WordPress.com account settings associated with the Network's Auth Token.
     /// User ID is passed along because the API doesn't include it in the response.
     ///
-    func synchronizeAccountSettings(userID: Int, onCompletion: @escaping (AccountSettings?, Error?) -> Void) {
+    func synchronizeAccountSettings(userID: Int64, onCompletion: @escaping (AccountSettings?, Error?) -> Void) {
         let remote = AccountRemote(network: network)
 
         remote.loadAccountSettings(for: userID) { [weak self] (accountSettings, error) in
@@ -104,7 +104,7 @@ private extension AccountStore {
 
     /// Loads the site plan for the default site.
     ///
-    func synchronizeSitePlan(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeSitePlan(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
         let remote = AccountRemote(network: network)
         remote.loadSitePlan(for: siteID) { [weak self]  (siteplan, error) in
             guard let siteplan = siteplan else {
@@ -120,21 +120,21 @@ private extension AccountStore {
 
     /// Loads the Account associated with the specified userID (if any!).
     ///
-    func loadAccount(userID: Int, onCompletion: @escaping (Account?) -> Void) {
-        let account = storageManager.viewStorage.loadAccount(userId: userID)?.toReadOnly()
+    func loadAccount(userID: Int64, onCompletion: @escaping (Account?) -> Void) {
+        let account = storageManager.viewStorage.loadAccount(userID: userID)?.toReadOnly()
         onCompletion(account)
     }
 
     /// Loads the Site associated with the specified siteID (if any!)
     ///
-    func loadSite(siteID: Int, onCompletion: @escaping (Site?) -> Void) {
+    func loadSite(siteID: Int64, onCompletion: @escaping (Site?) -> Void) {
         let site = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly()
         onCompletion(site)
     }
 
     /// Submits the tracks opt-in / opt-out setting to be synced globally. 
     ///
-    func updateAccountSettings(userID: Int, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
+    func updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: @escaping (Error?) -> Void) {
         let remote = AccountRemote(network: network)
         remote.updateAccountSettings(for: userID, tracksOptOut: tracksOptOut) { accountSettings, error in
             guard let _ = accountSettings else {
@@ -158,7 +158,7 @@ extension AccountStore {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
-        let storageAccount = storage.loadAccount(userId: readOnlyAccount.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
+        let storageAccount = storage.loadAccount(userID: readOnlyAccount.userID) ?? storage.insertNewObject(ofType: Storage.Account.self)
 
         storageAccount.update(with: readOnlyAccount)
         storage.saveIfNeeded()
@@ -170,7 +170,7 @@ extension AccountStore {
         assert(Thread.isMainThread)
 
         let storage = storageManager.viewStorage
-        let storageAccount = storage.loadAccountSettings(userId: readOnlyAccountSettings.userID) ??
+        let storageAccount = storage.loadAccountSettings(userID: readOnlyAccountSettings.userID) ??
             storage.insertNewObject(ofType: Storage.AccountSettings.self)
 
         storageAccount.update(with: readOnlyAccountSettings)

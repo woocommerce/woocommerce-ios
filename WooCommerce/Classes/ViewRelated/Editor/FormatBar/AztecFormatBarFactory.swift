@@ -7,12 +7,13 @@ struct AztecFormatBarFactory {
     func formatBar(onAction: @escaping (_ formatBarItem: FormatBarItem, _ formatBar: FormatBar) -> Void) -> FormatBar {
         let toolbar = Aztec.FormatBar()
 
-        toolbar.tintColor = .primary
-        toolbar.highlightedTintColor = UIColor.primary.withAlphaComponent(0.5)
-        toolbar.selectedTintColor = .textSubtle
+        toolbar.tintColor = .neutral(.shade60)
+        toolbar.highlightedTintColor = UIColor.neutral(.shade60).withAlphaComponent(0.5)
+        toolbar.selectedTintColor = .primary
         toolbar.disabledTintColor = .textTertiary
         toolbar.dividerTintColor = .divider
         toolbar.overflowToggleIcon = Gridicon.iconOfType(.ellipsis)
+        toolbar.backgroundColor = .systemColor(.secondarySystemBackground)
 
         updateToolbar(toolbar)
 

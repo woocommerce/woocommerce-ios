@@ -12,11 +12,11 @@ final class OrdersRemoteTests: XCTestCase {
 
     /// Dummy Site ID
     ///
-    let sampleSiteID = 1234
+    let sampleSiteID: Int64 = 1234
 
     /// Dummy Order ID
     ///
-    let sampleOrderID = 1467
+    let sampleOrderID: Int64 = 1467
 
     /// Dummy author string
     ///

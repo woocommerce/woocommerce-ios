@@ -280,8 +280,8 @@ private extension PeriodDataViewController {
         xAxis.setLabelCount(2, force: true)
         xAxis.labelFont = StyleManager.chartLabelFont
         xAxis.labelTextColor = .textSubtle
-        xAxis.axisLineColor = .listSmallIcon
-        xAxis.gridColor = .listSmallIcon
+        xAxis.axisLineColor = .systemColor(.separator)
+        xAxis.gridColor = .systemColor(.separator)
         xAxis.drawLabelsEnabled = true
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
@@ -292,9 +292,9 @@ private extension PeriodDataViewController {
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
         yAxis.labelTextColor = .textSubtle
-        yAxis.axisLineColor = .listSmallIcon
-        yAxis.gridColor = .listSmallIcon
-        yAxis.zeroLineColor = .listSmallIcon
+        yAxis.axisLineColor = .systemColor(.separator)
+        yAxis.gridColor = .systemColor(.separator)
+        yAxis.zeroLineColor = .systemColor(.separator)
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
         yAxis.drawAxisLineEnabled = false

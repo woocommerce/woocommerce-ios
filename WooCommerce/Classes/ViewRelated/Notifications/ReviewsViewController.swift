@@ -128,14 +128,14 @@ final class ReviewsViewController: UIViewController {
         }
     }
 
-    func presentDetails(for noteId: Int) {
+    func presentDetails(for noteID: Int64) {
         syncingCoordinator.synchronizeFirstPage()
-        viewModel.loadReview(for: noteId) { [weak self] in
+        viewModel.loadReview(for: noteID) { [weak self] in
             guard let self = self else {
                 return
             }
 
-            self.viewModel.delegate.presentReviewDetails(for: noteId, in: self)
+            self.viewModel.delegate.presentReviewDetails(for: noteID, in: self)
         }
     }
 }

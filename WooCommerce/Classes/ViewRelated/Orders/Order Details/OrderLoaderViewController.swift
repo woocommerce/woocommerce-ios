@@ -14,11 +14,11 @@ class OrderLoaderViewController: UIViewController {
 
     /// Target OrderID
     ///
-    private let orderID: Int
+    private let orderID: Int64
 
     /// Target Order's SiteID
     ///
-    private let siteID: Int
+    private let siteID: Int64
 
     /// UI Active State
     ///
@@ -46,7 +46,7 @@ class OrderLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(orderID: Int, siteID: Int) {
+    init(orderID: Int64, siteID: Int64) {
         self.orderID = orderID
         self.siteID = siteID
 

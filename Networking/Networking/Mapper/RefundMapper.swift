@@ -9,12 +9,12 @@ struct RefundMapper: Mapper {
     ///
     /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Refund Endpoints.
     ///
-    let siteID: Int
+    let siteID: Int64
 
     /// Order Identifier associated with the refund that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the orderID is not returned in any of the Refund Endpoints.
     ///
-    let orderID: Int
+    let orderID: Int64
 
 
     /// (Attempts) to convert a dictionary into a single Refund.

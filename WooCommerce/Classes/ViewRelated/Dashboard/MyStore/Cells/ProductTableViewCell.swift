@@ -52,7 +52,7 @@ class ProductTableViewCell: UITableViewCell {
 // MARK: - Public Methods
 //
 extension ProductTableViewCell {
-    func configure(_ statsItem: TopEarnerStatsItem?) {
+    func configure(_ statsItem: TopEarnerStatsItem?, imageService: ImageService) {
         nameText = statsItem?.productName
         detailText = String.localizedStringWithFormat(
             NSLocalizedString("Total orders: %ld",
@@ -61,6 +61,10 @@ extension ProductTableViewCell {
         )
         priceText = statsItem?.formattedTotalString
 
-        productImage.setImage(with: statsItem?.imageUrl, placeholder: UIImage.productPlaceholderImage)
+        imageService.downloadAndCacheImageForImageView(productImage,
+                                                       with: statsItem?.imageUrl,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
     }
 }

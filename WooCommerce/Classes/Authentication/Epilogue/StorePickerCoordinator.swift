@@ -41,7 +41,7 @@ final class StorePickerCoordinator: Coordinator {
 //
 extension StorePickerCoordinator: StorePickerViewControllerDelegate {
 
-    func willSelectStore(with storeID: Int, onCompletion: @escaping SelectStoreClosure) {
+    func willSelectStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         guard selectedConfiguration == .switchingStores else {
             onCompletion()
             return
@@ -54,7 +54,7 @@ extension StorePickerCoordinator: StorePickerViewControllerDelegate {
         logOutOfCurrentStore(onCompletion: onCompletion)
     }
 
-    func didSelectStore(with storeID: Int) {
+    func didSelectStore(with storeID: Int64) {
         guard storeID != ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
@@ -141,7 +141,7 @@ private extension StorePickerCoordinator {
         }
     }
 
-    func finalizeStoreSelection(_ storeID: Int) {
+    func finalizeStoreSelection(_ storeID: Int64) {
         ServiceLocator.stores.updateDefaultStore(storeID: storeID)
 
         // We need to call refreshUserData() here because the user selected

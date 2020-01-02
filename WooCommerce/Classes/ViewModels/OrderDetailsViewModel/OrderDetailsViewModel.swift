@@ -87,11 +87,11 @@ final class OrderDetailsViewModel {
         return dataSource.lookUpOrderStatus(for: order)
     }
 
-    func lookUpProduct(by productID: Int) -> Product? {
+    func lookUpProduct(by productID: Int64) -> Product? {
         return dataSource.lookUpProduct(by: productID)
     }
 
-    func lookUpRefund(by refundID: Int) -> Refund? {
+    func lookUpRefund(by refundID: Int64) -> Refund? {
         return dataSource.lookUpRefund(by: refundID)
     }
 }

@@ -150,7 +150,7 @@ private extension TopPerformersViewController {
     func configureView() {
         view.backgroundColor = .listBackground
         topBorder.backgroundColor = .systemColor(.separator)
-        middleBorder.backgroundColor = .divider
+        middleBorder.backgroundColor = .systemColor(.separator)
         buttonBarView.backgroundColor = .listForeground
         headingLabel.applyFootnoteStyle()
         headingLabel.textColor = .listIcon

@@ -75,7 +75,7 @@ final class DefaultReviewsDataSource: NSObject, ReviewsDataSource {
     /// Identifiers of the Products mentioned in the reviews.
     /// Guaranteed to be uniqued (does not contain duplicates)
     ///
-    var reviewsProductsIDs: [Int] {
+    var reviewsProductsIDs: [Int64] {
         return reviewsResultsController
             .fetchedObjects
             .map { return $0.productID }
@@ -194,16 +194,16 @@ private extension DefaultReviewsDataSource {
         return ReviewViewModel(review: review, product: reviewProduct, notification: note)
     }
 
-    private func product(id productID: Int) -> Product? {
+    private func product(id productID: Int64) -> Product? {
         let products = productsResultsController.fetchedObjects
 
         return products.filter { $0.productID == productID }.first
     }
 
-    private func notification(id reviewID: Int) -> Note? {
+    private func notification(id reviewID: Int64) -> Note? {
         let notifications = notificationsResultsController.fetchedObjects
 
-        return notifications.filter { $0.meta.identifier(forKey: .comment) == reviewID }.first
+        return notifications.filter { $0.meta.identifier(forKey: .comment) == Int(reviewID) }.first
     }
 }
 
@@ -245,8 +245,8 @@ extension DefaultReviewsDataSource: ReviewsInteractionDelegate {
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)
     }
 
-    func presentReviewDetails(for noteId: Int, in viewController: UIViewController) {
-        let notificationMaybe = notificationsResultsController.fetchedObjects.first { $0.noteId == noteId }
+    func presentReviewDetails(for noteID: Int64, in viewController: UIViewController) {
+        let notificationMaybe = notificationsResultsController.fetchedObjects.first { $0.noteID == noteID }
         guard let note = notificationMaybe,
             let reviewID = note.meta.identifier(forKey: .comment) else {
             return

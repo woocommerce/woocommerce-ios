@@ -195,7 +195,7 @@ private extension OrderStatusListViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    private func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
+    private func updateOrderAction(siteID: Int64, orderID: Int64, statusKey: String) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
@@ -266,7 +266,7 @@ extension OrderStatusListViewController {
 
     /// Displays the `Unable to Change Status of Order` Notice.
     ///
-    func displayErrorNotice(orderID: Int) {
+    func displayErrorNotice(orderID: Int64) {
         let title = NSLocalizedString(
             "Unable to change status of order #\(orderID)",
             comment: "Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number}"

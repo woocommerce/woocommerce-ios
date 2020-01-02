@@ -125,9 +125,11 @@ final class OrderDetailsDataSource: NSObject {
         return OrderDetailsResultsControllers(order: self.order)
     }()
 
-    private lazy var orderNoteAsyncDictionary: AsyncDictionary<Int, String> = {
+    private lazy var orderNoteAsyncDictionary: AsyncDictionary<Int64, String> = {
         return AsyncDictionary()
     }()
+
+    private let imageService: ImageService = ServiceLocator.imageService
 
     init(order: Order) {
         self.order = order
@@ -240,7 +242,7 @@ private extension OrderDetailsDataSource {
 
     private func configureBillingDetail(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Footer.showBilling
-        cell.bodyLabel?.applyBodyStyle()
+        cell.applyPlainTextStyle()
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
 
@@ -324,7 +326,7 @@ private extension OrderDetailsDataSource {
 
     private func configureDetails(cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = Titles.productDetails
-        cell.bodyLabel?.applyBodyStyle()
+        cell.applyPlainTextStyle()
         cell.accessoryImage = nil
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
@@ -366,7 +368,7 @@ private extension OrderDetailsDataSource {
         let product = lookUpProduct(by: item.productID)
         let itemViewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
         cell.selectionStyle = .default
-        cell.configure(item: itemViewModel)
+        cell.configure(item: itemViewModel, imageService: imageService)
     }
 
     private func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
@@ -460,11 +462,11 @@ extension OrderDetailsDataSource {
         return currentSiteStatuses.filter({$0.slug == order.statusKey}).first
     }
 
-    func lookUpProduct(by productID: Int) -> Product? {
+    func lookUpProduct(by productID: Int64) -> Product? {
         return products.filter({ $0.productID == productID }).first
     }
 
-    func lookUpRefund(by refundID: Int) -> Refund? {
+    func lookUpRefund(by refundID: Int64) -> Refund? {
         return refunds.filter({ $0.refundID == refundID }).first
     }
 

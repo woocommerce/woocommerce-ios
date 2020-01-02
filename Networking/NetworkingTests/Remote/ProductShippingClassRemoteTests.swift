@@ -35,7 +35,7 @@ final class ProductShippingClassRemoteTests: XCTestCase {
             XCTAssertEqual(productShippingClasses?.count, 3)
 
             // Validates on Shipping Class of ID 94.
-            let expectedShippingClassID = 94
+            let expectedShippingClassID: Int64 = 94
             guard let expectedShippingClass = productShippingClasses?.first(where: { $0.shippingClassID == expectedShippingClassID }) else {
                 XCTFail("Product shipping class with ID \(expectedShippingClassID) should exist")
                 return

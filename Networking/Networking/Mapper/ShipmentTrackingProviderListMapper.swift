@@ -3,9 +3,9 @@ import Foundation
 /// (Attempts) to convert a dictionary into an ShipmentTrackingProviderGroup entity.
 ///
 struct ShipmentTrackingProviderListMapper: Mapper {
-    private let siteID: Int
+    private let siteID: Int64
 
-    public init(siteID: Int) {
+    public init(siteID: Int64) {
         self.siteID = siteID
     }
 

@@ -40,7 +40,7 @@ class NoteListMapperTests: XCTestCase {
         let note = sampleNotes[0]
 
         // Plain Fields
-        XCTAssertEqual(note.noteId, 100001)
+        XCTAssertEqual(note.noteID, 100001)
         XCTAssertEqual(note.hash, 987654)
         XCTAssertEqual(note.read, false)
         XCTAssert(note.icon == "https://gravatar.tld/some-hash")
@@ -87,7 +87,7 @@ class NoteListMapperTests: XCTestCase {
         let note = brokenNotes[0]
 
         // Plain Fields
-        XCTAssertEqual(note.noteId, 123456)
+        XCTAssertEqual(note.noteID, 123456)
         XCTAssertEqual(note.hash, 987654)
         XCTAssertFalse(note.read)
         XCTAssertNil(note.icon)
@@ -255,7 +255,7 @@ class NoteListMapperTests: XCTestCase {
     /// Verifies that the Notification's subtype is properly parsed.
     ///
     func testStoreReviewSubtypeIsProperlyParsed() {
-        let storeReview = sampleNotes.first(where: { $0.noteId == 100009 })
+        let storeReview = sampleNotes.first(where: { $0.noteID == 100009 })
         XCTAssertEqual(storeReview?.subtype, "store_review")
         XCTAssertEqual(storeReview?.subkind, .storeReview)
     }

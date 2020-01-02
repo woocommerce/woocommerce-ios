@@ -10,7 +10,7 @@ struct ProductTaxClassListSelectorDataSource: PaginatedListSelectorDataSource {
     private let siteID: Int64
 
     init(product: Product, selected: TaxClass?) {
-        self.siteID = Int64(product.siteID)
+        self.siteID = product.siteID
         self.selected = selected
     }
 

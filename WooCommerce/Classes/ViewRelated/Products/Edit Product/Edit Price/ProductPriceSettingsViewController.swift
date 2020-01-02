@@ -199,8 +199,10 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             let navigationBarTitle = NSLocalizedString("Tax classes", comment: "Navigation bar title of the Product tax class selector screen")
             let noResultsPlaceholderText = NSLocalizedString("No tax classes yet",
             comment: "The text on the placeholder overlay when there are no tax classes on the Tax Class list picker")
+            let noResultsPlaceholderImage = UIImage.errorStateImage
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: navigationBarTitle,
-                                                                     noResultsPlaceholderText: noResultsPlaceholderText)
+                                                                     noResultsPlaceholderText: noResultsPlaceholderText,
+                                                                     noResultsPlaceholderImage: noResultsPlaceholderImage, noResultsPlaceholderImageTintColor: .gray(.shade20))
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in

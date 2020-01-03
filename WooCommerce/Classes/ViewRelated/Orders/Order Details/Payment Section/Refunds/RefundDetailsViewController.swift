@@ -7,11 +7,11 @@ import Yosemite
 final class RefundDetailsViewController: UIViewController {
     /// Main TableView.
     ///
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     /// Refund to be rendered.
     ///
-    var viewModel: RefundDetailsViewModel! {
+    private var viewModel: RefundDetailsViewModel! {
         didSet {
             reloadTableViewSectionsAndData()
         }
@@ -42,7 +42,11 @@ final class RefundDetailsViewController: UIViewController {
         configureViewModel()
         reloadSections()
     }
+}
 
+
+// MARK: - Setup
+private extension RefundDetailsViewController {
     /// Setup: Navigation.
     ///
     func configureNavigation() {
@@ -62,27 +66,10 @@ final class RefundDetailsViewController: UIViewController {
         tableView.dataSource = viewModel.dataSource
     }
 
-    private func configureViewModel() {
+    func configureViewModel() {
         viewModel.configureResultsControllers { [weak self] in
             self?.reloadTableViewSectionsAndData()
         }
-    }
-
-    /// Reloads the tableView's data, assuming the view has been loaded.
-    ///
-    func reloadTableViewDataIfPossible() {
-        guard isViewLoaded else {
-            return
-        }
-
-        tableView.reloadData()
-    }
-
-    /// Reloads the tableView's sections and data.
-    ///
-    func reloadTableViewSectionsAndData() {
-        reloadSections()
-        reloadTableViewDataIfPossible()
     }
 
     /// Registers all of the available UITableViewCells.
@@ -102,10 +89,28 @@ final class RefundDetailsViewController: UIViewController {
 // MARK: - Sections
 //
 private extension RefundDetailsViewController {
+
+    /// Reloads the tableView's sections and data.
+    ///
+    func reloadTableViewSectionsAndData() {
+        reloadSections()
+        reloadTableViewDataIfPossible()
+    }
+
     /// Reload the tableview section data.
     ///
     func reloadSections() {
         viewModel.reloadSections()
+    }
+
+    /// Reloads the tableView's data, assuming the view has been loaded.
+    ///
+    func reloadTableViewDataIfPossible() {
+        guard isViewLoaded else {
+            return
+        }
+
+        tableView.reloadData()
     }
 }
 

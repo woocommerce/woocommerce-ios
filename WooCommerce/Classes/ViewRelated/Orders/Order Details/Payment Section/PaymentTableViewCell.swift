@@ -29,6 +29,8 @@ final class PaymentTableViewCell: UITableViewCell {
         configureLabels()
     }
 
+    /// Configure an order payment summary "table"
+    ///
     func configure(with viewModel: OrderPaymentDetailsViewModel) {
         subtotalLabel.text = Titles.subtotalLabel
         subtotalValue.text = viewModel.subtotalValue
@@ -59,6 +61,28 @@ final class PaymentTableViewCell: UITableViewCell {
                                  totalValue as Any
                                 ]
     }
+
+    /// Configure a refund details "table"
+    ///
+    func configure(with viewModel: RefundDetailsViewModel) {
+        subtotalLabel.text = Titles.subtotal
+        subtotalValue.text = viewModel.itemSubtotal
+
+        discountLabel.text = nil
+        discountValue.text = nil
+        discountView.isHidden = true
+
+        shippingLabel.text = nil
+        shippingValue.text = nil
+        shippingView.isHidden = true
+
+        taxesLabel.text = Titles.tax
+        taxesValue.text = viewModel.taxSubtotal
+        taxesView.isHidden = taxesValue == nil
+
+        totalLabel.text = Titles.productsRefund
+        totalValue.text = viewModel.productsRefund
+    }
 }
 
 
@@ -72,6 +96,13 @@ private extension PaymentTableViewCell {
                                                   comment: "Taxes label for payment view")
         static let totalLabel = NSLocalizedString("Order Total",
                                                   comment: "Order Total label for payment view")
+
+        static let subtotal = NSLocalizedString("Subtotal",
+                                                comment: "Subtotal label for a refund details view")
+        static let tax = NSLocalizedString("Tax",
+                                           comment: "Tax label for a refund details view")
+        static let productsRefund = NSLocalizedString("Products Refund",
+                                                      comment: "Label for computed value `product refunds + taxes = subtotal`.")
     }
 }
 

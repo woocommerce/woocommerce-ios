@@ -423,7 +423,10 @@ public struct Product: Codable {
             try container.encode(dateOnSaleEnd, forKey: .dateOnSaleEnd)
         }
         try container.encode(taxStatusKey, forKey: .taxStatusKey)
-        try container.encode(taxClass, forKey: .taxClass)
+        //The backend for the standard tax class return "standard",
+        // but to set the standard tax class it accept only an empty string "" in the POST request
+        let newTaxClass = taxClass == "standard" ? "" : taxClass
+        try container.encode(newTaxClass, forKey: .taxClass)
 
         // Shipping Settings.
         try container.encode(weight, forKey: .weight)

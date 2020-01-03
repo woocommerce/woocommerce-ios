@@ -18,6 +18,19 @@ extension NSDecimalNumber {
         return self.decimalValue._isNegative == 1
     }
 
+    /// Returns the absolute value of a decimal, in case the original is negative.
+    ///
+    func abs() -> NSDecimalNumber {
+        guard self.isNegative() else {
+            return self
+        }
+
+        let negativeOne = NSDecimalNumber(decimal: -1.0)
+        let positive = self.multiplying(by: negativeOne)
+
+        return positive
+    }
+
     /// Provides a short, friendly, and *localized* representation of the receiver.
     ///
     /// - Parameter roundSmallNumbers: if `true`, small numbers are rounded, if `false`, no rounding occurs (defaults to true)

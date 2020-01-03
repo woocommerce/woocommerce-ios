@@ -129,7 +129,7 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
 
         let action = ProductAction.synchronizeProducts(siteID: siteID1,
-                                                       pageNumber: ProductStore.Constants.firstPageNumber,
+                                                       pageNumber: ProductStore.Default.firstPageNumber,
                                                        pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
 
@@ -199,7 +199,7 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: ProductStore.Constants.firstPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: ProductStore.Default.firstPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNotNil(error)
 
             // The previously upserted Product's should stay in storage.

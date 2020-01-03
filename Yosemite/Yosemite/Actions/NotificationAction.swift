@@ -25,7 +25,7 @@ public enum NotificationAction: Action {
 
     /// Synchronizes a specified Notification.
     ///
-    case synchronizeNotification(noteID: Int64, onCompletion: (Error?) -> Void)
+    case synchronizeNotification(noteID: Int64, onCompletion: (Note?, Error?) -> Void)
 
     /// Updates the WordPress.com Last Seen field.
     ///

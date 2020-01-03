@@ -57,6 +57,11 @@ final class ProductPriceSettingsViewController: UIViewController {
         _ taxClass: TaxClass?) -> Void
     private let onCompletion: Completion
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        return keyboardFrameObserver
+    }()
+
     /// Init
     ///
     init(product: Product, completion: @escaping Completion) {
@@ -86,11 +91,28 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        startListeningToNotifications()
         configureNavigationBar()
         configureMainView()
         configureSections()
         configureTableView()
         retrieveProductTaxClass()
+    }
+}
+
+// MARK: - Keyboard management
+//
+extension ProductPriceSettingsViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
+    }
+}
+
+ private extension ProductPriceSettingsViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }
 

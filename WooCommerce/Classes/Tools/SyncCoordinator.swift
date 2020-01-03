@@ -24,7 +24,7 @@ class SyncingCoordinator {
     /// Default Settings
     ///
     enum Defaults {
-        static let pageFirstIndex = ProductStore.Constants.firstPageNumber
+        static let pageFirstIndex = Store.Default.firstPageNumber
         static let pageSize = 25
         static let pageTTLInSeconds = TimeInterval(3 * 60)
     }

@@ -140,7 +140,7 @@ private extension ProductInventorySettingsViewController {
                 return
             }
             guard isValid else {
-                self.displayError(error: .invalidSKU)
+                self.displayError(error: .duplicatedSKU)
                 return
             }
             let data = ProductInventoryEditableData(sku: self.sku,

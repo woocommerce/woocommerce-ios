@@ -488,10 +488,12 @@ extension ProductStore {
 
 /// An error that occurs while updating a Product.
 ///
+/// - duplicatedSKU: the SKU is used by another Product.
 /// - invalidSKU: the SKU is invalid or duplicated.
 /// - unknown: other error cases.
 ///
 public enum ProductUpdateError: Error {
+    case duplicatedSKU
     case invalidSKU
     case unknown
 

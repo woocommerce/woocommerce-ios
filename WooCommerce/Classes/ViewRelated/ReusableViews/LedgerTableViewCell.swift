@@ -1,6 +1,6 @@
 import UIKit
 
-final class PaymentTableViewCell: UITableViewCell {
+final class LedgerTableViewCell: UITableViewCell {
     @IBOutlet var verticalStackView: UIStackView!
     @IBOutlet var subtotalView: UIView!
     @IBOutlet private weak var subtotalLabel: UILabel!
@@ -86,7 +86,7 @@ final class PaymentTableViewCell: UITableViewCell {
 }
 
 
-private extension PaymentTableViewCell {
+private extension LedgerTableViewCell {
     enum Titles {
         static let subtotalLabel = NSLocalizedString("Product Total",
                                                      comment: "Product Total label for payment view")
@@ -108,7 +108,7 @@ private extension PaymentTableViewCell {
 
 
 // Indirectly expose outlets for tests
-extension PaymentTableViewCell {
+extension LedgerTableViewCell {
     func getSubtotalLabel() -> UILabel {
         return subtotalLabel
     }
@@ -152,7 +152,7 @@ extension PaymentTableViewCell {
 
 // MARK: - Private Methods
 //
-private extension PaymentTableViewCell {
+private extension LedgerTableViewCell {
     /// Setup: Cell background
     ///
     func configureBackground() {

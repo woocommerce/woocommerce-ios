@@ -108,7 +108,7 @@ private extension RefundDetailsDataSource {
         switch cell {
         case let cell as ProductDetailsTableViewCell:
             configureOrderItem(cell, at: indexPath)
-        case let cell as PaymentTableViewCell:
+        case let cell as LedgerTableViewCell:
             configureProductsRefund(cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell:
             configureRefundAmount(cell, at: indexPath)
@@ -135,7 +135,7 @@ private extension RefundDetailsDataSource {
 
     /// Setup: ProductsRefund summary Cell
     ///
-    private func configureProductsRefund(_ cell: PaymentTableViewCell, at indexPath: IndexPath) {
+    private func configureProductsRefund(_ cell: LedgerTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .none
         cell.configure(with: viewModel)
     }
@@ -228,7 +228,7 @@ extension RefundDetailsDataSource {
             case .orderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .productsRefund:
-                return PaymentTableViewCell.reuseIdentifier
+                return LedgerTableViewCell.reuseIdentifier
             case .refundAmount:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refundMethod:

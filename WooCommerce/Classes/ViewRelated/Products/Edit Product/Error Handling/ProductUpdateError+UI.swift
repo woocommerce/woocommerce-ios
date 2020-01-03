@@ -14,7 +14,7 @@ extension ProductUpdateError {
     var alertMessage: String? {
         switch self {
         case .invalidSKU:
-            return NSLocalizedString("The SKU is used for another product or is invalid.",
+            return NSLocalizedString("This SKU is used on another product or is invalid.",
                                      comment: "The message of the alert when there is an error updating the product SKU")
         default:
             return nil

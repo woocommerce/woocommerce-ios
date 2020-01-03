@@ -114,6 +114,8 @@ private extension RefundDetailsDataSource {
             configureRefundAmount(cell, at: indexPath)
         case let cell as WooBasicTableViewCell:
             configureRefundMethod(cell)
+        case let cell as TopLeftImageTableViewCell:
+            configureRefundNote(cell)
         default:
             fatalError("Unidentified refund details row type")
         }
@@ -156,6 +158,14 @@ private extension RefundDetailsDataSource {
         cell.bodyLabel?.text = viewModel.refundMethod
         cell.applyPlainTextStyle()
     }
+
+    /// Setup: Reason for Refund Note Cell
+    ///
+    private func configureRefundNote(_ cell: TopLeftImageTableViewCell) {
+        cell.selectionStyle = .none
+        cell.imageView?.image = UIImage.quoteImage.imageWithTintColor(.black)
+        cell.textLabel?.text = viewModel.refundReason
+    }
 }
 
 
@@ -191,7 +201,17 @@ extension RefundDetailsDataSource {
             return Section(title: SectionTitle.refundDetails, rightTitle: nil, rows: rows)
         }()
 
-        sections = [products, details].compactMap { $0 }
+        let reason: Section? = {
+            guard viewModel.refundReason != nil else {
+                return nil
+            }
+
+            let row: Row = .refundReason
+
+            return Section(title: SectionTitle.refundReason, rightTitle: nil, row: row)
+        }()
+
+        sections = [products, details, reason].compactMap { $0 }
     }
 }
 
@@ -205,6 +225,7 @@ extension RefundDetailsDataSource {
         static let product = NSLocalizedString("Product", comment: "Product section title")
         static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
         static let refundDetails = NSLocalizedString("Refund Details", comment: "Refund Details section title")
+        static let refundReason = NSLocalizedString("Reason for Refund", comment: "Refund note section title")
     }
 
     /// Row Titles
@@ -222,6 +243,7 @@ extension RefundDetailsDataSource {
         case productsRefund
         case refundAmount
         case refundMethod
+        case refundReason
 
         var reuseIdentifier: String {
             switch self {
@@ -233,6 +255,8 @@ extension RefundDetailsDataSource {
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refundMethod:
                 return WooBasicTableViewCell.reuseIdentifier
+            case .refundReason:
+                return TopLeftImageTableViewCell.reuseIdentifier
             }
         }
     }

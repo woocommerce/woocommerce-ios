@@ -91,6 +91,12 @@ final class RefundDetailsViewModel {
         return refundMethodText
     }
 
+    /// Reason for refund note
+    ///
+    var refundReason: String? {
+        return refund.reason
+    }
+
     /// The datasource that will be used to render the Refund Details screen
     ///
     private(set) lazy var dataSource: RefundDetailsDataSource = {

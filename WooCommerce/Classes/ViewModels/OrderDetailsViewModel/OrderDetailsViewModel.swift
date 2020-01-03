@@ -201,7 +201,7 @@ extension OrderDetailsViewModel {
                 DDLogError("No refund details found.")
                 return
             }
-            
+
             let viewModel = RefundDetailsViewModel(order: order, refund: refund)
             let refundDetailsViewController = RefundDetailsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)

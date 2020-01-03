@@ -75,6 +75,24 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
+    /// OrderItemsRefund Count
+    ///
+    var refundedProductsCount: Decimal {
+        var refundedItems = [OrderItemRefund]()
+        for refund in refunds {
+            refundedItems.append(contentsOf: refund.items)
+        }
+
+        var quantities = [Decimal]()
+        for item in refundedItems {
+            quantities.append(item.quantity)
+        }
+
+        let decimalCount = quantities.reduce(0, +) // quantities report as negative values
+
+        return abs(decimalCount)
+    }
+
     /// Refunds on an Order
     ///
     var refunds: [Refund] {
@@ -374,12 +392,11 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
-        let productCount = refunds.reduce(0) { (sum, refund) in sum + refund.items.count }
-        let singular = NSLocalizedString("%ld Product",
-                                         comment: "1 Product")
-        let plural = NSLocalizedString("%ld Products",
-                                       comment: "For example, '5 Products'")
-        let productText = String.pluralize(productCount, singular: singular, plural: plural)
+        let singular = NSLocalizedString("%@ Item",
+                                         comment: "1 Item")
+        let plural = NSLocalizedString("%@ Items",
+                                       comment: "For example, '5 Items'")
+        let productText = String.pluralize(refundedProductsCount, singular: singular, plural: plural)
 
         cell.bodyLabel?.text = productText
         cell.applyPlainTextStyle()

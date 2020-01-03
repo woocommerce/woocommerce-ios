@@ -172,6 +172,115 @@ final class ProductShippingClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Verifies that syncing for the first page deletes stored models for the given site ID.
+    ///
+    func testSyncingProductShippingClassesOnTheFirstPageResetsStoredModels() {
+        // Inserts a Product Variation into the storage with two site IDs.
+        let siteID1: Int64 = 134
+        let siteID2: Int64 = 591
+
+        // This remote ID should not exist in the network response.
+        let shippingClassID: Int64 = 94115
+        storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: sampleProductShippingClass(remoteID: shippingClassID, siteID: siteID1))
+        storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: sampleProductShippingClass(remoteID: shippingClassID, siteID: siteID2))
+
+        network.simulateResponse(requestUrlSuffix: "products/shipping_classes", filename: "product-shipping-classes-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 2)
+
+        let expectation = self.expectation(description: "Retrieve ProductShippingClasss")
+        let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: siteID1,
+                                                                                      pageNumber: Store.Default.firstPageNumber,
+                                                                                      pageSize: defaultPageSize) { error in
+            XCTAssertNil(error)
+
+            // The previously upserted ProductVariation for siteID1 should be deleted.
+            let storedModelForSite1 = self.viewStorage.loadProductShippingClass(siteID: siteID1, remoteID: shippingClassID)
+            XCTAssertNil(storedModelForSite1)
+
+            // The previously upserted ProductShippingClass for siteID2 should stay in storage.
+            let storedModelForSite2 = self.viewStorage.loadProductShippingClass(siteID: siteID2, remoteID: shippingClassID)
+            XCTAssertNotNil(storedModelForSite2)
+
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that syncing after the first page does not delete stored models for the given site ID and product ID.
+    ///
+    func testSyncingProductShippingClassesAfterTheFirstPage() {
+        // Inserts one model into the storage.
+        let siteID: Int64 = 134
+
+        // This remote ID should not exist in the network response.
+        let shippingClassID: Int64 = 94115
+
+        storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: sampleProductShippingClass(remoteID: shippingClassID, siteID: siteID))
+
+        network.simulateResponse(requestUrlSuffix: "products/shipping_classes", filename: "product-shipping-classes-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
+
+        let expectation = self.expectation(description: "Retrieve ProductShippingClasss")
+        let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: siteID,
+                                                                                      pageNumber: 6,
+                                                                                      pageSize: defaultPageSize) { error in
+            XCTAssertNil(error)
+
+            // The previously upserted model should stay in storage.
+            let storedModel = self.viewStorage.loadProductShippingClass(siteID: siteID, remoteID: shippingClassID)
+            XCTAssertNotNil(storedModel)
+
+            XCTAssertGreaterThan(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
+
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that syncing for the first page does not delete stored model if the API call fails.
+    ///
+    func testSyncingProductShippingClassesOnTheFirstPageDoesNotDeleteStoredModelsUponResponseError() {
+        // Inserts one model into the storage.
+        let siteID: Int64 = 134
+
+        // This remote ID should not exist in the network response.
+        let shippingClassID: Int64 = 1002
+
+        storageManager.insertSampleProductShippingClass(readOnlyProductShippingClass: sampleProductShippingClass(remoteID: shippingClassID,
+                                                                                                                 siteID: siteID))
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
+
+        let expectation = self.expectation(description: "Retrieve ProductShippingClasss")
+        let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        let action = ProductShippingClassAction.synchronizeProductShippingClassModels(siteID: siteID,
+                                                                                      pageNumber: 6,
+                                                                                      pageSize: defaultPageSize) { error in
+                                                                            XCTAssertNotNil(error)
+
+            // The previously upserted model should stay in storage.
+            let storedModel = self.viewStorage.loadProductShippingClass(siteID: siteID, remoteID: shippingClassID)
+            XCTAssertNotNil(storedModel)
+
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
+
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     // MARK: - ProductShippingClassAction.retrieveProductShippingClass
 
     /// Verifies that `ProductShippingClassAction.retrieveProductShippingClass` effectively persists any retrieved ProductShippingClasss.
@@ -290,11 +399,15 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
 private extension ProductShippingClassStoreTests {
     func sampleProductShippingClass(remoteID: Int64) -> Yosemite.ProductShippingClass {
+        return sampleProductShippingClass(remoteID: remoteID, siteID: sampleSiteID)
+    }
+
+    func sampleProductShippingClass(remoteID: Int64, siteID: Int64) -> Yosemite.ProductShippingClass {
         return ProductShippingClass(count: 3,
                                     descriptionHTML: "Limited offer!",
                                     name: "Free Shipping",
                                     shippingClassID: remoteID,
-                                    siteID: sampleSiteID,
+                                    siteID: siteID,
                                     slug: "free-shipping")
     }
 }

@@ -96,7 +96,7 @@ private extension ProductStore {
                 return
             }
 
-            if pageNumber == 1 {
+            if pageNumber == Default.firstPageNumber {
                 self?.deleteStoredProducts(siteID: siteID)
             }
 
@@ -464,15 +464,6 @@ extension ProductStore {
     ///
     func upsertStoredProduct(readOnlyProduct: Networking.Product, in storage: StorageType) {
         upsertStoredProducts(readOnlyProducts: [readOnlyProduct], in: storage)
-    }
-}
-
-// MARK: - Constants!
-//
-public extension ProductStore {
-
-    enum Constants {
-        public static let firstPageNumber: Int = ProductsRemote.Default.pageNumber
     }
 }
 

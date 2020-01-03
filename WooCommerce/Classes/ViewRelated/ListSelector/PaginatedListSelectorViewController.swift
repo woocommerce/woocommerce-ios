@@ -17,6 +17,9 @@ protocol PaginatedListSelectorDataSource {
     /// Called when a different model is selected.
     mutating func handleSelectedChange(selected: StorageModel.ReadOnlyType)
 
+    /// Configures the selected UI.
+    func isSelected(model: StorageModel.ReadOnlyType) -> Bool
+
     /// Configures the cell with the given model.
     func configureCell(cell: Cell, model: StorageModel.ReadOnlyType)
 
@@ -139,7 +142,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         let model = resultsController.object(at: indexPath)
         dataSource.configureCell(cell: cell, model: model)
 
-        cell.accessoryType = model == dataSource.selected ? .checkmark: .none
+        cell.accessoryType = dataSource.isSelected(model: model) ? .checkmark: .none
 
         return cell
     }
@@ -298,7 +301,8 @@ private extension PaginatedListSelectorViewController {
     ///
     func displayNoResultsOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = nil
+        overlayView.messageImage = viewProperties.noResultsPlaceholderImage
+        overlayView.messageImageTintColor = viewProperties.noResultsPlaceholderImageTintColor
         overlayView.messageText = viewProperties.noResultsPlaceholderText
         overlayView.actionVisible = false
         overlayView.attach(to: view)

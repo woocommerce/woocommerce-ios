@@ -40,7 +40,7 @@ private extension DefaultProductFormTableViewModel {
 
 private extension DefaultProductFormTableViewModel {
     func priceSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.priceImage.applyProductFormSettingsStyle()
+        let icon = UIImage.priceImage
         let title = Constants.priceSettingsTitle
 
         var priceDetails = [String]()
@@ -66,7 +66,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func inventorySettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.inventoryImage.applyProductFormSettingsStyle()
+        let icon = UIImage.inventoryImage
         let title = Constants.inventorySettingsTitle
 
         var inventoryDetails = [String]()
@@ -90,7 +90,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func shippingSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.shippingImage.applyProductFormSettingsStyle()
+        let icon = UIImage.shippingImage
         let title = Constants.shippingSettingsTitle
 
         var shippingDetails = [String]()

@@ -71,6 +71,8 @@ final class ProductsViewController: UIViewController {
         return stateCoordinator
     }()
 
+    private let imageService: ImageService = ServiceLocator.imageService
+
     // MARK: - View Lifecycle
 
     override func viewDidLoad() {
@@ -138,6 +140,7 @@ private extension ProductsViewController {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
+        navigationController?.popToRootViewController(animated: false)
         updateResultsController(siteID: siteID)
         tableView.reloadData()
         syncingCoordinator.resynchronize()
@@ -311,7 +314,7 @@ extension ProductsViewController: UITableViewDataSource {
 
         let product = resultsController.object(at: indexPath)
         let viewModel = ProductsTabProductViewModel(product: product)
-        cell.update(viewModel: viewModel)
+        cell.update(viewModel: viewModel, imageService: imageService)
 
         return cell
     }
@@ -405,7 +408,7 @@ private extension ProductsViewController {
     ///
     func displayNoResultsOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = nil
+        overlayView.messageImage = .emptyProductsImage
         overlayView.messageText = NSLocalizedString("No products yet",
                                                     comment: "The text on the placeholder overlay when there are no products on the Products tab")
         overlayView.actionVisible = false

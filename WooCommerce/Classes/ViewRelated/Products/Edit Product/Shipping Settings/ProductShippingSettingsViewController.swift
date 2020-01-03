@@ -175,8 +175,11 @@ extension ProductShippingSettingsViewController: UITableViewDelegate {
             let navigationBarTitle = NSLocalizedString("Shipping classes", comment: "Navigation bar title of the Product shipping class selector screen")
             let noResultsPlaceholderText = NSLocalizedString("No shipping classes yet",
             comment: "The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker")
+            let noResultsPlaceholderImage = UIImage.shippingClassListSelectorEmptyImage
             let viewProperties = PaginatedListSelectorViewProperties(navigationBarTitle: navigationBarTitle,
-                                                                     noResultsPlaceholderText: noResultsPlaceholderText)
+                                                                     noResultsPlaceholderText: noResultsPlaceholderText,
+                                                                     noResultsPlaceholderImage: noResultsPlaceholderImage,
+                                                                     noResultsPlaceholderImageTintColor: .gray(.shade20))
             let selectorViewController =
                 PaginatedListSelectorViewController(viewProperties: viewProperties,
                                                     dataSource: dataSource) { [weak self] selected in

@@ -96,6 +96,12 @@ private extension ProductFormViewController {
         let viewProperties = InProgressViewProperties(title: title, message: message)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
 
+        // Before iOS 13, a modal with transparent background requires certain
+        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
 
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in

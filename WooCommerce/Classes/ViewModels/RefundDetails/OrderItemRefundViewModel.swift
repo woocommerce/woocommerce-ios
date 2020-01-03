@@ -48,16 +48,23 @@ struct OrderItemRefundViewModel {
         let itemTotal = currencyFormatter.formatAmount(positiveTotal, with: currency) ?? String()
         let itemSubtotal = currencyFormatter.formatAmount(item.price, with: currency) ?? String()
 
-        return itemTotal + " (" + itemSubtotal + " × " + quantity + ")"
+        let priceTemplate = NSLocalizedString("%@ (%@ x %@)",
+                                              comment: "<item total> (<item individual price> multipled by <quantity>)")
+        let priceText = String.localizedStringWithFormat(priceTemplate, itemTotal, itemSubtotal, quantity)
+
+        return priceText
     }
 
     /// Item's Tax
     /// Return $0.00 if there is no tax.
     ///
     var tax: String? {
-        let prefix = NSLocalizedString("Tax:", comment: "Tax label for total taxes line")
         let totalTax = currencyFormatter.formatAmount(item.totalTax, with: currency) ?? String()
-        return prefix + " " + totalTax
+        let taxTemplate = NSLocalizedString("Tax: %@",
+                                            comment: "Tax label for total taxes line, followed by the tax amount.")
+        let taxText = String.localizedStringWithFormat(taxTemplate, totalTax)
+
+        return taxText
     }
 
     /// Item's SKU
@@ -67,8 +74,10 @@ struct OrderItemRefundViewModel {
             return nil
         }
 
-        let prefix = NSLocalizedString("SKU:", comment: "SKU label")
-        return prefix + " " + sku
+        let skuTemplate = NSLocalizedString("SKU: %@", comment: "SKU label, followed by the SKU")
+        let skuText = String.localizedStringWithFormat(skuTemplate, sku)
+
+        return skuText
     }
 
     /// Grab the first available image for a product.
@@ -87,7 +96,8 @@ struct OrderItemRefundViewModel {
         return imageURL != nil
     }
 
-    init(item: OrderItemRefund, currency: String,
+    init(item: OrderItemRefund,
+         currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(),
          product: Product? = nil) {
         self.item = item

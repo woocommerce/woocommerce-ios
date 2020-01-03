@@ -143,7 +143,7 @@ public extension ProductsRemote {
 
     enum Default {
         public static let pageSize: Int   = 25
-        public static let pageNumber: Int = 1
+        public static let pageNumber: Int = Remote.Default.firstPageNumber
         public static let context: String = "view"
     }
 

@@ -1,14 +1,14 @@
 import Yosemite
 
 extension Product {
-    static func createSKUViewModel(sku: String?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+    static func createSKUViewModel(sku: String?, onTextChange: @escaping (_ text: String?) -> Void) -> TitleAndTextFieldTableViewCell.ViewModel {
         let title = NSLocalizedString("SKU", comment: "Title of the cell in Product Inventory Settings > SKU")
-        return UnitInputViewModel(title: title,
-                                  unit: "",
-                                  value: sku,
-                                  keyboardType: .default,
-                                  inputFormatter: StringInputFormatter(),
-                                  onInputChange: onInputChange)
+        let placeholder = NSLocalizedString("Optional",
+                                            comment: "Placeholder of the cell text field in Product Inventory Settings > SKU")
+        return TitleAndTextFieldTableViewCell.ViewModel(title: title,
+                                                        text: sku,
+                                                        placeholder: placeholder,
+                                                        onTextChange: onTextChange)
     }
 
     static func createStockQuantityViewModel(stockQuantity: Int?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {

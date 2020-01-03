@@ -17,6 +17,9 @@ protocol PaginatedListSelectorDataSource {
     /// Called when a different model is selected.
     mutating func handleSelectedChange(selected: StorageModel.ReadOnlyType)
 
+    /// Configures the selected UI.
+    func isSelected(model: StorageModel.ReadOnlyType) -> Bool
+
     /// Configures the cell with the given model.
     func configureCell(cell: Cell, model: StorageModel.ReadOnlyType)
 
@@ -69,6 +72,10 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     ///
     private let syncingCoordinator = SyncingCoordinator()
 
+    /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
+    ///
+    private var estimatedRowHeights = [IndexPath: CGFloat]()
+
     private lazy var stateCoordinator: PaginatedListViewControllerStateCoordinator = {
         let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: { [weak self] state in
             self?.didLeave(state: state)
@@ -86,6 +93,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     // MARK: - Constants
     //
+    let estimatedRowHeight = CGFloat(44)
     let placeholderRowsPerSection: [Int] = [3]
 
     init(viewProperties: PaginatedListSelectorViewProperties,
@@ -139,19 +147,36 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
         let model = resultsController.object(at: indexPath)
         dataSource.configureCell(cell: cell, model: model)
 
-        cell.accessoryType = model == dataSource.selected ? .checkmark: .none
+        cell.accessoryType = dataSource.isSelected(model: model) ? .checkmark: .none
 
         return cell
     }
 
     // MARK: UITableViewDelegate
     //
+
+    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
+        return estimatedRowHeights[indexPath] ?? estimatedRowHeight
+    }
+
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
 
         let selected = resultsController.object(at: indexPath)
         dataSource.handleSelectedChange(selected: selected)
         tableView.reloadData()
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        let objectIndex = resultsController.objectIndex(from: indexPath)
+        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: objectIndex)
+
+        // Preserve the Cell Height
+        // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
+        // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
+        // the actual value. AKA no flicker!
+        //
+        estimatedRowHeights[indexPath] = cell.frame.height
     }
 
     // MARK: SyncingCoordinatorDelegate
@@ -203,6 +228,8 @@ private extension PaginatedListSelectorViewController {
 
         tableView.refreshControl = refreshControl
 
+        tableView.cellLayoutMarginsFollowReadableWidth = true
+        tableView.estimatedRowHeight = estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
 

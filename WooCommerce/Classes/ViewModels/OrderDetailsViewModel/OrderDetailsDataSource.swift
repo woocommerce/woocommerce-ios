@@ -225,6 +225,8 @@ private extension OrderDetailsDataSource {
             configureNewTracking(cell: cell)
         case let cell as SummaryTableViewCell:
             configureSummary(cell: cell)
+        case let cell as WooBasicTableViewCell where row == .refundedProducts:
+            configureRefundedProducts(cell)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -371,6 +373,31 @@ private extension OrderDetailsDataSource {
         cell.configure(item: itemViewModel, imageService: imageService)
     }
 
+    private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
+        let productCount = refunds.reduce(0) { (sum, refund) in sum + refund.items.count }
+        let singular = NSLocalizedString("%ld Product",
+                                         comment: "1 Product")
+        let plural = NSLocalizedString("%ld Products",
+                                       comment: "For example, '5 Products'")
+        let productText = String.pluralize(productCount, singular: singular, plural: plural)
+
+        cell.bodyLabel?.text = productText
+        cell.applyPlainTextStyle()
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+            "View refunded order items",
+            comment: "Accessibility label for the '<number> Products' button"
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Show a list of refunded order items for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
+        )
+    }
+
     private func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
         cell.fulfillButton.setTitle(Titles.fulfillTitle, for: .normal)
         cell.onFullfillTouchUp = { [weak self] in
@@ -423,12 +450,14 @@ private extension OrderDetailsDataSource {
     private func configureShippingAddress(cell: CustomerInfoTableViewCell) {
         let shippingAddress = order.shippingAddress
 
-        cell.title = NSLocalizedString("Shipping details", comment: "Shipping title for customer info cell")
+        cell.title = NSLocalizedString("Shipping details",
+                                       comment: "Shipping title for customer info cell")
         cell.name = shippingAddress?.fullNameWithCompany
         cell.address = shippingAddress?.formattedPostalAddress ??
             NSLocalizedString(
                 "No address specified.",
-                comment: "Order details > customer info > shipping details. This is where the address would normally display."
+                comment: "Order details > customer info > shipping details. " +
+                "This is where the address would normally display."
         )
     }
 
@@ -488,7 +517,8 @@ extension OrderDetailsDataSource {
         let summary = Section(row: .summary)
 
         let shippingNotice: Section? = {
-            //Hide the shipping method warning if order contains only virtual products or if the order contains only one shipping method
+            // Hide the shipping method warning if order contains only virtual products
+            // or if the order contains only one shipping method
             if isMultiShippingLinesAvailable(for: order) == false {
                 return nil
             }
@@ -509,6 +539,16 @@ extension OrderDetailsDataSource {
             }
 
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+        }()
+
+        let refundedProducts: Section? = {
+            guard refunds.count > 0 else {
+                return nil
+            }
+
+            let row: Row = .refundedProducts
+
+            return Section(title: Title.refundedProducts, row: row)
         }()
 
         let customerInformation: Section = {
@@ -569,7 +609,16 @@ extension OrderDetailsDataSource {
             return Section(title: Title.notes, rows: rows)
         }()
 
-        sections = [summary, shippingNotice, products, customerInformation, payment, tracking, addTracking, notes].compactMap { $0 }
+        sections = [summary,
+                    shippingNotice,
+                    products,
+                    refundedProducts,
+                    customerInformation,
+                    payment,
+                    tracking,
+                    addTracking,
+                    notes].compactMap { $0 }
+
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
 
@@ -742,6 +791,7 @@ extension OrderDetailsDataSource {
     enum Title {
         static let product = NSLocalizedString("Product", comment: "Product section title")
         static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+        static let refundedProducts = NSLocalizedString("Refunded Products", comment: "Section title")
         static let tracking = NSLocalizedString("Tracking", comment: "Order tracking section title")
         static let customerNote = NSLocalizedString("Customer Provided Note", comment: "Customer note section title")
         static let information = NSLocalizedString("Customer", comment: "Customer info section title")
@@ -791,6 +841,7 @@ extension OrderDetailsDataSource {
         case orderItem
         case fulfillButton
         case details
+        case refundedProducts
         case customerNote
         case shippingAddress
         case shippingMethod
@@ -815,6 +866,8 @@ extension OrderDetailsDataSource {
             case .fulfillButton:
                 return FulfillButtonTableViewCell.reuseIdentifier
             case .details:
+                return WooBasicTableViewCell.reuseIdentifier
+            case .refundedProducts:
                 return WooBasicTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier

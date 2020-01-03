@@ -110,6 +110,8 @@ private extension RefundDetailsDataSource {
             configureOrderItem(cell, at: indexPath)
         case let cell as PaymentTableViewCell:
             configureProductsRefund(cell, at: indexPath)
+        case let cell as TwoColumnHeadlineFootnoteTableViewCell:
+            configureRefundAmount(cell, at: indexPath)
         default:
             fatalError("Unidentified refund details row type")
         }
@@ -134,6 +136,14 @@ private extension RefundDetailsDataSource {
     private func configureProductsRefund(_ cell: PaymentTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .none
         cell.configure(with: viewModel)
+    }
+
+    /// Setup: Refund Amount Cell
+    ///
+    private func configureRefundAmount(_ cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
+        cell.leftText = RowTitle.refundAmount
+        cell.rightText = viewModel.refundAmount
+        cell.hideFootnote()
     }
 }
 
@@ -193,6 +203,7 @@ extension RefundDetailsDataSource {
         /// Listed in the order they appear on screen
         case orderItem
         case productsRefund
+        case refundAmount
 
         var reuseIdentifier: String {
             switch self {
@@ -200,6 +211,8 @@ extension RefundDetailsDataSource {
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .productsRefund:
                 return PaymentTableViewCell.reuseIdentifier
+            case .refundAmount:
+                return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             }
         }
     }

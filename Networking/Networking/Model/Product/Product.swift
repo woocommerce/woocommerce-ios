@@ -411,11 +411,20 @@ public struct Product: Codable {
         // Price Settings.
         try container.encode(regularPrice, forKey: .regularPrice)
         try container.encode(salePrice, forKey: .salePrice)
-        try container.encode(dateOnSaleStart, forKey: .dateOnSaleStart)
-        try container.encode(dateOnSaleEnd, forKey: .dateOnSaleEnd)
+
+        // We need to send empty string if fields are null, because there is a bug on the API side
+        // Issue: https://github.com/woocommerce/woocommerce/issues/25350
+        if dateOnSaleStart == nil || dateOnSaleEnd == nil {
+            try container.encode("", forKey: .dateOnSaleStart)
+            try container.encode("", forKey: .dateOnSaleEnd)
+        }
+        else {
+            try container.encode(dateOnSaleStart, forKey: .dateOnSaleStart)
+            try container.encode(dateOnSaleEnd, forKey: .dateOnSaleEnd)
+        }
         try container.encode(taxStatusKey, forKey: .taxStatusKey)
         try container.encode(taxClass, forKey: .taxClass)
-        
+
         // Shipping Settings.
         try container.encode(weight, forKey: .weight)
         try container.encode(dimensions, forKey: .dimensions)

@@ -114,7 +114,8 @@ public class CurrencyFormatter {
         // NSDecimalNumber use by default the local decimal separator to evaluate a decimal amount.
         // We substitute the current decimal separator with the locale decimal separator.
         let localeDecimalSeparator = Locale.current.decimalSeparator ?? CurrencySettings.shared.decimalSeparator
-        let newStringAmount = stringAmount.replacingOccurrences(of: ",", with: localeDecimalSeparator).replacingOccurrences(of: ".", with: localeDecimalSeparator)
+        var newStringAmount = stringAmount.replacingOccurrences(of: ",", with: localeDecimalSeparator)
+        newStringAmount = newStringAmount.replacingOccurrences(of: ".", with: localeDecimalSeparator)
         guard let decimalAmount = convertToDecimal(from: newStringAmount) else {
             return nil
         }

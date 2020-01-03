@@ -232,21 +232,42 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editPriceSettings() {
-        let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self] (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
-            self?.onEditPriceSettingsCompletion(regularPrice: regularPrice, salePrice: salePrice, dateOnSaleStart: dateOnSaleStart, dateOnSaleEnd: dateOnSaleEnd, taxStatus: taxStatus, taxClass: taxClass)
+        let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
+            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
+            self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
+                                                salePrice: salePrice,
+                                                dateOnSaleStart: dateOnSaleStart,
+                                                dateOnSaleEnd: dateOnSaleEnd,
+                                                taxStatus: taxStatus,
+                                                taxClass: taxClass)
         }
         navigationController?.pushViewController(priceSettingsViewController, animated: true)
     }
 
-    func onEditPriceSettingsCompletion(regularPrice: String?, salePrice: String?, dateOnSaleStart: Date?, dateOnSaleEnd: Date?, taxStatus: ProductTaxStatus, taxClass: TaxClass?) {
+    func onEditPriceSettingsCompletion(regularPrice: String?,
+                                       salePrice: String?,
+                                       dateOnSaleStart: Date?,
+                                       dateOnSaleEnd: Date?,
+                                       taxStatus: ProductTaxStatus,
+                                       taxClass: TaxClass?) {
         defer {
             navigationController?.popViewController(animated: true)
         }
 
-        guard regularPrice != product.regularPrice || salePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart || dateOnSaleEnd != product.dateOnSaleEnd || taxStatus != product.productTaxStatus || taxClass?.slug != product.taxClass else {
+        guard regularPrice != product.regularPrice ||
+            salePrice != product.salePrice ||
+            dateOnSaleStart != product.dateOnSaleStart ||
+            dateOnSaleEnd != product.dateOnSaleEnd ||
+            taxStatus != product.productTaxStatus ||
+            taxClass?.slug != product.taxClass else {
             return
         }
-        self.product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice, salePrice: salePrice, dateOnSaleStart: dateOnSaleStart, dateOnSaleEnd: dateOnSaleEnd, taxStatus: taxStatus, taxClass: taxClass)
+        self.product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice,
+                                                           salePrice: salePrice,
+                                                           dateOnSaleStart: dateOnSaleStart,
+                                                           dateOnSaleEnd: dateOnSaleEnd,
+                                                           taxStatus: taxStatus,
+                                                           taxClass: taxClass)
     }
 }
 

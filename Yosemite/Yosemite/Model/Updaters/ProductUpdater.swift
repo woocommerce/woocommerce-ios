@@ -4,7 +4,12 @@ public protocol ProductUpdater {
     func nameUpdated(name: String) -> Product
     func descriptionUpdated(description: String) -> Product
     func shippingSettingsUpdated(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) -> Product
-    func priceSettingsUpdated(regularPrice: String?, salePrice: String?, dateOnSaleStart: Date?, dateOnSaleEnd: Date?, taxStatus: ProductTaxStatus, taxClass: TaxClass?) -> Product
+    func priceSettingsUpdated(regularPrice: String?,
+                              salePrice: String?,
+                              dateOnSaleStart: Date?,
+                              dateOnSaleEnd: Date?,
+                              taxStatus: ProductTaxStatus,
+                              taxClass: TaxClass?) -> Product
     func inventorySettingsUpdated(sku: String?,
                                   manageStock: Bool,
                                   soldIndividually: Bool,
@@ -203,7 +208,12 @@ extension Product: ProductUpdater {
                        menuOrder: menuOrder)
     }
 
-    public func priceSettingsUpdated(regularPrice: String?, salePrice: String?, dateOnSaleStart: Date?, dateOnSaleEnd: Date?, taxStatus: ProductTaxStatus, taxClass: TaxClass?) -> Product {
+    public func priceSettingsUpdated(regularPrice: String?,
+                                     salePrice: String?,
+                                     dateOnSaleStart: Date?,
+                                     dateOnSaleEnd: Date?,
+                                     taxStatus: ProductTaxStatus,
+                                     taxClass: TaxClass?) -> Product {
         return Product(siteID: siteID,
         productID: productID,
         name: name,

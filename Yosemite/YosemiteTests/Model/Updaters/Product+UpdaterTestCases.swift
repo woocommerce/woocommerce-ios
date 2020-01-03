@@ -49,7 +49,12 @@ final class Product_UpdaterTestCases: XCTestCase {
         let newTaxStatus = ProductTaxStatus.taxable
         let newTaxClass = TaxClass(siteID: product.siteID, name: "Reduced rate", slug: "reduced-rate")
 
-        let updatedProduct = product.priceSettingsUpdated(regularPrice: newRegularPrice, salePrice: newSalePrice, dateOnSaleStart: newDateOnSaleStart, dateOnSaleEnd: newDateOnSaleEnd, taxStatus: newTaxStatus, taxClass: newTaxClass)
+        let updatedProduct = product.priceSettingsUpdated(regularPrice: newRegularPrice,
+                                                          salePrice: newSalePrice,
+                                                          dateOnSaleStart: newDateOnSaleStart,
+                                                          dateOnSaleEnd: newDateOnSaleEnd,
+                                                          taxStatus: newTaxStatus,
+                                                          taxClass: newTaxClass)
         XCTAssertEqual(updatedProduct.regularPrice, newRegularPrice)
         XCTAssertEqual(updatedProduct.salePrice, newSalePrice)
         XCTAssertEqual(updatedProduct.dateOnSaleStart, newDateOnSaleStart)

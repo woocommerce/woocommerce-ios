@@ -49,7 +49,12 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     // Completion callback
     //
-    typealias Completion = (_ regularPrice: String?, _ salePrice: String?, _ dateOnSaleStart: Date?, _ dateOnSaleEnd: Date?, _ taxStatus: ProductTaxStatus, _ taxClass: TaxClass?) -> Void
+    typealias Completion = (_ regularPrice: String?,
+        _ salePrice: String?,
+        _ dateOnSaleStart: Date?,
+        _ dateOnSaleEnd: Date?,
+        _ taxStatus: ProductTaxStatus,
+        _ taxClass: TaxClass?) -> Void
     private let onCompletion: Completion
 
     /// Init

@@ -110,7 +110,7 @@ public class CurrencyFormatter {
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///
     func formatAmount(_ stringAmount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
-        
+
         // NSDecimalNumber use by default the local decimal separator to evaluate a decimal amount.
         // We substitute the current decimal separator with the locale decimal separator.
         let localeDecimalSeparator = Locale.current.decimalSeparator ?? CurrencySettings.shared.decimalSeparator

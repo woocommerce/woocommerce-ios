@@ -9,11 +9,11 @@ import Yosemite
 final class RefundDetailsDataSource: NSObject {
     /// Refund
     ///
-    private(set) var refund: Refund
+    private let refund: Refund
 
     /// Order
     ///
-    private(set) var order: Order
+    private let order: Order
 
     /// Sections to be rendered
     ///
@@ -39,8 +39,8 @@ final class RefundDetailsDataSource: NSObject {
 
     /// The results controllers used to display a refund
     ///
-    private lazy var resultsControllers: RefundDetailsResultControllers = {
-        return RefundDetailsResultControllers()
+    private lazy var resultsControllers: RefundDetailsResultController = {
+        return RefundDetailsResultController()
     }()
 
     /// Set up results controllers
@@ -136,7 +136,7 @@ private extension RefundDetailsDataSource {
 
 // MARK: - Lookup products
 //
-extension RefundDetailsDataSource {
+private extension RefundDetailsDataSource {
     func lookUpProduct(by productID: Int64) -> Product? {
         return products.filter({ $0.productID == productID }).first
     }

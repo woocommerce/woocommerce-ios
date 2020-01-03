@@ -4,7 +4,7 @@ import Yosemite
 
 /// Results controllers used to render the Refund Details view
 ///
-final class RefundDetailsResultControllers {
+final class RefundDetailsResultController {
     /// Product ResultsController.
     ///
     private lazy var productResultsController: ResultsController<StorageProduct> = {
@@ -30,7 +30,7 @@ final class RefundDetailsResultControllers {
 
 // MARK: - Configuring results controllers
 //
-private extension RefundDetailsResultControllers {
+private extension RefundDetailsResultController {
     /// Handle product event changes
     ///
     private func configureProductResultsController(onReload: @escaping () -> Void) {

@@ -1,20 +1,14 @@
 import Foundation
 
-/// `UnitInputFormatter` implementation for decimal number input.
+/// `UnitInputFormatter` implementation for integer number input.
 ///
-struct DecimalInputFormatter: UnitInputFormatter {
-    private let numberFormatter: NumberFormatter = {
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        return numberFormatter
-    }()
-
+struct IntegerInputFormatter: UnitInputFormatter {
     func isValid(input: String) -> Bool {
         guard input.isEmpty == false else {
             // Allows empty input to be replaced by 0.
             return true
         }
-        return numberFormatter.number(from: input) != nil
+        return Int(input) != nil
     }
 
     func format(input text: String?) -> String {

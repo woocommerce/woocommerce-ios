@@ -43,10 +43,14 @@ private extension ProductShippingClassStore {
     func synchronizeProductShippingClassModels(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductShippingClassRemote(network: network)
 
-        remote.loadAll(for: siteID) { [weak self] (models, error) in
+        remote.loadAll(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (models, error) in
             guard let models = models else {
                 onCompletion(error)
                 return
+            }
+
+            if pageNumber == Default.firstPageNumber {
+                self?.deleteStoredProductShippingClassModels(siteID: siteID)
             }
 
             self?.upsertStoredProductShippingClassModelsInBackground(readOnlyProductShippingClassModels: models,
@@ -72,6 +76,14 @@ private extension ProductShippingClassStore {
                                                         onCompletion(model, nil)
             }
         }
+    }
+
+    /// Deletes any Storage.ProductShippingClass with the specified `siteID` and `productID`
+    ///
+    func deleteStoredProductShippingClassModels(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProductShippingClasses(siteID: siteID)
+        storage.saveIfNeeded()
     }
 }
 

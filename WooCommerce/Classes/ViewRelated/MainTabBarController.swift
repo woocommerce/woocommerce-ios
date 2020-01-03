@@ -255,8 +255,8 @@ extension MainTabBarController {
 
     /// Switches to the Orders tab and pops to the root view controller
     ///
-    static func switchToOrdersTab() {
-        navigateTo(.orders)
+    static func switchToOrdersTab(completion: (() -> Void)? = nil) {
+        navigateTo(.orders, completion: completion)
     }
 
     /// Switches to the Reviews tab and pops to the root view controller
@@ -304,15 +304,40 @@ extension MainTabBarController {
         ordersViewController.statusFilter = statusFilter
     }
 
-    /// Switches to the Notifications Tab, and displays the details for the specified Notification ID.
+    /// Syncs the notification given the ID, and handles the notification based on its notification kind.
     ///
     static func presentNotificationDetails(for noteID: Int64) {
-        switchToReviewsTab {
-            guard let reviewsViewController: ReviewsViewController = childViewController() else {
+        let action = NotificationAction.synchronizeNotification(noteID: noteID) { note, error in
+            guard let note = note else {
                 return
             }
-            reviewsViewController.presentDetails(for: noteID)
+            presentNotificationDetails(for: note)
         }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    private static func presentNotificationDetails(for note: Note) {
+        switch note.kind {
+        case .storeOrder:
+            switchToOrdersTab {
+                guard let ordersViewController: OrdersViewController = childViewController() else {
+                    return
+                }
+                ordersViewController.presentDetails(for: note)
+            }
+        case .comment:
+            switchToReviewsTab {
+                guard let reviewsViewController: ReviewsViewController = childViewController() else {
+                    return
+                }
+                reviewsViewController.presentDetails(for: note.noteID)
+            }
+        default:
+            break
+        }
+
+        ServiceLocator.analytics.track(.notificationOpened, withProperties: [ "type": note.kind.rawValue,
+                                                                              "already_read": note.read ])
     }
 
     /// Switches to the My Store Tab, and presents the Settings .

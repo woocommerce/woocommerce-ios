@@ -36,7 +36,7 @@ final class AppSettingsStoreTests_StatsVersion: XCTestCase {
     }
 
     func testStatsVersionLastShownActions() {
-        let siteID = 134
+        let siteID: Int64 = 134
 
         let initialReadAction = AppSettingsAction.loadInitialStatsVersionToShow(siteID: siteID) { statsVersionLastShown in
             // Before any write actions, the stats version should be nil.
@@ -55,8 +55,8 @@ final class AppSettingsStoreTests_StatsVersion: XCTestCase {
     }
 
     func testStatsVersionLastShownWithTwoSites() {
-        let siteID1 = 134
-        let siteID2 = 268
+        let siteID1: Int64 = 134
+        let siteID2: Int64 = 268
 
         let statsVersionForSite1 = StatsVersion.v4
         let statsVersionForSite2 = StatsVersion.v3
@@ -77,7 +77,7 @@ final class AppSettingsStoreTests_StatsVersion: XCTestCase {
     }
 
     func testStatsVersionEligibleActions() {
-        let siteID = 134
+        let siteID: Int64 = 134
 
         let initialReadAction = AppSettingsAction.loadStatsVersionEligible(siteID: siteID) { eligibleStatsVersion in
             // Before any write actions, the stats version should be nil.

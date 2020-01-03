@@ -8,7 +8,7 @@ class SiteAPIMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 242424
+    private let dummySiteID: Int64 = 242424
 
     /// Dummy Site Namespaces.
     ///

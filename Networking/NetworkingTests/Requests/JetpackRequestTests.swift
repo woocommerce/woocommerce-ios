@@ -12,7 +12,7 @@ final class JetpackRequestTests: XCTestCase {
 
     /// Sample SiteID
     ///
-    private let sampleSiteID = 1234
+    private let sampleSiteID: Int64 = 1234
 
     /// RPC Sample Method Path
     ///

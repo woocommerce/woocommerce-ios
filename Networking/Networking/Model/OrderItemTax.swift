@@ -7,7 +7,7 @@ public struct OrderItemTax: Codable {
 
     /// Tax ID for line item
     ///
-    public let taxID: Int
+    public let taxID: Int64
 
     /// Tax subtotal
     ///
@@ -19,7 +19,7 @@ public struct OrderItemTax: Codable {
 
     /// OrderItemTax struct initializer
     ///
-    public init(taxID: Int, subtotal: String, total: String) {
+    public init(taxID: Int64, subtotal: String, total: String) {
         self.taxID = taxID
         self.subtotal = subtotal
         self.total = total
@@ -30,7 +30,7 @@ public struct OrderItemTax: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let taxID = try container.decode(Int.self, forKey: .taxID)
+        let taxID = try container.decode(Int64.self, forKey: .taxID)
         let subtotal = try container.decode(String.self, forKey: .subtotal)
         let total = try container.decode(String.self, forKey: .total)
 

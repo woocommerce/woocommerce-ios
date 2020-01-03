@@ -9,7 +9,7 @@ extension Storage.OrderNote: ReadOnlyConvertible {
     /// Updates the Storage.OrderCoupon with the ReadOnly.
     ///
     public func update(with orderNote: Yosemite.OrderNote) {
-        noteID = Int64(orderNote.noteID)
+        noteID = orderNote.noteID
         dateCreated = orderNote.dateCreated
         note = orderNote.note
         isCustomerNote = orderNote.isCustomerNote
@@ -19,7 +19,7 @@ extension Storage.OrderNote: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.OrderNote {
-        return OrderNote(noteId: Int(noteID),
+        return OrderNote(noteID: noteID,
                          dateCreated: dateCreated ?? Date(),
                          note: note ?? "",
                          isCustomerNote: isCustomerNote,

@@ -24,9 +24,9 @@ class BetaFeaturesViewController: UIViewController {
     ///
     private var sections = [Section]()
 
-    private let siteID: Int
+    private let siteID: Int64
 
-    init(siteID: Int) {
+    init(siteID: Int64) {
         self.siteID = siteID
         super.init(nibName: nil, bundle: nil)
     }

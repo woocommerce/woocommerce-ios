@@ -35,7 +35,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
     // MARK: Variations
 
     func testDetailsForProductWithOneVariation() {
-        let variations = [134]
+        let variations: [Int64] = [134]
         let product = productMock(name: "Yay", variations: variations)
         let viewModel = ProductsTabProductViewModel(product: product)
         let detailsText = viewModel.detailsAttributedString.string
@@ -45,7 +45,7 @@ final class ProductsTabProductViewModelTests: XCTestCase {
     }
 
     func testDetailsForProductWithMultipleVariations() {
-        let variations = [201, 134]
+        let variations: [Int64] = [201, 134]
         let product = productMock(name: "Yay", variations: variations)
         let viewModel = ProductsTabProductViewModel(product: product)
         let detailsText = viewModel.detailsAttributedString.string
@@ -60,7 +60,7 @@ extension ProductsTabProductViewModelTests {
     func productMock(name: String = "Hogsmeade",
                      stockQuantity: Int? = nil,
                      stockStatus: ProductStockStatus = .inStock,
-                     variations: [Int] = [],
+                     variations: [Int64] = [],
                      images: [ProductImage] = []) -> Product {
 
         let mock = MockProduct()

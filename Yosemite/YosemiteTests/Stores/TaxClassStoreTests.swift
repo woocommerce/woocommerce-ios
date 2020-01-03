@@ -32,7 +32,7 @@ final class TaxClassStoreTests: XCTestCase {
 
     /// Testing SiteID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     // MARK: - Overridden Methods
 

@@ -21,10 +21,15 @@ struct ProductsTabProductViewModel {
     let name: String
     let detailsAttributedString: NSAttributedString
 
-    init(product: Product) {
+    // Dependency for configuring the view.
+    let imageService: ImageService
+
+    init(product: Product, imageService: ImageService = ServiceLocator.imageService) {
         imageUrl = product.images.first?.src
         name = product.name
         detailsAttributedString = product.createDetailsAttributedString()
+
+        self.imageService = imageService
     }
 }
 

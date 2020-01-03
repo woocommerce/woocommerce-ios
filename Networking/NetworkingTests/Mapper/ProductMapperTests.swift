@@ -8,15 +8,15 @@ class ProductMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 33334444
+    private let dummySiteID: Int64 = 33334444
 
     /// Dummy Product ID.
     ///
-    private let dummyProductID = 282
+    private let dummyProductID: Int64 = 282
 
     /// Dummy Product Variation ID.
     ///
-    private let dummyProductVariationID = 295
+    private let dummyProductVariationID: Int64 = 295
 
     /// Verifies that all of the Product Fields are parsed correctly.
     ///

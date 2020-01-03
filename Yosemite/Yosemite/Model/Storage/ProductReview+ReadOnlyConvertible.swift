@@ -9,9 +9,9 @@ extension Storage.ProductReview: ReadOnlyConvertible {
     /// Updates the Storage.ProductReview with the ReadOnly.
     ///
     public func update(with review: Yosemite.ProductReview) {
-        siteID              = Int64(review.siteID)
-        reviewID            = Int64(review.reviewID)
-        productID           = Int64(review.productID)
+        siteID              = review.siteID
+        reviewID            = review.reviewID
+        productID           = review.productID
         dateCreated         = review.dateCreated
         statusKey           = review.statusKey
         reviewer            = review.reviewer
@@ -25,9 +25,9 @@ extension Storage.ProductReview: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductReview {
-        return ProductReview(siteID: Int(siteID),
-                             reviewID: Int(reviewID),
-                             productID: Int(productID),
+        return ProductReview(siteID: siteID,
+                             reviewID: reviewID,
+                             productID: productID,
                              dateCreated: dateCreated ?? Date(),
                              statusKey: statusKey ?? "",
                              reviewer: reviewer ?? "" ,

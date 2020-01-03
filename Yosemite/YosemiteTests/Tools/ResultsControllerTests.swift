@@ -113,7 +113,7 @@ class ResultsControllerTests: XCTestCase {
         let indexPath = IndexPath(row: 0, section: 0)
         let readOnlyAccount = resultsController.object(at: indexPath)
 
-        XCTAssertEqual(Int(mutableAccount.userID), readOnlyAccount.userID)
+        XCTAssertEqual(mutableAccount.userID, readOnlyAccount.userID)
         XCTAssertEqual(mutableAccount.displayName, readOnlyAccount.displayName)
     }
 
@@ -297,8 +297,8 @@ class ResultsControllerTests: XCTestCase {
                 let expected = resultsController.object(at: indexPath)
                 let retrieved = resultsController.fetchedObjects[objectIndex]
 
-                XCTAssertEqual(retrieved.userID, Int(expected.userID))
-                XCTAssertEqual(object.userID, Int(expected.userID))
+                XCTAssertEqual(retrieved.userID, expected.userID)
+                XCTAssertEqual(object.userID, expected.userID)
             }
         }
     }

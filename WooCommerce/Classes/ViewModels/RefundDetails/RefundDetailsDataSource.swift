@@ -202,7 +202,7 @@ extension RefundDetailsDataSource {
         }()
 
         let reason: Section? = {
-            guard viewModel.refundReason != nil else {
+            guard viewModel.refundReason?.isEmpty == false else {
                 return nil
             }
 

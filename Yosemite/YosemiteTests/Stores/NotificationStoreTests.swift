@@ -130,7 +130,7 @@ class NotificationStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
 
-        let syncAction = NotificationAction.synchronizeNotification(noteID: notificationId) { error in
+        let syncAction = NotificationAction.synchronizeNotification(noteID: notificationId) { note, error  in
             let note = self.viewStorage.loadNotification(noteID: notificationId)
             XCTAssertNil(error)
             XCTAssertNotNil(note)

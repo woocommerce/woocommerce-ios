@@ -74,7 +74,6 @@ private extension NotificationStore {
                               completion: onCompletion)
     }
 
-
     /// Unregisters a Dotcom Device from the Push Notifications Delivery Subsystem.
     ///
     func unregisterDevice(deviceId: String, onCompletion: @escaping (Error?) -> Void) {
@@ -126,17 +125,17 @@ private extension NotificationStore {
     ///     - noteID: Notification ID of the note to be downloaded.
     ///     - onCompletion: Closure to be executed on completion.
     ///
-    func synchronizeNotification(with noteID: Int64, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeNotification(with noteID: Int64, onCompletion: @escaping (Note?, Error?) -> Void) {
         let remote = NotificationsRemote(network: network)
 
         remote.loadNotes(noteIDs: [noteID]) { notes, error in
             guard let notes = notes else {
-                onCompletion(error)
+                onCompletion(nil, error)
                 return
             }
 
             self.updateLocalNotes(with: notes) {
-                onCompletion(nil)
+                onCompletion(notes.first, nil)
             }
         }
     }

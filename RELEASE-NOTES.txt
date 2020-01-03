@@ -1,6 +1,7 @@
 3.4
 -----
 - bugfix: on the Order Details screen, the product quantity title in the 2-column header view aligns to the right now
+- bugfix: tapping on a new Order push notification, it used to go to the Reviews tab. Now it should go to the new Order screen
 - bugfix: on the Products tab, if tapping on a Product and then switching stores, the old Product details used to remain on the Products tab. Now the Product list is always shown on the Products tab after switching stores.
 - Dark mode: colors are updated up to design for the navigation bar, tab bar, Fulfill Order > add tracking icon, Review Details > product link icon.
 - bugfix/enhancement: on the Products tab, if there are no Products the "Work In Progress" banner is shown with an image placeholder below now.

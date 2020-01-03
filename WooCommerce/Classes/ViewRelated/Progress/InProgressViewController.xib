@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
-        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <objects>
@@ -24,13 +23,13 @@
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="8pm-FD-1B3">
-                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
+                    <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                     <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" id="aqc-qD-gTF">
-                        <rect key="frame" x="0.0" y="0.0" width="414" height="818"/>
+                        <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="fQw-aK-Jka">
-                                <rect key="frame" x="30" y="378.5" width="354" height="61"/>
+                                <rect key="frame" x="30" y="417.5" width="354" height="61"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="n5k-uL-oTu">
                                         <rect key="frame" x="156" y="0.0" width="42" height="20.5"/>
@@ -65,12 +64,11 @@
             </subviews>
             <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
             <constraints>
-                <constraint firstItem="8pm-FD-1B3" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="1Ds-ba-kai"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="8pm-FD-1B3" secondAttribute="trailing" id="6U4-ZD-P8S"/>
-                <constraint firstItem="8pm-FD-1B3" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="UcI-lR-0Gy"/>
-                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="8pm-FD-1B3" secondAttribute="bottom" id="fNb-Lk-x40"/>
+                <constraint firstItem="8pm-FD-1B3" firstAttribute="top" secondItem="i5M-Pr-FkT" secondAttribute="top" id="1Ds-ba-kai"/>
+                <constraint firstAttribute="trailing" secondItem="8pm-FD-1B3" secondAttribute="trailing" id="6U4-ZD-P8S"/>
+                <constraint firstItem="8pm-FD-1B3" firstAttribute="leading" secondItem="i5M-Pr-FkT" secondAttribute="leading" id="UcI-lR-0Gy"/>
+                <constraint firstAttribute="bottom" secondItem="8pm-FD-1B3" secondAttribute="bottom" id="fNb-Lk-x40"/>
             </constraints>
-            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
             <point key="canvasLocation" x="132" y="79"/>
         </view>
     </objects>

@@ -5,6 +5,8 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    private let siteID: Int64
+
     // Editable data - shared.
     //
     private var sku: String?
@@ -32,6 +34,8 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.onCompletion = completion
+
+        self.siteID = product.siteID
 
         self.sku = product.sku
         self.manageStockEnabled = product.manageStock
@@ -131,13 +135,23 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     @objc func completeUpdating() {
-        let data = ProductInventoryEditableData(sku: sku,
-                                                manageStock: manageStockEnabled,
-                                                soldIndividually: soldIndividually,
-                                                stockQuantity: stockQuantity,
-                                                backordersSetting: backordersSetting,
-                                                stockStatus: stockStatus)
-        onCompletion(data)
+        let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
+            guard let self = self else {
+                return
+            }
+            guard isValid else {
+                self.displayError(error: .duplicatedSKU)
+                return
+            }
+            let data = ProductInventoryEditableData(sku: self.sku,
+                                                    manageStock: self.manageStockEnabled,
+                                                    soldIndividually: self.soldIndividually,
+                                                    stockQuantity: self.stockQuantity,
+                                                    backordersSetting: self.backordersSetting,
+                                                    stockStatus: self.stockStatus)
+            self.onCompletion(data)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -153,6 +167,27 @@ private extension ProductInventorySettingsViewController {
             return
         }
         self.stockQuantity = Int(stockQuantity)
+    }
+}
+
+// MARK: - Error handling
+//
+private extension ProductInventorySettingsViewController {
+    func displayError(error: ProductUpdateError) {
+        displayErrorAlert(title: error.alertTitle, message: error.alertMessage)
+    }
+
+    func displayErrorAlert(title: String?, message: String?) {
+        let alert = UIAlertController(title: title,
+                                      message: message,
+                                      preferredStyle: .alert)
+        let cancel = UIAlertAction(title: NSLocalizedString(
+            "OK",
+            comment: "Dismiss button on the alert when there is an error updating the product"
+        ), style: .cancel, handler: nil)
+        alert.addAction(cancel)
+
+        present(alert, animated: true, completion: nil)
     }
 }
 

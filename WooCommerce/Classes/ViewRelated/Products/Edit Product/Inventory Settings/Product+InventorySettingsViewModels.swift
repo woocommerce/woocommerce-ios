@@ -17,7 +17,7 @@ extension Product {
                                   unit: "",
                                   value: "\(stockQuantity ?? 0)",
                                   keyboardType: .numberPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  inputFormatter: IntegerInputFormatter(),
                                   onInputChange: onInputChange)
     }
 }

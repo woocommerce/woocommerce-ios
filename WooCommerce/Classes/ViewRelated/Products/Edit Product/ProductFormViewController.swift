@@ -102,14 +102,7 @@ private extension ProductFormViewController {
     func displayError(error: ProductUpdateError?) {
         let title = NSLocalizedString("Cannot update Product", comment: "The title of the alert when there is an error updating the product")
 
-        let message: String?
-        switch error {
-        case .invalidSKU:
-            message = NSLocalizedString("The SKU is used for another product or is invalid. Please check the inventory settings.",
-                                        comment: "The message of the alert when there is an error updating the product SKU")
-        default:
-            message = nil
-        }
+        let message = error?.alertMessage
 
         displayErrorAlert(title: title, message: message)
     }

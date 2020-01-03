@@ -40,6 +40,8 @@ public class ProductStore: Store {
             requestMissingProducts(for: order, onCompletion: onCompletion)
         case .updateProduct(let product, let onCompletion):
             updateProduct(product: product, onCompletion: onCompletion)
+        case .validateProductSKU(let sku, let siteID, let onCompletion):
+            validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -189,6 +191,23 @@ private extension ProductStore {
                 onCompletion(product, nil)
             }
         }
+    }
+
+    /// Validates the Product SKU against other Products in storage.
+    ///
+    func validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
+        guard let sku = sku, sku.isEmpty == false else {
+            // It is valid to not have a sku.
+            onCompletion(true)
+            return
+        }
+
+        guard let products = storageManager.viewStorage.loadProducts(siteID: siteID) else {
+            onCompletion(true)
+            return
+        }
+        let anyProductHasTheSameSKU = products.compactMap({ $0.sku }).contains(sku)
+        onCompletion(anyProductHasTheSameSKU == false)
     }
 }
 
@@ -469,10 +488,12 @@ extension ProductStore {
 
 /// An error that occurs while updating a Product.
 ///
+/// - duplicatedSKU: the SKU is used by another Product.
 /// - invalidSKU: the SKU is invalid or duplicated.
 /// - unknown: other error cases.
 ///
 public enum ProductUpdateError: Error {
+    case duplicatedSKU
     case invalidSKU
     case unknown
 

@@ -2,8 +2,8 @@ import XCTest
 
 @testable import WooCommerce
 
-final class DecimalInputFormatterTests: XCTestCase {
-    private let formatter = DecimalInputFormatter()
+final class IntegerInputFormatterTests: XCTestCase {
+    private let formatter = IntegerInputFormatter()
 
     // MARK: test cases for `isValid(input:)`
 
@@ -17,19 +17,19 @@ final class DecimalInputFormatterTests: XCTestCase {
         XCTAssertFalse(formatter.isValid(input: input))
     }
 
-    func testDecimalInputIsValid() {
+    func testDecimalInputIsNotValid() {
         let input = "9990.52"
-        XCTAssertTrue(formatter.isValid(input: input))
+        XCTAssertFalse(formatter.isValid(input: input))
     }
 
     func testTrailingPointInputIsValid() {
         let input = "9990."
-        XCTAssertTrue(formatter.isValid(input: input))
+        XCTAssertFalse(formatter.isValid(input: input))
     }
 
-    func testLeadingPointInputIsInvalid() {
-        let input = "."
-        XCTAssertFalse(formatter.isValid(input: input))
+    func testIntegerInputIsValid() {
+        let input = "888888"
+        XCTAssertTrue(formatter.isValid(input: input))
     }
 
     // MARK: test cases for `format(input:)`
@@ -40,18 +40,8 @@ final class DecimalInputFormatterTests: XCTestCase {
     }
 
     func testFormattingInputWithLeadingZeros() {
-        let input = "00123.91"
-        XCTAssertEqual(formatter.format(input: input), "123.91")
-    }
-
-    func testFormattingInputWithLeadingZerosFollowedByDecimalPoint() {
-        let input = "000.91"
-        XCTAssertEqual(formatter.format(input: input), "0.91")
-    }
-
-    func testFormattingDecimalInput() {
-        let input = "0.314"
-        XCTAssertEqual(formatter.format(input: input), "0.314")
+        let input = "0012391"
+        XCTAssertEqual(formatter.format(input: input), "12391")
     }
 
     func testFormattingIntegerInput() {

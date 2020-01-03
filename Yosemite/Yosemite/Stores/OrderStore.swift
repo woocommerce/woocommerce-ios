@@ -62,7 +62,7 @@ private extension OrderStore {
 
     /// Searches all of the orders that contain a given Keyword.
     ///
-    func searchOrders(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
         remote.searchOrders(for: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
@@ -79,7 +79,7 @@ private extension OrderStore {
 
     /// Retrieves the orders associated with a given Site ID (if any!).
     ///
-    func synchronizeOrders(siteID: Int, statusKey: String?, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeOrders(siteID: Int64, statusKey: String?, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
         remote.loadAllOrders(for: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (orders, error) in
@@ -96,7 +96,7 @@ private extension OrderStore {
 
     /// Retrieves a specific order associated with a given Site ID (if any!).
     ///
-    func retrieveOrder(siteID: Int, orderID: Int, onCompletion: @escaping (Order?, Error?) -> Void) {
+    func retrieveOrder(siteID: Int64, orderID: Int64, onCompletion: @escaping (Order?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
         remote.loadOrder(for: siteID, orderID: orderID) { [weak self] (order, error) in
@@ -116,7 +116,7 @@ private extension OrderStore {
 
     /// Updates an Order with the specified Status.
     ///
-    func updateOrder(siteID: Int, orderID: Int, statusKey: String, onCompletion: @escaping (Error?) -> Void) {
+    func updateOrder(siteID: Int64, orderID: Int64, statusKey: String, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically update the Status
         let oldStatus = updateOrderStatus(orderID: orderID, statusKey: statusKey)
 
@@ -134,7 +134,7 @@ private extension OrderStore {
         }
     }
 
-    func countProcessingOrders(siteID: Int, onCompletion: @escaping (OrderCount?, Error?) -> Void) {
+    func countProcessingOrders(siteID: Int64, onCompletion: @escaping (OrderCount?, Error?) -> Void) {
         let remote = OrdersRemote(network: network)
 
         let status = OrderStatusEnum.processing.rawValue
@@ -159,7 +159,7 @@ extension OrderStore {
 
     /// Deletes any Storage.Order with the specified OrderID
     ///
-    func deleteStoredOrder(orderID: Int) {
+    func deleteStoredOrder(orderID: Int64) {
         let storage = storageManager.viewStorage
         guard let order = storage.loadOrder(orderID: orderID) else {
             return
@@ -174,7 +174,7 @@ extension OrderStore {
     /// - Returns: Status, prior to performing the Update OP.
     ///
     @discardableResult
-    func updateOrderStatus(orderID: Int, statusKey: String) -> String {
+    func updateOrderStatus(orderID: Int64, statusKey: String) -> String {
         let storage = storageManager.viewStorage
         guard let order = storage.loadOrder(orderID: orderID) else {
             return statusKey
@@ -418,7 +418,7 @@ private extension OrderStore {
 
     /// Updates the stored OrderCount with the new OrderCount fetched from the remote
     ///
-    private func upsertOrderCountInBackground(siteID: Int, readOnlyOrderCount: Networking.OrderCount, onCompletion: @escaping () -> Void) {
+    private func upsertOrderCountInBackground(siteID: Int64, readOnlyOrderCount: Networking.OrderCount, onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             self.updateOrderCountResults(siteID: siteID, readOnlyOrderCount: readOnlyOrderCount, in: derivedStorage)
@@ -429,7 +429,7 @@ private extension OrderStore {
         }
     }
 
-    private func updateOrderCountResults(siteID: Int, readOnlyOrderCount: Networking.OrderCount, in storage: StorageType) {
+    private func updateOrderCountResults(siteID: Int64, readOnlyOrderCount: Networking.OrderCount, in storage: StorageType) {
         storage.deleteAllObjects(ofType: Storage.OrderCountItem.self)
         storage.deleteAllObjects(ofType: Storage.OrderCount.self)
 

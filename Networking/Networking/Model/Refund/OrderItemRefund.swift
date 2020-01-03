@@ -4,10 +4,10 @@ import Foundation
 /// Represents an Order Item to be Refunded
 ///
 public struct OrderItemRefund: Codable {
-    public let itemID: Int
+    public let itemID: Int64
     public let name: String
-    public let productID: Int
-    public let variationID: Int
+    public let productID: Int64
+    public let variationID: Int64
     public let quantity: Decimal
 
     /// Price is a currency.
@@ -26,10 +26,10 @@ public struct OrderItemRefund: Codable {
 
     /// OrderItemRefund struct initializer.
     ///
-    public init(itemID: Int,
+    public init(itemID: Int64,
                 name: String,
-                productID: Int,
-                variationID: Int,
+                productID: Int64,
+                variationID: Int64,
                 quantity: Decimal,
                 price: NSDecimalNumber,
                 sku: String?,
@@ -59,10 +59,10 @@ public struct OrderItemRefund: Codable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let itemID = try container.decode(Int.self, forKey: .itemID)
+        let itemID = try container.decode(Int64.self, forKey: .itemID)
         let name = try container.decode(String.self, forKey: .name)
-        let productID = try container.decode(Int.self, forKey: .productID)
-        let variationID = try container.decode(Int.self, forKey: .variationID)
+        let productID = try container.decode(Int64.self, forKey: .productID)
+        let variationID = try container.decode(Int64.self, forKey: .variationID)
 
         let quantity = try container.decode(Decimal.self, forKey: .quantity)
         let decimalPrice = try container.decodeIfPresent(Decimal.self, forKey: .price) ?? Decimal(0)

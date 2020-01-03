@@ -3,12 +3,12 @@ import Foundation
 /// Represents order stats over a specific period.
 /// v4 API
 public struct OrderStatsV4: Decodable {
-    public let siteID: Int
+    public let siteID: Int64
     public let granularity: StatsGranularityV4
     public let totals: OrderStatsV4Totals
     public let intervals: [OrderStatsV4Interval]
 
-    public init(siteID: Int,
+    public init(siteID: Int64,
                 granularity: StatsGranularityV4,
                 totals: OrderStatsV4Totals,
                 intervals: [OrderStatsV4Interval]) {
@@ -19,7 +19,7 @@ public struct OrderStatsV4: Decodable {
     }
 
     public init(from decoder: Decoder) throws {
-        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw OrderStatsV4APIError.missingSiteID
         }
 

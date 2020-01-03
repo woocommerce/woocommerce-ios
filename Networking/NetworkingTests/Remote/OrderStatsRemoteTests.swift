@@ -12,7 +12,7 @@ class OrderStatsRemoteTests: XCTestCase {
 
     /// Dummy Site ID
     ///
-    let sampleSiteID = 1234
+    let sampleSiteID: Int64 = 1234
 
     /// Repeat always!
     ///

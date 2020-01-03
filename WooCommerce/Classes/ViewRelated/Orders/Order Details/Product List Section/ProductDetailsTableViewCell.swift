@@ -141,9 +141,13 @@ private extension ProductDetailsTableViewCell {
 // MARK: - Public Methods
 //
 extension ProductDetailsTableViewCell {
-    func configure(item: OrderItemViewModel) {
+    func configure(item: OrderItemViewModel, imageService: ImageService) {
 
-        productImageView.setImage(with: item.imageURL?.absoluteString, placeholder: UIImage.productPlaceholderImage)
+        imageService.downloadAndCacheImageForImageView(productImageView,
+                                                       with: item.imageURL?.absoluteString,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
 
         name = item.name
         quantity = item.quantity

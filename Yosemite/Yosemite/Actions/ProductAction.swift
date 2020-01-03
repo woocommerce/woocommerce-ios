@@ -8,19 +8,19 @@ public enum ProductAction: Action {
 
     /// Searches products that contain a given keyword.
     ///
-    case searchProducts(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+    case searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
     /// Synchronizes the Products matching the specified criteria.
     ///
-    case synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+    case synchronizeProducts(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
     /// Retrieves the specified Product.
     ///
-    case retrieveProduct(siteID: Int, productID: Int, onCompletion: (Product?, Error?) -> Void)
+    case retrieveProduct(siteID: Int64, productID: Int64, onCompletion: (Product?, Error?) -> Void)
 
     /// Retrieves a specified list of Products.
     ///
-    case retrieveProducts(siteID: Int, productIDs: [Int], onCompletion: (Error?) -> Void)
+    case retrieveProducts(siteID: Int64, productIDs: [Int64], onCompletion: (Error?) -> Void)
 
     /// Deletes all of the cached products.
     ///

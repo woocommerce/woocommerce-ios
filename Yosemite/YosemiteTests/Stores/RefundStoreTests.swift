@@ -28,23 +28,23 @@ class RefundStoreTests: XCTestCase {
 
     /// Testing SiteID
     ///
-    private let sampleSiteID = 999
+    private let sampleSiteID: Int64 = 999
 
     /// Testing SitID #2
     ///
-    private let sampleSiteID2 = 187634
+    private let sampleSiteID2: Int64 = 187634
 
     /// Testing OrderID
     ///
-    private let sampleOrderID = 560
+    private let sampleOrderID: Int64 = 560
 
     /// Testing RefundID
     ///
-    private let sampleRefundID = 590
+    private let sampleRefundID: Int64 = 590
 
     /// RefundID for a single refund
     ///
-    private let refundID = 562
+    private let refundID: Int64 = 562
 
     /// Testing Page Number
     ///
@@ -426,7 +426,7 @@ private extension RefundStoreTests {
 
     /// Generate a sample Refund
     ///
-    func sampleRefund(_ siteID: Int? = nil) -> Networking.Refund {
+    func sampleRefund(_ siteID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
         let testDate = date(with: "2019-10-09T16:18:23")
         return Refund(refundID: sampleRefundID,
@@ -443,7 +443,7 @@ private extension RefundStoreTests {
 
     /// Generate a mutated Refund
     ///
-    func sampleRefundMutated(_ siteID: Int? = nil) -> Networking.Refund {
+    func sampleRefundMutated(_ siteID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
         let testDate = date(with: "2019-10-09T16:18:23")
         return Refund(refundID: sampleRefundID,
@@ -460,7 +460,7 @@ private extension RefundStoreTests {
 
     /// Generate a single Refund
     ///
-    func sampleRefund2(_ siteID: Int? = nil) -> Networking.Refund {
+    func sampleRefund2(_ siteID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
         let testDate = date(with: "2019-10-01T19:33:46")
         return Refund(refundID: refundID,

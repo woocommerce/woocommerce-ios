@@ -8,7 +8,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 424242
+    private let dummySiteID: Int64 = 424242
 
 
     /// Verifies that all of the Order Fields are parsed correctly.

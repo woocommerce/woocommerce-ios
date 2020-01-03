@@ -7,7 +7,7 @@ import UIKit
 /// - results: the results are shown
 enum PaginatedListViewControllerState {
     case noResultsPlaceholder
-    case syncing(withExistingData: Bool)
+    case syncing(pageNumber: Int)
     case results
 }
 
@@ -53,11 +53,10 @@ final class PaginatedListViewControllerStateCoordinator {
         }
     }
 
-    /// Should be called before Sync'ing. Transitions to either `results` or `placeholder` state, depending on whether if
-    /// we've got cached results, or not.
+    /// Should be called before Sync'ing.
     ///
-    func transitionToSyncingState(withExistingData: Bool) {
-        state = .syncing(withExistingData: withExistingData)
+    func transitionToSyncingState(pageNumber: Int) {
+        state = .syncing(pageNumber: pageNumber)
     }
 
     /// Should be called whenever the results are updated: after Sync'ing (or after applying a filter).

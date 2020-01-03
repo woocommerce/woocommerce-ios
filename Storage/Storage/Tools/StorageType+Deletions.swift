@@ -9,7 +9,7 @@ public extension StorageType {
 
     /// Deletes all of the stored Products for the provided siteID.
     ///
-    func deleteProducts(siteID: Int) {
+    func deleteProducts(siteID: Int64) {
         guard let products = loadProducts(siteID: siteID) else {
             return
         }

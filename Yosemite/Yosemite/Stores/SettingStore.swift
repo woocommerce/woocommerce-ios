@@ -43,7 +43,7 @@ private extension SettingStore {
 
     /// Synchronizes the general site settings associated with the provided Site ID (if any!).
     ///
-    func synchronizeGeneralSiteSettings(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
         let remote = SiteSettingsRemote(network: network)
         remote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
             guard let settings = settings else {
@@ -59,7 +59,7 @@ private extension SettingStore {
 
     /// Synchronizes the product site settings associated with the provided Site ID (if any!).
     ///
-    func synchronizeProductSiteSettings(siteID: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
         let remote = SiteSettingsRemote(network: network)
         remote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
             guard let settings = settings else {
@@ -76,7 +76,7 @@ private extension SettingStore {
     /// Retrieves the site API information associated with the provided Site ID (if any!).
     /// This call does NOT persist returned data into the Storage layer.
     ///
-    func retrieveSiteAPI(siteID: Int, onCompletion: @escaping (SiteAPI?, Error?) -> Void) {
+    func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (SiteAPI?, Error?) -> Void) {
         let remote = SiteAPIRemote(network: network)
         remote.loadAPIInformation(for: siteID) { (siteAPI, error) in
             onCompletion(siteAPI, error)
@@ -92,7 +92,7 @@ private extension SettingStore {
     /// Updates (OR Inserts) the specified **general** ReadOnly `SiteSetting` Entities **in a background thread**. `onCompletion` will be called
     /// on the main thread!
     ///
-    func upsertStoredGeneralSettingsInBackground(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+    func upsertStoredGeneralSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.general)
@@ -106,7 +106,7 @@ private extension SettingStore {
     /// Updates (OR Inserts) the specified **product** ReadOnly `SiteSetting` entities **in a background thread**. `onCompletion` will be called
     /// on the main thread!
     ///
-    func upsertStoredProductSettingsInBackground(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
+    func upsertStoredProductSettingsInBackground(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform {
             self.upsertSettings(readOnlySiteSettings, in: derivedStorage, siteID: siteID, settingGroup: SiteSettingGroup.product)
@@ -117,7 +117,7 @@ private extension SettingStore {
         }
     }
 
-    func upsertSettings(_ readOnlySiteSettings: [SiteSetting], in storage: StorageType, siteID: Int, settingGroup: SiteSettingGroup) {
+    func upsertSettings(_ readOnlySiteSettings: [SiteSetting], in storage: StorageType, siteID: Int64, settingGroup: SiteSettingGroup) {
         // Upsert the settings from the read-only site settings
         for readOnlyItem in readOnlySiteSettings {
             if let existingStorageItem = storage.loadSiteSetting(siteID: siteID, settingID: readOnlyItem.settingID) {
@@ -146,13 +146,13 @@ extension SettingStore {
 
     /// Unit Testing Helper: Updates or Inserts the specified **general** ReadOnly SiteSetting entities in the provided Storage instance.
     ///
-    func upsertStoredGeneralSiteSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
+    func upsertStoredGeneralSiteSettings(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
         upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.general)
     }
 
     /// Unit Testing Helper: Updates or Inserts the specified **product** ReadOnly SiteSetting entities in the provided Storage instance.
     ///
-    func upsertStoredProductSiteSettings(siteID: Int, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
+    func upsertStoredProductSiteSettings(siteID: Int64, readOnlySiteSettings: [Networking.SiteSetting], in storage: StorageType) {
         upsertSettings(readOnlySiteSettings, in: storage, siteID: siteID, settingGroup: SiteSettingGroup.product)
     }
 }

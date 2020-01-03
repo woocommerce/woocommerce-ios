@@ -9,12 +9,12 @@ public class NotificationsRemote: Remote {
     /// Retrieves latest Notifications (OR collection of specified Notifications, whenever the NoteIds is present).
     ///
     /// - Parameters:
-    ///     - noteIds: Identifiers of notifications to retrieve.
+    ///     - noteIDs: Identifiers of notifications to retrieve.
     ///     - pageSize: Number of hashes to retrieve.
     ///     - completion: callback to be executed on completion.
     ///
-    public func loadNotes(noteIds: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([Note]?, Error?) -> Void) {
-        let request = requestForNotifications(fields: .all, noteIds: noteIds, pageSize: pageSize)
+    public func loadNotes(noteIDs: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([Note]?, Error?) -> Void) {
+        let request = requestForNotifications(fields: .all, noteIDs: noteIDs, pageSize: pageSize)
         let mapper = NoteListMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -24,12 +24,12 @@ public class NotificationsRemote: Remote {
     /// Retrieves the top N Hashes (or the latest hashes for the specified NoteIds).
     ///
     /// - Parameters:
-    ///     - noteIds: Identifiers of notifications to retrieve.
+    ///     - noteIDs: Identifiers of notifications to retrieve.
     ///     - pageSize: Number of hashes to retrieve.
     ///     - completion: callback to be executed on completion.
     ///
-    public func loadHashes(noteIds: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([NoteHash]?, Error?) -> Void) {
-        let request = requestForNotifications(fields: .hashes, noteIds: noteIds, pageSize: pageSize)
+    public func loadHashes(noteIDs: [Int64]? = nil, pageSize: Int? = nil, completion: @escaping ([NoteHash]?, Error?) -> Void) {
+        let request = requestForNotifications(fields: .hashes, noteIDs: noteIDs, pageSize: pageSize)
         let mapper = NoteHashListMapper()
 
         enqueue(request, mapper: mapper, completion: completion)
@@ -43,7 +43,7 @@ public class NotificationsRemote: Remote {
     ///     - read: The new Read Status to be set.
     ///     - completion: Closure to be executed on completion, indicating whether the OP was successful or not.
     ///
-    public func updateReadStatus(noteIds: [Int64], read: Bool, completion: @escaping (Error?) -> Void) {
+    public func updateReadStatus(noteIDs: [Int64], read: Bool, completion: @escaping (Error?) -> Void) {
         // Note: Isn't the API wonderful?
         //
         let booleanFromPlanetMars = read ? Constants.readAsInteger : Constants.unreadAsInteger
@@ -52,9 +52,9 @@ public class NotificationsRemote: Remote {
         //
         var payload = [String: Int]()
 
-        for noteId in noteIds {
-            let noteIdAsString = String(noteId)
-            payload[noteIdAsString] = booleanFromPlanetMars
+        for noteID in noteIDs {
+            let noteIDAsString = String(noteID)
+            payload[noteIDAsString] = booleanFromPlanetMars
         }
 
         // Parameters: [.counts: [Payload]]
@@ -111,18 +111,18 @@ private extension NotificationsRemote {
     /// Note that only the specified fields will be retrieved.
     ///
     /// - Parameters:
-    ///     - noteIds: Identifier for the notifications that should be loaded.
+    ///     - noteIDs: Identifier for the notifications that should be loaded.
     ///     - fields: List of comma separated fields, to be loaded.
     ///     - pageSize: Number of notifications to load.
     ///     - completion: Callback to be executed on completion.
     ///
-    func requestForNotifications(fields: Fields? = nil, noteIds: [Int64]? = nil, pageSize: Int?) -> DotcomRequest {
+    func requestForNotifications(fields: Fields? = nil, noteIDs: [Int64]? = nil, pageSize: Int?) -> DotcomRequest {
         var parameters = [ParameterKeys.locale: Locale.current.description]
         if let fields = fields {
             parameters[ParameterKeys.fields] = fields.rawValue
         }
 
-        if let notificationIds = noteIds {
+        if let notificationIds = noteIDs {
             let identifiersAsStrings = notificationIds.map { String($0) }
             parameters[ParameterKeys.identifiers] = identifiersAsStrings.joined(separator: ",")
         }

@@ -292,7 +292,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/shipping_classes/\(sampleShippingClassID)", filename: "product-shipping-classes-load-one")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
 
-        let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
+        let product = MockProduct().product(siteID: sampleSiteID, shippingClassID: sampleShippingClassID)
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         let action = ProductShippingClassAction
@@ -326,7 +326,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
             filename: "product-shipping-classes-load-one")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 0)
 
-        let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
+        let product = MockProduct().product(siteID: sampleSiteID, shippingClassID: sampleShippingClassID)
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         let action = ProductShippingClassAction
@@ -361,7 +361,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "products/shipping_classes/\(sampleShippingClassID)", filename: "generic_error")
 
-        let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
+        let product = MockProduct().product(siteID: sampleSiteID, shippingClassID: sampleShippingClassID)
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         let action = ProductShippingClassAction.retrieveProductShippingClass(siteID: sampleSiteID, remoteID: sampleShippingClassID) { (model, error) in
@@ -381,7 +381,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve ProductShippingClass empty response")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let product = MockProduct().product(siteID: Int(sampleSiteID), shippingClassID: Int(sampleShippingClassID))
+        let product = MockProduct().product(siteID: sampleSiteID, shippingClassID: sampleShippingClassID)
         storageManager.insertSampleProduct(readOnlyProduct: product)
 
         let action = ProductShippingClassAction.retrieveProductShippingClass(siteID: sampleSiteID, remoteID: sampleShippingClassID) { (model, error) in

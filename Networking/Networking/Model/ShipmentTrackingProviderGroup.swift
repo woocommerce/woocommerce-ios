@@ -9,19 +9,19 @@ public struct ShipmentTrackingProviderGroup {
 
     /// Site Identifier
     ///
-    public let siteID: Int
+    public let siteID: Int64
 
     /// Tracking providers belonging to the group
     ///
     public let providers: [ShipmentTrackingProvider]
 
-    public init(name: String, siteID: Int, providers: [ShipmentTrackingProvider]) {
+    public init(name: String, siteID: Int64, providers: [ShipmentTrackingProvider]) {
         self.name = name
         self.siteID = siteID
         self.providers = providers
     }
 
-    public init(name: String, siteID: Int, dictionary: [String: String]?) {
+    public init(name: String, siteID: Int64, dictionary: [String: String]?) {
         let providers = dictionary?.map({ ShipmentTrackingProvider(siteID: siteID, name: $0.key, url: $0.value) }) ?? []
         self.init(name: name, siteID: siteID, providers: providers)
     }

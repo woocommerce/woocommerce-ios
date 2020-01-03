@@ -25,6 +25,10 @@ final class ServiceLocator {
     ///
     private static var _featureFlagService: FeatureFlagService = DefaultFeatureFlagService()
 
+    /// ImageService
+    ///
+    private static var _imageService: ImageService = DefaultImageService()
+
     /// In-App Notifications Presenter
     ///
     private static var _noticePresenter: NoticePresenter = DefaultNoticePresenter()
@@ -60,6 +64,12 @@ final class ServiceLocator {
         return _featureFlagService
     }
 
+    /// Provides the access point to the image service.
+    /// - Returns: An implementation of the ImageService protocol. It defaults to DefaultImageService
+    static var imageService: ImageService {
+        return _imageService
+    }
+
     /// Provides the access point to the stores.
     /// - Returns: An implementation of the StoresManager protocol. It defaults to DefaultStoresManager
     static var stores: StoresManager {
@@ -88,8 +98,8 @@ final class ServiceLocator {
     ///
     static var shippingSettingsService: ShippingSettingsService {
         guard let shippingSettingsService = _shippingSettingsService else {
-            let siteID = stores.sessionManager.defaultStoreID ?? Int.min
-            let service = StorageShippingSettingsService(siteID: Int64(siteID),
+            let siteID = stores.sessionManager.defaultStoreID ?? Int64.min
+            let service = StorageShippingSettingsService(siteID: siteID,
                                                          storageManager: storageManager)
             _shippingSettingsService = service
             return service

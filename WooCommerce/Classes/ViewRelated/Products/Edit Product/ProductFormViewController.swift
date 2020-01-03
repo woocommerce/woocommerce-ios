@@ -226,12 +226,20 @@ private extension ProductFormViewController {
         }
         self.product = productUpdater.descriptionUpdated(description: newDescription)
     }
+}
 
+// MARK: Action - Edit Product Price Settings
+//
+private extension ProductFormViewController {
     func editPriceSettings() {
         let priceSettingsViewController = ProductPriceSettingsViewController(product: product)
         navigationController?.pushViewController(priceSettingsViewController, animated: true)
     }
+}
 
+// MARK: Action - Edit Product Shipping Settings
+//
+private extension ProductFormViewController {
     func editShippingSettings() {
         let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) { [weak self] (weight, dimensions, shippingClass) in
             self?.onEditShippingSettingsCompletion(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
@@ -254,8 +262,26 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editInventorySettings() {
-        let inventorySettingsViewController = ProductInventorySettingsViewController(product: product)
+        let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
+            self?.onEditInventorySettingsCompletion(data: data)
+        }
         navigationController?.pushViewController(inventorySettingsViewController, animated: true)
+    }
+
+    func onEditInventorySettingsCompletion(data: ProductInventoryEditableData) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        let originalData = ProductInventoryEditableData(product: product)
+        guard originalData != data else {
+            return
+        }
+        self.product = productUpdater.inventorySettingsUpdated(sku: data.sku,
+                                                               manageStock: data.manageStock,
+                                                               soldIndividually: data.soldIndividually,
+                                                               stockQuantity: data.stockQuantity,
+                                                               backordersSetting: data.backordersSetting,
+                                                               stockStatus: data.stockStatus)
     }
 }
 

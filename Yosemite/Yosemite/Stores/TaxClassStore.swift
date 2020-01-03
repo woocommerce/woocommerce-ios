@@ -44,10 +44,10 @@ private extension TaxClassStore {
 
     /// Retrieve and synchronizes the Tax Classes associated with a given Site ID (if any!).
     ///
-    func retrieveTaxClasses(siteID: Int, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
+    func retrieveTaxClasses(siteID: Int64, onCompletion: @escaping ([TaxClass]?, Error?) -> Void) {
         let remote = TaxClassRemote(network: network)
 
-        remote.loadAllTaxClasses(for: Int64(siteID)) { [weak self] (taxClasses, error) in
+        remote.loadAllTaxClasses(for: siteID) { [weak self] (taxClasses, error) in
             guard let taxClasses = taxClasses else {
                 onCompletion(nil, error)
                 return
@@ -73,7 +73,7 @@ private extension TaxClassStore {
     /// Synchronizes the Tax Class found in a specified Product.
     ///
     func requestMissingTaxClasses(for product: Product, onCompletion: @escaping (TaxClass?, Error?) -> Void) {
-        guard let taxClassFromStorage = product.taxClass else {
+        guard let taxClassFromStorage = product.taxClass, product.taxClass?.isEmpty == false else {
             onCompletion(nil, nil)
             return
         }
@@ -86,7 +86,7 @@ private extension TaxClassStore {
         }
         else {
             let remote = TaxClassRemote(network: network)
-            remote.loadAllTaxClasses(for: Int64(product.siteID)) { [weak self] (taxClasses, error) in
+            remote.loadAllTaxClasses(for: product.siteID) { [weak self] (taxClasses, error) in
                 guard let taxClasses = taxClasses else {
                     onCompletion(nil, error)
                     return

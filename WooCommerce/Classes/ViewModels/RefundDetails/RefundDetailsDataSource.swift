@@ -173,6 +173,14 @@ extension RefundDetailsDataSource {
     enum SectionTitle {
         static let product = NSLocalizedString("Product", comment: "Product section title")
         static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
+        static let refundDetails = NSLocalizedString("Refund Details", comment: "Refund Details section title")
+    }
+
+    /// Row Titles
+    ///
+    enum RowTitle {
+        static let refundAmount = NSLocalizedString("Refund Amount",
+                                                    comment: "Refund Details page > Refund Details section > The label that marks the refunded amount")
     }
 
     /// Table Rows

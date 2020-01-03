@@ -15,6 +15,10 @@ final class RefundDetailsDataSource: NSObject {
     ///
     private let order: Order
 
+    /// Refund Detail View Model
+    ///
+    private let viewModel: RefundDetailsViewModel
+
     /// Sections to be rendered
     ///
     private(set) var sections = [Section]()
@@ -35,6 +39,7 @@ final class RefundDetailsDataSource: NSObject {
     init(refund: Refund, order: Order) {
         self.refund = refund
         self.order = order
+        self.viewModel = RefundDetailsViewModel(order: order, refund: refund)
     }
 
     /// The results controllers used to display a refund
@@ -66,6 +71,7 @@ extension RefundDetailsDataSource: UITableViewDataSource {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
         configure(cell, for: row, at: indexPath)
+
         return cell
     }
 }
@@ -126,8 +132,6 @@ private extension RefundDetailsDataSource {
     /// Setup: ProductsRefund summary Cell
     ///
     private func configureProductsRefund(_ cell: PaymentTableViewCell, at indexPath: IndexPath) {
-        let viewModel = RefundDetailsViewModel(order: order, refund: refund)
-
         cell.selectionStyle = .none
         cell.configure(with: viewModel)
     }

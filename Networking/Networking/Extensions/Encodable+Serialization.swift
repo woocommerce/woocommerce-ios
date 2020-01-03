@@ -17,7 +17,7 @@ extension Encodable {
         let jsonEncoder = JSONEncoder()
         jsonEncoder.dateEncodingStrategy = .formatted(DateFormatter.Defaults.dateTimeFormatter)
         let data = try jsonEncoder.encode(self)
-       
+
         do {
             guard let dictionary = try JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] else {
                 throw EncodableError.jsonSerializationType

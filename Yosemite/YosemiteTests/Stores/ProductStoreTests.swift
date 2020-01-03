@@ -743,7 +743,7 @@ class ProductStoreTests: XCTestCase {
         let expectedProductSaleEnd = date(with: "2019-10-27T21:29:50")
         let expectedProductTaxStatus = "taxable"
         let expectedProductTaxClass = "reduced-rate"
-        
+
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
 

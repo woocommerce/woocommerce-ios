@@ -35,6 +35,39 @@ final class RefundedProductsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        // Do any additional setup after loading the view.
+        configureNavigation()
+        configureTableView()
+    }
+}
+
+
+// MARK: - Setup
+private extension RefundedProductsViewController {
+    /// Setup: Navigation.
+    ///
+    func configureNavigation() {
+        title = NSLocalizedString("Refunded Products",
+                                  comment: "Order > Order Details > 'N Items' cell tapped > Refunded Products title")
+        
+    }
+
+    /// Setup: TableView.
+    ///
+    func configureTableView() {
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
+        tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
+        tableView.estimatedRowHeight = Constants.rowHeight
+        tableView.rowHeight = UITableView.automaticDimension
+    }
+}
+
+
+// MARK: - Constants
+//
+extension RefundedProductsViewController {
+    enum Constants {
+        static let rowHeight = CGFloat(38)
+        static let sectionHeight = CGFloat(44)
     }
 }

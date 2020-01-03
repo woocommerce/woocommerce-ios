@@ -153,7 +153,8 @@ private extension RefundDetailsDataSource {
     ///
     private func configureRefundMethod(_ cell: WooBasicTableViewCell) {
         cell.selectionStyle = .none
-        cell.textLabel?.text = viewModel.refundMethod
+        cell.bodyLabel?.text = viewModel.refundMethod
+        cell.applyPlainTextStyle()
     }
 }
 
@@ -184,7 +185,13 @@ extension RefundDetailsDataSource {
             return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)
         }()
 
-        sections = [products].compactMap { $0 }
+        let details: Section = {
+            let rows: [Row] = [.refundAmount, .refundMethod]
+
+            return Section(title: SectionTitle.refundDetails, rightTitle: nil, rows: rows)
+        }()
+
+        sections = [products, details].compactMap { $0 }
     }
 }
 

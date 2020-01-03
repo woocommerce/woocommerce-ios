@@ -448,6 +448,7 @@
 		CE2A9FC023BFB1BE002BEC1C /* LedgerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */; };
 		CE2A9FC323BFC440002BEC1C /* RefundedProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC123BFC440002BEC1C /* RefundedProductsViewController.swift */; };
 		CE2A9FC423BFC440002BEC1C /* RefundedProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FC223BFC440002BEC1C /* RefundedProductsViewController.xib */; };
+		CE2A9FC623BFFADE002BEC1C /* RefundedProductsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
 		CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */; };
 		CE32B11520BF8779006FBCF4 /* FulfillButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */; };
@@ -1062,6 +1063,7 @@
 		CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LedgerTableViewCell.xib; sourceTree = "<group>"; };
 		CE2A9FC123BFC440002BEC1C /* RefundedProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewController.swift; sourceTree = "<group>"; };
 		CE2A9FC223BFC440002BEC1C /* RefundedProductsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundedProductsViewController.xib; sourceTree = "<group>"; };
+		CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewModel.swift; sourceTree = "<group>"; };
 		CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnSectionHeaderView.xib; sourceTree = "<group>"; };
 		CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnSectionHeaderView.swift; sourceTree = "<group>"; };
 		CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillButtonTableViewCell.swift; sourceTree = "<group>"; };
@@ -2481,21 +2483,22 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		CE5F462823AAC9EA006B1A5C /* RefundDetails */ = {
+		CE5F462823AAC9EA006B1A5C /* Refunds */ = {
 			isa = PBXGroup;
 			children = (
 				CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */,
 				CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */,
 				CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */,
 				CE7E780D23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift */,
+				CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */,
 			);
-			path = RefundDetails;
+			path = Refunds;
 			sourceTree = "<group>";
 		};
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				CE5F462823AAC9EA006B1A5C /* RefundDetails */,
+				CE5F462823AAC9EA006B1A5C /* Refunds */,
 				D817585C22BB5E6900289CFE /* OrderDetailsViewModel */,
 				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
@@ -3151,6 +3154,7 @@
 				02305352237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift in Sources */,
 				B5DBF3C520E148E000B53AED /* DeauthenticatedState.swift in Sources */,
 				021E2A1A23AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift in Sources */,
+				CE2A9FC623BFFADE002BEC1C /* RefundedProductsViewModel.swift in Sources */,
 				02E4FD7A230688BA0049610C /* OrderStatsV4Interval+Chart.swift in Sources */,
 				0262DA5823A23AC80029AF30 /* ProductShippingSettingsViewController.swift in Sources */,
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,

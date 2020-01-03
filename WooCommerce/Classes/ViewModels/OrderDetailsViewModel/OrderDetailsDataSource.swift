@@ -573,11 +573,16 @@ extension OrderDetailsDataSource {
         updateOrderNoteAsyncDictionary(orderNotes: orderNotes)
     }
 
-    func refund(at indexPath: IndexPath) -> Refund {
+    func refund(at indexPath: IndexPath) -> Refund? {
         let index = indexPath.row - Constants.paymentCell - Constants.paidByCustomerCell
-        let refund = refunds[index]
+        let condensedRefund = order.refunds[index]
+        let refund = refunds.first { $0.refundID == condensedRefund.refundID }
 
-        return refund
+        guard let refundFound = refund else {
+            return nil
+        }
+
+        return refundFound
     }
 
     private func updateOrderNoteAsyncDictionary(orderNotes: [OrderNote]) {

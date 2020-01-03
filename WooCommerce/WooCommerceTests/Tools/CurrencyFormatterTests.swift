@@ -370,7 +370,7 @@ class CurrencyFormatterTests: XCTestCase {
 
     func testFormatAmountUsingDecimalValueWithPointSeparator() {
         let inputValue = "13.21"
-        let expectedResult = "13" + CurrencySettings.shared.decimalSeparator + "21$"
+        let expectedResult = "$13" + CurrencySettings.shared.decimalSeparator + "21"
 
         let amount = CurrencyFormatter().formatAmount(inputValue, with: "USD")
         XCTAssertEqual(amount, expectedResult)
@@ -378,7 +378,7 @@ class CurrencyFormatterTests: XCTestCase {
 
     func testFormatAmountUsingDecimalValueWithCommaSeparator() {
         let inputValue = "13,21"
-        let expectedResult = "13" + CurrencySettings.shared.decimalSeparator + "21$"
+        let expectedResult = "$13" + CurrencySettings.shared.decimalSeparator + "21"
 
         let amount = CurrencyFormatter().formatAmount(inputValue, with: "USD")
         XCTAssertEqual(amount, expectedResult)

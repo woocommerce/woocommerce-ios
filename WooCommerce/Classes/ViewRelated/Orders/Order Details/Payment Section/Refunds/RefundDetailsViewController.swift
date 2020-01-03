@@ -124,6 +124,8 @@ extension RefundDetailsViewModel {
         let cells = [
             ProductDetailsTableViewCell.self,
             PaymentTableViewCell.self,
+            TwoColumnHeadlineFootnoteTableViewCell.self,
+            WooBasicTableViewCell.self,
         ]
 
         for cell in cells {

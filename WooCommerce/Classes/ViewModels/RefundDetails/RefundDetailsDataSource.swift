@@ -112,6 +112,8 @@ private extension RefundDetailsDataSource {
             configureProductsRefund(cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell:
             configureRefundAmount(cell, at: indexPath)
+        case let cell as WooBasicTableViewCell:
+            configureRefundMethod(cell)
         default:
             fatalError("Unidentified refund details row type")
         }
@@ -141,9 +143,17 @@ private extension RefundDetailsDataSource {
     /// Setup: Refund Amount Cell
     ///
     private func configureRefundAmount(_ cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
+        cell.selectionStyle = .none
         cell.leftText = RowTitle.refundAmount
         cell.rightText = viewModel.refundAmount
         cell.hideFootnote()
+    }
+
+    /// Setup: Refund Method Cell
+    ///
+    private func configureRefundMethod(_ cell: WooBasicTableViewCell) {
+        cell.selectionStyle = .none
+        cell.textLabel?.text = viewModel.refundMethod
     }
 }
 
@@ -204,6 +214,7 @@ extension RefundDetailsDataSource {
         case orderItem
         case productsRefund
         case refundAmount
+        case refundMethod
 
         var reuseIdentifier: String {
             switch self {
@@ -213,6 +224,8 @@ extension RefundDetailsDataSource {
                 return PaymentTableViewCell.reuseIdentifier
             case .refundAmount:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
+            case .refundMethod:
+                return WooBasicTableViewCell.reuseIdentifier
             }
         }
     }

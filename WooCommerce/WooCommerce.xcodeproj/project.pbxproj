@@ -2499,7 +2499,7 @@
 			isa = PBXGroup;
 			children = (
 				CE5F462823AAC9EA006B1A5C /* Refunds */,
-				D817585C22BB5E6900289CFE /* OrderDetailsViewModel */,
+				D817585C22BB5E6900289CFE /* Order Details */,
 				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
 				CE22709A228F362600C0626C /* ProductDetailsViewModel.swift */,
@@ -2642,7 +2642,7 @@
 			path = ViewRelated;
 			sourceTree = "<group>";
 		};
-		D817585C22BB5E6900289CFE /* OrderDetailsViewModel */ = {
+		D817585C22BB5E6900289CFE /* Order Details */ = {
 			isa = PBXGroup;
 			children = (
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
@@ -2653,7 +2653,7 @@
 				D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */,
 				D8C11A5D22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift */,
 			);
-			path = OrderDetailsViewModel;
+			path = "Order Details";
 			sourceTree = "<group>";
 		};
 		D85136C7231E128500DD0539 /* Reviews */ = {

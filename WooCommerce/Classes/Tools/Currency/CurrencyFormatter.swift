@@ -10,7 +10,13 @@ public class CurrencyFormatter {
     ///   - stringValue: the string received from the API
     ///
     func convertToDecimal(from stringValue: String) -> NSDecimalNumber? {
-        let decimalValue = NSDecimalNumber(string: stringValue)
+
+        // NSDecimalNumber use by default the local decimal separator to evaluate a decimal amount.
+        // We substitute the current decimal separator with the locale decimal separator.
+        let localeDecimalSeparator = Locale.current.decimalSeparator ?? CurrencySettings.shared.decimalSeparator
+        var newStringValue = stringValue.replacingOccurrences(of: ",", with: localeDecimalSeparator)
+        newStringValue = newStringValue.replacingOccurrences(of: ".", with: localeDecimalSeparator)
+        let decimalValue = NSDecimalNumber(string: newStringValue)
 
         guard decimalValue != NSDecimalNumber.notANumber else {
             DDLogError("Error: string input is not a number: \(stringValue)")
@@ -110,13 +116,7 @@ public class CurrencyFormatter {
     ///     - currency: a 3-letter country code for currencies that are supported in the API. e.g. "USD"
     ///
     func formatAmount(_ stringAmount: String, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
-
-        // NSDecimalNumber use by default the local decimal separator to evaluate a decimal amount.
-        // We substitute the current decimal separator with the locale decimal separator.
-        let localeDecimalSeparator = Locale.current.decimalSeparator ?? CurrencySettings.shared.decimalSeparator
-        var newStringAmount = stringAmount.replacingOccurrences(of: ",", with: localeDecimalSeparator)
-        newStringAmount = newStringAmount.replacingOccurrences(of: ".", with: localeDecimalSeparator)
-        guard let decimalAmount = convertToDecimal(from: newStringAmount) else {
+        guard let decimalAmount = convertToDecimal(from: stringAmount) else {
             return nil
         }
 

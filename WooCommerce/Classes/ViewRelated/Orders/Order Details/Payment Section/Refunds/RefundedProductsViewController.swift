@@ -13,7 +13,7 @@ final class RefundedProductsViewController: UIViewController {
     ///
     var viewModel: RefundedProductsViewModel! {
         didSet {
-//            reloadTableViewSectionsAndData()
+            reloadTableViewSectionsAndData()
         }
     }
 
@@ -59,6 +59,45 @@ private extension RefundedProductsViewController {
         tableView.rowHeight = UITableView.automaticDimension
 
         tableView.dataSource = viewModel.dataSource
+    }
+
+    /// Reloads the tableView's data, assuming the view has been loaded.
+    ///
+    func reloadTableViewDataIfPossible() {
+        guard isViewLoaded else {
+            return
+        }
+
+        tableView.reloadData()
+    }
+
+    /// Reloads the tableView's sections and data.
+    ///
+    func reloadTableViewSectionsAndData() {
+        reloadSections()
+        reloadTableViewDataIfPossible()
+    }
+
+    /// Registers all of the available TableViewCells
+    ///
+    func registerTableViewCells() {
+        viewModel.registerTableViewCells(tableView)
+    }
+
+    /// Registers all of the available TableViewHeaderFooters
+    ///
+    func registerTableViewHeaderFooters() {
+        viewModel.registerTableViewHeaderFooters(tableView)
+    }
+}
+
+
+// MARK: - Sections
+//
+private extension RefundedProductsViewController {
+
+    func reloadSections() {
+        viewModel.reloadSections()
     }
 }
 

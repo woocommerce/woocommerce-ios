@@ -72,13 +72,28 @@ extension RefundedProductsDataSource {
 }
 
 
+// MARK: - Sections
+extension RefundedProductsDataSource {
+    /// Setup: Sections
+    ///
+    func reloadSections() {
+        let refundedProducts: Section? = {
+            let rows: [Row] = Array(repeating: .orderItemRefunded, count: refunds.count)
+
+            return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)
+        }()
+
+        sections = [refundedProducts].compactMap { $0 }
+    }
+}
+
 // MARK: - Constants
 //
 extension RefundedProductsDataSource {
     /// Section Titles
     ///
     enum SectionTitle {
-        static let product = NSLocalizedString("Product", comment: "Product section title")
+        static let product = NSLocalizedString("Refunded Products", comment: "Refunded Products section title")
         static let quantity = NSLocalizedString("Qty", comment: "Quantity abbreviation for section title")
     }
 
@@ -86,11 +101,11 @@ extension RefundedProductsDataSource {
     ///
     enum Row {
         /// Listed in the order they appear on screen
-        case orderItem
+        case orderItemRefunded
 
         var reuseIdentifier: String {
             switch self {
-            case .orderItem:
+            case .orderItemRefunded:
                 return ProductDetailsTableViewCell.reuseIdentifier
             }
         }

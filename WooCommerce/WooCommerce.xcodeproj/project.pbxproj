@@ -449,6 +449,7 @@
 		CE2A9FC323BFC440002BEC1C /* RefundedProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC123BFC440002BEC1C /* RefundedProductsViewController.swift */; };
 		CE2A9FC423BFC440002BEC1C /* RefundedProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FC223BFC440002BEC1C /* RefundedProductsViewController.xib */; };
 		CE2A9FC623BFFADE002BEC1C /* RefundedProductsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */; };
+		CE2A9FC823C3D2D4002BEC1C /* RefundedProductsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
 		CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */; };
 		CE32B11520BF8779006FBCF4 /* FulfillButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */; };
@@ -1064,6 +1065,7 @@
 		CE2A9FC123BFC440002BEC1C /* RefundedProductsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewController.swift; sourceTree = "<group>"; };
 		CE2A9FC223BFC440002BEC1C /* RefundedProductsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = RefundedProductsViewController.xib; sourceTree = "<group>"; };
 		CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewModel.swift; sourceTree = "<group>"; };
+		CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsDataSource.swift; sourceTree = "<group>"; };
 		CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnSectionHeaderView.xib; sourceTree = "<group>"; };
 		CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnSectionHeaderView.swift; sourceTree = "<group>"; };
 		CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillButtonTableViewCell.swift; sourceTree = "<group>"; };
@@ -2491,6 +2493,7 @@
 				CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */,
 				CE7E780D23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift */,
 				CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */,
+				CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */,
 			);
 			path = Refunds;
 			sourceTree = "<group>";
@@ -3426,6 +3429,7 @@
 				B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */,
 				CE1D5A59228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift in Sources */,
 				02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift in Sources */,
+				CE2A9FC823C3D2D4002BEC1C /* RefundedProductsDataSource.swift in Sources */,
 				CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */,
 				B53B898D20D462A000EDB467 /* DefaultStoresManager.swift in Sources */,
 				D88CA758237D1C27005D2F44 /* Ghost+Woo.swift in Sources */,

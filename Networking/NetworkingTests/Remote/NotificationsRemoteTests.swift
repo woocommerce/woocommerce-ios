@@ -118,7 +118,7 @@ class NotificationsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_error")
 
-        remote.updateReadStatus(noteIds: [], read: true) { error in
+        remote.updateReadStatus(noteIDs: [], read: true) { error in
             guard let error = error as? DotcomError else {
                 XCTFail()
                 return
@@ -140,7 +140,7 @@ class NotificationsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
 
-        remote.updateReadStatus(noteIds: [], read: true) { error in
+        remote.updateReadStatus(noteIDs: [], read: true) { error in
             XCTAssertNil(error)
             expectation.fulfill()
         }

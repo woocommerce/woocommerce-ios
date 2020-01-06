@@ -29,6 +29,17 @@ class OverlayMessageView: UIView {
         }
     }
 
+    /// Overlay's Top Image Tint Color.
+    ///
+    var messageImageTintColor: UIColor? {
+        get {
+            return imageView.tintColor
+        }
+        set {
+            imageView.tintColor = newValue
+        }
+    }
+
     /// Message to be displayed below the Image.
     ///
     var messageText: String? {

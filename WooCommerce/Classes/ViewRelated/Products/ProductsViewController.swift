@@ -40,7 +40,7 @@ final class ProductsViewController: UIViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
-        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min
+        let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
         let resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in
             self?.tableView.reloadData()
@@ -70,6 +70,8 @@ final class ProductsViewController: UIViewController {
         })
         return stateCoordinator
     }()
+
+    private let imageService: ImageService = ServiceLocator.imageService
 
     // MARK: - View Lifecycle
 
@@ -138,8 +140,10 @@ private extension ProductsViewController {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
+        navigationController?.popToRootViewController(animated: false)
         updateResultsController(siteID: siteID)
         tableView.reloadData()
+        syncingCoordinator.resynchronize()
     }
 }
 
@@ -262,14 +266,14 @@ private extension ProductsViewController {
 // MARK: - Updates
 //
 private extension ProductsViewController {
-    func updateResultsController(siteID: Int) {
+    func updateResultsController(siteID: Int64) {
         resultsController = createResultsController(siteID: siteID)
         configureResultsController(resultsController) { [weak self] in
             self?.tableView.reloadData()
         }
     }
 
-    func createResultsController(siteID: Int) -> ResultsController<StorageProduct> {
+    func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let descriptor = NSSortDescriptor(key: "name", ascending: true, selector: #selector(NSString.localizedCompare(_:)))
@@ -310,7 +314,7 @@ extension ProductsViewController: UITableViewDataSource {
 
         let product = resultsController.object(at: indexPath)
         let viewModel = ProductsTabProductViewModel(product: product)
-        cell.update(viewModel: viewModel)
+        cell.update(viewModel: viewModel, imageService: imageService)
 
         return cell
     }
@@ -404,11 +408,20 @@ private extension ProductsViewController {
     ///
     func displayNoResultsOverlay() {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
-        overlayView.messageImage = nil
+        overlayView.messageImage = .emptyProductsImage
         overlayView.messageText = NSLocalizedString("No products yet",
                                                     comment: "The text on the placeholder overlay when there are no products on the Products tab")
         overlayView.actionVisible = false
-        overlayView.attach(to: view)
+
+        // Pins the overlay view to the bottom of the top banner view.
+        overlayView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(overlayView)
+        NSLayoutConstraint.activate([
+            overlayView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            overlayView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            overlayView.topAnchor.constraint(equalTo: topBannerView.bottomAnchor),
+            overlayView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
+        ])
     }
 
     /// Removes all of the the OverlayMessageView instances in the view hierarchy.
@@ -432,7 +445,7 @@ extension ProductsViewController: SyncingCoordinatorDelegate {
             return
         }
 
-        transitionToSyncingState()
+        transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductAction
             .synchronizeProducts(siteID: siteID,
@@ -466,11 +479,11 @@ private extension ProductsViewController {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
-        case .syncing(let withExistingData):
-            if withExistingData {
-                ensureFooterSpinnerIsStarted()
-            } else {
+        case .syncing(let pageNumber):
+            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
                 displayPlaceholderProducts()
+            } else {
+                ensureFooterSpinnerIsStarted()
             }
         case .results:
             break
@@ -489,8 +502,8 @@ private extension ProductsViewController {
         }
     }
 
-    func transitionToSyncingState() {
-        stateCoordinator.transitionToSyncingState(withExistingData: !isEmpty)
+    func transitionToSyncingState(pageNumber: Int) {
+        stateCoordinator.transitionToSyncingState(pageNumber: pageNumber)
     }
 
     func transitionToResultsUpdatedState() {

@@ -7,11 +7,11 @@ public struct ShipmentTracking: Decodable {
 
     /// Site Identifier.
     ///
-    public let siteID: Int
+    public let siteID: Int64
 
     /// Order Identifier.
     ///
-    public let orderID: Int
+    public let orderID: Int64
 
     /// Unique identifier for shipment tracking
     ///
@@ -36,7 +36,13 @@ public struct ShipmentTracking: Decodable {
 
     /// ShipmentTracking struct initializer.
     ///
-    public init(siteID: Int, orderID: Int, trackingID: String, trackingNumber: String, trackingProvider: String?, trackingURL: String?, dateShipped: Date?) {
+    public init(siteID: Int64,
+                orderID: Int64,
+                trackingID: String,
+                trackingNumber: String,
+                trackingProvider: String?,
+                trackingURL: String?,
+                dateShipped: Date?) {
         self.siteID = siteID
         self.orderID = orderID
         self.trackingID = trackingID
@@ -49,10 +55,10 @@ public struct ShipmentTracking: Decodable {
     /// The public initializer for ShipmentTracking.
     ///
     public init(from decoder: Decoder) throws {
-        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw ShipmentTrackingAPIError.missingSiteID
         }
-        guard let orderID = decoder.userInfo[.orderID] as? Int else {
+        guard let orderID = decoder.userInfo[.orderID] as? Int64 else {
             throw ShipmentTrackingAPIError.missingOrderID
         }
 

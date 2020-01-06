@@ -9,7 +9,7 @@ extension Storage.ProductDefaultAttribute: ReadOnlyConvertible {
     /// Updates the Storage.ProductDefaultAttribute with the ReadOnly.
     ///
     public func update(with defaultAttribute: Yosemite.ProductDefaultAttribute) {
-        attributeID = Int64(defaultAttribute.attributeID)
+        attributeID = defaultAttribute.attributeID
         name = defaultAttribute.name
         option = defaultAttribute.option
     }
@@ -17,7 +17,7 @@ extension Storage.ProductDefaultAttribute: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductDefaultAttribute {
-        return ProductDefaultAttribute(attributeID: Int(attributeID),
+        return ProductDefaultAttribute(attributeID: attributeID,
                                        name: name,
                                        option: option)
     }

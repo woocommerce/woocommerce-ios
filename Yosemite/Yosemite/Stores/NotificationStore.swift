@@ -38,18 +38,18 @@ public class NotificationStore: Store {
                            onCompletion: onCompletion)
         case .synchronizeNotifications(let onCompletion):
             synchronizeNotifications(onCompletion: onCompletion)
-        case .synchronizeNotification(let noteId, let onCompletion):
-            synchronizeNotification(with: noteId, onCompletion: onCompletion)
+        case .synchronizeNotification(let noteID, let onCompletion):
+            synchronizeNotification(with: noteID, onCompletion: onCompletion)
         case .unregisterDevice(let deviceId, let onCompletion):
             unregisterDevice(deviceId: deviceId, onCompletion: onCompletion)
         case .updateLastSeen(let timestamp, let onCompletion):
             updateLastSeen(timestamp: timestamp, onCompletion: onCompletion)
-        case .updateReadStatus(let noteId, let read, let onCompletion):
-            updateReadStatus(for: [noteId], read: read, onCompletion: onCompletion)
-        case .updateMultipleReadStatus(let noteIds, let read, let onCompletion):
-            updateReadStatus(for: noteIds, read: read, onCompletion: onCompletion)
-        case .updateLocalDeletedStatus(let noteId, let deleteInProgress, let onCompletion):
-            updateDeletedStatus(noteId: noteId, deleteInProgress: deleteInProgress, onCompletion: onCompletion)
+        case .updateReadStatus(let noteID, let read, let onCompletion):
+            updateReadStatus(for: [noteID], read: read, onCompletion: onCompletion)
+        case .updateMultipleReadStatus(let noteIDs, let read, let onCompletion):
+            updateReadStatus(for: noteIDs, read: read, onCompletion: onCompletion)
+        case .updateLocalDeletedStatus(let noteID, let deleteInProgress, let onCompletion):
+            updateDeletedStatus(noteID: noteID, deleteInProgress: deleteInProgress, onCompletion: onCompletion)
         }
     }
 }
@@ -64,7 +64,7 @@ private extension NotificationStore {
     func registerDevice(device: APNSDevice,
                         applicationId: String,
                         applicationVersion: String,
-                        defaultStoreID: Int,
+                        defaultStoreID: Int64,
                         onCompletion: @escaping (DotcomDevice?, Error?) -> Void) {
         let remote = DevicesRemote(network: network)
         remote.registerDevice(device: device,
@@ -73,7 +73,6 @@ private extension NotificationStore {
                               defaultStoreID: defaultStoreID,
                               completion: onCompletion)
     }
-
 
     /// Unregisters a Dotcom Device from the Push Notifications Delivery Subsystem.
     ///
@@ -103,7 +102,7 @@ private extension NotificationStore {
                         return
                     }
 
-                    remote.loadNotes(noteIds: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] (notes, error) in
+                    remote.loadNotes(noteIDs: outdatedIDs, pageSize: Constants.maximumPageSize) { [weak self] (notes, error) in
 
                         guard let notes = notes else {
                             onCompletion(error)
@@ -123,20 +122,20 @@ private extension NotificationStore {
     /// Synchronizes the Notification matching the specified ID, and updates the local entity.
     ///
     /// - Parameters:
-    ///     - noteId: Notification ID of the note to be downloaded.
+    ///     - noteID: Notification ID of the note to be downloaded.
     ///     - onCompletion: Closure to be executed on completion.
     ///
-    func synchronizeNotification(with noteId: Int64, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeNotification(with noteID: Int64, onCompletion: @escaping (Note?, Error?) -> Void) {
         let remote = NotificationsRemote(network: network)
 
-        remote.loadNotes(noteIds: [noteId]) { notes, error in
+        remote.loadNotes(noteIDs: [noteID]) { notes, error in
             guard let notes = notes else {
-                onCompletion(error)
+                onCompletion(nil, error)
                 return
             }
 
             self.updateLocalNotes(with: notes) {
-                onCompletion(nil)
+                onCompletion(notes.first, nil)
             }
         }
     }
@@ -154,15 +153,15 @@ private extension NotificationStore {
 
     /// Updates the read status for the given notification ID(s)
     ///
-    func updateReadStatus(for noteIds: [Int64], read: Bool, onCompletion: @escaping (Error?) -> Void) {
+    func updateReadStatus(for noteIDs: [Int64], read: Bool, onCompletion: @escaping (Error?) -> Void) {
         /// Optimistically Update
         ///
-        updateLocalNoteReadStatus(for: noteIds, read: read)
+        updateLocalNoteReadStatus(for: noteIDs, read: read)
 
         /// On error we'll just mark the Note for Refresh
         ///
         let remote = NotificationsRemote(network: network)
-        remote.updateReadStatus(noteIds: noteIds, read: read) { error in
+        remote.updateReadStatus(noteIDs: noteIDs, read: read) { error in
             guard let error = error else {
 
                 /// What is this about:
@@ -178,7 +177,7 @@ private extension NotificationStore {
                 return
             }
 
-            self.invalidateCache(for: noteIds) {
+            self.invalidateCache(for: noteIDs) {
                 onCompletion(error)
             }
         }
@@ -187,8 +186,8 @@ private extension NotificationStore {
     /// Marks the provided notification as "currently being deleted" — no network call is made. This is
     /// useful for filtering on the notifications list.
     ///
-    func updateDeletedStatus(noteId: Int64, deleteInProgress: Bool, onCompletion: @escaping (Error?) -> Void) {
-        markLocalNoteAsDeleted(for: noteId, isDeleted: deleteInProgress) {
+    func updateDeletedStatus(noteID: Int64, deleteInProgress: Bool, onCompletion: @escaping (Error?) -> Void) {
+        markLocalNoteAsDeleted(for: noteID, isDeleted: deleteInProgress) {
             onCompletion(nil)
         }
     }
@@ -235,7 +234,7 @@ extension NotificationStore {
 
         derivedStorage.perform {
             for remoteNote in remoteNotes {
-                let localNote = derivedStorage.loadNotification(noteID: remoteNote.noteId) ?? derivedStorage.insertNewObject(ofType: Storage.Note.self)
+                let localNote = derivedStorage.loadNotification(noteID: remoteNote.noteID) ?? derivedStorage.insertNewObject(ofType: Storage.Note.self)
                 localNote.update(with: remoteNote)
             }
         }
@@ -300,11 +299,11 @@ extension NotificationStore {
 
     /// Invalidates the Hash for the specified Notifications.
     ///
-    func invalidateCache(for noteIds: [Int64], onCompletion: (() -> Void)? = nil) {
+    func invalidateCache(for noteIDs: [Int64], onCompletion: (() -> Void)? = nil) {
         let derivedStorage = type(of: self).sharedDerivedStorage(with: storageManager)
 
         derivedStorage.perform {
-            let notifications = noteIds.compactMap { derivedStorage.loadNotification(noteID: $0) }
+            let notifications = noteIDs.compactMap { derivedStorage.loadNotification(noteID: $0) }
             for note in notifications {
                 note.noteHash = Int64.min
             }

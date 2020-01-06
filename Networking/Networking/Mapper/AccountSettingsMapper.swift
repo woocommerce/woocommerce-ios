@@ -9,7 +9,7 @@ struct AccountSettingsMapper: Mapper {
     ///
     /// We're injecting this field via `JSONDecoder.userInfo` because UserID is not returned in the /me/settings endpoint.
     ///
-    let userID: Int
+    let userID: Int64
 
     /// (Attempts) to convert a dictionary into an AccountSettings entity.
     ///

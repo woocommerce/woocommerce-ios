@@ -4,13 +4,13 @@ import Foundation
 /// Represents a ProductDefaultAttribute entity.
 ///
 public struct ProductDefaultAttribute: Decodable {
-    public let attributeID: Int
+    public let attributeID: Int64
     public let name: String?
     public let option: String?
 
     /// ProductAttribute initializer.
     ///
-    public init(attributeID: Int,
+    public init(attributeID: Int64,
                 name: String?,
                 option: String?) {
         self.attributeID = attributeID
@@ -23,7 +23,7 @@ public struct ProductDefaultAttribute: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let attributeID = try container.decode(Int.self, forKey: .attributeID)
+        let attributeID = try container.decode(Int64.self, forKey: .attributeID)
         let name = try container.decodeIfPresent(String.self, forKey: .name)
         let option = try container.decodeIfPresent(String.self, forKey: .option)
 

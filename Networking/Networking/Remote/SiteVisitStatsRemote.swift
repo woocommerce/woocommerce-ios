@@ -14,7 +14,7 @@ public class SiteVisitStatsRemote: Remote {
     ///   - quantity: How many `unit`s to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadSiteVisitorStats(for siteID: Int,
+    public func loadSiteVisitorStats(for siteID: Int64,
                                      siteTimezone: TimeZone? = nil,
                                      unit: StatGranularity,
                                      latestDateToInclude: Date,

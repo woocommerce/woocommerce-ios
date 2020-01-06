@@ -19,7 +19,7 @@ final class DatePickerTableViewCell: UITableViewCell {
     }
 
     private func configureBottomBorder() {
-        bottomBorder.backgroundColor = UIColor.listSmallIcon
+        bottomBorder.backgroundColor = .clear
     }
 }
 

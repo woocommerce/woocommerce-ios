@@ -28,11 +28,11 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Dummy Site ID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     /// Dummy Order ID
     ///
-    private let sampleOrderID = 963
+    private let sampleOrderID: Int64 = 963
 
     /// Mock Country name
     ///

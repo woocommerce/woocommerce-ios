@@ -4,14 +4,16 @@ import Foundation
 
 final class MockProduct {
 
-    let testSiteID = 2019
-    let testProductID = 2020
+    let testSiteID: Int64 = 2019
+    let testProductID: Int64 = 2020
 
     func product(name: String = "Hogsmeade",
                  productShippingClass: ProductShippingClass? = nil,
+                 backordersSetting: ProductBackordersSetting = .notAllowed,
                  stockQuantity: Int? = nil,
+                 taxClass: String? = "",
                  stockStatus: ProductStockStatus = .inStock,
-                 variations: [Int] = [],
+                 variations: [Int64] = [],
                  images: [ProductImage] = []) -> Product {
 
     return Product(siteID: testSiteID,
@@ -48,11 +50,11 @@ final class MockProduct {
                    downloadExpiry: -1,
                    externalURL: "http://somewhere.com",
                    taxStatusKey: "taxable",
-                   taxClass: "",
+                   taxClass: taxClass,
                    manageStock: false,
                    stockQuantity: stockQuantity,
                    stockStatusKey: stockStatus.rawValue,
-                   backordersKey: "no",
+                   backordersKey: backordersSetting.rawValue,
                    backordersAllowed: false,
                    backordered: false,
                    soldIndividually: true,

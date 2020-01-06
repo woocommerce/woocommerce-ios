@@ -39,7 +39,7 @@ final class ProductVariationsRemoteTests: XCTestCase {
             XCTAssertEqual(productVariations?.count, 8)
 
             // Validates on Variation of ID 1275.
-            let expectedVariationID = 1275
+            let expectedVariationID: Int64 = 1275
             guard let expectedVariation = productVariations?.first(where: { $0.productVariationID == expectedVariationID }) else {
                 XCTFail("Product variation with ID \(expectedVariationID) should exist")
                 return

@@ -99,7 +99,7 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
         return reviews.count
     }
 
-    var reviewsProductsIDs: [Int] {
+    var reviewsProductsIDs: [Int64] {
         return reviews
             .map { return $0.productID }
             .uniqued()
@@ -135,7 +135,7 @@ final class MockReviewsDataSource: NSObject, ReviewsDataSource {
 
     func didSelectItem(at indexPath: IndexPath, in viewController: UIViewController) {}
 
-    func presentReviewDetails(for noteId: Int, in viewController: UIViewController) {}
+    func presentReviewDetails(for noteID: Int64, in viewController: UIViewController) {}
 
     func tableView(_ tableView: UITableView,
                    willDisplay cell: UITableViewCell,

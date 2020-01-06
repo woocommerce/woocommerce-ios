@@ -9,19 +9,18 @@ final class RefundedProductsViewController: UIViewController {
     ///
     @IBOutlet private weak var tableView: UITableView!
 
-    /// Order we're observing.
+    /// Refunds to be rendered!
     ///
-    private let order: Order
-
-    /// Array of full refunds.
-    ///
-    private(set) var refunds: [Refund]
+    var viewModel: RefundedProductsViewModel! {
+        didSet {
+//            reloadTableViewSectionsAndData()
+        }
+    }
 
     /// Designated initalizer.
     ///
-    init(order: Order, refunds: [Refund]) {
-        self.order = order
-        self.refunds = refunds
+    init(viewModel: RefundedProductsViewModel) {
+        self.viewModel = viewModel
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
 

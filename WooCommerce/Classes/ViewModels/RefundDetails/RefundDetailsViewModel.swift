@@ -79,11 +79,13 @@ private extension RefundDetailsViewModel {
     /// Calculate the subtotal for each returned item
     ///
     func calculateItemSubtotal() -> NSDecimalNumber {
-        let itemSubtotals = refund.items.map { NSDecimalNumber(string: $0.subtotal) }
+        let itemSubtotals = refund.items.map { currencyFormatter.convertToDecimal(from: $0.subtotal) }
 
         var subtotal = NSDecimalNumber.zero
-        for i in itemSubtotals {
-            subtotal = subtotal.adding(i)
+        for itemSubtotal in itemSubtotals {
+            if let i = itemSubtotal {
+                subtotal = subtotal.adding(i)
+            }
         }
 
         if subtotal.isNegative() {
@@ -96,11 +98,13 @@ private extension RefundDetailsViewModel {
     /// Calculate the subtotal tax for each returned item
     ///
     func calculateSubtotalTax() -> NSDecimalNumber {
-        let itemsSubtotalTax = refund.items.map { NSDecimalNumber(string: $0.subtotalTax) }
+        let itemSubtotalTaxes = refund.items.map { currencyFormatter.convertToDecimal(from: $0.subtotalTax) }
 
         var subtotalTax = NSDecimalNumber.zero
-        for i in itemsSubtotalTax {
-            subtotalTax = subtotalTax.adding(i)
+        for itemSubtotalTax in itemSubtotalTaxes {
+            if let i = itemSubtotalTax {
+                subtotalTax = subtotalTax.adding(i)
+            }
         }
 
         return subtotalTax.abs()

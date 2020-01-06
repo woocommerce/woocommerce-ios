@@ -57,6 +57,8 @@ private extension RefundedProductsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
+
+        tableView.dataSource = viewModel.dataSource
     }
 }
 

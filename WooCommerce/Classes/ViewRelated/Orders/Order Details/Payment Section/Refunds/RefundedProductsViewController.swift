@@ -48,7 +48,6 @@ private extension RefundedProductsViewController {
     func configureNavigation() {
         title = NSLocalizedString("Refunded Products",
                                   comment: "Order > Order Details > 'N Items' cell tapped > Refunded Products title")
-
     }
 
     /// Setup: TableView.

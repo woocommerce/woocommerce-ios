@@ -30,12 +30,25 @@ final class RefundedProductsViewController: UIViewController {
         fatalError("init(coder:) is not supported")
     }
 
+    /// EntityListener: Update / Deletion Notifications.
+    ///
+    private lazy var entityListener: EntityListener<Order> = {
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: viewModel.order)
+    }()
+
+    /// Send notices to the user
+    ///
+    private let notices = OrderDetailsNotices()
+
     // MARK: - View Lifecycle
     override func viewDidLoad() {
         super.viewDidLoad()
 
         configureNavigation()
         configureTableView()
+        registerTableViewCells()
+        registerTableViewHeaderFooters()
+        configureEntityListener()
     }
 }
 
@@ -89,6 +102,27 @@ private extension RefundedProductsViewController {
     func registerTableViewHeaderFooters() {
         viewModel.registerTableViewHeaderFooters(tableView)
     }
+
+    /// Setup: EntityListener
+    ///
+    func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] order in
+            guard let self = self else {
+                return
+            }
+            self.viewModel.updateOrderStatus(order: order)
+            self.reloadTableViewSectionsAndData()
+        }
+
+        entityListener.onDelete = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.navigationController?.popViewController(animated: true)
+            self.displayOrderDeletedNotice(order: self.viewModel.order)
+        }
+    }
 }
 
 
@@ -98,6 +132,17 @@ private extension RefundedProductsViewController {
 
     func reloadSections() {
         viewModel.reloadSections()
+    }
+}
+
+
+// MARK: - Notices
+//
+private extension RefundedProductsViewController {
+    /// Displays a Notice onscreen, indicating that the current Order has been deleted from the Store.
+    ///
+    func displayOrderDeletedNotice(order: Order) {
+        notices.displayOrderDeletedNotice(order: order)
     }
 }
 

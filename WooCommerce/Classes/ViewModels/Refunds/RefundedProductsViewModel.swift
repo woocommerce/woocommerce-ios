@@ -7,23 +7,42 @@ import Yosemite
 final class RefundedProductsViewModel {
     /// Order we're observing.
     ///
-    private let order: Order
+    private(set) var order: Order
 
-    /// Array of full refunds.
+    /// Array of all refunded items.
     ///
-    private(set) var refunds: [Refund]
+    private(set) var items: [OrderItemRefund]
 
-    /// The datasource that will be used to render the Order Details screen
+    /// The datasource that will be used to render the Refunded Products screen.
     ///
     private(set) lazy var dataSource: RefundedProductsDataSource = {
-        return RefundedProductsDataSource(order: self.order, refunds: self.refunds)
+        return RefundedProductsDataSource(order: self.order, items: self.items)
     }()
 
     /// Designated initializer.
     ///
-    init(order: Order, refunds: [Refund]) {
+    init(order: Order, items: [OrderItemRefund]) {
         self.order = order
-        self.refunds = refunds
+        self.items = items
+    }
+
+    /// Update the view model's order when notified
+    ///
+    func update(order newOrder: Order) {
+        self.order = newOrder
+    }
+}
+
+// MARK: - Configuring results controllers
+//
+extension RefundedProductsViewModel {
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        dataSource.configureResultsControllers(onReload: onReload)
+    }
+
+    func updateOrderStatus(order: Order) {
+        update(order: order)
+        dataSource.update(order: order)
     }
 }
 

@@ -559,7 +559,7 @@ extension OrderDetailsDataSource {
         }()
 
         let refundedProducts: Section? = {
-            guard refunds.count > 0 else {
+            guard refundedProductsCount > 0 else {
                 return nil
             }
 

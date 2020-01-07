@@ -9,11 +9,11 @@ import Yosemite
 final class RefundedProductsDataSource: NSObject {
     /// Refunds
     ///
-    private(set) var refunds: [Refund]
+    private(set) var items: [OrderItemRefund]
 
     /// Order
     ///
-    private let order: Order
+    private(set) var order: Order
 
     /// Sections to be rendered
     ///
@@ -21,9 +21,33 @@ final class RefundedProductsDataSource: NSObject {
 
     /// Designated initializer.
     ///
-    init(order: Order, refunds: [Refund]) {
+    init(order: Order, items: [OrderItemRefund]) {
         self.order = order
-        self.refunds = refunds
+        self.items = items
+    }
+
+    /// The results controllers used to display a refund
+    ///
+    private lazy var resultsControllers: RefundDetailsResultController = {
+        return RefundDetailsResultController()
+    }()
+
+    /// Set up results controllers
+    ///
+    func configureResultsControllers(onReload: @escaping () -> Void) {
+        resultsControllers.configureResultsControllers(onReload: onReload)
+    }
+
+    /// Update the data source's order when notified
+    ///
+    func update(order: Order) {
+        self.order = order
+    }
+
+    /// Products from a Refund
+    ///
+    var products: [Product] {
+        return resultsControllers.products
     }
 }
 
@@ -42,7 +66,7 @@ extension RefundedProductsDataSource: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let row = sections[indexPath.section].rows[indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
-//        configure(cell, for: row, at: indexPath)
+        configure(cell, for: row, at: indexPath)
 
         return cell
     }
@@ -71,6 +95,43 @@ extension RefundedProductsDataSource {
     }
 }
 
+// MARK: - Support for UITableViewDataSource
+//
+private extension RefundedProductsDataSource {
+    func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
+        switch cell {
+        case let cell as ProductDetailsTableViewCell where row == .orderItemRefunded:
+            configureOrderItemRefund(cell, at: indexPath)
+        default:
+            fatalError("Unidentified customer info row type")
+        }
+    }
+
+    /// Setup: Refunded product details cell
+    ///
+    func configureOrderItemRefund(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+        let item = items[indexPath.row]
+        let product = lookUpProduct(by: item.productID)
+        let itemViewModel = OrderItemRefundViewModel(item: item,
+                                                     currency: order.currency,
+                                                     product: product)
+        let imageService = ServiceLocator.imageService
+
+        cell.selectionStyle = .default
+        cell.configure(item: itemViewModel, imageService: imageService)
+    }
+}
+
+
+// MARK: - Lookup products
+//
+private extension RefundedProductsDataSource {
+    func lookUpProduct(by productID: Int64) -> Product? {
+        return products.filter({ $0.productID == productID }).first
+    }
+}
+
+
 
 // MARK: - Sections
 extension RefundedProductsDataSource {
@@ -78,7 +139,7 @@ extension RefundedProductsDataSource {
     ///
     func reloadSections() {
         let refundedProducts: Section? = {
-            let rows: [Row] = Array(repeating: .orderItemRefunded, count: refunds.count)
+            let rows: [Row] = Array(repeating: .orderItemRefunded, count: items.count)
 
             return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)
         }()

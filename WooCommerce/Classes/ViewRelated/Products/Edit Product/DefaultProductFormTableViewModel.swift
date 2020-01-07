@@ -65,7 +65,7 @@ private extension DefaultProductFormTableViewModel {
                 priceDetails.append(String.localizedStringWithFormat(Constants.saleDatesFormat, formattedTimeRange))
             }
         } else if product.price.isEmpty == false {
-            let formattedPrice = currencyFormatter.formatAmount(product.price, with: currency) ?? ""
+            let formattedPrice = currencyFormatter.formatAmount(product.regularPrice ?? product.price, with: currency) ?? ""
             priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedPrice))
         }
 

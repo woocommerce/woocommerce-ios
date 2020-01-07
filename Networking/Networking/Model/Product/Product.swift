@@ -408,6 +408,26 @@ public struct Product: Codable {
         try container.encode(name, forKey: .name)
         try container.encode(fullDescription, forKey: .fullDescription)
 
+        // Price Settings.
+        try container.encode(regularPrice, forKey: .regularPrice)
+        try container.encode(salePrice, forKey: .salePrice)
+
+        // We need to send empty string if fields are null, because there is a bug on the API side
+        // Issue: https://github.com/woocommerce/woocommerce/issues/25350
+        if dateOnSaleStart == nil || dateOnSaleEnd == nil {
+            try container.encode("", forKey: .dateOnSaleStart)
+            try container.encode("", forKey: .dateOnSaleEnd)
+        }
+        else {
+            try container.encode(dateOnSaleStart, forKey: .dateOnSaleStart)
+            try container.encode(dateOnSaleEnd, forKey: .dateOnSaleEnd)
+        }
+        try container.encode(taxStatusKey, forKey: .taxStatusKey)
+        //The backend for the standard tax class return "standard",
+        // but to set the standard tax class it accept only an empty string "" in the POST request
+        let newTaxClass = taxClass == "standard" ? "" : taxClass
+        try container.encode(newTaxClass, forKey: .taxClass)
+
         // Shipping Settings.
         try container.encode(weight, forKey: .weight)
         try container.encode(dimensions, forKey: .dimensions)

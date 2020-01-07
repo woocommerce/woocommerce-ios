@@ -41,10 +41,18 @@ private extension ProductVariationStore {
     func synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductVariationsRemote(network: network)
 
-        remote.loadAllProductVariations(for: siteID, productID: productID) { [weak self] (productVariations, error) in
+        remote.loadAllProductVariations(for: siteID,
+                                        productID: productID,
+                                        pageNumber: pageNumber,
+                                        pageSize: pageSize) { [weak self] (productVariations, error) in
             guard let productVariations = productVariations else {
                 onCompletion(error)
                 return
+            }
+
+            if pageNumber == Default.firstPageNumber {
+                self?.deleteStoredProductVariations(siteID: siteID,
+                                                    productID: productID)
             }
 
             self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations,
@@ -76,6 +84,14 @@ private extension ProductVariationStore {
         storageManager.saveDerivedType(derivedStorage: derivedStorage) {
             DispatchQueue.main.async(execute: onCompletion)
         }
+    }
+
+    /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`
+    ///
+    func deleteStoredProductVariations(siteID: Int64, productID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProductVariations(siteID: siteID, productID: productID)
+        storage.saveIfNeeded()
     }
 }
 

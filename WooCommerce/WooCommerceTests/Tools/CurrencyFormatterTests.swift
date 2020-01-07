@@ -285,7 +285,7 @@ class CurrencyFormatterTests: XCTestCase {
 
         let inputValue = "97.64"
         let expectedResult = "$97"
-        let amount = formatter.formatHumanReadableAmount(inputValue)
+        let amount = formatter.formatHumanReadableAmount(inputValue, with: "USD")
         XCTAssertEqual(amount, expectedResult)
     }
 

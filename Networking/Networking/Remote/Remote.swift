@@ -121,6 +121,15 @@ private extension Remote {
     }
 }
 
+// MARK: - Constants!
+//
+public extension Remote {
+
+    enum Default {
+        public static let firstPageNumber: Int = 1
+    }
+}
+
 
 // MARK: - Remote Notifications
 //

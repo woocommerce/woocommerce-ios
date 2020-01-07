@@ -99,6 +99,10 @@ public struct Product: Codable {
         return ProductBackordersSetting(rawValue: backordersKey)
     }
 
+    public var productTaxStatus: ProductTaxStatus {
+        return ProductTaxStatus(rawValue: taxStatusKey)
+    }
+
     /// Product struct initializer.
     ///
     public init(siteID: Int64,

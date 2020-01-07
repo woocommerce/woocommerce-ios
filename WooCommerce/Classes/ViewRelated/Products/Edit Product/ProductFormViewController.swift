@@ -40,14 +40,20 @@ final class ProductFormViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigationBar()
+        configureMainView()
         configureTableView()
     }
 }
 
 private extension ProductFormViewController {
     func configureNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
         removeNavigationBackBarButtonText()
+    }
+
+    func configureMainView() {
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
@@ -84,6 +90,20 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     @objc func updateProduct() {
+        let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
+        let message = NSLocalizedString("Please wait while we publish this product to your store",
+                                        comment: "Message of the in-progress UI while updating the Product remotely")
+        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
+        // Before iOS 13, a modal with transparent background requires certain
+        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
+        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
@@ -93,8 +113,8 @@ private extension ProductFormViewController {
             }
             self?.product = product
 
-            // TODO-1671: temporarily dismisses the Product form before the navigation is implemented.
-            self?.dismiss(animated: true)
+            // Dismisses the in-progress UI.
+            self?.navigationController?.dismiss(animated: true, completion: nil)
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -102,14 +122,7 @@ private extension ProductFormViewController {
     func displayError(error: ProductUpdateError?) {
         let title = NSLocalizedString("Cannot update Product", comment: "The title of the alert when there is an error updating the product")
 
-        let message: String?
-        switch error {
-        case .invalidSKU:
-            message = NSLocalizedString("The SKU is used for another product or is invalid. Please check the inventory settings.",
-                                        comment: "The message of the alert when there is an error updating the product SKU")
-        default:
-            message = nil
-        }
+        let message = error?.alertMessage
 
         displayErrorAlert(title: title, message: message)
     }

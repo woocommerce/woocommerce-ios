@@ -95,6 +95,7 @@ extension RefundedProductsDataSource {
     }
 }
 
+
 // MARK: - Support for UITableViewDataSource
 //
 private extension RefundedProductsDataSource {
@@ -132,7 +133,6 @@ private extension RefundedProductsDataSource {
 }
 
 
-
 // MARK: - Sections
 extension RefundedProductsDataSource {
     /// Setup: Sections
@@ -147,6 +147,7 @@ extension RefundedProductsDataSource {
         sections = [refundedProducts].compactMap { $0 }
     }
 }
+
 
 // MARK: - Constants
 //

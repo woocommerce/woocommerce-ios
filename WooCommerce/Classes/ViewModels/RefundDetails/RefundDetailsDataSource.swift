@@ -195,7 +195,8 @@ private extension RefundDetailsDataSource {
     ///
     private func configureRefundNote(_ cell: TopLeftImageTableViewCell) {
         cell.selectionStyle = .none
-        cell.imageView?.image = UIImage.quoteImage.imageWithTintColor(.black)
+        cell.imageView?.image = UIImage.quoteImage
+        cell.imageView?.tintColor = .text
         cell.textLabel?.text = refundReason
     }
 }

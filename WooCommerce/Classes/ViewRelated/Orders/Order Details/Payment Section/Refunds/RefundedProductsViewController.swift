@@ -9,7 +9,7 @@ final class RefundedProductsViewController: UIViewController {
     ///
     @IBOutlet private weak var tableView: UITableView!
 
-    /// Refunds to be rendered!
+    /// Refunded Products to be rendered!
     ///
     var viewModel: RefundedProductsViewModel! {
         didSet {
@@ -36,7 +36,7 @@ final class RefundedProductsViewController: UIViewController {
         return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: viewModel.order)
     }()
 
-    /// Send notices to the user
+    /// Send notices to the user.
     ///
     private let notices = OrderDetailsNotices()
 
@@ -54,6 +54,7 @@ final class RefundedProductsViewController: UIViewController {
 
 
 // MARK: - Setup
+//
 private extension RefundedProductsViewController {
     /// Setup: Navigation.
     ///

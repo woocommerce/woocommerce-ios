@@ -43,11 +43,18 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {
-        return [
-            .price(viewModel: priceSettingsRow(product: product)),
-            .shipping(viewModel: shippingSettingsRow(product: product)),
-            .inventory(viewModel: inventorySettingsRow(product: product))
-        ]
+        if product.downloadable || product.virtual {
+            return [
+                .price(viewModel: priceSettingsRow(product: product)),
+                .inventory(viewModel: inventorySettingsRow(product: product))
+            ]
+        } else {
+            return [
+                .price(viewModel: priceSettingsRow(product: product)),
+                .shipping(viewModel: shippingSettingsRow(product: product)),
+                .inventory(viewModel: inventorySettingsRow(product: product))
+            ]
+        }
     }
 }
 

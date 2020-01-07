@@ -12,7 +12,6 @@ final class ErrorSectionHeaderView: UITableViewHeaderFooterView {
         super.awakeFromNib()
 
         tintColor = .clear
-
         configureTitleLabel()
     }
 

@@ -104,3 +104,22 @@ extension RefundedProductsViewModel {
         }
     }
 }
+
+
+// MARK: - Syncing data. Yosemite related stuff
+//
+extension RefundedProductsViewModel {
+    func syncOrder(onCompletion: ((Order?, Error?) -> ())? = nil) {
+        let action = OrderAction.retrieveOrder(siteID: order.siteID, orderID: order.orderID) { (order, error) in
+            guard let _ = order else {
+                DDLogError("⛔️ Error synchronizing Order: \(error.debugDescription)")
+                onCompletion?(nil, error)
+                return
+            }
+
+            onCompletion?(order, nil)
+        }
+
+        ServiceLocator.stores.dispatch(action)
+    }
+}

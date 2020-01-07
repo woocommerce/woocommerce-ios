@@ -9,6 +9,14 @@ final class RefundedProductsViewController: UIViewController {
     ///
     @IBOutlet private weak var tableView: UITableView!
 
+    /// Pull To Refresh Support.
+    ///
+    private lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
+        return refreshControl
+    }()
+
     /// Refunded Products to be rendered!
     ///
     var viewModel: RefundedProductsViewModel! {
@@ -73,6 +81,7 @@ private extension RefundedProductsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
     }
@@ -173,6 +182,44 @@ private extension RefundedProductsViewController {
     ///
     func displayOrderDeletedNotice(order: Order) {
         notices.displayOrderDeletedNotice(order: order)
+    }
+}
+
+
+// MARK: - Action Handlers
+//
+extension RefundedProductsViewController {
+
+    @objc func pullToRefresh() {
+        ServiceLocator.analytics.track(.refundedProductsPulledToRefresh)
+        let group = DispatchGroup()
+
+        group.enter()
+        syncOrder { _ in
+            group.leave()
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.refreshControl.endRefreshing()
+        }
+    }
+}
+
+
+// MARK: - Sync'ing Helpers
+//
+private extension RefundedProductsViewController {
+    func syncOrder(onCompletion: ((Error?) -> ())? = nil) {
+        viewModel.syncOrder { [weak self] (order, error) in
+            guard let self = self, let order = order else {
+                onCompletion?(error)
+                return
+            }
+
+            self.viewModel.update(order: order)
+
+            onCompletion?(nil)
+        }
     }
 }
 

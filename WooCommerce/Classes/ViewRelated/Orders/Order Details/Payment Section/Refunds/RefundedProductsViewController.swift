@@ -49,6 +49,8 @@ final class RefundedProductsViewController: UIViewController {
         registerTableViewCells()
         registerTableViewHeaderFooters()
         configureEntityListener()
+        configureViewModel()
+        reloadSections()
     }
 }
 
@@ -124,6 +126,14 @@ private extension RefundedProductsViewController {
             self.displayOrderDeletedNotice(order: self.viewModel.order)
         }
     }
+
+    /// Setup: Configure viewModel
+    ///
+    func configureViewModel() {
+        viewModel.configureResultsControllers { [weak self] in
+            self?.reloadTableViewSectionsAndData()
+        }
+    }
 }
 
 
@@ -133,6 +143,25 @@ private extension RefundedProductsViewController {
 
     func reloadSections() {
         viewModel.reloadSections()
+    }
+}
+
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension RefundedProductsViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        viewModel.tableView(tableView, in: self, didSelectRowAt: indexPath)
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return viewModel.dataSource.viewForHeaderInSection(section, tableView: tableView)
     }
 }
 

@@ -125,7 +125,7 @@ extension OrderDetailsViewModel {
             WooBasicTableViewCell.self,
             OrderNoteHeaderTableViewCell.self,
             OrderNoteTableViewCell.self,
-            PaymentTableViewCell.self,
+            LedgerTableViewCell.self,
             TwoColumnHeadlineFootnoteTableViewCell.self,
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,

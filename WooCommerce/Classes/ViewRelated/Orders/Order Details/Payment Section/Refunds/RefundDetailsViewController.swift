@@ -123,7 +123,10 @@ extension RefundDetailsViewModel {
     func registerTableViewCells(_ tableView: UITableView) {
         let cells = [
             ProductDetailsTableViewCell.self,
-            PaymentTableViewCell.self,
+            LedgerTableViewCell.self,
+            TwoColumnHeadlineFootnoteTableViewCell.self,
+            WooBasicTableViewCell.self,
+            TopLeftImageTableViewCell.self
         ]
 
         for cell in cells {

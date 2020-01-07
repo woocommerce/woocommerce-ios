@@ -207,7 +207,7 @@ private extension OrderDetailsDataSource {
             configureOrderNoteHeader(cell: cell, at: indexPath)
         case let cell as OrderNoteTableViewCell:
             configureOrderNote(cell: cell, at: indexPath)
-        case let cell as PaymentTableViewCell:
+        case let cell as LedgerTableViewCell:
             configurePayment(cell: cell)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .customerPaid:
             configureCustomerPaid(cell: cell)
@@ -312,7 +312,7 @@ private extension OrderDetailsDataSource {
         cell.contents = orderNoteAsyncDictionary.value(forKey: note.noteID)
     }
 
-    private func configurePayment(cell: PaymentTableViewCell) {
+    private func configurePayment(cell: LedgerTableViewCell) {
         let paymentViewModel = OrderPaymentDetailsViewModel(order: order)
         cell.configure(with: paymentViewModel)
     }
@@ -825,7 +825,7 @@ extension OrderDetailsDataSource {
             case .billingDetail:
                 return WooBasicTableViewCell.reuseIdentifier
             case .payment:
-                return PaymentTableViewCell.reuseIdentifier
+                return LedgerTableViewCell.reuseIdentifier
             case .customerPaid:
                 return TwoColumnHeadlineFootnoteTableViewCell.reuseIdentifier
             case .refund:

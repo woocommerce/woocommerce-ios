@@ -27,9 +27,9 @@
 		020B2F8F23BD9F1F00BD79AD /* IntegerInputFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B2F8E23BD9F1F00BD79AD /* IntegerInputFormatter.swift */; };
 		020B2F9123BDD71500BD79AD /* IntegerInputFormatterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B2F9023BDD71500BD79AD /* IntegerInputFormatterTests.swift */; };
 		020B2F9423BDDBDC00BD79AD /* ProductUpdateError+UI.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B2F9323BDDBDC00BD79AD /* ProductUpdateError+UI.swift */; };
+		020BE74823B05CF2007FE54C /* ProductInventoryEditableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74723B05CF2007FE54C /* ProductInventoryEditableData.swift */; };
 		020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */; };
 		020BE74E23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */; };
-		020BE74823B05CF2007FE54C /* ProductInventoryEditableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74723B05CF2007FE54C /* ProductInventoryEditableData.swift */; };
 		020BE76723B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE76623B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift */; };
 		020BE76923B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE76823B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift */; };
 		020BE76B23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE76A23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift */; };
@@ -416,8 +416,6 @@
 		CE1D5A56228A0AD200DF3715 /* TwoColumnTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1D5A54228A0AD200DF3715 /* TwoColumnTableViewCell.xib */; };
 		CE1D5A59228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1D5A57228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift */; };
 		CE1D5A5A228A1C2C00DF3715 /* ProductReviewsTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1D5A58228A1C2C00DF3715 /* ProductReviewsTableViewCell.xib */; };
-		CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */; };
-		CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */; };
 		CE1EC8C820B478B6009762BF /* TwoColumnLabelView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */; };
 		CE1EC8CA20B479F1009762BF /* TwoColumnLabelView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */; };
 		CE1EC8EC20B8A3FF009762BF /* LeftImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */; };
@@ -448,6 +446,8 @@
 		CE27257C21924A8C002B22EB /* HelpAndSupportViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */; };
 		CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */; };
 		CE27258021925AE8002B22EB /* ValueOneTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */; };
+		CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */; };
+		CE2A9FC023BFB1BE002BEC1C /* LedgerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
 		CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */; };
 		CE32B11520BF8779006FBCF4 /* FulfillButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */; };
@@ -553,7 +553,7 @@
 		D8C11A4E22DD235F00D4A88D /* OrderDetailsResultsControllers.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */; };
 		D8C11A5E22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5D22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift */; };
 		D8C11A6022E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */; };
-		D8C11A6222E24C4A00D4A88D /* PaymentTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A6122E24C4A00D4A88D /* PaymentTableViewCellTests.swift */; };
+		D8C11A6222E24C4A00D4A88D /* LedgerTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C11A6122E24C4A00D4A88D /* LedgerTableViewCellTests.swift */; };
 		D8C251D2230CA90200F49782 /* StoresManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251D1230CA90200F49782 /* StoresManager.swift */; };
 		D8C251D9230D256F00F49782 /* NoticePresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251D8230D256F00F49782 /* NoticePresenter.swift */; };
 		D8C251DB230D288A00F49782 /* PushNotesManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8C251DA230D288A00F49782 /* PushNotesManager.swift */; };
@@ -609,9 +609,9 @@
 		020B2F8E23BD9F1F00BD79AD /* IntegerInputFormatter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegerInputFormatter.swift; sourceTree = "<group>"; };
 		020B2F9023BDD71500BD79AD /* IntegerInputFormatterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegerInputFormatterTests.swift; sourceTree = "<group>"; };
 		020B2F9323BDDBDC00BD79AD /* ProductUpdateError+UI.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductUpdateError+UI.swift"; sourceTree = "<group>"; };
+		020BE74723B05CF2007FE54C /* ProductInventoryEditableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventoryEditableData.swift; sourceTree = "<group>"; };
 		020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndTextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndTextFieldTableViewCell.xib; sourceTree = "<group>"; };
-		020BE74723B05CF2007FE54C /* ProductInventoryEditableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventoryEditableData.swift; sourceTree = "<group>"; };
 		020BE76623B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecBoldFormatBarCommandTests.swift; sourceTree = "<group>"; };
 		020BE76823B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecItalicFormatBarCommandTests.swift; sourceTree = "<group>"; };
 		020BE76A23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecUnderlineFormatBarCommandTests.swift; sourceTree = "<group>"; };
@@ -1030,8 +1030,6 @@
 		CE1D5A54228A0AD200DF3715 /* TwoColumnTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnTableViewCell.xib; sourceTree = "<group>"; };
 		CE1D5A57228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductReviewsTableViewCell.swift; sourceTree = "<group>"; };
 		CE1D5A58228A1C2C00DF3715 /* ProductReviewsTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductReviewsTableViewCell.xib; sourceTree = "<group>"; };
-		CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaymentTableViewCell.swift; sourceTree = "<group>"; };
-		CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = PaymentTableViewCell.xib; sourceTree = "<group>"; };
 		CE1EC8C720B478B6009762BF /* TwoColumnLabelView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnLabelView.xib; sourceTree = "<group>"; };
 		CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnLabelView.swift; sourceTree = "<group>"; };
 		CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LeftImageTableViewCell.swift; sourceTree = "<group>"; };
@@ -1062,6 +1060,8 @@
 		CE27257B21924A8C002B22EB /* HelpAndSupportViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HelpAndSupportViewController.swift; sourceTree = "<group>"; };
 		CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ValueOneTableViewCell.swift; sourceTree = "<group>"; };
 		CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ValueOneTableViewCell.xib; sourceTree = "<group>"; };
+		CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LedgerTableViewCell.swift; sourceTree = "<group>"; };
+		CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LedgerTableViewCell.xib; sourceTree = "<group>"; };
 		CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnSectionHeaderView.xib; sourceTree = "<group>"; };
 		CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnSectionHeaderView.swift; sourceTree = "<group>"; };
 		CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillButtonTableViewCell.swift; sourceTree = "<group>"; };
@@ -1167,7 +1167,7 @@
 		D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderDetailsResultsControllers.swift; sourceTree = "<group>"; };
 		D8C11A5D22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderPaymentDetailsViewModel.swift; sourceTree = "<group>"; };
 		D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = OrderPaymentDetailsViewModelTests.swift; path = WooCommerceTests/ViewRelated/OrderPaymentDetailsViewModelTests.swift; sourceTree = SOURCE_ROOT; };
-		D8C11A6122E24C4A00D4A88D /* PaymentTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PaymentTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/PaymentTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
+		D8C11A6122E24C4A00D4A88D /* LedgerTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LedgerTableViewCellTests.swift; path = WooCommerceTests/ViewRelated/LedgerTableViewCellTests.swift; sourceTree = SOURCE_ROOT; };
 		D8C251D1230CA90200F49782 /* StoresManager.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoresManager.swift; sourceTree = "<group>"; };
 		D8C251D8230D256F00F49782 /* NoticePresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NoticePresenter.swift; sourceTree = "<group>"; };
 		D8C251DA230D288A00F49782 /* PushNotesManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PushNotesManager.swift; sourceTree = "<group>"; };
@@ -1812,7 +1812,7 @@
 				D85136D4231E40B500DD0539 /* ProductReviewTableViewCellTests.swift */,
 				D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */,
 				D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */,
-				D8C11A6122E24C4A00D4A88D /* PaymentTableViewCellTests.swift */,
+				D8C11A6122E24C4A00D4A88D /* LedgerTableViewCellTests.swift */,
 				D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */,
 				D8F82AC422AF903700B67E4B /* IconsTests.swift */,
 				D89E0C30226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift */,
@@ -2446,8 +2446,6 @@
 		CE35F1142343E832007B2A6B /* Payment Section */ = {
 			isa = PBXGroup;
 			children = (
-				CE1EC8C320B46819009762BF /* PaymentTableViewCell.swift */,
-				CE1EC8C420B46819009762BF /* PaymentTableViewCell.xib */,
 				CE35F1042343DCAC007B2A6B /* Refunds */,
 			);
 			path = "Payment Section";
@@ -2561,12 +2559,16 @@
 				B5A8532120BDBFAE00FAAB4D /* CircularImageView.swift */,
 				D83F592E225B269C00626E75 /* DatePickerTableViewCell.swift */,
 				D83F592F225B269C00626E75 /* DatePickerTableViewCell.xib */,
+				D81F2D36225F0D160084BF9C /* EmptyListMessageWithActionView.swift */,
+				D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */,
 				B50BB4152141828F00AF0F3C /* FooterSpinnerView.swift */,
 				CE24BCCD212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift */,
 				CE24BCCE212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib */,
 				7441E1D121503F77004E6ECE /* IntrinsicTableView.swift */,
 				740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */,
 				740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */,
+				CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */,
+				CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */,
 				CE1EC8EA20B8A3FF009762BF /* LeftImageTableViewCell.swift */,
 				CE1EC8EB20B8A3FF009762BF /* LeftImageTableViewCell.xib */,
 				B5BE75DA213F1D1E00909A14 /* OverlayMessageView.swift */,
@@ -2586,6 +2588,8 @@
 				CE583A0A2107937F00D73C1C /* TextViewTableViewCell.xib */,
 				D843D5C922437E59001BFA55 /* TitleAndEditableValueTableViewCell.swift */,
 				D843D5CA22437E59001BFA55 /* TitleAndEditableValueTableViewCell.xib */,
+				020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */,
+				020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */,
 				CE22E3F921714776005A6BEF /* TopLeftImageTableViewCell.swift */,
 				CE22E3FA21714776005A6BEF /* TopLeftImageTableViewCell.xib */,
 				CE1EC8C920B479F1009762BF /* TwoColumnLabelView.swift */,
@@ -2596,17 +2600,13 @@
 				CE1D5A54228A0AD200DF3715 /* TwoColumnTableViewCell.xib */,
 				CE35F1192343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.swift */,
 				CE35F11A2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib */,
+				0262DA5123A238460029AF30 /* UnitInputTableViewCell.swift */,
+				0262DA5223A238460029AF30 /* UnitInputTableViewCell.xib */,
 				CE27257D21925AE8002B22EB /* ValueOneTableViewCell.swift */,
 				CE27257E21925AE8002B22EB /* ValueOneTableViewCell.xib */,
 				B5A56BEF219F2CE90065A902 /* VerticalButton.swift */,
-				D81F2D36225F0D160084BF9C /* EmptyListMessageWithActionView.swift */,
-				D81F2D34225F0CF70084BF9C /* EmptyListMessageWithActionView.xib */,
 				CE227096228F152400C0626C /* WooBasicTableViewCell.swift */,
 				CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */,
-				0262DA5123A238460029AF30 /* UnitInputTableViewCell.swift */,
-				0262DA5223A238460029AF30 /* UnitInputTableViewCell.xib */,
-				020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */,
-				020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -2902,13 +2902,13 @@
 				45C8B26223155CBC0002FA77 /* BillingInformationViewController.xib in Resources */,
 				02482A8C237BE8C7007E73ED /* LinkSettingsViewController.xib in Resources */,
 				740ADFE521C33688009EE5A9 /* licenses.html in Resources */,
+				CE2A9FC023BFB1BE002BEC1C /* LedgerTableViewCell.xib in Resources */,
 				45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
 				CE32B11620BF8779006FBCF4 /* FulfillButtonTableViewCell.xib in Resources */,
 				45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
 				7493BB8F2149852A003071A9 /* TopPerformersHeaderView.xib in Resources */,
-				CE1EC8C620B46819009762BF /* PaymentTableViewCell.xib in Resources */,
 				CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */,
 				CE35F11C2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib in Resources */,
 				451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */,
@@ -3216,6 +3216,7 @@
 				D843D5D322485009001BFA55 /* ShipmentProvidersViewController.swift in Sources */,
 				02482A8E237BEAE9007E73ED /* AztecLinkFormatBarCommand.swift in Sources */,
 				02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */,
+				CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */,
 				B58B4AC02108FF6100076FDD /* Array+Helpers.swift in Sources */,
 				B5A56BF0219F2CE90065A902 /* VerticalButton.swift in Sources */,
 				748C7780211E18A600814F2C /* OrderStats+Woo.swift in Sources */,
@@ -3317,7 +3318,6 @@
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
-				CE1EC8C520B46819009762BF /* PaymentTableViewCell.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
 				02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
@@ -3540,7 +3540,7 @@
 				02279590237A5DC900787C63 /* AztecUnorderedListFormatBarCommandTests.swift in Sources */,
 				B5F571AB21BEECB60010D1B8 /* NoteWooTests.swift in Sources */,
 				B56BBD16214820A70053A32D /* SyncCoordinatorTests.swift in Sources */,
-				D8C11A6222E24C4A00D4A88D /* PaymentTableViewCellTests.swift in Sources */,
+				D8C11A6222E24C4A00D4A88D /* LedgerTableViewCellTests.swift in Sources */,
 				D83A6A7A23792B2400419D48 /* UIColor+Muriel-Tests.swift in Sources */,
 				B5DBF3C320E1484400B53AED /* StoresManagerTests.swift in Sources */,
 				D88D5A3B230B5D63007B6E01 /* MockupAnalyticsProvider.swift in Sources */,

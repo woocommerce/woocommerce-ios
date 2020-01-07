@@ -15,10 +15,6 @@ final class RefundDetailsDataSource: NSObject {
     ///
     private let order: Order
 
-    /// Refund Detail View Model
-    ///
-    private let viewModel: RefundDetailsViewModel
-
     /// Sections to be rendered
     ///
     private(set) var sections = [Section]()
@@ -27,6 +23,10 @@ final class RefundDetailsDataSource: NSObject {
     private var items: [OrderItemRefund] {
         return refund.items
     }
+
+    /// Currency Formatter
+    ///
+    private let currencyFormatter = CurrencyFormatter()
 
     /// Products from a Refund.
     ///
@@ -39,7 +39,6 @@ final class RefundDetailsDataSource: NSObject {
     init(refund: Refund, order: Order) {
         self.refund = refund
         self.order = order
-        self.viewModel = RefundDetailsViewModel(order: order, refund: refund)
     }
 
     /// The results controllers used to display a refund
@@ -52,6 +51,38 @@ final class RefundDetailsDataSource: NSObject {
     ///
     func configureResultsControllers(onReload: @escaping () -> Void) {
         resultsControllers.configureResultsControllers(onReload: onReload)
+    }
+
+    /// Refund Amount
+    ///
+    private var refundAmount: String {
+        let formattedRefund = currencyFormatter.formatAmount(refund.amount, with: order.currency)
+
+        return formattedRefund ?? String()
+    }
+
+    /// Refund Method
+    ///
+    private var refundMethod: String {
+        guard refund.isAutomated == true else {
+            let refundMethodTemplate = NSLocalizedString("Refunded manually via %@",
+                                                         comment: "It reads, 'Refunded manually via <payment method>'")
+            let refundMethodText = String.localizedStringWithFormat(refundMethodTemplate, order.paymentMethodTitle)
+
+            return refundMethodText
+        }
+
+        let refundMethodTemplate = NSLocalizedString("Refunded via %@",
+                                                     comment: "It reads, 'Refunded via <payment method>'")
+        let refundMethodText = String.localizedStringWithFormat(refundMethodTemplate, order.paymentMethodTitle)
+
+        return refundMethodText
+    }
+
+    /// Reason for refund note
+    ///
+    private var refundReason: String? {
+        return refund.reason
     }
 }
 
@@ -139,6 +170,7 @@ private extension RefundDetailsDataSource {
     ///
     private func configureProductsRefund(_ cell: LedgerTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .none
+        let viewModel = RefundDetailsViewModel(order: order, refund: refund)
         cell.configure(with: viewModel)
     }
 
@@ -147,7 +179,7 @@ private extension RefundDetailsDataSource {
     private func configureRefundAmount(_ cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .none
         cell.leftText = RowTitle.refundAmount
-        cell.rightText = viewModel.refundAmount
+        cell.rightText = refundAmount
         cell.hideFootnote()
     }
 
@@ -155,7 +187,7 @@ private extension RefundDetailsDataSource {
     ///
     private func configureRefundMethod(_ cell: WooBasicTableViewCell) {
         cell.selectionStyle = .none
-        cell.bodyLabel?.text = viewModel.refundMethod
+        cell.bodyLabel?.text = refundMethod
         cell.applyPlainTextStyle()
     }
 
@@ -164,7 +196,7 @@ private extension RefundDetailsDataSource {
     private func configureRefundNote(_ cell: TopLeftImageTableViewCell) {
         cell.selectionStyle = .none
         cell.imageView?.image = UIImage.quoteImage.imageWithTintColor(.black)
-        cell.textLabel?.text = viewModel.refundReason
+        cell.textLabel?.text = refundReason
     }
 }
 
@@ -202,7 +234,7 @@ extension RefundDetailsDataSource {
         }()
 
         let reason: Section? = {
-            guard viewModel.refundReason?.isEmpty == false else {
+            guard refundReason?.isEmpty == false else {
                 return nil
             }
 

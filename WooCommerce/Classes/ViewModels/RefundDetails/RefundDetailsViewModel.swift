@@ -65,38 +65,6 @@ final class RefundDetailsViewModel {
         return formattedProductsRefund ?? String()
     }
 
-    /// Refund Amount
-    ///
-    var refundAmount: String {
-        let formattedRefund = currencyFormatter.formatAmount(refund.amount, with: order.currency)
-
-        return formattedRefund ?? String()
-    }
-
-    /// Refund Method
-    ///
-    var refundMethod: String {
-        guard refund.isAutomated == true else {
-            let refundMethodTemplate = NSLocalizedString("Refunded manually via %@",
-                                                         comment: "It reads, 'Refunded manually via <payment method>'")
-            let refundMethodText = String.localizedStringWithFormat(refundMethodTemplate, order.paymentMethodTitle)
-
-            return refundMethodText
-        }
-
-        let refundMethodTemplate = NSLocalizedString("Refunded via %@",
-                                                     comment: "It reads, 'Refunded via <payment method>'")
-        let refundMethodText = String.localizedStringWithFormat(refundMethodTemplate, order.paymentMethodTitle)
-
-        return refundMethodText
-    }
-
-    /// Reason for refund note
-    ///
-    var refundReason: String? {
-        return refund.reason
-    }
-
     /// The datasource that will be used to render the Refund Details screen
     ///
     private(set) lazy var dataSource: RefundDetailsDataSource = {

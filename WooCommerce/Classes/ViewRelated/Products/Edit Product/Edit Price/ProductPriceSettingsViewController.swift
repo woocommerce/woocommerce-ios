@@ -36,8 +36,8 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     // Internal data for rendering UI
     //
+    private var taxStatus: ProductTaxStatus = .taxable
     private var taxClass: TaxClass?
-    private var taxStatus: ProductTaxStatus?
 
     // The tax class configured by default, always present in a website
     //
@@ -47,6 +47,16 @@ final class ProductPriceSettingsViewController: UIViewController {
     ///
     private var sections: [Section] = []
 
+    // Completion callback
+    //
+    typealias Completion = (_ regularPrice: String?,
+        _ salePrice: String?,
+        _ dateOnSaleStart: Date?,
+        _ dateOnSaleEnd: Date?,
+        _ taxStatus: ProductTaxStatus,
+        _ taxClass: TaxClass?) -> Void
+    private let onCompletion: Completion
+
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
         return keyboardFrameObserver
@@ -54,8 +64,9 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     /// Init
     ///
-    init(product: Product) {
+    init(product: Product, completion: @escaping Completion) {
         self.product = product
+        self.onCompletion = completion
         regularPrice = product.regularPrice
         salePrice = product.salePrice
         dateOnSaleStart = product.dateOnSaleStart
@@ -155,7 +166,8 @@ private extension ProductPriceSettingsViewController {
 //
 private extension ProductPriceSettingsViewController {
     @objc func completeUpdating() {
-        // TODO-1423: update price settings
+        let newSalePrice = salePrice == "0" ? nil : salePrice
+        onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
     }
 }
 
@@ -212,7 +224,9 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             let dataSource = ProductTaxStatusListSelectorDataSource(selected: taxStatus)
             let listSelectorViewController = ListSelectorViewController(viewProperties: viewProperties,
                                                                         dataSource: dataSource) { [weak self] selected in
-                                                                            self?.taxStatus = selected
+                                                                            if let selected = selected {
+                                                                                self?.taxStatus = selected
+                                                                            }
                                                                             self?.refreshViewContent()
             }
             navigationController?.pushViewController(listSelectorViewController, animated: true)
@@ -399,7 +413,7 @@ private extension ProductPriceSettingsViewController {
 
     func configureTaxStatus(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("Tax status", comment: "Title of the cell in Product Price Settings > Tax status")
-        cell.updateUI(title: title, value: taxStatus?.description)
+        cell.updateUI(title: title, value: taxStatus.description)
         cell.accessoryType = .disclosureIndicator
     }
 

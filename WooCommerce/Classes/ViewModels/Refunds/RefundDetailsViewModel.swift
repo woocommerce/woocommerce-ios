@@ -65,38 +65,6 @@ final class RefundDetailsViewModel {
         return formattedProductsRefund ?? String()
     }
 
-    /// Refund Amount
-    ///
-    var refundAmount: String {
-        let formattedRefund = currencyFormatter.formatAmount(refund.amount, with: order.currency)
-
-        return formattedRefund ?? String()
-    }
-
-    /// Refund Method
-    ///
-    var refundMethod: String {
-        guard refund.isAutomated == true else {
-            let refundMethodTemplate = NSLocalizedString("Refunded manually via %@",
-                                                         comment: "It reads, 'Refunded manually via <payment method>'")
-            let refundMethodText = String.localizedStringWithFormat(refundMethodTemplate, order.paymentMethodTitle)
-
-            return refundMethodText
-        }
-
-        let refundMethodTemplate = NSLocalizedString("Refunded via %@",
-                                                     comment: "It reads, 'Refunded via <payment method>'")
-        let refundMethodText = String.localizedStringWithFormat(refundMethodTemplate, order.paymentMethodTitle)
-
-        return refundMethodText
-    }
-
-    /// Reason for refund note
-    ///
-    var refundReason: String? {
-        return refund.reason
-    }
-
     /// The datasource that will be used to render the Refund Details screen
     ///
     private(set) lazy var dataSource: RefundDetailsDataSource = {
@@ -111,11 +79,13 @@ private extension RefundDetailsViewModel {
     /// Calculate the subtotal for each returned item
     ///
     func calculateItemSubtotal() -> NSDecimalNumber {
-        let itemSubtotals = refund.items.map { NSDecimalNumber(string: $0.subtotal) }
+        let itemSubtotals = refund.items.map { currencyFormatter.convertToDecimal(from: $0.subtotal) }
 
         var subtotal = NSDecimalNumber.zero
-        for i in itemSubtotals {
-            subtotal = subtotal.adding(i)
+        for itemSubtotal in itemSubtotals {
+            if let i = itemSubtotal {
+                subtotal = subtotal.adding(i)
+            }
         }
 
         if subtotal.isNegative() {
@@ -128,11 +98,13 @@ private extension RefundDetailsViewModel {
     /// Calculate the subtotal tax for each returned item
     ///
     func calculateSubtotalTax() -> NSDecimalNumber {
-        let itemsSubtotalTax = refund.items.map { NSDecimalNumber(string: $0.subtotalTax) }
+        let itemSubtotalTaxes = refund.items.map { currencyFormatter.convertToDecimal(from: $0.subtotalTax) }
 
         var subtotalTax = NSDecimalNumber.zero
-        for i in itemsSubtotalTax {
-            subtotalTax = subtotalTax.adding(i)
+        for itemSubtotalTax in itemSubtotalTaxes {
+            if let i = itemSubtotalTax {
+                subtotalTax = subtotalTax.adding(i)
+            }
         }
 
         return subtotalTax.abs()

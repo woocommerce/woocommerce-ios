@@ -24,7 +24,7 @@ final class RefundDetailsDataSource: NSObject {
         return refund.items
     }
 
-    /// Currency Formatter.
+    /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter()
 

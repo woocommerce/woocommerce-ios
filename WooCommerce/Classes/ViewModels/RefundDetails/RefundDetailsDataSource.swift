@@ -102,6 +102,8 @@ private extension RefundDetailsDataSource {
         switch cell {
         case let cell as ProductDetailsTableViewCell:
             configureOrderItem(cell, at: indexPath)
+        case let cell as PaymentTableViewCell:
+            configureProductsRefund(cell, at: indexPath)
         default:
             fatalError("Unidentified refund details row type")
         }
@@ -119,6 +121,15 @@ private extension RefundDetailsDataSource {
 
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)
+    }
+
+    /// Setup: ProductsRefund summary Cell
+    ///
+    private func configureProductsRefund(_ cell: PaymentTableViewCell, at indexPath: IndexPath) {
+        let viewModel = RefundDetailsViewModel(order: order, refund: refund)
+
+        cell.selectionStyle = .none
+        cell.configure(with: viewModel)
     }
 }
 
@@ -143,7 +154,8 @@ extension RefundDetailsDataSource {
                 return nil
             }
 
-            let rows: [Row] = Array(repeating: .orderItem, count: items.count)
+            var rows: [Row] = Array(repeating: .orderItem, count: items.count)
+            rows.append(.productsRefund)
 
             return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)
         }()
@@ -168,11 +180,14 @@ extension RefundDetailsDataSource {
     enum Row {
         /// Listed in the order they appear on screen
         case orderItem
+        case productsRefund
 
         var reuseIdentifier: String {
             switch self {
             case .orderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
+            case .productsRefund:
+                return PaymentTableViewCell.reuseIdentifier
             }
         }
     }

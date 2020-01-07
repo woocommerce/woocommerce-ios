@@ -197,7 +197,11 @@ extension OrderDetailsViewModel {
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
-            let refund = dataSource.refund(at: indexPath)
+            guard let refund = dataSource.refund(at: indexPath) else {
+                DDLogError("No refund details found.")
+                return
+            }
+
             let viewModel = RefundDetailsViewModel(order: order, refund: refund)
             let refundDetailsViewController = RefundDetailsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)

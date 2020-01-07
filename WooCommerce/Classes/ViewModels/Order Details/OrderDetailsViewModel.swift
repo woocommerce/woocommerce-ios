@@ -226,6 +226,7 @@ extension OrderDetailsViewModel {
                 "refunded_item_ids": itemIDs.sortedUniqueIntToString()
             ]
             ServiceLocator.analytics.track(.refundedProductsDetailTapped, withProperties: props)
+
             let viewModel = RefundedProductsViewModel(order: order, items: refundedItems)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)

@@ -75,6 +75,24 @@ final class OrderDetailsDataSource: NSObject {
         return resultsControllers.products
     }
 
+    /// OrderItemsRefund Count
+    ///
+    var refundedProductsCount: Decimal {
+        var refundedItems = [OrderItemRefund]()
+        for refund in refunds {
+            refundedItems.append(contentsOf: refund.items)
+        }
+
+        var quantities = [Decimal]()
+        for item in refundedItems {
+            quantities.append(item.quantity)
+        }
+
+        let decimalCount = quantities.reduce(0, +) // quantities report as negative values
+
+        return abs(decimalCount)
+    }
+
     /// Refunds on an Order
     ///
     var refunds: [Refund] {
@@ -369,6 +387,30 @@ private extension OrderDetailsDataSource {
         let itemViewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
         cell.selectionStyle = .default
         cell.configure(item: itemViewModel, imageService: imageService)
+    }
+
+    private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
+        let singular = NSLocalizedString("%@ Item",
+                                         comment: "1 Item")
+        let plural = NSLocalizedString("%@ Items",
+                                       comment: "For example, '5 Items'")
+        let productText = String.pluralize(refundedProductsCount, singular: singular, plural: plural)
+
+        cell.bodyLabel?.text = productText
+        cell.applyPlainTextStyle()
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+
+        cell.accessibilityTraits = .button
+        cell.accessibilityLabel = NSLocalizedString(
+            "View refunded order items",
+            comment: "Accessibility label for the '<number> Products' button"
+        )
+
+        cell.accessibilityHint = NSLocalizedString(
+            "Show a list of refunded order items for this order.",
+            comment: "VoiceOver accessibility hint, informing the user that the button can be used to view billing information."
+        )
     }
 
     private func configureFulfillmentButton(cell: FulfillButtonTableViewCell) {
@@ -791,6 +833,7 @@ extension OrderDetailsDataSource {
         case orderItem
         case fulfillButton
         case details
+        case refundedProducts
         case customerNote
         case shippingAddress
         case shippingMethod
@@ -815,6 +858,8 @@ extension OrderDetailsDataSource {
             case .fulfillButton:
                 return FulfillButtonTableViewCell.reuseIdentifier
             case .details:
+                return WooBasicTableViewCell.reuseIdentifier
+            case .refundedProducts:
                 return WooBasicTableViewCell.reuseIdentifier
             case .customerNote:
                 return CustomerNoteTableViewCell.reuseIdentifier

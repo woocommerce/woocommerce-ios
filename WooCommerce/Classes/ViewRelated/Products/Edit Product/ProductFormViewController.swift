@@ -40,14 +40,20 @@ final class ProductFormViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigationBar()
+        configureMainView()
         configureTableView()
     }
 }
 
 private extension ProductFormViewController {
     func configureNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
         removeNavigationBackBarButtonText()
+    }
+
+    func configureMainView() {
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
@@ -84,6 +90,20 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     @objc func updateProduct() {
+        let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
+        let message = NSLocalizedString("Please wait while we publish this product to your store",
+                                        comment: "Message of the in-progress UI while updating the Product remotely")
+        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
+        // Before iOS 13, a modal with transparent background requires certain
+        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
+        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
@@ -93,8 +113,8 @@ private extension ProductFormViewController {
             }
             self?.product = product
 
-            // Temporarily dismisses the Product form before the navigation is implemented.
-            self?.dismiss(animated: true)
+            // Dismisses the in-progress UI.
+            self?.navigationController?.dismiss(animated: true, completion: nil)
         }
         ServiceLocator.stores.dispatch(action)
     }
@@ -200,7 +220,7 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Description
+// MARK: Action - Edit Product Parameters
 //
 private extension ProductFormViewController {
     func editProductDescription() {
@@ -225,8 +245,42 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func editPriceSettings() {
-        let priceSettingsViewController = ProductPriceSettingsViewController(product: product)
+        let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
+            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
+            self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
+                                                salePrice: salePrice,
+                                                dateOnSaleStart: dateOnSaleStart,
+                                                dateOnSaleEnd: dateOnSaleEnd,
+                                                taxStatus: taxStatus,
+                                                taxClass: taxClass)
+        }
         navigationController?.pushViewController(priceSettingsViewController, animated: true)
+    }
+
+    func onEditPriceSettingsCompletion(regularPrice: String?,
+                                       salePrice: String?,
+                                       dateOnSaleStart: Date?,
+                                       dateOnSaleEnd: Date?,
+                                       taxStatus: ProductTaxStatus,
+                                       taxClass: TaxClass?) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        guard regularPrice != product.regularPrice ||
+            salePrice != product.salePrice ||
+            dateOnSaleStart != product.dateOnSaleStart ||
+            dateOnSaleEnd != product.dateOnSaleEnd ||
+            taxStatus != product.productTaxStatus ||
+            taxClass?.slug != product.taxClass else {
+            return
+        }
+        self.product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice,
+                                                           salePrice: salePrice,
+                                                           dateOnSaleStart: dateOnSaleStart,
+                                                           dateOnSaleEnd: dateOnSaleEnd,
+                                                           taxStatus: taxStatus,
+                                                           taxClass: taxClass)
     }
 }
 
@@ -278,7 +332,7 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Description
+// MARK: Constants
 //
 private extension ProductFormViewController {
     enum Constants {

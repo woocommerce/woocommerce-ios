@@ -8,9 +8,15 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
 
-    init(product: Product, currency: String, currencyFormatter: CurrencyFormatter = CurrencyFormatter()) {
+    private let canEditImages: Bool
+
+    init(product: Product,
+         currency: String,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(),
+         canEditImages: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
+        self.canEditImages = canEditImages
         configureSections(product: product)
     }
 }
@@ -22,11 +28,18 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func primaryFieldRows(product: Product) -> [ProductFormSection.PrimaryFieldRow] {
-        return [
-            .images(product: product),
-            .name(name: product.name),
-            .description(description: product.trimmedFullDescription)
-        ]
+        if canEditImages == false && product.images.isEmpty {
+            return [
+                .name(name: product.name),
+                .description(description: product.trimmedFullDescription)
+            ]
+        } else {
+            return [
+                .images(product: product),
+                .name(name: product.name),
+                .description(description: product.trimmedFullDescription)
+            ]
+        }
     }
 
     func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {

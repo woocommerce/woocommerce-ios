@@ -15,9 +15,12 @@ private extension ProductFormSection.SettingsRow.ViewModel {
 ///
 final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
+    private let canEditImages: Bool
 
-    init(viewModel: ProductFormTableViewModel) {
+    init(viewModel: ProductFormTableViewModel,
+         canEditImages: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)) {
         self.viewModel = viewModel
+        self.canEditImages = canEditImages
         super.init()
     }
 }
@@ -74,6 +77,11 @@ private extension ProductFormTableViewDataSource {
     func configureImages(cell: UITableViewCell, product: Product) {
         guard let cell = cell as? ProductImagesHeaderTableViewCell else {
             fatalError()
+        }
+
+        guard canEditImages else {
+            cell.configure(with: product, config: .images)
+            return
         }
 
         if product.images.count > 0 {

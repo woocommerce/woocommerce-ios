@@ -313,6 +313,7 @@ private extension ProductInventorySettingsViewController {
         switch error {
         case .duplicatedSKU, .invalidSKU:
             viewModel = viewModel.stateUpdated(state: .error)
+            UIAccessibility.post(notification: .layoutChanged, argument: cell)
         default:
             break
         }

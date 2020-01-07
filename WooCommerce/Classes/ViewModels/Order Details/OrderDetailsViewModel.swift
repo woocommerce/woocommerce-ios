@@ -208,17 +208,24 @@ extension OrderDetailsViewModel {
             ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         case .refund:
-            ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
             guard let refund = dataSource.refund(at: indexPath) else {
                 DDLogError("No refund details found.")
                 return
             }
 
+            let props = ["order_id": order.orderID, "refund_id": refund.refundID]
+            ServiceLocator.analytics.track(.orderDetailRefundDetailTapped, withProperties: props)
+
             let viewModel = RefundDetailsViewModel(order: order, refund: refund)
             let refundDetailsViewController = RefundDetailsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
         case .refundedProducts:
-            ServiceLocator.analytics.track(.refundedProductsDetailTapped)
+            let itemIDs: [Int64] = refundedItems.map { $0.itemID }
+            let props: [String: Any] = [
+                "order_id": order.orderID,
+                "refunded_item_ids": itemIDs.sortedUniqueIntToString()
+            ]
+            ServiceLocator.analytics.track(.refundedProductsDetailTapped, withProperties: props)
             let viewModel = RefundedProductsViewModel(order: order, items: refundedItems)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)

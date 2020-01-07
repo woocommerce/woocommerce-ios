@@ -56,7 +56,7 @@ public class AccountRemote: Remote {
         let path = "me/sites"
         let parameters = [
             "fields": "ID,name,description,URL,options",
-            "options": "timezone,is_wpcom_store,woocommerce_is_active"
+            "options": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset"
         ]
 
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)

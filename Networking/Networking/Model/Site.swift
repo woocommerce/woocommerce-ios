@@ -36,6 +36,10 @@ public struct Site: Decodable {
     /// Time zone identifier of the site (TZ database name).
     ///
     public let timezone: String
+    
+    /// Return the website UTC time offset, showing the difference in hours and minutes from UTC, from the westernmost (−12:00) to the easternmost (+14:00).
+    ///
+    public let gmtOffset: Decimal
 
     /// Decodable Conformance.
     ///
@@ -51,6 +55,7 @@ public struct Site: Decodable {
         let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
+        let gmtOffset = try optionsContainer.decode(Decimal.self, forKey: .gmtOffset)
 
         self.init(siteID: siteID,
                   name: name,
@@ -59,7 +64,8 @@ public struct Site: Decodable {
                   plan: String(), // Not created on init. Added in supplementary API request.
                   isWooCommerceActive: isWooCommerceActive,
                   isWordPressStore: isWordPressStore,
-                  timezone: timezone)
+                  timezone: timezone,
+                  gmtOffset: gmtOffset)
     }
 
     /// Designated Initializer.
@@ -71,7 +77,8 @@ public struct Site: Decodable {
                 plan: String,
                 isWooCommerceActive: Bool,
                 isWordPressStore: Bool,
-                timezone: String) {
+                timezone: String,
+                gmtOffset: Decimal) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -80,6 +87,7 @@ public struct Site: Decodable {
         self.isWordPressStore = isWordPressStore
         self.isWooCommerceActive = isWooCommerceActive
         self.timezone = timezone
+        self.gmtOffset = gmtOffset
     }
 }
 
@@ -94,7 +102,8 @@ extension Site: Comparable {
             lhs.url == rhs.url &&
             lhs.plan == rhs.plan &&
             lhs.isWooCommerceActive == rhs.isWooCommerceActive &&
-            lhs.isWordPressStore == rhs.isWordPressStore
+            lhs.isWordPressStore == rhs.isWordPressStore &&
+            lhs.gmtOffset == rhs.gmtOffset
     }
 
     public static func < (lhs: Site, rhs: Site) -> Bool {
@@ -122,6 +131,7 @@ private extension Site {
         case isWordPressStore = "is_wpcom_store"
         case isWooCommerceActive = "woocommerce_is_active"
         case timezone = "timezone"
+        case gmtOffset = "gmt_offset"
     }
 
     enum PlanKeys: String, CodingKey {

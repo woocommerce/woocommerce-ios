@@ -36,7 +36,7 @@ public struct Site: Decodable {
     /// Time zone identifier of the site (TZ database name).
     ///
     public let timezone: String
-    
+
     /// Return the website UTC time offset, showing the difference in hours and minutes from UTC, from the westernmost (−12:00) to the easternmost (+14:00).
     ///
     public let gmtOffset: Decimal

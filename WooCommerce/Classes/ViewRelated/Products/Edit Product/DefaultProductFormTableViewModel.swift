@@ -8,9 +8,9 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
 
-    // When the site time zone can be correctly fetched, consider using the site time zone
-    // for Product schedule sale (https://github.com/woocommerce/woocommerce-ios/issues/1375).
-    var siteTimezone: TimeZone = .current
+    // Timezone of the website
+    //
+    var siteTimezone: TimeZone = TimeZone.websiteTimezone
 
     init(product: Product, currency: String, currencyFormatter: CurrencyFormatter = CurrencyFormatter()) {
         self.currency = currency

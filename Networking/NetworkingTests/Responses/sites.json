@@ -8,7 +8,7 @@
       "jetpack": true,
       "options": {
         "timezone": "",
-        "gmt_offset": 0,
+        "gmt_offset": 3.5,
         "blog_public": 1,
         "videopress_enabled": false,
         "upgraded_filetypes_enabled": true,
@@ -146,7 +146,7 @@
       "jetpack": false,
       "options": {
         "timezone": "",
-        "gmt_offset": 0,
+        "gmt_offset": -4,
         "blog_public": 1,
         "videopress_enabled": false,
         "upgraded_filetypes_enabled": false,

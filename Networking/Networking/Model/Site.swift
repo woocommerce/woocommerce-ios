@@ -138,3 +138,16 @@ private extension Site {
         case shortName      = "product_name_short"
     }
 }
+
+/// Computed properties
+///
+public extension Site {
+
+    /// Returns the TimeZone using the gmtOffset
+    ///
+    var siteTimezone: TimeZone {
+        let secondsFromGMT = Int(gmtOffset * 3600)
+        return TimeZone(secondsFromGMT: secondsFromGMT) ?? .current
+    }
+
+}

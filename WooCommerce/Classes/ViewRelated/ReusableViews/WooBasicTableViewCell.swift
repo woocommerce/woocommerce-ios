@@ -60,6 +60,7 @@ class WooBasicTableViewCell: UITableViewCell {
             accessoryView = nil
             return
         }
+
         let accessoryImageView = UIImageView(image: accessoryImage)
         accessoryImageView.tintColor = .primaryButtonBackground
         accessoryView = accessoryImageView

@@ -47,10 +47,11 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v3.2-whats-new"
+msgctxt "v3.3-whats-new"
 msgid ""
-"- Fans of dark mode, rejoice! It’s here.\n"
-"- Fans of previewing things, you can rejoice too! We know a Products tab is high on people’s wish lists. While we’re not ready to fully release a version of the app that includes it, you can preview the coming-soon Products tab right now — head to Settings in the app to enable it.\n"
+"- The Fulfill Order screen displays the full contents of customer-provided notes (when there is one) instead of cutting them off after single line, so you can see all the detail on one screen.\n"
+"- The count on the Orders tab bar now correctly refreshes when you switch between stores.\n"
+"- Quirks are intriguing in people and a lot less intriguing in apps, so we took care of a few bugs that caused some visual quirks (in particular, when changing system font sizes).\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

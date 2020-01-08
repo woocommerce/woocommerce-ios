@@ -75,7 +75,7 @@ private extension DefaultProductFormTableViewModel {
 
             // TODO-1505: show sale period
         } else if product.price.isEmpty == false {
-            let formattedPrice = currencyFormatter.formatAmount(product.price, with: currency) ?? ""
+            let formattedPrice = currencyFormatter.formatAmount(product.regularPrice ?? product.price, with: currency) ?? ""
             priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedPrice))
         }
 

@@ -12,8 +12,8 @@ public struct Refund: Codable {
     public let reason: String
     public let refundedByUserID: Int64
 
-    /// If true, the automatic refund is used.
-    /// When false, manual refund process is used.
+    /// If true, the automatic refund was used.
+    /// When false, manual refund process was used.
     ///
     public let isAutomated: Bool?
 

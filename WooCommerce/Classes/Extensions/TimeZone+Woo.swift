@@ -11,7 +11,7 @@ extension TimeZone {
         guard let gmtOffset = ServiceLocator.stores.sessionManager.defaultSite?.gmtOffset else {
             return .current
         }
-        let secondsFromGMT = NSDecimalNumber(decimal: gmtOffset).multiplying(by: 3600)
-        return TimeZone(secondsFromGMT: secondsFromGMT.intValue) ?? .current
+        let secondsFromGMT = Int(gmtOffset * 3600)
+        return TimeZone(secondsFromGMT: secondsFromGMT) ?? .current
     }
 }

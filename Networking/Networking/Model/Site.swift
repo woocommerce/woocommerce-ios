@@ -39,7 +39,7 @@ public struct Site: Decodable {
 
     /// Return the website UTC time offset, showing the difference in hours and minutes from UTC, from the westernmost (−12:00) to the easternmost (+14:00).
     ///
-    public let gmtOffset: Decimal
+    public let gmtOffset: Double
 
     /// Decodable Conformance.
     ///
@@ -55,7 +55,7 @@ public struct Site: Decodable {
         let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
-        let gmtOffset = try optionsContainer.decode(Decimal.self, forKey: .gmtOffset)
+        let gmtOffset = try optionsContainer.decode(Double.self, forKey: .gmtOffset)
 
         self.init(siteID: siteID,
                   name: name,
@@ -78,7 +78,7 @@ public struct Site: Decodable {
                 isWooCommerceActive: Bool,
                 isWordPressStore: Bool,
                 timezone: String,
-                gmtOffset: Decimal) {
+                gmtOffset: Double) {
         self.siteID = siteID
         self.name = name
         self.description = description

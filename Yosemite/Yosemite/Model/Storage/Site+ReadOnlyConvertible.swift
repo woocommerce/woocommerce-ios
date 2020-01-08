@@ -17,7 +17,7 @@ extension Storage.Site: ReadOnlyConvertible {
         isWooCommerceActive = NSNumber(booleanLiteral: site.isWooCommerceActive)
         isWordPressStore = NSNumber(booleanLiteral: site.isWordPressStore)
         timezone = site.timezone
-        gmtOffset = NSDecimalNumber(decimal: site.gmtOffset)
+        gmtOffset = site.gmtOffset
     }
 
     /// Returns a ReadOnly version of the receiver.
@@ -31,6 +31,6 @@ extension Storage.Site: ReadOnlyConvertible {
                     isWooCommerceActive: isWooCommerceActive?.boolValue ?? false,
                     isWordPressStore: isWordPressStore?.boolValue ?? false,
                     timezone: timezone ?? "",
-                    gmtOffset: gmtOffset as Decimal)
+                    gmtOffset: gmtOffset)
     }
 }

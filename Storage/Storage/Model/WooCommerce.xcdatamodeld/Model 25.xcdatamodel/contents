@@ -453,7 +453,7 @@
         <relationship name="order" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Order" inverseName="shippingLines" inverseEntity="Order"/>
     </entity>
     <entity name="Site" representedClassName="Site" syncable="YES">
-        <attribute name="gmtOffset" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="gmtOffset" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="isWooCommerceActive" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="isWordPressStore" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="name" optional="YES" attributeType="String"/>

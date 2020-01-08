@@ -262,6 +262,7 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
             fatalError()
         }
         headerView.configure(title: errorTitle)
+        UIAccessibility.post(notification: .layoutChanged, argument: headerView)
         return headerView
     }
 
@@ -313,7 +314,6 @@ private extension ProductInventorySettingsViewController {
         switch error {
         case .duplicatedSKU, .invalidSKU:
             viewModel = viewModel.stateUpdated(state: .error)
-            UIAccessibility.post(notification: .layoutChanged, argument: cell)
         default:
             break
         }

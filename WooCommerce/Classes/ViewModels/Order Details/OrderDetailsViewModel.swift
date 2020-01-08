@@ -38,6 +38,18 @@ final class OrderDetailsViewModel {
         return dataSource.products
     }
 
+    /// Refunded products from an Order
+    ///
+    var refundedItems: [OrderItemRefund] {
+        let refunds = dataSource.refunds
+        var items = [OrderItemRefund]()
+        for refund in refunds {
+            items.append(contentsOf: refund.items)
+        }
+
+        return items
+    }
+
     /// Indicates if we consider the shipment tracking plugin as reachable
     /// https://github.com/woocommerce/woocommerce-ios/issues/852#issuecomment-482308373
     ///
@@ -207,7 +219,8 @@ extension OrderDetailsViewModel {
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
         case .refundedProducts:
             ServiceLocator.analytics.track(.refundedProductsDetailTapped)
-            let refundedProductsDetailViewController = RefundedProductsViewController(order: order, refunds: dataSource.refunds)
+            let viewModel = RefundedProductsViewModel(order: order, items: refundedItems)
+            let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
         default:
             break

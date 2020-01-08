@@ -346,6 +346,7 @@ private extension AccountStoreTests {
                     plan: String(),
                     isWooCommerceActive: true,
                     isWordPressStore: false,
-                    timezone: "Asia/Taipei")
+                    timezone: "Asia/Taipei",
+                    gmtOffset: 0)
     }
 }

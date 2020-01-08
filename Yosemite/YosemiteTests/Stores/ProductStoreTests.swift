@@ -737,6 +737,12 @@ class ProductStoreTests: XCTestCase {
         let expectedStockQuantity = 99
         let expectedBackordersSetting = ProductBackordersSetting.allowed
         let expectedStockStatus = ProductStockStatus.inStock
+        let expectedProductRegularPrice = "12.00"
+        let expectedProductSalePrice = "10.00"
+        let expectedProductSaleStart = date(with: "2019-10-15T21:30:11")
+        let expectedProductSaleEnd = date(with: "2019-10-27T21:29:50")
+        let expectedProductTaxStatus = "taxable"
+        let expectedProductTaxClass = "reduced-rate"
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
@@ -762,6 +768,13 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(product?.stockQuantity, expectedStockQuantity)
             XCTAssertEqual(product?.backordersSetting, expectedBackordersSetting)
             XCTAssertEqual(product?.productStockStatus, expectedStockStatus)
+            // Price settings.
+            XCTAssertEqual(product?.regularPrice, expectedProductRegularPrice)
+            XCTAssertEqual(product?.salePrice, expectedProductSalePrice)
+            XCTAssertEqual(product?.dateOnSaleStart, expectedProductSaleStart)
+            XCTAssertEqual(product?.dateOnSaleEnd, expectedProductSaleEnd)
+            XCTAssertEqual(product?.taxStatusKey, expectedProductTaxStatus)
+            XCTAssertEqual(product?.taxClass, expectedProductTaxClass)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()

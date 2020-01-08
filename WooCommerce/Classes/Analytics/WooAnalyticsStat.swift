@@ -153,6 +153,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailOrderStatusEditButtonTapped = "order_detail_order_status_edit_button_tapped"
     case orderDetailProductDetailTapped         = "order_detail_product_detail_button_tapped"
     case orderDetailRefundDetailTapped          = "order_detail_refund_detail_tapped"
+    case refundedProductsDetailTapped           = "order_detail_refunded_products_detail_tapped"
     case orderDetailTrackPackageButtonTapped    = "order_detail_track_package_button_tapped"
     case orderDetailTrackingDeleteButtonTapped  = "order_detail_tracking_delete_button_tapped"
     case orderFulfillmentCompleteButtonTapped   = "order_fulfillment_mark_order_complete_button_tapped"

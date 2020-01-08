@@ -125,7 +125,7 @@ extension OrderDetailsViewModel {
             WooBasicTableViewCell.self,
             OrderNoteHeaderTableViewCell.self,
             OrderNoteTableViewCell.self,
-            PaymentTableViewCell.self,
+            LedgerTableViewCell.self,
             TwoColumnHeadlineFootnoteTableViewCell.self,
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
@@ -197,9 +197,18 @@ extension OrderDetailsViewModel {
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
         case .refund:
             ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
-            let refund = dataSource.refund(at: indexPath)
-            let refundDetailsViewController = RefundDetailsViewController(refund: refund)
+            guard let refund = dataSource.refund(at: indexPath) else {
+                DDLogError("No refund details found.")
+                return
+            }
+
+            let viewModel = RefundDetailsViewModel(order: order, refund: refund)
+            let refundDetailsViewController = RefundDetailsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
+        case .refundedProducts:
+            ServiceLocator.analytics.track(.refundedProductsDetailTapped)
+            let refundedProductsDetailViewController = RefundedProductsViewController(order: order, refunds: dataSource.refunds)
+            viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
         default:
             break
         }

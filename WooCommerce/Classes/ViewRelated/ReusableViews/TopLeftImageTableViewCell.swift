@@ -13,6 +13,7 @@ class TopLeftImageTableViewCell: UITableViewCell {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+
         imageView?.frame.size = CGSize(width: Constants.iconW, height: Constants.iconH)
         imageView?.frame.origin.y = Constants.iconY
     }

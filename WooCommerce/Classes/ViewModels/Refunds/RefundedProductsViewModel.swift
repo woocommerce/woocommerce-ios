@@ -36,27 +36,32 @@ final class RefundedProductsViewModel {
         var variations = [OrderItemRefundSummary]()
 
         for productID in uniqueProductIDs {
-            var repeatedItems = [OrderItemRefund]()
+            var productGroup = [OrderItemRefund]()
             var variationIDs = [Int64]()
+
+            // Get every item that has the same productID
             for item in sorted {
                 if item.productID == productID {
-                    repeatedItems.append(item)
+                    productGroup.append(item)
                     variationIDs.append(item.variationID)
                 }
             }
 
-            for repeatedItem in repeatedItems {
+            for repeatedItem in productGroup {
                 let tax = currency.convertToDecimal(from: repeatedItem.totalTax)
 
+                // See if a product with a variation is in the varitions array.
                 let hasVariant = variations.contains { element in
-                    if element.variationID == repeatedItem.variationID {
+                    if  element.productID == repeatedItem.productID &&
+                        element.variationID == repeatedItem.variationID {
                         return true
                     }
                     return false
                 }
 
                 if hasVariant {
-                    let variant = variations.first(where: { $0.variationID == repeatedItem.variationID })
+                    // Edit an existing variable product
+                    let variant = variations.first(where: { $0.productID == repeatedItem.productID && $0.variationID == repeatedItem.variationID })
                     let tax = currency.convertToDecimal(from: repeatedItem.totalTax)
                     variant?.quantity += repeatedItem.quantity
 
@@ -66,6 +71,7 @@ final class RefundedProductsViewModel {
                         }
                     }
                 } else {
+                    // Make a new variable product
                     let variant = OrderItemRefundSummary(name: repeatedItem.name,
                                                          productID: repeatedItem.productID,
                                                          variationID: repeatedItem.variationID,

@@ -9,14 +9,82 @@ final class RefundedProductsViewModel {
     ///
     private(set) var order: Order
 
-    /// Array of all refunded items.
+    /// Array of all refunded items from every refund.
     ///
     private(set) var items: [OrderItemRefund]
+
+    /// Condense order items into summarized data
+    ///
+    var summedItems: [OrderItemRefundSummary] {
+        /// OrderItemRefund.orderItemID isn't useful for finding duplicates here,
+        /// because multiple refunds cause orderItemIDs to be unique.
+        /// Instead, we need to find duplicate *Products*.
+
+        let currency = CurrencyFormatter()
+
+        // Sort the items by product ID
+        let sorted = items.sorted(by: { $0.productID > $1.productID })
+
+        // Get all the productIDs
+        var productIDs = [Int64]()
+        for item in sorted {
+            productIDs.append(item.productID)
+        }
+
+        // Remove duplicate productIDs
+        let uniqueProductIDs = Array(Set(productIDs))
+        var variations = [OrderItemRefundSummary]()
+
+        for productID in uniqueProductIDs {
+            var repeatedItems = [OrderItemRefund]()
+            var variationIDs = [Int64]()
+            for item in sorted {
+                if item.productID == productID {
+                    repeatedItems.append(item)
+                    variationIDs.append(item.variationID)
+                }
+            }
+
+            for repeatedItem in repeatedItems {
+                let tax = currency.convertToDecimal(from: repeatedItem.totalTax)
+
+                let hasVariant = variations.contains { element in
+                    if element.variationID == repeatedItem.variationID {
+                        return true
+                    }
+                    return false
+                }
+
+                if hasVariant {
+                    let variant = variations.first(where: { $0.variationID == repeatedItem.variationID })
+                    let tax = currency.convertToDecimal(from: repeatedItem.totalTax)
+                    variant?.quantity += repeatedItem.quantity
+
+                    if let totalTax = tax {
+                        if let variantTax = variant?.totalTax {
+                            variant?.totalTax = variantTax.adding(totalTax)
+                        }
+                    }
+                } else {
+                    let variant = OrderItemRefundSummary(name: repeatedItem.name,
+                                                         productID: repeatedItem.productID,
+                                                         variationID: repeatedItem.variationID,
+                                                         quantity: repeatedItem.quantity,
+                                                         price: repeatedItem.price,
+                                                         sku: repeatedItem.sku,
+                                                         totalTax: tax)
+                    variations.append(variant)
+                }
+            }
+        }
+
+        return variations
+    }
 
     /// The datasource that will be used to render the Refunded Products screen.
     ///
     private(set) lazy var dataSource: RefundedProductsDataSource = {
-        return RefundedProductsDataSource(order: self.order, items: self.items)
+        return RefundedProductsDataSource(order: self.order, items: self.summedItems)
     }()
 
     /// Designated initializer.
@@ -94,7 +162,7 @@ extension RefundedProductsViewModel {
         switch dataSource.sections[indexPath.section].rows[indexPath.row] {
 
         case .orderItemRefunded:
-            let item = items[indexPath.row]
+            let item = summedItems[indexPath.row]
             let productID = item.variationID == 0 ? item.productID : item.variationID
             let loaderViewController = ProductLoaderViewController(productID: productID,
                                                                    siteID: order.siteID,

@@ -157,3 +157,14 @@ extension OrderItemRefund: Comparable {
             (lhs.itemID == rhs.itemID && lhs.productID == rhs.productID && lhs.name < rhs.name)
     }
 }
+
+
+// MARK: - Hashable Conformance
+//
+extension OrderItemRefund: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(itemID)
+        hasher.combine(productID)
+        hasher.combine(variationID)
+    }
+}

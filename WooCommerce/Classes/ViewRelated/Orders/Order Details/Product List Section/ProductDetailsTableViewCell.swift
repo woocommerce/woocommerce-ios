@@ -172,4 +172,20 @@ extension ProductDetailsTableViewCell {
         price = item.price
         sku = item.sku
     }
+
+    /// Configure a summary of all refunded products (with variants, if any)
+    ///
+    func configure(item: OrderItemRefundSummaryViewModel, imageService: ImageService) {
+
+        imageService.downloadAndCacheImageForImageView(productImageView,
+                                                       with: item.imageURL?.absoluteString,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
+
+        name = item.name
+        quantity = item.quantity
+        price = item.price
+        sku = item.sku
+    }
 }

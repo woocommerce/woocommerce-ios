@@ -43,6 +43,7 @@ final class OrderDetailsViewModel {
     var refundedItems: [OrderItemRefund] {
         let refunds = dataSource.refunds
         var items = [OrderItemRefund]()
+
         for refund in refunds {
             items.append(contentsOf: refund.items)
         }

@@ -7,12 +7,23 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         let title: String?
         let text: String?
         let placeholder: String?
+        let state: State
         let onTextChange: ((_ text: String?) -> Void)?
 
-        init(title: String?, text: String?, placeholder: String?, onTextChange: ((_ text: String?) -> Void)?) {
+        enum State {
+            case normal
+            case error
+        }
+
+        init(title: String?,
+             text: String?,
+             placeholder: String?,
+             state: State = .normal,
+             onTextChange: ((_ text: String?) -> Void)?) {
             self.title = title
             self.text = text
             self.placeholder = placeholder
+            self.state = state
             self.onTextChange = onTextChange
         }
     }
@@ -35,8 +46,10 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
 
     func configure(viewModel: ViewModel) {
         titleLabel.text = viewModel.title
+        titleLabel.textColor = viewModel.state.textColor
         textField.text = viewModel.text
         textField.placeholder = viewModel.placeholder
+        textField.textColor = viewModel.state.textColor
         onTextChange = viewModel.onTextChange
     }
 }
@@ -64,5 +77,16 @@ private extension TitleAndTextFieldTableViewCell {
 private extension TitleAndTextFieldTableViewCell {
     @objc func textFieldDidChange(textField: UITextField) {
         onTextChange?(textField.text)
+    }
+}
+
+private extension TitleAndTextFieldTableViewCell.ViewModel.State {
+    var textColor: UIColor {
+        switch self {
+        case .normal:
+            return .text
+        case .error:
+            return .error
+        }
     }
 }

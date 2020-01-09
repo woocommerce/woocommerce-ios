@@ -5,6 +5,7 @@ import Yosemite
 ///
 final class ProductImagesViewController: UIViewController {
     @IBOutlet private weak var addButton: UIButton!
+    @IBOutlet private weak var addButtonBottomBorderView: UIView!
     @IBOutlet private weak var imagesContainerView: UIView!
 
     private let siteID: Int64
@@ -37,6 +38,7 @@ final class ProductImagesViewController: UIViewController {
 
         configureNavigation()
         configureAddButton()
+        configureAddButtonBottomBorderView()
         configureImagesContainerView()
     }
 }
@@ -54,8 +56,12 @@ private extension ProductImagesViewController {
         addButton.applyPrimaryButtonStyle()
     }
 
+    func configureAddButtonBottomBorderView() {
+        addButtonBottomBorderView.backgroundColor = .systemColor(.separator)
+    }
+
     func configureImagesContainerView() {
-        imagesContainerView.backgroundColor = .listBackground
+        imagesContainerView.backgroundColor = .basicBackground
 
         addChild(imagesViewController)
         imagesContainerView.addSubview(imagesViewController.view)

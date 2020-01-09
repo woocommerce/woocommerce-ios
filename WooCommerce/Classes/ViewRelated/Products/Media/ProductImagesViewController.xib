@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina6_1" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductImagesViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="addButton" destination="0Ax-am-fAo" id="QNl-lB-JSc"/>
+                <outlet property="addButtonBottomBorderView" destination="KbB-CQ-TNt" id="94x-9o-kxI"/>
                 <outlet property="imagesContainerView" destination="SsJ-ZU-y5E" id="MoY-hV-AkN"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -27,11 +28,21 @@
                             <rect key="frame" x="16" y="16" width="382" height="30"/>
                             <state key="normal" title="Button"/>
                         </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KbB-CQ-TNt">
+                            <rect key="frame" x="0.0" y="61.5" width="414" height="0.5"/>
+                            <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="0.5" id="47e-lI-f8z"/>
+                            </constraints>
+                        </view>
                     </subviews>
                     <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
                     <constraints>
                         <constraint firstItem="0Ax-am-fAo" firstAttribute="leading" secondItem="Dk2-8r-KNb" secondAttribute="leading" constant="16" id="Cxh-B4-v30"/>
+                        <constraint firstAttribute="bottom" secondItem="KbB-CQ-TNt" secondAttribute="bottom" id="KjN-PF-4mY"/>
+                        <constraint firstItem="KbB-CQ-TNt" firstAttribute="leading" secondItem="Dk2-8r-KNb" secondAttribute="leading" id="Qj7-eC-kFt"/>
                         <constraint firstItem="0Ax-am-fAo" firstAttribute="centerY" secondItem="Dk2-8r-KNb" secondAttribute="centerY" id="bsU-a9-Qwh"/>
+                        <constraint firstAttribute="trailing" secondItem="KbB-CQ-TNt" secondAttribute="trailing" id="huF-CE-lcd"/>
                         <constraint firstItem="0Ax-am-fAo" firstAttribute="top" secondItem="Dk2-8r-KNb" secondAttribute="top" constant="16" id="m6y-9Z-jVb"/>
                         <constraint firstItem="0Ax-am-fAo" firstAttribute="centerX" secondItem="Dk2-8r-KNb" secondAttribute="centerX" id="v2z-mg-x6v"/>
                     </constraints>

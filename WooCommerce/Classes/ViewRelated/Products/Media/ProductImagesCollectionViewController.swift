@@ -28,7 +28,7 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        collectionView.backgroundColor = .listBackground
+        collectionView.backgroundColor = .basicBackground
 
         collectionView.register(ProductImageCollectionViewCell.loadNib(), forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
 

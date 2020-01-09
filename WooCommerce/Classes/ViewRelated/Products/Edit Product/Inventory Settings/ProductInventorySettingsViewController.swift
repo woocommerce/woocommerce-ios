@@ -24,6 +24,8 @@ final class ProductInventorySettingsViewController: UIViewController {
     ///
     private var sections: [Section] = []
 
+    private var error: ProductUpdateError?
+
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
         return keyboardFrameObserver
@@ -90,8 +92,16 @@ private extension ProductInventorySettingsViewController {
             stockSection = Section(rows: [.manageStock, .stockStatus])
         }
 
+        let skuSection: Section
+        if let error = error {
+            skuSection = Section(errorTitle: error.alertMessage,
+                                 rows: [.sku])
+        } else {
+            skuSection = Section(rows: [.sku])
+        }
+
         sections = [
-            Section(rows: [.sku]),
+            skuSection,
             stockSection,
             Section(rows: [.limitOnePerOrder])
         ]
@@ -119,6 +129,7 @@ private extension ProductInventorySettingsViewController {
         tableView.backgroundColor = .listBackground
 
         registerTableViewCells()
+        registerTableViewHeaderFooters()
 
         tableView.dataSource = self
         tableView.delegate = self
@@ -127,6 +138,14 @@ private extension ProductInventorySettingsViewController {
     func registerTableViewCells() {
         for row in Row.allCases {
             tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
+        }
+    }
+
+    func registerTableViewHeaderFooters() {
+        let headersAndFooters = [ ErrorSectionHeaderView.self ]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
         }
     }
 }
@@ -174,20 +193,8 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     func displayError(error: ProductUpdateError) {
-        displayErrorAlert(title: error.alertTitle, message: error.alertMessage)
-    }
-
-    func displayErrorAlert(title: String?, message: String?) {
-        let alert = UIAlertController(title: title,
-                                      message: message,
-                                      preferredStyle: .alert)
-        let cancel = UIAlertAction(title: NSLocalizedString(
-            "OK",
-            comment: "Dismiss button on the alert when there is an error updating the product"
-        ), style: .cancel, handler: nil)
-        alert.addAction(cancel)
-
-        present(alert, animated: true, completion: nil)
+        self.error = error
+        reloadSections()
     }
 }
 
@@ -243,6 +250,37 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
             return
         }
     }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let section = sections[section]
+        guard let errorTitle = section.errorTitle else {
+            return nil
+        }
+
+        let headerID = ErrorSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? ErrorSectionHeaderView else {
+            fatalError()
+        }
+        headerView.configure(title: errorTitle)
+        UIAccessibility.post(notification: .layoutChanged, argument: headerView)
+        return headerView
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        let section = sections[section]
+        guard let errorTitle = section.errorTitle, errorTitle.isEmpty == false else {
+            return 0
+        }
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        let section = sections[section]
+        guard let errorTitle = section.errorTitle, errorTitle.isEmpty == false else {
+            return 0
+        }
+        return Constants.estimatedSectionHeaderHeight
+    }
 }
 
 // MARK: - Cell configuration
@@ -270,8 +308,14 @@ private extension ProductInventorySettingsViewController {
     }
 
     func configureSKU(cell: TitleAndTextFieldTableViewCell) {
-        let viewModel = Product.createSKUViewModel(sku: sku) { [weak self] value in
+        var viewModel = Product.createSKUViewModel(sku: sku) { [weak self] value in
             self?.handleSKUChange(value)
+        }
+        switch error {
+        case .duplicatedSKU, .invalidSKU:
+            viewModel = viewModel.stateUpdated(state: .error)
+        default:
+            break
         }
         cell.configure(viewModel: viewModel)
     }
@@ -328,8 +372,19 @@ private extension ProductInventorySettingsViewController {
 
 private extension ProductInventorySettingsViewController {
 
+    enum Constants {
+        static let estimatedSectionHeaderHeight: CGFloat = 44
+    }
+
     struct Section {
+        let errorTitle: String?
         let rows: [Row]
+
+        init(errorTitle: String? = nil,
+             rows: [Row]) {
+            self.errorTitle = errorTitle
+            self.rows = rows
+        }
     }
 
     enum Row: CaseIterable {

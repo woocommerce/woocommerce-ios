@@ -342,9 +342,17 @@ extension ProductsViewController: UITableViewDelegate {
 
         let currencyCode = CurrencySettings.shared.currencyCode
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-        let productViewController = ProductDetailsViewController(viewModel: viewModel)
-        navigationController?.pushViewController(productViewController, animated: true)
+        let isFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
+        let viewController: UIViewController
+        if product.productType == .simple && isFeatureFlagOn {
+            viewController = ProductFormViewController(product: product, currency: currency)
+            // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+            viewController.hidesBottomBarWhenPushed = true
+        } else {
+            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
+            viewController = ProductDetailsViewController(viewModel: viewModel)
+        }
+        navigationController?.pushViewController(viewController, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {

@@ -66,6 +66,8 @@ private extension RefundDetailsViewController {
         tableView.dataSource = viewModel.dataSource
     }
 
+    /// Setup: Configure viewModel
+    ///
     func configureViewModel() {
         viewModel.configureResultsControllers { [weak self] in
             self?.reloadTableViewSectionsAndData()

@@ -7,13 +7,16 @@ final class MockProduct {
     let testSiteID: Int64 = 2019
     let testProductID: Int64 = 2020
 
-    func product(name: String = "Hogsmeade",
+    func product(downloadable: Bool = false,
+                 name: String = "Hogsmeade",
                  productShippingClass: ProductShippingClass? = nil,
                  backordersSetting: ProductBackordersSetting = .notAllowed,
+                 productType: ProductType = .simple,
                  stockQuantity: Int? = nil,
                  taxClass: String? = "",
                  stockStatus: ProductStockStatus = .inStock,
                  variations: [Int64] = [],
+                 virtual: Bool = false,
                  images: [ProductImage] = []) -> Product {
 
     return Product(siteID: testSiteID,
@@ -25,7 +28,7 @@ final class MockProduct {
                    dateModified: Date(),
                    dateOnSaleStart: date(with: "2019-10-15T21:30:00"),
                    dateOnSaleEnd: date(with: "2019-10-27T21:29:59"),
-                   productTypeKey: "booking",
+                   productTypeKey: productType.rawValue,
                    statusKey: "publish",
                    featured: false,
                    catalogVisibilityKey: "visible",
@@ -43,8 +46,8 @@ final class MockProduct {
                    onSale: false,
                    purchasable: true,
                    totalSales: 0,
-                   virtual: true,
-                   downloadable: false,
+                   virtual: virtual,
+                   downloadable: downloadable,
                    downloads: [],
                    downloadLimit: -1,
                    downloadExpiry: -1,

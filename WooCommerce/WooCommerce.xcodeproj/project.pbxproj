@@ -30,6 +30,8 @@
 		020BE74823B05CF2007FE54C /* ProductInventoryEditableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74723B05CF2007FE54C /* ProductInventoryEditableData.swift */; };
 		020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */; };
 		020BE74E23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */; };
+		020B2F9923BDF2E000BD79AD /* DefaultProductFormTableViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020B2F9823BDF2E000BD79AD /* DefaultProductFormTableViewModelTests.swift */; };
+		020BE74823B05CF2007FE54C /* ProductInventoryEditableData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74723B05CF2007FE54C /* ProductInventoryEditableData.swift */; };
 		020BE76723B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE76623B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift */; };
 		020BE76923B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE76823B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift */; };
 		020BE76B23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE76A23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift */; };
@@ -162,6 +164,9 @@
 		02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */; };
 		02E6B97823853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E6B97623853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift */; };
 		02E6B97923853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02E6B97723853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib */; };
+		02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F49AD923BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift */; };
+		02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F49ADB23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift */; };
+		02F49ADE23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02F49ADD23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib */; };
 		02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F4F50A237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift */; };
 		02F4F50F237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F4F50D237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift */; };
 		02F4F510237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02F4F50E237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib */; };
@@ -451,8 +456,9 @@
 		CE2A9FBF23BFB1BE002BEC1C /* LedgerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */; };
 		CE2A9FC023BFB1BE002BEC1C /* LedgerTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */; };
 		CE2A9FC623BFFADE002BEC1C /* RefundedProductsViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */; };
-		CE2A9FCB23C4E637002BEC1C /* RefundedProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FC923C4E636002BEC1C /* RefundedProductsViewController.xib */; };
-		CE2A9FCC23C4E637002BEC1C /* RefundedProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FCA23C4E637002BEC1C /* RefundedProductsViewController.swift */; };
+		CE2A9FC823C3D2D4002BEC1C /* RefundedProductsDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */; };
+		CE2A9FCF23C4F2C8002BEC1C /* RefundedProductsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE2A9FCD23C4F2C8002BEC1C /* RefundedProductsViewController.xib */; };
+		CE2A9FD023C4F2C8002BEC1C /* RefundedProductsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE2A9FCE23C4F2C8002BEC1C /* RefundedProductsViewController.swift */; };
 		CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */; };
 		CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */; };
 		CE32B11520BF8779006FBCF4 /* FulfillButtonTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */; };
@@ -617,6 +623,8 @@
 		020BE74723B05CF2007FE54C /* ProductInventoryEditableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventoryEditableData.swift; sourceTree = "<group>"; };
 		020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TitleAndTextFieldTableViewCell.swift; sourceTree = "<group>"; };
 		020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TitleAndTextFieldTableViewCell.xib; sourceTree = "<group>"; };
+		020B2F9823BDF2E000BD79AD /* DefaultProductFormTableViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductFormTableViewModelTests.swift; sourceTree = "<group>"; };
+		020BE74723B05CF2007FE54C /* ProductInventoryEditableData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventoryEditableData.swift; sourceTree = "<group>"; };
 		020BE76623B49FE9007FE54C /* AztecBoldFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecBoldFormatBarCommandTests.swift; sourceTree = "<group>"; };
 		020BE76823B4A268007FE54C /* AztecItalicFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecItalicFormatBarCommandTests.swift; sourceTree = "<group>"; };
 		020BE76A23B4A380007FE54C /* AztecUnderlineFormatBarCommandTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecUnderlineFormatBarCommandTests.swift; sourceTree = "<group>"; };
@@ -749,6 +757,9 @@
 		02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModelTests.swift; sourceTree = "<group>"; };
 		02E6B97623853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTitleAndValueTableViewCell.swift; sourceTree = "<group>"; };
 		02E6B97723853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingTitleAndValueTableViewCell.xib; sourceTree = "<group>"; };
+		02F49AD923BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TitleAndTextFieldTableViewCell.ViewModel+State.swift"; sourceTree = "<group>"; };
+		02F49ADB23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorSectionHeaderView.swift; sourceTree = "<group>"; };
+		02F49ADD23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ErrorSectionHeaderView.xib; sourceTree = "<group>"; };
 		02F4F50A237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormTableViewDataSource.swift; sourceTree = "<group>"; };
 		02F4F50D237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageAndTitleAndTextTableViewCell.swift; sourceTree = "<group>"; };
 		02F4F50E237AFC1E00E13A9C /* ImageAndTitleAndTextTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ImageAndTitleAndTextTableViewCell.xib; sourceTree = "<group>"; };
@@ -1070,8 +1081,9 @@
 		CE2A9FBD23BFB1BD002BEC1C /* LedgerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LedgerTableViewCell.swift; sourceTree = "<group>"; };
 		CE2A9FBE23BFB1BE002BEC1C /* LedgerTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LedgerTableViewCell.xib; sourceTree = "<group>"; };
 		CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewModel.swift; sourceTree = "<group>"; };
-		CE2A9FC923C4E636002BEC1C /* RefundedProductsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RefundedProductsViewController.xib; sourceTree = "<group>"; };
-		CE2A9FCA23C4E637002BEC1C /* RefundedProductsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewController.swift; sourceTree = "<group>"; };
+		CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductsDataSource.swift; sourceTree = "<group>"; };
+		CE2A9FCD23C4F2C8002BEC1C /* RefundedProductsViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = RefundedProductsViewController.xib; sourceTree = "<group>"; };
+		CE2A9FCE23C4F2C8002BEC1C /* RefundedProductsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RefundedProductsViewController.swift; sourceTree = "<group>"; };
 		CE32B10A20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = TwoColumnSectionHeaderView.xib; sourceTree = "<group>"; };
 		CE32B10C20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TwoColumnSectionHeaderView.swift; sourceTree = "<group>"; };
 		CE32B11320BF8779006FBCF4 /* FulfillButtonTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FulfillButtonTableViewCell.swift; sourceTree = "<group>"; };
@@ -1230,8 +1242,17 @@
 			isa = PBXGroup;
 			children = (
 				020B2F9323BDDBDC00BD79AD /* ProductUpdateError+UI.swift */,
+				02F49AD923BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift */,
 			);
 			path = "Error Handling";
+			sourceTree = "<group>";
+		};
+		020B2F9723BDF2D000BD79AD /* Edit Product */ = {
+			isa = PBXGroup;
+			children = (
+				020B2F9823BDF2E000BD79AD /* DefaultProductFormTableViewModelTests.swift */,
+			);
+			path = "Edit Product";
 			sourceTree = "<group>";
 		};
 		020DD48B2322A5F9005822B1 /* View Models */ = {
@@ -1412,6 +1433,7 @@
 		0269177E23260090002AFC20 /* Products */ = {
 			isa = PBXGroup;
 			children = (
+				020B2F9723BDF2D000BD79AD /* Edit Product */,
 				45FBDF29238BF87800127F77 /* Collection View Cells */,
 				0269177F232600A6002AFC20 /* ProductsTabProductViewModelTests.swift */,
 				02691781232605B9002AFC20 /* PaginatedListViewControllerStateCoordinatorTests.swift */,
@@ -2357,8 +2379,8 @@
 		CE35F1042343DCAC007B2A6B /* Refunds */ = {
 			isa = PBXGroup;
 			children = (
-				CE2A9FCA23C4E637002BEC1C /* RefundedProductsViewController.swift */,
-				CE2A9FC923C4E636002BEC1C /* RefundedProductsViewController.xib */,
+				CE2A9FCE23C4F2C8002BEC1C /* RefundedProductsViewController.swift */,
+				CE2A9FCD23C4F2C8002BEC1C /* RefundedProductsViewController.xib */,
 				CE8CCD41239AC06E009DBD22 /* RefundDetailsViewController.swift */,
 				CE8CCD42239AC06E009DBD22 /* RefundDetailsViewController.xib */,
 			);
@@ -2511,6 +2533,7 @@
 				CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */,
 				CE7E780D23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift */,
 				CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */,
+				CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */,
 			);
 			path = Refunds;
 			sourceTree = "<group>";
@@ -2519,7 +2542,7 @@
 			isa = PBXGroup;
 			children = (
 				CE5F462823AAC9EA006B1A5C /* Refunds */,
-				D817585C22BB5E6900289CFE /* OrderDetailsViewModel */,
+				D817585C22BB5E6900289CFE /* Order Details */,
 				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
 				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
 				CE22709A228F362600C0626C /* ProductDetailsViewModel.swift */,
@@ -2622,6 +2645,12 @@
 				B5A56BEF219F2CE90065A902 /* VerticalButton.swift */,
 				CE227096228F152400C0626C /* WooBasicTableViewCell.swift */,
 				CE227098228F180B00C0626C /* WooBasicTableViewCell.xib */,
+				0262DA5123A238460029AF30 /* UnitInputTableViewCell.swift */,
+				0262DA5223A238460029AF30 /* UnitInputTableViewCell.xib */,
+				020BE74B23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.swift */,
+				020BE74C23B1F5EA007FE54C /* TitleAndTextFieldTableViewCell.xib */,
+				02F49ADB23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift */,
+				02F49ADD23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -2662,7 +2691,7 @@
 			path = ViewRelated;
 			sourceTree = "<group>";
 		};
-		D817585C22BB5E6900289CFE /* OrderDetailsViewModel */ = {
+		D817585C22BB5E6900289CFE /* Order Details */ = {
 			isa = PBXGroup;
 			children = (
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
@@ -2673,7 +2702,7 @@
 				D8C11A4D22DD235F00D4A88D /* OrderDetailsResultsControllers.swift */,
 				D8C11A5D22E2440400D4A88D /* OrderPaymentDetailsViewModel.swift */,
 			);
-			path = OrderDetailsViewModel;
+			path = "Order Details";
 			sourceTree = "<group>";
 		};
 		D85136C7231E128500DD0539 /* Reviews */ = {
@@ -2860,7 +2889,7 @@
 				93BCF01F20DC2CE200EBF7A1 /* bash_secrets.tpl in Resources */,
 				02162727237963AF000208D2 /* ProductFormViewController.xib in Resources */,
 				B56DB3D42049BFAA00D4AA8E /* Assets.xcassets in Resources */,
-				CE2A9FCB23C4E637002BEC1C /* RefundedProductsViewController.xib in Resources */,
+				CE2A9FCF23C4F2C8002BEC1C /* RefundedProductsViewController.xib in Resources */,
 				B573B1A0219DC2690081C78C /* Localizable.strings in Resources */,
 				B559EBAF20A0BF8F00836CD4 /* README.md in Resources */,
 				CE583A082107849F00D73C1C /* SwitchTableViewCell.xib in Resources */,
@@ -2920,6 +2949,7 @@
 				740ADFE521C33688009EE5A9 /* licenses.html in Resources */,
 				CE2A9FC023BFB1BE002BEC1C /* LedgerTableViewCell.xib in Resources */,
 				45C8B2592313FA570002FA77 /* CustomerNoteTableViewCell.xib in Resources */,
+				02F49ADE23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib in Resources */,
 				B554016B2170D6010067DC90 /* ChartPlaceholderView.xib in Resources */,
 				CE32B11620BF8779006FBCF4 /* FulfillButtonTableViewCell.xib in Resources */,
 				45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */,
@@ -3177,6 +3207,7 @@
 				021E2A1A23AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift in Sources */,
 				CE2A9FC623BFFADE002BEC1C /* RefundedProductsViewModel.swift in Sources */,
 				02E4FD7A230688BA0049610C /* OrderStatsV4Interval+Chart.swift in Sources */,
+				CE2A9FD023C4F2C8002BEC1C /* RefundedProductsViewController.swift in Sources */,
 				0262DA5823A23AC80029AF30 /* ProductShippingSettingsViewController.swift in Sources */,
 				748C7782211E294000814F2C /* Double+Woo.swift in Sources */,
 				D8915DC32372C9EF00F63762 /* UIColor+ColorStudio.swift in Sources */,
@@ -3353,7 +3384,6 @@
 				D83F5930225B269C00626E75 /* DatePickerTableViewCell.swift in Sources */,
 				0272C00322EE9C3200D7CA2C /* AsyncDictionary.swift in Sources */,
 				028BAC3D22F2DECE008BB4AF /* StoreStatsAndTopPerformersViewController.swift in Sources */,
-				CE2A9FCC23C4E637002BEC1C /* RefundedProductsViewController.swift in Sources */,
 				B59D1EDF219072CC009D1978 /* ProductReviewTableViewCell.swift in Sources */,
 				020DD48A23229495005822B1 /* ProductsTabProductTableViewCell.swift in Sources */,
 				74AAF6A5212A04A900C612B0 /* ChartMarker.swift in Sources */,
@@ -3403,6 +3433,7 @@
 				020F41E623163C0100776C4D /* TopBannerView.swift in Sources */,
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
 				CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */,
+				02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,
 				740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */,
 				CE22709F2293052700C0626C /* WebviewHelper.swift in Sources */,
@@ -3425,6 +3456,7 @@
 				B5980A6321AC879F00EBF596 /* Bundle+Woo.swift in Sources */,
 				B59D1EE5219080B4009D1978 /* Note+Woo.swift in Sources */,
 				02913E9523A774C500707A0C /* UnitInputFormatter.swift in Sources */,
+				02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */,
 				CE4DA5CA21DEA78E00074607 /* NSDecimalNumber+Helpers.swift in Sources */,
 				CE5F462A23AACA0A006B1A5C /* RefundDetailsDataSource.swift in Sources */,
 				02162726237963AF000208D2 /* ProductFormViewController.swift in Sources */,
@@ -3450,6 +3482,7 @@
 				B53B3F37219C75AC00DF1EB6 /* OrderLoaderViewController.swift in Sources */,
 				CE1D5A59228A1C2C00DF3715 /* ProductReviewsTableViewCell.swift in Sources */,
 				02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift in Sources */,
+				CE2A9FC823C3D2D4002BEC1C /* RefundedProductsDataSource.swift in Sources */,
 				CE24BCCF212DE8A6001CD12E /* HeadlineLabelTableViewCell.swift in Sources */,
 				B53B898D20D462A000EDB467 /* DefaultStoresManager.swift in Sources */,
 				D88CA758237D1C27005D2F44 /* Ghost+Woo.swift in Sources */,
@@ -3517,6 +3550,7 @@
 				746791632108D7C0007CF1DC /* WooAnalyticsTests.swift in Sources */,
 				021FAFCD2355621E00B99241 /* UIView+SubviewsAxisTests.swift in Sources */,
 				74F3015A2200EC0800931B9E /* NSDecimalNumberWooTests.swift in Sources */,
+				020B2F9923BDF2E000BD79AD /* DefaultProductFormTableViewModelTests.swift in Sources */,
 				D85136CD231E15B800DD0539 /* MockReviews.swift in Sources */,
 				D8053BCE231F98DA00CE60C2 /* ReviewAgeTests.swift in Sources */,
 				020BE76D23B4A404007FE54C /* AztecStrikethroughFormatBarCommandTests.swift in Sources */,

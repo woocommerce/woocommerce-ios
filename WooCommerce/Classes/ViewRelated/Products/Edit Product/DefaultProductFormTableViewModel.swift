@@ -81,8 +81,19 @@ private extension DefaultProductFormTableViewModel {
                 let dateIntervalFormatter = DateIntervalFormatter.mediumLengthLocalizedDateIntervalFormatter
                 dateIntervalFormatter.timeZone = siteTimezone
                 let formattedTimeRange = dateIntervalFormatter.string(from: dateOnSaleStart, to: dateOnSaleEnd)
-
                 priceDetails.append(String.localizedStringWithFormat(Constants.saleDatesFormat, formattedTimeRange))
+            }
+            else if let dateOnSaleStart = product.dateOnSaleStart, product.dateOnSaleEnd == nil {
+                let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
+                dateFormatter.timeZone = siteTimezone
+                let formattedDate = dateFormatter.string(from: dateOnSaleStart)
+                priceDetails.append(String.localizedStringWithFormat(Constants.saleDateFormatFrom, formattedDate))
+            }
+            else if let dateOnSaleEnd = product.dateOnSaleEnd, product.dateOnSaleStart == nil {
+                let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
+                dateFormatter.timeZone = siteTimezone
+                let formattedDate = dateFormatter.string(from: dateOnSaleEnd)
+                priceDetails.append(String.localizedStringWithFormat(Constants.saleDateFormatTo, formattedDate))
             }
         } else if product.price.isEmpty == false {
             let formattedPrice = currencyFormatter.formatAmount(product.regularPrice ?? product.price, with: currency) ?? ""
@@ -182,6 +193,10 @@ private extension DefaultProductFormTableViewModel {
                                                        comment: "Format of the sale price on the Price Settings row")
         static let saleDatesFormat = NSLocalizedString("Sale dates: %@",
                                                        comment: "Format of the sale period on the Price Settings row")
+        static let saleDateFormatFrom = NSLocalizedString("Sale dates: From %@",
+                                                    comment: "Format of the sale period on the Price Settings row from a certain date")
+        static let saleDateFormatTo = NSLocalizedString("Sale dates: Until %@",
+                                                    comment: "Format of the sale period on the Price Settings row until a certain date")
 
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",

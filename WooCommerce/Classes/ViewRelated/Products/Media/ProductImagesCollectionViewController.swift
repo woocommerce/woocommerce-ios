@@ -55,8 +55,9 @@ extension ProductImagesCollectionViewController {
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier, for: indexPath) as? ProductImageCollectionViewCell else {
-            fatalError()
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier,
+                                                            for: indexPath) as? ProductImageCollectionViewCell else {
+                                                                fatalError()
         }
 
         let productImage = productImages[indexPath.row]

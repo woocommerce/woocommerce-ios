@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14868" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_1" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14824"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductImagesViewController" customModule="WooCommerce" customModuleProvider="target">
+            <connections>
+                <outlet property="addButton" destination="0Ax-am-fAo" id="QNl-lB-JSc"/>
+                <outlet property="imagesContainerView" destination="SsJ-ZU-y5E" id="MoY-hV-AkN"/>
+                <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="i5M-Pr-FkT">
+            <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
+            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Dk2-8r-KNb" userLabel="Top Container View">
+                    <rect key="frame" x="0.0" y="44" width="414" height="62"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0Ax-am-fAo">
+                            <rect key="frame" x="16" y="16" width="382" height="30"/>
+                            <state key="normal" title="Button"/>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstItem="0Ax-am-fAo" firstAttribute="leading" secondItem="Dk2-8r-KNb" secondAttribute="leading" constant="16" id="Cxh-B4-v30"/>
+                        <constraint firstItem="0Ax-am-fAo" firstAttribute="centerY" secondItem="Dk2-8r-KNb" secondAttribute="centerY" id="bsU-a9-Qwh"/>
+                        <constraint firstItem="0Ax-am-fAo" firstAttribute="top" secondItem="Dk2-8r-KNb" secondAttribute="top" constant="16" id="m6y-9Z-jVb"/>
+                        <constraint firstItem="0Ax-am-fAo" firstAttribute="centerX" secondItem="Dk2-8r-KNb" secondAttribute="centerX" id="v2z-mg-x6v"/>
+                    </constraints>
+                </view>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="SsJ-ZU-y5E" userLabel="Images Container View">
+                    <rect key="frame" x="0.0" y="106" width="414" height="756"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                </view>
+            </subviews>
+            <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <constraints>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="SsJ-ZU-y5E" secondAttribute="trailing" id="Jyc-HD-LGF"/>
+                <constraint firstItem="SsJ-ZU-y5E" firstAttribute="top" secondItem="Dk2-8r-KNb" secondAttribute="bottom" id="LTj-Wm-7IT"/>
+                <constraint firstItem="SsJ-ZU-y5E" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="Qp6-lt-mgi"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="bottom" secondItem="SsJ-ZU-y5E" secondAttribute="bottom" id="YEi-eA-Yib"/>
+                <constraint firstItem="Dk2-8r-KNb" firstAttribute="top" secondItem="fnl-2z-Ty3" secondAttribute="top" id="dXs-wX-EmW"/>
+                <constraint firstItem="Dk2-8r-KNb" firstAttribute="leading" secondItem="fnl-2z-Ty3" secondAttribute="leading" id="iE9-KH-1ui"/>
+                <constraint firstItem="fnl-2z-Ty3" firstAttribute="trailing" secondItem="Dk2-8r-KNb" secondAttribute="trailing" id="iT9-hr-OFf"/>
+            </constraints>
+            <viewLayoutGuide key="safeArea" id="fnl-2z-Ty3"/>
+            <point key="canvasLocation" x="139" y="81"/>
+        </view>
+    </objects>
+</document>

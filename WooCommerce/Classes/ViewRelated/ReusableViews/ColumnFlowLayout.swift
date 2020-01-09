@@ -4,7 +4,7 @@ import UIKit
 ///
 final class ColumnFlowLayout: UICollectionViewFlowLayout {
 
-    let cellsPerRow: Int
+    private let cellsPerRow: Int
 
     init(cellsPerRow: Int,
          minimumInteritemSpacing: CGFloat = 0,
@@ -12,7 +12,7 @@ final class ColumnFlowLayout: UICollectionViewFlowLayout {
          sectionInset: UIEdgeInsets = .zero) {
         self.cellsPerRow = cellsPerRow
         super.init()
-        
+
         self.minimumInteritemSpacing = minimumInteritemSpacing
         self.minimumLineSpacing = minimumLineSpacing
         self.sectionInset = sectionInset

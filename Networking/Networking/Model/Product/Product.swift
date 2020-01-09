@@ -414,14 +414,19 @@ public struct Product: Codable {
 
         // We need to send empty string if fields are null, because there is a bug on the API side
         // Issue: https://github.com/woocommerce/woocommerce/issues/25350
-        if dateOnSaleStart == nil || dateOnSaleEnd == nil {
+        if dateOnSaleStart == nil {
             try container.encode("", forKey: .dateOnSaleStart)
-            try container.encode("", forKey: .dateOnSaleEnd)
         }
         else {
             try container.encode(dateOnSaleStart, forKey: .dateOnSaleStart)
+        }
+        if dateOnSaleEnd == nil {
+            try container.encode("", forKey: .dateOnSaleEnd)
+        }
+        else {
             try container.encode(dateOnSaleEnd, forKey: .dateOnSaleEnd)
         }
+
         try container.encode(taxStatusKey, forKey: .taxStatusKey)
         //The backend for the standard tax class return "standard",
         // but to set the standard tax class it accept only an empty string "" in the POST request

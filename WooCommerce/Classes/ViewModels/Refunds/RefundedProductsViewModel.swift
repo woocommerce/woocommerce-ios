@@ -41,15 +41,21 @@ final class RefundedProductsViewModel {
             let totalTax = items
                 .compactMap( { currency.convertToDecimal(from: $0.totalTax) } )
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+            // Sum the total
+            let total = items
+                .compactMap( { currency.convertToDecimal(from: $0.total) } )
+                .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
             return OrderItemRefundSummary(
-                name: item.name,
                 productID: item.productID,
                 variationID: item.variationID,
-                quantity: totalQuantity,
+                name: item.name,
                 price: item.price,
+                quantity: totalQuantity,
                 sku: item.sku,
-                totalTax: totalTax)
+                total: total,
+                totalTax: totalTax
+            )
         }
     }
 

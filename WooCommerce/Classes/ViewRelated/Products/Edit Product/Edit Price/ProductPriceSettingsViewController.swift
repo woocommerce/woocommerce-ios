@@ -17,9 +17,9 @@ final class ProductPriceSettingsViewController: UIViewController {
     private var dateOnSaleStart: Date?
     private var dateOnSaleEnd: Date?
 
-    // When the site time zone can be correctly fetched, consider using the site time zone
-    // for Product schedule sale (https://github.com/woocommerce/woocommerce-ios/issues/1375).
-    private let timezoneForScheduleSaleDates = TimeZone.current
+    // Timezone of the website
+    //
+    private let timezoneForScheduleSaleDates = TimeZone.siteTimezone
 
     // Date Pickers status
     //
@@ -362,7 +362,7 @@ private extension ProductPriceSettingsViewController {
 
     func configureScheduleSaleFrom(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("From", comment: "Title of the cell in Product Price Settings > Schedule sale From a certain date")
-        let value = dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none)
+        let value = dateOnSaleStart?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
         cell.updateUI(title: title, value: value)
     }
 
@@ -372,6 +372,7 @@ private extension ProductPriceSettingsViewController {
         }
 
         cell.getPicker().setDate(dateOnSaleStart, animated: false)
+        cell.getPicker().timeZone = timezoneForScheduleSaleDates
         cell.onDateSelected = { [weak self] date in
             guard let self = self else {
                 return
@@ -388,7 +389,7 @@ private extension ProductPriceSettingsViewController {
 
     func configureScheduleSaleTo(cell: SettingTitleAndValueTableViewCell) {
         let title = NSLocalizedString("To", comment: "Title of the cell in Product Price Settings > Schedule sale To a certain date")
-        let value = dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none)
+        let value = dateOnSaleEnd?.toString(dateStyle: .medium, timeStyle: .none, timeZone: timezoneForScheduleSaleDates)
         cell.updateUI(title: title, value: value)
     }
 
@@ -397,6 +398,7 @@ private extension ProductPriceSettingsViewController {
             return
         }
         cell.getPicker().setDate(dateOnSaleEnd, animated: false)
+        cell.getPicker().timeZone = timezoneForScheduleSaleDates
         cell.onDateSelected = { [weak self] date in
             guard let self = self else {
                 return

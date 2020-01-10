@@ -8,6 +8,10 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
 
+    // Timezone of the website
+    //
+    var siteTimezone: TimeZone = TimeZone.siteTimezone
+
     private let canEditImages: Bool
 
     init(product: Product,
@@ -73,7 +77,13 @@ private extension DefaultProductFormTableViewModel {
             priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedRegularPrice))
             priceDetails.append(String.localizedStringWithFormat(Constants.salePriceFormat, formattedSalePrice))
 
-            // TODO-1505: show sale period
+            if let dateOnSaleStart = product.dateOnSaleStart, let dateOnSaleEnd = product.dateOnSaleEnd {
+                let dateIntervalFormatter = DateIntervalFormatter.mediumLengthLocalizedDateIntervalFormatter
+                dateIntervalFormatter.timeZone = siteTimezone
+                let formattedTimeRange = dateIntervalFormatter.string(from: dateOnSaleStart, to: dateOnSaleEnd)
+
+                priceDetails.append(String.localizedStringWithFormat(Constants.saleDatesFormat, formattedTimeRange))
+            }
         } else if product.price.isEmpty == false {
             let formattedPrice = currencyFormatter.formatAmount(product.regularPrice ?? product.price, with: currency) ?? ""
             priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedPrice))
@@ -170,7 +180,7 @@ private extension DefaultProductFormTableViewModel {
                                                           comment: "Format of the regular price on the Price Settings row")
         static let salePriceFormat = NSLocalizedString("Sale price: %@",
                                                        comment: "Format of the sale price on the Price Settings row")
-        static let saleDatesFormat = NSLocalizedString("Sale dates: %1$@-%2$@",
+        static let saleDatesFormat = NSLocalizedString("Sale dates: %@",
                                                        comment: "Format of the sale period on the Price Settings row")
 
         // Inventory

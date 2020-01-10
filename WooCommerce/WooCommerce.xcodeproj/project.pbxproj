@@ -190,6 +190,7 @@
 		453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */; };
 		453DBF8E2387F34A006762A5 /* UICollectionViewCell+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */; };
 		453DBF9023882814006762A5 /* ProductImagesFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */; };
+		454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */; };
 		45AE582C230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */; };
 		45AE582D230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */; };
 		45B9C63E23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45B9C63C23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift */; };
@@ -789,6 +790,7 @@
 		453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		453DBF8D2387F34A006762A5 /* UICollectionViewCell+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UICollectionViewCell+Helpers.swift"; sourceTree = "<group>"; };
 		453DBF8F23882814006762A5 /* ProductImagesFlowLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImagesFlowLayout.swift; sourceTree = "<group>"; };
+		454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DateIntervalFormatter+Helpers.swift"; sourceTree = "<group>"; };
 		45AE582A230D9D35001901E3 /* OrderNoteHeaderTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderNoteHeaderTableViewCell.swift; sourceTree = "<group>"; };
 		45AE582B230D9D35001901E3 /* OrderNoteHeaderTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrderNoteHeaderTableViewCell.xib; sourceTree = "<group>"; };
 		45B9C63C23A8E50D007FC4C5 /* ProductPriceSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductPriceSettingsViewController.swift; sourceTree = "<group>"; };
@@ -2322,6 +2324,7 @@
 				B57C5C9321B80E4700FF82B2 /* Data+Woo.swift */,
 				B5290ED8219B3FA900A6AF7F /* Date+Woo.swift */,
 				CE4DDB7A20DD312400D32EC8 /* DateFormatter+Helpers.swift */,
+				454B28BD23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift */,
 				B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */,
 				748C7781211E294000814F2C /* Double+Woo.swift */,
 				740987B221B87760000E4C80 /* FancyAnimatedButton+Woo.swift */,
@@ -3267,6 +3270,7 @@
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,
+				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
 				024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */,
 				0290E27A238E590500B5C466 /* ListSelectorViewProperties.swift in Sources */,
 				B555530F21B57DE700449E71 /* ApplicationAdapter.swift in Sources */,

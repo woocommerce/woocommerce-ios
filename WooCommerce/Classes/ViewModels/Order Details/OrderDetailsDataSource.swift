@@ -574,7 +574,12 @@ extension OrderDetailsDataSource {
             if customerNote.isEmpty == false {
                 rows.append(.customerNote)
             }
-            if order.shippingAddress != nil {
+
+            let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
+                return self.items.first(where: { $0.productID == product.productID}) != nil
+            }.allSatisfy { $0.virtual == true }
+
+            if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {
                 rows.append(.shippingAddress)
             }
             if shippingLines.count > 0 {

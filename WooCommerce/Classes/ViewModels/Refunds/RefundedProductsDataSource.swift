@@ -114,7 +114,7 @@ private extension RefundedProductsDataSource {
         let item = items[indexPath.row]
         let product = lookUpProduct(by: item.productID)
         let itemViewModel = OrderItemRefundSummaryViewModel(item: item,
-                                                            currency: order.currency,
+                                                            currencyCode: order.currency,
                                                             product: product)
         let imageService = ServiceLocator.imageService
 
@@ -145,6 +145,25 @@ extension RefundedProductsDataSource {
         }()
 
         sections = [refundedProducts].compactMap { $0 }
+    }
+
+    /// Handle taps on cells
+    ///
+    func tableView(_ tableView: UITableView,
+                   in viewController: UIViewController,
+                   didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+
+        switch sections[indexPath.section].rows[indexPath.row] {
+        case .orderItemRefunded:
+            let item = items[indexPath.row]
+            let productID = item.variationID == 0 ? item.productID : item.variationID
+            let loaderViewController = ProductLoaderViewController(productID: productID,
+                                                                   siteID: order.siteID,
+                                                                   currency: order.currency)
+            let navController = WooNavigationController(rootViewController: loaderViewController)
+            viewController.present(navController, animated: true, completion: nil)
+        }
     }
 }
 

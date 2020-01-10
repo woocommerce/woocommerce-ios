@@ -3,20 +3,21 @@ import Foundation
 
 /// Represents a computed summary of refunded products
 ///
-public class OrderItemRefundSummary {
-    public let name: String
-    public let productID: Int64
-    public let variationID: Int64
-    public var quantity: Decimal
+final class OrderItemRefundSummary {
+    let productID: Int64
+    let variationID: Int64
+
+    let name: String
+    var quantity: Decimal
 
     /// Price is a currency.
     /// When handling currencies, `NSDecimalNumber` is a powerhouse
     /// for localization and string-to-number conversions.
     /// `Decimal` doesn't yet have all of the `NSDecimalNumber` APIs.
     ///
-    public let price: NSDecimalNumber
-    public let sku: String?
-    public var totalTax: NSDecimalNumber?
+    let price: NSDecimalNumber
+    let sku: String?
+    var totalTax: NSDecimalNumber?
 
     /// Designated initializer.
     ///

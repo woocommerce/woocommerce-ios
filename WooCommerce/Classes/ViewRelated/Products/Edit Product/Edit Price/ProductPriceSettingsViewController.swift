@@ -19,7 +19,7 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     // Timezone of the website
     //
-    private let timezoneForScheduleSaleDates = TimeZone.websiteTimezone
+    private let timezoneForScheduleSaleDates = TimeZone.siteTimezone
 
     // Date Pickers status
     //

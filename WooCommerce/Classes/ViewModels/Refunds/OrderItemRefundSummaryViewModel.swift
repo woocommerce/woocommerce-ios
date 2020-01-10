@@ -55,27 +55,6 @@ struct OrderItemRefundSummaryViewModel {
         return priceText
     }
 
-    /// Item's Tax
-    /// Return $0.00 if there is no tax.
-    ///
-    var tax: String {
-        guard let tax = item.totalTax else {
-            let totalTax = currencyFormatter.formatAmount(NSDecimalNumber.zero, with: currency) ?? String()
-            let taxTemplate = NSLocalizedString("Tax: %@",
-                                                comment: "Tax label for total taxes line, followed by the tax amount.")
-            let taxText = String.localizedStringWithFormat(taxTemplate, totalTax)
-
-            return taxText
-        }
-
-        let totalTax = currencyFormatter.formatAmount(tax, with: currency) ?? String()
-        let taxTemplate = NSLocalizedString("Tax: %@",
-                                            comment: "Tax label for total taxes line, followed by the tax amount.")
-        let taxText = String.localizedStringWithFormat(taxTemplate, totalTax)
-
-        return taxText
-    }
-
     /// Item's SKU
     ///
     var sku: String? {
@@ -99,12 +78,8 @@ struct OrderItemRefundSummaryViewModel {
         return URL(string: productImageURLString)
     }
 
-    /// Check to see if the product has an image URL.
+    /// Designated initializer
     ///
-    var productHasImage: Bool {
-        return imageURL != nil
-    }
-
     init(item: OrderItemRefundSummary,
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(),

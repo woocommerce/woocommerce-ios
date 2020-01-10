@@ -20,7 +20,7 @@ privacy_url({
   'default' => 'https://automattic.com/privacy/',
 })
 
-copyright('2019 WooCommerce')
+copyright('2020 WooCommerce')
 
 skip_binary_upload true
 overwrite_screenshots true

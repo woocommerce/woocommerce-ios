@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-12-12 00:54:55+0000 */
+/* Translation-Revision-Date: 2020-01-09 00:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -42,14 +42,7 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld varianter";
 
-/* Payment on <date> received via (payment method title) */
-"(datePaid) via (order.paymentMethodTitle)" = "(datePaid) via (order.paymentMethodTitle)";
-
-/* Title for an untitled post, should match WP core */
-"(no title)" = "(ingen rubrik)";
-
-/* A badge with the number of orders. More than nine new orders.
-   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
 "9+" = "9+";
 
 /* An error message. */
@@ -73,12 +66,12 @@
 /* The plugin is active on the site and has enabled automatic updates */
 "Active, Autoupdates on" = "Aktiv, automatiska uppdateringar på";
 
-/* Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+/* A button title used for a shipment tracking unit test
+   A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Lägg till";
 
-/* Add Tracking row label
-   Add tracking screen - title. */
+/* A title used for a shipment tracking unit test
+   Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Lägg till spårning";
 
 /* Accessibility label for the 'Add a note' button
@@ -90,9 +83,6 @@
 
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Lägg till en spårning";
-
-/* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
-"Adds a note to an order" = "Lägger till en notering för en order";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Lägger till spårning för en order.";
@@ -127,6 +117,9 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Ett fel inträffade när din begäran behandlades:";
 
+/* Message shown when Apple authentication fails. */
+"Apple authentication failed." = "Autentiseringen via Apple misslyckades.";
+
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Programloggar";
 
@@ -155,7 +148,8 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Automatiskt hanterat på denna webbplats";
 
-/* Awaiting payment via (payment method title) */
+/* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
+   Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "Väntar på betalning via %@";
 
 /* Alert button title - dismisses alert, which cancels the log out attempt */
@@ -256,6 +250,9 @@
 /* Copy tracking number button title */
 "Copy Tracking Number" = "Kopiera spårningsnummer";
 
+/* Copy email address button title */
+"Copy email address" = "Kopiera e-postadressen";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "Kunde in te kontrollera webbplatsens inköp.";
 
@@ -344,8 +341,8 @@
 /* Discount label for payment view */
 "Discount" = "Rabatt";
 
-/* Add a note screen - button title for closing the view
-   Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+/* A unit test string for a button title
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Stäng";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -408,11 +405,11 @@
 /* The text placeholder for the Text Editor screen */
 "Enter a title..." = "Skriv en rubrik...";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "Ange en giltig URL, t.ex. exempel.com.";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Ange leverantörens namn";
+
+/* Label for button to log in using your site address. */
+"Enter the address of the WordPress site you'd like to connect." = "Skriv in adressen för den WordPress-webbplats du vill ansluta.";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Ange adressen till den WooCommerce-butik som du vill ansluta.";
@@ -646,9 +643,6 @@
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "Loggfiler efter skapandedatum";
 
-/* Label for button to log in using your site address. */
-"Log in by entering your site address." = "Logga in genom att ange din webbplatsadress.";
-
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Kunde inte logga in. Var vänlig försök igen.";
 
@@ -767,8 +761,10 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "Inga produktvarianter ännu";
 
-/* Search Products (Empty State)
-   The text on the placeholder overlay when there are no products on the Products tab */
+/* Search Products (Empty State) */
+"No products found" = "Inga produkter hittades";
+
+/* The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Inga produkter ännu";
 
 /* Orders List (Empty State + Filters) */
@@ -893,7 +889,8 @@
    Display label for the review's pending status */
 "Pending" = "Inväntar granskning";
 
-/* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
+/* A unit test string, appended before the title of a review.
+   Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "Väntande recension";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
@@ -907,6 +904,9 @@
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Ange en URL";
+
+/* Error message shown when a URL is invalid. */
+"Please enter a complete website address, like example.com." = "Ange en fullständig webbplatsadress som example.com.";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "Vänligen ange en adress till webbplatsen.";
@@ -1122,7 +1122,8 @@
 /* Action: Opens the Store in a browser */
 "Share your Store" = "Dela din butik";
 
-/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+/* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
+   Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "Leveransföretag %@";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
@@ -1178,7 +1179,8 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "Storlek:";
 
-/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
+/* A unit test for reviews, checking that anonymous users are added as the author named `someone`
+   Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Någon";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
@@ -1378,7 +1380,7 @@
 "That username is not allowed." = "Det användarnamnet är inte tillåtet.";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
-"The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Google-kontot ”(loginFields.username)” matchar inte något konto på WordPress.com";
+"The Google account \"%@\" doesn't match any account on WordPress.com" = "Google-kontot ”%@” matchar inte något konto på WordPress.com";
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "Det gick inte att hämta beställningen!";
@@ -1497,7 +1499,8 @@
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "Spårningsnummer";
 
-/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+/* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
+   Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Spårningsnummer %@";
 
 /* Display label for the review's trash status
@@ -1591,9 +1594,6 @@
 "Unknown" = "Okänd";
 
 /* No comment provided by engineer. */
-"Unknown Search Terms" = "Okända söktermer";
-
-/* No comment provided by engineer. */
 "Unknown error" = "Okänt fel";
 
 /* Accessibility label for unordered list button on formatting toolbar. */
@@ -1623,22 +1623,27 @@
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Uppdatera till WooCommerce 3.5 för att fortsätta använda den här appen";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+/* A unit test string for a singular time interval
+   Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Uppdaterades för %ld timme sedan";
 
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+/* A unit test string for 1 day, represented as plural time interval in hours
+   A unit test string for a plural time interval in hours - A unit test string for time interval just under 1 day - Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
 "Updated %ld hours ago" = "Uppdaterades för %ld timmar sedan";
 
 /* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
 "Updated %ld minute ago" = "Uppdaterad för %ld minut sedan";
 
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+/* A unit test string for a plural time interval in minutes
+   A unit test string for time intervals - Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
 "Updated %ld minutes ago" = "Uppdaterad för %ld minuter sedan";
 
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+/* A unit test string for relative time intervals
+   Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
 "Updated moments ago" = "Uppdaterad alldeles nyss";
 
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM
+   Updated on <date> */
 "Updated on %@" = "Uppdaterad den %@";
 
 /* Login dialog username placeholder
@@ -1696,7 +1701,7 @@
 "Watch readers from around the world read and interact with your site — in real time." = "Ha koll på hur läsare från hela världen läser och interagerar med din webbplats – i realtid.";
 
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.22 or higher" = "Vi har återgått till den gamla statistiken. För att använda betastatistiken, aktivera WooCommerce Admin-tillägget med version 0.22 eller senare";
+"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "Vi har återgått till den gamla statistiken. För att använda betastatistiken, aktivera WooCommerce Admin-tillägget med version 0.23 eller senare";
 
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Vi har skickat en magisk registreringslänk! Kolla din e-post på denna enhet och knacka på länken i e-postmeddelandet för att fullfölja registreringen.";

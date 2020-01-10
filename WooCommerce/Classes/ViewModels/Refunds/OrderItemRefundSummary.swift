@@ -8,26 +8,28 @@ final class OrderItemRefundSummary {
     let variationID: Int64
 
     let name: String
-    var quantity: Decimal
 
-    /// Price is a currency.
+    /// Price, total, and totalTax are currency values.
     /// When handling currencies, `NSDecimalNumber` is a powerhouse
     /// for localization and string-to-number conversions.
-    /// `Decimal` doesn't yet have all of the `NSDecimalNumber` APIs.
+    /// `Decimal` doesn't have all of the `NSDecimalNumber` APIs (yet).
     ///
     let price: NSDecimalNumber
+    var quantity: Decimal
     let sku: String?
+    var total: NSDecimalNumber
     var totalTax: NSDecimalNumber?
 
     /// Designated initializer.
     ///
-    init(name: String, productID: Int64, variationID: Int64, quantity: Decimal, price: NSDecimalNumber, sku: String?, totalTax: NSDecimalNumber?) {
-        self.name = name
+    init(productID: Int64, variationID: Int64, name: String, price: NSDecimalNumber, quantity: Decimal, sku: String?, total: NSDecimalNumber, totalTax: NSDecimalNumber?) {
         self.productID = productID
         self.variationID = variationID
-        self.quantity = quantity
+        self.name = name
         self.price = price
+        self.quantity = quantity
         self.sku = sku
+        self.total = total
         self.totalTax = totalTax
     }
 }

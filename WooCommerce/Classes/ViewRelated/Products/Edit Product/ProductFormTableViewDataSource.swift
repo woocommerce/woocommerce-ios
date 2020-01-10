@@ -16,12 +16,17 @@ private extension ProductFormSection.SettingsRow.ViewModel {
 final class ProductFormTableViewDataSource: NSObject {
     private let viewModel: ProductFormTableViewModel
     private let canEditImages: Bool
+    private var onAddImage: (() -> Void)?
 
     init(viewModel: ProductFormTableViewModel,
          canEditImages: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)) {
         self.viewModel = viewModel
         self.canEditImages = canEditImages
         super.init()
+    }
+
+    func configureActions(onAddImage: @escaping () -> Void) {
+        self.onAddImage = onAddImage
     }
 }
 
@@ -94,8 +99,8 @@ private extension ProductFormTableViewDataSource {
         cell.onImageSelected = { (productImage, indexPath) in
             // TODO: open image detail
         }
-        cell.onAddImage = {
-            // TODO: start add image process
+        cell.onAddImage = { [weak self] in
+            self?.onAddImage?()
         }
     }
 

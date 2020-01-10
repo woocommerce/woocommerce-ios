@@ -630,24 +630,25 @@ private extension FulfillViewController {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        let address: Section = {
+        let address: Section? = {
             var rows: [Row] = []
 
             if shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }
 
+            let orderContainsOnlyVirtualProducts = self.products?.filter { (product) -> Bool in
+                return self.order.items.first(where: { $0.productID == product.productID}) != nil
+            }.allSatisfy { $0.virtual == true }
+
             let title = NSLocalizedString("Customer Information", comment: "Section title for the customer's billing and shipping address")
-            if let shippingAddress = order.shippingAddress {
+            if let shippingAddress = order.shippingAddress, orderContainsOnlyVirtualProducts == false {
                 let row = Row.address(shipping: shippingAddress)
                 rows.insert(row, at: 0)
                 return Section(title: title, secondaryTitle: nil, rows: rows)
             }
 
-            let row = Row.address(shipping: order.billingAddress)
-            rows.insert(row, at: 0)
-
-            return Section(title: title, secondaryTitle: nil, rows: rows)
+            return nil
         }()
 
         let tracking: Section? = {

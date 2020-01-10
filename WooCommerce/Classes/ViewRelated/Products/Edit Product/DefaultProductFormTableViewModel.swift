@@ -10,7 +10,7 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
 
     // Timezone of the website
     //
-    var siteTimezone: TimeZone = TimeZone.websiteTimezone
+    var siteTimezone: TimeZone = TimeZone.siteTimezone
 
     private let canEditImages: Bool
 

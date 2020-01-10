@@ -38,26 +38,26 @@ private extension CommentStore {
 
     /// Updates the comment's approval status
     ///
-    func updateApprovalStatus(siteID: Int, commentID: Int, isApproved: Bool, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
+    func updateApprovalStatus(siteID: Int64, commentID: Int64, isApproved: Bool, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
         let newStatus = isApproved ? CommentStatus.approved : CommentStatus.unapproved
         moderateComment(siteID: siteID, commentID: commentID, status: newStatus, onCompletion: onCompletion)
     }
 
     /// Updates the comment's spam status
     ///
-    func updateSpamStatus(siteID: Int, commentID: Int, isSpam: Bool, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
+    func updateSpamStatus(siteID: Int64, commentID: Int64, isSpam: Bool, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
         let newStatus = isSpam ? CommentStatus.spam : CommentStatus.unspam
         moderateComment(siteID: siteID, commentID: commentID, status: newStatus, onCompletion: onCompletion)
     }
 
     /// Updates the comment's trash status
     ///
-    func updateTrashStatus(siteID: Int, commentID: Int, isTrash: Bool, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
+    func updateTrashStatus(siteID: Int64, commentID: Int64, isTrash: Bool, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
         let newStatus = isTrash ? CommentStatus.trash : CommentStatus.untrash
         moderateComment(siteID: siteID, commentID: commentID, status: newStatus, onCompletion: onCompletion)
     }
 
-    func moderateComment(siteID: Int, commentID: Int, status: CommentStatus, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
+    func moderateComment(siteID: Int64, commentID: Int64, status: CommentStatus, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
         let remote = CommentRemote(network: network)
 
         remote.moderateComment(siteID: siteID, commentID: commentID, status: status) { (updatedStatus, error) in

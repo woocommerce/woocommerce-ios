@@ -9,7 +9,7 @@ public struct ShipmentTrackingProvider {
 
     /// Site Identifier
     ///
-    public let siteID: Int
+    public let siteID: Int64
 
     /// Tracking provider url
     ///
@@ -17,7 +17,7 @@ public struct ShipmentTrackingProvider {
 
     /// Shipment Tracking Provider struct initializer
     ///
-    public init(siteID: Int, name: String, url: String) {
+    public init(siteID: Int64, name: String, url: String) {
         self.siteID = siteID
         self.name = name
         self.url = url

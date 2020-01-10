@@ -10,7 +10,7 @@ struct ReportOrderTotalsMapper: Mapper {
     /// the remote endpoints don't really return the SiteID in any of the
     /// settings endpoints.
     ///
-    let siteID: Int
+    let siteID: Int64
 
     /// (Attempts) to extract order totals report from a given JSON Encoded response.
     ///

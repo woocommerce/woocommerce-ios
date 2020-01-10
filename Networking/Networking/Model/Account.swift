@@ -7,7 +7,7 @@ public struct Account: Decodable {
 
     /// Dotcom UserID
     ///
-    public let userID: Int
+    public let userID: Int64
 
     /// Display Name
     ///
@@ -28,7 +28,7 @@ public struct Account: Decodable {
 
     /// Designated Initializer.
     ///
-    public init(userID: Int, displayName: String, email: String, username: String, gravatarUrl: String?) {
+    public init(userID: Int64, displayName: String, email: String, username: String, gravatarUrl: String?) {
         self.userID = userID
         self.displayName = displayName
         self.email = email

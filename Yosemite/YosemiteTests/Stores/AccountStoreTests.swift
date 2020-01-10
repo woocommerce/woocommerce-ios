@@ -114,7 +114,7 @@ class AccountStoreTests: XCTestCase {
         XCTAssert(viewStorage.countObjects(ofType: Storage.Account.self, matching: nil) == 1)
 
         let expectedAccount = sampleAccountUpdate()
-        let storageAccount = viewStorage.loadAccount(userId: expectedAccount.userID)!
+        let storageAccount = viewStorage.loadAccount(userID: expectedAccount.userID)!
         compare(storageAccount: storageAccount, remoteAccount: expectedAccount)
     }
 
@@ -124,10 +124,10 @@ class AccountStoreTests: XCTestCase {
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteAccount = sampleAccountPristine()
 
-        XCTAssertNil(viewStorage.loadAccount(userId: remoteAccount.userID))
+        XCTAssertNil(viewStorage.loadAccount(userID: remoteAccount.userID))
         accountStore.upsertStoredAccount(readOnlyAccount: remoteAccount)
 
-        let storageAccount = viewStorage.loadAccount(userId: remoteAccount.userID)!
+        let storageAccount = viewStorage.loadAccount(userID: remoteAccount.userID)!
         compare(storageAccount: storageAccount, remoteAccount: remoteAccount)
     }
 
@@ -309,7 +309,7 @@ private extension AccountStoreTests {
     /// Verifies that the Storage.Account fields match with the specified Networking.Account.
     ///
     func compare(storageAccount: Storage.Account, remoteAccount: Networking.Account) {
-        XCTAssertEqual(storageAccount.userID, Int64(remoteAccount.userID))
+        XCTAssertEqual(storageAccount.userID, remoteAccount.userID)
         XCTAssertEqual(storageAccount.displayName, remoteAccount.displayName)
         XCTAssertEqual(storageAccount.email, remoteAccount.email)
         XCTAssertEqual(storageAccount.username, remoteAccount.username)
@@ -346,6 +346,7 @@ private extension AccountStoreTests {
                     plan: String(),
                     isWooCommerceActive: true,
                     isWordPressStore: false,
-                    timezone: "Asia/Taipei")
+                    timezone: "Asia/Taipei",
+                    gmtOffset: 0)
     }
 }

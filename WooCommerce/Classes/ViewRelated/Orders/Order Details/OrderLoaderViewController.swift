@@ -3,7 +3,7 @@ import UIKit
 import Yosemite
 
 
-// MARK: - OrderLoaderViewController: Loads asynchronously an Order (given it's OrderID + SiteID).
+// MARK: - OrderLoaderViewController: Loads asynchronously an Order from a push notification (given it's OrderID + SiteID).
 //         On Success the OrderDetailsViewController will be rendered "in place".
 //
 class OrderLoaderViewController: UIViewController {
@@ -12,13 +12,17 @@ class OrderLoaderViewController: UIViewController {
     ///
     private let activityIndicator = UIActivityIndicatorView(style: .gray)
 
+    /// Source push notification `Note`
+    ///
+    private let note: Note
+
     /// Target OrderID
     ///
-    private let orderID: Int
+    private let orderID: Int64
 
     /// Target Order's SiteID
     ///
-    private let siteID: Int
+    private let siteID: Int64
 
     /// UI Active State
     ///
@@ -46,7 +50,8 @@ class OrderLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(orderID: Int, siteID: Int) {
+    init(note: Note, orderID: Int64, siteID: Int64) {
+        self.note = note
         self.orderID = orderID
         self.siteID = siteID
 
@@ -233,6 +238,26 @@ private extension OrderLoaderViewController {
 }
 
 
+// MARK: - Notification handling
+//
+private extension OrderLoaderViewController {
+    /// Marks a specific Notification as read.
+    ///
+    func markNotificationAsReadIfNeeded(note: Note) {
+        guard note.read == false else {
+            return
+        }
+
+        let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { (error) in
+            if let error = error {
+                DDLogError("⛔️ Error marking single notification as read: \(error)")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+}
+
+
 // MARK: - Finite State Machine Management
 //
 private extension OrderLoaderViewController {
@@ -245,6 +270,7 @@ private extension OrderLoaderViewController {
             startSpinner()
         case .success(let order):
             presentOrderDetails(for: order)
+            markNotificationAsReadIfNeeded(note: note)
         case .failure:
             displayFailureOverlay()
         }

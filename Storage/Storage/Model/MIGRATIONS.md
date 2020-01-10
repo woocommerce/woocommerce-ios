@@ -2,6 +2,10 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 25 (Release 3.4.0.0)
+- @pmusolino 2019-01-7
+- Add `gmtOffset` attribute to `Site` entity
+
 ## Model 24 (Release 3.3.0.0)
 - @jaclync 2019-12-2
 - New `ProductShippingClass` entity

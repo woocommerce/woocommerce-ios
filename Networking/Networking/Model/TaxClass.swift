@@ -6,7 +6,7 @@ public struct TaxClass: Decodable {
 
     /// WordPress.com Site Identifier.
     ///
-    public let siteID: Int
+    public let siteID: Int64
 
     /// Tax class name.
     ///
@@ -19,7 +19,7 @@ public struct TaxClass: Decodable {
 
     /// Default initializer for TaxClass.
     ///
-    public init(siteID: Int, name: String, slug: String) {
+    public init(siteID: Int64, name: String, slug: String) {
         self.siteID = siteID
         self.name = name
         self.slug = slug
@@ -31,7 +31,7 @@ public struct TaxClass: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw TaxClassDecodingError.missingSiteID
         }
         let name = try container.decode(String.self, forKey: .name)

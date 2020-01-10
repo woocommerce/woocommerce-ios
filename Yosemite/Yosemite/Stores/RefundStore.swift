@@ -47,7 +47,7 @@ private extension RefundStore {
 
     /// Creates a new Refund.
     ///
-    func createRefund(siteID: Int, orderID: Int, refund: Refund, onCompletion: @escaping (Refund?, Error?) -> Void) {
+    func createRefund(siteID: Int64, orderID: Int64, refund: Refund, onCompletion: @escaping (Refund?, Error?) -> Void) {
         let remote = RefundsRemote(network: network)
 
         remote.createRefund(for: siteID, by: orderID, refund: refund) { [weak self] (refund, error) in
@@ -64,7 +64,7 @@ private extension RefundStore {
 
     /// Retrieves a single Refund by ID.
     ///
-    func retrieveRefund(siteID: Int, orderID: Int, refundID: Int, onCompletion: @escaping (Networking.Refund?, Error?) -> Void) {
+    func retrieveRefund(siteID: Int64, orderID: Int64, refundID: Int64, onCompletion: @escaping (Networking.Refund?, Error?) -> Void) {
         let remote = RefundsRemote(network: network)
 
         remote.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) { [weak self] (refund, error) in
@@ -84,7 +84,7 @@ private extension RefundStore {
 
     /// Retrieves all Refunds by an orderID.
     ///
-    func retrieveRefunds(siteID: Int, orderID: Int, refundIDs: [Int], onCompletion: @escaping (Error?) -> Void) {
+    func retrieveRefunds(siteID: Int64, orderID: Int64, refundIDs: [Int64], onCompletion: @escaping (Error?) -> Void) {
         let remote = RefundsRemote(network: network)
 
         remote.loadRefunds(for: siteID, by: orderID, with: refundIDs) { [weak self] (refunds, error) in
@@ -101,7 +101,7 @@ private extension RefundStore {
 
     /// Synchronizes the refunds associated with a given orderID
     ///
-    func synchronizeRefunds(siteID: Int, orderID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeRefunds(siteID: Int64, orderID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = RefundsRemote(network: network)
 
         remote.loadAllRefunds(for: siteID, by: orderID) { [weak self] (refunds, error) in
@@ -135,7 +135,7 @@ private extension RefundStore {
 
     /// Deletes any Storage.Refund with the specified `siteID`, `orderID`, and `refundID`
     ///
-    func deleteStoredRefund(siteID: Int, orderID: Int, refundID: Int) {
+    func deleteStoredRefund(siteID: Int64, orderID: Int64, refundID: Int64) {
         let storage = storageManager.viewStorage
         guard let refund = storage.loadRefund(siteID: siteID, orderID: orderID, refundID: refundID) else {
             return

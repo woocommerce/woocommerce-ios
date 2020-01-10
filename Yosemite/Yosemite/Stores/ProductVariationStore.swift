@@ -41,10 +41,18 @@ private extension ProductVariationStore {
     func synchronizeProductVariations(siteID: Int64, productID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductVariationsRemote(network: network)
 
-        remote.loadAllProductVariations(for: siteID, productID: productID) { [weak self] (productVariations, error) in
+        remote.loadAllProductVariations(for: siteID,
+                                        productID: productID,
+                                        pageNumber: pageNumber,
+                                        pageSize: pageSize) { [weak self] (productVariations, error) in
             guard let productVariations = productVariations else {
                 onCompletion(error)
                 return
+            }
+
+            if pageNumber == Default.firstPageNumber {
+                self?.deleteStoredProductVariations(siteID: siteID,
+                                                    productID: productID)
             }
 
             self?.upsertStoredProductVariationsInBackground(readOnlyProductVariations: productVariations,
@@ -77,6 +85,14 @@ private extension ProductVariationStore {
             DispatchQueue.main.async(execute: onCompletion)
         }
     }
+
+    /// Deletes any Storage.ProductVariation with the specified `siteID` and `productID`
+    ///
+    func deleteStoredProductVariations(siteID: Int64, productID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProductVariations(siteID: siteID, productID: productID)
+        storage.saveIfNeeded()
+    }
 }
 
 
@@ -93,7 +109,7 @@ private extension ProductVariationStore {
                                        in storage: StorageType,
                                        siteID: Int64,
                                        productID: Int64) {
-        let product = storage.loadProduct(siteID: Int(siteID), productID: Int(productID))
+        let product = storage.loadProduct(siteID: siteID, productID: productID)
 
         // Upserts the Product Variations from the read-only version
         for readOnlyProductVariation in readOnlyProductVariations {
@@ -122,7 +138,7 @@ private extension ProductVariationStore {
 
     /// Replaces the provided StorageProductVariation's attributes with the provided read-only
     /// ProductVariation's attributes.
-    /// Because all local Product attributes have ID = 0, they are not unique in Storage and we always replace the whole
+    /// Because all local Product attributes have ID: Int64 = 0, they are not unique in Storage and we always replace the whole
     /// attribute array.
     ///
     func handleProductVariationAttributes(_ readOnlyVariation: Networking.ProductVariation,

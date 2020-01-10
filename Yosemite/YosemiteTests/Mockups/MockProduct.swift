@@ -3,14 +3,15 @@ import Foundation
 
 
 final class MockProduct {
-    func product(siteID: Int = 2019,
-                 productID: Int = 2020,
+    func product(siteID: Int64 = 2019,
+                 productID: Int64 = 2020,
                  name: String = "Hogsmeade",
+                 sku: String? = nil,
                  stockQuantity: Int? = nil,
                  stockStatus: ProductStockStatus = .inStock,
-                 variations: [Int] = [],
+                 variations: [Int64] = [],
                  images: [ProductImage] = [],
-                 shippingClassID: Int = 0) -> Product {
+                 shippingClassID: Int64 = 0) -> Product {
 
         return Product(siteID: siteID,
                        productID: productID,
@@ -32,7 +33,7 @@ final class MockProduct {
                        know and we&#8217;ll send you our large group rate.</p>\n<p>GROUP RATES</p>\n<p>Reserve your event for up to 30 guests \
                        for $100.</p>\n
                        """,
-                       sku: "",
+                       sku: sku,
                        price: "0",
                        regularPrice: "",
                        salePrice: "",

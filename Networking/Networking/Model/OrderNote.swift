@@ -4,7 +4,7 @@ import Foundation
 /// Represents an Order's Note Entity.
 ///
 public struct OrderNote: Decodable {
-    public let noteID: Int
+    public let noteID: Int64
     public let dateCreated: Date
     public let note: String
     public let isCustomerNote: Bool
@@ -12,8 +12,8 @@ public struct OrderNote: Decodable {
 
     /// OrderNote struct initializer.
     ///
-    public init(noteId: Int, dateCreated: Date, note: String, isCustomerNote: Bool, author: String) {
-        self.noteID = noteId
+    public init(noteID: Int64, dateCreated: Date, note: String, isCustomerNote: Bool, author: String) {
+        self.noteID = noteID
         self.dateCreated = dateCreated
         self.note = note
         self.isCustomerNote = isCustomerNote
@@ -24,13 +24,13 @@ public struct OrderNote: Decodable {
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let noteId = try container.decode(Int.self, forKey: .noteId)
+        let noteID = try container.decode(Int64.self, forKey: .noteID)
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let note = try container.decode(String.self, forKey: .note)
         let isCustomerNote = try container.decode(Bool.self, forKey: .isCustomerNote)
         let author = try container.decode(String.self, forKey: .author)
 
-        self.init(noteId: noteId, dateCreated: dateCreated, note: note, isCustomerNote: isCustomerNote, author: author) // initialize the struct
+        self.init(noteID: noteID, dateCreated: dateCreated, note: note, isCustomerNote: isCustomerNote, author: author) // initialize the struct
     }
 }
 
@@ -40,7 +40,7 @@ public struct OrderNote: Decodable {
 private extension OrderNote {
 
     enum CodingKeys: String, CodingKey {
-        case noteId         = "id"
+        case noteID         = "id"
         case dateCreated    = "date_created_gmt"
         case note           = "note"
         case isCustomerNote = "customer_note"

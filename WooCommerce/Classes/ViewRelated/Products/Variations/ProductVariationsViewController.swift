@@ -62,6 +62,8 @@ final class ProductVariationsViewController: UIViewController {
     private let siteID: Int64
     private let productID: Int64
 
+    private let imageService: ImageService = ServiceLocator.imageService
+
     init(siteID: Int64, productID: Int64) {
         self.siteID = siteID
         self.productID = productID
@@ -193,8 +195,9 @@ extension ProductVariationsViewController: UITableViewDataSource {
         let currency = CurrencySettings.shared.symbol(from: currencyCode)
         let viewModel = ProductsTabProductViewModel(productVariation: productVariation,
                                                     currency: currency)
-        cell.update(viewModel: viewModel)
+        cell.update(viewModel: viewModel, imageService: imageService)
         cell.selectionStyle = .none
+        cell.accessoryType = .none
 
         return cell
     }
@@ -300,10 +303,10 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Product Variations for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
-        transitionToSyncingState()
+        transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductVariationAction
-            .synchronizeProductVariations(siteID: Int64(siteID), productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
+            .synchronizeProductVariations(siteID: siteID, productID: productID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] error in
                                     guard let self = self else {
                                         return
                                     }
@@ -333,11 +336,11 @@ private extension ProductVariationsViewController {
         switch state {
         case .noResultsPlaceholder:
             displayNoResultsOverlay()
-        case .syncing(let withExistingData):
-            if withExistingData {
-                ensureFooterSpinnerIsStarted()
-            } else {
+        case .syncing(let pageNumber):
+            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
                 displayPlaceholderProducts()
+            } else {
+                ensureFooterSpinnerIsStarted()
             }
         case .results:
             break
@@ -356,8 +359,8 @@ private extension ProductVariationsViewController {
         }
     }
 
-    func transitionToSyncingState() {
-        stateCoordinator.transitionToSyncingState(withExistingData: !isEmpty)
+    func transitionToSyncingState(pageNumber: Int) {
+        stateCoordinator.transitionToSyncingState(pageNumber: pageNumber)
     }
 
     func transitionToResultsUpdatedState() {

@@ -38,10 +38,16 @@ final class OrderDetailsViewModel {
         return dataSource.products
     }
 
-    /// Refunds
+    /// Refunded products from an Order
     ///
-    var refunds: [Refund] {
-        return dataSource.refunds
+    var refundedItems: [OrderItemRefund] {
+        let refunds = dataSource.refunds
+        var items = [OrderItemRefund]()
+        for refund in refunds {
+            items.append(contentsOf: refund.items)
+        }
+
+        return items
     }
 
     /// Indicates if we consider the shipment tracking plugin as reachable
@@ -93,11 +99,11 @@ final class OrderDetailsViewModel {
         return dataSource.lookUpOrderStatus(for: order)
     }
 
-    func lookUpProduct(by productID: Int) -> Product? {
+    func lookUpProduct(by productID: Int64) -> Product? {
         return dataSource.lookUpProduct(by: productID)
     }
 
-    func lookUpRefund(by refundID: Int) -> Refund? {
+    func lookUpRefund(by refundID: Int64) -> Refund? {
         return dataSource.lookUpRefund(by: refundID)
     }
 }
@@ -131,7 +137,7 @@ extension OrderDetailsViewModel {
             WooBasicTableViewCell.self,
             OrderNoteHeaderTableViewCell.self,
             OrderNoteTableViewCell.self,
-            PaymentTableViewCell.self,
+            LedgerTableViewCell.self,
             TwoColumnHeadlineFootnoteTableViewCell.self,
             ProductDetailsTableViewCell.self,
             OrderTrackingTableViewCell.self,
@@ -201,6 +207,21 @@ extension OrderDetailsViewModel {
         case .details:
             ServiceLocator.analytics.track(.orderDetailProductDetailTapped)
             viewController.performSegue(withIdentifier: Constants.productDetailsSegue, sender: nil)
+        case .refund:
+            ServiceLocator.analytics.track(.orderDetailRefundDetailTapped)
+            guard let refund = dataSource.refund(at: indexPath) else {
+                DDLogError("No refund details found.")
+                return
+            }
+
+            let viewModel = RefundDetailsViewModel(order: order, refund: refund)
+            let refundDetailsViewController = RefundDetailsViewController(viewModel: viewModel)
+            viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
+        case .refundedProducts:
+            ServiceLocator.analytics.track(.refundedProductsDetailTapped)
+            let viewModel = RefundedProductsViewModel(order: order, items: refundedItems)
+            let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
+            viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
         default:
             break
         }

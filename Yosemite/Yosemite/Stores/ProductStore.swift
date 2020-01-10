@@ -40,6 +40,8 @@ public class ProductStore: Store {
             requestMissingProducts(for: order, onCompletion: onCompletion)
         case .updateProduct(let product, let onCompletion):
             updateProduct(product: product, onCompletion: onCompletion)
+        case .validateProductSKU(let sku, let siteID, let onCompletion):
+            validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -62,7 +64,7 @@ private extension ProductStore {
 
     /// Searches all of the products that contain a given Keyword.
     ///
-    func searchProducts(siteID: Int, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
         remote.searchProducts(for: siteID,
                               keyword: keyword,
@@ -83,7 +85,7 @@ private extension ProductStore {
 
     /// Synchronizes the products associated with a given Site ID, sorted by ascending name.
     ///
-    func synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func synchronizeProducts(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.loadAllProducts(for: siteID,
@@ -96,7 +98,7 @@ private extension ProductStore {
                 return
             }
 
-            if pageNumber == 1 {
+            if pageNumber == Default.firstPageNumber {
                 self?.deleteStoredProducts(siteID: siteID)
             }
 
@@ -113,7 +115,7 @@ private extension ProductStore {
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
         let storage = storageManager.viewStorage
-        var missingIDs = [Int]()
+        var missingIDs = [Int64]()
         for productID in productIDs {
             let storageProduct = storage.loadProduct(siteID: order.siteID, productID: productID)
             if storageProduct == nil {
@@ -137,8 +139,8 @@ private extension ProductStore {
     /// Retrieves multiple products with a given siteID + productIDs.
     /// - Note: This is NOT a wrapper for retrieving a single product.
     ///
-    func retrieveProducts(siteID: Int,
-                          productIDs: [Int],
+    func retrieveProducts(siteID: Int64,
+                          productIDs: [Int64],
                           onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
@@ -156,7 +158,7 @@ private extension ProductStore {
 
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
-    func retrieveProduct(siteID: Int, productID: Int, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
+    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.loadProduct(for: siteID, productID: productID) { [weak self] (product, error) in
@@ -176,12 +178,12 @@ private extension ProductStore {
 
     /// Updates the product.
     ///
-    func updateProduct(product: Product, onCompletion: @escaping (Product?, Error?) -> Void) {
+    func updateProduct(product: Product, onCompletion: @escaping (Product?, ProductUpdateError?) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product else {
-                onCompletion(nil, error)
+                onCompletion(nil, error.map({ ProductUpdateError(error: $0) }))
                 return
             }
 
@@ -189,6 +191,23 @@ private extension ProductStore {
                 onCompletion(product, nil)
             }
         }
+    }
+
+    /// Validates the Product SKU against other Products in storage.
+    ///
+    func validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
+        guard let sku = sku, sku.isEmpty == false else {
+            // It is valid to not have a sku.
+            onCompletion(true)
+            return
+        }
+
+        guard let products = storageManager.viewStorage.loadProducts(siteID: siteID) else {
+            onCompletion(true)
+            return
+        }
+        let anyProductHasTheSameSKU = products.compactMap({ $0.sku }).contains(sku)
+        onCompletion(anyProductHasTheSameSKU == false)
     }
 }
 
@@ -199,7 +218,7 @@ private extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///
-    func deleteStoredProduct(siteID: Int, productID: Int) {
+    func deleteStoredProduct(siteID: Int64, productID: Int64) {
         let storage = storageManager.viewStorage
         guard let product = storage.loadProduct(siteID: siteID, productID: productID) else {
             return
@@ -211,7 +230,7 @@ private extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID`
     ///
-    func deleteStoredProducts(siteID: Int) {
+    func deleteStoredProducts(siteID: Int64) {
         let storage = storageManager.viewStorage
         storage.deleteProducts(siteID: siteID)
         storage.saveIfNeeded()
@@ -268,8 +287,8 @@ private extension ProductStore {
     /// Updates the provided StorageProduct's productShippingClass using the existing `ProductShippingClass` in storage, if any
     ///
     func handleProductShippingClass(storageProduct: Storage.Product, _ storage: StorageType) {
-        if let existingStorageShippingClass = storage.loadProductShippingClass(siteID: Int64(storageProduct.siteID),
-                                                                               remoteID: Int64(storageProduct.shippingClassID)) {
+        if let existingStorageShippingClass = storage.loadProductShippingClass(siteID: storageProduct.siteID,
+                                                                               remoteID: storageProduct.shippingClassID) {
             storageProduct.productShippingClass = existingStorageShippingClass
         } else {
             storageProduct.productShippingClass = nil
@@ -427,7 +446,7 @@ private extension ProductStore {
 
     /// Upserts the Products, and associates them to the SearchResults Entity (in Background)
     ///
-    private func upsertSearchResultsInBackground(siteID: Int, keyword: String, readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
+    private func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
         let derivedStorage = sharedDerivedStorage
         derivedStorage.perform { [weak self] in
             self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
@@ -441,7 +460,7 @@ private extension ProductStore {
 
     /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)
     ///
-    private func upsertStoredResults(siteID: Int, keyword: String, readOnlyProducts: [Networking.Product], in storage: StorageType) {
+    private func upsertStoredResults(siteID: Int64, keyword: String, readOnlyProducts: [Networking.Product], in storage: StorageType) {
         let searchResults = storage.loadProductSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.ProductSearchResults.self)
         searchResults.keyword = keyword
 
@@ -467,11 +486,42 @@ extension ProductStore {
     }
 }
 
-// MARK: - Constants!
-//
-public extension ProductStore {
+/// An error that occurs while updating a Product.
+///
+/// - duplicatedSKU: the SKU is used by another Product.
+/// - invalidSKU: the SKU is invalid or duplicated.
+/// - unknown: other error cases.
+///
+public enum ProductUpdateError: Error {
+    case duplicatedSKU
+    case invalidSKU
+    case unknown
 
-    enum Constants {
-        public static let firstPageNumber: Int = ProductsRemote.Default.pageNumber
+    init(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            self = .unknown
+            return
+        }
+        switch dotcomError {
+        case .unknown(let code, _):
+            guard let errorCode = ErrorCode(rawValue: code) else {
+                self = .unknown
+                return
+            }
+            self = errorCode.error
+        default:
+            self = .unknown
+        }
+    }
+
+    private enum ErrorCode: String {
+        case invalidSKU = "product_invalid_sku"
+
+        var error: ProductUpdateError {
+            switch self {
+            case .invalidSKU:
+                return .invalidSKU
+            }
+        }
     }
 }

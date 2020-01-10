@@ -2,8 +2,8 @@ import XCTest
 @testable import WooCommerce
 @testable import Networking
 
-final class PaymentTableViewCellTests: XCTestCase {
-    private var cell: PaymentTableViewCell!
+final class LedgerTableViewCellTests: XCTestCase {
+    private var cell: LedgerTableViewCell!
     private var viewModel: OrderPaymentDetailsViewModel!
     private var order: Order!
 
@@ -12,8 +12,8 @@ final class PaymentTableViewCellTests: XCTestCase {
         order = MockOrders().sampleOrder()
         viewModel = OrderPaymentDetailsViewModel(order: order)
 
-        let nib = Bundle.main.loadNibNamed("PaymentTableViewCell", owner: self, options: nil)
-        cell = nib?.first as? PaymentTableViewCell
+        let nib = Bundle.main.loadNibNamed("LedgerTableViewCell", owner: self, options: nil)
+        cell = nib?.first as? LedgerTableViewCell
 
         cell?.configure(with: viewModel!)
     }
@@ -77,7 +77,7 @@ final class PaymentTableViewCellTests: XCTestCase {
 }
 
 
-private extension PaymentTableViewCellTests {
+private extension LedgerTableViewCellTests {
     enum Titles {
         static let subtotalLabel = NSLocalizedString("Product Total",
                                                      comment: "Product Total label for payment view")

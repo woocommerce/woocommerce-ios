@@ -8,7 +8,7 @@ final class TaxClassListMapperTest: XCTestCase {
 
     /// Testing SiteID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     /// Verifies that all of the Tax Class Fields are parsed correctly.
     ///

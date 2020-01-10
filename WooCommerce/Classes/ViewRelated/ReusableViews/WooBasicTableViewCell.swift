@@ -15,7 +15,8 @@ import UIKit
 ///
 class WooBasicTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var bodyLabel: UILabel!
+    @IBOutlet private(set) weak var bodyLabel: UILabel!
+    @IBOutlet private(set) weak var bodyLabelTopMarginConstraint: NSLayoutConstraint!
 
     public var accessoryImage: UIImage? {
         didSet {
@@ -59,8 +60,26 @@ class WooBasicTableViewCell: UITableViewCell {
             accessoryView = nil
             return
         }
+
         let accessoryImageView = UIImageView(image: accessoryImage)
         accessoryImageView.tintColor = .primaryButtonBackground
         accessoryView = accessoryImageView
+    }
+}
+
+extension WooBasicTableViewCell {
+    func applyListSelectorStyle() {
+        bodyLabel.applyBodyStyle()
+        bodyLabelTopMarginConstraint.constant = 0
+    }
+
+    func applyPlainTextStyle() {
+        bodyLabel.applyBodyStyle()
+        bodyLabelTopMarginConstraint.constant = 8
+    }
+
+    func applyActionableStyle() {
+        bodyLabel.applyActionableStyle()
+        bodyLabelTopMarginConstraint.constant = 8
     }
 }

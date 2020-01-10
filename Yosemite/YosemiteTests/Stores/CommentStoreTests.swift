@@ -29,11 +29,11 @@ class CommentStoreTests: XCTestCase {
 
     /// Testing SiteID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     /// Testing CommentID
     ///
-    private let sampleCommentID = 999
+    private let sampleCommentID: Int64 = 999
 
 
     override func setUp() {

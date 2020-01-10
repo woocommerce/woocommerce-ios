@@ -42,7 +42,7 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
     typealias SearchModel = ProductsTabProductViewModel
 
     func configureCell(searchModel: ProductsTabProductViewModel) {
-        update(viewModel: searchModel)
+        update(viewModel: searchModel, imageService: searchModel.imageService)
     }
 
     static func register(for tableView: UITableView) {
@@ -51,7 +51,7 @@ extension ProductsTabProductTableViewCell: SearchResultCell {
 }
 
 extension ProductsTabProductTableViewCell {
-    func update(viewModel: ProductsTabProductViewModel) {
+    func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
         nameLabel.text = viewModel.name
 
         detailsLabel.attributedText = viewModel.detailsAttributedString
@@ -59,10 +59,14 @@ extension ProductsTabProductTableViewCell {
         productImageView.contentMode = .center
         productImageView.image = .productsTabProductCellPlaceholderImage
         if let productURLString = viewModel.imageUrl {
-            productImageView.setImage(with: productURLString) { [weak self] (success) in
-                if success {
-                    self?.productImageView.contentMode = .scaleAspectFill
-                }
+            imageService.downloadAndCacheImageForImageView(productImageView,
+                                                           with: productURLString,
+                                                           placeholder: .productsTabProductCellPlaceholderImage,
+                                                           progressBlock: nil) { [weak self] (image, error) in
+                                                            let success = image != nil && error == nil
+                                                            if success {
+                                                                self?.productImageView.contentMode = .scaleAspectFill
+                                                            }
             }
         }
     }

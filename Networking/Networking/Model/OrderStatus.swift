@@ -5,7 +5,7 @@ import Foundation
 ///
 public struct OrderStatus: Decodable {
     public let name: String?
-    public let siteID: Int
+    public let siteID: Int64
     public let slug: String
     public let total: Int
 
@@ -15,7 +15,7 @@ public struct OrderStatus: Decodable {
 
     /// OrderStatus struct initializer.
     ///
-    public init(name: String?, siteID: Int, slug: String, total: Int) {
+    public init(name: String?, siteID: Int64, slug: String, total: Int) {
         self.name = name
         self.siteID = siteID
         self.slug = slug
@@ -25,7 +25,7 @@ public struct OrderStatus: Decodable {
     /// The public initializer for OrderStatus.
     ///
     public init(from decoder: Decoder) throws {
-        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw OrderStatusError.missingSiteID
         }
 

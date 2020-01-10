@@ -30,6 +30,8 @@ class TopPerformerDataViewController: UIViewController {
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
+    private let imageService: ImageService = ServiceLocator.imageService
+
     // MARK: - Computed Properties
 
     private var topEarnerStats: TopEarnerStats? {
@@ -143,7 +145,7 @@ private extension TopPerformerDataViewController {
 
     func configureTableView() {
         tableView.backgroundColor = .basicBackground
-        tableView.separatorColor = .divider
+        tableView.separatorColor = .systemColor(.separator)
         tableView.allowsSelection = false
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
         tableView.rowHeight = UITableView.automaticDimension
@@ -220,7 +222,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             fatalError()
         }
 
-        cell.configure(statsItem)
+        cell.configure(statsItem, imageService: imageService)
         return cell
     }
 }

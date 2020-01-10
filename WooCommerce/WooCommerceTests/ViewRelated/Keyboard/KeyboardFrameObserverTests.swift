@@ -12,7 +12,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
 
         let expectedFrame = CGRect(origin: .zero, size: CGSize(width: 10, height: 18))
-        let expectedFrames: [CGRect] = [expectedFrame]
+        let expectedFrames: [CGRect] = [expectedFrame, .zero]
 
         var actualFrames = [CGRect]()
 
@@ -24,6 +24,8 @@ final class KeyboardFrameObserverTests: XCTestCase {
             }
         }
         keyboardFrameObserver.startObservingKeyboardFrame()
+
+        notificationCenter.postKeyboardWillShowNotification(keyboardFrame: expectedFrame)
 
         notificationCenter.postKeyboardWillShowNotification(keyboardFrame: expectedFrame)
         notificationCenter.postKeyboardWillHideNotification(keyboardFrame: expectedFrame)
@@ -40,7 +42,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
 
         let expectedFrameForShow = CGRect(origin: .zero, size: CGSize(width: 10, height: 18))
-        let expectedFrameForHide = CGRect(origin: .zero, size: CGSize(width: 17, height: 10))
+        let expectedFrameForHide = CGRect.zero
         let expectedFrames: [CGRect] = [expectedFrameForShow, expectedFrameForHide]
 
         var actualFrames = [CGRect]()

@@ -292,7 +292,7 @@ private extension StoreStatsAndTopPerformersViewController {
 // MARK: - Sync'ing Helpers
 //
 private extension StoreStatsAndTopPerformersViewController {
-    func syncStats(for siteID: Int,
+    func syncStats(for siteID: Int64,
                    siteTimezone: TimeZone,
                    timeRange: StatsTimeRangeV4,
                    latestDateToInclude: Date,
@@ -313,7 +313,7 @@ private extension StoreStatsAndTopPerformersViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncSiteVisitStats(for siteID: Int,
+    func syncSiteVisitStats(for siteID: Int64,
                             siteTimezone: TimeZone,
                             timeRange: StatsTimeRangeV4,
                             latestDateToInclude: Date,
@@ -331,7 +331,7 @@ private extension StoreStatsAndTopPerformersViewController {
         ServiceLocator.stores.dispatch(action)
     }
 
-    func syncTopEarnersStats(for siteID: Int, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
+    func syncTopEarnersStats(for siteID: Int64, timeRange: StatsTimeRangeV4, latestDateToInclude: Date, onCompletion: ((Error?) -> Void)? = nil) {
         let action = StatsActionV4.retrieveTopEarnerStats(siteID: siteID,
                                                           timeRange: timeRange,
                                                           latestDateToInclude: Date()) { error in

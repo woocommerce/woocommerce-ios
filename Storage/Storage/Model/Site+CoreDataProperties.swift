@@ -15,4 +15,5 @@ extension Site {
     @NSManaged public var isWooCommerceActive: NSNumber?
     @NSManaged public var isWordPressStore: NSNumber?
     @NSManaged public var timezone: String?
+    @NSManaged public var gmtOffset: Double
 }

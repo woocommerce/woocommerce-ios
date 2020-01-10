@@ -34,7 +34,7 @@ protocol StoresManager {
 
     /// Updates the Default Store as specified.
     ///
-    func updateDefaultStore(storeID: Int)
+    func updateDefaultStore(storeID: Int64)
 
     /// Indicates if the StoresManager is currently authenticated, or not.
     ///

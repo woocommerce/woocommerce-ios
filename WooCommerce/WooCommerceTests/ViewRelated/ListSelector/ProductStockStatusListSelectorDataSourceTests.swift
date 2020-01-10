@@ -8,7 +8,7 @@ final class ProductStockStatusListSelectorDataSourceTests: XCTestCase {
     func testSelectedStatus() {
         let expectedStockStatus = ProductStockStatus.outOfStock
         let product = MockProduct().product(stockStatus: expectedStockStatus)
-        var dataSource = ProductStockStatusListSelectorDataSource(product: product)
+        var dataSource = ProductStockStatusListSelectorDataSource(selected: product.productStockStatus)
         XCTAssertEqual(dataSource.selected, expectedStockStatus)
 
         let newStockStatus = ProductStockStatus.inStock
@@ -18,13 +18,13 @@ final class ProductStockStatusListSelectorDataSourceTests: XCTestCase {
 
     func testStockStatusListData() {
         let product = MockProduct().product()
-        let dataSource = ProductStockStatusListSelectorDataSource(product: product)
+        let dataSource = ProductStockStatusListSelectorDataSource(selected: product.productStockStatus)
         XCTAssertEqual(dataSource.data.count, 3)
     }
 
     func testCellConfiguration() {
         let product = MockProduct().product()
-        let dataSource = ProductStockStatusListSelectorDataSource(product: product)
+        let dataSource = ProductStockStatusListSelectorDataSource(selected: product.productStockStatus)
         let nib = Bundle.main.loadNibNamed(BasicTableViewCell.classNameWithoutNamespaces, owner: self, options: nil)
         guard let cell = nib?.first as? BasicTableViewCell else {
             XCTFail()

@@ -4,13 +4,13 @@ import Foundation
 /// Represents an Order Refund Entity.
 ///
 public struct OrderRefundCondensed: Decodable {
-    public let refundID: Int
+    public let refundID: Int64
     public let reason: String?
     public let total: String
 
     /// OrderRefundCondensed struct initializer
     ///
-    public init(refundID: Int, reason: String?, total: String) {
+    public init(refundID: Int64, reason: String?, total: String) {
         self.refundID = refundID
         self.reason = reason
         self.total = total
@@ -21,7 +21,7 @@ public struct OrderRefundCondensed: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let refundID = try container.decode(Int.self, forKey: .refundID)
+        let refundID = try container.decode(Int64.self, forKey: .refundID)
         let reason = try container.decodeIfPresent(String.self, forKey: .reason)
         let total = try container.decode(String.self, forKey: .total)
 

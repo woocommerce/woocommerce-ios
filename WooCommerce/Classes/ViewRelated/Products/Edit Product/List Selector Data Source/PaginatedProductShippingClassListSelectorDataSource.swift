@@ -9,9 +9,9 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
 
     private let siteID: Int64
 
-    init(product: Product) {
-        self.siteID = Int64(product.siteID)
-        self.selected = product.productShippingClass
+    init(product: Product, selected: ProductShippingClass?) {
+        self.siteID = product.siteID
+        self.selected = selected
     }
 
     func createResultsController() -> ResultsController<StorageProductShippingClass> {
@@ -28,11 +28,16 @@ struct PaginatedProductShippingClassListSelectorDataSource: PaginatedListSelecto
         self.selected = selected == self.selected ? nil: selected
     }
 
-    func configureCell(cell: BasicTableViewCell, model: ProductShippingClass) {
+    func isSelected(model: ProductShippingClass) -> Bool {
+        return model == selected
+    }
+
+    func configureCell(cell: WooBasicTableViewCell, model: ProductShippingClass) {
         cell.selectionStyle = .default
+        cell.applyListSelectorStyle()
 
         let bodyText = model.name
-        cell.textLabel?.text = bodyText
+        cell.bodyLabel.text = bodyText
     }
 
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {

@@ -34,7 +34,7 @@ protocol PushNotesManager {
     ///     - tokenData: APNS's Token Data
     ///     - defaultStoreID: Default WooCommerce Store ID
     ///
-    func registerDeviceToken(with tokenData: Data, defaultStoreID: Int)
+    func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64)
 
     /// Handles a Remote Push Notifican Payload. On completion the `completionHandler` will be executed.
     ///

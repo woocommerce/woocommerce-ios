@@ -10,11 +10,11 @@ private struct TestConstants {
         .url(forResource: "shipment-provider", withExtension: "plist")
     static let customFileURL = Bundle(for: AppSettingsStoreTests.self)
         .url(forResource: "custom-shipment-provider", withExtension: "plist")
-    static let siteID = 156590080
+    static let siteID: Int64 = 156590080
     static let providerName = "post.at"
     static let providerURL = "http://some.where"
 
-    static let newSiteID = 1234
+    static let newSiteID: Int64 = 1234
     static let newProviderName = "Some provider"
     static let newProviderURL = "http://some.where"
 }

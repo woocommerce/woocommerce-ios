@@ -29,8 +29,7 @@ final class OrderItemRefundSummary {
          quantity: Decimal,
          sku: String?,
          total: NSDecimalNumber,
-         totalTax: NSDecimalNumber?)
-    {
+         totalTax: NSDecimalNumber?) {
         self.productID = productID
         self.variationID = variationID
         self.name = name

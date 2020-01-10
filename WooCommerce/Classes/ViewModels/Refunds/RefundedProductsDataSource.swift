@@ -152,18 +152,8 @@ extension RefundedProductsDataSource {
     func tableView(_ tableView: UITableView,
                    in viewController: UIViewController,
                    didSelectRowAt indexPath: IndexPath) {
+        // This tableview shouldn't have any actions, so deselect the row.
         tableView.deselectRow(at: indexPath, animated: true)
-
-        switch sections[indexPath.section].rows[indexPath.row] {
-        case .orderItemRefunded:
-            let item = items[indexPath.row]
-            let productID = item.variationID == 0 ? item.productID : item.variationID
-            let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                   siteID: order.siteID,
-                                                                   currency: order.currency)
-            let navController = WooNavigationController(rootViewController: loaderViewController)
-            viewController.present(navController, animated: true, completion: nil)
-        }
     }
 }
 

@@ -11,7 +11,7 @@ final class RefundedProductsViewModel {
 
     /// Array of all refunded items from every refund.
     ///
-    private(set) var items: [OrderItemRefund]
+    private var items: [OrderItemRefund]
 
     /// Condense order items into summarized data
     ///
@@ -37,20 +37,18 @@ final class RefundedProductsViewModel {
 
         for productID in uniqueProductIDs {
             var productGroup = [OrderItemRefund]()
-            var variationIDs = [Int64]()
 
             // Get every item that has the same productID
             for item in sorted {
                 if item.productID == productID {
                     productGroup.append(item)
-                    variationIDs.append(item.variationID)
                 }
             }
 
             for repeatedItem in productGroup {
                 let tax = currency.convertToDecimal(from: repeatedItem.totalTax)
 
-                // See if a product with a variation is in the varitions array.
+                // See if a product with a variation is in the variations array.
                 let hasVariant = variations.contains { element in
                     if  element.productID == repeatedItem.productID &&
                         element.variationID == repeatedItem.variationID {

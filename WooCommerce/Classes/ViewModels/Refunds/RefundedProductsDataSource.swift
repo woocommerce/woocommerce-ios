@@ -9,7 +9,7 @@ import Yosemite
 final class RefundedProductsDataSource: NSObject {
     /// Refunds
     ///
-    private(set) var items: [OrderItemRefundSummary]
+    private var items: [OrderItemRefundSummary]
 
     /// Order
     ///

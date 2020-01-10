@@ -22,67 +22,39 @@ final class RefundedProductsViewModel {
 
         let currency = CurrencyFormatter()
 
-        // Sort the items by product ID
-        let sorted = items.sorted(by: { $0.productID > $1.productID })
-
-        // Get all the productIDs
-        var productIDs = [Int64]()
-        for item in sorted {
-            productIDs.append(item.productID)
+        let grouped = Dictionary(grouping: items) { (item) in
+            // This needs to be hashable so a tuple won't do it
+            // I doubt this would become a performance issue, but it could be replaced
+            // by a hashable struct
+            return "\(item.productID)-\(item.variationID)"
         }
+        return grouped.compactMap { (_, items) in
+            // Here we iterate over each group's items
 
-        // Remove duplicate productIDs
-        let uniqueProductIDs = Array(Set(productIDs))
-        var variations = [OrderItemRefundSummary]()
-
-        for productID in uniqueProductIDs {
-            var productGroup = [OrderItemRefund]()
-
-            // Get every item that has the same productID
-            for item in sorted {
-                if item.productID == productID {
-                    productGroup.append(item)
-                }
+            // All items should be equal except for quantity and price, so we pick the first
+            guard let item = items.first else {
+                // This should never happen, but let's be safe
+                return nil
             }
 
-            for repeatedItem in productGroup {
-                let tax = currency.convertToDecimal(from: repeatedItem.totalTax)
+            // Sum the quantities
+            let totalQuantity = items
+                .map( { $0.quantity } )
+                .reduce(0, +)
+            // Sum the refunded amount
+            let totalTax = items
+                .compactMap( { currency.convertToDecimal(from: $0.totalTax) } )
+                .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-                // See if a product with a variation is in the variations array.
-                let hasVariant = variations.contains { element in
-                    if  element.productID == repeatedItem.productID &&
-                        element.variationID == repeatedItem.variationID {
-                        return true
-                    }
-                    return false
-                }
-
-                if hasVariant {
-                    // Edit an existing variable product
-                    let variant = variations.first(where: { $0.productID == repeatedItem.productID && $0.variationID == repeatedItem.variationID })
-                    let tax = currency.convertToDecimal(from: repeatedItem.totalTax)
-                    variant?.quantity += repeatedItem.quantity
-
-                    if let totalTax = tax {
-                        if let variantTax = variant?.totalTax {
-                            variant?.totalTax = variantTax.adding(totalTax)
-                        }
-                    }
-                } else {
-                    // Make a new variable product
-                    let variant = OrderItemRefundSummary(name: repeatedItem.name,
-                                                         productID: repeatedItem.productID,
-                                                         variationID: repeatedItem.variationID,
-                                                         quantity: repeatedItem.quantity,
-                                                         price: repeatedItem.price,
-                                                         sku: repeatedItem.sku,
-                                                         totalTax: tax)
-                    variations.append(variant)
-                }
-            }
+            return OrderItemRefundSummary(
+                name: item.name,
+                productID: item.productID,
+                variationID: item.variationID,
+                quantity: totalQuantity,
+                price: item.price,
+                sku: item.sku,
+                totalTax: totalTax)
         }
-
-        return variations
     }
 
     /// The datasource that will be used to render the Refunded Products screen.

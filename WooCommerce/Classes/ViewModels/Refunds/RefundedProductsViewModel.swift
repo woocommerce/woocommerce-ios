@@ -37,11 +37,11 @@ final class RefundedProductsViewModel {
 
             // Sum the quantities
             let totalQuantity = items.sum(\.quantity)
-            // Sum the refunded amount
+            // Sum the total taxes refunded
             let totalTax = items
                 .compactMap( { currency.convertToDecimal(from: $0.totalTax) } )
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-            // Sum the total
+            // Sum the refunded amount
             let total = items
                 .compactMap( { currency.convertToDecimal(from: $0.total) } )
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })

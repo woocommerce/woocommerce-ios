@@ -23,11 +23,9 @@ final class RefundedProductsViewModel {
         let currency = CurrencyFormatter()
 
         let grouped = Dictionary(grouping: items) { (item) in
-            // This needs to be hashable so a tuple won't do it
-            // I doubt this would become a performance issue, but it could be replaced
-            // by a hashable struct
-            return "\(item.productID)-\(item.variationID)"
+            return item.hashValue
         }
+
         return grouped.compactMap { (_, items) in
             // Here we iterate over each group's items
 

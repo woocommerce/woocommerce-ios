@@ -16,7 +16,7 @@ struct OrderItemRefundSummaryViewModel {
 
     /// Yosemite.Order.currency
     ///
-    let currency: String
+    let currencyCode: String
 
     /// Item's Name
     ///
@@ -36,21 +36,21 @@ struct OrderItemRefundSummaryViewModel {
 
     /// Item's Total
     ///
-    var total: NSDecimalNumber {
-        let itemQuantity = NSDecimalNumber(decimal: abs(item.quantity))
-        return item.price.multiplying(by: itemQuantity)
+    var total: String {
+        let positiveTotal = item.total.abs()
+        return currencyFormatter.formatAmount(positiveTotal, with: currencyCode) ?? String()
     }
 
-    /// Item's Price
+    /// Item's Price Summary
+    /// Example: $140 ($35 x 4)
     /// Always return a string, even for zero amounts.
     ///
     var price: String {
-        let itemTotal = currencyFormatter.formatAmount(total, with: currency) ?? String()
-        let itemPrice = currencyFormatter.formatAmount(item.price, with: currency) ?? String()
+        let itemPrice = currencyFormatter.formatAmount(item.price, with: currencyCode) ?? String()
 
         let priceTemplate = NSLocalizedString("%@ (%@ x %@)",
                                               comment: "<item total> (<item individual price> multipled by <quantity>)")
-        let priceText = String.localizedStringWithFormat(priceTemplate, itemTotal, itemPrice, quantity)
+        let priceText = String.localizedStringWithFormat(priceTemplate, total, itemPrice, quantity)
 
         return priceText
     }
@@ -81,11 +81,11 @@ struct OrderItemRefundSummaryViewModel {
     /// Designated initializer
     ///
     init(item: OrderItemRefundSummary,
-         currency: String,
+         currencyCode: String,
          formatter: CurrencyFormatter = CurrencyFormatter(),
          product: Product? = nil) {
         self.item = item
-        self.currency = currency
+        self.currencyCode = currencyCode
         self.currencyFormatter = formatter
         self.product = product
     }

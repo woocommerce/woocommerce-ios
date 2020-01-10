@@ -22,7 +22,15 @@ final class OrderItemRefundSummary {
 
     /// Designated initializer.
     ///
-    init(productID: Int64, variationID: Int64, name: String, price: NSDecimalNumber, quantity: Decimal, sku: String?, total: NSDecimalNumber, totalTax: NSDecimalNumber?) {
+    init(productID: Int64,
+         variationID: Int64,
+         name: String,
+         price: NSDecimalNumber,
+         quantity: Decimal,
+         sku: String?,
+         total: NSDecimalNumber,
+         totalTax: NSDecimalNumber?)
+    {
         self.productID = productID
         self.variationID = variationID
         self.name = name

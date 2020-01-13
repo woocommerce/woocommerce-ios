@@ -34,7 +34,7 @@ extension FancyAlertViewController {
             }
         }
 
-        let image = UIImage.siteAddressModalPlaceholder
+        let image = WordPressAuthenticator.shared.displayImages.siteAddressModalPlaceholder
 
         let config = FancyAlertViewController.Config(titleText: Strings.titleText,
                                                      bodyText: Strings.bodyText,

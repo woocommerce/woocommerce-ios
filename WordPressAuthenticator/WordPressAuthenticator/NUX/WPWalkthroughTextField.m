@@ -120,6 +120,8 @@ NSInteger const LeftImageSpacing = 8;
     [self.secureTextEntryToggle addTarget:self action:@selector(secureTextEntryToggleAction:) forControlEvents:UIControlEventTouchUpInside];
 
     [self updateSecureTextEntryToggleImage];
+    [self updateSecureTextEntryForAccessibility];
+
     self.rightView = self.secureTextEntryToggle;
     self.rightViewMode = UITextFieldViewModeAlways;
 }
@@ -253,6 +255,7 @@ NSInteger const LeftImageSpacing = 8;
 
     [super setSecureTextEntry:secureTextEntry];
     [self updateSecureTextEntryToggleImage];
+    [self updateSecureTextEntryForAccessibility];
 }
 
 - (void)secureTextEntryToggleAction:(id)sender
@@ -270,6 +273,19 @@ NSInteger const LeftImageSpacing = 8;
     UIImage *image = self.isSecureTextEntry ? self.secureTextEntryImageHidden : self.secureTextEntryImageVisible;
     [self.secureTextEntryToggle setImage:image forState:UIControlStateNormal];
     [self.secureTextEntryToggle sizeToFit];
+}
+
+- (void)updateSecureTextEntryForAccessibility
+{
+    self.secureTextEntryToggle.accessibilityLabel = NSLocalizedString(@"Show password", @"Accessibility label for the “Show password“ button in the login page's password field.");
+
+    NSString *accessibilityValue;
+    if (self.isSecureTextEntry) {
+        accessibilityValue = NSLocalizedString(@"Hidden", "Accessibility value if login page's password field is hiding the password (i.e. with asterisks).");
+    } else {
+        accessibilityValue = NSLocalizedString(@"Shown", "Accessibility value if login page's password field is displaying the password.");
+    }
+    self.secureTextEntryToggle.accessibilityValue = accessibilityValue;
 }
 
 @end

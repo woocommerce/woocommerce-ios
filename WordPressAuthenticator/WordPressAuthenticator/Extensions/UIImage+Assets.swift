@@ -4,6 +4,17 @@ import Foundation
 // MARK: - Named Assets
 //
 extension UIImage {
+    /// Returns the Link Image.
+    ///
+    static var linkFieldImage: UIImage {
+        return UIImage(named: "icon-url-field", in: bundle, compatibleWith: nil)!
+    }
+
+    /// Returns the Default Magic Link Image.
+    ///
+    static var magicLinkImage: UIImage {
+        return UIImage(named: "login-magic-link", in: bundle, compatibleWith: nil)!
+    }
 
     /// Returns the Default Site Icon Placeholder Image.
     ///

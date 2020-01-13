@@ -167,20 +167,14 @@ private extension ProductPriceSettingsViewController {
 extension ProductPriceSettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
-        var editedData = false
         let newSalePrice = salePrice == "0" ? nil : salePrice
         let newTaxClass = taxClass?.slug == "standard" ? "" : taxClass?.slug
         if regularPrice != product.regularPrice || newSalePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart || dateOnSaleEnd != product.dateOnSaleEnd || taxStatus.rawValue != product.taxStatusKey || newTaxClass != product.taxClass {
-            editedData = true
+            presentBackNavigationActionSheet()
         }
-
-        guard editedData else {
+        else {
             navigationController?.popViewController(animated: true)
-            return false
         }
-
-        presentBackNavigationActionSheet()
-
         return false
     }
 

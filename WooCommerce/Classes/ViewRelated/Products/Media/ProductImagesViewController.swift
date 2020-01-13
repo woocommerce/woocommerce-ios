@@ -4,6 +4,8 @@ import Yosemite
 /// Displays Product images with edit functionality.
 ///
 final class ProductImagesViewController: UIViewController {
+    typealias Completion = (_ images: [ProductImage]) -> Void
+
     @IBOutlet private weak var addButton: UIButton!
     @IBOutlet private weak var addButtonBottomBorderView: UIView!
     @IBOutlet private weak var imagesContainerView: UIView!
@@ -22,10 +24,13 @@ final class ProductImagesViewController: UIViewController {
         return viewController
     }()
 
-    init(product: Product) {
+    private let onCompletion: Completion
+
+    init(product: Product, completion: @escaping Completion) {
         self.siteID = product.siteID
         self.productID = product.productID
         self.productImages = product.images
+        self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -48,6 +53,8 @@ final class ProductImagesViewController: UIViewController {
 private extension ProductImagesViewController {
     func configureNavigation() {
         title = NSLocalizedString("Photos", comment: "Product images (Product images page title)")
+
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeEditing))
     }
 
     func configureAddButton() {
@@ -80,4 +87,7 @@ private extension ProductImagesViewController {
         // TODO-1713: display options to add an image.
     }
 
+    @objc func completeEditing() {
+        onCompletion(productImages)
+    }
 }

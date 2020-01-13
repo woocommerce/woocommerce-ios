@@ -88,6 +88,23 @@ final class Product_UpdaterTestCases: XCTestCase {
         XCTAssertEqual(updatedProduct.backordersSetting, newBackordersSetting)
         XCTAssertEqual(updatedProduct.productStockStatus, newStockStatus)
     }
+
+    func testUpdatingImages() {
+        let product = sampleProduct()
+        let newImage = ProductImage(imageID: 17,
+                                  dateCreated: date(with: "2018-01-26T21:49:45"),
+                                  dateModified: date(with: "2018-01-26T21:50:11"),
+                                  src: "https://somewebsite.com/shirt.jpg",
+                                  name: "Tshirt",
+                                  alt: "")
+        let newImages = [newImage]
+        let updatedProduct = product.imagesUpdated(images: newImages)
+        // Sanity check on unchanged properties.
+        XCTAssertEqual(updatedProduct.fullDescription, product.fullDescription)
+        XCTAssertEqual(updatedProduct.name, product.name)
+        // Images.
+        XCTAssertEqual(updatedProduct.images, newImages)
+    }
 }
 
 // MARK: - Private Helpers

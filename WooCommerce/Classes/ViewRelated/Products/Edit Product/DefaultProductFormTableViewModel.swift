@@ -32,33 +32,33 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func primaryFieldRows(product: Product) -> [ProductFormSection.PrimaryFieldRow] {
-        if canEditImages == false && product.images.isEmpty {
+        guard canEditImages || product.images.isEmpty == false else {
             return [
-                .name(name: product.name),
-                .description(description: product.trimmedFullDescription)
-            ]
-        } else {
-            return [
-                .images(product: product),
                 .name(name: product.name),
                 .description(description: product.trimmedFullDescription)
             ]
         }
+
+        return [
+            .images(product: product),
+            .name(name: product.name),
+            .description(description: product.trimmedFullDescription)
+        ]
     }
 
     func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {
-        if product.downloadable || product.virtual {
+        guard product.downloadable == false && product.virtual == false else {
             return [
                 .price(viewModel: priceSettingsRow(product: product)),
-                .inventory(viewModel: inventorySettingsRow(product: product))
-            ]
-        } else {
-            return [
-                .price(viewModel: priceSettingsRow(product: product)),
-                .shipping(viewModel: shippingSettingsRow(product: product)),
                 .inventory(viewModel: inventorySettingsRow(product: product))
             ]
         }
+
+        return [
+            .price(viewModel: priceSettingsRow(product: product)),
+            .shipping(viewModel: shippingSettingsRow(product: product)),
+            .inventory(viewModel: inventorySettingsRow(product: product))
+        ]
     }
 }
 

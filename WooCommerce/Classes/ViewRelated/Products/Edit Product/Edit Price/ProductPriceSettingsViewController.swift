@@ -164,10 +164,52 @@ private extension ProductPriceSettingsViewController {
 
 // MARK: - Navigation actions handling
 //
-private extension ProductPriceSettingsViewController {
-    @objc func completeUpdating() {
+extension ProductPriceSettingsViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        var editedData = false
+        let newSalePrice = salePrice == "0" ? nil : salePrice
+        let newTaxClass = taxClass?.slug == "standard" ? "" : taxClass?.slug
+        if regularPrice != product.regularPrice || newSalePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart || dateOnSaleEnd != product.dateOnSaleEnd || taxStatus.rawValue != product.taxStatusKey || newTaxClass != product.taxClass {
+            editedData = true
+        }
+
+        guard editedData else {
+            navigationController?.popViewController(animated: true)
+            return false
+        }
+
+        presentBackNavigationActionSheet()
+
+        return false
+    }
+
+    @objc private func completeUpdating() {
         let newSalePrice = salePrice == "0" ? nil : salePrice
         onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+    }
+
+    func presentBackNavigationActionSheet() {
+        let actionSheetMessage = NSLocalizedString("Are you sure you want to discard these changes?",
+                                                 comment: "Action sheet title in Edit Product > Edit Pricing")
+        let actionSheet = UIAlertController(title: nil, message: actionSheetMessage, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.save) { [weak self] _ in
+            self?.completeUpdating()
+        }
+
+        actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.discard) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = view
+        popoverController?.sourceRect = view.bounds
+
+        present(actionSheet, animated: true)
     }
 }
 
@@ -506,4 +548,13 @@ private extension ProductPriceSettingsViewController {
 private struct Constants {
     static let sectionHeight = CGFloat(44)
     static let pickerRowHeight = CGFloat(216)
+}
+
+private enum ActionSheetStrings {
+    static let save = NSLocalizedString("Save changes",
+                                        comment: "Button title in the action sheet in Edit Product > Edit pricing")
+    static let discard = NSLocalizedString("Discard changes",
+                                          comment: "Button title in the action sheet in Edit Product > Edit pricing")
+    static let cancel = NSLocalizedString("Cancel",
+                                          comment: "Dismiss the action sheet in Edit Product > Edit Pricing")
 }

@@ -1,2 +1,3 @@
-– Alla som älskar dark-mode kan glädja sig! Det är här.
-– Alla som älskar att förhandsgranska saker kan också glädja sig! Vi vet att Produkter-fliken ligger högt på allas önskelistor. Även om vi inte är helt klara att släppa en version av appen som har den så kan du förhandsgranska den kommande Produkter-fliken redan nu. Gå till Inställningar i appen för att aktivera den.
+– Genomför beställningsskärmen visar fullständigt innehåll för användarangivna anteckningar (om det finns några) i stället för att beskära dem efter en rad så att du kan se all information på en sida.
+– Antal i fliken Beställningar uppdateras nu som den ska när du växlar mellan butiker.
+– Egenheter är charmiga hos människor, mindre charmiga hos appar. Därför har vi tagit hand om en del buggar som orsakade lite visuella egenheter (särskilt när man bytte teckenstorlek i systemet).

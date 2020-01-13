@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-12-12 00:54:56+0000 */
+/* Translation-Revision-Date: 2020-01-09 00:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -42,14 +42,7 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld 변형";
 
-/* Payment on <date> received via (payment method title) */
-"(datePaid) via (order.paymentMethodTitle)" = "(order.paymentMethodTitle)을(를) 통한 (datePaid)";
-
-/* Title for an untitled post, should match WP core */
-"(no title)" = "(제목 없음)";
-
-/* A badge with the number of orders. More than nine new orders.
-   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
 "9+" = "9+";
 
 /* An error message. */
@@ -73,12 +66,12 @@
 /* The plugin is active on the site and has enabled automatic updates */
 "Active, Autoupdates on" = "활성화, 자동 업데이트 켜기";
 
-/* Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+/* A button title used for a shipment tracking unit test
+   A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "추가";
 
-/* Add Tracking row label
-   Add tracking screen - title. */
+/* A title used for a shipment tracking unit test
+   Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "추적 추가";
 
 /* Accessibility label for the 'Add a note' button
@@ -90,9 +83,6 @@
 
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "추적 추가";
-
-/* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
-"Adds a note to an order" = "주문에 메모 추가";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "주문에 대한 추적을 추가합니다.";
@@ -127,6 +117,9 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "요청을 처리하는 동안 다음 오류가 발생했습니다. ";
 
+/* Message shown when Apple authentication fails. */
+"Apple authentication failed." = "Apple 인증에 실패했습니다.";
+
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "애플리케이션 로그";
 
@@ -155,7 +148,8 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "이 사이트에서 자동으로 관리됨";
 
-/* Awaiting payment via (payment method title) */
+/* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
+   Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "%@을(를) 통한 결제 대기 중";
 
 /* Alert button title - dismisses alert, which cancels the log out attempt */
@@ -256,6 +250,9 @@
 /* Copy tracking number button title */
 "Copy Tracking Number" = "추적 번호 복사";
 
+/* Copy email address button title */
+"Copy email address" = "이메일 주소 복사";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "사이트 구매를 확인할 수 없습니다.";
 
@@ -344,8 +341,8 @@
 /* Discount label for payment view */
 "Discount" = "할인";
 
-/* Add a note screen - button title for closing the view
-   Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+/* A unit test string for a button title
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "무시";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -408,11 +405,11 @@
 /* The text placeholder for the Text Editor screen */
 "Enter a title..." = "제목을 입력하세요...";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "유효한 URL을 입력하세요(예: example.com).";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "공급업체 이름 입력";
+
+/* Label for button to log in using your site address. */
+"Enter the address of the WordPress site you'd like to connect." = "연결하려는 워드프레스 사이트 주소를 입력하세요.";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "연결하려는 WooCommerce 스토어의 주소를 입력합니다.";
@@ -646,9 +643,6 @@
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "생성 일자별 로그 파일";
 
-/* Label for button to log in using your site address. */
-"Log in by entering your site address." = "사이트 주소를 입력하여 로그인하세요.";
-
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "로그인에 실패했습니다. 다시 시도하세요.";
 
@@ -767,8 +761,10 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "아직 제품 변형이 없습니다.";
 
-/* Search Products (Empty State)
-   The text on the placeholder overlay when there are no products on the Products tab */
+/* Search Products (Empty State) */
+"No products found" = "제품을 찾을 수 없음";
+
+/* The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "아직 제품이 없음";
 
 /* Orders List (Empty State + Filters) */
@@ -893,7 +889,8 @@
    Display label for the review's pending status */
 "Pending" = "대기중";
 
-/* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
+/* A unit test string, appended before the title of a review.
+   Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "검토중";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
@@ -907,6 +904,9 @@
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "URL을 입력하세요.";
+
+/* Error message shown when a URL is invalid. */
+"Please enter a complete website address, like example.com." = "example.com과 같은 완전한 웹사이트 주소를 입력하세요.";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "사이트 주소를 입력해주세요.";
@@ -1122,7 +1122,8 @@
 /* Action: Opens the Store in a browser */
 "Share your Store" = "스토어 공유";
 
-/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+/* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
+   Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "배송 회사 %@";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
@@ -1178,7 +1179,8 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "크기:";
 
-/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
+/* A unit test for reviews, checking that anonymous users are added as the author named `someone`
+   Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "다른 사람";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
@@ -1378,7 +1380,7 @@
 "That username is not allowed." = "해당 사용자명은 허용되지 않습니다.";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
-"The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Google 계정 \"(loginFields.username)\"이 워드프레스닷컴의 계정과 일치하지 않습니다.";
+"The Google account \"%@\" doesn't match any account on WordPress.com" = "Google 계정 \"%@\"이(가) 워드프레스닷컴의 계정과 일치하지 않습니다.";
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "주문을 로드할 수 없습니다!";
@@ -1497,7 +1499,8 @@
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "추적 번호";
 
-/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+/* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
+   Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "추적 번호 %@";
 
 /* Display label for the review's trash status
@@ -1591,9 +1594,6 @@
 "Unknown" = "알 수 없음";
 
 /* No comment provided by engineer. */
-"Unknown Search Terms" = "알 수 없는 검색어";
-
-/* No comment provided by engineer. */
 "Unknown error" = "알려지지 않은 에러";
 
 /* Accessibility label for unordered list button on formatting toolbar. */
@@ -1623,22 +1623,27 @@
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "이 앱을 계속 사용하려면 WooCommerce 3.5로 업데이트하세요.";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+/* A unit test string for a singular time interval
+   Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld시간 전에 업데이트됨";
 
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+/* A unit test string for 1 day, represented as plural time interval in hours
+   A unit test string for a plural time interval in hours - A unit test string for time interval just under 1 day - Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
 "Updated %ld hours ago" = "%ld시간 전에 업데이트됨";
 
 /* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
 "Updated %ld minute ago" = "%ld분 전에 업데이트됨";
 
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+/* A unit test string for a plural time interval in minutes
+   A unit test string for time intervals - Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
 "Updated %ld minutes ago" = "%ld분 전에 업데이트됨";
 
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+/* A unit test string for relative time intervals
+   Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
 "Updated moments ago" = "방금 업데이트됨";
 
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM
+   Updated on <date> */
 "Updated on %@" = "%@에 업데이트";
 
 /* Login dialog username placeholder
@@ -1696,7 +1701,7 @@
 "Watch readers from around the world read and interact with your site — in real time." = "전 세계 독자들이 회원님의 사이트를 읽고 상호 작용하는 것을 실시간으로 지켜보세요.";
 
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.22 or higher" = "이전 통계로 되돌렸습니다. 베타 통계를 사용하려면 버전 0.22 이상으로 WooCommerce Admin 플러그인을 활성화하세요.";
+"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "이전 통계로 되돌렸습니다. 베타 통계를 사용하려면 버전 0.23 이상으로 WooCommerce Admin 플러그인을 활성화하세요.";
 
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "매직 가입 링크를 보냈습니다! 이 장치에서 이메일을 확인하고 이메일의 링크를 눌러 가입을 완료하세요.";

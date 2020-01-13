@@ -1,2 +1,3 @@
-- Amantes del modo oscuro, ¡estáis de enhorabuena! Ya ha llegado.
-- Amantes de las vistas previas, ¡también estáis de enhorabuena! Sabemos que muchos una pestaña Productos está en la lista de deseos de muchos. Aunque no estamos listos para lanzar una versión completa de la aplicación que la incluya, puedes obtener una vista previa de la pestaña Productos, que se lanzará pronto. Dirígete a Configuración en la aplicación ahora mismo para activarla.
+- La pantalla Realizar pedido muestra el contenido completo de las notas proporcionadas por el cliente (cuando las hay) en lugar de cortarlas después de una sola línea, de modo que se puede ver toda la información en una pantalla.
+- El recuento de la barra de pestañas Pedidos ahora se actualiza correctamente al cambiar de tienda.
+- Las excentricidades hacen que las personas sean interesantes, pero no las aplicaciones, así que nos hemos encargado de algunos errores que causaban fallos visuales (en particular, al cambiar el tamaño de las fuentes del sistema).

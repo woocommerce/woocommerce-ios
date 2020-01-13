@@ -1,2 +1,3 @@
-- Penggemar mode gelap, bergembiralah! Mode ini sudah tersedia.
-- Penggemar pratinjau, Anda juga bisa bergembira! Kami tahu bahwa tab Produk merupakan keinginan dari banyak pihak. Meskipun kami belum siap untuk sepenuhnya merilis versi aplikasi yang menyertakannya, Anda masih bisa mempratinjau tab Produk yang akan hadir sekarang — buka Pengaturan di aplikasi untuk mengaktifkannya.
+- Layar Penuhi Pesanan menampilkan isi lengkap catatan yang dibuat pelanggan (jika ada), dan tidak memotongnya setelah satu baris, sehingga Anda dapat melihat semua detail di satu layar.
+- Jumlah pada bilah tab Pesanan kini disegarkan dengan benar saat Anda beralih antartoko.
+- Hal yang tak terduga memang menarik pada manusia, tetapi tidak untuk aplikasi. Jadi, kami mengatasi beberapa bug penyebab masalah visual (khususnya, ketika mengubah ukuran font sistem).

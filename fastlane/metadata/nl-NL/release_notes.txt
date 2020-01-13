@@ -1,2 +1,3 @@
-- Fans van de nachtmodus kunnen verheugd zijn! Hij is nu beschikbaar.
-- Fans van voorbeeldweergaven kunnen ook verheugd zijn! We weten dat een tabblad met producten hoog op de lijst met gewenste functies staat. Hoewel we nog geen volledige versie van de app kunnen uitbrengen die deze functie bevat, kun we je nu een voorproefje geven van het tabblad Producten, dat binnenkort beschikbaar wordt. Ga naar Instellingen in de app om deze functie in te schakelen.
+- Het scherm Bestelling voltooien geeft de volledige inhoud van klantopmerkingen weer (als die er zijn) in plaats van ze af te breken na één regel. Zo kun je alle informatie zien op één scherm.
+- Het aantal in het scherm Bestellingen wordt nu juist bijgewerkt als je schakelt tussen winkels.
+- Eigenaardigheden vinden we leuk bij mensen, maar een stuk minder in apps. Daarom hebben we een aantal bugs opgelost die zorgden voor visuele eigenaardigheden (vooral bij het veranderen van lettertypegrootten).

@@ -25,10 +25,8 @@ target 'WooCommerce' do
   pod 'Gridicons', '~> 0.19'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  # TODO-jaclync: revert the diffs for temporary testing and update the official pod version after it's released.
-  pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'wcios-1638-login-color-updates'
-#  pod 'WordPressAuthenticator', '~> 1.10.5'
-#  pod 'WordPressAuthenticator', :path => '../WordPressAuthenticator-iOS'
+  #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
+  pod 'WordPressAuthenticator', '~> 1.10.6-beta'
 
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
   pod 'WordPressShared', '~> 1.8.2'

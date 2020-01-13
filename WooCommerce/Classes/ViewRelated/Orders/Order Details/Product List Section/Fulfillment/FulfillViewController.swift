@@ -637,8 +637,8 @@ private extension FulfillViewController {
                 rows.append(.shippingMethod)
             }
 
-            let orderContainsOnlyVirtualProducts = self.products?.filter { (product) -> Bool in
-                return self.order.items.first(where: { $0.productID == product.productID}) != nil
+            let orderContainsOnlyVirtualProducts = products?.filter { (product) -> Bool in
+                return order.items.first(where: { $0.productID == product.productID}) != nil
             }.allSatisfy { $0.virtual == true }
 
             let title = NSLocalizedString("Customer Information", comment: "Section title for the customer's billing and shipping address")

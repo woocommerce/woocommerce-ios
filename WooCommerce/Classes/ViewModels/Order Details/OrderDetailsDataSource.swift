@@ -576,7 +576,7 @@ extension OrderDetailsDataSource {
             }
 
             let orderContainsOnlyVirtualProducts = self.products.filter { (product) -> Bool in
-                return self.items.first(where: { $0.productID == product.productID}) != nil
+                return items.first(where: { $0.productID == product.productID}) != nil
             }.allSatisfy { $0.virtual == true }
 
             if order.shippingAddress != nil && orderContainsOnlyVirtualProducts == false {

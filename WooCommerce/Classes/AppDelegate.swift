@@ -173,10 +173,10 @@ private extension AppDelegate {
     ///
     func setupFancyAlertAppearance() {
         let appearance = FancyAlertView.appearance()
-        appearance.bodyBackgroundColor = .listBackground
-        appearance.bottomBackgroundColor = .listBackground
+        appearance.bodyBackgroundColor = .systemColor(.systemBackground)
+        appearance.bottomBackgroundColor = appearance.bodyBackgroundColor
         appearance.bottomDividerColor = .listSmallIcon
-        appearance.topDividerColor = .listSmallIcon
+        appearance.topDividerColor = appearance.bodyBackgroundColor
 
         appearance.titleTextColor = .text
         appearance.titleFont = UIFont.title2
@@ -186,8 +186,8 @@ private extension AppDelegate {
 
         appearance.actionFont = UIFont.headline
         appearance.infoFont = UIFont.subheadline
-        appearance.infoTintColor = .primary
-        appearance.headerBackgroundColor = .listSmallIcon
+        appearance.infoTintColor = .accent
+        appearance.headerBackgroundColor = .alertHeaderImageBackgroundColor
     }
 
     /// Sets up FancyButton's UIAppearance.
@@ -195,7 +195,7 @@ private extension AppDelegate {
     func setupFancyButtonAppearance() {
         let appearance = FancyButton.appearance()
         appearance.primaryNormalBackgroundColor = .primaryButtonBackground
-        appearance.primaryNormalBorderColor = .primaryButtonDownBorder
+        appearance.primaryNormalBorderColor = .primaryButtonBorder
         appearance.primaryHighlightBackgroundColor = .primaryButtonDownBackground
         appearance.primaryHighlightBorderColor = .primaryButtonDownBorder
     }

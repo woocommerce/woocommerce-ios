@@ -400,6 +400,15 @@ extension UIColor {
 }
 
 
+// MARK: - Login.
+extension UIColor {
+    class var alertHeaderImageBackgroundColor: UIColor {
+        return UIColor(light: .systemColor(.systemGray6),
+                       dark: .systemColor(.systemGray5))
+    }
+}
+
+
 // MARK: - Grays
 extension UIColor {
     /// Muriel gray palette

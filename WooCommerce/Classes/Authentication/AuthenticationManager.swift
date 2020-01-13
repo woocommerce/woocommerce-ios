@@ -50,8 +50,14 @@ class AuthenticationManager: Authentication {
                                                      jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                      siteLoginInstructions: AuthenticationConstants.siteInstructions)
 
+        let displayImages = WordPressAuthenticatorDisplayImages(
+            magicLink: .loginMagicLinkImage,
+            siteAddressModalPlaceholder: .loginSiteAddressInfoImage
+        )
+
         WordPressAuthenticator.initialize(configuration: configuration,
                                           style: style,
+                                          displayImages: displayImages,
                                           displayStrings: displayStrings)
         WordPressAuthenticator.shared.delegate = self
     }

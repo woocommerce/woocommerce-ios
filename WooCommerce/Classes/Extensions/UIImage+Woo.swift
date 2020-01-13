@@ -194,6 +194,18 @@ extension UIImage {
         return Gridicon.iconOfType(.image)
     }
 
+    /// Login magic link
+    ///
+    static var loginMagicLinkImage: UIImage {
+        return UIImage(named: "logic-magic-link")!
+    }
+
+    /// Login site address info
+    ///
+    static var loginSiteAddressInfoImage: UIImage {
+        return UIImage(named: "login-site-address-info")!
+    }
+
     /// Mail Icon
     ///
     static var mailImage: UIImage {

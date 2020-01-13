@@ -405,6 +405,8 @@ public struct Product: Codable {
     public func encode(to encoder: Encoder) throws {
         var container = encoder.container(keyedBy: CodingKeys.self)
 
+        try container.encode(images, forKey: .images)
+
         try container.encode(name, forKey: .name)
         try container.encode(fullDescription, forKey: .fullDescription)
 

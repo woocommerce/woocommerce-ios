@@ -40,6 +40,10 @@ import AuthenticationServices
     ///
     public let style: WordPressAuthenticatorStyle
 
+    /// Authenticator's Display Images.
+    ///
+    public let displayImages: WordPressAuthenticatorDisplayImages
+
     /// Authenticator's Display Texts.
     ///
     public let displayStrings: WordPressAuthenticatorDisplayStrings
@@ -65,9 +69,11 @@ import AuthenticationServices
     ///
     private init(configuration: WordPressAuthenticatorConfiguration,
                  style: WordPressAuthenticatorStyle,
+                 displayImages: WordPressAuthenticatorDisplayImages,
                  displayStrings: WordPressAuthenticatorDisplayStrings) {
         self.configuration = configuration
         self.style = style
+        self.displayImages = displayImages
         self.displayStrings = displayStrings
     }
 
@@ -75,12 +81,16 @@ import AuthenticationServices
     ///
     public static func initialize(configuration: WordPressAuthenticatorConfiguration,
                                   style: WordPressAuthenticatorStyle,
+                                  displayImages: WordPressAuthenticatorDisplayImages = .defaultImages,
                                   displayStrings: WordPressAuthenticatorDisplayStrings = .defaultStrings) {
         guard privateInstance == nil else {
             fatalError("WordPressAuthenticator is already initialized")
         }
 
-        privateInstance = WordPressAuthenticator(configuration: configuration, style: style, displayStrings: displayStrings)
+        privateInstance = WordPressAuthenticator(configuration: configuration,
+                                                 style: style,
+                                                 displayImages: displayImages,
+                                                 displayStrings: displayStrings)
     }
 
     // MARK: - Public Methods

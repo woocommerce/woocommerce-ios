@@ -7,6 +7,7 @@ import WordPressShared
 /// app to look for the emailed authentication link.
 ///
 class NUXLinkMailViewController: LoginViewController {
+    @IBOutlet private weak var imageView: UIImageView!
     @IBOutlet var label: UILabel?
     @IBOutlet var openMailButton: NUXButton?
     @IBOutlet var usePasswordButton: UIButton?
@@ -27,6 +28,8 @@ class NUXLinkMailViewController: LoginViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        imageView.image = WordPressAuthenticator.shared.displayImages.magicLink
+
         let email = loginFields.username
         if !email.isValidEmail() {
             assert(email.isValidEmail(), "The value of loginFields.username was not a valid email address.")
@@ -35,6 +38,7 @@ class NUXLinkMailViewController: LoginViewController {
         emailMagicLinkSource = loginFields.meta.emailMagicLinkSource
         assert(emailMagicLinkSource != nil, "Must have an email link source.")
 
+        styleUsePasswordButton()
         localizeControls()
     }
 
@@ -43,6 +47,13 @@ class NUXLinkMailViewController: LoginViewController {
     }
 
     // MARK: - Configuration
+
+    private func styleUsePasswordButton() {
+        guard let usePasswordButton = usePasswordButton else {
+            return
+        }
+        WPStyleGuide.configureTextButton(usePasswordButton)
+    }
 
     /// Assigns localized strings to various UIControl defined in the storyboard.
     ///

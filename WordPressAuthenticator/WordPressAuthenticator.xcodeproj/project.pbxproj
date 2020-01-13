@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */; };
 		1A21EE9822832BC300C940C6 /* WordPressComOAuthClientFacade+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A21EE9722832BC200C940C6 /* WordPressComOAuthClientFacade+Swift.swift */; };
 		1A4095182271AEFC009AA86D /* WPAuthenticator-Swift.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		7A7A9B9CD2D81959F9AB9AF6 /* Pods_WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C736FF243DE333FCAB1C2614 /* Pods_WordPressAuthenticator.framework */; };
@@ -142,6 +143,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WordPressAuthenticatorDisplayImages.swift; sourceTree = "<group>"; };
 		1A21EE9722832BC200C940C6 /* WordPressComOAuthClientFacade+Swift.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "WordPressComOAuthClientFacade+Swift.swift"; sourceTree = "<group>"; };
 		1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "WPAuthenticator-Swift.h"; sourceTree = "<group>"; };
 		276354F054C34AD36CA32AB6 /* Pods-WordPressAuthenticator.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release-alpha.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release-alpha.xcconfig"; sourceTree = "<group>"; };
@@ -433,6 +435,7 @@
 				B56090F6208A533200399AE4 /* WordPressSupportSourceTag.swift */,
 				CE1B18CF20EEC41600BECC3F /* WordPressAuthenticatorConfiguration.swift */,
 				CE1B18D120EEC44400BECC3F /* WordPressAuthenticatorStyles.swift */,
+				020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */,
 				CE16177421B6D82200B82A47 /* WordPressAuthenticatorDisplayStrings.swift */,
 			);
 			path = Authenticator;
@@ -879,6 +882,7 @@
 				B5609139208A563800399AE4 /* LoginEmailViewController.swift in Sources */,
 				98C9195B2308E3DA00A90E12 /* AppleAuthenticator.swift in Sources */,
 				B56090F9208A533200399AE4 /* WordPressAuthenticator+Events.swift in Sources */,
+				020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */,
 				B560913A208A563800399AE4 /* LoginLinkRequestViewController.swift in Sources */,
 				B560910C208A54F800399AE4 /* WordPressComOAuthClientFacade.m in Sources */,
 				B55272C320B2FE4100E18BC5 /* WPAuthenticatorLoggingPrivate.m in Sources */,

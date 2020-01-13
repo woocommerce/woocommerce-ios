@@ -111,7 +111,7 @@ private extension SiteInfoHeaderView {
     func refreshBlavatarStyle() {
         if blavatarBorderIsHidden {
             blavatarImageView.layer.borderWidth = 0
-            blavatarImageView.tintColor = .clear
+            blavatarImageView.tintColor = WordPressAuthenticator.shared.style.placeholderColor
         } else {
             blavatarImageView.layer.borderColor = WordPressAuthenticator.shared.style.instructionColor.cgColor
             blavatarImageView.layer.borderWidth = 1

@@ -115,7 +115,6 @@ private extension ProductShippingSettingsViewController {
 extension ProductShippingSettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
-        
         if weight != product.weight || length != product.dimensions.length || width != product.dimensions.width || height != product.dimensions.height || shippingClass != product.productShippingClass {
             presentBackNavigationActionSheet()
         }

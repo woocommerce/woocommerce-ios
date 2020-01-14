@@ -5,6 +5,8 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    private let product: Product
+
     private let siteID: Int64
 
     // Editable data - shared.
@@ -36,6 +38,8 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.onCompletion = completion
+
+        self.product = product
 
         self.siteID = product.siteID
 
@@ -152,8 +156,19 @@ private extension ProductInventorySettingsViewController {
 
 // MARK: - Navigation actions handling
 //
-private extension ProductInventorySettingsViewController {
-    @objc func completeUpdating() {
+extension ProductInventorySettingsViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        if sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually || stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting || stockStatus != product.productStockStatus {
+            presentBackNavigationActionSheet()
+        }
+        else {
+            navigationController?.popViewController(animated: true)
+        }
+        return false
+    }
+
+    @objc private func completeUpdating() {
         let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
             guard let self = self else {
                 return
@@ -171,6 +186,15 @@ private extension ProductInventorySettingsViewController {
             self.onCompletion(data)
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
+            self?.completeUpdating()
+        }, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }, onCancel: {
+        })
     }
 }
 

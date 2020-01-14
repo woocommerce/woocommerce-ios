@@ -73,6 +73,8 @@
 		02305352237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */; };
 		02305353237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */; };
 		0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0230535A2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift */; };
+		02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02357B2823CDB3E300147C2B /* ProductImageViewController.swift */; };
+		02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02357B2923CDB3E300147C2B /* ProductImageViewController.xib */; };
 		02396251239948470096F34C /* UIImage+TintColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02396250239948470096F34C /* UIImage+TintColor.swift */; };
 		02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */; };
 		02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */; };
@@ -670,6 +672,8 @@
 		0230534F237454C700487A64 /* AztecHorizontalRulerFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecHorizontalRulerFormatBarCommand.swift; sourceTree = "<group>"; };
 		02305350237454C700487A64 /* AztecInsertMoreFormatBarCommand.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AztecInsertMoreFormatBarCommand.swift; sourceTree = "<group>"; };
 		0230535A2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecSourceCodeFormatBarCommand.swift; sourceTree = "<group>"; };
+		02357B2823CDB3E300147C2B /* ProductImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageViewController.swift; sourceTree = "<group>"; };
+		02357B2923CDB3E300147C2B /* ProductImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImageViewController.xib; sourceTree = "<group>"; };
 		02396250239948470096F34C /* UIImage+TintColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TintColor.swift"; sourceTree = "<group>"; };
 		02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV3ToV4BannerActionHandler.swift; sourceTree = "<group>"; };
 		02404ED92314C36200FF1170 /* StatsVersionStateCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatsVersionStateCoordinator.swift; sourceTree = "<group>"; };
@@ -1506,6 +1510,8 @@
 				0286B27623C7051F003D784B /* ProductImagesCollectionViewController.xib */,
 				0286B27923C7051F003D784B /* ProductImagesViewController.swift */,
 				0286B27823C7051F003D784B /* ProductImagesViewController.xib */,
+				02357B2823CDB3E300147C2B /* ProductImageViewController.swift */,
+				02357B2923CDB3E300147C2B /* ProductImageViewController.xib */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -2977,6 +2983,7 @@
 				CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */,
 				CE35F11C2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib in Resources */,
 				451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */,
+				02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */,
 				CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
 				CE21B3D820FE669A00A259D5 /* BasicTableViewCell.xib in Resources */,
@@ -3263,6 +3270,7 @@
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
+				02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */,
 				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,
 				021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */,
 				020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */,

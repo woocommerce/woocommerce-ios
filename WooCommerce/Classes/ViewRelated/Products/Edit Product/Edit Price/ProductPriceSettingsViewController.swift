@@ -184,7 +184,7 @@ extension ProductPriceSettingsViewController {
     }
 
     func presentBackNavigationActionSheet() {
-        presentSaveChangesActionSheet(onSave: { [weak self] in
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
             self?.completeUpdating()
         }, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)

@@ -1,8 +1,13 @@
 import UIKit
 
-extension UIViewController {
 
-    func presentSaveChangesActionSheet(onSave: (() -> Void)?, onDiscard: (() -> Void)?, onCancel: (() -> Void)?) {
+/// UIAlertController Helpers
+///
+extension UIAlertController {
+
+    /// Save Changes Action Sheet
+    ///
+    static func presentSaveChangesActionSheet(viewController: UIViewController, onSave: (() -> Void)?, onDiscard: (() -> Void)?, onCancel: (() -> Void)?) {
         let actionSheet = UIAlertController(title: nil, message: ActionSheetStrings.message, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
@@ -19,10 +24,10 @@ extension UIViewController {
         }
 
         let popoverController = actionSheet.popoverPresentationController
-        popoverController?.sourceView = view
-        popoverController?.sourceRect = view.bounds
+        popoverController?.sourceView = viewController.view
+        popoverController?.sourceRect = viewController.view.bounds
 
-        present(actionSheet, animated: true)
+        viewController.present(actionSheet, animated: true)
     }
 }
 
@@ -36,3 +41,4 @@ private enum ActionSheetStrings {
     static let cancel = NSLocalizedString("Cancel",
                                           comment: "Button title Cancel in Save Changes Action Sheet")
 }
+

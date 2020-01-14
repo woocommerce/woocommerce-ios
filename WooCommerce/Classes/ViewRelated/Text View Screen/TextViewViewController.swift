@@ -81,7 +81,7 @@ extension TextViewViewController {
     }
 
     func presentBackNavigationActionSheet() {
-        presentSaveChangesActionSheet(onSave: { [weak self] in
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
             self?.completeEditing()
         }, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)

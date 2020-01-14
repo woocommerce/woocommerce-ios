@@ -52,16 +52,6 @@ extension OrderItemRefundSummary: Comparable {
 
     public static func < (lhs: OrderItemRefundSummary, rhs: OrderItemRefundSummary) -> Bool {
         return lhs.productID < rhs.productID ||
-            (lhs.productID == rhs.productID && lhs.name < rhs.name)
-    }
-}
-
-
-// MARK: - Hashable Conformance
-//
-extension OrderItemRefundSummary: Hashable {
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(productID)
-        hasher.combine(variationID)
+            (lhs.productID == rhs.productID && lhs.variationID < rhs.variationID)
     }
 }

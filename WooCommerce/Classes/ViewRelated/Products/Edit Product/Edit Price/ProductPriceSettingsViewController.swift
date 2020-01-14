@@ -184,26 +184,12 @@ extension ProductPriceSettingsViewController {
     }
 
     func presentBackNavigationActionSheet() {
-        let actionSheetMessage = NSLocalizedString("Are you sure you want to discard these changes?",
-                                                 comment: "Action sheet title in Edit Product > Edit Pricing")
-        let actionSheet = UIAlertController(title: nil, message: actionSheetMessage, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-
-        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.save) { [weak self] _ in
+        presentSaveChangesActionSheet(onSave: { [weak self] in
             self?.completeUpdating()
-        }
-
-        actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.discard) { [weak self] _ in
+        }, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
-        }
-
-        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.sourceView = view
-        popoverController?.sourceRect = view.bounds
-
-        present(actionSheet, animated: true)
+        }, onCancel: {
+        })
     }
 }
 
@@ -542,13 +528,4 @@ private extension ProductPriceSettingsViewController {
 private struct Constants {
     static let sectionHeight = CGFloat(44)
     static let pickerRowHeight = CGFloat(216)
-}
-
-private enum ActionSheetStrings {
-    static let save = NSLocalizedString("Save changes",
-                                        comment: "Button title in the action sheet in Edit Product > Edit pricing")
-    static let discard = NSLocalizedString("Discard changes",
-                                          comment: "Button title in the action sheet in Edit Product > Edit pricing")
-    static let cancel = NSLocalizedString("Cancel",
-                                          comment: "Dismiss the action sheet in Edit Product > Edit Pricing")
 }

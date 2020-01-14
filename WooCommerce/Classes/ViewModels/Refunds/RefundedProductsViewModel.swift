@@ -131,24 +131,4 @@ extension RefundedProductsViewModel {
     func reloadSections() {
         dataSource.reloadSections()
     }
-
-    /// Handle taps on cells
-    ///
-    func tableView(_ tableView: UITableView,
-                   in viewController: UIViewController,
-                   didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-
-        switch dataSource.sections[indexPath.section].rows[indexPath.row] {
-
-        case .orderItemRefunded:
-            let item = summedItems[indexPath.row]
-            let productID = item.variationID == 0 ? item.productID : item.variationID
-            let loaderViewController = ProductLoaderViewController(productID: productID,
-                                                                   siteID: order.siteID,
-                                                                   currency: order.currency)
-            let navController = WooNavigationController(rootViewController: loaderViewController)
-            viewController.present(navController, animated: true, completion: nil)
-        }
-    }
 }

@@ -1,6 +1,11 @@
 import Foundation
 import Storage
 
+extension Storage.Product {
+    var imagesArray: [Storage.ProductImage] {
+        return images?.toArray() ?? []
+    }
+}
 
 // MARK: - Storage.Product: ReadOnlyConvertible
 //

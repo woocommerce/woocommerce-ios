@@ -3,10 +3,7 @@ import Storage
 
 extension Storage.ProductVariation {
     var attributesArray: [Attribute] {
-        guard let attributes = attributes.array as? [Attribute] else {
-            return []
-        }
-        return attributes
+        return attributes.toArray()
     }
 }
 

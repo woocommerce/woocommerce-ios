@@ -146,15 +146,6 @@ extension RefundedProductsDataSource {
 
         sections = [refundedProducts].compactMap { $0 }
     }
-
-    /// Handle taps on cells
-    ///
-    func tableView(_ tableView: UITableView,
-                   in viewController: UIViewController,
-                   didSelectRowAt indexPath: IndexPath) {
-        // This tableview shouldn't have any actions, so deselect the row.
-        tableView.deselectRow(at: indexPath, animated: true)
-    }
 }
 
 

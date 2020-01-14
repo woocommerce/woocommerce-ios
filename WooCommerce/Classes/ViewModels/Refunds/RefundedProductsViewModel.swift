@@ -15,13 +15,15 @@ final class RefundedProductsViewModel {
 
     /// Condense order items into summarized data
     ///
-    var summedItems: [OrderItemRefundSummary] {
-        /// OrderItemRefund.orderItemID isn't useful for finding duplicates here,
-        /// because multiple refunds cause orderItemIDs to be unique.
+    private var summedItems: [OrderItemRefundSummary] {
+        /// OrderItemRefund.orderItemID isn't useful for finding duplicates in
+        /// items because multiple refunds cause orderItemIDs to be unique.
         /// Instead, we need to find duplicate *Products*.
 
         let currency = CurrencyFormatter()
-
+        // Creates an array of dictionaries, with the hash value as the key.
+        // Example: [hashValue: [item, item], hashvalue: [item]]
+        // Since dictionary keys are unique, this eliminates the duplicate `OrderItemRefund`s.
         let grouped = Dictionary(grouping: items) { (item) in
             return item.hashValue
         }

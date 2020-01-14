@@ -159,7 +159,8 @@ private extension ProductInventorySettingsViewController {
 extension ProductInventorySettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
-        if sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually || stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting || stockStatus != product.productStockStatus {
+        if sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually ||
+            stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting || stockStatus != product.productStockStatus {
             presentBackNavigationActionSheet()
         }
         else {

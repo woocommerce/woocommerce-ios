@@ -110,7 +110,10 @@ private extension ProductFormViewController {
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
                 DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                self?.displayError(error: error)
+                // Dismisses the in-progress UI then presents the error alert.
+                self?.navigationController?.dismiss(animated: true) {
+                    self?.displayError(error: error)
+                }
                 return
             }
             self?.product = product
@@ -119,11 +122,6 @@ private extension ProductFormViewController {
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }
         ServiceLocator.stores.dispatch(action)
-    }
-
-    func showProductImages() {
-        let imagesViewController = ProductImagesViewController(product: product)
-        navigationController?.pushViewController(imagesViewController, animated: true)
     }
 
     func displayError(error: ProductUpdateError?) {
@@ -197,6 +195,27 @@ extension ProductFormViewController: UITableViewDelegate {
         default:
             return nil
         }
+    }
+}
+
+// MARK: Action - Edit Product Images
+//
+private extension ProductFormViewController {
+    func showProductImages() {
+        let imagesViewController = ProductImagesViewController(product: product) { [weak self] images in
+            self?.onEditProductImagesCompletion(images: images)
+        }
+        navigationController?.pushViewController(imagesViewController, animated: true)
+    }
+
+    func onEditProductImagesCompletion(images: [ProductImage]) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        guard images != product.images else {
+            return
+        }
+        self.product = productUpdater.imagesUpdated(images: images)
     }
 }
 

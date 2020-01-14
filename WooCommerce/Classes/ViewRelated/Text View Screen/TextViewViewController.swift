@@ -63,9 +63,44 @@ final class TextViewViewController: UIViewController {
     }
 }
 
-private extension TextViewViewController {
-    @objc func completeEditing() {
+// MARK: - Navigation actions handling
+//
+extension TextViewViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        if initialText != textView.text {
+            presentBackNavigationActionSheet()
+        }
+        else {
+            navigationController?.popViewController(animated: true)
+        }
+        return false
+    }
+
+    @objc private func completeEditing() {
         onCompletion(textView.text)
+    }
+
+    func presentBackNavigationActionSheet() {
+        let actionSheetMessage = NSLocalizedString("Are you sure you want to discard these changes?",
+                                                 comment: "Action sheet title in Edit Product > Edit Pricing")
+        let actionSheet = UIAlertController(title: nil, message: actionSheetMessage, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.save) { [weak self] _ in
+            self?.completeEditing()
+        }
+
+        actionSheet.addDestructiveActionWithTitle(ActionSheetStrings.discard) { [weak self] _ in
+            self?.navigationController?.popViewController(animated: true)
+        }
+
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel)
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = view
+        popoverController?.sourceRect = view.bounds
+
+        present(actionSheet, animated: true)
     }
 }
 
@@ -144,4 +179,14 @@ private extension TextViewViewController {
     enum Constants {
         static let textContainerInset = UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16)
     }
+
+    enum ActionSheetStrings {
+        static let save = NSLocalizedString("Save changes",
+                                            comment: "Button title in the action sheet in the generic text editor")
+        static let discard = NSLocalizedString("Discard changes",
+                                              comment: "Button title in the action sheet in the generic text editor")
+        static let cancel = NSLocalizedString("Cancel",
+                                              comment: "Dismiss the action sheet in the generic text editor")
+    }
+
 }

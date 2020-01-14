@@ -20,7 +20,8 @@ final class ProductImagesViewController: UIViewController {
 
     // Child view controller.
     private lazy var imagesViewController: ProductImagesCollectionViewController = {
-        let viewController = ProductImagesCollectionViewController(images: productImages)
+        let viewController = ProductImagesCollectionViewController(images: productImages,
+                                                                   onDeletion: onDeletion)
         return viewController
     }()
 
@@ -41,6 +42,7 @@ final class ProductImagesViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        configureMainView()
         configureNavigation()
         configureAddButton()
         configureAddButtonBottomBorderView()
@@ -51,10 +53,16 @@ final class ProductImagesViewController: UIViewController {
 // MARK: - UI configurations
 //
 private extension ProductImagesViewController {
+    func configureMainView() {
+        view.backgroundColor = .basicBackground
+    }
+
     func configureNavigation() {
         title = NSLocalizedString("Photos", comment: "Product images (Product images page title)")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeEditing))
+
+        removeNavigationBackBarButtonText()
     }
 
     func configureAddButton() {
@@ -89,5 +97,10 @@ private extension ProductImagesViewController {
 
     @objc func completeEditing() {
         onCompletion(productImages)
+    }
+
+    func onDeletion(productImage: ProductImage) {
+        productImages.removeAll(where: { $0.imageID == productImage.imageID })
+        navigationController?.popViewController(animated: true)
     }
 }

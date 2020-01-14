@@ -8,10 +8,14 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
     private var productImages: [ProductImage]
 
     private let imageService: ImageService
+    private let onDeletion: ProductImageViewController.Deletion
 
-    init(images: [ProductImage], imageService: ImageService = ServiceLocator.imageService) {
+    init(images: [ProductImage],
+         imageService: ImageService = ServiceLocator.imageService,
+         onDeletion: @escaping ProductImageViewController.Deletion) {
         self.productImages = images
         self.imageService = imageService
+        self.onDeletion = onDeletion
         let columnLayout = ColumnFlowLayout(
             cellsPerRow: 2,
             minimumInteritemSpacing: 16,
@@ -72,5 +76,15 @@ extension ProductImagesCollectionViewController {
         }
 
         return cell
+    }
+}
+
+// MARK: UICollectionViewDelegate
+//
+extension ProductImagesCollectionViewController {
+    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let productImage = productImages[indexPath.row]
+        let productImageViewController = ProductImageViewController(productImage: productImage, onDeletion: onDeletion)
+        navigationController?.pushViewController(productImageViewController, animated: true)
     }
 }

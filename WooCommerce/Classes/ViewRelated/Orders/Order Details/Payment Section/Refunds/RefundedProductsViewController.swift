@@ -151,12 +151,6 @@ private extension RefundedProductsViewController {
 // MARK: - UITableViewDelegate Conformance
 //
 extension RefundedProductsViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
-        viewModel.tableView(tableView, in: self, didSelectRowAt: indexPath)
-    }
-
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }

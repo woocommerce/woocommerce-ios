@@ -1,2 +1,1 @@
-Check which products are
-performing best
+Create and manage products

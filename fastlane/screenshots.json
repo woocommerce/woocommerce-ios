@@ -5,9 +5,9 @@
 	"stylesheet": "appstoreres/assets/styles/style.css",
 	"devices": [
 		{
-			"name": "iPhone Xs",
-			"canvas_size": [1125,2436],
-			"text_size": [925, 313],
+			"name": "iPhone Xs max",
+			"canvas_size": [1242,2688],
+			"text_size": [1042, 313],
 			"text_offset": [100, 192],
 			"font_size": "86px"
 		},
@@ -20,78 +20,73 @@
 		}
 	],
 	"entries": [
+		// Intro Screen
 		{
-			"device": "iPhone Xs",
+			"device": "iPhone Xs max",
 			"filename": "01-iphone-x.png",
 			"background": "appstoreres/assets/simple/screenshot-1-iphone-x.png",
 			"attachments": [
 				{
 					"text": "metadata/{locale}/app_store_screenshot_1.txt",
 					"font-size": 144,
-					"size": [925, 600],
+					"size": [1042, 600],
 					"position": [100, 889],
 					"stylesheet": "appstoreres/assets/styles/first-screen-heading.css"
 				},
 				{
 					"text": "metadata/{locale}/app_store_screenshot_1b.txt",
 					"font-size": 40,
-					"size": [925, 250],
-					"position": [100, 2135],
+					"size": [1042, 250],
+					"position": [100, 2387],
 					"stylesheet": "appstoreres/assets/styles/first-screen-footer.css"
 				}
 			]
 		},
 		// View and manage orders
 		{
-			"device": "iPhone Xs",
+			"device": "iPhone Xs max",
 			"text": "metadata/{locale}/app_store_screenshot_2.txt",
 			"filename": "02-iphone-x.png",
 			"background": "appstoreres/assets/simple/screenshot-2-iphone-x.png"
 		},
-		// Get real-time order alerts
+		// Track order status
 		{
-			"device": "iPhone Xs",
+			"device": "iPhone Xs max",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt",
 			"filename": "03-iphone-x.png",
 			"background": "appstoreres/assets/simple/screenshot-3-iphone-x.png"
 		},
-		// Track order status
+		// Scroll through, filter, or look up specific orders
 		{
-			"device": "iPhone Xs",
+			"device": "iPhone Xs max",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt",
 			"filename": "04-iphone-x.png",
 			"background": "appstoreres/assets/simple/screenshot-4-iphone-x.png"
 		},
-		// Scroll through, filter, or look up specific orders
+		// Track sales data and high performing products
 		{
-			"device": "iPhone Xs",
+			"device": "iPhone Xs max",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt",
 			"filename": "05-iphone-x.png",
 			"background": "appstoreres/assets/simple/screenshot-5-iphone-x.png"
 		},
-		// View store data by week, month, and year
+		// Get notified about new customer reviews
 		{
-			"device": "iPhone Xs",
+			"device": "iPhone Xs max",
 			"text": "metadata/{locale}/app_store_screenshot_6.txt",
 			"filename": "06-iphone-x.png",
 			"background": "appstoreres/assets/simple/screenshot-6-iphone-x.png"
 		},
-		// Check which products are performing best
+		// Create and manage products
 		{
-			"device": "iPhone Xs",
+			"device": "iPhone Xs max",
 			"text": "metadata/{locale}/app_store_screenshot_7.txt",
 			"filename": "07-iphone-x.png",
 			"background": "appstoreres/assets/simple/screenshot-7-iphone-x.png"
 		},
-		// Get notified about customer reviews
-		{
-			"device": "iPhone Xs",
-			"text": "metadata/{locale}/app_store_screenshot_8.txt",
-			"filename": "08-iphone-x.png",
-			"background": "appstoreres/assets/simple/screenshot-8-iphone-x.png"
-		},
 
 		// iPhone 8
+		// Intro Screen
 		{
 			"device": "iPhone 8",
 			"filename": "01-iphone-8.png",
@@ -120,47 +115,40 @@
 			"filename": "02-iphone-8.png",
 			"background": "appstoreres/assets/simple/screenshot-2-iphone-8.png"
 		},
-		// Get real-time order alerts
+		// Track order status
 		{
 			"device": "iPhone 8",
 			"text": "metadata/{locale}/app_store_screenshot_3.txt",
 			"filename": "03-iphone-8.png",
 			"background": "appstoreres/assets/simple/screenshot-3-iphone-8.png"
 		},
-		// Track order status
+		// Scroll through, filter, or look up specific orders
 		{
 			"device": "iPhone 8",
 			"text": "metadata/{locale}/app_store_screenshot_4.txt",
 			"filename": "04-iphone-8.png",
 			"background": "appstoreres/assets/simple/screenshot-4-iphone-8.png"
 		},
-		// Scroll through, filter, or look up specific orders
+		// Track sales data and high performing products
 		{
 			"device": "iPhone 8",
 			"text": "metadata/{locale}/app_store_screenshot_5.txt",
 			"filename": "05-iphone-8.png",
 			"background": "appstoreres/assets/simple/screenshot-5-iphone-8.png"
 		},
-		// View store data by week, month, and year
+		// Get notified about new customer reviews
 		{
 			"device": "iPhone 8",
 			"text": "metadata/{locale}/app_store_screenshot_6.txt",
 			"filename": "06-iphone-8.png",
 			"background": "appstoreres/assets/simple/screenshot-6-iphone-8.png"
 		},
-		// Check which products are performing best
+		// Create and manage products
 		{
 			"device": "iPhone 8",
 			"text": "metadata/{locale}/app_store_screenshot_7.txt",
 			"filename": "07-iphone-8.png",
 			"background": "appstoreres/assets/simple/screenshot-7-iphone-8.png"
-		},
-		// Get notified about customer reviews
-		{
-			"device": "iPhone 8",
-			"text": "metadata/{locale}/app_store_screenshot_8.txt",
-			"filename": "08-iphone-8.png",
-			"background": "appstoreres/assets/simple/screenshot-8-iphone-8.png"
 		}
 	]
 }

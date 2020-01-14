@@ -1,2 +1,2 @@
-View store data by week,
-month, and year
+Get notified about new
+customer reviews

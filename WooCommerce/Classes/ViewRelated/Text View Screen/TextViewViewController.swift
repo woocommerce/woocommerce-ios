@@ -80,7 +80,7 @@ extension TextViewViewController {
         onCompletion(textView.text)
     }
 
-    func presentBackNavigationActionSheet() {
+    private func presentBackNavigationActionSheet() {
         UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
             self?.completeEditing()
         }, onDiscard: { [weak self] in

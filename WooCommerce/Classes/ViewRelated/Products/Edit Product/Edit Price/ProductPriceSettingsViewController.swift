@@ -183,7 +183,7 @@ extension ProductPriceSettingsViewController {
         onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
     }
 
-    func presentBackNavigationActionSheet() {
+    private func presentBackNavigationActionSheet() {
         UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
             self?.completeUpdating()
         }, onDiscard: { [weak self] in

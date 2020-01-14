@@ -112,12 +112,33 @@ private extension ProductShippingSettingsViewController {
 
 // MARK: - Navigation actions handling
 //
-private extension ProductShippingSettingsViewController {
-    @objc func completeUpdating() {
+extension ProductShippingSettingsViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        
+        if weight != product.weight || length != product.dimensions.length || width != product.dimensions.width || height != product.dimensions.height || shippingClass != product.productShippingClass {
+            presentBackNavigationActionSheet()
+        }
+        else {
+            navigationController?.popViewController(animated: true)
+        }
+        return false
+    }
+
+    @objc private func completeUpdating() {
         let dimensions = ProductDimensions(length: length ?? "",
                                            width: width ?? "",
                                            height: height ?? "")
         onCompletion(weight, dimensions, shippingClass)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
+            self?.completeUpdating()
+        }, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        }, onCancel: {
+        })
     }
 }
 

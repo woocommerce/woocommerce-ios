@@ -555,7 +555,7 @@ class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let entityListener = EntityListener(viewContext: viewContext, readOnlyEntity: sampleProduct())
 
-        // Track Events: Upsert == 1 / Delete == 0
+        // Track Events: Upsert == 2 / Delete == 0
         var numberOfUpsertEvents = 0
         entityListener.onUpsert = { upserted in
             numberOfUpsertEvents += 1
@@ -566,7 +566,8 @@ class ProductStoreTests: XCTestCase {
             XCTFail()
         }
 
-        // Initial save: This should trigger *ONE* Upsert event
+        // Initial save: This should trigger two Upsert events:
+        // first one for the first Product upsert, and the second one for the Product image upsert.
         let backgroundSaveExpectation = expectation(description: "Retrieve product empty response")
         let derivedContext = storageManager.newDerivedStorage()
 
@@ -582,7 +583,7 @@ class ProductStoreTests: XCTestCase {
             }
 
             self.storageManager.saveDerivedType(derivedStorage: derivedContext) {
-                XCTAssertEqual(numberOfUpsertEvents, 1)
+                XCTAssertEqual(numberOfUpsertEvents, 2)
                 backgroundSaveExpectation.fulfill()
             }
         }

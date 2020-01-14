@@ -9,7 +9,7 @@ import Yosemite
 final class RefundedProductsDataSource: NSObject {
     /// Refunds
     ///
-    private(set) var items: [OrderItemRefund]
+    private var items: [OrderItemRefundSummary]
 
     /// Order
     ///
@@ -21,7 +21,7 @@ final class RefundedProductsDataSource: NSObject {
 
     /// Designated initializer.
     ///
-    init(order: Order, items: [OrderItemRefund]) {
+    init(order: Order, items: [OrderItemRefundSummary]) {
         self.order = order
         self.items = items
     }
@@ -102,7 +102,7 @@ private extension RefundedProductsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as ProductDetailsTableViewCell where row == .orderItemRefunded:
-            configureOrderItemRefund(cell, at: indexPath)
+            configureOrderItemRefundSummary(cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -110,12 +110,12 @@ private extension RefundedProductsDataSource {
 
     /// Setup: Refunded product details cell
     ///
-    func configureOrderItemRefund(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+    func configureOrderItemRefundSummary(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let item = items[indexPath.row]
         let product = lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemRefundViewModel(item: item,
-                                                     currency: order.currency,
-                                                     product: product)
+        let itemViewModel = OrderItemRefundSummaryViewModel(item: item,
+                                                            currencyCode: order.currency,
+                                                            product: product)
         let imageService = ServiceLocator.imageService
 
         cell.selectionStyle = .default

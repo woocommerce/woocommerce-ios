@@ -41,4 +41,3 @@ private enum ActionSheetStrings {
     static let cancel = NSLocalizedString("Cancel",
                                           comment: "Button title Cancel in Save Changes Action Sheet")
 }
-

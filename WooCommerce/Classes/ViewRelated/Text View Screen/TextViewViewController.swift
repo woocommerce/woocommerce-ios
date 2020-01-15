@@ -85,7 +85,6 @@ extension TextViewViewController {
             self?.completeEditing()
         }, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
-        }, onCancel: {
         })
     }
 }

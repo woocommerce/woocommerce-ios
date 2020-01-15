@@ -244,7 +244,6 @@ extension AztecEditorViewController {
             self?.saveButtonTapped()
         }, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
-        }, onCancel: {
         })
     }
 }

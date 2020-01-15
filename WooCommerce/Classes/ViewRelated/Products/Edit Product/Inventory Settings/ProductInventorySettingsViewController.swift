@@ -194,7 +194,6 @@ extension ProductInventorySettingsViewController {
             self?.completeUpdating()
         }, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
-        }, onCancel: {
         })
     }
 }

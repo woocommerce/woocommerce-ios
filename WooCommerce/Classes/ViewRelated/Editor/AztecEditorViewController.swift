@@ -124,7 +124,7 @@ final class AztecEditorViewController: UIViewController, Editor {
         setHTML(content)
 
         // getHTML() from the Rich Text View removes the HTML tags
-        // so we allign the original content to the value of the Rich Text View
+        // so we align the original content to the value of the Rich Text View
         content = getHTML()
 
         refreshPlaceholderVisibility()

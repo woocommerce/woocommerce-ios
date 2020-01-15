@@ -52,7 +52,7 @@ private extension ProductImageCollectionViewCell {
 
     enum Settings {
         static let clipToBounds = true
-        static let imageContentMode = ContentMode.scaleAspectFit
+        static let imageContentMode = ContentMode.center
         static let maskToBounds = true
     }
 }

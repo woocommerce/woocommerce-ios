@@ -82,10 +82,6 @@ final class MainTabBarController: UITabBarController {
     ///
     private let notificationsBadge = NotificationsBadgeController()
 
-    /// Orders badge
-    ///
-    private let ordersBadge = OrdersBadgeController()
-
     /// ViewModel
     ///
     private let viewModel = MainTabViewModel()
@@ -140,18 +136,6 @@ final class MainTabBarController: UITabBarController {
             scrollContentToTop()
         } else {
             trackTabSelected(newTab: userSelectedTab)
-        }
-    }
-
-    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        super.viewWillTransition(to: size, with: coordinator)
-        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
-            guard let self = self else {
-                return
-            }
-            let tab = WooTab.orders
-            let tabIndex = tab.visibleIndex(isProductListFeatureOn: self.isProductsTabVisible)
-            self.ordersBadge.updateBadgePosition(.orders, in: self.tabBar, tabIndex: tabIndex)
         }
     }
 
@@ -373,21 +357,20 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
         viewModel.onBadgeReload = { [weak self] countReadableString in
-            guard let self = self else {
+            guard let self = self,
+            let badgeText = countReadableString else {
                 return
             }
 
             let tab = WooTab.orders
             let tabIndex = tab.visibleIndex(isProductListFeatureOn: self.isProductsTabVisible)
 
-            guard let badgeText = countReadableString else {
-                self.ordersBadge.hideBadgeOn(tab, in: self.tabBar, tabIndex: tabIndex)
+            guard let orderTab: UITabBarItem = self.tabBar.items?[tabIndex] else {
                 return
             }
 
-            self.ordersBadge.showBadgeOn(.orders,
-                                         in: self.tabBar, tabIndex: tabIndex,
-                                         withValue: badgeText)
+            orderTab.badgeValue = badgeText
+            orderTab.badgeColor = .primary
         }
 
         viewModel.startObservingOrdersCount()

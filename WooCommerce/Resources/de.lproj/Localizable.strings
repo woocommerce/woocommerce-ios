@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2019-12-12 00:55:04+0000 */
+/* Translation-Revision-Date: 2020-01-09 00:54:03+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -42,14 +42,7 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld Varianten";
 
-/* Payment on <date> received via (payment method title) */
-"(datePaid) via (order.paymentMethodTitle)" = "(datePaid) per (order.paymentMethodTitle)";
-
-/* Title for an untitled post, should match WP core */
-"(no title)" = "(kein Titel)";
-
-/* A badge with the number of orders. More than nine new orders.
-   Content of the badge presented over the Orders icon when there are more than 9 orders processing */
+/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
 "9+" = "9+";
 
 /* An error message. */
@@ -73,12 +66,12 @@
 /* The plugin is active on the site and has enabled automatic updates */
 "Active, Autoupdates on" = "Aktiv, automatische Updates an";
 
-/* Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+/* A button title used for a shipment tracking unit test
+   A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Hinzufügen";
 
-/* Add Tracking row label
-   Add tracking screen - title. */
+/* A title used for a shipment tracking unit test
+   Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "Verfolgung hinzufügen";
 
 /* Accessibility label for the 'Add a note' button
@@ -90,9 +83,6 @@
 
 /* Accessibility label for the 'Add a tracking' button */
 "Add a tracking" = "Sendungsverfolgung hinzufügen";
-
-/* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
-"Adds a note to an order" = "Fügt einen Hinweis zu einer Bestellung hinzu";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "Fügt einer Bestellung eine Sendungsverfolgungsnummer hinzu.";
@@ -127,6 +117,9 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "Beim Verarbeiten deiner Anforderung ist ein Fehler aufgetreten. ";
 
+/* Message shown when Apple authentication fails. */
+"Apple authentication failed." = "Apple-Authentifizierung fehlgeschlagen.";
+
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Anwendungsprotokolle";
 
@@ -155,7 +148,8 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Auf dieser Website automatisch verwaltet";
 
-/* Awaiting payment via (payment method title) */
+/* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
+   Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "Warten auf Zahlung per %@";
 
 /* Alert button title - dismisses alert, which cancels the log out attempt */
@@ -256,6 +250,9 @@
 /* Copy tracking number button title */
 "Copy Tracking Number" = "Sendungsverfolgungsnummer kopieren";
 
+/* Copy email address button title */
+"Copy email address" = "E-Mail-Adresse kopieren";
+
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "Die Käufe konnten nicht überprüft werden.";
 
@@ -344,8 +341,8 @@
 /* Discount label for payment view */
 "Discount" = "Rabatt";
 
-/* Add a note screen - button title for closing the view
-   Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+/* A unit test string for a button title
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Überspringen";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
@@ -408,11 +405,11 @@
 /* The text placeholder for the Text Editor screen */
 "Enter a title..." = "Gib einen Titel ein …";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "Gib eine gültige URL ein, zum Beispiel „example.com“.";
-
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Name des Anbieters eingeben";
+
+/* Label for button to log in using your site address. */
+"Enter the address of the WordPress site you'd like to connect." = "Gib die Adresse der WordPress-Website ein, die du verbinden möchtest.";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Gib die Adresse deines WooCommerce-Shops ein, den du verbinden möchtest.";
@@ -646,9 +643,6 @@
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "Protokolldateien nach Erstellungsdatum";
 
-/* Label for button to log in using your site address. */
-"Log in by entering your site address." = "Melde dich an, indem du deine Website-Adresse eingibst.";
-
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "Anmeldung fehlgeschlagen. Bitte nochmal versuchen.";
 
@@ -767,8 +761,10 @@
 /* The text on the placeholder overlay when there are no product variations on the Products tab */
 "No product variations yet" = "Noch keine Produktvarianten";
 
-/* Search Products (Empty State)
-   The text on the placeholder overlay when there are no products on the Products tab */
+/* Search Products (Empty State) */
+"No products found" = "Keine Produkte gefunden";
+
+/* The text on the placeholder overlay when there are no products on the Products tab */
 "No products yet" = "Noch keine Produkte";
 
 /* Orders List (Empty State + Filters) */
@@ -893,7 +889,8 @@
    Display label for the review's pending status */
 "Pending" = "Ausstehend";
 
-/* Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
+/* A unit test string, appended before the title of a review.
+   Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
 "Pending Review" = "Ausstehende Bewertung";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
@@ -907,6 +904,9 @@
 
 /* Placeholder for editing the URL of a text link */
 "Please enter a URL" = "Bitte gib eine URL ein.";
+
+/* Error message shown when a URL is invalid. */
+"Please enter a complete website address, like example.com." = "Bitte gib eine vollständige Website-Adresse wie „example.com“ an.";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "Bitte gib eine Website-Adresse ein.";
@@ -1122,7 +1122,8 @@
 /* Action: Opens the Store in a browser */
 "Share your Store" = "Teile deinen Shop";
 
-/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+/* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
+   Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "Versandunternehmen %@";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
@@ -1178,7 +1179,8 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "Größe:";
 
-/* Indicates the reviewer does not have a name. It reads { Someone left a review} */
+/* A unit test for reviews, checking that anonymous users are added as the author named `someone`
+   Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Jemand";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
@@ -1378,7 +1380,7 @@
 "That username is not allowed." = "Dieser Benutzername ist nicht erlaubt!";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
-"The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "Das Google-Konto \"(loginFields.username)\" stimmt mit keinem WordPress.com-Konto überein.";
+"The Google account \"%@\" doesn't match any account on WordPress.com" = "Das Google-Konto „%@“ stimmt mit keinem WordPress.com-Konto überein";
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "Fehler beim Laden der Bestellung.";
@@ -1497,7 +1499,8 @@
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "Sendungsverfolgungsnummer";
 
-/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+/* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
+   Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "Sendungsverfolgungsnummer %@";
 
 /* Display label for the review's trash status
@@ -1591,9 +1594,6 @@
 "Unknown" = "Unbekannt";
 
 /* No comment provided by engineer. */
-"Unknown Search Terms" = "Unbekannte Suchbegriffe";
-
-/* No comment provided by engineer. */
 "Unknown error" = "Unbekannter Fehler";
 
 /* Accessibility label for unordered list button on formatting toolbar. */
@@ -1623,22 +1623,27 @@
 /* Title of alert warning users to upgrade to WC 3.5. */
 "Update to WooCommerce 3.5 to keep using this app" = "Auf WooCommerce 3.5 aktualisieren, um diese App weiterhin zu verwenden";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+/* A unit test string for a singular time interval
+   Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "Vor %ld Stunde aktualisiert";
 
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+/* A unit test string for 1 day, represented as plural time interval in hours
+   A unit test string for a plural time interval in hours - A unit test string for time interval just under 1 day - Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
 "Updated %ld hours ago" = "Vor %ld Stunden aktualisiert";
 
 /* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
 "Updated %ld minute ago" = "Vor %ld Minute aktualisiert";
 
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+/* A unit test string for a plural time interval in minutes
+   A unit test string for time intervals - Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
 "Updated %ld minutes ago" = "Vor %ld Minuten aktualisiert";
 
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+/* A unit test string for relative time intervals
+   Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
 "Updated moments ago" = "Gerade eben aktualisiert";
 
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM
+   Updated on <date> */
 "Updated on %@" = "Aktualisiert am %@";
 
 /* Login dialog username placeholder
@@ -1696,7 +1701,7 @@
 "Watch readers from around the world read and interact with your site — in real time." = "Schau zu, wie Leser aus der ganzen Welt deine Website lesen und damit interagieren – in Echtzeit.";
 
 /* The info of the top banner on Dashboard that indicates new stats is unavailable */
-"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.22 or higher" = "Wir sind zu den alten Statistiken zurückgekehrt. Um die Beta-Statistiken zu verwenden, aktiviere das WooCommerce Admin-Plugin mit Version 0.22 oder höher.";
+"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "Wir sind zu den alten Statistiken zurückgekehrt. Um die Beta-Statistiken zu verwenden, aktiviere das WooCommerce Admin-Plugin mit Version 0.23 oder höher.";
 
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "Wir haben dir einen magischen Link für die Registrierung gesendet! Überprüfe deine E-Mails auf diesem Gerät und tippe auf den Link in der E-Mail, um die Registrierung abzuschließen.";

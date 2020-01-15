@@ -1,2 +1,3 @@
-- Fãs do modo noturno, podem comemorar! Ele está disponível.
-- Fãs de prévias, comemorem também! Sabemos que a guia "Produtos" é um dos principais pedidos. Enquanto a versão do aplicativo com essa guia não é lançada por completo, você pode já visualizar uma prévia. Acesse "Configurações" no aplicativo para ativá-la.
+- A tela Concluir pedido exibe todo o conteúdo das observações fornecidas pelo cliente, se houver, em vez de as cortar após uma única linha. Assim, você vê todos os detalhes em apenas uma tela.
+- A contagem na guia Pedidos agora é corretamente atualizada quando você troca as lojas.
+- Peculiaridades são ótimas em pessoas, mas não tanto em aplicativos. Por isso, corrigimos alguns bugs que causavam peculiaridades visuais, principalmente os que alteravam o tamanho das fontes do sistema.

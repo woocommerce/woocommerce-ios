@@ -1,0 +1,21 @@
+{
+    "data": {
+        "id": 94,
+        "name": "Free Shipping",
+        "slug": "free-shipping",
+        "description": "Limited offer!",
+        "count": 3,
+        "_links": {
+            "self": [
+                {
+                    "href": "https://shop.com/shipping_classes/94"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://shop.com/wp-json/wc/v3/products/shipping_classes"
+                }
+            ]
+        }
+    }
+}

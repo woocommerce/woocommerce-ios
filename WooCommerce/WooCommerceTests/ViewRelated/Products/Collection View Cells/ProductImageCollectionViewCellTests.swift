@@ -22,7 +22,7 @@ final class ProductImageCollectionViewCellTests: XCTestCase {
     }
 
     func testImageViewConfiguration() {
-        XCTAssertEqual(cell?.imageView.contentMode, .scaleAspectFit)
+        XCTAssertEqual(cell?.imageView.contentMode, .center)
         XCTAssertEqual(cell?.imageView.clipsToBounds, true)
     }
 

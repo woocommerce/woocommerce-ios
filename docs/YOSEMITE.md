@@ -46,6 +46,7 @@ At the moment, we provide the following subclasses of `Store`:
 * `StatsStore` responds to operations declared in `StatsAction`, providing support for the order stats.
 * `StatsStoreV4` responds to operations declared in `StatsActionV4`, providing support for the order stats based on the V4 API, yet to be integrated in the UI.
 * `ShipmentStore` implements support for the operations declared in `ShipmentAction`
+* `TaxClassesStore` implements support for the operations declared in `TaxClassesAction`
 * Finally, `StatStore`implements the logic to present statistics, supporting operations declared in `StatsAction`
 
 ## Operations with domain level concerns. Action

@@ -1,2 +1,3 @@
-- Fan del Dark Mode, gioite nuovamente! È qui.
-- Fan dell'anteprima degli elementi, potete gioire anche voi! Sappiamo che la scheda Products (Prodotti) è in cima alla lista dei desideri degli utenti. Sebbene non siamo pronti a rilasciare completamente una versione dell'app che la include, puoi visualizzare in questo momento in anteprima la scheda Prodotti in arrivo: vai su Impostazioni nell'app per abilitarla.
+- Nella schermata Evadi ordine, anziché tagliare le (eventuali) note fornite dal cliente dopo ogni singola riga, viene visualizzato l'intero contenuto di tali note in modo da permetterti di vedere tutti i dettagli su una singola schermata.
+- Il conteggio sulla barra della scheda Ordini adesso viene aggiornato correttamente quando passi da un negozio all'altro.
+- Le stranezze possono essere intriganti nelle persone, ma molto meno nelle app, quindi abbiamo corretto qualche bug che causava delle anormalità di visualizzazione (in particolare, quando si cambiavano le dimensioni dei caratteri di sistema).

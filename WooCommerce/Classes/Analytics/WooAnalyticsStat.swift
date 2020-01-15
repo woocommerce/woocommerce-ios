@@ -146,6 +146,7 @@ public enum WooAnalyticsStat: String {
     case orderDetailShowBillingTapped           = "order_detail_customer_info_show_billing_tapped"
     case orderDetailFulfillButtonTapped         = "order_detail_fulfill_order_button_tapped"
     case orderDetailCustomerEmailTapped         = "order_detail_customer_info_email_menu_email_tapped"
+    case orderDetailCustomerEmailMenuTapped     = "order_detail_customer_info_email_menu_tapped"
     case orderDetailCustomerPhoneMenuTapped     = "order_detail_customer_info_phone_menu_tapped"
     case orderDetailCustomerPhoneOptionTapped   = "order_detail_customer_info_phone_menu_phone_tapped"
     case orderDetailCustomerSMSOptionTapped     = "order_detail_customer_info_phone_menu_sms_tapped"

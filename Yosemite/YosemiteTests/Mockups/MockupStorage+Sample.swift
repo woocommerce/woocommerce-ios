@@ -19,4 +19,14 @@ extension MockupStorageManager {
 
         return newAccount
     }
+
+    /// Inserts a new (Sample) Product into the specified context.
+    ///
+    @discardableResult
+    func insertSampleProduct(readOnlyProduct: Product) -> StorageProduct {
+        let newProduct = viewStorage.insertNewObject(ofType: StorageProduct.self)
+        newProduct.update(with: readOnlyProduct)
+
+        return newProduct
+    }
 }

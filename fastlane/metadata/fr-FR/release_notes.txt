@@ -1,2 +1,3 @@
-- Adeptes du mode sombre, réjouissez-vous ! Il est là.
-- Adeptes de la prévisualisation, réjouissez-vous également ! Nous savons qu'un onglet Produits intéresse fortement les utilisateurs. Bien que nous ne soyons pas encore tout à fait prêts à lancer une version complète de l'application intégrant cette fonctionnalité, vous pouvez désormais apercevoir l'onglet Produits disponible bientôt. Accédez à Paramètres dans l'application pour l'activer.
+- L’écran des commandes affiche la totalité des notes fournies par le client (lorsqu’il y en a une) au lieu de les couper après une ligne. Vous pouvez ainsi voir tous les détails sur un seul écran.
+- Désormais le compte affiché sur l’onglet des Commandes se rafraîchit lorsque vous passez d’une boutique à l’autre.
+- Les excentricités peuvent être intrigantes chez une personne, mais beaucoup moins dans des applications. Nous nous sommes donc occupés d’un certain nombre de certains bugs qui causaient des excentricités sur le plan visuel (modification des tailles de police par exemple).

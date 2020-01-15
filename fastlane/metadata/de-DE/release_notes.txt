@@ -1,2 +1,3 @@
-- Freunde des dunklen Modus dürfen sich freuen! Hier ist er.
-- Auch wer sich gerne eine Vorschau ansieht, darf sich freuen! Viele wünschen sich einen Produkte-Tab. Zwar ist die Entwicklung der neuen App-Version mit einem solchen Tab noch nicht abgeschlossen, aber den künftigen Produkte-Tab kannst du dir jetzt schon in der Vorschau ansehen.
+- Der Bildschirm für die Auftragsausführung zeigt den gesamten Inhalt der Kundennachrichten an (falls vorhanden) und nicht nur die erste Zeile. So siehst du alle Details direkt auf einem Bildschirm.
+- Die Anzahl auf dem Tab „Aufträge“ wird jetzt korrekt aktualisiert, wenn du zwischen verschiedenen Shops wechselst.
+- Macken machen zwar Menschen interessant, sind jedoch in Apps unerwünscht. Daher haben wir einige Fehler behoben, die zu diesen Macken geführt haben (insbesondere beim Ändern der Systemschriftgröße).

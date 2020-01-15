@@ -162,11 +162,9 @@ extension ProductInventorySettingsViewController {
         if sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually ||
             stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting || stockStatus != product.productStockStatus {
             presentBackNavigationActionSheet()
+            return false
         }
-        else {
-            navigationController?.popViewController(animated: true)
-        }
-        return false
+        return true
     }
 
     @objc private func completeUpdating() {

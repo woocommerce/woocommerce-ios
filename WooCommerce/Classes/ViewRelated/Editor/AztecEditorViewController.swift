@@ -232,11 +232,9 @@ extension AztecEditorViewController {
         let editedContent = getHTML()
         if content != editedContent {
             presentBackNavigationActionSheet()
+            return false
         }
-        else {
-            navigationController?.popViewController(animated: true)
-        }
-        return false
+        return true
     }
 
     private func presentBackNavigationActionSheet() {

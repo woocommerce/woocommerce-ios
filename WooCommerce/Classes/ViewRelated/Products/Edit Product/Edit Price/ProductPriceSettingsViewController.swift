@@ -168,7 +168,7 @@ extension ProductPriceSettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
         let newSalePrice = salePrice == "0" ? nil : salePrice
-        let newTaxClass = taxClass?.slug == "standard" ? "" : taxClass?.slug
+        let newTaxClass = taxClass?.slug == standardTaxClass.slug ? "" : taxClass?.slug
         if regularPrice != product.regularPrice || newSalePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart ||
             dateOnSaleEnd != product.dateOnSaleEnd || taxStatus.rawValue != product.taxStatusKey || newTaxClass != product.taxClass {
             presentBackNavigationActionSheet()

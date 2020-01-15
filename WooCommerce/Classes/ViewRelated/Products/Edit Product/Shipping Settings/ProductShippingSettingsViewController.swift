@@ -118,11 +118,9 @@ extension ProductShippingSettingsViewController {
         if weight != product.weight || length != product.dimensions.length || width != product.dimensions.width || height != product.dimensions.height ||
             shippingClass != product.productShippingClass {
             presentBackNavigationActionSheet()
+            return false
         }
-        else {
-            navigationController?.popViewController(animated: true)
-        }
-        return false
+        return true
     }
 
     @objc private func completeUpdating() {

@@ -69,11 +69,9 @@ extension TextViewViewController {
     override func shouldPopOnBackButton() -> Bool {
         if initialText != textView.text {
             presentBackNavigationActionSheet()
+            return false
         }
-        else {
-            navigationController?.popViewController(animated: true)
-        }
-        return false
+        return true
     }
 
     @objc private func completeEditing() {

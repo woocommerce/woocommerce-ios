@@ -7,7 +7,8 @@ extension UIAlertController {
 
     /// Save Changes Action Sheet
     ///
-    static func presentSaveChangesActionSheet(viewController: UIViewController, onSave: (() -> Void)?, onDiscard: (() -> Void)?, onCancel: (() -> Void)? = nil) {
+    static func presentSaveChangesActionSheet(viewController: UIViewController, onSave: (() -> Void)?,
+                                              onDiscard: (() -> Void)?, onCancel: (() -> Void)? = nil) {
         let actionSheet = UIAlertController(title: nil, message: ActionSheetStrings.message, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 

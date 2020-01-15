@@ -6,7 +6,7 @@ import WordPressEditor
 final class AztecEditorViewController: UIViewController, Editor {
     var onContentSave: OnContentSave?
 
-    private let content: String
+    private var content: String
 
     private let viewProperties: EditorViewProperties
 
@@ -122,6 +122,10 @@ final class AztecEditorViewController: UIViewController, Editor {
                                                  placeholderView: placeholderLabel)
 
         setHTML(content)
+
+        // getHTML() from the Rich Text View removes the HTML tags
+        // so we allign the original content to the value of the Rich Text View
+        content = getHTML()
 
         refreshPlaceholderVisibility()
     }

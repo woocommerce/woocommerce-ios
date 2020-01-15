@@ -40,12 +40,14 @@ protocol  UINavigationBarBackButtonHandler {
     /// - Returns: true - don't block，false - block
     func  shouldPopOnBackButton() -> Bool
 }
+
 extension UIViewController: UINavigationBarBackButtonHandler {
     //Do not block the "Back" button action by default, otherwise, override this function in the specified viewcontroller
     @objc func  shouldPopOnBackButton() -> Bool {
         return true
     }
 }
+
 extension UINavigationController: UINavigationBarDelegate {
     public func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
         guard let items = navigationBar.items else {
@@ -58,7 +60,7 @@ extension UINavigationController: UINavigationBarDelegate {
 
         var shouldPop = true
 
-        if let vc = topViewController, vc.responds(to: #selector(UIViewController.shouldPopOnBackButton)) {
+        if let vc = topViewController {
             shouldPop = vc.shouldPopOnBackButton()
         }
 

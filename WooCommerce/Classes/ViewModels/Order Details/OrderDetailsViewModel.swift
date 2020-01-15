@@ -62,7 +62,7 @@ final class OrderDetailsViewModel {
     /// The datasource that will be used to render the Order Details screen
     ///
     private(set) lazy var dataSource: OrderDetailsDataSource = {
-        return OrderDetailsDataSource(order: self.order)
+        return OrderDetailsDataSource(order: order)
     }()
 
     /// Order Notes

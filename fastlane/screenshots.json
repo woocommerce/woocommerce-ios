@@ -78,12 +78,12 @@
 			"background": "appstoreres/assets/simple/screenshot-6-iphone-x.png"
 		},
 		// Create and manage products
-		{
-			"device": "iPhone Xs max",
-			"text": "metadata/{locale}/app_store_screenshot_7.txt",
-			"filename": "07-iphone-x.png",
-			"background": "appstoreres/assets/simple/screenshot-7-iphone-x.png"
-		},
+		//{
+		//	"device": "iPhone Xs max",
+		//	"text": "metadata/{locale}/app_store_screenshot_7.txt",
+		//	"filename": "07-iphone-x.png",
+		//	"background": "appstoreres/assets/simple/screenshot-7-iphone-x.png"
+		//},
 
 		// iPhone 8
 		// Intro Screen
@@ -142,13 +142,13 @@
 			"text": "metadata/{locale}/app_store_screenshot_6.txt",
 			"filename": "06-iphone-8.png",
 			"background": "appstoreres/assets/simple/screenshot-6-iphone-8.png"
-		},
-		// Create and manage products
-		{
-			"device": "iPhone 8",
-			"text": "metadata/{locale}/app_store_screenshot_7.txt",
-			"filename": "07-iphone-8.png",
-			"background": "appstoreres/assets/simple/screenshot-7-iphone-8.png"
 		}
+		// Create and manage products
+		//{
+		//	"device": "iPhone 8",
+		//	"text": "metadata/{locale}/app_store_screenshot_7.txt",
+		//	"filename": "07-iphone-8.png",
+		//	"background": "appstoreres/assets/simple/screenshot-7-iphone-8.png"
+		//}
 	]
 }

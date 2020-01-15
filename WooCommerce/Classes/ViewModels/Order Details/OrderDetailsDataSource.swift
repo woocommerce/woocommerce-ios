@@ -499,7 +499,7 @@ private extension OrderDetailsDataSource {
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        if summedItems.count == 0 {
+        if refundedItems.count == 0 {
             let item = items[indexPath.row]
             let product = lookUpProduct(by: item.productID)
             let itemViewModel = OrderItemViewModel(item: item,

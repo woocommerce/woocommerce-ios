@@ -39,11 +39,7 @@ final class RefundedProductsViewModel {
 
             // Sum the quantities
             let totalQuantity = items.sum(\.quantity)
-            // Sum the total taxes refunded
-            let totalTax = items
-                .compactMap({ currency.convertToDecimal(from: $0.totalTax) })
-                .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-            // Sum the refunded amount
+            // Sum the refunded product amount
             let total = items
                 .compactMap({ currency.convertToDecimal(from: $0.total) })
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
@@ -55,8 +51,7 @@ final class RefundedProductsViewModel {
                 price: item.price,
                 quantity: totalQuantity,
                 sku: item.sku,
-                total: total,
-                totalTax: totalTax
+                total: total
             )
         }
     }
@@ -65,7 +60,7 @@ final class RefundedProductsViewModel {
     ///
     private(set) lazy var dataSource: RefundedProductsDataSource = {
         let sortedItems = summedItems.sorted()
-        return RefundedProductsDataSource(order: self.order, items: sortedItems)
+        return RefundedProductsDataSource(order: order, items: sortedItems)
     }()
 
     /// Designated initializer.

@@ -221,7 +221,7 @@ final class OrderDetailsDataSource: NSObject {
             )
         }
 
-        let sorted = unsortedResult.sorted(by:{ ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
+        let sorted = unsortedResult.sorted(by: { ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
 
         return sorted
     }

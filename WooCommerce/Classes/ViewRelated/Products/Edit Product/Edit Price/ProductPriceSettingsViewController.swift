@@ -172,11 +172,9 @@ extension ProductPriceSettingsViewController {
         if regularPrice != product.regularPrice || newSalePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart ||
             dateOnSaleEnd != product.dateOnSaleEnd || taxStatus.rawValue != product.taxStatusKey || newTaxClass != product.taxClass {
             presentBackNavigationActionSheet()
+            return false
         }
-        else {
-            navigationController?.popViewController(animated: true)
-        }
-        return false
+        return true
     }
 
     @objc private func completeUpdating() {

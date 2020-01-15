@@ -80,6 +80,7 @@ private extension ProductImageViewController {
         let alert = UIAlertController(title: title,
                                       message: message,
                                       preferredStyle: .alert)
+        alert.view.tintColor = .text
         let cancel = UIAlertAction(title: NSLocalizedString(
             "Cancel",
             comment: "Dismiss button on the alert when the user taps to delete a Product image"

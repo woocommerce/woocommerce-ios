@@ -1,6 +1,11 @@
 import Foundation
 import Storage
 
+extension Storage.Product {
+    var imagesArray: [Storage.ProductImage] {
+        return images?.toArray() ?? []
+    }
+}
 
 // MARK: - Storage.Product: ReadOnlyConvertible
 //
@@ -76,7 +81,7 @@ extension Storage.Product: ReadOnlyConvertible {
         let productCategories = categories?.map { $0.toReadOnly() } ?? [Yosemite.ProductCategory]()
         let productDownloads = downloads?.map { $0.toReadOnly() } ?? [Yosemite.ProductDownload]()
         let productTags = tags?.map { $0.toReadOnly() } ?? [Yosemite.ProductTag]()
-        let productImages = images?.map { $0.toReadOnly() } ?? [Yosemite.ProductImage]()
+        let productImages = imagesArray.map { $0.toReadOnly() }
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
         let productShippingClassModel = productShippingClass?.toReadOnly()
@@ -140,7 +145,7 @@ extension Storage.Product: ReadOnlyConvertible {
                        purchaseNote: purchaseNote,
                        categories: productCategories.sorted(),
                        tags: productTags.sorted(),
-                       images: productImages.sorted(),
+                       images: productImages,
                        attributes: productAttributes.sorted(),
                        defaultAttributes: productDefaultAttributes.sorted(),
                        variations: variations ?? [],

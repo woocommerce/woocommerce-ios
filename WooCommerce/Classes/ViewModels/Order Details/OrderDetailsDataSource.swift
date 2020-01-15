@@ -6,7 +6,11 @@ import Yosemite
 /// The main file for Order Details data.
 ///
 final class OrderDetailsDataSource: NSObject {
-    private(set) var order: Order
+    private(set) var order: Order {
+        didSet {
+            calculateAggregateData()
+        }
+    }
     private let currencyFormatter = CurrencyFormatter()
     private let couponLines: [OrderCouponLine]?
 
@@ -112,9 +116,16 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     /// All the items inside an order
-    private var items: [OrderItem] {
-        return order.items
-    }
+    ///
+    private(set) var items: [OrderItem]
+
+    /// Aggregate data for refunded products from an Order
+    ///
+    var refundedItems = [OrderItemRefundSummary]()
+
+    /// Calculate order item quantities and totals after refunded products have altered the fields
+    ///
+    var summedItems = [OrderItemRefundSummary]()
 
     /// All the condensed refunds in an order
     ///
@@ -130,7 +141,8 @@ final class OrderDetailsDataSource: NSObject {
         }
     }
 
-    /// Note of customer about the order
+    /// Note from the customer about the order
+    //
     private var customerNote: String {
         return order.customerNote ?? String()
     }
@@ -152,6 +164,8 @@ final class OrderDetailsDataSource: NSObject {
     init(order: Order) {
         self.order = order
         self.couponLines = order.coupons
+        self.items = order.items.sorted()
+
         super.init()
     }
 
@@ -161,6 +175,110 @@ final class OrderDetailsDataSource: NSObject {
 
     func configureResultsControllers(onReload: @escaping () -> Void) {
         resultsControllers.configureResultsControllers(onReload: onReload)
+    }
+
+    func calculateRefundedItems() -> [OrderItemRefundSummary]  {
+       /// OrderItemRefund.orderItemID isn't useful for finding duplicates in
+       /// items because multiple refunds cause orderItemIDs to be unique.
+       /// Instead, we need to find duplicate *Products*.
+       var items = [OrderItemRefund]()
+       for refund in refunds {
+           items.append(contentsOf: refund.items)
+       }
+
+       let currency = CurrencyFormatter()
+       // Creates an array of dictionaries, with the hash value as the key.
+       // Example: [hashValue: [item, item], hashvalue: [item]]
+       // Since dictionary keys are unique, this eliminates the duplicate `OrderItemRefund`s.
+       let grouped = Dictionary(grouping: items) { (item) in
+           return item.hashValue
+       }
+
+       return grouped.compactMap { (_, items) in
+           // Here we iterate over each group's items
+
+           // All items should be equal except for quantity and price, so we pick the first
+           guard let item = items.first else {
+               // This should never happen, but let's be safe
+               return nil
+           }
+
+           // Sum the quantities
+           let totalQuantity = items.sum(\.quantity)
+           // Sum the refunded product amount
+           let total = items
+               .compactMap({ currency.convertToDecimal(from: $0.total) })
+               .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+
+           return OrderItemRefundSummary(
+               productID: item.productID,
+               variationID: item.variationID,
+               name: item.name,
+               price: item.price,
+               quantity: totalQuantity,
+               sku: item.sku,
+               total: total
+           )
+       }
+    }
+
+    func calculateAggregateData() {
+        let refundedItems = calculateRefundedItems()
+        if refundedItems.count == 0 {
+            return
+        }
+
+        let currency = CurrencyFormatter()
+        // Convert the order.items to an OrderItemRefundSummary type
+        var convertedItems = [OrderItemRefundSummary]()
+        for item in order.items {
+            let total = currency.convertToDecimal(from: item.total) ?? NSDecimalNumber.zero
+            let convertedItem = OrderItemRefundSummary(
+                productID: item.productID,
+                variationID: item.variationID,
+                name: item.name,
+                price: item.price,
+                quantity: item.quantity,
+                sku: item.sku,
+                total: total
+            )
+            convertedItems.append(convertedItem)
+        }
+
+        var items = [OrderItemRefundSummary]()
+        items.append(contentsOf: convertedItems)
+        items.append(contentsOf: refundedItems)
+
+        let grouped = Dictionary(grouping: items) { (item) in
+            return item.hashValue
+        }
+
+        summedItems = grouped.compactMap { (_, items) in
+            // Here we iterate over each group's items
+
+            // All items should be equal except for quantity and price, so we pick the first
+            guard let item = items.first else {
+                // This should never happen, but let's be safe
+                return nil
+            }
+
+            // Sum the quantities
+            let totalQuantity = items.sum(\.quantity)
+            // Sum the refunded product amount
+            let total = items
+                .compactMap({ $0.total })
+                .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
+
+            return OrderItemRefundSummary(
+                productID: item.productID,
+                variationID: item.variationID,
+                name: item.name,
+                price: item.price,
+                quantity: totalQuantity,
+                sku: item.sku,
+                total: total
+            )
+        }
     }
 }
 
@@ -384,10 +502,23 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        let item = items[indexPath.row]
-        let product = lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
         cell.selectionStyle = .default
+
+        if summedItems.count == 0 {
+            let item = order.items[indexPath.row]
+            let product = lookUpProduct(by: item.productID)
+            let itemViewModel = OrderItemViewModel(item: item,
+                                                   currency: order.currency,
+                                                   product: product)
+            cell.configure(item: itemViewModel, imageService: imageService)
+            return
+        }
+
+        let item = summedItems[indexPath.row]
+        let product = lookUpProduct(by: item.productID)
+        let itemViewModel = OrderItemRefundSummaryViewModel(item: item,
+                                                            currencyCode: order.currency,
+                                                            product: product)
         cell.configure(item: itemViewModel, imageService: imageService)
     }
 

@@ -194,7 +194,7 @@ final class OrderDetailsDataSource: NSObject {
             return item.hashValue
         }
 
-        return grouped.compactMap { (_, items) in
+        let unsortedResult: [OrderItemRefundSummary] = grouped.compactMap { (key, items) in
             // Here we iterate over each group's items
 
             // All items should be equal except for quantity and price, so we pick the first
@@ -220,6 +220,10 @@ final class OrderDetailsDataSource: NSObject {
                 total: total
             )
         }
+
+        let sorted = unsortedResult.sorted(by:{ ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
+
+        return sorted
     }
 
     /// All the condensed refunds in an order
@@ -259,7 +263,7 @@ final class OrderDetailsDataSource: NSObject {
     init(order: Order) {
         self.order = order
         self.couponLines = order.coupons
-        self.items = order.items.sorted()
+        self.items = order.items
 
         super.init()
     }

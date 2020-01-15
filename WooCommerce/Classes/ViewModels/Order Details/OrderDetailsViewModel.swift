@@ -41,7 +41,7 @@ final class OrderDetailsViewModel {
     /// Sorted order items
     ///
     var items: [OrderItem] {
-        return order.items.sorted()
+        return order.items
     }
 
     /// Refunded products from an Order

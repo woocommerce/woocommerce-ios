@@ -544,7 +544,7 @@ extension OrderDetailsDataSource {
         }()
 
         let products: Section? = {
-            guard items.isEmpty == false else {
+            if order.items.isEmpty {
                 return nil
             }
 

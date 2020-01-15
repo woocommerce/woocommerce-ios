@@ -38,6 +38,12 @@ final class OrderDetailsViewModel {
         return dataSource.products
     }
 
+    /// Sorted order items
+    ///
+    var items: [OrderItem] {
+        return order.items.sorted()
+    }
+
     /// Refunded products from an Order
     ///
     var refundedItems: [OrderItemRefund] {
@@ -94,7 +100,6 @@ final class OrderDetailsViewModel {
 
     /// Helpers
     ///
-
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         return dataSource.lookUpOrderStatus(for: order)
     }
@@ -193,7 +198,7 @@ extension OrderDetailsViewModel {
             let navController = WooNavigationController(rootViewController: addTracking)
             viewController.present(navController, animated: true, completion: nil)
         case .orderItem:
-            let item = order.items[indexPath.row]
+            let item = items[indexPath.row]
             let productID = item.variationID == 0 ? item.productID : item.variationID
             let loaderViewController = ProductLoaderViewController(productID: productID,
                                                                    siteID: order.siteID,

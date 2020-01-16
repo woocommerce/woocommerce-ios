@@ -10,6 +10,10 @@ public enum ProductAction: Action {
     ///
     case searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
+    /// Searches if a product sky already exist.
+    ///
+    case searchIfSkuExist(siteID: Int64, sku: String, onCompletion: (Bool?, Error?) -> Void)
+
     /// Synchronizes the Products matching the specified criteria.
     ///
     case synchronizeProducts(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)

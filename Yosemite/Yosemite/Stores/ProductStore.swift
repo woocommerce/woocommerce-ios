@@ -34,6 +34,8 @@ public class ProductStore: Store {
             retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
         case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .searchIfSkuExist(let siteID, let sku, let onCompletion):
+            searchIfSkuExist(siteID: siteID, sku: sku, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .requestMissingProducts(let order, let onCompletion):
@@ -80,6 +82,23 @@ private extension ProductStore {
                                                                       readOnlyProducts: products) {
                                     onCompletion(nil)
                                 }
+        }
+    }
+
+    /// Searches if a given sku already exists.
+    ///
+    func searchIfSkuExist(siteID: Int64, sku: String, onCompletion: @escaping (Bool?, Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+        remote.searchSku(for: siteID, sku: sku) { (sku, error) in
+            if error != nil {
+                onCompletion(nil, error)
+            }
+            else if sku != nil && sku?.isEmpty == false {
+                onCompletion(true, nil)
+            }
+            else {
+                onCompletion(false, nil)
+            }
         }
     }
 

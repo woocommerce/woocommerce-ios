@@ -723,7 +723,7 @@ class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.searchIfSkuExist` effectively fetch an existing sku
     ///
-    func testSearchIfSkuExistEffectivelyRetrievedAnExistingSku() {
+    func testSearchIfSkuExistEffectivelyRetrieveAnExistingSku() {
         let expectation = self.expectation(description: "Search given Product SKU if already exists")
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 

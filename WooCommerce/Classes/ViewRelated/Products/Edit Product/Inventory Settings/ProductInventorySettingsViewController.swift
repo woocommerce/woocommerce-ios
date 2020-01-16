@@ -31,6 +31,8 @@ final class ProductInventorySettingsViewController: UIViewController {
     // Sku validation
     private var skuIsValid: Bool = true
 
+    private var throttler: Throttler = Throttler(seconds: 1)
+
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
         return keyboardFrameObserver
@@ -204,18 +206,24 @@ private extension ProductInventorySettingsViewController {
             return
         }
 
-        let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
-            guard let self = self else {
-                return
+        let siteID = self.siteID
+        throttler.throttle {
+            DispatchQueue.main.async {
+                let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
+                    guard let self = self else {
+                        return
+                    }
+                    self.skuIsValid = isValid
+                    guard isValid else {
+                        self.displayError(error: .duplicatedSKU)
+                        return
+                    }
+                    self.hideError()
+                }
+
+                ServiceLocator.stores.dispatch(action)
             }
-            self.skuIsValid = isValid
-            guard isValid else {
-                self.displayError(error: .duplicatedSKU)
-                return
-            }
-            self.hideError()
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     func handleStockQuantityChange(_ stockQuantity: String?) {

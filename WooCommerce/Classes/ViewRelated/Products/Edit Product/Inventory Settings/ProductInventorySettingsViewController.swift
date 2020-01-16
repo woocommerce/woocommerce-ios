@@ -28,6 +28,9 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     private var error: ProductUpdateError?
 
+    // Sku validation
+    private var skuIsValid: Bool = true
+
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
         return keyboardFrameObserver
@@ -168,23 +171,15 @@ extension ProductInventorySettingsViewController {
     }
 
     @objc private func completeUpdating() {
-        let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
-            guard let self = self else {
-                return
-            }
-            guard isValid else {
-                self.displayError(error: .duplicatedSKU)
-                return
-            }
+        if skuIsValid {
             let data = ProductInventoryEditableData(sku: self.sku,
-                                                    manageStock: self.manageStockEnabled,
-                                                    soldIndividually: self.soldIndividually,
-                                                    stockQuantity: self.stockQuantity,
-                                                    backordersSetting: self.backordersSetting,
-                                                    stockStatus: self.stockStatus)
+                                            manageStock: self.manageStockEnabled,
+                                            soldIndividually: self.soldIndividually,
+                                            stockQuantity: self.stockQuantity,
+                                            backordersSetting: self.backordersSetting,
+                                            stockStatus: self.stockStatus)
             self.onCompletion(data)
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     private func presentBackNavigationActionSheet() {
@@ -201,6 +196,26 @@ extension ProductInventorySettingsViewController {
 private extension ProductInventorySettingsViewController {
     func handleSKUChange(_ sku: String?) {
         self.sku = sku
+
+        // If the sku is identical to the old one, is always valid.
+        guard sku != product.sku else {
+            skuIsValid = true
+            hideError()
+            return
+        }
+
+        let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
+            guard let self = self else {
+                return
+            }
+            self.skuIsValid = isValid
+            guard isValid else {
+                self.displayError(error: .duplicatedSKU)
+                return
+            }
+            self.hideError()
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func handleStockQuantityChange(_ stockQuantity: String?) {
@@ -217,6 +232,14 @@ private extension ProductInventorySettingsViewController {
     func displayError(error: ProductUpdateError) {
         self.error = error
         reloadSections()
+    }
+
+    func hideError() {
+        // This check is useful to not reload at every tipying all the sections
+        if error != nil {
+            error = nil
+            reloadSections()
+        }
     }
 }
 

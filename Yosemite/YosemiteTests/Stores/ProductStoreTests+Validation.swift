@@ -83,4 +83,23 @@ final class ProductStoreTests_Validation: XCTestCase {
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+    
+    /// Verifies that a non existing SKU is valid.
+    func testValidatingSKUWithNotExistingValue() {
+        let expectation = self.expectation(description: "Product SKU validation")
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "product-search-sku")
+
+        let expectedResult = true
+
+        let skuToSearchFor = "T-SHIRT-HAPPY-PANDA"
+        let action = ProductAction.validateProductSKU(skuToSearchFor, siteID: sampleSiteID) { isValid in
+            XCTAssertEqual(isValid, expectedResult)
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }

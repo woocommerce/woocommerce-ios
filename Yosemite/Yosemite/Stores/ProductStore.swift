@@ -208,7 +208,7 @@ private extension ProductStore {
                 onCompletion(false)
                 return
             }
-            let isValid = value != nil ? false : true
+            let isValid = (value != nil && value == sku) ? false : true
             onCompletion(isValid)
         }
     }

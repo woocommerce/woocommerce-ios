@@ -10,7 +10,7 @@ struct ProductSkuMapper: Mapper {
     func map(response: Data) throws -> String {
         let decoder = JSONDecoder()
 
-        return try decoder.decode(ProductSkuEnvelope.self, from: response).productsSkus["sku"] ?? ""
+        return try decoder.decode(ProductSkuEnvelope.self, from: response).productsSkus.first?["sku"] ?? ""
     }
 }
 
@@ -20,7 +20,7 @@ struct ProductSkuMapper: Mapper {
 /// allows us to do parse all the things with JSONDecoder.
 ///
 private struct ProductSkuEnvelope: Decodable {
-    let productsSkus: [String: String]
+    let productsSkus: [[String: String]]
 
     private enum CodingKeys: String, CodingKey {
         case productsSkus = "data"

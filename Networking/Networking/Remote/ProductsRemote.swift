@@ -105,7 +105,7 @@ public class ProductsRemote: Remote {
 
         enqueue(request, mapper: mapper, completion: completion)
     }
-    
+
     /// Retrieves a product SKU if available.
     ///
     /// - Parameters:
@@ -184,7 +184,7 @@ public extension ProductsRemote {
         static let sku: String        = "sku"
         static let fields: String     = "_fields"
     }
-    
+
     private enum ParameterValues {
         static let skuFieldValues: String = "sku"
     }

@@ -33,6 +33,7 @@
 		450106912399B2C800E24722 /* TaxClassListMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106902399B2C800E24722 /* TaxClassListMapper.swift */; };
 		457FC68C2382B2FD00B41B02 /* product-update.json in Resources */ = {isa = PBXBuildFile; fileRef = 457FC68B2382B2FD00B41B02 /* product-update.json */; };
 		45D1CF4923BACA6500945A36 /* ProductTaxStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4823BACA6500945A36 /* ProductTaxStatus.swift */; };
+		45D685F823D0BC78005F87D0 /* ProductSkuMapper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D685F723D0BC78005F87D0 /* ProductSkuMapper.swift */; };
 		45E3EEBB237009CF00A826AC /* ShippingLine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45E3EEBA237009CF00A826AC /* ShippingLine.swift */; };
 		45ED4F10239E8A54004F1BE3 /* TaxClassListMapperTest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */; };
 		45ED4F12239E8C57004F1BE3 /* taxes-classes.json in Resources */ = {isa = PBXBuildFile; fileRef = 45ED4F11239E8C57004F1BE3 /* taxes-classes.json */; };
@@ -330,6 +331,7 @@
 		450106902399B2C800E24722 /* TaxClassListMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapper.swift; sourceTree = "<group>"; };
 		457FC68B2382B2FD00B41B02 /* product-update.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "product-update.json"; sourceTree = "<group>"; };
 		45D1CF4823BACA6500945A36 /* ProductTaxStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatus.swift; sourceTree = "<group>"; };
+		45D685F723D0BC78005F87D0 /* ProductSkuMapper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSkuMapper.swift; sourceTree = "<group>"; };
 		45E3EEBA237009CF00A826AC /* ShippingLine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShippingLine.swift; sourceTree = "<group>"; };
 		45ED4F0F239E8A54004F1BE3 /* TaxClassListMapperTest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassListMapperTest.swift; sourceTree = "<group>"; };
 		45ED4F11239E8C57004F1BE3 /* taxes-classes.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "taxes-classes.json"; sourceTree = "<group>"; };
@@ -1005,6 +1007,7 @@
 				D8C251CF230BD72700F49782 /* ProductReviewMapper.swift */,
 				0219B03823964BB3007DCD5E /* ProductShippingClassMapper.swift */,
 				025CA2C1238EBBAA00B05C81 /* ProductShippingClassListMapper.swift */,
+				45D685F723D0BC78005F87D0 /* ProductSkuMapper.swift */,
 				CE430673234BA6AD0073CBFF /* RefundMapper.swift */,
 				CE430675234BA7920073CBFF /* RefundListMapper.swift */,
 				7412A8EB21B6E286005D182A /* ReportOrderTotalsMapper.swift */,
@@ -1437,6 +1440,7 @@
 				D823D91022377B4F00C90817 /* ShipmentTrackingProviderGroup.swift in Sources */,
 				743E84EC22171F4600FAC9D7 /* ShipmentTracking.swift in Sources */,
 				B56C1EB820EA76F500D749F9 /* Site.swift in Sources */,
+				45D685F823D0BC78005F87D0 /* ProductSkuMapper.swift in Sources */,
 				D8736B6022F0887900A14A29 /* OrderCountMapper.swift in Sources */,
 				7412A8EA21B6E192005D182A /* ReportRemote.swift in Sources */,
 				B5A2417D217F9ECC00595DEF /* MetaContainer.swift in Sources */,

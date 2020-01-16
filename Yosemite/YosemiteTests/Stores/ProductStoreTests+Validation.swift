@@ -83,7 +83,7 @@ final class ProductStoreTests_Validation: XCTestCase {
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-    
+
     /// Verifies that a non existing SKU is valid.
     func testValidatingSKUWithNotExistingValue() {
         let expectation = self.expectation(description: "Product SKU validation")

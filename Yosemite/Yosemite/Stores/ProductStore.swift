@@ -205,7 +205,7 @@ private extension ProductStore {
         let remote = ProductsRemote(network: network)
         remote.searchSku(for: siteID, sku: sku) { (value, error) in
             if error != nil {
-                onCompletion(false)
+                onCompletion(true)
                 return
             }
             let isValid = (value != nil && value == sku) ? false : true

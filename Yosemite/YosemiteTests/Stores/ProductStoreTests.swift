@@ -719,6 +719,29 @@ class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    // MARK: - ProductAction.
+
+    /// Verifies that `ProductAction.searchIfSkuExist` effectively fetch an existing sku
+    ///
+    func testSearchIfSkuExistEffectivelyRetrievedAnExistingSku() {
+        let expectation = self.expectation(description: "Search given Product SKU if already exists")
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "product-search-sku")
+
+        let expectedResult = true
+
+        let skuToSearchFor = "T-SHIRT-HAPPY-NINJA"
+        let action = ProductAction.searchIfSkuExist(siteID: sampleSiteID, sku: skuToSearchFor) { (result, error) in
+            XCTAssertEqual(result, expectedResult)
+            XCTAssertNil(error)
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     // MARK: - ProductAction.updateProduct
 
     /// Verifies that `ProductAction.updateProduct` returns the expected `Product`.

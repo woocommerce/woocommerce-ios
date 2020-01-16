@@ -203,6 +203,7 @@ private extension ProductInventorySettingsViewController {
         guard sku != product.sku else {
             skuIsValid = true
             hideError()
+            self.getSkuCell()?.textFieldBecomeFirstResponder()
             return
         }
 
@@ -214,11 +215,13 @@ private extension ProductInventorySettingsViewController {
                         return
                     }
                     self.skuIsValid = isValid
-                    guard isValid else {
-                        self.displayError(error: .duplicatedSKU)
-                        return
+                    if isValid {
+                        self.hideError()
                     }
-                    self.hideError()
+                    else {
+                        self.displayError(error: .duplicatedSKU)
+                    }
+                    self.getSkuCell()?.textFieldBecomeFirstResponder()
                 }
 
                 ServiceLocator.stores.dispatch(action)
@@ -420,6 +423,24 @@ private extension ProductInventorySettingsViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
+    }
+
+    func getIndexPathForRow(_ row: Row) -> IndexPath? {
+        for i in 0 ..< sections.count {
+            for j in 0 ..< sections[i].rows.count {
+                if sections[i].rows[j] == row {
+                    return IndexPath(row: j, section: i)
+                }
+            }
+        }
+        return nil
+    }
+
+    func getSkuCell() -> TitleAndTextFieldTableViewCell? {
+        guard let indexPath = getIndexPathForRow(.sku) else {
+            return nil
+        }
+        return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
     }
 }
 

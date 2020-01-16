@@ -10,10 +10,6 @@ public enum ProductAction: Action {
     ///
     case searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
-    /// Searches if a product sky already exist.
-    ///
-    case searchIfSkuExist(siteID: Int64, sku: String, onCompletion: (Bool?, Error?) -> Void)
-
     /// Synchronizes the Products matching the specified criteria.
     ///
     case synchronizeProducts(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
@@ -38,7 +34,7 @@ public enum ProductAction: Action {
     ///
     case updateProduct(product: Product, onCompletion: (Product?, ProductUpdateError?) -> Void)
 
-    /// Checks whether a Product SKU is valid against other Products in storage.
+    /// Checks whether a Product SKU is valid against other Products in the store.
     ///
     case validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: (Bool) -> Void)
 }

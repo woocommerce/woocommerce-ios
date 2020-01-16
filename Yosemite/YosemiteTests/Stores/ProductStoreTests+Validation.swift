@@ -42,12 +42,6 @@ final class ProductStoreTests_Validation: XCTestCase {
         let expectation = self.expectation(description: "Product SKU validation")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        // Inserts a sample Product into storage with nil sku.
-        let sampleProduct = MockProduct().product(siteID: sampleSiteID, productID: 1, sku: nil)
-        storageManager.insertSampleProduct(readOnlyProduct: sampleProduct)
-
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-
         let action = ProductAction.validateProductSKU(nil, siteID: sampleSiteID) { isValid in
             XCTAssertTrue(isValid)
             expectation.fulfill()
@@ -62,12 +56,6 @@ final class ProductStoreTests_Validation: XCTestCase {
         let expectation = self.expectation(description: "Product SKU validation")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        // Inserts a sample Product into storage with nil sku.
-        let sampleProduct = MockProduct().product(siteID: sampleSiteID, productID: 1, sku: "")
-        storageManager.insertSampleProduct(readOnlyProduct: sampleProduct)
-
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
-
         let action = ProductAction.validateProductSKU("", siteID: sampleSiteID) { isValid in
             XCTAssertTrue(isValid)
             expectation.fulfill()
@@ -77,24 +65,22 @@ final class ProductStoreTests_Validation: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    /// Verifies that a duplicated SKU is invalid.
-    func testValidatingSKUWithAnExistingValue() {
+    /// Verifies that an existing SKU is not valid.
+    func testValidatingSKUWithExistingValue() {
         let expectation = self.expectation(description: "Product SKU validation")
-        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        // Inserts a sample Product into storage with nil sku.
-        let sku = "uks"
-        let sampleProduct = MockProduct().product(siteID: sampleSiteID, productID: 1, sku: sku)
-        storageManager.insertSampleProduct(readOnlyProduct: sampleProduct)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "product-search-sku")
 
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+        let expectedResult = false
 
-        let action = ProductAction.validateProductSKU(sku, siteID: sampleSiteID) { isValid in
-            XCTAssertFalse(isValid)
+        let skuToSearchFor = "T-SHIRT-HAPPY-NINJA"
+        let action = ProductAction.validateProductSKU(skuToSearchFor, siteID: sampleSiteID) { isValid in
+            XCTAssertEqual(isValid, expectedResult)
             expectation.fulfill()
         }
 
-        productStore.onAction(action)
+        store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 }

@@ -164,10 +164,30 @@ private extension ProductPriceSettingsViewController {
 
 // MARK: - Navigation actions handling
 //
-private extension ProductPriceSettingsViewController {
-    @objc func completeUpdating() {
+extension ProductPriceSettingsViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        let newSalePrice = salePrice == "0" ? nil : salePrice
+        let newTaxClass = taxClass?.slug == standardTaxClass.slug ? "" : taxClass?.slug
+        if regularPrice != product.regularPrice || newSalePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart ||
+            dateOnSaleEnd != product.dateOnSaleEnd || taxStatus.rawValue != product.taxStatusKey || newTaxClass != product.taxClass {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    @objc private func completeUpdating() {
         let newSalePrice = salePrice == "0" ? nil : salePrice
         onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
+            self?.completeUpdating()
+        }, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 

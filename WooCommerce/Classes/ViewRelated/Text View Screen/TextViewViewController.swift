@@ -63,9 +63,27 @@ final class TextViewViewController: UIViewController {
     }
 }
 
-private extension TextViewViewController {
-    @objc func completeEditing() {
+// MARK: - Navigation actions handling
+//
+extension TextViewViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        if initialText != textView.text {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    @objc private func completeEditing() {
         onCompletion(textView.text)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
+            self?.completeEditing()
+        }, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 

@@ -10,6 +10,7 @@
 - bugfix/enhancement: on the Products tab, if there are no Products the "Work In Progress" banner is shown with an image placeholder below now.
 - bugfix: the deleted Product Variations should not show up after syncing anymore.
 - bugfix: now the shipping address in the Order Detail is hidden if the order contains only virtual products
+- bugfix: when the app is in the foreground while receiving a push notification, the badge on the Orders tab and Reviews tab should be updated correctly based on the type of the notification.
 
 3.3
 -----

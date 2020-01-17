@@ -120,6 +120,10 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onCameraCaptureCompletion(asset: PHAsset?, error: Error?) {
+        guard let _ = asset else {
+            displayErrorAlert(error: error)
+            return
+        }
         // TODO-1713: handle media from camera
     }
 }
@@ -128,6 +132,29 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
+        defer {
+            dismiss(animated: true, completion: nil)
+        }
+        guard assets.isEmpty == false else {
+            return
+        }
         // TODO-1713: handle media from photo library
+    }
+}
+
+// MARK: Error handling
+//
+private extension ProductImagesViewController {
+    func displayErrorAlert(error: Error?) {
+        let title = NSLocalizedString("Cannot upload image", comment: "Title of the alert when there is an error uploading image(s)")
+        let alertController = UIAlertController(title: title,
+                                                message: error?.localizedDescription,
+                                                preferredStyle: .alert)
+        let cancel = UIAlertAction(title: NSLocalizedString("OK",
+                                                            comment: "Dismiss button on the alert when there is an error uploading image(s)"),
+                                   style: .cancel,
+                                   handler: nil)
+        alertController.addAction(cancel)
+        present(alertController, animated: true)
     }
 }

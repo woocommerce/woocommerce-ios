@@ -8,17 +8,11 @@ final class DeviceMediaLibraryPicker: NSObject {
     private let onCompletion: Completion
     private let dataSource = WPPHAssetDataSource()
 
-    // When cancelling the picker from the group library view, the presenting view controller is needed to dismiss the picker.
-    // Ideally, `WPMediaPickerViewControllerDelegate`'s `mediaPickerControllerDidCancel` passes the view controller being presented.
-    private var origin: UIViewController?
-
     init(onCompletion: @escaping Completion) {
         self.onCompletion = onCompletion
     }
 
     func presentPicker(origin: UIViewController) {
-        self.origin = origin
-
         let options = WPMediaPickerOptions()
         options.showActionBar = false
         options.showSearchBar = false
@@ -45,8 +39,6 @@ extension DeviceMediaLibraryPicker: WPMediaPickerViewControllerDelegate {
     }
 
     func mediaPickerController(_ picker: WPMediaPickerViewController, didFinishPicking assets: [WPMediaAsset]) {
-        picker.dismiss(animated: true)
-
         guard let assets = assets as? [PHAsset], assets.isEmpty == false else {
             return
         }
@@ -55,10 +47,6 @@ extension DeviceMediaLibraryPicker: WPMediaPickerViewControllerDelegate {
     }
 
     func mediaPickerControllerDidCancel(_ picker: WPMediaPickerViewController) {
-        origin?.dismiss(animated: true)
-
         onCompletion([])
-
-        origin = nil
     }
 }

@@ -1,8 +1,8 @@
 import Foundation
 
 
-/// Represents a computed summary of order items.
-/// order items - refunded order items = aggregate order item data.
+/// This model represents a computed summary of order items.
+/// (order items - refunded order items) = aggregate order item data.
 ///
 final class AggregateOrderItem {
     let productID: Int64

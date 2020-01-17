@@ -501,6 +501,7 @@
 		CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758523D21AC200486676 /* AggregateOrderItem.swift */; };
 		CECC758A23D2205F00486676 /* RefundedProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758923D2205F00486676 /* RefundedProduct.swift */; };
 		CECC758C23D2227000486676 /* RefundedProductCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758B23D2227000486676 /* RefundedProductCellViewModel.swift */; };
+		CECC759123D22B5000486676 /* RefundedOrderItemCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC759023D22B5000486676 /* RefundedOrderItemCellViewModel.swift */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
 		CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006032077D1280079161F /* SummaryTableViewCell.swift */; };
 		CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE006042077D1280079161F /* SummaryTableViewCell.xib */; };
@@ -1136,6 +1137,7 @@
 		CECC758523D21AC200486676 /* AggregateOrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregateOrderItem.swift; sourceTree = "<group>"; };
 		CECC758923D2205F00486676 /* RefundedProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProduct.swift; sourceTree = "<group>"; };
 		CECC758B23D2227000486676 /* RefundedProductCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProductCellViewModel.swift; sourceTree = "<group>"; };
+		CECC759023D22B5000486676 /* RefundedOrderItemCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedOrderItemCellViewModel.swift; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
 		CEE006032077D1280079161F /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
 		CEE006042077D1280079161F /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
@@ -2558,17 +2560,6 @@
 		CE5F462823AAC9EA006B1A5C /* Refunds */ = {
 			isa = PBXGroup;
 			children = (
-				CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */,
-				CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */,
-				CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */,
-				CE7E780D23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift */,
-				CECC758923D2205F00486676 /* RefundedProduct.swift */,
-				CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */,
-				CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */,
-				CECC758B23D2227000486676 /* RefundedProductCellViewModel.swift */,
-				CE2A9FD323C67A8D002BEC1C /* OrderItemRefundSummary.swift */,
-				CE2A9FD523C68164002BEC1C /* OrderItemRefundSummaryViewModel.swift */,
-				CECC758523D21AC200486676 /* AggregateOrderItem.swift */,
 			);
 			path = Refunds;
 			sourceTree = "<group>";
@@ -2620,6 +2611,39 @@
 				CE4DA5C521DD755E00074607 /* CurrencyFormatter.swift */,
 			);
 			path = Currency;
+			sourceTree = "<group>";
+		};
+		CECC758D23D2260E00486676 /* Refunded Products */ = {
+			isa = PBXGroup;
+			children = (
+				CECC758923D2205F00486676 /* RefundedProduct.swift */,
+				CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */,
+				CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */,
+				CECC758B23D2227000486676 /* RefundedProductCellViewModel.swift */,
+			);
+			path = "Refunded Products";
+			sourceTree = "<group>";
+		};
+		CECC758E23D2266300486676 /* Refund Details */ = {
+			isa = PBXGroup;
+			children = (
+				CE5F462623AAC8C0006B1A5C /* RefundDetailsViewModel.swift */,
+				CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */,
+				CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */,
+				CECC759023D22B5000486676 /* RefundedOrderItemCellViewModel.swift */,
+			);
+			path = "Refund Details";
+			sourceTree = "<group>";
+		};
+		CECC758F23D226AC00486676 /* Aggregate Order Items */ = {
+			isa = PBXGroup;
+			children = (
+				CE7E780D23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift */,
+				CE2A9FD323C67A8D002BEC1C /* OrderItemRefundSummary.swift */,
+				CE2A9FD523C68164002BEC1C /* OrderItemRefundSummaryViewModel.swift */,
+				CECC758523D21AC200486676 /* AggregateOrderItem.swift */,
+			);
+			path = "Aggregate Order Items";
 			sourceTree = "<group>";
 		};
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
@@ -2726,6 +2750,9 @@
 		D817585C22BB5E6900289CFE /* Order Details */ = {
 			isa = PBXGroup;
 			children = (
+				CECC758F23D226AC00486676 /* Aggregate Order Items */,
+				CECC758E23D2266300486676 /* Refund Details */,
+				CECC758D23D2260E00486676 /* Refunded Products */,
 				CE85535C209B5BB700938BDC /* OrderDetailsViewModel.swift */,
 				D817585D22BB5E8700289CFE /* OrderEmailComposer.swift */,
 				D817585F22BB614A00289CFE /* OrderMessageComposer.swift */,
@@ -3277,6 +3304,7 @@
 				D843D5D92248EE91001BFA55 /* ManualTrackingViewModel.swift in Sources */,
 				B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */,
 				747AA0892107CEC60047A89B /* AnalyticsProvider.swift in Sources */,
+				CECC759123D22B5000486676 /* RefundedOrderItemCellViewModel.swift in Sources */,
 				B5DBF3CB20E149CC00B53AED /* AuthenticatedState.swift in Sources */,
 				CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */,
 				B53B3F39219C817800DF1EB6 /* UIStoryboard+Woo.swift in Sources */,

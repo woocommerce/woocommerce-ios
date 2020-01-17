@@ -173,9 +173,9 @@ extension ProductDetailsTableViewCell {
         sku = item.sku
     }
 
-    /// Configure a summary of all refunded products (with variants, if any)
+    /// Configure aggregate order items (with variants, if any)
     ///
-    func configure(item: OrderItemRefundSummaryViewModel, imageService: ImageService) {
+    func configure(item: AggregateOrderItemCellViewModel, imageService: ImageService) {
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
                                                        placeholder: .productPlaceholderImage,

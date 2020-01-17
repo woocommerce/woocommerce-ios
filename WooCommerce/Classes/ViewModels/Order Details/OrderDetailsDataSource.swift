@@ -111,15 +111,16 @@ final class OrderDetailsDataSource: NSObject {
         return shippingLines.first?.methodTitle ?? String()
     }
 
-    /// All the items inside an order
+    /// Yosemite.OrderItem
+    /// The original list of order items a user purchased
     ///
     private(set) var items: [OrderItem]
 
-    /// Aggregate data for refunded products from an Order
+    /// Combine refunded order items to show refunded products
     ///
-    var refundedItems: [OrderItemRefundSummary] {
-        /// OrderItemRefund.orderItemID isn't useful for finding duplicates in
-        /// items because multiple refunds cause orderItemIDs to be unique.
+    var refundedProducts: [RefundedProduct] {
+        /// OrderItemRefund.orderItemID isn't useful for finding duplicates
+        /// because multiple refunds cause orderItemIDs to be unique.
         /// Instead, we need to find duplicate *Products*.
         var items = [OrderItemRefund]()
         for refund in refunds {
@@ -150,7 +151,7 @@ final class OrderDetailsDataSource: NSObject {
                 .compactMap({ currency.convertToDecimal(from: $0.total) })
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-            return OrderItemRefundSummary(
+            return RefundedProduct(
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -162,19 +163,19 @@ final class OrderDetailsDataSource: NSObject {
         }
     }
 
-    /// Calculate order item quantities and totals after refunded products have altered the fields
+    /// Calculate the new order item quantities and totals after refunded products have altered the fields
     ///
-    var summedItems: [OrderItemRefundSummary] {
-        if refundedItems.count == 0 {
+    var aggregateOrderItems: [AggregateOrderItem] {
+        if refundedProducts.count == 0 {
             fatalError("Error: attemtpted to calculate aggregate order item data with no refunded products.")
         }
 
         let currency = CurrencyFormatter()
-        // Convert the order items to an OrderItemRefundSummary type
-        var convertedItems = [OrderItemRefundSummary]()
+        // Convert the order items into a mutable type
+        var convertedItems = [AggregateOrderItem]()
         for item in items {
             let total = currency.convertToDecimal(from: item.total) ?? NSDecimalNumber.zero
-            let convertedItem = OrderItemRefundSummary(
+            let convertedItem = AggregateOrderItem(
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -186,15 +187,28 @@ final class OrderDetailsDataSource: NSObject {
             convertedItems.append(convertedItem)
         }
 
-        var items = [OrderItemRefundSummary]()
-        items.append(contentsOf: convertedItems)
-        items.append(contentsOf: refundedItems)
-
-        let grouped = Dictionary(grouping: items) { (item) in
-            return item.hashValue
+        // Convert refunded products into the same compatible type
+        var convertedRefundedProducts = [AggregateOrderItem]()
+        for refundedProduct in refundedProducts {
+            let convertedRefundedProduct = AggregateOrderItem(productID: refundedProduct.productID,
+                                                              variationID: refundedProduct.variationID,
+                                                              name: refundedProduct.name,
+                                                              price: refundedProduct.price,
+                                                              quantity: refundedProduct.quantity,
+                                                              sku: refundedProduct.sku,
+                                                              total: refundedProduct.total)
+            convertedRefundedProducts.append(convertedRefundedProduct)
         }
 
-        let unsortedResult: [OrderItemRefundSummary] = grouped.compactMap { (key, items) in
+        var allItems = [AggregateOrderItem]()
+        allItems.append(contentsOf: convertedItems)
+        allItems.append(contentsOf: convertedRefundedProducts)
+
+        let grouped = Dictionary(grouping: allItems) { (item) in
+            return allItems.hashValue
+        }
+
+        let unsortedResult: [AggregateOrderItem] = grouped.compactMap { (key, items) in
             // Here we iterate over each group's items
 
             // All items should be equal except for quantity and price, so we pick the first
@@ -210,7 +224,7 @@ final class OrderDetailsDataSource: NSObject {
                 .compactMap({ $0.total })
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-            return OrderItemRefundSummary(
+            return AggregateOrderItem(
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -499,7 +513,7 @@ private extension OrderDetailsDataSource {
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        if refundedItems.count == 0 {
+        if refundedProducts.count == 0 {
             let item = items[indexPath.row]
             let product = lookUpProduct(by: item.productID)
             let itemViewModel = OrderItemViewModel(item: item,
@@ -509,11 +523,13 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        let item = summedItems[indexPath.row]
-        let product = lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemRefundSummaryViewModel(item: item,
+        let aggregateItem = aggregateOrderItems[indexPath.row]
+        let productID = aggregateItem.variationID == 0 ? aggregateItem.productID : aggregateItem.variationID
+        let product = lookUpProduct(by: productID)
+        let itemViewModel = AggregateOrderItemCellViewModel(aggregateItem: aggregateItem,
                                                             currencyCode: order.currency,
                                                             product: product)
+
         cell.configure(item: itemViewModel, imageService: imageService)
     }
 

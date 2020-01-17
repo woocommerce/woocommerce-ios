@@ -188,4 +188,19 @@ extension ProductDetailsTableViewCell {
         price = item.price
         sku = item.sku
     }
+
+    /// Configure an aggregate refunded product cell
+    ///
+    func configure(item: RefundedProductCellViewModel, imageService: ImageService) {
+        imageService.downloadAndCacheImageForImageView(productImageView,
+                                                       with: item.imageURL?.absoluteString,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
+
+        name = item.name
+        quantity = item.quantity
+        price = item.price
+        sku = item.sku
+    }
 }

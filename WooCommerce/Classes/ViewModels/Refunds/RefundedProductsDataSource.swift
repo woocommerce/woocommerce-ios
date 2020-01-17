@@ -7,9 +7,9 @@ import Yosemite
 /// Must conform to NSObject so it can be the UITableViewDataSource.
 ///
 final class RefundedProductsDataSource: NSObject {
-    /// Refunds
+    /// Aggregate data for refunded products
     ///
-    private var items: [OrderItemRefundSummary]
+    private(set) var refundedProducts: [RefundedProduct]
 
     /// Order
     ///
@@ -21,9 +21,9 @@ final class RefundedProductsDataSource: NSObject {
 
     /// Designated initializer.
     ///
-    init(order: Order, items: [OrderItemRefundSummary]) {
+    init(order: Order, refundedProducts: [RefundedProduct]) {
         self.order = order
-        self.items = items
+        self.refundedProducts = refundedProducts
     }
 
     /// The results controllers used to display a refund
@@ -111,15 +111,16 @@ private extension RefundedProductsDataSource {
     /// Setup: Refunded product details cell
     ///
     func configureRefundedProduct(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        let item = items[indexPath.row]
-        let product = lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemRefundSummaryViewModel(item: item,
-                                                            currencyCode: order.currency,
-                                                            product: product)
+        let refundedProduct = refundedProducts[indexPath.row]
+        let productID = refundedProduct.variationID == 0 ? refundedProduct.productID : refundedProduct.variationID
+        let product = lookUpProduct(by: productID)
+        let refundedProductViewModel = RefundedProductCellViewModel(refundedProduct: refundedProduct,
+                                                                    currency: order.currency,
+                                                                    product: product)
         let imageService = ServiceLocator.imageService
 
         cell.selectionStyle = .default
-        cell.configure(item: itemViewModel, imageService: imageService)
+        cell.configure(item: refundedProductViewModel, imageService: imageService)
     }
 }
 
@@ -139,7 +140,7 @@ extension RefundedProductsDataSource {
     ///
     func reloadSections() {
         let refundedProducts: Section? = {
-            let rows: [Row] = Array(repeating: .orderItemRefunded, count: items.count)
+            let rows: [Row] = Array(repeating: .orderItemRefunded, count: self.refundedProducts.count)
 
             return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)
         }()

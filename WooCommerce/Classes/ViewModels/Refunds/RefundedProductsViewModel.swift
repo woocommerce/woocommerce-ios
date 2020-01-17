@@ -2,7 +2,7 @@ import Foundation
 import Yosemite
 
 
-// MARK: - Refunded Products View Model
+// MARK: - View Model for the Refunded Products view controller
 //
 final class RefundedProductsViewModel {
     /// Order we're observing.
@@ -63,7 +63,7 @@ final class RefundedProductsViewModel {
     ///
     private(set) lazy var dataSource: RefundedProductsDataSource = {
         let sortedItems = refundedProducts.sorted(by: { ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
-        return RefundedProductsDataSource(order: order, items: sortedItems)
+        return RefundedProductsDataSource(order: order, refundedProducts: sortedItems)
     }()
 
     /// Designated initializer.

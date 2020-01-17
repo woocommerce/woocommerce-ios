@@ -4,7 +4,7 @@ import Foundation
 /// Represents a computed summary of order items.
 /// order items - refunded order items = aggregate order item data.
 ///
-final class AggregateOrderItemSummary {
+final class AggregateOrderItem {
     let productID: Int64
     let variationID: Int64
 
@@ -42,13 +42,13 @@ final class AggregateOrderItemSummary {
 
 // MARK: - Comparable Conformance
 //
-extension AggregateOrderItemSummary: Comparable {
-    public static func == (lhs: AggregateOrderItemSummary, rhs: AggregateOrderItemSummary) -> Bool {
+extension AggregateOrderItem: Comparable {
+    public static func == (lhs: AggregateOrderItem, rhs: AggregateOrderItem) -> Bool {
         return lhs.productID == rhs.productID &&
             lhs.variationID == rhs.variationID
     }
 
-    public static func < (lhs: AggregateOrderItemSummary, rhs: AggregateOrderItemSummary) -> Bool {
+    public static func < (lhs: AggregateOrderItem, rhs: AggregateOrderItem) -> Bool {
         return lhs.productID < rhs.productID ||
             (lhs.productID == rhs.productID && lhs.variationID < rhs.variationID)
     }

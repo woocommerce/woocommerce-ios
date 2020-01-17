@@ -57,7 +57,7 @@ extension AggregateOrderItem: Comparable {
 
 // MARK: - Hashable Conformance
 //
-extension AggregateOrderItemSummary: Hashable {
+extension AggregateOrderItem: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(productID)
         hasher.combine(variationID)

@@ -74,7 +74,7 @@ private extension ProductImagesViewController {
     func configureAddButton() {
         addButton.setTitle(NSLocalizedString("Add Photos", comment: "Action to add photos on the Product images screen"), for: .normal)
         addButton.addTarget(self, action: #selector(addTapped), for: .touchUpInside)
-        addButton.applyPrimaryButtonStyle()
+        addButton.applySecondaryButtonStyle()
     }
 
     func configureAddButtonBottomBorderView() {

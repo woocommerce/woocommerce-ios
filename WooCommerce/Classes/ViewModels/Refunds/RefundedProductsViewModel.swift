@@ -10,12 +10,15 @@ final class RefundedProductsViewModel {
     private(set) var order: Order
 
     /// Array of all refunded items from every refund.
+    /// May contain duplicate data.
+    /// Example: ["Hoodie - XL": 1, "Hoodie - XL": 2]
     ///
-    private var items: [OrderItemRefund]
+    private var refundedItems: [OrderItemRefund]
 
-    /// Condense order items into summarized data
+    /// Condense the refunded products into summarized data
+    /// by removing duplicate data found in refunded items.
     ///
-    private var summedItems: [OrderItemRefundSummary] {
+    private var refundedProducts: [OrderItemRefundSummary] {
         /// OrderItemRefund.orderItemID isn't useful for finding duplicates in
         /// items because multiple refunds cause orderItemIDs to be unique.
         /// Instead, we need to find duplicate *Products*.
@@ -24,7 +27,7 @@ final class RefundedProductsViewModel {
         // Creates an array of dictionaries, with the hash value as the key.
         // Example: [hashValue: [item, item], hashvalue: [item]]
         // Since dictionary keys are unique, this eliminates the duplicate `OrderItemRefund`s.
-        let grouped = Dictionary(grouping: items) { (item) in
+        let grouped = Dictionary(grouping: refundedItems) { (item) in
             return item.hashValue
         }
 
@@ -59,15 +62,15 @@ final class RefundedProductsViewModel {
     /// The datasource that will be used to render the Refunded Products screen.
     ///
     private(set) lazy var dataSource: RefundedProductsDataSource = {
-        let sortedItems = summedItems.sorted(by: { ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
+        let sortedItems = refundedProducts.sorted(by: { ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
         return RefundedProductsDataSource(order: order, items: sortedItems)
     }()
 
     /// Designated initializer.
     ///
-    init(order: Order, items: [OrderItemRefund]) {
+    init(order: Order, refundedItems: [OrderItemRefund]) {
         self.order = order
-        self.items = items
+        self.refundedItems = refundedItems
     }
 
     /// Update the view model's order when notified

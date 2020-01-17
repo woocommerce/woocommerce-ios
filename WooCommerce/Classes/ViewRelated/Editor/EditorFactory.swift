@@ -14,7 +14,7 @@ final class EditorFactory {
     func productDescriptionEditor(product: Product,
                                   onContentSave: @escaping Editor.OnContentSave) -> Editor & UIViewController {
         let navigationTitle = NSLocalizedString("Description", comment: "The navigation bar title of the Aztec editor screen.")
-        let viewProperties = EditorViewProperties(navigationTitle: navigationTitle)
+        let viewProperties = EditorViewProperties(navigationTitle: navigationTitle, showSaveChangesActionSheet: true)
         let editor = AztecEditorViewController(content: product.fullDescription, viewProperties: viewProperties)
         editor.onContentSave = onContentSave
         return editor

@@ -205,6 +205,14 @@ extension OrderDetailsViewModel {
                                                                    currency: order.currency)
             let navController = WooNavigationController(rootViewController: loaderViewController)
             viewController.present(navController, animated: true, completion: nil)
+        case .aggregateOrderItem:
+            let item = dataSource.aggregateOrderItems[indexPath.row]
+            let productID = item.variationID == 0 ? item.productID : item.variationID
+            let loaderViewController = ProductLoaderViewController(productID: productID,
+                                                                   siteID: order.siteID,
+                                                                   currency: order.currency)
+            let navController = WooNavigationController(rootViewController: loaderViewController)
+            viewController.present(navController, animated: true, completion: nil)
         case .billingDetail:
             ServiceLocator.analytics.track(.orderDetailShowBillingTapped)
             let billingInformationViewController = BillingInformationViewController(order: order)

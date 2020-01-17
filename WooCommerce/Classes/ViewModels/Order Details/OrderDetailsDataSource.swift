@@ -205,7 +205,7 @@ final class OrderDetailsDataSource: NSObject {
         allItems.append(contentsOf: convertedRefundedProducts)
 
         let grouped = Dictionary(grouping: allItems) { (item) in
-            return allItems.hashValue
+            return item.hashValue
         }
 
         let unsortedResult: [AggregateOrderItem] = grouped.compactMap { (key, items) in
@@ -690,7 +690,10 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            var rows: [Row] = Array(repeating: .orderItem, count: items.count)
+            var rows: [Row] = refunds.count == 0
+                ? Array(repeating: .orderItem, count: items.count)
+                : Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
+
             if isProcessingPayment {
                 rows.append(.fulfillButton)
             } else {
@@ -1003,6 +1006,7 @@ extension OrderDetailsDataSource {
     enum Row {
         case summary
         case orderItem
+        case aggregateOrderItem
         case fulfillButton
         case details
         case refundedProducts
@@ -1026,6 +1030,8 @@ extension OrderDetailsDataSource {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
             case .orderItem:
+                return ProductDetailsTableViewCell.reuseIdentifier
+            case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .fulfillButton:
                 return FulfillButtonTableViewCell.reuseIdentifier

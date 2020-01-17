@@ -102,7 +102,7 @@ private extension RefundedProductsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as ProductDetailsTableViewCell where row == .orderItemRefunded:
-            configureOrderItemRefundSummary(cell, at: indexPath)
+            configureRefundedProduct(cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -110,7 +110,7 @@ private extension RefundedProductsDataSource {
 
     /// Setup: Refunded product details cell
     ///
-    func configureOrderItemRefundSummary(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+    func configureRefundedProduct(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let item = items[indexPath.row]
         let product = lookUpProduct(by: item.productID)
         let itemViewModel = OrderItemRefundSummaryViewModel(item: item,

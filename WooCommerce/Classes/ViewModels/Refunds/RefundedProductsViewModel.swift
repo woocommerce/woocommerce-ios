@@ -18,7 +18,7 @@ final class RefundedProductsViewModel {
     /// Condense the refunded products into summarized data
     /// by removing duplicate data found in refunded items.
     ///
-    private var refundedProducts: [OrderItemRefundSummary] {
+    private var refundedProducts: [RefundedProduct] {
         /// OrderItemRefund.orderItemID isn't useful for finding duplicates in
         /// items because multiple refunds cause orderItemIDs to be unique.
         /// Instead, we need to find duplicate *Products*.
@@ -47,7 +47,7 @@ final class RefundedProductsViewModel {
                 .compactMap({ currency.convertToDecimal(from: $0.total) })
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-            return OrderItemRefundSummary(
+            return RefundedProduct(
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,

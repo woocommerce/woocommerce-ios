@@ -499,6 +499,7 @@
 		CE8CCD44239AC06E009DBD22 /* RefundDetailsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = CE8CCD42239AC06E009DBD22 /* RefundDetailsViewController.xib */; };
 		CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */; };
 		CECC758623D21AC200486676 /* AggregateOrderItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758523D21AC200486676 /* AggregateOrderItem.swift */; };
+		CECC758A23D2205F00486676 /* RefundedProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758923D2205F00486676 /* RefundedProduct.swift */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
 		CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006032077D1280079161F /* SummaryTableViewCell.swift */; };
 		CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE006042077D1280079161F /* SummaryTableViewCell.xib */; };
@@ -1132,6 +1133,7 @@
 		CEA16F3920FD0C8C0061B4E1 /* WooAnalytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooAnalytics.swift; sourceTree = "<group>"; };
 		CECA64B020D9990E005A44C4 /* WooCommerce-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WooCommerce-Bridging-Header.h"; sourceTree = "<group>"; };
 		CECC758523D21AC200486676 /* AggregateOrderItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregateOrderItem.swift; sourceTree = "<group>"; };
+		CECC758923D2205F00486676 /* RefundedProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundedProduct.swift; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
 		CEE006032077D1280079161F /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
 		CEE006042077D1280079161F /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
@@ -2558,6 +2560,7 @@
 				CE5F462923AACA0A006B1A5C /* RefundDetailsDataSource.swift */,
 				CE5F462B23AACBC4006B1A5C /* RefundDetailsResultController.swift */,
 				CE7E780D23AAE96F00BC5C54 /* OrderItemRefundViewModel.swift */,
+				CECC758923D2205F00486676 /* RefundedProduct.swift */,
 				CE2A9FC523BFFADE002BEC1C /* RefundedProductsViewModel.swift */,
 				CE2A9FC723C3D2D4002BEC1C /* RefundedProductsDataSource.swift */,
 				CE2A9FD323C67A8D002BEC1C /* OrderItemRefundSummary.swift */,
@@ -3277,6 +3280,7 @@
 				021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */,
 				020F41E823176F8E00776C4D /* TopBannerPresenter.swift in Sources */,
 				02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */,
+				CECC758A23D2205F00486676 /* RefundedProduct.swift in Sources */,
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,

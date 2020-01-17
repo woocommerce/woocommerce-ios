@@ -27,11 +27,11 @@ final class MediaPickingCoordinator {
         let menuAlert = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         menuAlert.view.tintColor = .text
 
+        menuAlert.addAction(photoLibraryAction(origin: origin))
+
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
             menuAlert.addAction(cameraAction(origin: origin))
         }
-
-        menuAlert.addAction(photoLibraryAction(origin: origin))
 
         menuAlert.addAction(siteMediaLibraryAction(origin: origin))
 
@@ -48,7 +48,7 @@ final class MediaPickingCoordinator {
 //
 private extension MediaPickingCoordinator {
     func cameraAction(origin: UIViewController) -> UIAlertAction {
-        let title = NSLocalizedString("Take a Photo",
+        let title = NSLocalizedString("Take a photo",
                                       comment: "Menu option for taking an image or video with the device's camera.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
             self?.showCameraCapture(origin: origin)
@@ -56,7 +56,7 @@ private extension MediaPickingCoordinator {
     }
 
     func photoLibraryAction(origin: UIViewController) -> UIAlertAction {
-        let title = NSLocalizedString("Choose from My Device",
+        let title = NSLocalizedString("Choose from device",
                                       comment: "Menu option for selecting media from the device's photo library.")
         return UIAlertAction(title: title, style: .default) { [weak self] action in
             self?.showDeviceMediaLibraryPicker(origin: origin)

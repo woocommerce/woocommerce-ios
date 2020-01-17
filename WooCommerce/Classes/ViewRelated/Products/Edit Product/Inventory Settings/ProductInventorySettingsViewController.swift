@@ -207,6 +207,7 @@ private extension ProductInventorySettingsViewController {
             return
         }
 
+        // Throttled API call
         let siteID = self.siteID
         throttler.throttle {
             DispatchQueue.main.async {

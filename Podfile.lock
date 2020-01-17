@@ -71,6 +71,7 @@ PODS:
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
   - WordPressUI (1.5.0)
   - Wormholy (1.5.1)
+  - WPMediaPicker (1.6.0)
   - wpxmlrpc (0.8.4)
   - XLPagerTabStrip (9.0.0)
   - ZendeskSDK (4.0.0):
@@ -97,6 +98,7 @@ DEPENDENCIES:
   - WordPressShared (~> 1.8.2)
   - WordPressUI (~> 1.4)
   - Wormholy (~> 1.5.1)
+  - WPMediaPicker (~> 1.6.0)
   - XLPagerTabStrip (~> 9.0)
   - ZendeskSDK (~> 4.0)
 
@@ -128,6 +130,7 @@ SPEC REPOS:
     - WordPressShared
     - WordPressUI
     - Wormholy
+    - WPMediaPicker
     - wpxmlrpc
     - XLPagerTabStrip
     - ZendeskSDK
@@ -159,10 +162,11 @@ SPEC CHECKSUMS:
   WordPressShared: 5561910e9b6635874abeb10e450b7d2a29f23838
   WordPressUI: 4a4adafd2b052e94e4846c0a0203761773dc4fd5
   Wormholy: f01b096b449a9fcab864a10f7e5b5693b1225c88
+  WPMediaPicker: e5d28197da6b467d4e5975d64a49255977e39455
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: 99679d8420a6d862773e2ddef0ebcc51b282317d
 
-PODFILE CHECKSUM: 5d0293aba0b83ee80dc3f63b2f4697daffd3c5cf
+PODFILE CHECKSUM: e4231e9f0d566658171c431802f78085afec88e1
 
 COCOAPODS: 1.8.4

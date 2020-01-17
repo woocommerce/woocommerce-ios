@@ -1,3 +1,4 @@
+import Photos
 import UIKit
 import Yosemite
 
@@ -23,6 +24,11 @@ final class ProductImagesViewController: UIViewController {
         let viewController = ProductImagesCollectionViewController(images: productImages,
                                                                    onDeletion: onDeletion)
         return viewController
+    }()
+
+    private lazy var mediaPickingCoordinator: MediaPickingCoordinator = {
+        return MediaPickingCoordinator(onCameraCaptureCompletion: self.onCameraCaptureCompletion,
+                                       onDeviceMediaLibraryPickerCompletion: self.onDeviceMediaLibraryPickerCompletion(assets:))
     }()
 
     private let onCompletion: Completion
@@ -92,15 +98,36 @@ private extension ProductImagesViewController {
 private extension ProductImagesViewController {
 
     @objc func addTapped() {
-        // TODO-1713: display options to add an image.
+        showOptionsMenu()
     }
 
     @objc func completeEditing() {
         onCompletion(productImages)
     }
 
+    func showOptionsMenu() {
+        let pickingContext = MediaPickingContext(origin: self, view: addButton)
+        mediaPickingCoordinator.present(context: pickingContext)
+    }
+
     func onDeletion(productImage: ProductImage) {
         productImages.removeAll(where: { $0.imageID == productImage.imageID })
         navigationController?.popViewController(animated: true)
+    }
+}
+
+// MARK: - Action handling for camera capture
+//
+private extension ProductImagesViewController {
+    func onCameraCaptureCompletion(asset: PHAsset?, error: Error?) {
+        // TODO-1713: handle media from camera
+    }
+}
+
+// MARK: Action handling for device media library picker
+//
+private extension ProductImagesViewController {
+    func onDeviceMediaLibraryPickerCompletion(assets: [PHAsset]) {
+        // TODO-1713: handle media from photo library
     }
 }

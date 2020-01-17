@@ -628,6 +628,7 @@ private extension ZendeskManager {
         // Email Text Field
         alertController.addTextField { textField in
             textField.clearButtonMode = .always
+            textField.keyboardType = .emailAddress
             textField.placeholder = LocalizedText.emailPlaceholder
             textField.text = self.userEmail
 

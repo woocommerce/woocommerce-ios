@@ -93,4 +93,3 @@ struct RefundedProductCellViewModel {
         self.product = product
     }
 }
-

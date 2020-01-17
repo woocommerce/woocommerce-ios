@@ -62,4 +62,3 @@ extension RefundedProduct: Hashable {
         hasher.combine(variationID)
     }
 }
-

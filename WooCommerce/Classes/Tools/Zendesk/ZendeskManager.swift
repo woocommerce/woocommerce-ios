@@ -360,6 +360,7 @@ private extension ZendeskManager {
     }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
+        presentInController = viewController
         getUserInformationIfAvailable()
         promptUserForInformation(withName: withName, from: viewController) { (success, email) in
             guard success else {

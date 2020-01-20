@@ -179,6 +179,17 @@ extension ProductPriceSettingsViewController {
 
     @objc private func completeUpdating() {
         let newSalePrice = salePrice == "0" ? nil : salePrice
+
+        // Check if the sale price is less of the regular price, else show an error.
+        if let decimalSalePrice = getDecimalPrice(salePrice), let decimalRegularPrice = getDecimalPrice(regularPrice) {
+            print(decimalSalePrice, decimalRegularPrice)
+            let comparison = decimalSalePrice.compare(decimalRegularPrice)
+            guard comparison == .orderedAscending else {
+                displaySalePriceErrorNotice()
+                return
+            }
+        }
+
         onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
     }
 
@@ -200,6 +211,22 @@ private extension ProductPriceSettingsViewController {
 
     func handleSalePriceChange(salePrice: String?) {
         self.salePrice = salePrice
+    }
+}
+
+// MARK: - Error handling
+//
+private extension ProductPriceSettingsViewController {
+
+    /// Displays a Notice onscreen, indicating that the sale price need to be higher than the regular price
+    ///
+    func displaySalePriceErrorNotice() {
+        UIApplication.shared.keyWindow?.endEditing(true)
+        let message = NSLocalizedString("The sale price need to be less than the regular price",
+                                        comment: "Product price error notice message, when the sale price is higher than the regular price")
+
+        let notice = Notice(title: message, feedbackType: .error)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -477,6 +504,17 @@ private extension ProductPriceSettingsViewController {
         Section(title: nil, rows: saleScheduleRows),
         Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass])
         ]
+    }
+
+    func getDecimalPrice(_ price: String?) -> NSDecimalNumber? {
+        guard let price = price else {
+            return nil
+        }
+        let currencyFormatter = CurrencyFormatter()
+        let currencyCode = CurrencySettings.shared.currencyCode
+        let unit = CurrencySettings.shared.symbol(from: currencyCode)
+        let value = price.replacingOccurrences(of: unit, with: "")
+        return currencyFormatter.convertToDecimal(from: value)
     }
 }
 

@@ -138,13 +138,13 @@ extension RefundedProductsDataSource {
     /// Setup: Sections
     ///
     func reloadSections() {
-        let refundedProducts: Section? = {
-            let rows: [Row] = Array(repeating: .orderItemRefunded, count: self.refundedProducts.count)
+        let refundedProductsSection: Section? = {
+            let rows: [Row] = Array(repeating: .orderItemRefunded, count: refundedProducts.count)
 
             return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)
         }()
 
-        sections = [refundedProducts].compactMap { $0 }
+        sections = [refundedProductsSection].compactMap { $0 }
     }
 }
 

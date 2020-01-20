@@ -34,7 +34,6 @@ final class MediaPickingCoordinator {
         }
 
         menuAlert.addAction(siteMediaLibraryAction(origin: origin))
-
         menuAlert.addAction(cancelAction())
 
         menuAlert.popoverPresentationController?.sourceView = fromView

@@ -207,7 +207,7 @@ private extension ProductInventorySettingsViewController {
     func handleSKUChange(_ sku: String?) {
         self.sku = sku
 
-        // If the sku is identical to the old one, is always valid.
+        // If the sku is identical to the old one, is always valid
         guard sku != product.sku else {
             skuIsValid = true
             hideError()

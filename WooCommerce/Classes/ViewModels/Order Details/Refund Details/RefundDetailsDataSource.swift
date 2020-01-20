@@ -157,8 +157,7 @@ private extension RefundDetailsDataSource {
     ///
     private func configureRefundedOrderItem(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let refundedItem = refundedItems[indexPath.row]
-        let productID = refundedItem.variationID == 0 ? refundedItem.productID : refundedItem.variationID
-        let product = lookUpProduct(by: productID)
+        let product = lookUpProduct(by: refundedItem.productOrVariationID)
         let itemViewModel = ProductDetailsCellViewModel(refundedItem: refundedItem,
                                                         currency: order.currency,
                                                         product: product)

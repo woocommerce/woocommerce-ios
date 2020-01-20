@@ -203,12 +203,12 @@ private extension ProductStore {
         }
 
         let remote = ProductsRemote(network: network)
-        remote.searchSku(for: siteID, sku: sku) { (value, error) in
+        remote.searchSku(for: siteID, sku: sku) { (result, error) in
             if error != nil {
                 onCompletion(true)
                 return
             }
-            let isValid = (value != nil && value == sku) ? false : true
+            let isValid = (result != nil && result == sku) ? false : true
             onCompletion(isValid)
         }
     }

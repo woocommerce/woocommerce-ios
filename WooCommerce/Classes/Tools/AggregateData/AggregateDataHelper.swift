@@ -26,7 +26,7 @@ final class AggregateDataHelper {
 
     /// Combine all refunded products into a single data source
     ///
-    static func combineRefundedProducts(from refunds: [Refund]) -> [AggregateOrderItem] {
+    static func combineRefundedProducts(from refunds: [Refund]) -> [AggregateOrderItem]? {
         /// OrderItemRefund.orderItemID isn't useful for finding duplicates
         /// because multiple refunds cause orderItemIDs to be unique.
         /// Instead, we need to find duplicate *Products*.
@@ -43,7 +43,7 @@ final class AggregateDataHelper {
             return item.hashValue
         }
 
-        return grouped.compactMap { (_, items) in
+        let unsortedResult = grouped.compactMap { (key, items) -> AggregateOrderItem? in
             // Here we iterate over each group's items
 
             // All items should be equal except for quantity and price, so we pick the first
@@ -69,14 +69,17 @@ final class AggregateDataHelper {
                 total: total
             )
         }
+
+        let sorted = unsortedResult.sorted(by: { ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
+
+        return sorted
     }
 
     /// Combine original order items with refunded products
     /// to get a tally for the quantity and item total
     ///
     static func combineOrderItems(_ items: [OrderItem], with refunds: [Refund]) -> [AggregateOrderItem] {
-        let refundedProducts = combineRefundedProducts(from: refunds)
-        if refundedProducts.count == 0 {
+        guard let refundedProducts = combineRefundedProducts(from: refunds) else {
             fatalError("Error: attemtpted to calculate aggregate order item data with no refunded products.")
         }
 

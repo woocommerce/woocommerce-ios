@@ -106,7 +106,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Combine refunded order items to show refunded products
     ///
-    var refundedProducts: [AggregateOrderItem] {
+    var refundedProducts: [AggregateOrderItem]? {
         return AggregateDataHelper.combineRefundedProducts(from: refunds)
     }
 
@@ -389,7 +389,7 @@ private extension OrderDetailsDataSource {
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        if refundedProducts.count == 0 {
+        guard let _ = refundedProducts else {
             let item = items[indexPath.row]
             let product = lookUpProduct(by: item.productOrVariationID)
             let itemViewModel = ProductDetailsCellViewModel(item: item,

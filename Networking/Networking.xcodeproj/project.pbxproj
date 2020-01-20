@@ -252,6 +252,7 @@
 		CEC4BF91234E40B5008D9195 /* refund-single.json in Resources */ = {isa = PBXBuildFile; fileRef = CEC4BF90234E40B5008D9195 /* refund-single.json */; };
 		CEC4BF93234E7EE0008D9195 /* refunds-all.json in Resources */ = {isa = PBXBuildFile; fileRef = CEC4BF92234E7EE0008D9195 /* refunds-all.json */; };
 		CEC4BF95234E7F34008D9195 /* RefundListMapperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEC4BF94234E7F34008D9195 /* RefundListMapperTests.swift */; };
+		CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */ = {isa = PBXBuildFile; fileRef = CECC759D23D6231900486676 /* order-560-all-refunds.json */; };
 		CEF88DAB233E911A00BED485 /* order-fully-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAA233E911A00BED485 /* order-fully-refunded.json */; };
 		CEF88DAD233E95B000BED485 /* OrderRefundCondensed.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */; };
 		CEF88DAF233E9F7E00BED485 /* order-details-partially-refunded.json in Resources */ = {isa = PBXBuildFile; fileRef = CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */; };
@@ -556,6 +557,7 @@
 		CEC4BF90234E40B5008D9195 /* refund-single.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "refund-single.json"; sourceTree = "<group>"; };
 		CEC4BF92234E7EE0008D9195 /* refunds-all.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "refunds-all.json"; sourceTree = "<group>"; };
 		CEC4BF94234E7F34008D9195 /* RefundListMapperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RefundListMapperTests.swift; sourceTree = "<group>"; };
+		CECC759D23D6231900486676 /* order-560-all-refunds.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-560-all-refunds.json"; sourceTree = "<group>"; };
 		CEF88DAA233E911A00BED485 /* order-fully-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-fully-refunded.json"; sourceTree = "<group>"; };
 		CEF88DAC233E95B000BED485 /* OrderRefundCondensed.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderRefundCondensed.swift; sourceTree = "<group>"; };
 		CEF88DAE233E9F7D00BED485 /* order-details-partially-refunded.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "order-details-partially-refunded.json"; sourceTree = "<group>"; };
@@ -893,6 +895,7 @@
 		B559EBA820A0B5B100836CD4 /* Responses */ = {
 			isa = PBXGroup;
 			children = (
+				CECC759D23D6231900486676 /* order-560-all-refunds.json */,
 				74C8F06F20EEC3A800B6EDC9 /* broken-notes.json */,
 				B5A2417A217F98FC00595DEF /* broken-notifications.json */,
 				74C8F06B20EEBD5D00B6EDC9 /* broken-order.json */,
@@ -1315,6 +1318,7 @@
 				CE0A0F1F223998A10075ED8D /* products-load-all.json in Resources */,
 				74E30951216E8DCE00ABCE4C /* site-visits-alt.json in Resources */,
 				74ABA1C5213F17AA00FFAD30 /* top-performers-day.json in Resources */,
+				CECC759E23D6231A00486676 /* order-560-all-refunds.json in Resources */,
 				74ABA1CB213F19FE00FFAD30 /* top-performers-week.json in Resources */,
 				B524194721AC643900D6FC0A /* device-settings.json in Resources */,
 				CEF88DAB233E911A00BED485 /* order-fully-refunded.json in Resources */,

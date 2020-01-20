@@ -172,10 +172,9 @@ final class OrderDetailsDataSource: NSObject {
 
         let currency = CurrencyFormatter()
         // Convert the order items into a mutable type
-        var convertedItems = [AggregateOrderItem]()
-        for item in items {
+        let convertedItems = items.map { item -> AggregateOrderItem in
             let total = currency.convertToDecimal(from: item.total) ?? NSDecimalNumber.zero
-            let convertedItem = AggregateOrderItem(
+            return AggregateOrderItem(
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -184,7 +183,6 @@ final class OrderDetailsDataSource: NSObject {
                 sku: item.sku,
                 total: total
             )
-            convertedItems.append(convertedItem)
         }
 
         let allItems = convertedItems + refundedProducts

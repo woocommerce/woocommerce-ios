@@ -140,20 +140,4 @@ struct ProductDetailsCellViewModel {
         self.positivePrice = refundedItem.price.abs()
         self.skuText = refundedItem.sku
     }
-
-    /// Refunded Product initializer
-    ///
-    init(refundedProduct: RefundedProduct,
-         currency: String,
-         formatter: CurrencyFormatter = CurrencyFormatter(),
-         product: Product? = nil) {
-        self.currency = currency
-        self.currencyFormatter = formatter
-        self.product = product
-        self.name = refundedProduct.name
-        self.positiveQuantity = abs(refundedProduct.quantity)
-        self.total = refundedProduct.total.abs()
-        self.positivePrice = refundedProduct.price.abs()
-        self.skuText = refundedProduct.sku
-    }
 }

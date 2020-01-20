@@ -118,7 +118,7 @@ final class OrderDetailsDataSource: NSObject {
 
     /// Combine refunded order items to show refunded products
     ///
-    var refundedProducts: [RefundedProduct] {
+    var refundedProducts: [AggregateOrderItem] {
         /// OrderItemRefund.orderItemID isn't useful for finding duplicates
         /// because multiple refunds cause orderItemIDs to be unique.
         /// Instead, we need to find duplicate *Products*.
@@ -151,7 +151,7 @@ final class OrderDetailsDataSource: NSObject {
                 .compactMap({ currency.convertToDecimal(from: $0.total) })
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
-            return RefundedProduct(
+            return AggregateOrderItem(
                 productID: item.productID,
                 variationID: item.variationID,
                 name: item.name,
@@ -187,22 +187,7 @@ final class OrderDetailsDataSource: NSObject {
             convertedItems.append(convertedItem)
         }
 
-        // Convert refunded products into the same compatible type
-        var convertedRefundedProducts = [AggregateOrderItem]()
-        for refundedProduct in refundedProducts {
-            let convertedRefundedProduct = AggregateOrderItem(productID: refundedProduct.productID,
-                                                              variationID: refundedProduct.variationID,
-                                                              name: refundedProduct.name,
-                                                              price: refundedProduct.price,
-                                                              quantity: refundedProduct.quantity,
-                                                              sku: refundedProduct.sku,
-                                                              total: refundedProduct.total)
-            convertedRefundedProducts.append(convertedRefundedProduct)
-        }
-
-        var allItems = [AggregateOrderItem]()
-        allItems.append(contentsOf: convertedItems)
-        allItems.append(contentsOf: convertedRefundedProducts)
+        let allItems = convertedItems + refundedProducts
 
         let grouped = Dictionary(grouping: allItems) { (item) in
             return item.hashValue

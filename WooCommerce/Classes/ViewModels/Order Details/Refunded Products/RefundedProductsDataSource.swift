@@ -9,7 +9,7 @@ import Yosemite
 final class RefundedProductsDataSource: NSObject {
     /// Aggregate data for refunded products
     ///
-    private(set) var refundedProducts: [RefundedProduct]
+    private(set) var refundedProducts: [AggregateOrderItem]
 
     /// Order
     ///
@@ -21,7 +21,7 @@ final class RefundedProductsDataSource: NSObject {
 
     /// Designated initializer.
     ///
-    init(order: Order, refundedProducts: [RefundedProduct]) {
+    init(order: Order, refundedProducts: [AggregateOrderItem]) {
         self.order = order
         self.refundedProducts = refundedProducts
     }
@@ -113,7 +113,7 @@ private extension RefundedProductsDataSource {
     func configureRefundedProduct(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         let refundedProduct = refundedProducts[indexPath.row]
         let product = lookUpProduct(by: refundedProduct.productOrVariationID)
-        let refundedProductViewModel = ProductDetailsCellViewModel(refundedProduct: refundedProduct,
+        let refundedProductViewModel = ProductDetailsCellViewModel(aggregateItem: refundedProduct,
                                                                     currency: order.currency,
                                                                     product: product)
         let imageService = ServiceLocator.imageService

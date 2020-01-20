@@ -204,7 +204,7 @@ private extension ProductStore {
 
         let remote = ProductsRemote(network: network)
         remote.searchSku(for: siteID, sku: sku) { (result, error) in
-            if error != nil {
+            guard error == nil else {
                 onCompletion(true)
                 return
             }

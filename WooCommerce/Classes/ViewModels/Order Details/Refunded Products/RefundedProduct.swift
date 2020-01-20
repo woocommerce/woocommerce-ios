@@ -62,3 +62,18 @@ extension RefundedProduct: Hashable {
         hasher.combine(variationID)
     }
 }
+
+
+// MARK: - Helper Methods
+//
+extension RefundedProduct {
+    /// Returns the variant if it exists
+    ///
+    var productOrVariationID: Int64 {
+        if variationID == 0 {
+            return productID
+        }
+
+        return variationID
+    }
+}

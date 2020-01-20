@@ -4,7 +4,7 @@ import Foundation
 /// This model represents a computed summary of order items.
 /// (order items - refunded order items) = aggregate order item data.
 ///
-struct AggregateOrderItem {
+final class AggregateOrderItem {
     let productID: Int64
     let variationID: Int64
 
@@ -61,5 +61,20 @@ extension AggregateOrderItem: Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(productID)
         hasher.combine(variationID)
+    }
+}
+
+
+// MARK: - Helper Methods
+//
+extension AggregateOrderItem {
+    /// Returns the variant if it exists
+    ///
+    var productOrVariationID: Int64 {
+        if variationID == 0 {
+            return productID
+        }
+
+        return variationID
     }
 }

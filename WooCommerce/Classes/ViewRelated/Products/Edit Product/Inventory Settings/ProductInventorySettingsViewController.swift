@@ -234,7 +234,7 @@ private extension ProductInventorySettingsViewController {
                         return
                     }
                     self.hideError()
-                    self.enableDoneButton(false)
+                    self.enableDoneButton(true)
                 }
 
                 ServiceLocator.stores.dispatch(action)

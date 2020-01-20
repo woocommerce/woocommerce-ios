@@ -232,7 +232,7 @@ extension OrderDetailsViewModel {
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
         case .refundedProducts:
             ServiceLocator.analytics.track(.refundedProductsDetailTapped)
-            let viewModel = RefundedProductsViewModel(order: order, refundedItems: refundedItems)
+            let viewModel = RefundedProductsViewModel(order: order, refundedProducts: dataSource.refundedProducts)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
         default:

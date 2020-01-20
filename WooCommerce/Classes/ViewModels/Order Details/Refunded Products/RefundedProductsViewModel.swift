@@ -9,55 +9,9 @@ final class RefundedProductsViewModel {
     ///
     private(set) var order: Order
 
-    /// Array of all refunded items from every refund.
-    /// May contain duplicate data.
-    /// Example: ["Hoodie - XL": 1, "Hoodie - XL": 2]
+    /// Aggregate data for all OrderItemRefund.
     ///
-    private var refundedItems: [OrderItemRefund]
-
-    /// Condense the refunded products into summarized data
-    /// by removing duplicate data found in refunded items.
-    ///
-    private var refundedProducts: [AggregateOrderItem] {
-        /// OrderItemRefund.orderItemID isn't useful for finding duplicates in
-        /// items because multiple refunds cause orderItemIDs to be unique.
-        /// Instead, we need to find duplicate *Products*.
-
-        let currency = CurrencyFormatter()
-        // Creates an array of dictionaries, with the hash value as the key.
-        // Example: [hashValue: [item, item], hashvalue: [item]]
-        // Since dictionary keys are unique, this eliminates the duplicate `OrderItemRefund`s.
-        let grouped = Dictionary(grouping: refundedItems) { (item) in
-            return item.hashValue
-        }
-
-        return grouped.compactMap { (_, items) in
-            // Here we iterate over each group's items
-
-            // All items should be equal except for quantity and price, so we pick the first
-            guard let item = items.first else {
-                // This should never happen, but let's be safe
-                return nil
-            }
-
-            // Sum the quantities
-            let totalQuantity = items.sum(\.quantity)
-            // Sum the refunded product amount
-            let total = items
-                .compactMap({ currency.convertToDecimal(from: $0.total) })
-                .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-            return AggregateOrderItem(
-                productID: item.productID,
-                variationID: item.variationID,
-                name: item.name,
-                price: item.price,
-                quantity: totalQuantity,
-                sku: item.sku,
-                total: total
-            )
-        }
-    }
+    private var refundedProducts: [AggregateOrderItem]
 
     /// The datasource that will be used to render the Refunded Products screen.
     ///
@@ -68,9 +22,9 @@ final class RefundedProductsViewModel {
 
     /// Designated initializer.
     ///
-    init(order: Order, refundedItems: [OrderItemRefund]) {
+    init(order: Order, refundedProducts: [AggregateOrderItem]) {
         self.order = order
-        self.refundedItems = refundedItems
+        self.refundedProducts = refundedProducts
     }
 
     /// Update the view model's order when notified

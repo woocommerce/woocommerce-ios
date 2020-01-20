@@ -19,13 +19,17 @@ final class Throttler {
     }
 
     func throttle(block: @escaping () -> ()) {
-        job.cancel()
+        cancel()
         job = DispatchWorkItem() { [weak self] in
             self?.previousRun = Date()
             block()
         }
         let delay = maxInterval.isLess(than: Date.second(from: previousRun)) ? 0 : maxInterval
         queue.asyncAfter(deadline: .now() + Double(delay), execute: job)
+    }
+
+    func cancel() {
+        job.cancel()
     }
 }
 

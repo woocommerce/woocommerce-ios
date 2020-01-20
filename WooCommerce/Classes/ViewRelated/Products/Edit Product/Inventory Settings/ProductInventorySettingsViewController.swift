@@ -203,6 +203,7 @@ private extension ProductInventorySettingsViewController {
         guard sku != product.sku else {
             skuIsValid = true
             hideError()
+            throttler.cancel()
             getSkuCell()?.textFieldBecomeFirstResponder()
             return
         }
@@ -216,13 +217,13 @@ private extension ProductInventorySettingsViewController {
                         return
                     }
                     self.skuIsValid = isValid
-                    if isValid {
-                        self.hideError()
-                    }
-                    else {
+
+                    guard isValid else {
                         self.displayError(error: .duplicatedSKU)
+                        self.getSkuCell()?.textFieldBecomeFirstResponder()
+                        return
                     }
-                    self.getSkuCell()?.textFieldBecomeFirstResponder()
+                    self.hideError()
                 }
 
                 ServiceLocator.stores.dispatch(action)

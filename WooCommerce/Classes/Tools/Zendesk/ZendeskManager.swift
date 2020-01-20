@@ -360,6 +360,7 @@ private extension ZendeskManager {
     }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
+        presentInController = viewController
         getUserInformationIfAvailable()
         promptUserForInformation(withName: withName, from: viewController) { (success, email) in
             guard success else {
@@ -627,6 +628,7 @@ private extension ZendeskManager {
         // Email Text Field
         alertController.addTextField { textField in
             textField.clearButtonMode = .always
+            textField.keyboardType = .emailAddress
             textField.placeholder = LocalizedText.emailPlaceholder
             textField.text = self.userEmail
 

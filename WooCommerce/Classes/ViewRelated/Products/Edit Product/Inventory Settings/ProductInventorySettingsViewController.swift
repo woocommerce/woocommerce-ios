@@ -164,6 +164,10 @@ private extension ProductInventorySettingsViewController {
 extension ProductInventorySettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
+        guard skuIsValid else {
+            return true
+        }
+
         if sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually ||
             stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting || stockStatus != product.productStockStatus {
             presentBackNavigationActionSheet()
@@ -191,6 +195,10 @@ extension ProductInventorySettingsViewController {
             self?.navigationController?.popViewController(animated: true)
         })
     }
+
+    private func enableDoneButton(_ enabled: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = enabled
+    }
 }
 
 // MARK: - Input changes handling
@@ -205,6 +213,7 @@ private extension ProductInventorySettingsViewController {
             hideError()
             throttler.cancel()
             getSkuCell()?.textFieldBecomeFirstResponder()
+            enableDoneButton(true)
             return
         }
 
@@ -221,9 +230,11 @@ private extension ProductInventorySettingsViewController {
                     guard isValid else {
                         self.displayError(error: .duplicatedSKU)
                         self.getSkuCell()?.textFieldBecomeFirstResponder()
+                        self.enableDoneButton(false)
                         return
                     }
                     self.hideError()
+                    self.enableDoneButton(false)
                 }
 
                 ServiceLocator.stores.dispatch(action)

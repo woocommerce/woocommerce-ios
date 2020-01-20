@@ -333,7 +333,6 @@
 		B5718D6521B56B400026C9F0 /* PushNotificationsManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5718D6421B56B3F0026C9F0 /* PushNotificationsManagerTests.swift */; };
 		B573B1A0219DC2690081C78C /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = B573B19D219DC2690081C78C /* Localizable.strings */; };
 		B57B678A2107546E00AF8905 /* Address+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B67892107546E00AF8905 /* Address+Woo.swift */; };
-		B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */; };
 		B57C5C9221B80E3C00FF82B2 /* APNSDevice+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9121B80E3B00FF82B2 /* APNSDevice+Woo.swift */; };
 		B57C5C9421B80E4700FF82B2 /* Data+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9321B80E4700FF82B2 /* Data+Woo.swift */; };
 		B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */; };
@@ -969,7 +968,6 @@
 		B573B1AE219DC2BC0081C78C /* zh-Hans */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hans"; path = "zh-Hans.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B573B1AF219DC2BD0081C78C /* zh-Hant */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = "zh-Hant"; path = "zh-Hant.lproj/Localizable.strings"; sourceTree = "<group>"; };
 		B57B67892107546E00AF8905 /* Address+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Address+Woo.swift"; sourceTree = "<group>"; };
-		B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrderItemViewModel.swift; sourceTree = "<group>"; };
 		B57C5C9121B80E3B00FF82B2 /* APNSDevice+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "APNSDevice+Woo.swift"; sourceTree = "<group>"; };
 		B57C5C9321B80E4700FF82B2 /* Data+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Data+Woo.swift"; sourceTree = "<group>"; };
 		B57C5C9521B80E5400FF82B2 /* Dictionary+Woo.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dictionary+Woo.swift"; sourceTree = "<group>"; };
@@ -2558,20 +2556,11 @@
 			path = Cells;
 			sourceTree = "<group>";
 		};
-		CE5F462823AAC9EA006B1A5C /* Refunds */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Refunds;
-			sourceTree = "<group>";
-		};
 		CE85535B209B5B6A00938BDC /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				CE5F462823AAC9EA006B1A5C /* Refunds */,
 				D817585C22BB5E6900289CFE /* Order Details */,
 				D843D5D82248EE90001BFA55 /* ManualTrackingViewModel.swift */,
-				B57B678D21078C5400AF8905 /* OrderItemViewModel.swift */,
 				CE22709A228F362600C0626C /* ProductDetailsViewModel.swift */,
 				CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */,
 				D843D5D622485B19001BFA55 /* ShippingProvidersViewModel.swift */,
@@ -3531,7 +3520,6 @@
 				024DF31423742B7A006658FE /* AztecUnderlineFormatBarCommand.swift in Sources */,
 				CE32B10D20BEDE1C006FBCF4 /* TwoColumnSectionHeaderView.swift in Sources */,
 				D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */,
-				B57B678E21078C5400AF8905 /* OrderItemViewModel.swift in Sources */,
 				D8C62471227AE0030011A7D6 /* SiteCountry.swift in Sources */,
 				B582F95920FFCEAA0060934A /* UITableViewHeaderFooterView+Helpers.swift in Sources */,
 				02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */,

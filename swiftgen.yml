@@ -1,0 +1,38 @@
+coredata:
+  - inputs: &dataModel Storage/Storage/Model/WooCommerce.xcdatamodeld/Model 24.xcdatamodel
+    outputs:
+      templatePath: coredata-networking-model-template.stencil
+      output: Networking/Networking/Model/Product/ProductShippingClass.swift
+      params: &params
+        entityName: &model ProductShippingClass
+        publicAccess: public
+  - inputs: *dataModel
+    outputs:
+      templatePath: coredata-model-readonlyconvertible-template.stencil
+      output: Yosemite/Yosemite/Model/Storage/ProductShippingClass+ReadOnlyConvertible.swift
+      params: *params
+  # - inputs: *dataModel
+  #   outputs:
+  #     templatePath: coredata-networking-mapper-template.stencil
+  #     output: Networking/Networking/Mapper/ProductShippingClassMapper.swift
+  #     params: *params
+  # - inputs: *dataModel
+  #   outputs:
+  #     templatePath: coredata-networking-list-mapper-template.stencil
+  #     output: Networking/Networking/Mapper/ProductShippingClassListMapper.swift
+  #     params: *params
+  # - inputs: *dataModel
+  #   outputs:
+  #     templatePath: coredata-networking-remote-template.stencil
+  #     output: Networking/Networking/Remote/ProductShippingClassRemote.swift
+  #     params: *params
+  # - inputs: *dataModel
+  #   outputs:
+  #     templatePath: coredata-yosemite-store-action-template.stencil
+  #     output: Yosemite/Yosemite/Actions/ProductShippingClassAction.swift
+  #     params: *params
+  - inputs: *dataModel
+    outputs:
+      templatePath: coredata-yosemite-store-template.stencil
+      output: Yosemite/Yosemite/Stores/ProductShippingClassStore.swift
+      params: *params

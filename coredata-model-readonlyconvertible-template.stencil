@@ -1,0 +1,70 @@
+import Foundation
+import Storage
+
+{% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
+{% for model in models %}
+  {% for name, entity in model.entities %}
+    {% if entity.name == param.entityName %}
+      {% set superclass %}{{ model.entities[entity.superEntity].className|default:"Decodable" }}{% endset %}
+      {% set entityClassName %}{{ entity.className|default:"NSManagedObject" }}{% endset %}
+// MARK: - Storage.{{ entity.name }}: ReadOnlyConvertible
+//
+extension Storage.{{ entity.name }}: ReadOnlyConvertible {
+
+    /// Updates the Storage.{{ entity.name }} with the ReadOnly.
+    ///
+    public func update(with {{ entity.name | lowerFirstLetter }}: Yosemite.{{ entity.name }}) {
+        // Entities.
+    {% for attribute in entity.attributes %}
+        {{ attribute.name }} = {{ entity.name | lowerFirstLetter }}.{{ attribute.name }}
+    {% endfor %}
+    {% if entity.relationships.count > 0 %}
+        // Relationships.
+    {% for relationship in entity.relationships %}
+        {{ relationship.name }} = {{ entity.name | lowerFirstLetter }}.{{ relationship.name }}
+    {% endfor %}
+    {% endif %}
+    }
+
+
+    /// Returns a ReadOnly version of the receiver.
+    ///
+    public func toReadOnly() -> Yosemite.{{ entity.name }} {
+        {% if entity.relationships.count > 0 %}
+        {% for relationship in entity.relationships %}
+          {% if relationship.isToMany %}
+            {% if relationship.isOptional %}
+        let {{ relationship.name }} = self.{{ relationship.name }}?.map { $0.toReadOnly() } ?? [Yosemite.{{ model.entities[relationship.destinationEntity].className|default:"NSManagedObject" }}]()
+            {% else %}
+        let {{ relationship.name }} = self.{{ relationship.name }}.map { $0.toReadOnly() }
+            {% endif %}
+          {% else %}
+            {% if relationship.isOptional %}
+        let {{ relationship.name }} = self.{{ relationship.name }}?.toReadOnly()
+            {% else %}
+        // TODO: implement the relationship: {{ relationship.name }}.
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+
+        {% endif %}
+        {% for attribute in entity.attributes %}
+          {% if forloop.first %}
+        return {{ entity.name }}({{ attribute.name }}: {{ attribute.name }},
+          {% elif forloop.last and entity.relationships.count == 0 %}
+                                 {{ attribute.name }}: {{ attribute.name }})
+          {% else %}
+                                 {{ attribute.name }}: {{ attribute.name }},
+          {% endif %}
+        {% endfor %}
+        {% if entity.relationships.count > 0 %}
+                                 // Relationships.
+        {% for relationship in entity.relationships %}
+                                 {{ relationship.name }}: {{ relationship.name }}{% if relationship.isOptional %}?{% endif %}{% if forloop.last %}){% else %},{% endif %}
+        {% endfor %}
+        {% endif %}
+    }
+}
+    {% endif %}
+    {% endfor %}
+{% endfor %}

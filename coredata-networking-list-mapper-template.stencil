@@ -1,0 +1,50 @@
+import Foundation
+
+{% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
+{% for model in models %}
+  {% for name, entity in model.entities %}
+    {% if entity.name == param.entityName %}
+      {% set superclass %}{{ model.entities[entity.superEntity].className|default:"Decodable" }}{% endset %}
+      {% set entityClassName %}{{ entity.className|default:"NSManagedObject" }}{% endset %}
+/// Mapper: {{ entity.name }} List
+///
+struct {{ entity.name }}ListMapper: Mapper {
+    // TODO: uncomment the code below for siteID injection or delete
+    /// Site Identifier associated to the product variation that will be parsed.
+    ///
+    /// We're injecting this field via `JSONDecoder.userInfo` because SiteID is not returned in any of the Product Variation Endpoints.
+    ///
+    // let siteID: Int64
+
+    /// (Attempts) to convert a dictionary into [{{ entity.name }}].
+    ///
+    func map(response: Data) throws -> [{{ entity.name }}] {
+        let decoder = JSONDecoder()
+        
+        // TODO: add any custom decoding strategies like date
+
+        // TODO: uncomment the code below for siteID injection or delete
+        // decoder.userInfo = [
+        //     .siteID: siteID
+        // ]
+
+        return try decoder.decode({{ entity.name }}ListEnvelope.self, from: response).data
+    }
+}
+
+
+/// {{ entity.name }}ListEnvelope Disposable Entity
+///
+/// `Load All {{ entity.name }}` endpoint returns the requested data in the `data` key. This entity
+/// allows us to parse all the things with JSONDecoder.
+///
+private struct {{ entity.name }}ListEnvelope: Decodable {
+    let data: [{{ entity.name }}]
+
+    private enum CodingKeys: String, CodingKey {
+        case data = "data"
+    }
+}
+    {% endif %}
+    {% endfor %}
+{% endfor %}

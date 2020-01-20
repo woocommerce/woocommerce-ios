@@ -1,0 +1,24 @@
+import Foundation
+import Networking
+
+{% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
+{% for model in models %}
+  {% for name, entity in model.entities %}
+    {% if entity.name == param.entityName %}
+      {% set superclass %}{{ model.entities[entity.superEntity].className|default:"Decodable" }}{% endset %}
+      {% set entityClassName %}{{ entity.className|default:"NSManagedObject" }}{% endset %}
+// MARK: - {{ entity.name }}Action: Defines all of the Actions supported by the {{ entity.name }}Store.
+//
+public enum {{ entity.name }}Action: Action {
+
+    /// Synchronizes the {{ entity.name }}'s matching the specified criteria.
+    ///
+    case synchronize{{ entity.name }}Models(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
+
+    /// Retrieves the specified {{ entity.name }}.
+    ///
+    case retrieve{{ entity.name }}(siteID: Int64, remoteID: Int64, onCompletion: ({{ entity.name }}?, Error?) -> Void)
+}
+    {% endif %}
+    {% endfor %}
+{% endfor %}

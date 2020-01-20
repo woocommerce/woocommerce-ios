@@ -1,0 +1,162 @@
+import Foundation
+
+{% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
+{% for model in models %}
+  {% for name, entity in model.entities %}
+    {% if entity.name == param.entityName %}
+      {% set superclass %}{{ model.entities[entity.superEntity].className|default:"Decodable" }}{% endset %}
+      {% set entityClassName %}{{ entity.className|default:"NSManagedObject" }}{% endset %}
+/// Represents a {{ entity.name }} entity.
+///
+      {% if entityClassName|contains:"." %}
+      // Warning: '{{ entityClassName }}' cannot be a valid type name, skipping code generation.
+      
+      {% else %}
+      {% if param.generateObjcName %}
+      @objc({{ entityClassName }})
+      {% endif %}
+{{ accessModifier }} struct {{ entityClassName }}: {{ superclass }} {
+        {% set override %}{% if superclass != "NSManagedObject" %}override {% endif %}{% endset %}
+  {# Entities #}
+    // Entities.
+  {% for attribute in entity.attributes %}
+  {% if attribute.usesScalarValueType %}
+    {{ accessModifier }} let {{ attribute.name }}: {{ attribute.typeName }}
+  {% else %}
+    {{ accessModifier }} let {{ attribute.name }}: {{ attribute.typeName }}{% if attribute.isOptional %}?{% endif %}
+  {% endif %}
+  {% endfor %}
+  {% if entity.relationships.count > 0 %}
+    // Relationships.
+  {% for relationship in entity.relationships %}
+    {% if relationship.isToMany %}
+    {{ accessModifier }} let {{ relationship.name }}: [{{ model.entities[relationship.destinationEntity].className|default:"NSManagedObject" }}]
+    {% else %}
+    {{ accessModifier }} let {{ relationship.name }}: {{ model.entities[relationship.destinationEntity].className|default:"NSManagedObject" }}{% if relationship.isOptional %}?{% endif %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+  {% for fetchedProperty in entity.fetchedProperties %}
+    {{ accessModifier }} let {{ fetchedProperty.name }}: [{{ fetchedProperty.fetchRequest.entity }}]
+  {% endfor %}
+
+    /// {{ entity.name }} initializer.
+    ///
+  {% for attribute in entity.attributes %}
+    {% if forloop.first %}
+    public init({{ attribute.name }}: {{ attribute.typeName }}{% if attribute.isOptional %}?{% endif %},
+    {% elif forloop.last and entity.relationships.count == 0 %}
+                {{ attribute.name }}: {{ attribute.typeName }}{% if attribute.isOptional %}?{% endif %}) {
+    {% else %}
+                {{ attribute.name }}: {{ attribute.typeName }}{% if attribute.isOptional %}?{% endif %},
+    {% endif %}
+  {% endfor %}
+  {% if entity.relationships.count > 0 %}
+                // Relationships.
+  {% for relationship in entity.relationships %}
+    {% if relationship.isToMany %}
+                {{ relationship.name }}: [{{ model.entities[relationship.destinationEntity].className|default:"NSManagedObject" }}]{% if forloop.last %}){% else %},{% endif %}
+    {% else %}
+                {{ relationship.name }}: {{ model.entities[relationship.destinationEntity].className|default:"NSManagedObject" }}{% if relationship.isOptional %}?{% endif %}{% if forloop.last %}){% else %},{% endif %}
+    {% endif %}
+  {% endfor %}
+  {% endif %}
+        // Entities.
+    {% for attribute in entity.attributes %}
+        self.{{ attribute.name }} = {{ attribute.name }}
+    {% endfor %}
+    {% if entity.relationships.count > 0 %}
+        // Relationships.
+    {% for relationship in entity.relationships %}
+        self.{{ relationship.name }} = {{ relationship.name }}
+    {% endfor %}
+    {% endif %}
+    }
+
+
+    /// Public initializer for {{ entity.name }}.
+    ///
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+
+        // Entities.
+        {% for attribute in entity.attributes %}
+        {% if attribute.isOptional %}
+        let {{ attribute.name }} = try container.decodeIfPresent({{ attribute.typeName }}.self, forKey: .{{ attribute.name }})
+        {% else %}
+        let {{ attribute.name }} = try container.decode({{ attribute.typeName }}.self, forKey: .{{ attribute.name }})
+        {% endif %}
+        {% endfor %}
+
+        {% if entity.relationships.count > 0 %}
+        // Relationships.
+        {% for relationship in entity.relationships %}
+        {% if relationship.isToMany %}
+          {% if relationship.isOptional %}
+        let {{ relationship.name }} = try container.decodeIfPresent([{{ model.entities[relationship.destinationEntity].className|default:"NSManagedObject" }}].self, forKey: .{{ relationship.name }}) ?? []
+          {% else %}
+        let {{ relationship.name }} = try container.decode([{{ model.entities[relationship.destinationEntity].className|default:"NSManagedObject" }}].self, forKey: .{{ relationship.name }})
+          {% endif %}
+        {% else %}
+          {% if relationship.isOptional %}
+        let {{ relationship.name }} = try container.decodeIfPresent({{ model.entities[relationship.destinationEntity].className|default:"NSManagedObject" }}.self, forKey: .{{ relationship.name }})
+          {% else %}
+        let {{ relationship.name }} = try container.decode({{ model.entities[relationship.destinationEntity].className|default:"NSManagedObject" }}.self, forKey: .{{ relationship.name }})
+          {% endif %}   
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        {% for attribute in entity.attributes %}
+        {% if forloop.first %}
+        self.init({{ attribute.name }}: {{ attribute.name }},
+        {% elif forloop.last and entity.relationships.count == 0 %}
+                  {{ attribute.name }}: {{ attribute.name }})
+        {% else %}
+                  {{ attribute.name }}: {{ attribute.name }},
+        {% endif %}
+        {% endfor %}
+        {% if entity.relationships.count > 0 %}
+                  // Relationships.
+        {% for relationship in entity.relationships %}
+                  {{ relationship.name }}: {{ relationship.name }}{% if forloop.last %}){% else %},{% endif %}
+        {% endfor %}
+        {% endif %}
+    }
+}
+
+
+/// Defines all of the {{ entity.name }} CodingKeys
+///
+private extension {{ entity.name }} {
+    enum CodingKeys: String, CodingKey {
+        {% for attribute in entity.attributes %}
+        case {{ attribute.name }}
+        {% endfor %}
+    }
+}
+
+
+// MARK: - Equatable Conformance
+//
+extension {{ entity.name }}: Equatable {
+    public static func == (lhs: {{ entity.name }}, rhs: {{ entity.name }}) -> Bool {
+        {% for attribute in entity.attributes %}
+          {% if forloop.first %}
+        return lhs.{{ attribute.name }} == rhs.{{ attribute.name }}{% if entity.attributes.count > 1 %} &&{% endif %}
+          {% else %}
+            lhs.{{ attribute.name }} == rhs.{{ attribute.name }}{% if not forloop.last %} &&{% endif %}
+          {% endif %}
+        {% endfor %}
+        {% if entity.relationships.count > 0 %}
+            // Relationships.
+        {% for relationship in entity.relationships %}
+            lhs.{{ relationship.name }} == rhs.{{ relationship.name }}{% if !forloop.last %} &&{% endif %}
+        {% endfor %}
+        {% endif %}
+    }
+}
+    {% endif %}
+    {% endif %}
+    {% endfor %}
+{% endfor %}

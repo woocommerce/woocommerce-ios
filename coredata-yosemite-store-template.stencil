@@ -1,0 +1,109 @@
+import Foundation
+import Networking
+import Storage
+
+{% set accessModifier %}{% if param.publicAccess %}public{% else %}internal{% endif %}{% endset %}
+{% for model in models %}
+  {% for name, entity in model.entities %}
+    {% if entity.name == param.entityName %}
+      {% set superclass %}{{ model.entities[entity.superEntity].className|default:"Decodable" }}{% endset %}
+      {% set entityClassName %}{{ entity.className|default:"NSManagedObject" }}{% endset %}      
+// MARK: - {{ entity.name }}Store
+//
+public final class {{ entity.name }}Store: Store {
+
+    private lazy var sharedDerivedStorage: StorageType = {
+        return storageManager.newDerivedStorage()
+    }()
+
+    /// Registers for supported Actions.
+    ///
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
+        dispatcher.register(processor: self, for: {{ entity.name }}Action.self)
+    }
+
+    /// Receives and executes Actions.
+    ///
+    override public func onAction(_ action: Action) {
+        guard let action = action as? {{ entity.name }}Action else {
+            assertionFailure("{{ entity.name }}Store received an unsupported action")
+            return
+        }
+
+        switch action {
+        case .synchronize{{ entity.name }}Models(let siteID, let pageNumber, let pageSize, let onCompletion):
+            synchronize{{ entity.name }}Models(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        }
+    }
+}
+
+
+// MARK: - Services!
+//
+private extension {{ entity.name }}Store {
+
+    /// Synchronizes the `{{ entity.name }}`s associated with a given Site ID (if any!).
+    ///
+    func synchronize{{ entity.name }}Models(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = {{ entity.name }}Remote(network: network)
+
+        remote.loadAll(for: siteID) { [weak self] (models, error) in
+            guard let models = models else {
+                onCompletion(error)
+                return
+            }
+
+            self?.upsertStored{{ entity.name }}ModelsInBackground(readOnly{{ entity.name }}Models: models,
+                                                                  siteID: siteID) {
+                                                                      onCompletion(nil)
+            }
+        }
+    }
+}
+
+
+// MARK: - Storage: {{ entity.name }}
+//
+private extension {{ entity.name }}Store {
+
+    /// Updates (OR Inserts) the specified ReadOnly {{ entity.name }} Entities *in a background thread*. onCompletion will be called
+    /// on the main thread!
+    ///
+    func upsertStored{{ entity.name }}ModelsInBackground(readOnly{{ entity.name }}Models: [Networking.{{ entity.name }}],
+                                                   siteID: Int64,
+                                                   onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            self?.upsertStored{{ entity.name }}Models(readOnly{{ entity.name }}Models: readOnly{{ entity.name }}Models, in: derivedStorage, siteID: siteID)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+}
+
+
+private extension {{ entity.name }}Store {
+    /// Updates (OR Inserts) the specified ReadOnly {{ entity.name }} Entities into the Storage Layer.
+    ///
+    /// - Parameters:
+    ///     - readOnly{{ entity.name }}Models: Remote {{ entity.name }}'s to be persisted.
+    ///     - storage: Where we should save all the things!
+    ///     - siteID: site ID for looking up the {{ entity.name }}.
+    ///
+    func upsertStored{{ entity.name }}Models(readOnly{{ entity.name }}Models: [Networking.{{ entity.name }}],
+                                       in storage: StorageType,
+                                       siteID: Int64) {
+        // Upserts the {{ entity.name }} models from the read-only version
+        for readOnly{{ entity.name }} in readOnly{{ entity.name }}Models {
+            let storage{{ entity.name }} = storage.load{{ entity.name }}(siteID: siteID,
+                                                                            remoteID: readOnly{{ entity.name }}.remoteID)
+                ?? storage.insertNewObject(ofType: Storage.{{ entity.name }}.self)
+            storage{{ entity.name }}.update(with: readOnly{{ entity.name }})
+        }
+    }
+}
+    {% endif %}
+    {% endfor %}
+{% endfor %}

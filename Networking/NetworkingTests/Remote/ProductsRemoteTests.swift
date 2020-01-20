@@ -138,6 +138,46 @@ class ProductsRemoteTests: XCTestCase {
     }
 
 
+    // MARK: - Search Product SKU tests
+
+    /// Verifies that searchSku properly parses the product `sku` sample response.
+    ///
+    func testSearchSkuProperlyReturnsParsedSku() {
+        let remote = ProductsRemote(network: network)
+        let expectation = self.expectation(description: "Search for a product sku")
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "product-search-sku")
+
+        let expectedSku = "T-SHIRT-HAPPY-NINJA"
+
+        remote.searchSku(for: sampleSiteID, sku: expectedSku) { (sku, error) in
+            XCTAssertNil(error)
+            XCTAssertNotNil(sku)
+            XCTAssertEqual(sku, expectedSku)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that searchSku properly relays Networking Layer errors.
+    ///
+    func testSearchSkuProperlyRelaysNetwokingErrors() {
+        let remote = ProductsRemote(network: network)
+        let expectation = self.expectation(description: "Wait for a product sku result")
+
+        let skuToSearch = "T-SHIRT-HAPPY-NINJA"
+
+        remote.searchSku(for: sampleSiteID, sku: skuToSearch) { (sku, error) in
+            XCTAssertNil(sku)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+
     // MARK: - Update Product
 
     /// Verifies that updateProduct properly parses the `product-update` sample response.

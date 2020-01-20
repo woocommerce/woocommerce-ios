@@ -202,12 +202,15 @@ private extension ProductStore {
             return
         }
 
-        guard let products = storageManager.viewStorage.loadProducts(siteID: siteID) else {
-            onCompletion(true)
-            return
+        let remote = ProductsRemote(network: network)
+        remote.searchSku(for: siteID, sku: sku) { (result, error) in
+            guard error == nil else {
+                onCompletion(true)
+                return
+            }
+            let isValid = (result != nil && result == sku) ? false : true
+            onCompletion(isValid)
         }
-        let anyProductHasTheSameSKU = products.compactMap({ $0.sku }).contains(sku)
-        onCompletion(anyProductHasTheSameSKU == false)
     }
 }
 

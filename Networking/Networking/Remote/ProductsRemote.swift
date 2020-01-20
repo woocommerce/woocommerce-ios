@@ -106,6 +106,28 @@ public class ProductsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Retrieves a product SKU if available.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote products.
+    ///     - sku: Product SKU to search for.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func searchSku(for siteID: Int64,
+                               sku: String,
+                               completion: @escaping (String?, Error?) -> Void) {
+        let parameters = [
+            ParameterKey.sku: sku,
+            ParameterKey.fields: ParameterValues.skuFieldValues
+        ]
+
+        let path = Path.products
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductSkuMapper()
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Updates a specific `Product`.
     ///
     /// - Parameters:
@@ -159,6 +181,12 @@ public extension ProductsRemote {
         static let search: String     = "search"
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
+        static let sku: String        = "sku"
+        static let fields: String     = "_fields"
+    }
+
+    private enum ParameterValues {
+        static let skuFieldValues: String = "sku"
     }
 }
 

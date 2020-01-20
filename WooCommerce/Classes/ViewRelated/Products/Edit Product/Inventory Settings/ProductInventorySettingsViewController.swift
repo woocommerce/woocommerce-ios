@@ -427,10 +427,10 @@ private extension ProductInventorySettingsViewController {
     }
 
     func getIndexPathForRow(_ row: Row) -> IndexPath? {
-        for i in 0 ..< sections.count {
-            for j in 0 ..< sections[i].rows.count {
-                if sections[i].rows[j] == row {
-                    return IndexPath(row: j, section: i)
+        for s in 0 ..< sections.count {
+            for r in 0 ..< sections[s].rows.count {
+                if sections[s].rows[r] == row {
+                    return IndexPath(row: r, section: s)
                 }
             }
         }

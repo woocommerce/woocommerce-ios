@@ -114,7 +114,7 @@ private extension RefundedProductsDataSource {
         let refundedProduct = refundedProducts[indexPath.row]
         let productID = refundedProduct.variationID == 0 ? refundedProduct.productID : refundedProduct.variationID
         let product = lookUpProduct(by: productID)
-        let refundedProductViewModel = RefundedProductCellViewModel(refundedProduct: refundedProduct,
+        let refundedProductViewModel = ProductDetailsCellViewModel(refundedProduct: refundedProduct,
                                                                     currency: order.currency,
                                                                     product: product)
         let imageService = ServiceLocator.imageService

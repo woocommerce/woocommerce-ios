@@ -159,9 +159,9 @@ private extension RefundDetailsDataSource {
         let refundedItem = refundedItems[indexPath.row]
         let productID = refundedItem.variationID == 0 ? refundedItem.productID : refundedItem.variationID
         let product = lookUpProduct(by: productID)
-        let itemViewModel = RefundedOrderItemCellViewModel(refundedItem: refundedItem,
-                                                           currency: order.currency,
-                                                           product: product)
+        let itemViewModel = ProductDetailsCellViewModel(refundedItem: refundedItem,
+                                                        currency: order.currency,
+                                                        product: product)
 
         let imageService = ServiceLocator.imageService
 

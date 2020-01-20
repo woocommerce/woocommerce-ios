@@ -3,7 +3,7 @@ import Gridicons
 import Yosemite
 
 
-/// Pick List: Renders a row that displays a single Product.
+/// Pick List: a simplified ProductDetails cell, that focuses on order fulfillment.
 ///
 final class PickListTableViewCell: UITableViewCell {
 
@@ -59,7 +59,7 @@ final class PickListTableViewCell: UITableViewCell {
     // MARK: - Overridden Methods
 
     required init?(coder aDecoder: NSCoder) {
-        // initializers don't call property observers,
+        // Initializers don't call property observers,
         // so don't set the default for mode here.
         super.init(coder: aDecoder)
     }
@@ -106,9 +106,9 @@ extension PickListTableViewCell {
         sku = skuText
     }
 
-    /// Configure a refunded order item
+    /// Configure a pick list cell
     ///
-    func configure(item: OrderItemRefundViewModel, imageService: ImageService) {
+    func configure(item: ProductDetailsCellViewModel, imageService: ImageService) {
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: item.imageURL?.absoluteString,
                                                        placeholder: .productPlaceholderImage,

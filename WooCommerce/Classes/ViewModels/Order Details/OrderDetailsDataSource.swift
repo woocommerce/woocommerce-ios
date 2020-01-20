@@ -516,9 +516,9 @@ private extension OrderDetailsDataSource {
         if refundedProducts.count == 0 {
             let item = items[indexPath.row]
             let product = lookUpProduct(by: item.productID)
-            let itemViewModel = OrderItemViewModel(item: item,
-                                                   currency: order.currency,
-                                                   product: product)
+            let itemViewModel = ProductDetailsCellViewModel(item: item,
+                                                            currency: order.currency,
+                                                            product: product)
             cell.configure(item: itemViewModel, imageService: imageService)
             return
         }
@@ -526,9 +526,9 @@ private extension OrderDetailsDataSource {
         let aggregateItem = aggregateOrderItems[indexPath.row]
         let productID = aggregateItem.variationID == 0 ? aggregateItem.productID : aggregateItem.variationID
         let product = lookUpProduct(by: productID)
-        let itemViewModel = AggregateOrderItemCellViewModel(aggregateItem: aggregateItem,
-                                                            currencyCode: order.currency,
-                                                            product: product)
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem,
+                                                        currency: order.currency,
+                                                        product: product)
 
         cell.configure(item: itemViewModel, imageService: imageService)
     }

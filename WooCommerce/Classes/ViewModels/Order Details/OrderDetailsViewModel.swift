@@ -40,7 +40,7 @@ final class OrderDetailsViewModel {
 
     /// Sorted order items
     ///
-    var items: [OrderItem] {
+    private var items: [OrderItem] {
         return order.items
     }
 

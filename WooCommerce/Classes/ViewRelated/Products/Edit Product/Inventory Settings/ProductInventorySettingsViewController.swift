@@ -247,7 +247,7 @@ private extension ProductInventorySettingsViewController {
     }
 
     func hideError() {
-        // This check is useful to not reload at every tipying all the sections
+        // This check is useful so we don't reload while typing each letter in the sections
         if error != nil {
             error = nil
             reloadSections()

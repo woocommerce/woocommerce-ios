@@ -501,7 +501,8 @@
 		CECC758C23D2227000486676 /* ProductDetailsCellViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */; };
 		CECC759523D6057E00486676 /* OrderItem+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC759423D6057E00486676 /* OrderItem+Woo.swift */; };
 		CECC759723D607C900486676 /* OrderItemRefund+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC759623D607C900486676 /* OrderItemRefund+Woo.swift */; };
-		CECC759923D6160000486676 /* AggregateOrderItemTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC759823D6160000486676 /* AggregateOrderItemTests.swift */; };
+		CECC759923D6160000486676 /* AggregateDataHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC759823D6160000486676 /* AggregateDataHelperTests.swift */; };
+		CECC759C23D61C1400486676 /* AggregateDataHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = CECC759B23D61C1400486676 /* AggregateDataHelper.swift */; };
 		CEE005F62076C4040079161F /* Orders.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = CEE005F52076C4040079161F /* Orders.storyboard */; };
 		CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEE006032077D1280079161F /* SummaryTableViewCell.swift */; };
 		CEE006062077D1280079161F /* SummaryTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = CEE006042077D1280079161F /* SummaryTableViewCell.xib */; };
@@ -1137,7 +1138,8 @@
 		CECC758B23D2227000486676 /* ProductDetailsCellViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductDetailsCellViewModel.swift; sourceTree = "<group>"; };
 		CECC759423D6057E00486676 /* OrderItem+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItem+Woo.swift"; sourceTree = "<group>"; };
 		CECC759623D607C900486676 /* OrderItemRefund+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderItemRefund+Woo.swift"; sourceTree = "<group>"; };
-		CECC759823D6160000486676 /* AggregateOrderItemTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregateOrderItemTests.swift; sourceTree = "<group>"; };
+		CECC759823D6160000486676 /* AggregateDataHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregateDataHelperTests.swift; sourceTree = "<group>"; };
+		CECC759B23D61C1400486676 /* AggregateDataHelper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AggregateDataHelper.swift; sourceTree = "<group>"; };
 		CEE005F52076C4040079161F /* Orders.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Orders.storyboard; sourceTree = "<group>"; };
 		CEE006032077D1280079161F /* SummaryTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SummaryTableViewCell.swift; sourceTree = "<group>"; };
 		CEE006042077D1280079161F /* SummaryTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SummaryTableViewCell.xib; sourceTree = "<group>"; };
@@ -1871,37 +1873,38 @@
 		B53A569521123D27000776C9 /* Tools */ = {
 			isa = PBXGroup;
 			children = (
-				D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */,
+				D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */,
+				D83F5938225B424B00626E75 /* AddManualTrackingViewModelTests.swift */,
+				CECC759823D6160000486676 /* AggregateDataHelperTests.swift */,
+				CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */,
+				02BA23BF22EE9DAF009539E7 /* AsyncDictionaryTests.swift */,
+				CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */,
+				93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */,
+				D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */,
+				0247AAA123A3C5A6007F967E /* DecimalInputFormatterTests.swift */,
+				02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */,
+				024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */,
+				D89E0C30226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift */,
+				D83F5936225B402E00626E75 /* EditableValueOneTableViewCellTests.swift */,
+				D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */,
+				D8F82AC422AF903700B67E4B /* IconsTests.swift */,
+				020B2F9023BDD71500BD79AD /* IntegerInputFormatterTests.swift */,
+				D8C11A6122E24C4A00D4A88D /* LedgerTableViewCellTests.swift */,
+				D83F593C225B4B5000626E75 /* ManualTrackingViewControllerTests.swift */,
+				D8AB131D225DC25F002BB5D1 /* MockOrders.swift */,
 				D83A6A772379097A00419D48 /* MurielColorTests.swift */,
+				D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */,
+				D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */,
+				45B9C64423A945C0007FC4C5 /* PriceInputFormatterTests.swift */,
+				D85136D4231E40B500DD0539 /* ProductReviewTableViewCellTests.swift */,
+				B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */,
 				D8053BCD231F98DA00CE60C2 /* ReviewAgeTests.swift */,
 				D85136DC231E613900DD0539 /* ReviewsViewModelTests.swift */,
-				D85136D4231E40B500DD0539 /* ProductReviewTableViewCellTests.swift */,
 				D88D5A3C230B5E85007B6E01 /* ServiceLocatorTests.swift */,
-				D8736B5022EB69E300A14A29 /* OrderDetailsViewModelTests.swift */,
-				D8C11A6122E24C4A00D4A88D /* LedgerTableViewCellTests.swift */,
-				D8C11A5F22E2479800D4A88D /* OrderPaymentDetailsViewModelTests.swift */,
-				D8F82AC422AF903700B67E4B /* IconsTests.swift */,
-				D89E0C30226EFB0900DF9DE6 /* EditableOrderTrackingTableViewCellTests.swift */,
-				D8A8C4F22268288F001C72BF /* AddManualCustomTrackingViewModelTests.swift */,
-				D82DFB4B225F303200EFE2CB /* EmptyListMessageWithActionTests.swift */,
-				D83F593C225B4B5000626E75 /* ManualTrackingViewControllerTests.swift */,
-				D83F5938225B424B00626E75 /* AddManualTrackingViewModelTests.swift */,
-				D83F5936225B402E00626E75 /* EditableValueOneTableViewCellTests.swift */,
-				D83F5934225B3CDD00626E75 /* DatePickerTableViewCellTests.swift */,
-				93FA787121CD2A1A00B663E5 /* CurrencySettingsTests.swift */,
-				B53A569621123D3B000776C9 /* ResultsControllerUIKitTests.swift */,
 				B517EA19218B2D2600730EC4 /* StringFormatterTests.swift */,
 				B56BBD15214820A70053A32D /* SyncCoordinatorTests.swift */,
+				D83A6A7923792B2400419D48 /* UIColor+Muriel-Tests.swift */,
 				CE50345621B1F26C007573C6 /* ZendeskManagerTests.swift */,
-				CE4DA5C721DD759400074607 /* CurrencyFormatterTests.swift */,
-				CEEC9B6521E7C5200055EEF0 /* AppRatingManagerTests.swift */,
-				D8AB131D225DC25F002BB5D1 /* MockOrders.swift */,
-				024A543522BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift */,
-				02BA23BF22EE9DAF009539E7 /* AsyncDictionaryTests.swift */,
-				0247AAA123A3C5A6007F967E /* DecimalInputFormatterTests.swift */,
-				020B2F9023BDD71500BD79AD /* IntegerInputFormatterTests.swift */,
-				45B9C64423A945C0007FC4C5 /* PriceInputFormatterTests.swift */,
-				02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -1964,6 +1967,7 @@
 		B55D4C2220B716CE00D7A50F /* Tools */ = {
 			isa = PBXGroup;
 			children = (
+				CECC759A23D61BCC00486676 /* AggregateData */,
 				02C0CD2823B5BAFB00F880B1 /* ImageService */,
 				CEEC9B6121E79EBF0055EEF0 /* AppRatings */,
 				CE9B7E3021C94685000F971C /* Currency */,
@@ -2294,7 +2298,6 @@
 			children = (
 				B5F571AA21BEECB60010D1B8 /* NoteWooTests.swift */,
 				7435E58F21C0162C00216F0F /* OrderNoteWooTests.swift */,
-				CECC759823D6160000486676 /* AggregateOrderItemTests.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -2636,6 +2639,14 @@
 				CECC758523D21AC200486676 /* AggregateOrderItem.swift */,
 			);
 			path = "Aggregate Order Items";
+			sourceTree = "<group>";
+		};
+		CECC759A23D61BCC00486676 /* AggregateData */ = {
+			isa = PBXGroup;
+			children = (
+				CECC759B23D61C1400486676 /* AggregateDataHelper.swift */,
+			);
+			path = AggregateData;
 			sourceTree = "<group>";
 		};
 		CED6021A20B35FBF0032C639 /* ReusableViews */ = {
@@ -3423,6 +3434,7 @@
 				CE583A072107849F00D73C1C /* SwitchTableViewCell.swift in Sources */,
 				D8149F562251EE300006A245 /* UITextField+Helpers.swift in Sources */,
 				D831E2E0230E0BA7000037D0 /* Logs.swift in Sources */,
+				CECC759C23D61C1400486676 /* AggregateDataHelper.swift in Sources */,
 				02B296A722FA6DB500FD7A4C /* Date+StartAndEnd.swift in Sources */,
 				D81D9228222E7F0800FFA585 /* OrderStatusListViewController.swift in Sources */,
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
@@ -3645,7 +3657,7 @@
 				D83F5935225B3CDD00626E75 /* DatePickerTableViewCellTests.swift in Sources */,
 				93FA787221CD2A1A00B663E5 /* CurrencySettingsTests.swift in Sources */,
 				45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */,
-				CECC759923D6160000486676 /* AggregateOrderItemTests.swift in Sources */,
+				CECC759923D6160000486676 /* AggregateDataHelperTests.swift in Sources */,
 				020BE76F23B4A468007FE54C /* AztecBlockquoteFormatBarCommandTests.swift in Sources */,
 				748C7784211E2D8400814F2C /* DoubleWooTests.swift in Sources */,
 				020BE77523B4A7EC007FE54C /* AztecSourceCodeFormatBarCommandTests.swift in Sources */,

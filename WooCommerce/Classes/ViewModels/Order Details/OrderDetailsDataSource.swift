@@ -78,19 +78,7 @@ final class OrderDetailsDataSource: NSObject {
     /// OrderItemsRefund Count
     ///
     var refundedProductsCount: Decimal {
-        var refundedItems = [OrderItemRefund]()
-        for refund in refunds {
-            refundedItems.append(contentsOf: refund.items)
-        }
-
-        var quantities = [Decimal]()
-        for item in refundedItems {
-            quantities.append(item.quantity)
-        }
-
-        let decimalCount = quantities.reduce(0, +) // quantities report as negative values
-
-        return abs(decimalCount)
+        return AggregateDataHelper.refundedProductsCount(from: refunds)
     }
 
     /// Refunds on an Order
@@ -119,108 +107,13 @@ final class OrderDetailsDataSource: NSObject {
     /// Combine refunded order items to show refunded products
     ///
     var refundedProducts: [AggregateOrderItem] {
-        /// OrderItemRefund.orderItemID isn't useful for finding duplicates
-        /// because multiple refunds cause orderItemIDs to be unique.
-        /// Instead, we need to find duplicate *Products*.
-        var items = [OrderItemRefund]()
-        for refund in refunds {
-            items.append(contentsOf: refund.items)
-        }
-
-        let currency = CurrencyFormatter()
-        // Creates an array of dictionaries, with the hash value as the key.
-        // Example: [hashValue: [item, item], hashvalue: [item]]
-        // Since dictionary keys are unique, this eliminates the duplicate `OrderItemRefund`s.
-        let grouped = Dictionary(grouping: items) { (item) in
-            return item.hashValue
-        }
-
-        return grouped.compactMap { (_, items) in
-            // Here we iterate over each group's items
-
-            // All items should be equal except for quantity and price, so we pick the first
-            guard let item = items.first else {
-                // This should never happen, but let's be safe
-                return nil
-            }
-
-            // Sum the quantities
-            let totalQuantity = items.sum(\.quantity)
-            // Sum the refunded product amount
-            let total = items
-                .compactMap({ currency.convertToDecimal(from: $0.total) })
-                .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-            return AggregateOrderItem(
-                productID: item.productID,
-                variationID: item.variationID,
-                name: item.name,
-                price: item.price,
-                quantity: totalQuantity,
-                sku: item.sku,
-                total: total
-            )
-        }
+        return AggregateDataHelper.combineRefundedProducts(from: refunds)
     }
 
     /// Calculate the new order item quantities and totals after refunded products have altered the fields
     ///
     var aggregateOrderItems: [AggregateOrderItem] {
-        if refundedProducts.count == 0 {
-            fatalError("Error: attemtpted to calculate aggregate order item data with no refunded products.")
-        }
-
-        let currency = CurrencyFormatter()
-        // Convert the order items into a mutable type
-        let convertedItems = items.map { item -> AggregateOrderItem in
-            let total = currency.convertToDecimal(from: item.total) ?? NSDecimalNumber.zero
-            return AggregateOrderItem(
-                productID: item.productID,
-                variationID: item.variationID,
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-                sku: item.sku,
-                total: total
-            )
-        }
-
-        let allItems = convertedItems + refundedProducts
-
-        let grouped = Dictionary(grouping: allItems) { (item) in
-            return item.hashValue
-        }
-
-        let unsortedResult: [AggregateOrderItem] = grouped.compactMap { (key, items) in
-            // Here we iterate over each group's items
-
-            // All items should be equal except for quantity and price, so we pick the first
-            guard let item = items.first else {
-                // This should never happen, but let's be safe
-                return nil
-            }
-
-            // Sum the quantities
-            let totalQuantity = items.sum(\.quantity)
-            // Sum the refunded product amount
-            let total = items
-                .compactMap({ $0.total })
-                .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
-
-            return AggregateOrderItem(
-                productID: item.productID,
-                variationID: item.variationID,
-                name: item.name,
-                price: item.price,
-                quantity: totalQuantity,
-                sku: item.sku,
-                total: total
-            )
-        }
-
-        let sorted = unsortedResult.sorted(by: { ($0.productID, $0.variationID) < ($1.productID, $1.variationID) })
-
-        return sorted
+        return AggregateDataHelper.combineOrderItems(items, with: refunds)
     }
 
     /// All the condensed refunds in an order

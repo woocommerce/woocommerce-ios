@@ -203,7 +203,7 @@ private extension ProductInventorySettingsViewController {
         guard sku != product.sku else {
             skuIsValid = true
             hideError()
-            self.getSkuCell()?.textFieldBecomeFirstResponder()
+            getSkuCell()?.textFieldBecomeFirstResponder()
             return
         }
 

@@ -4,7 +4,7 @@ import XCTest
 
 /// ProductSkuMapper Unit Tests
 ///
-class ProductSkuMapperTests: XCTestCase {
+final class ProductSkuMapperTests: XCTestCase {
 
     /// Verifies that SKU are parsed correctly.
     ///

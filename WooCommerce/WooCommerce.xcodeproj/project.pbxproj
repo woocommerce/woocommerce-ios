@@ -161,6 +161,10 @@
 		02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2923B5BB1C00F880B1 /* ImageService.swift */; };
 		02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */; };
 		02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */; };
+		02CA63DA23D1ADD100BBF148 /* CameraCaptureCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D623D1ADD100BBF148 /* CameraCaptureCoordinator.swift */; };
+		02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D723D1ADD100BBF148 /* MediaPickingCoordinator.swift */; };
+		02CA63DC23D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */; };
+		02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02CA63D923D1ADD100BBF148 /* MediaPickingContext.swift */; };
 		02D45647231CB1FB008CF0A9 /* UIImage+Dot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */; };
 		02D4564C231D05E2008CF0A9 /* BetaFeaturesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02D4564B231D05E1008CF0A9 /* BetaFeaturesViewController.swift */; };
 		02E262C9238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift */; };
@@ -212,6 +216,7 @@
 		45C8B2692316B2440002FA77 /* BillingAddressTableViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45C8B2682316B2440002FA77 /* BillingAddressTableViewCellTests.swift */; };
 		45D1CF4523BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */; };
 		45D1CF4723BAC89A00945A36 /* ProductTaxStatusListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorDataSource.swift */; };
+		45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45D685FD23D0FB25005F87D0 /* Throttler.swift */; };
 		45FBDF2B238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */; };
 		45FBDF2D238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */; };
 		45FBDF34238D33F100127F77 /* MockProduct.swift in Sources */ = {isa = PBXBuildFile; fileRef = 45FBDF33238D33F100127F77 /* MockProduct.swift */; };
@@ -765,6 +770,10 @@
 		02C0CD2923B5BB1C00F880B1 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageService.swift; sourceTree = "<group>"; };
 		02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageServiceTests.swift; sourceTree = "<group>"; };
+		02CA63D623D1ADD100BBF148 /* CameraCaptureCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraCaptureCoordinator.swift; sourceTree = "<group>"; };
+		02CA63D723D1ADD100BBF148 /* MediaPickingCoordinator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPickingCoordinator.swift; sourceTree = "<group>"; };
+		02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DeviceMediaLibraryPicker.swift; sourceTree = "<group>"; };
+		02CA63D923D1ADD100BBF148 /* MediaPickingContext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaPickingContext.swift; sourceTree = "<group>"; };
 		02D45646231CB1FB008CF0A9 /* UIImage+Dot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+Dot.swift"; sourceTree = "<group>"; };
 		02D4564B231D05E1008CF0A9 /* BetaFeaturesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BetaFeaturesViewController.swift; sourceTree = "<group>"; };
 		02E262C8238D0AD300B79588 /* ProductStockStatusListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockStatusListSelectorDataSource.swift; sourceTree = "<group>"; };
@@ -819,6 +828,7 @@
 		45C8B2682316B2440002FA77 /* BillingAddressTableViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingAddressTableViewCellTests.swift; sourceTree = "<group>"; };
 		45D1CF4423BAC2A500945A36 /* ProductTaxClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSource.swift; sourceTree = "<group>"; };
 		45D1CF4623BAC89A00945A36 /* ProductTaxStatusListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorDataSource.swift; sourceTree = "<group>"; };
+		45D685FD23D0FB25005F87D0 /* Throttler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Throttler.swift; sourceTree = "<group>"; };
 		45FBDF2A238BF8A300127F77 /* ProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FBDF2C238BF8BF00127F77 /* AddProductImageCollectionViewCellTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductImageCollectionViewCellTests.swift; sourceTree = "<group>"; };
 		45FBDF33238D33F100127F77 /* MockProduct.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockProduct.swift; sourceTree = "<group>"; };
@@ -1516,6 +1526,10 @@
 		0286B27523C704FC003D784B /* Media */ = {
 			isa = PBXGroup;
 			children = (
+				02CA63D623D1ADD100BBF148 /* CameraCaptureCoordinator.swift */,
+				02CA63D823D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift */,
+				02CA63D923D1ADD100BBF148 /* MediaPickingContext.swift */,
+				02CA63D723D1ADD100BBF148 /* MediaPickingCoordinator.swift */,
 				0286B27723C7051F003D784B /* ProductImagesCollectionViewController.swift */,
 				0286B27623C7051F003D784B /* ProductImagesCollectionViewController.xib */,
 				0286B27923C7051F003D784B /* ProductImagesViewController.swift */,
@@ -1986,6 +2000,7 @@
 				B5D6DC53214802740003E48A /* SyncCoordinator.swift */,
 				B55D4C2620B717C000D7A50F /* UserAgent.swift */,
 				CE22709E2293052700C0626C /* WebviewHelper.swift */,
+				45D685FD23D0FB25005F87D0 /* Throttler.swift */,
 			);
 			path = Tools;
 			sourceTree = "<group>";
@@ -3130,6 +3145,7 @@
 				"${BUILT_PRODUCTS_DIR}/SVProgressHUD/SVProgressHUD.framework",
 				"${BUILT_PRODUCTS_DIR}/Sentry/Sentry.framework",
 				"${BUILT_PRODUCTS_DIR}/UIDeviceIdentifier/UIDeviceIdentifier.framework",
+				"${BUILT_PRODUCTS_DIR}/WPMediaPicker/WPMediaPicker.framework",
 				"${BUILT_PRODUCTS_DIR}/WordPress-Aztec-iOS/Aztec.framework",
 				"${BUILT_PRODUCTS_DIR}/WordPress-Editor-iOS/WordPressEditor.framework",
 				"${BUILT_PRODUCTS_DIR}/WordPressKit/WordPressKit.framework",
@@ -3163,6 +3179,7 @@
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SVProgressHUD.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Sentry.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/UIDeviceIdentifier.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WPMediaPicker.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Aztec.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WordPressEditor.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/WordPressKit.framework",
@@ -3235,10 +3252,13 @@
 				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
+				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,
+				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
 				02913E9723A774E600707A0C /* DecimalInputFormatter.swift in Sources */,
 				0216271E2375044D000208D2 /* AztecFormatBar+Update.swift in Sources */,
 				026CF63A237E9ABE009563D4 /* ProductVariationsViewController.swift in Sources */,
+				45D685FE23D0FB25005F87D0 /* Throttler.swift in Sources */,
 				459097F823CDE47F00DEA9E0 /* UIAlertController+Helpers.swift in Sources */,
 				CE32B11A20BF8E32006FBCF4 /* UIButton+Helpers.swift in Sources */,
 				CE0F17D222A8308900964A63 /* FancyAlertController+PurchaseNote.swift in Sources */,
@@ -3440,6 +3460,7 @@
 				CEE006082077D14C0079161F /* OrderDetailsViewController.swift in Sources */,
 				B58B4AB62108F11C00076FDD /* Notice.swift in Sources */,
 				CE4296B920A5E9E400B2AFBD /* CNContact+Helpers.swift in Sources */,
+				02CA63DC23D1ADD100BBF148 /* DeviceMediaLibraryPicker.swift in Sources */,
 				02404EDA2314C36300FF1170 /* StatsVersionStateCoordinator.swift in Sources */,
 				CEE006052077D1280079161F /* SummaryTableViewCell.swift in Sources */,
 				74A33D8021C3F234009E25DE /* LicensesViewController.swift in Sources */,
@@ -3505,6 +3526,7 @@
 				CEEC9B6421E7AB850055EEF0 /* AppRatingManager.swift in Sources */,
 				020F41E623163C0100776C4D /* TopBannerView.swift in Sources */,
 				B57C744E20F56E3800EEFC87 /* UITableViewCell+Helpers.swift in Sources */,
+				02CA63DA23D1ADD100BBF148 /* CameraCaptureCoordinator.swift in Sources */,
 				CEEC9B5C21E79B3E0055EEF0 /* FeatureFlag.swift in Sources */,
 				02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */,
 				74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */,

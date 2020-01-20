@@ -34,7 +34,7 @@ public enum ProductAction: Action {
     ///
     case updateProduct(product: Product, onCompletion: (Product?, ProductUpdateError?) -> Void)
 
-    /// Checks whether a Product SKU is valid against other Products in storage.
+    /// Checks whether a Product SKU is valid against other Products in the store.
     ///
     case validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: (Bool) -> Void)
 }

@@ -31,7 +31,7 @@ final class ProductInventorySettingsViewController: UIViewController {
     // Sku validation
     private var skuIsValid: Bool = true
 
-    private var throttler: Throttler = Throttler(seconds: 1)
+    private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))

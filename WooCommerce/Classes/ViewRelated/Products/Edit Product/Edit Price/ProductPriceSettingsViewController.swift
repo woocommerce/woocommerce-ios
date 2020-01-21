@@ -510,10 +510,7 @@ private extension ProductPriceSettingsViewController {
             return nil
         }
         let currencyFormatter = CurrencyFormatter()
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let unit = CurrencySettings.shared.symbol(from: currencyCode)
-        let value = price.replacingOccurrences(of: unit, with: "")
-        return currencyFormatter.convertToDecimal(from: value)
+        return currencyFormatter.convertToDecimal(from: price)
     }
 }
 

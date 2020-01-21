@@ -182,7 +182,6 @@ extension ProductPriceSettingsViewController {
 
         // Check if the sale price is less of the regular price, else show an error.
         if let decimalSalePrice = getDecimalPrice(salePrice), let decimalRegularPrice = getDecimalPrice(regularPrice) {
-            print(decimalSalePrice, decimalRegularPrice)
             let comparison = decimalSalePrice.compare(decimalRegularPrice)
             guard comparison == .orderedAscending else {
                 displaySalePriceErrorNotice()

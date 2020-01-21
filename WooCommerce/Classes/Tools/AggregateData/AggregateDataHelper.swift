@@ -8,8 +8,8 @@ final class AggregateDataHelper {
     /// Calculate the total quantity of refunded products
     ///
     static func refundedProductsCount(from refunds: [Refund]) -> Decimal {
-        let refundedItems = refunds.flatMap{ $0.items }
-        let quantities = refundedItems.map{ $0.quantity }
+        let refundedItems = refunds.flatMap { $0.items }
+        let quantities = refundedItems.map { $0.quantity }
         let decimalCount = quantities.reduce(0, +)
 
         // quantities report as negative values
@@ -22,7 +22,7 @@ final class AggregateDataHelper {
         /// OrderItemRefund.orderItemID isn't useful for finding duplicates
         /// because multiple refunds cause orderItemIDs to be unique.
         /// Instead, we need to find duplicate *Products*.
-        let items = refunds.flatMap{ $0.items }
+        let items = refunds.flatMap { $0.items }
         let currency = CurrencyFormatter()
 
         // Creates an array of dictionaries, with the hash value as the key.
@@ -45,7 +45,7 @@ final class AggregateDataHelper {
             let totalQuantity = items.sum(\.quantity)
             // Sum the refunded product amount
             let total = items
-                .compactMap({ currency.convertToDecimal(from: $0.total) })
+                .compactMap { currency.convertToDecimal(from: $0.total) }
                 .reduce(NSDecimalNumber(value: 0), { $0.adding($1) })
 
             return AggregateOrderItem(

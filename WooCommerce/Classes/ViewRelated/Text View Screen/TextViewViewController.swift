@@ -1,5 +1,14 @@
 import UIKit
 
+protocol TextViewViewControllerDelegate: class {
+
+    // Text validation.
+    func shouldValidate(text: String) -> Bool
+
+    // Error text that will be shown if the text does not pass validation.
+    func validationError() -> String
+}
+
 /// Contains an editable text view with a placeholder label when the text is empty.
 ///
 final class TextViewViewController: UIViewController {
@@ -26,6 +35,8 @@ final class TextViewViewController: UIViewController {
     private let keyboardType: UIKeyboardType
     private let autocapitalizationType: UITextAutocapitalizationType
     private let onCompletion: Completion
+
+    weak var delegate: TextViewViewControllerDelegate?
 
     init(text: String?,
          placeholder: String,
@@ -75,6 +86,16 @@ extension TextViewViewController {
     }
 
     @objc private func completeEditing() {
+        guard delegate != nil else {
+            onCompletion(textView.text)
+            return
+        }
+        guard delegate?.shouldValidate(text: textView.text) == true else {
+            if let errorString = delegate?.validationError() {
+                displayErrorNotice(error: errorString)
+            }
+            return
+        }
         onCompletion(textView.text)
     }
 
@@ -133,6 +154,19 @@ extension TextViewViewController: UITextViewDelegate {
         refreshPlaceholderVisibility()
     }
 }
+
+// MARK: - Error handling
+//
+private extension TextViewViewController {
+    /// Displays a Notice onscreen, indicating that the text didn't pass the validation.
+    ///
+    func displayErrorNotice(error: String) {
+        UIApplication.shared.keyWindow?.endEditing(true)
+        let notice = Notice(title: error, feedbackType: .error)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+}
+
 
 // MARK: - Keyboard management
 //

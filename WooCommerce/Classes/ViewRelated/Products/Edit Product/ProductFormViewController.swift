@@ -231,6 +231,7 @@ private extension ProductFormViewController {
         ) { [weak self] (newProductName) in
             self?.onEditProductNameCompletion(newName: newProductName ?? "")
         }
+        textViewController.delegate = self
 
         navigationController?.pushViewController(textViewController, animated: true)
     }
@@ -244,6 +245,19 @@ private extension ProductFormViewController {
         }
         self.product = productUpdater.nameUpdated(name: newName)
     }
+}
+
+extension ProductFormViewController: TextViewViewControllerDelegate {
+    func shouldValidate(text: String) -> Bool {
+        return !text.isEmpty
+    }
+
+    func validationError() -> String {
+        return NSLocalizedString("Title cannot be empty",
+                                 comment: "Product title error notice message, when the title is empty")
+    }
+
+
 }
 
 // MARK: Action - Edit Product Parameters

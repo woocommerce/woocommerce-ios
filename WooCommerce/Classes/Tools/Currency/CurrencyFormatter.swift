@@ -22,7 +22,7 @@ public class CurrencyFormatter {
         let unit = CurrencySettings.shared.symbol(from: currencyCode)
         newStringValue = newStringValue.replacingOccurrences(of: unit, with: "")
 
-        let decimalValue = NSDecimalNumber(string: newStringValue)
+        let decimalValue = NSDecimalNumber(string: newStringValue, locale: Locale.current)
 
         guard decimalValue != NSDecimalNumber.notANumber else {
             DDLogError("Error: string input is not a number: \(stringValue)")

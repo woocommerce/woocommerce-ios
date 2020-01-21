@@ -166,8 +166,17 @@ extension PushNotificationsManager {
         DDLogVerbose("📱 Push Notification Received: \n\(userInfo)\n")
 
         // Badge: Update
-        if let badgeNumber = userInfo.dictionary(forKey: APNSKey.aps)?.integer(forKey: APNSKey.badge) {
-            configuration.application.applicationIconBadgeNumber = badgeNumber
+        if let badgeNumber = userInfo.dictionary(forKey: APNSKey.aps)?.integer(forKey: APNSKey.badge),
+            let typeString = userInfo.string(forKey: APNSKey.type),
+            let type = Note.Kind(rawValue: typeString) {
+            switch type {
+            case .comment:
+                configuration.application.applicationIconBadgeNumber = badgeNumber
+            case .storeOrder:
+                NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
+            default:
+                break
+            }
         }
 
         // Badge: Reset

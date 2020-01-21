@@ -24,6 +24,12 @@ final class OrderDetailsDataSource: NSObject {
         return order.statusKey == OrderStatusEnum.processing.rawValue
     }
 
+    /// Is this order fully refunded?
+    ///
+    private var isRefundedStatus: Bool {
+        return order.statusKey == OrderStatusEnum.refunded.rawValue
+    }
+
     /// Is the shipment tracking plugin available?
     ///
     var trackingIsReachable: Bool = false
@@ -399,13 +405,15 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        let aggregateItem = aggregateOrderItems[indexPath.row]
-        let product = lookUpProduct(by: aggregateItem.productOrVariationID)
-        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem,
-                                                        currency: order.currency,
-                                                        product: product)
+        if aggregateOrderItems.count > 0 {
+            let aggregateItem = aggregateOrderItems[indexPath.row]
+            let product = lookUpProduct(by: aggregateItem.productOrVariationID)
+            let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem,
+                                                            currency: order.currency,
+                                                            product: product)
 
-        cell.configure(item: itemViewModel, imageService: imageService)
+            cell.configure(item: itemViewModel, imageService: imageService)
+        }
     }
 
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
@@ -565,9 +573,16 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            var rows: [Row] = refunds.count == 0
-                ? Array(repeating: .orderItem, count: items.count)
-                : Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
+            if isRefundedStatus {
+                return nil
+            }
+
+            var rows = [Row]()
+            if refundedProductsCount > 0 {
+                rows = Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
+            } else {
+                rows = Array(repeating: .orderItem, count: items.count)
+            }
 
             if isProcessingPayment {
                 rows.append(.fulfillButton)

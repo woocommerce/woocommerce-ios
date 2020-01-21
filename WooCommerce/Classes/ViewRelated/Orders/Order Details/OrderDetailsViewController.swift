@@ -47,6 +47,7 @@ final class OrderDetailsViewController: UIViewController {
         registerTableViewHeaderFooters()
         configureEntityListener()
         configureViewModel()
+        reloadTableViewSectionsAndData()
     }
 
     override func viewWillAppear(_ animated: Bool) {

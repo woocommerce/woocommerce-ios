@@ -17,7 +17,7 @@ final class OrderStatusListViewController: UIViewController {
     }()
 
     private var orderStatuses: [OrderStatus] {
-        let filteredStatuses = statusResultsController.fetchedObjects.filter{ $0.slug != OrderStatusEnum.refunded.rawValue }
+        let filteredStatuses = statusResultsController.fetchedObjects.filter { $0.slug != OrderStatusEnum.refunded.rawValue }
         return filteredStatuses
     }
 

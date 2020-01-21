@@ -16,7 +16,7 @@ public class CurrencyFormatter {
         let localeDecimalSeparator = Locale.current.decimalSeparator ?? CurrencySettings.shared.decimalSeparator
         var newStringValue = stringValue.replacingOccurrences(of: ",", with: localeDecimalSeparator)
         newStringValue = newStringValue.replacingOccurrences(of: ".", with: localeDecimalSeparator)
-        let decimalValue = NSDecimalNumber(string: newStringValue)
+        let decimalValue = NSDecimalNumber(string: newStringValue, locale: Locale.current)
 
         guard decimalValue != NSDecimalNumber.notANumber else {
             DDLogError("Error: string input is not a number: \(stringValue)")

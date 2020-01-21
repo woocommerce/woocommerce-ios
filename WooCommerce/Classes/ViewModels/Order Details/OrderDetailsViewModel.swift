@@ -199,8 +199,7 @@ extension OrderDetailsViewModel {
             viewController.present(navController, animated: true, completion: nil)
         case .orderItem:
             let item = items[indexPath.row]
-            let productID = item.variationID == 0 ? item.productID : item.variationID
-            let loaderViewController = ProductLoaderViewController(productID: productID,
+            let loaderViewController = ProductLoaderViewController(productID: item.productOrVariationID,
                                                                    siteID: order.siteID,
                                                                    currency: order.currency)
             let navController = WooNavigationController(rootViewController: loaderViewController)

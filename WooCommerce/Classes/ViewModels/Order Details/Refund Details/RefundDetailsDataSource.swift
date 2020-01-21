@@ -19,22 +19,23 @@ final class RefundDetailsDataSource: NSObject {
     ///
     private(set) var sections = [Section]()
 
-    /// All the items inside a Refund
-    private var items: [OrderItemRefund] {
+    /// Refunded order items
+    ///
+    private var refundedItems: [OrderItemRefund] {
         return refund.items
     }
 
-    /// Currency Formatter.
+    /// Currency Formatter
     ///
     private let currencyFormatter = CurrencyFormatter()
 
-    /// Products from a Refund.
+    /// Products from a Refund
     ///
     var products: [Product] {
         return resultsControllers.products
     }
 
-    /// Refunds initializer.
+    /// Refunds initializer
     ///
     init(refund: Refund, order: Order) {
         self.refund = refund
@@ -138,7 +139,7 @@ private extension RefundDetailsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as ProductDetailsTableViewCell:
-            configureOrderItem(cell, at: indexPath)
+            configureRefundedOrderItem(cell, at: indexPath)
         case let cell as LedgerTableViewCell:
             configureProductsRefund(cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell:
@@ -154,12 +155,13 @@ private extension RefundDetailsDataSource {
 
     /// Setup: Product Cell
     ///
-    private func configureOrderItem(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        let item = items[indexPath.row]
-        let product = lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemRefundViewModel(item: item,
-                                                     currency: order.currency,
-                                                     product: product)
+    private func configureRefundedOrderItem(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+        let refundedItem = refundedItems[indexPath.row]
+        let product = lookUpProduct(by: refundedItem.productOrVariationID)
+        let itemViewModel = ProductDetailsCellViewModel(refundedItem: refundedItem,
+                                                        currency: order.currency,
+                                                        product: product)
+
         let imageService = ServiceLocator.imageService
 
         cell.selectionStyle = .default
@@ -218,11 +220,11 @@ extension RefundDetailsDataSource {
     ///
     func reloadSections() {
         let products: Section? = {
-            guard items.isEmpty == false else {
+            if refundedItems.isEmpty {
                 return nil
             }
 
-            var rows: [Row] = Array(repeating: .orderItem, count: items.count)
+            var rows: [Row] = Array(repeating: .orderItem, count: refundedItems.count)
             rows.append(.productsRefund)
 
             return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)

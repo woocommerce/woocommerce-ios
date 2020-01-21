@@ -38,6 +38,12 @@ final class OrderDetailsViewModel {
         return dataSource.products
     }
 
+    /// Sorted order items
+    ///
+    private var items: [OrderItem] {
+        return order.items
+    }
+
     /// Refunded products from an Order
     ///
     var refundedItems: [OrderItemRefund] {
@@ -62,7 +68,7 @@ final class OrderDetailsViewModel {
     /// The datasource that will be used to render the Order Details screen
     ///
     private(set) lazy var dataSource: OrderDetailsDataSource = {
-        return OrderDetailsDataSource(order: self.order)
+        return OrderDetailsDataSource(order: order)
     }()
 
     /// Order Notes
@@ -94,7 +100,6 @@ final class OrderDetailsViewModel {
 
     /// Helpers
     ///
-
     func lookUpOrderStatus(for order: Order) -> OrderStatus? {
         return dataSource.lookUpOrderStatus(for: order)
     }
@@ -193,7 +198,14 @@ extension OrderDetailsViewModel {
             let navController = WooNavigationController(rootViewController: addTracking)
             viewController.present(navController, animated: true, completion: nil)
         case .orderItem:
-            let item = order.items[indexPath.row]
+            let item = items[indexPath.row]
+            let loaderViewController = ProductLoaderViewController(productID: item.productOrVariationID,
+                                                                   siteID: order.siteID,
+                                                                   currency: order.currency)
+            let navController = WooNavigationController(rootViewController: loaderViewController)
+            viewController.present(navController, animated: true, completion: nil)
+        case .aggregateOrderItem:
+            let item = dataSource.aggregateOrderItems[indexPath.row]
             let productID = item.variationID == 0 ? item.productID : item.variationID
             let loaderViewController = ProductLoaderViewController(productID: productID,
                                                                    siteID: order.siteID,
@@ -219,7 +231,10 @@ extension OrderDetailsViewModel {
             viewController.navigationController?.pushViewController(refundDetailsViewController, animated: true)
         case .refundedProducts:
             ServiceLocator.analytics.track(.refundedProductsDetailTapped)
-            let viewModel = RefundedProductsViewModel(order: order, items: refundedItems)
+            guard let refundedProducts = dataSource.refundedProducts else {
+                return
+            }
+            let viewModel = RefundedProductsViewModel(order: order, refundedProducts: refundedProducts)
             let refundedProductsDetailViewController = RefundedProductsViewController(viewModel: viewModel)
             viewController.navigationController?.pushViewController(refundedProductsDetailViewController, animated: true)
         default:

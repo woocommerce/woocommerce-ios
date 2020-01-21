@@ -1,7 +1,7 @@
 import Foundation
 
 
-/// Represents an Order Item to be Refunded
+/// Represents an Order Item that was refunded or will be refunded.
 ///
 public struct OrderItemRefund: Codable {
     public let itemID: Int64

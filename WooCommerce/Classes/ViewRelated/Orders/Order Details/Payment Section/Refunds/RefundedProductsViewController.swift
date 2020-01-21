@@ -30,7 +30,7 @@ final class RefundedProductsViewController: UIViewController {
         fatalError("init(coder:) is not supported")
     }
 
-    /// EntityListener: Update / Deletion Notifications.
+    /// EntityListener: Update / Deletion of Orders.
     ///
     private lazy var entityListener: EntityListener<Order> = {
         return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: viewModel.order)

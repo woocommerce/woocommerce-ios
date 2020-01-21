@@ -7,9 +7,9 @@ import Yosemite
 /// Must conform to NSObject so it can be the UITableViewDataSource.
 ///
 final class RefundedProductsDataSource: NSObject {
-    /// Refunds
+    /// Aggregate data for refunded products
     ///
-    private var items: [OrderItemRefundSummary]
+    private(set) var refundedProducts: [AggregateOrderItem]
 
     /// Order
     ///
@@ -21,9 +21,9 @@ final class RefundedProductsDataSource: NSObject {
 
     /// Designated initializer.
     ///
-    init(order: Order, items: [OrderItemRefundSummary]) {
+    init(order: Order, refundedProducts: [AggregateOrderItem]) {
         self.order = order
-        self.items = items
+        self.refundedProducts = refundedProducts
     }
 
     /// The results controllers used to display a refund
@@ -102,7 +102,7 @@ private extension RefundedProductsDataSource {
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
         case let cell as ProductDetailsTableViewCell where row == .orderItemRefunded:
-            configureOrderItemRefundSummary(cell, at: indexPath)
+            configureRefundedProduct(cell, at: indexPath)
         default:
             fatalError("Unidentified customer info row type")
         }
@@ -110,16 +110,16 @@ private extension RefundedProductsDataSource {
 
     /// Setup: Refunded product details cell
     ///
-    func configureOrderItemRefundSummary(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        let item = items[indexPath.row]
-        let product = lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemRefundSummaryViewModel(item: item,
-                                                            currencyCode: order.currency,
-                                                            product: product)
+    func configureRefundedProduct(_ cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+        let refundedProduct = refundedProducts[indexPath.row]
+        let product = lookUpProduct(by: refundedProduct.productOrVariationID)
+        let refundedProductViewModel = ProductDetailsCellViewModel(aggregateItem: refundedProduct,
+                                                                    currency: order.currency,
+                                                                    product: product)
         let imageService = ServiceLocator.imageService
 
         cell.selectionStyle = .default
-        cell.configure(item: itemViewModel, imageService: imageService)
+        cell.configure(item: refundedProductViewModel, imageService: imageService)
     }
 }
 
@@ -138,13 +138,13 @@ extension RefundedProductsDataSource {
     /// Setup: Sections
     ///
     func reloadSections() {
-        let refundedProducts: Section? = {
-            let rows: [Row] = Array(repeating: .orderItemRefunded, count: items.count)
+        let refundedProductsSection: Section? = {
+            let rows: [Row] = Array(repeating: .orderItemRefunded, count: refundedProducts.count)
 
             return Section(title: SectionTitle.product, rightTitle: SectionTitle.quantity, rows: rows)
         }()
 
-        sections = [refundedProducts].compactMap { $0 }
+        sections = [refundedProductsSection].compactMap { $0 }
     }
 }
 

@@ -8,16 +8,8 @@ final class AggregateDataHelper {
     /// Calculate the total quantity of refunded products
     ///
     static func refundedProductsCount(from refunds: [Refund]) -> Decimal {
-        var refundedItems = [OrderItemRefund]()
-        for refund in refunds {
-            refundedItems.append(contentsOf: refund.items)
-        }
-
-        var quantities = [Decimal]()
-        for item in refundedItems {
-            quantities.append(item.quantity)
-        }
-
+        let refundedItems = refunds.flatMap{ $0.items }
+        let quantities = refundedItems.map{ $0.quantity }
         let decimalCount = quantities.reduce(0, +)
 
         // quantities report as negative values
@@ -30,12 +22,9 @@ final class AggregateDataHelper {
         /// OrderItemRefund.orderItemID isn't useful for finding duplicates
         /// because multiple refunds cause orderItemIDs to be unique.
         /// Instead, we need to find duplicate *Products*.
-        var items = [OrderItemRefund]()
-        for refund in refunds {
-            items.append(contentsOf: refund.items)
-        }
-
+        let items = refunds.flatMap{ $0.items }
         let currency = CurrencyFormatter()
+
         // Creates an array of dictionaries, with the hash value as the key.
         // Example: [hashValue: [item, item], hashvalue: [item]]
         // Since dictionary keys are unique, this eliminates the duplicate `OrderItemRefund`s.

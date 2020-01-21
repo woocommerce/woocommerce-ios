@@ -16,6 +16,11 @@ final class OrderStatusListViewController: UIViewController {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    private var orderStatuses: [OrderStatus] {
+        let filteredStatuses = statusResultsController.fetchedObjects.filter{ $0.slug != OrderStatusEnum.refunded.rawValue }
+        return filteredStatuses
+    }
+
     /// The status selected
     ///
     private var selectedStatus: OrderStatus? {
@@ -66,7 +71,7 @@ final class OrderStatusListViewController: UIViewController {
 
     private func preselectStatusIfPossible() {
         if let selectedStatus = selectedStatus,
-            let index = statusResultsController.fetchedObjects.firstIndex(of: selectedStatus) {
+            let index = orderStatuses.firstIndex(of: selectedStatus) {
             tableView.selectRow(at: IndexPath(row: index, section: 0), animated: false, scrollPosition: .none)
         }
     }
@@ -216,11 +221,11 @@ private extension OrderStatusListViewController {
 //
 extension OrderStatusListViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return statusResultsController.sections.count
+        return 1
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return statusResultsController.sections[section].numberOfObjects
+        return orderStatuses.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -229,7 +234,7 @@ extension OrderStatusListViewController: UITableViewDataSource {
             fatalError()
         }
 
-        let status = statusResultsController.object(at: indexPath)
+        let status = orderStatuses[indexPath.row]
         cell.textLabel?.text = status.name
 
         return cell
@@ -246,7 +251,7 @@ extension OrderStatusListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedStatus = statusResultsController.object(at: indexPath)
+        selectedStatus = orderStatuses[indexPath.row]
     }
 }
 

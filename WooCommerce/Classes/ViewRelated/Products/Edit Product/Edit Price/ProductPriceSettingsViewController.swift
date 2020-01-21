@@ -222,7 +222,7 @@ private extension ProductPriceSettingsViewController {
     ///
     func displaySalePriceErrorNotice() {
         UIApplication.shared.keyWindow?.endEditing(true)
-        let message = NSLocalizedString("The sale price need to be less than the regular price",
+        let message = NSLocalizedString("The sale price should be lower than the regular price.",
                                         comment: "Product price error notice message, when the sale price is higher than the regular price")
 
         let notice = Notice(title: message, feedbackType: .error)

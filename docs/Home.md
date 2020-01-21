@@ -1,3 +1,6 @@
-Welcome to the woocommerce-ios wiki!
+# WooCommerce for iOS Docs
 
-[Architecture Documentation](ARCHITECTURE.md)
+- [Architecture](ARCHITECTURE.md)
+- [Networking](NETWORKING.md)
+- [Storage](STORAGE.md)
+- [Yosemite](Yosemite.md)

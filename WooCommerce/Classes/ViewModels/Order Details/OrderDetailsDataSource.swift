@@ -131,7 +131,7 @@ final class OrderDetailsDataSource: NSObject {
     }
 
     /// Note from the customer about the order
-    //
+    ///
     private var customerNote: String {
         return order.customerNote ?? String()
     }

@@ -13,6 +13,11 @@ final class ShippingProvidersViewModel {
     let title = NSLocalizedString("Shipping Providers",
                                   comment: "Title of view displaying all available Shipment Tracking Providers")
 
+    /// The currently selected tracking provider.
+    private let selectedProvider: ShipmentTrackingProvider?
+    /// The currently selected tracking provider's group name.
+    private let selectedProviderGroupName: String?
+
     // MARK: - Store country
 
     /// Encapsulates the logic to figure out the current store's country
@@ -105,8 +110,10 @@ final class ShippingProvidersViewModel {
 
     /// Designated initializer
     ///
-    init(order: Order) {
+    init(order: Order, selectedProvider: ShipmentTrackingProvider?, selectedProviderGroupName: String?) {
         self.order = order
+        self.selectedProvider = selectedProvider
+        self.selectedProviderGroupName = selectedProviderGroupName
     }
 
     /// Setup: Results Controller

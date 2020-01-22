@@ -202,6 +202,7 @@ extension ShipmentProvidersViewController: UITableViewDataSource {
 
         cell.bodyLabel?.text = viewModel.titleForCellAt(indexPath)
         cell.applyListSelectorStyle()
+        cell.accessoryType = viewModel.isSelected(indexPath) ? .checkmark : .none
 
         return cell
     }

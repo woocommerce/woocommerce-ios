@@ -285,7 +285,7 @@ extension ShippingProvidersViewModel {
             indexPath.section == Constants.countrySectionIndex {
             return storeCountrySection()?.name
         }
-        return providersExcludingStoreCountry.sections[indexPath.section - delta()].name
+        return providersExcludingStoreCountry.sections[safe: indexPath.section - delta()]?.name
     }
 
     /// Returns the ShipmentTrackingProvider at a given IndexPath

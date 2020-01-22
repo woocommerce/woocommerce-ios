@@ -254,6 +254,19 @@ extension ShippingProvidersViewModel {
             .name
     }
 
+    /// Indicates if the item at `indexPath` is the same as the currently selected provider.
+    func isSelected(_ indexPath: IndexPath) -> Bool {
+        guard let selectedProvider = selectedProvider,
+            let selectedProviderGroupName = selectedProviderGroupName,
+            let provider = provider(at: indexPath),
+            let groupName = groupName(at: indexPath) else {
+            return false
+        }
+
+        return provider.name == selectedProvider.name &&
+            groupName == selectedProviderGroupName
+    }
+
     private func storeCountrySection() -> ResultsController<StorageShipmentTrackingProvider>.SectionInfo? {
         return providersForStoreCountry
             .sections.first

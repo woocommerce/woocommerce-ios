@@ -253,7 +253,7 @@ extension ProductFormViewController: TextViewViewControllerDelegate {
     }
 
     func validationError() -> String {
-        return NSLocalizedString("Title cannot be empty",
+        return NSLocalizedString("Please add a title",
                                  comment: "Product title error notice message, when the title is empty")
     }
 

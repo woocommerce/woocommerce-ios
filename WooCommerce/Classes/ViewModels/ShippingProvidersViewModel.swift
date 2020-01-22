@@ -299,7 +299,10 @@ extension ShippingProvidersViewModel {
             return provider
         }
 
-        let group = providersExcludingStoreCountry.sections[indexPath.section - delta()]
+        guard let group = providersExcludingStoreCountry.sections[safe: indexPath.section - delta()] else {
+            return nil
+        }
+
         let provider = group.objects[indexPath.item]
 
         return provider

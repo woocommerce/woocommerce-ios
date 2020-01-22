@@ -3,10 +3,10 @@ import UIKit
 protocol TextViewViewControllerDelegate: class {
 
     // Text validation.
-    func shouldValidate(text: String) -> Bool
+    func validate(text: String) -> Bool
 
     // Error text that will be shown if the text does not pass validation.
-    func validationError() -> String
+    func validationErrorMessage() -> String
 }
 
 /// Contains an editable text view with a placeholder label when the text is empty.
@@ -90,8 +90,8 @@ extension TextViewViewController {
             onCompletion(textView.text)
             return
         }
-        guard delegate?.shouldValidate(text: textView.text) == true else {
-            if let errorString = delegate?.validationError() {
+        guard delegate?.validate(text: textView.text) == true else {
+            if let errorString = delegate?.validationErrorMessage() {
                 displayErrorNotice(error: errorString)
             }
             return

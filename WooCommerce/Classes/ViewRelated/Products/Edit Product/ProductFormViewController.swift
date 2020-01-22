@@ -248,11 +248,11 @@ private extension ProductFormViewController {
 }
 
 extension ProductFormViewController: TextViewViewControllerDelegate {
-    func shouldValidate(text: String) -> Bool {
+    func validate(text: String) -> Bool {
         return !text.isEmpty
     }
 
-    func validationError() -> String {
+    func validationErrorMessage() -> String {
         return NSLocalizedString("Please add a title",
                                  comment: "Product title error notice message, when the title is empty")
     }

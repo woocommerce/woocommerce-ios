@@ -51,8 +51,8 @@
                     <constraint firstItem="Kz9-1h-fRY" firstAttribute="top" secondItem="VuR-wG-Bbc" secondAttribute="bottom" constant="8" id="4yW-xe-vMw"/>
                     <constraint firstItem="VuR-wG-Bbc" firstAttribute="trailing" secondItem="H2p-sc-9uM" secondAttribute="trailingMargin" id="ALe-dT-Iae"/>
                     <constraint firstItem="uIV-Sn-Yeh" firstAttribute="top" secondItem="Kz9-1h-fRY" secondAttribute="bottom" constant="8" id="B6Q-cI-ASJ"/>
+                    <constraint firstItem="0jq-dU-DSt" firstAttribute="leading" relation="greaterThanOrEqual" secondItem="uIV-Sn-Yeh" secondAttribute="trailing" constant="16" id="GXV-DS-eh5"/>
                     <constraint firstItem="Kz9-1h-fRY" firstAttribute="trailing" secondItem="VuR-wG-Bbc" secondAttribute="trailing" id="H8X-uc-vIl"/>
-                    <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="uIV-Sn-Yeh" secondAttribute="trailing" constant="16" id="Iv2-nI-HgU"/>
                     <constraint firstItem="0jq-dU-DSt" firstAttribute="trailing" secondItem="VuR-wG-Bbc" secondAttribute="trailing" id="Yrn-9W-9Dw"/>
                     <constraint firstItem="uIV-Sn-Yeh" firstAttribute="leading" secondItem="VuR-wG-Bbc" secondAttribute="leading" id="h9K-qI-gKu"/>
                     <constraint firstItem="VuR-wG-Bbc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="mSL-pS-fig"/>

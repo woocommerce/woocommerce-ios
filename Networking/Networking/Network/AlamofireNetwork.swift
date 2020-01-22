@@ -2,10 +2,13 @@ import Foundation
 import Alamofire
 
 
+extension Alamofire.MultipartFormData: MultipartFormData {}
 
 /// AlamofireWrapper: Encapsulates all of the Alamofire OP's
 ///
 public class AlamofireNetwork: Network {
+
+    private let backgroundSessionManager: Alamofire.SessionManager
 
     /// WordPress.com Credentials.
     ///
@@ -16,6 +19,7 @@ public class AlamofireNetwork: Network {
     ///
     public required init(credentials: Credentials) {
         self.credentials = credentials
+        self.backgroundSessionManager = Alamofire.SessionManager(configuration: URLSessionConfiguration.background(withIdentifier: "com.automattic.woocommerce.backgroundsession"))
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -40,6 +44,23 @@ public class AlamofireNetwork: Network {
             .responseData { response in
                 completion(response.value, response.networkingError)
             }
+    }
+
+    public func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                        to request: URLRequestConvertible,
+                                        completion: @escaping (Data?, Error?) -> Void) {
+        let authenticated = AuthenticatedRequest(credentials: credentials, request: request)
+
+        backgroundSessionManager.upload(multipartFormData: multipartFormData, with: authenticated) { (encodingResult) in
+            switch encodingResult {
+            case .success(let upload, _, _):
+                upload.responseData { response in
+                    completion(response.value, response.error)
+                }
+            case .failure(let error):
+                completion(nil, error)
+            }
+        }
     }
 }
 

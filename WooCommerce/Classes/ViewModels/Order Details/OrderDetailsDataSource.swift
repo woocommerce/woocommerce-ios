@@ -395,7 +395,8 @@ private extension OrderDetailsDataSource {
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        guard let _ = refundedProducts else {
+        let refundsEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds)
+        guard aggregateOrderItems.count > 0 && refundsEnabled else {
             let item = items[indexPath.row]
             let product = lookUpProduct(by: item.productOrVariationID)
             let itemViewModel = ProductDetailsCellViewModel(item: item,
@@ -405,15 +406,13 @@ private extension OrderDetailsDataSource {
             return
         }
 
-        if aggregateOrderItems.count > 0 {
-            let aggregateItem = aggregateOrderItems[indexPath.row]
-            let product = lookUpProduct(by: aggregateItem.productOrVariationID)
-            let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem,
-                                                            currency: order.currency,
-                                                            product: product)
+        let aggregateItem = aggregateOrderItems[indexPath.row]
+        let product = lookUpProduct(by: aggregateItem.productOrVariationID)
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem,
+                                                        currency: order.currency,
+                                                        product: product)
 
-            cell.configure(item: itemViewModel, imageService: imageService)
-        }
+        cell.configure(item: itemViewModel, imageService: imageService)
     }
 
     private func configureRefundedProducts(_ cell: WooBasicTableViewCell) {
@@ -573,6 +572,20 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
+            // Order Items section with Refunds hidden
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
+                var rows: [Row] = Array(repeating: .orderItem, count: items.count)
+
+                if isProcessingPayment {
+                    rows.append(.fulfillButton)
+                } else {
+                    rows.append(.details)
+                }
+
+                return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+            }
+
+            // Refunds active
             if isRefundedStatus {
                 return nil
             }
@@ -594,6 +607,12 @@ extension OrderDetailsDataSource {
         }()
 
         let refundedProducts: Section? = {
+            // Refunds off
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
+                return nil
+            }
+
+            // Refunds on
             guard refundedProductsCount > 0 else {
                 return nil
             }

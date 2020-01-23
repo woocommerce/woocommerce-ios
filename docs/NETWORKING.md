@@ -5,9 +5,9 @@
 ![Networking high level class diagram](images/networking.png)
 
 ## Remote
-A `Remote` performs network requests. This is the core of this module.  
+A [`Remote`](../Networking/Networking/Remote/Remote.swift) performs network requests. This is the core of this module.  
 
-The base implementation of `Remote`  is provided an implementation of the `Network` protocol, and enqueues pairs of `Request` and `Mapper`, executing that request on the provided `Network` and delegating the parsing of the response to the `Mapper` provided. 
+The base implementation of `Remote`  is provided an implementation of the [`Network`](../Networking/Networking/Network/Network.swift) protocol, and enqueues pairs of `Request` and [`Mapper`](../Networking/Networking/Mapper/Mapper.swift), executing that request on the provided `Network` and delegating the parsing of the response to the `Mapper` provided. 
 
 There is a subclass of `Remote` for each relevant concern. Each of these subclasses provide public methods for each of the networking operations relevant to that concern.
 

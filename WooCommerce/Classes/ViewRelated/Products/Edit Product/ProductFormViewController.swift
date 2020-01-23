@@ -161,18 +161,23 @@ extension ProductFormViewController: UITableViewDelegate {
             case .images:
                 break
             case .name:
+                ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
                 editProductName()
             case .description:
+                ServiceLocator.analytics.track(.productDetailViewProductDescriptionTapped)
                 editProductDescription()
             }
         case .settings(let rows):
             let row = rows[indexPath.row]
             switch row {
             case .price:
+                ServiceLocator.analytics.track(.productDetailViewPriceSettingsTapped)
                 editPriceSettings()
             case .shipping:
+                ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                 editShippingSettings()
             case .inventory:
+                ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
             }
         }
@@ -232,6 +237,7 @@ private extension ProductFormViewController {
                                                         placeholder: placeholder,
                                                         navigationTitle: navigationTitle
         ) { [weak self] (newProductName) in
+            ServiceLocator.analytics.track(.productNameDoneButtonTapped)
             self?.onEditProductNameCompletion(newName: newProductName ?? "")
         }
         textViewController.delegate = self
@@ -268,6 +274,7 @@ extension ProductFormViewController: TextViewViewControllerDelegate {
 private extension ProductFormViewController {
     func editProductDescription() {
         let editorViewController = EditorFactory().productDescriptionEditor(product: product) { [weak self] content in
+            ServiceLocator.analytics.track(.aztecEditorDoneButtonTapped)
             self?.onEditProductDescriptionCompletion(newDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)
@@ -290,6 +297,7 @@ private extension ProductFormViewController {
     func editPriceSettings() {
         let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
             (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
+            ServiceLocator.analytics.track(.productPriceSettingsDoneButtonTapped)
             self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
                                                 salePrice: salePrice,
                                                 dateOnSaleStart: dateOnSaleStart,
@@ -332,6 +340,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editShippingSettings() {
         let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) { [weak self] (weight, dimensions, shippingClass) in
+            ServiceLocator.analytics.track(.productShippingSettingsDoneButtonTapped)
             self?.onEditShippingSettingsCompletion(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
         }
         navigationController?.pushViewController(shippingSettingsViewController, animated: true)
@@ -353,6 +362,7 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editInventorySettings() {
         let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
+            ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped)
             self?.onEditInventorySettingsCompletion(data: data)
         }
         navigationController?.pushViewController(inventorySettingsViewController, animated: true)

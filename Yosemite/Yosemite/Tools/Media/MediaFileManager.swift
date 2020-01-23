@@ -55,7 +55,7 @@ final class MediaFileManager {
     /// - Note: if a file already exists with the same name, the file name is appended with a number
     ///   and incremented until a unique filename is found.
     ///
-    func createLocalMediaURL(withFilename filename: String, fileExtension: String?) throws -> URL {
+    func createLocalMediaURL(filename: String, fileExtension: String?) throws -> URL {
         let baseURL = try createDirectoryURL()
         let url: URL
         if let fileExtension = fileExtension {

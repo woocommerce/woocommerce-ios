@@ -49,6 +49,7 @@
 		02FF055C23D9846A0058E6E7 /* MediaFileManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF055923D9846A0058E6E7 /* MediaFileManagerTests.swift */; };
 		02FF055D23D9846A0058E6E7 /* FileManager+URLTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF055A23D9846A0058E6E7 /* FileManager+URLTests.swift */; };
 		02FF055F23D985710058E6E7 /* URL+MediaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF055E23D985710058E6E7 /* URL+MediaTests.swift */; };
+		02FF056123D98FD40058E6E7 /* ImageSourceWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056023D98FD40058E6E7 /* ImageSourceWriter.swift */; };
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
 		450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */; };
@@ -237,6 +238,7 @@
 		02FF055923D9846A0058E6E7 /* MediaFileManagerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MediaFileManagerTests.swift; sourceTree = "<group>"; };
 		02FF055A23D9846A0058E6E7 /* FileManager+URLTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "FileManager+URLTests.swift"; sourceTree = "<group>"; };
 		02FF055E23D985710058E6E7 /* URL+MediaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "URL+MediaTests.swift"; sourceTree = "<group>"; };
+		02FF056023D98FD40058E6E7 /* ImageSourceWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageSourceWriter.swift; sourceTree = "<group>"; };
 		35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45010692239A6C9F00E24722 /* TaxClassStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassStore.swift; sourceTree = "<group>"; };
@@ -498,6 +500,7 @@
 				02FF054523D983F30058E6E7 /* MediaFileManager.swift */,
 				02FF054623D983F30058E6E7 /* MediaImageExporter.swift */,
 				02FF054B23D983F30058E6E7 /* URL+Media.swift */,
+				02FF056023D98FD40058E6E7 /* ImageSourceWriter.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -1102,6 +1105,7 @@
 				026CF628237D8F30009563D4 /* ProductVariationAction.swift in Sources */,
 				B52E002E211A3F5500700FDE /* ReadOnlyType.swift in Sources */,
 				B5C9DE162087FF0E006B910A /* Store.swift in Sources */,
+				02FF056123D98FD40058E6E7 /* ImageSourceWriter.swift in Sources */,
 				026CF626237D8EFB009563D4 /* ProductVariationStore.swift in Sources */,
 				B52E0034211A449600700FDE /* Site+ReadOnlyType.swift in Sources */,
 				D8C11A5822DFB2FF00D4A88D /* OrderStatsV4Interval+ReadOnlyConvertible.swift in Sources */,

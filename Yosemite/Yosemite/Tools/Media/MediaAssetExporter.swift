@@ -9,7 +9,7 @@ final class MediaAssetExporter: MediaExporter {
 
     let mediaDirectoryType: MediaDirectory
 
-    private let imageOptions: MediaImageExporter.Options
+    private let imageOptions: MediaImageExportOptions
 
     private let allowableFileExtensions: Set<String>
 
@@ -19,7 +19,10 @@ final class MediaAssetExporter: MediaExporter {
     ///
     private lazy var imageManager = PHImageManager.default()
 
-    init(asset: PHAsset, imageOptions: MediaImageExporter.Options, allowableFileExtensions: Set<String>, mediaDirectoryType: MediaDirectory = .uploads) {
+    init(asset: PHAsset,
+         imageOptions: MediaImageExportOptions,
+         allowableFileExtensions: Set<String>,
+         mediaDirectoryType: MediaDirectory = .uploads) {
         self.asset = asset
         self.imageOptions = imageOptions
         self.allowableFileExtensions = allowableFileExtensions
@@ -85,20 +88,13 @@ final class MediaAssetExporter: MediaExporter {
                                             return
                                         }
 
-                                        var exportImageType = self.imageOptions.exportImageType
-                                        if self.imageOptions.exportImageType == nil, let utiToUse = uti {
-                                            exportImageType = self.preferredExportTypeFor(uti: utiToUse)
-                                        }
-                                        let options = MediaImageExporter.Options(maximumImageSize: self.imageOptions.maximumImageSize,
-                                                                                        imageCompressionQuality: self.imageOptions.imageCompressionQuality,
-                                                                                        exportImageType: exportImageType,
-                                                                                        stripsGeoLocationIfNeeded: self.imageOptions.stripsGeoLocationIfNeeded)
+                                        let typeHint = self.preferredExportTypeFor(uti: uti)
 
                                         // Hands off the image export to a shared image writer.
                                         let exporter = MediaImageExporter(data: imageData,
                                                                           filename: filename,
-                                                                          typeHint: uti,
-                                                                          options: options,
+                                                                          typeHint: typeHint,
+                                                                          options: self.imageOptions,
                                                                           mediaDirectoryType: self.mediaDirectoryType)
                                         exporter.export(onCompletion: onCompletion)
         })
@@ -106,17 +102,20 @@ final class MediaAssetExporter: MediaExporter {
 }
 
 private extension MediaAssetExporter {
-    func preferredExportTypeFor(uti: String) -> String? {
+    func preferredExportTypeFor(uti: String?) -> String? {
+        guard let uti = uti else {
+            return nil
+        }
+
         guard allowableFileExtensions.isEmpty == false,
             let extensionType = UTTypeCopyPreferredTagWithClass(uti as CFString, kUTTagClassFilenameExtension)?.takeRetainedValue() as String?
             else {
                 return nil
         }
-        if allowableFileExtensions.contains(extensionType) {
-            return uti
-        } else {
+        guard allowableFileExtensions.contains(extensionType) else {
             return kUTTypeJPEG as String
         }
+        return uti
     }
 
     /// Exports and writes an asset's GIF data to a local Media URL.
@@ -131,7 +130,7 @@ private extension MediaAssetExporter {
         }
         let url: URL
         do {
-            url = try mediaFileManager.createLocalMediaURL(withFilename: resource.originalFilename,
+            url = try mediaFileManager.createLocalMediaURL(filename: resource.originalFilename,
                                                            fileExtension: "gif")
         } catch {
             onCompletion(nil, error)

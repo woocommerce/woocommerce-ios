@@ -35,12 +35,3 @@ extension MediaExporter {
         return MediaFileManager(directory: mediaDirectoryType)
     }
 }
-
-/// Protocol of general options available for an export, typically corresponding to a user setting.
-///
-protocol MediaExportingOptions {
-
-    /// Strip the geoLocation from exported media, if needed.
-    ///
-    var stripsGeoLocationIfNeeded: Bool { get }
-}

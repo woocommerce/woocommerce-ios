@@ -75,10 +75,9 @@ private extension MediaExportService {
         ///
         /// - Note: This value may or may not be honored, depending on the export implementation and underlying data.
         ///
-        static let imageExportOptions = MediaImageExporter.Options(maximumImageSize: 3000,
-                                                                   imageCompressionQuality: 0.85,
-                                                                   exportImageType: nil,
-                                                                   stripsGeoLocationIfNeeded: false)
+        static let imageExportOptions = MediaImageExportOptions(maximumImageSize: 3000,
+                                                                imageCompressionQuality: 0.85,
+                                                                stripsGeoLocationIfNeeded: false)
 
         static let allowableFileExtensions = Set<String>(["jpg", "jpeg", "png", "gif"])
     }

@@ -10,19 +10,19 @@ final class MediaFileManagerTests: XCTestCase {
 
             let fileManager = MediaFileManager()
 
-            var url = try fileManager.createLocalMediaURL(withFilename: basename, fileExtension: pathExtension)
+            var url = try fileManager.createLocalMediaURL(filename: basename, fileExtension: pathExtension)
             XCTAssertEqual(url.lastPathComponent, expected)
 
-            url = try fileManager.createLocalMediaURL(withFilename: expected, fileExtension: pathExtension)
+            url = try fileManager.createLocalMediaURL(filename: expected, fileExtension: pathExtension)
             XCTAssertEqual(url.lastPathComponent, expected)
 
-            url = try fileManager.createLocalMediaURL(withFilename: basename + ".png", fileExtension: pathExtension)
+            url = try fileManager.createLocalMediaURL(filename: basename + ".png", fileExtension: pathExtension)
             XCTAssertEqual(url.lastPathComponent, expected)
 
-            url = try fileManager.createLocalMediaURL(withFilename: basename, fileExtension: nil)
+            url = try fileManager.createLocalMediaURL(filename: basename, fileExtension: nil)
             XCTAssertEqual(url.lastPathComponent, basename)
 
-            url = try fileManager.createLocalMediaURL(withFilename: expected, fileExtension: nil)
+            url = try fileManager.createLocalMediaURL(filename: expected, fileExtension: nil)
             XCTAssertEqual(url.lastPathComponent, expected)
         } catch {
             XCTFail("Error creating local media URL: \(error)")
@@ -34,7 +34,7 @@ final class MediaFileManagerTests: XCTestCase {
             let fileManager = MockupFileManager()
             let data = Data()
             let mediaFileManager = MediaFileManager(fileManager: fileManager)
-            let localURL = try mediaFileManager.createLocalMediaURL(withFilename: "hello", fileExtension: "txt")
+            let localURL = try mediaFileManager.createLocalMediaURL(filename: "hello", fileExtension: "txt")
 
             XCTAssertTrue(fileManager.createFile(atPath: localURL.path, contents: data))
             XCTAssertTrue(fileManager.fileExists(atPath: localURL.path))

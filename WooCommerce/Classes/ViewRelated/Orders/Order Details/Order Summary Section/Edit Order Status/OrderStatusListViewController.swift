@@ -10,16 +10,11 @@ final class OrderStatusListViewController: UIViewController {
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        let predicate = NSPredicate(format: "siteID == %lld && slug != %@", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min, OrderStatusEnum.refunded.rawValue)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
-
-    private var orderStatuses: [OrderStatus] {
-        let filteredStatuses = statusResultsController.fetchedObjects.filter { $0.slug != OrderStatusEnum.refunded.rawValue }
-        return filteredStatuses
-    }
 
     /// The status selected
     ///
@@ -71,7 +66,7 @@ final class OrderStatusListViewController: UIViewController {
 
     private func preselectStatusIfPossible() {
         if let selectedStatus = selectedStatus,
-            let index = orderStatuses.firstIndex(of: selectedStatus) {
+            let index = statusResultsController.fetchedObjects.firstIndex(of: selectedStatus) {
             tableView.selectRow(at: IndexPath(row: index, section: 0), animated: false, scrollPosition: .none)
         }
     }
@@ -221,11 +216,11 @@ private extension OrderStatusListViewController {
 //
 extension OrderStatusListViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 1
+        return statusResultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return orderStatuses.count
+        return statusResultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -234,7 +229,7 @@ extension OrderStatusListViewController: UITableViewDataSource {
             fatalError()
         }
 
-        let status = orderStatuses[indexPath.row]
+        let status = statusResultsController.object(at: indexPath)
         cell.textLabel?.text = status.name
 
         return cell
@@ -251,7 +246,7 @@ extension OrderStatusListViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        selectedStatus = orderStatuses[indexPath.row]
+        selectedStatus = statusResultsController.object(at: indexPath)
     }
 }
 

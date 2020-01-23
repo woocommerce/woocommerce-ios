@@ -2,13 +2,12 @@ import MobileCoreServices
 
 extension URL {
     var mimeTypeForPathExtension: String {
-        if
-            let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, lastPathComponent as CFString, nil)?.takeRetainedValue(),
-            let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue() {
-            return contentType as String
+        guard
+            let id = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as CFString, nil)?.takeRetainedValue(),
+            let contentType = UTTypeCopyPreferredTagWithClass(id, kUTTagClassMIMEType)?.takeRetainedValue() else {
+                return "application/octet-stream"
         }
-
-        return "application/octet-stream"
+        return contentType as String
     }
 
     /// The expected file extension string for a given UTType identifier string.

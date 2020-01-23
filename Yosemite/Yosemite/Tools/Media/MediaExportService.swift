@@ -9,7 +9,7 @@ import Photos
 final class MediaExportService {
     /// Completion handler for a created Media object.
     ///
-    typealias MediaExportCompletion = (MediaUploadable?, Error?) -> Void
+    typealias MediaExportCompletion = (UploadableMedia?, Error?) -> Void
 
     private lazy var exportQueue: DispatchQueue = {
         return DispatchQueue(label: "org.wordpress.mediaExportService", autoreleaseFrequency: .workItem)
@@ -80,6 +80,6 @@ private extension MediaExportService {
                                                                    exportImageType: nil,
                                                                    stripsGeoLocationIfNeeded: false)
 
-        static let allowableFileExtensions = Set<String>(["jpg", "jpeg", "png", "gif", "pdf"])
+        static let allowableFileExtensions = Set<String>(["jpg", "jpeg", "png", "gif"])
     }
 }

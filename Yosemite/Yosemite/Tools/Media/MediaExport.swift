@@ -1,11 +1,11 @@
 import Foundation
 import Networking
 
-typealias MediaUploadable = Networking.UploadableMedia
+typealias UploadableMedia = Networking.UploadableMedia
 
 /// Completion block when a media item is exported.
 ///
-typealias MediaExportCompletion = (MediaUploadable?, Error?) -> Void
+typealias MediaExportCompletion = (UploadableMedia?, Error?) -> Void
 
 /// Exports media to the local file system for remote upload.
 ///

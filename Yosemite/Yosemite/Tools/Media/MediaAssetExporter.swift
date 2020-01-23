@@ -148,7 +148,7 @@ private extension MediaAssetExporter {
                                 onCompletion(nil, error)
                                 return
                             }
-                            let exported = MediaUploadable(localURL: url,
+                            let exported = UploadableMedia(localURL: url,
                                                            filename: url.lastPathComponent,
                                                            mimeType: url.mimeTypeForPathExtension)
                             onCompletion(exported, nil)

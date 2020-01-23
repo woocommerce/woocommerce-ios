@@ -120,7 +120,7 @@ final class MediaImageExporter: MediaExporter {
             writer.nullifyGPSData = options.stripsGeoLocationIfNeeded
             _ = try writer.writeImageSource(source)
 
-            let exported = MediaUploadable(localURL: url,
+            let exported = UploadableMedia(localURL: url,
                                            filename: url.lastPathComponent,
                                            mimeType: url.mimeTypeForPathExtension)
             onCompletion(exported, nil)

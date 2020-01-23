@@ -6,7 +6,7 @@ import UIKit
 class AppSelector {
     // the action sheet that will contain the list of apps that can be called
     let alertController: UIAlertController
-    
+
     /// initializes the picker with a dictionary. Initialization will fail if an empty/invalid app list is passed
     /// - Parameters:
     ///   - appList: collection of apps to be added to the selector
@@ -26,18 +26,23 @@ class AppSelector {
                     UIApplication.shared.open(url)
                 })
             }
+            guard !actions.isEmpty else {
+                return nil
+            }
+            //sort the apps alphabetically
+            actions = actions.sorted { $0.title ?? "" < $1.title ?? "" }
             actions.append(UIAlertAction(title: AppSelectorTitles.cancel.localized, style: .cancel, handler: nil))
-            
+
             if let action = defaultAction {
                 actions.insert(action, at: 0)
             }
             return actions
         }
-        
+
         guard let appCalls = buildAppCalls(from: appList) else {
             return nil
         }
-        
+
         alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         appCalls.forEach {
             alertController.addAction($0)
@@ -51,27 +56,31 @@ extension AppSelector {
     /// initializes the picker with a plist file in a specified bundle
     convenience init?(with plistFile: String, in bundle: Bundle, defaultAction: UIAlertAction? = nil) {
 
-        guard let path = bundle.path(forResource: plistFile, ofType: "plist"),
-            let availableApps = NSDictionary(contentsOfFile: path) as? [String: String],
-            !availableApps.isEmpty else {
-                return nil
+        guard let plistPath = bundle.path(forResource: plistFile, ofType: "plist"),
+            let availableApps = NSDictionary(contentsOfFile: plistPath) as? [String: String] else {
+            return nil
         }
         self.init(with: availableApps, defaultAction: defaultAction)
     }
 
     /// Convenience init for a picker that calls supported email clients apps, defined in EmailClients.plist
     convenience init?() {
-        let bundle = Bundle(for: type(of: self))
+        guard let bundlePath = Bundle(for: type(of: self))
+            .path(forResource: "WordPressAuthenticatorResources", ofType: "bundle"),
+            let wpAuthenticatorBundle = Bundle(path: bundlePath) else {
+                return nil
+        }
+
         let plistFile = "EmailClients"
         var defaultAction: UIAlertAction?
-        
+
         // if available, prepend apple mail
         if MFMailComposeViewController.canSendMail(), let url = URL(string: "message://") {
             defaultAction = UIAlertAction(title: AppSelectorTitles.appleMail.localized, style: .default) { action in
                 UIApplication.shared.open(url)
             }
         }
-        self.init(with: plistFile, in: bundle, defaultAction: defaultAction)
+        self.init(with: plistFile, in: wpAuthenticatorBundle, defaultAction: defaultAction)
     }
 }
 
@@ -122,7 +131,7 @@ enum AppSelectorTitles: String {
     case msOutlook
     case spark
     case yahooMail
-    case fastMail
+    case fastmail
     case cancel
 
     var localized: String {
@@ -139,7 +148,7 @@ enum AppSelectorTitles: String {
             return NSLocalizedString("Spark", comment: "Spark")
         case .yahooMail:
             return NSLocalizedString("Yahoo Mail", comment: "Yahoo Mail")
-        case .fastMail:
+        case .fastmail:
             return NSLocalizedString("Fastmail", comment: "Fastmail")
         case .cancel:
             return NSLocalizedString("Cancel", comment: "Cancel")

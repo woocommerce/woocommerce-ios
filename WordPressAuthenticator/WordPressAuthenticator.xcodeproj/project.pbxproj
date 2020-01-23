@@ -298,6 +298,21 @@
 			path = Private;
 			sourceTree = "<group>";
 		};
+		3F550D4B23DA3B59007E5897 /* SupportedEmailClients */ = {
+			isa = PBXGroup;
+			children = (
+				3FFF2FC023D7ED7C00D38C77 /* EmailClients.plist */,
+			);
+			path = SupportedEmailClients;
+			sourceTree = "<group>";
+		};
+		3F550D4C23DA4191007E5897 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
 		6205895375D954F46B1DFE53 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -341,8 +356,8 @@
 		B5609094208A4EAF00399AE4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				B56052A32090B2ED001B91FD /* CircularImageView.swift */,
 				3FFF2FC223D7F53200D38C77 /* AppSelector.swift */,
+				B56052A32090B2ED001B91FD /* CircularImageView.swift */,
 				B5609112208A555500399AE4 /* LoginTextField.swift */,
 				B5609113208A555500399AE4 /* SearchTableViewCell.swift */,
 				B5609114208A555500399AE4 /* SearchTableViewCell.xib */,
@@ -482,7 +497,7 @@
 			children = (
 				B5A5274020B478160065BE81 /* Animations */,
 				B5E07FF3208FD13800657A9A /* Assets.xcassets */,
-				3FFF2FC023D7ED7C00D38C77 /* EmailClients.plist */,
+				3F550D4B23DA3B59007E5897 /* SupportedEmailClients */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -547,6 +562,7 @@
 				B501C03D208FC52500D1E58F /* Authenticator */,
 				B501C03B208FC52400D1E58F /* Model */,
 				B501C03F208FC52500D1E58F /* Services */,
+				3F550D4C23DA4191007E5897 /* UI */,
 				B5ED7904207E976500A8FD8C /* Info.plist */,
 			);
 			path = WordPressAuthenticatorTests;

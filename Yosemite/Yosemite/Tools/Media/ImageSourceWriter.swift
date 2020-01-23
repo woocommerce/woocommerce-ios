@@ -99,6 +99,7 @@ extension ImageSourceWriter {
         case imageSourceDestinationWithURLFailed
         case imageSourceThumbnailGenerationFailed
         case imageSourceDestinationWriteFailed
+
         var description: String {
             switch self {
             default:

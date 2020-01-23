@@ -56,20 +56,21 @@ final class MediaImageExporter: MediaExporter {
     }
 
     func export(onCompletion: @escaping MediaExportCompletion) {
-        exportImage(withData: data, fileName: filename, typeHint: typeHint, onCompletion: onCompletion)
+        exportImage(data: data, fileName: filename, typeHint: typeHint, onCompletion: onCompletion)
     }
 
     /// Exports and writes an image's data, expected as PNG or JPEG format, to a local Media URL.
     ///
     /// - Parameters:
+    ///     - data: Image data.
     ///     - fileName: Filename if it's known.
-    ///     - typeHint: Hint towards the UTType of data, such as PNG or JPEG.
-    ///     - onCompletion: Called on successful export, with the local file URL of the exported UIImage.
-    ///     - onError: Called if an error was encountered during creation.
+    ///     - typeHint: The UTType of data, if it's known.
+    ///     - onCompletion: Called when the image export completes.
     ///
-    /// - Returns: a progress object that report the current state of the export process.
-    ///
-    private func exportImage(withData data: Data, fileName: String?, typeHint: String?, onCompletion: @escaping MediaExportCompletion) {
+    private func exportImage(data: Data,
+                             fileName: String?,
+                             typeHint: String?,
+                             onCompletion: @escaping MediaExportCompletion) {
         do {
             let hint = typeHint ?? kUTTypeJPEG as String
             let sourceOptions: [String: Any] = [kCGImageSourceTypeIdentifierHint as String: hint as CFString]
@@ -88,7 +89,7 @@ final class MediaImageExporter: MediaExporter {
         }
     }
 
-    /// Exports and writes an image source, to a local Media URL.
+    /// Exports and writes an image source to a local Media URL.
     ///
     /// - Parameters:
     ///     - fileName: Filename if it's known.
@@ -97,7 +98,10 @@ final class MediaImageExporter: MediaExporter {
     ///
     /// - Returns: a progress object that report the current state of the export process.
     ///
-    private func exportImageSource(_ source: CGImageSource, filename: String?, type: String, onCompletion: @escaping MediaExportCompletion) {
+    private func exportImageSource(_ source: CGImageSource,
+                                   filename: String?,
+                                   type: String,
+                                   onCompletion: @escaping MediaExportCompletion) {
         do {
             let filename = filename ?? defaultImageFilename
             // Makes a new URL within the local Media directory
@@ -121,11 +125,8 @@ final class MediaImageExporter: MediaExporter {
 extension MediaImageExporter {
     enum ImageExportError: Error {
         case imageSourceCreationWithDataFailed
-        case imageSourceCreationWithURLFailed
         case imageSourceIsAnUnknownType
-        case imageSourceDestinationWithURLFailed
-        case imageSourceThumbnailGenerationFailed
-        case imageSourceDestinationWriteFailed
+
         var description: String {
             switch self {
             default:

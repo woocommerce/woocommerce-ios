@@ -57,6 +57,23 @@ final class AggregateDataHelperTests: XCTestCase {
             XCTAssertEqual(expected.sku, actual.sku)
         }
     }
+
+    /// Verifies that aggregate order items filter out objects with zero quantities.
+    ///
+    func testAggregateOrderItemsFilterOutZeroQuantities() {
+        let orders = mapLoadAllOrdersResponse()
+
+        guard let order = orders.first(where: { $0.orderID == orderID }) else {
+            XCTFail("Error: could not find order with the specified orderID.")
+            return
+        }
+
+        let refunds = mapLoadAllRefundsResponse()
+        let expectedCount = 7
+        let actual = AggregateDataHelper.combineOrderItems(order.items, with: refunds)
+
+        XCTAssertEqual(expectedCount, actual.count)
+    }
 }
 
 

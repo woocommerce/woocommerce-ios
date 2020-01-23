@@ -251,7 +251,7 @@ public enum WooAnalyticsStat: String {
     case productListPulledToRefresh             = "product_list_pulled_to_refresh"
     case productListSearched                    = "product_list_searched"
     case productListMenuSearchTapped            = "product_list_menu_search_tapped"
-    
+
     // Edit Product Events
     //
     case productDetailUpdateButtonTapped        = "product_detail_update_button_tapped"
@@ -267,7 +267,7 @@ public enum WooAnalyticsStat: String {
     case productPriceSettingsDoneButtonTapped   = "product_price_settings_done_button_tapped"
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
-    
+
     // Readonly Product Variations Events
     //
     case productDetailsProductVariantsTapped    = "product_detail_view_product_variants_tapped"

@@ -19,7 +19,7 @@ final class AggregateDataHelperTests: XCTestCase {
     ///
     func testRefundsCount() {
         let refunds = mapLoadAllRefundsResponse()
-        let expected = 3
+        let expected = 4
         let actual = refunds.count
 
         XCTAssertEqual(expected, actual)
@@ -29,7 +29,7 @@ final class AggregateDataHelperTests: XCTestCase {
     ///
     func testRefundedProductsCount() {
         let refunds = mapLoadAllRefundsResponse()
-        let expected = Decimal(6)
+        let expected = Decimal(8)
         let actual = AggregateDataHelper.refundedProductsCount(from: refunds)
 
         XCTAssertEqual(expected, actual)
@@ -115,11 +115,19 @@ private extension AggregateDataHelperTests {
     func expectedRefundedProducts() -> [AggregateOrderItem] {
         let currencyFormatter = CurrencyFormatter()
         var expectedArray = [AggregateOrderItem]()
+        let item0 = AggregateOrderItem(productID: 16,
+                                       variationID: 0,
+                                       name: "Woo Logo",
+                                       price: currencyFormatter.convertToDecimal(from: "31.5") ?? NSDecimalNumber.zero,
+                                       quantity: -2,
+                                       sku: "HOODIE-WOO-LOGO",
+                                       total: currencyFormatter.convertToDecimal(from: "-63.00") ?? NSDecimalNumber.zero)
+        expectedArray.append(item0)
         let item1 = AggregateOrderItem(
                         productID: 21,
                         variationID: 70,
                         name: "Ship Your Idea - Blue, XL",
-                        price: currencyFormatter.convertToDecimal(from: "-27.00") ?? NSDecimalNumber.zero,
+                        price: currencyFormatter.convertToDecimal(from: "27") ?? NSDecimalNumber.zero,
                         quantity: -3,
                         sku: "HOODIE-SHIP-YOUR-IDEA-BLUE-XL",
                         total: currencyFormatter.convertToDecimal(from: "-81.00") ?? NSDecimalNumber.zero
@@ -130,7 +138,7 @@ private extension AggregateDataHelperTests {
                         productID: 21,
                         variationID: 71,
                         name: "Ship Your Idea - Black, L",
-                        price: currencyFormatter.convertToDecimal(from: "-31.50") ?? NSDecimalNumber.zero,
+                        price: currencyFormatter.convertToDecimal(from: "31.5") ?? NSDecimalNumber.zero,
                         quantity: -1,
                         sku: "HOODIE-SHIP-YOUR-IDEA-BLACK-L",
                         total: currencyFormatter.convertToDecimal(from: "-31.50") ?? NSDecimalNumber.zero
@@ -141,7 +149,7 @@ private extension AggregateDataHelperTests {
                         productID: 22,
                         variationID: 0,
                         name: "Ninja Silhouette",
-                        price: currencyFormatter.convertToDecimal(from: "-18.00") ?? NSDecimalNumber.zero,
+                        price: currencyFormatter.convertToDecimal(from: "18") ?? NSDecimalNumber.zero,
                         quantity: -1,
                         sku: "T-SHIRT-NINJA-SILHOUETTE",
                         total: currencyFormatter.convertToDecimal(from: "-18.00") ?? NSDecimalNumber.zero
@@ -152,7 +160,7 @@ private extension AggregateDataHelperTests {
                         productID: 24,
                         variationID: 0,
                         name: "Happy Ninja",
-                        price: currencyFormatter.convertToDecimal(from: "-31.50") ?? NSDecimalNumber.zero,
+                        price: currencyFormatter.convertToDecimal(from: "31.5") ?? NSDecimalNumber.zero,
                         quantity: -1,
                         sku: "HOODIE-HAPPY-NINJA",
                         total: currencyFormatter.convertToDecimal(from: "-31.50") ?? NSDecimalNumber.zero

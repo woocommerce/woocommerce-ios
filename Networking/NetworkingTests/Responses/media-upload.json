@@ -1,0 +1,53 @@
+{
+    "media": [
+        {
+            "ID": 1899,
+            "URL": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2.jpg",
+            "guid": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2.jpg",
+            "date": "2020-01-22T12:01:52+02:30",
+            "post_ID": 0,
+            "author_ID": 44301761,
+            "file": "BTLY3763-2.jpg",
+            "mime_type": "image/jpeg",
+            "extension": "jpg",
+            "title": "BTLY3763",
+            "caption": "",
+            "description": "",
+            "alt": "",
+            "icon": "https://test.com/wp-includes/images/media/default.png",
+            "thumbnails": {
+                "medium": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2-225x300.jpg",
+                "thumbnail": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2-150x150.jpg",
+                "woocommerce_thumbnail": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2-324x324.jpg",
+                "woocommerce_single": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2-416x555.jpg",
+                "woocommerce_gallery_thumbnail": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2-100x100.jpg",
+                "shop_catalog": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2-324x324.jpg",
+                "shop_single": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2-416x555.jpg",
+                "shop_thumbnail": "https://test.com/wp-content/uploads/2020/01/BTLY3763-2-100x100.jpg"
+            },
+            "height": 1024,
+            "width": 768,
+            "exif": {
+                "aperture": "0",
+                "credit": "",
+                "camera": "",
+                "caption": "",
+                "created_timestamp": "0",
+                "copyright": "",
+                "focal_length": "0",
+                "iso": "0",
+                "shutter_speed": "0",
+                "title": "",
+                "orientation": "0",
+                "keywords": []
+            },
+            "meta": {
+                "links": {
+                    "self": "https://public-api.wordpress.com/rest/v1.1/sites/000/media/1899",
+                    "help": "https://public-api.wordpress.com/rest/v1.1/sites/000/media/1899/help",
+                    "site": "https://public-api.wordpress.com/rest/v1.1/sites/000"
+                }
+            }
+        }
+    ]
+}

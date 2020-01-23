@@ -10,6 +10,9 @@
 		020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */ = {isa = PBXBuildFile; fileRef = 020BE74923B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift */; };
 		1A21EE9822832BC300C940C6 /* WordPressComOAuthClientFacade+Swift.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A21EE9722832BC200C940C6 /* WordPressComOAuthClientFacade+Swift.swift */; };
 		1A4095182271AEFC009AA86D /* WPAuthenticator-Swift.h in Headers */ = {isa = PBXBuildFile; fileRef = 1A4095152271AEFC009AA86D /* WPAuthenticator-Swift.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		3F550D4E23DA429B007E5897 /* AppSelectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F550D4D23DA429B007E5897 /* AppSelectorTests.swift */; };
+		3F550D5123DA4A9C007E5897 /* LinkMailPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F550D5023DA4A9C007E5897 /* LinkMailPresenter.swift */; };
+		3F550D5323DA4AC6007E5897 /* URLHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F550D5223DA4AC6007E5897 /* URLHandler.swift */; };
 		3FFF2FC123D7ED7C00D38C77 /* EmailClients.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3FFF2FC023D7ED7C00D38C77 /* EmailClients.plist */; };
 		3FFF2FC323D7F53200D38C77 /* AppSelector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FFF2FC223D7F53200D38C77 /* AppSelector.swift */; };
 		7A7A9B9CD2D81959F9AB9AF6 /* Pods_WordPressAuthenticator.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C736FF243DE333FCAB1C2614 /* Pods_WordPressAuthenticator.framework */; };
@@ -151,6 +154,9 @@
 		276354F054C34AD36CA32AB6 /* Pods-WordPressAuthenticator.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release-alpha.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		33FEF45B466FF8EAAE5F3923 /* Pods-WordPressAuthenticator.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.release.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.release.xcconfig"; sourceTree = "<group>"; };
 		37AFD4EF492B00CA7AEC11A3 /* Pods-WordPressAuthenticatorTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
+		3F550D4D23DA429B007E5897 /* AppSelectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelectorTests.swift; sourceTree = "<group>"; };
+		3F550D5023DA4A9C007E5897 /* LinkMailPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LinkMailPresenter.swift; sourceTree = "<group>"; };
+		3F550D5223DA4AC6007E5897 /* URLHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URLHandler.swift; sourceTree = "<group>"; };
 		3FFF2FC023D7ED7C00D38C77 /* EmailClients.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = EmailClients.plist; sourceTree = "<group>"; };
 		3FFF2FC223D7F53200D38C77 /* AppSelector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppSelector.swift; sourceTree = "<group>"; };
 		5A441EC80D2B8D2209C2E228 /* Pods_WordPressAuthenticatorTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WordPressAuthenticatorTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -313,6 +319,24 @@
 			path = UI;
 			sourceTree = "<group>";
 		};
+		3F550D4F23DA4A6B007E5897 /* Email Client Picker */ = {
+			isa = PBXGroup;
+			children = (
+				3FFF2FC223D7F53200D38C77 /* AppSelector.swift */,
+				3F550D5023DA4A9C007E5897 /* LinkMailPresenter.swift */,
+				3F550D5223DA4AC6007E5897 /* URLHandler.swift */,
+			);
+			path = "Email Client Picker";
+			sourceTree = "<group>";
+		};
+		3F550D5423DA5094007E5897 /* Email Client Picker */ = {
+			isa = PBXGroup;
+			children = (
+				3F550D4D23DA429B007E5897 /* AppSelectorTests.swift */,
+			);
+			path = "Email Client Picker";
+			sourceTree = "<group>";
+		};
 		6205895375D954F46B1DFE53 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
@@ -356,7 +380,6 @@
 		B5609094208A4EAF00399AE4 /* UI */ = {
 			isa = PBXGroup;
 			children = (
-				3FFF2FC223D7F53200D38C77 /* AppSelector.swift */,
 				B56052A32090B2ED001B91FD /* CircularImageView.swift */,
 				B5609112208A555500399AE4 /* LoginTextField.swift */,
 				B5609113208A555500399AE4 /* SearchTableViewCell.swift */,
@@ -540,6 +563,7 @@
 			children = (
 				CE1B18CA20EEC31000BECC3F /* Credentials */,
 				B5609099208A4EAF00399AE4 /* Authenticator */,
+				3F550D4F23DA4A6B007E5897 /* Email Client Picker */,
 				B560909B208A4EB000399AE4 /* Extensions */,
 				B5ED7917207E993E00A8FD8C /* Logging */,
 				B5609098208A4EAF00399AE4 /* Model */,
@@ -559,6 +583,7 @@
 		B5ED7901207E976500A8FD8C /* WordPressAuthenticatorTests */ = {
 			isa = PBXGroup;
 			children = (
+				3F550D5423DA5094007E5897 /* Email Client Picker */,
 				B501C03D208FC52500D1E58F /* Authenticator */,
 				B501C03B208FC52400D1E58F /* Model */,
 				B501C03F208FC52500D1E58F /* Services */,
@@ -903,6 +928,7 @@
 				CE30A2AD2257CECC00DF3CDA /* AuthenticatorCredentials.swift in Sources */,
 				B5609145208A563800399AE4 /* LoginViewController.swift in Sources */,
 				B5609139208A563800399AE4 /* LoginEmailViewController.swift in Sources */,
+				3F550D5323DA4AC6007E5897 /* URLHandler.swift in Sources */,
 				98C9195B2308E3DA00A90E12 /* AppleAuthenticator.swift in Sources */,
 				B56090F9208A533200399AE4 /* WordPressAuthenticator+Events.swift in Sources */,
 				020BE74A23B0BD2E007FE54C /* WordPressAuthenticatorDisplayImages.swift in Sources */,
@@ -944,6 +970,7 @@
 				B56090E1208A4F9D00399AE4 /* WPWalkthroughTextField.m in Sources */,
 				B56090EF208A527000399AE4 /* WPStyleGuide+Login.swift in Sources */,
 				B56090D0208A4F5400399AE4 /* NUXViewControllerBase.swift in Sources */,
+				3F550D5123DA4A9C007E5897 /* LinkMailPresenter.swift in Sources */,
 				B56090DE208A4F9D00399AE4 /* WPWalkthroughOverlayView.m in Sources */,
 				B560910A208A54F800399AE4 /* WordPressComAccountService.swift in Sources */,
 				B56090FA208A533200399AE4 /* WordPressAuthenticator.swift in Sources */,
@@ -955,6 +982,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B501C045208FC68700D1E58F /* LoginFieldsValidationTests.swift in Sources */,
+				3F550D4E23DA429B007E5897 /* AppSelectorTests.swift in Sources */,
 				CE16177821B70C1A00B82A47 /* WordPressAuthenticatorDisplayTextTests.swift in Sources */,
 				B501C048208FC79C00D1E58F /* LoginFacadeTests.m in Sources */,
 				B501C046208FC6A700D1E58F /* WordPressAuthenticatorTests.swift in Sources */,

@@ -11,7 +11,10 @@ class AppSelector {
     /// - Parameters:
     ///   - appList: collection of apps to be added to the selector
     ///   - defaultAction: default action, if not nil, will be the first element of the list
-    init?(with appList: [String: String], defaultAction: UIAlertAction? = nil) {
+    ///   - urlHandler: object that handles app URL schemes; defaults to UIApplication.shared
+    init?(with appList: [String: String],
+          defaultAction: UIAlertAction? = nil,
+          urlHandler: URLHandler = UIApplication.shared) {
         /// inline method that builds a list of app calls to be inserted in the action sheet
         func buildAppCalls(from appList: [String: String]) -> [UIAlertAction]? {
             guard !appList.isEmpty else {
@@ -19,11 +22,11 @@ class AppSelector {
             }
             var actions = [UIAlertAction]()
             for (name, urlString) in appList {
-                guard let url = URL(string: urlString), UIApplication.shared.canOpenURL(url) else {
+                guard let url = URL(string: urlString), urlHandler.canOpenURL(url) else {
                     continue
                 }
                 actions.append(UIAlertAction(title: AppSelectorTitles(rawValue: name)?.localized ?? name, style: .default) { action in
-                    UIApplication.shared.open(url)
+                    urlHandler.open(url, options: [:], completionHandler: nil)
                 })
             }
             guard !actions.isEmpty else {
@@ -51,7 +54,7 @@ class AppSelector {
 }
 
 
-/// Email Clients Selector
+/// Initializers for Email Picker
 extension AppSelector {
     /// initializes the picker with a plist file in a specified bundle
     convenience init?(with plistFile: String, in bundle: Bundle, defaultAction: UIAlertAction? = nil) {
@@ -81,44 +84,6 @@ extension AppSelector {
             }
         }
         self.init(with: plistFile, in: wpAuthenticatorBundle, defaultAction: defaultAction)
-    }
-}
-
-
-/// Email picker presenter
-class LinkMailPresenter {
-    /// Presents the available mail clients in an action sheet. If none is available,
-    /// Falls back to Apple Mail and opens it.
-    /// If not even Apple Mail is available, presents an alert to check your email
-    /// - Parameters:
-    ///   - viewController: the UIViewController that will present the action sheet
-    ///   - appSelector: the app picker that contains the available clients. Nil if no clients are available
-    ///                  reads the supported email clients from EmailClients.plist
-    func presentEmailClients(on viewController: UIViewController,
-                             appSelector: AppSelector? = AppSelector()) {
-
-        guard let picker = appSelector else {
-            // fall back to Apple Mail if no other clients are installed
-            if MFMailComposeViewController.canSendMail(), let url = URL(string: "message://") {
-                UIApplication.shared.open(url)
-            } else {
-                showAlertToCheckEmail(on: viewController)
-            }
-            return
-        }
-        viewController.present(picker.alertController, animated: true)
-    }
-
-    private func showAlertToCheckEmail(on viewController: UIViewController) {
-        let title = NSLocalizedString("Please check your email", comment: "Alert title for check your email during logIn/signUp.")
-        let message = NSLocalizedString("Please open your email app and look for an email from WordPress.com.", comment: "Message to ask the user to check their email and look for a WordPress.com email.")
-
-        let alertController =  UIAlertController(title: title,
-                                                 message: message,
-                                                 preferredStyle: .alert)
-        alertController.addCancelActionWithTitle(NSLocalizedString("OK",
-                                                                   comment: "Button title. An acknowledgement of the message displayed in a prompt."))
-        viewController.present(alertController, animated: true, completion: nil)
     }
 }
 

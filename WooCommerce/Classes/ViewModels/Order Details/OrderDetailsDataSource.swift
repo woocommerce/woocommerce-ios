@@ -585,11 +585,6 @@ extension OrderDetailsDataSource {
                 return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
             }
 
-            // Refunds active
-            if isRefundedStatus {
-                return nil
-            }
-
             var rows = [Row]()
             if refundedProductsCount > 0 {
                 rows = Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
@@ -599,8 +594,12 @@ extension OrderDetailsDataSource {
 
             if isProcessingPayment {
                 rows.append(.fulfillButton)
-            } else {
+            } else if isRefundedStatus == false {
                 rows.append(.details)
+            }
+
+            if rows.count == 0 {
+                return nil
             }
 
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)

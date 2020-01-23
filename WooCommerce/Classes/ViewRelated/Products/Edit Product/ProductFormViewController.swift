@@ -92,6 +92,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     @objc func updateProduct() {
+        ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
         let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
         let message = NSLocalizedString("Please wait while we publish this product to your store",
                                         comment: "Message of the in-progress UI while updating the Product remotely")
@@ -110,6 +111,7 @@ private extension ProductFormViewController {
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
                 DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                ServiceLocator.analytics.track(.productDetailUpdateError)
                 // Dismisses the in-progress UI then presents the error alert.
                 self?.navigationController?.dismiss(animated: true) {
                     self?.displayError(error: error)
@@ -118,6 +120,7 @@ private extension ProductFormViewController {
             }
             self?.product = product
 
+            ServiceLocator.analytics.track(.productDetailUpdateSuccess)
             // Dismisses the in-progress UI.
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }

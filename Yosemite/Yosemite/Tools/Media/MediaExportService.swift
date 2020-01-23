@@ -2,9 +2,7 @@ import Foundation
 import CocoaLumberjack
 import Photos
 
-/// Encapsulates exporting assets such as PHAssets, images, videos, or files at URLs to `MediaUploadable`.
-///
-/// - Note: Methods with escaping closures will call back via its corresponding thread.
+/// Encapsulates exporting assets such as PHAssets, images, videos, or files at URLs to `UploadableMedia`.
 ///
 final class MediaExportService {
     /// Completion handler for a created Media object.
@@ -12,7 +10,7 @@ final class MediaExportService {
     typealias MediaExportCompletion = (UploadableMedia?, Error?) -> Void
 
     private lazy var exportQueue: DispatchQueue = {
-        return DispatchQueue(label: "org.wordpress.mediaExportService", autoreleaseFrequency: .workItem)
+        return DispatchQueue(label: "com.woocommerce.mediaExportService", autoreleaseFrequency: .workItem)
     }()
 
     // MARK: - Instance methods

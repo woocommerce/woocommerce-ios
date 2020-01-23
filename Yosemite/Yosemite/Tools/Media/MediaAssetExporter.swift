@@ -3,7 +3,7 @@ import MobileCoreServices
 import AVFoundation
 import Photos
 
-/// Media export handling of PHAssets
+/// Exports a media item of `PHAsset` type to be uploadable.
 ///
 final class MediaAssetExporter: MediaExporter {
 

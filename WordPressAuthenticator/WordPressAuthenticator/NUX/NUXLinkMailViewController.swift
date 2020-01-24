@@ -104,7 +104,7 @@ class NUXLinkMailViewController: LoginViewController {
                 }
             }
         }
-        let linkMailPresenter = LinkMailPresenter()
+        let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
         linkMailPresenter.presentEmailClients(on: self)
     }
 

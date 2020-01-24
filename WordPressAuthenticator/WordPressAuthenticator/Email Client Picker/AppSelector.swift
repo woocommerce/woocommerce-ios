@@ -16,10 +16,11 @@ class AppSelector {
           defaultAction: UIAlertAction? = nil,
           urlHandler: URLHandler = UIApplication.shared) {
         /// inline method that builds a list of app calls to be inserted in the action sheet
-        func buildAppCalls(from appList: [String: String]) -> [UIAlertAction]? {
+        func makeAlertActions(from appList: [String: String]) -> [UIAlertAction]? {
             guard !appList.isEmpty else {
                 return nil
             }
+
             var actions = [UIAlertAction]()
             for (name, urlString) in appList {
                 guard let url = URL(string: urlString), urlHandler.canOpenURL(url) else {
@@ -29,6 +30,7 @@ class AppSelector {
                     urlHandler.open(url, options: [:], completionHandler: nil)
                 })
             }
+
             guard !actions.isEmpty else {
                 return nil
             }
@@ -42,7 +44,7 @@ class AppSelector {
             return actions
         }
 
-        guard let appCalls = buildAppCalls(from: appList) else {
+        guard let appCalls = makeAlertActions(from: appList) else {
             return nil
         }
 
@@ -102,21 +104,21 @@ enum AppSelectorTitles: String {
     var localized: String {
         switch self {
         case .appleMail:
-            return NSLocalizedString("Mail (Default)", comment: "Label for Apple Mail as default email client")
+            return NSLocalizedString("Mail (Default)", comment: "Option to select the Apple Mail app when logging in with magic links")
         case .gmail:
-            return NSLocalizedString("Gmail", comment: "Gmail")
+            return NSLocalizedString("Gmail", comment: "Option to select the Gmail app when logging in with magic links")
         case .airmail:
-            return NSLocalizedString("Airmail", comment: "Airmail")
+            return NSLocalizedString("Airmail", comment: "Option to select the Airmail app when logging in with magic links")
         case .msOutlook:
-            return NSLocalizedString("Microsoft Outlook", comment: "Microsoft Outlook")
+            return NSLocalizedString("Microsoft Outlook", comment: "Option to select the Microsft Outlook app when logging in with magic links")
         case .spark:
-            return NSLocalizedString("Spark", comment: "Spark")
+            return NSLocalizedString("Spark", comment: "Option to select the Spark email app when logging in with magic links")
         case .yahooMail:
-            return NSLocalizedString("Yahoo Mail", comment: "Yahoo Mail")
+            return NSLocalizedString("Yahoo Mail", comment: "Option to select the Yahoo Mail app when logging in with magic links")
         case .fastmail:
-            return NSLocalizedString("Fastmail", comment: "Fastmail")
+            return NSLocalizedString("Fastmail", comment: "Option to select the Fastmail app when logging in with magic links")
         case .cancel:
-            return NSLocalizedString("Cancel", comment: "Cancel")
+            return NSLocalizedString("Cancel", comment: "Option to cancel the email app selection when logging in with magic links")
         }
     }
 }

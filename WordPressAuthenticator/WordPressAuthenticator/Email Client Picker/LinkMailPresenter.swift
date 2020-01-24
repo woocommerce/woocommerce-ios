@@ -3,6 +3,13 @@ import MessageUI
 
 /// Email picker presenter
 class LinkMailPresenter {
+
+    private let emailAddress: String
+
+    init(emailAddress: String) {
+        self.emailAddress = emailAddress
+    }
+
     /// Presents the available mail clients in an action sheet. If none is available,
     /// Falls back to Apple Mail and opens it.
     /// If not even Apple Mail is available, presents an alert to check your email
@@ -26,8 +33,13 @@ class LinkMailPresenter {
     }
 
     private func showAlertToCheckEmail(on viewController: UIViewController) {
-        let title = NSLocalizedString("Please check your email", comment: "Alert title for check your email during logIn/signUp.")
-        let message = NSLocalizedString("Please open your email app and look for an email from WordPress.com.", comment: "Message to ask the user to check their email and look for a WordPress.com email.")
+        let title = NSLocalizedString("Check your email!",
+                                      comment: "Alert title for check your email during logIn/signUp.")
+        let message = NSLocalizedString("We just emailed a link to ",
+                                        comment: "First part of the message to ask a user to check their email for a WordPress.com email")
+            + emailAddress
+            + NSLocalizedString(". Please check your mail app and tap the link to log in.",
+                                comment: "Second part of the message to ask a user to check their email for a WordPress.com email")
 
         let alertController =  UIAlertController(title: title,
                                                  message: message,

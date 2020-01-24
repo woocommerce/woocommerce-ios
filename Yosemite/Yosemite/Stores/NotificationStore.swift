@@ -97,7 +97,7 @@ private extension NotificationStore {
 
                 self?.determineUpdatedNotes(using: hashes) { outdatedIDs in
 
-                    guard outdatedIDs.isNotEmpty else {
+                    guard outdatedIDs.isEmpty == false else {
                         onCompletion(nil)
                         return
                     }

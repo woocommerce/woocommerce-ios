@@ -71,7 +71,7 @@ struct ProductDetailsCellViewModel {
     /// Item SKU
     ///
     var sku: String? {
-        guard let sku = skuText, sku.isNotEmpty else {
+        guard let sku = skuText, sku.isEmpty == false else {
             return nil
         }
 

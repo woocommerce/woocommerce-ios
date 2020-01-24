@@ -5,7 +5,6 @@ import Gridicons
 class NewNoteViewController: UIViewController {
 
     // MARK: - Properties
-
     @IBOutlet var tableView: UITableView!
 
     var viewModel: OrderDetailsViewModel!
@@ -16,8 +15,6 @@ class NewNoteViewController: UIViewController {
 
     private var noteText: String = ""
 
-    private var emailCustomerSwitch: Bool = false
-
     /// Dedicated NoticePresenter (use this here instead of ServiceLocator.noticePresenter)
     ///
     private lazy var noticePresenter: DefaultNoticePresenter = {
@@ -27,7 +24,6 @@ class NewNoteViewController: UIViewController {
     }()
 
     // MARK: - View Lifecycle
-
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigation()
@@ -136,7 +132,6 @@ private extension NewNoteViewController {
 
         cell.iconImage = .asideImage
         cell.iconTint = isCustomerNote ? .listIcon : .textSubtle
-        cell.iconTint = emailCustomerSwitch == true ? .primary : .listIcon
         cell.iconImage?.accessibilityLabel = isCustomerNote ?
             NSLocalizedString("Note to customer",
                               comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :
@@ -174,6 +169,7 @@ private extension NewNoteViewController {
             }
 
             self.isCustomerNote = newValue
+            self.refreshTextViewCell()
 
             cell.accessibilityLabel = String.localizedStringWithFormat(
                 NSLocalizedString("Email note to customer %@", comment: ""),
@@ -184,9 +180,6 @@ private extension NewNoteViewController {
 
             let stateValue = newValue ? "on" : "off"
             ServiceLocator.analytics.track(.orderNoteEmailCustomerToggled, withProperties: ["state": stateValue])
-
-            self.emailCustomerSwitch = stateValue == "on" ? true : false
-            self.refreshTextViewCell()
         }
     }
 

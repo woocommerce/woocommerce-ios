@@ -18,6 +18,12 @@ final class OrderDetailsViewModel {
         self.order = newOrder
     }
 
+    /// The date displayed on the Orders List
+    /// 
+    var formattedDateCreated: String? {
+        DateFormatter.mediumLengthLocalizedDateFormatter.string(from: order.dateCreated)
+    }
+
     var summaryTitle: String? {
         return dataSource.summaryTitle
     }

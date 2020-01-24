@@ -41,6 +41,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     func configureCell(viewModel: OrderDetailsViewModel, orderStatus: OrderStatus?) {
         titleLabel.text = viewModel.summaryTitle
         totalLabel.text = viewModel.totalFriendlyString
+        dateCreatedLabel.text = viewModel.formattedDateCreated
 
         if let orderStatus = orderStatus {
             paymentStatusLabel.applyStyle(for: orderStatus.status)

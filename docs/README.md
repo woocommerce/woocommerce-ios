@@ -3,4 +3,4 @@
 - [Architecture](ARCHITECTURE.md)
 - [Networking](NETWORKING.md)
 - [Storage](STORAGE.md)
-- [Yosemite](Yosemite.md)
+- [Yosemite](YOSEMITE.md)

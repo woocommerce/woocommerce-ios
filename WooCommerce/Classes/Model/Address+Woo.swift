@@ -18,7 +18,6 @@ extension Address {
     ///
     var fullNameWithCompany: String {
         var output: [String] = []
-            
         if fullName.isNotEmpty {
             output.append(fullName)
         }

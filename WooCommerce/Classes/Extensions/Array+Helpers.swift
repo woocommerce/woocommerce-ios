@@ -13,7 +13,7 @@ extension Array {
 
         return removeFirst()
     }
-    
+
     /// A Boolean value indicating whether an array has characters.
     public var isNotEmpty: Bool {
         return !isEmpty

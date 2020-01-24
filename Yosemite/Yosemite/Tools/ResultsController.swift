@@ -147,7 +147,7 @@ public class ResultsController<T: ResultsControllerMutableType> {
     public var isEmpty: Bool {
         return controller.fetchedObjects?.isEmpty ?? true
     }
-    
+
     /// Returns the number of fetched objects.
     ///
     public var numberOfObjects: Int {

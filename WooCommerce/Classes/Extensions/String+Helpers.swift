@@ -63,7 +63,7 @@ extension String {
 
         return newText
     }
-    
+
     /// A Boolean value indicating whether a string has characters.
     public var isNotEmpty: Bool {
         return !isEmpty

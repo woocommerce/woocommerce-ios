@@ -90,7 +90,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
     private var isEmpty: Bool {
         return resultsController.isEmpty
     }
-    
+
     // MARK: - Constants
     //
     let estimatedRowHeight = CGFloat(44)

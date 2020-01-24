@@ -777,7 +777,7 @@ extension OrderDetailsDataSource {
                 return true
             }
         case .tracking:
-            if orderTracking(at: indexPath)?.trackingNumber.isNotEmpty {
+            if orderTracking(at: indexPath)?.trackingNumber.isNotEmpty == true {
                 return true
             }
         default:

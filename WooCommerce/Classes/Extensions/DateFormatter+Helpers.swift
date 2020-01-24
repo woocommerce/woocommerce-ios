@@ -73,11 +73,9 @@ extension DateFormatter {
         ///
         /// Example Output: "Dec 30" or "12月30日"
         ///
-        public static let chartMarkerDayFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("MMM d")
-            return formatter
-        }()
+        public static var chartMarkerDayFormatter: DateFormatter {
+            monthAndDayFormatter
+        }
 
         /// Date formatter used for creating a **localized** date string displayed on a chart marker for **week** granularity.
         ///
@@ -120,6 +118,16 @@ extension DateFormatter {
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("MMM d yyyy")
 
+        return formatter
+    }()
+
+    /// Date formatter used for creating a **localized** string containing the month and day.
+    ///
+    /// Example Output: "Dec 30" or "12月30日"
+    ///
+    public static let monthAndDayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.setLocalizedDateFormatFromTemplate("MMM d")
         return formatter
     }()
 }

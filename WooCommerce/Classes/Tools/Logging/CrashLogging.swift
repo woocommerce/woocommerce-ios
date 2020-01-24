@@ -44,7 +44,8 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 struct CrashLoggingSettings {
     static var didOptIn: Bool {
         get {
-            return UserDefaults.standard.object(forKey: .userOptedInCrashLogging) ?? false
+            // By default, opt the user into crash reporting
+            return UserDefaults.standard.object(forKey: .userOptedInCrashLogging) ?? true
         }
         set {
             if newValue {

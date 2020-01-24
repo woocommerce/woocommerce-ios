@@ -74,4 +74,10 @@ extension UILabel {
     func applyActionableStyle() {
         textColor = .accent
     }
+
+    func applyCaption1Style() {
+        adjustsFontForContentSizeCategory = true
+        font = .caption1
+        textColor = .textSubtle
+    }
 }

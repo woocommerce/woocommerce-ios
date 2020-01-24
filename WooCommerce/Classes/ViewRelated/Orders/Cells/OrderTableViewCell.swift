@@ -121,5 +121,7 @@ private extension OrderTableViewCell {
         totalLabel.numberOfLines = 0
         paymentStatusLabel.applyFootnoteStyle()
         paymentStatusLabel.numberOfLines = 0
+
+        dateCreatedLabel.applyCaption1Style()
     }
 }

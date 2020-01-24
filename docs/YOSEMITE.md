@@ -5,32 +5,32 @@
 ![Yosemite high level class diagram](images/yosemite_general.png)
 
 ## Application state. StoresManagerState
-Business logic is broken down into different subclasses of   `Store`   A `Store` encapsulates the business logic related to one and only one of the domain level concerns (i.e. Notifications, Orders, Shipment…)
+Business logic is broken down into different subclasses of   [`Store`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Base/Store.swift).   A `Store` encapsulates the business logic related to one and only one of the domain level concerns (i.e. Notifications, Orders, Shipment…).
 
-Some of these concerns require a valid user session (a user to be logged into the system) while some others don’t require a session.  To handle that, `Store`s are aggregated by a `StoresManager`.
+Some of these concerns require a valid user session (a user to be logged into the system) while some others don’t require a session.  To handle that, `Store`s are aggregated by a [`StoresManager`](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/ServiceLocator/StoresManager.swift).
 
-`StoresManager` is a state machine, that manages two states. Those states are implementations of the `StoresManagerState` protocol. Currently, we have two implementations, `AuthenticateState` and `DeauthenticateState`
+`StoresManager` is a state machine, that manages two states. Those states are implementations of the `StoresManagerState` protocol. Currently, we have two implementations, [`AuthenticatedState`](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Yosemite/AuthenticatedState.swift) and [`DeauthenticatedState`](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Yosemite/DeauthenticatedState.swift).
 
 Each of the implementations of the `StoresManagerState` aggregates a collection of subclasses of `Store` protocol. That’s how we enforce certain concerns (i.e. Orders) to require users to be authenticated.
 
-`StoresManager` takes care of the transition from the authenticated (`AuthenticateState`) to the deauthenticated (`Deauthenticate`) state, while executing the necessary side effects of those transitions (for example, clearing the user data locally stored)
+`StoresManager` takes care of the transition from the authenticated (`AuthenticatedState`) to the deauthenticated (`DeauthenticatedState`) state, while executing the necessary side effects of those transitions (for example, clearing the user data locally stored)
 
 `StoresManager` is a singleton. 
 
-ℹ️ The `AuthenticateState`aggregates a reference to `Dispatcher`. **This is an important piece of the system, as it is responsible for executing the actions declared in the different Stores**. Therefore we will discuss it in depth later on.
+ℹ️ The `AuthenticatedState` aggregates a reference to `Dispatcher`. **This is an important piece of the system, as it is responsible for executing the actions declared in the different Stores**. Therefore we will discuss it in depth later on.
 
 ## Domain level concerns. Store
-As mentioned in the previous section, the business logic pertaining each domain level concern is encapsulated in a separate subclass of `Store` .
+As mentioned in the previous section, the business logic pertaining each domain level concern is encapsulated in a separate subclass of `Store`.
 
 `Store` is an implementation of the `ActionsProcessor` protocol. We will discuss this protocol later, but for now, let’s say it is _something that can process an action_.
 
-`Store` is injected with a reference to a `Dispatcher`, an implementation of the  `StorageManagerType`  protocol (the storage stack) and an implementation of the `Network` protocol (the networking stack).
+`Store` is injected with a reference to a [`Dispatcher`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Base/Dispatcher.swift), an implementation of the  [`StorageManagerType`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Storage/Storage/Protocols/StorageManagerType.swift)  protocol (the storage stack) and an implementation of the [`Network`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Networking/Networking/Network/Network.swift) protocol (the networking stack).
 
 As a quick aside, please note this pattern: dependencies are usually injected.
 
 `Store` is a lightweight implementation of the [Template Method Pattern](https://en.wikipedia.org/wiki/Template_method_pattern). It enforces its subclasses to implement a method  (called `registerSupportedActions`) that will register a collection of _supported actions_ with the `Dispatcher` and to implement a method that deals with incoming actions.  We will discuss what actions are and how they are modelled a bit later.
 
-Each subclass of `Store` registers a processor with the `Dispatcher`. To register a processor, a subclass of `Store`overrides `registerSupportedActions`. In the implementation of that method, it will register itself as processor, for a given set of actions.
+Each subclass of `Store` registers a processor with the `Dispatcher`. To register a processor, a subclass of `Store` overrides `registerSupportedActions`. In the implementation of that method, it will register itself as processor, for a given set of actions.
 
 That set of actions is declared in an implementation of the `Action` protocol. We will look at `Action` in details in the next section, but for now,  it is important to note that there is a one to one relationship between each subclass of `Store` and a corresponding implementation of the `Action` protocol. (i.e. for `AccountStore` we would also have a `AccountAction`).
 
@@ -75,6 +75,7 @@ The sequence for the UI layer to trigger a request to fetch data would be:
 * The `StoresManager` will find the currently active `StoresManagerState`, forward that operation to the `Dispatcher` aggregated by it, which in turn will forward it to whatever `Store` registered as capable of handling it (in our example, `StatsStore`)
 
 The full listing:
+
 ```
     func syncTopPerformers(onCompletion: ((Error?) -> Void)? = nil) {
         let action = StatsAction.retrieveTopEarnerStats(siteID: siteID,

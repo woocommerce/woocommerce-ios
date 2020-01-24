@@ -5,11 +5,11 @@
 ![Yosemite high level class diagram](images/yosemite_general.png)
 
 ## Application state. StoresManagerState
-Business logic is broken down into different subclasses of   [`Store`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Base/Store.swift).   A `Store` encapsulates the business logic related to one and only one of the domain level concerns (i.e. Notifications, Orders, Shipment…).
+Business logic is broken down into different subclasses of   [`Store`](../Yosemite/Yosemite/Base/Store.swift).   A `Store` encapsulates the business logic related to one and only one of the domain level concerns (i.e. Notifications, Orders, Shipment…).
 
-Some of these concerns require a valid user session (a user to be logged into the system) while some others don’t require a session.  To handle that, `Store`s are aggregated by a [`StoresManager`](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/ServiceLocator/StoresManager.swift).
+Some of these concerns require a valid user session (a user to be logged into the system) while some others don’t require a session.  To handle that, `Store`s are aggregated by a [`StoresManager`](../WooCommerce/Classes/ServiceLocator/StoresManager.swift).
 
-`StoresManager` is a state machine, that manages two states. Those states are implementations of the `StoresManagerState` protocol. Currently, we have two implementations, [`AuthenticatedState`](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Yosemite/AuthenticatedState.swift) and [`DeauthenticatedState`](https://github.com/woocommerce/woocommerce-ios/blob/develop/WooCommerce/Classes/Yosemite/DeauthenticatedState.swift).
+`StoresManager` is a state machine, that manages two states. Those states are implementations of the `StoresManagerState` protocol. Currently, we have two implementations, [`AuthenticatedState`](../WooCommerce/Classes/Yosemite/AuthenticatedState.swift) and [`DeauthenticatedState`](../WooCommerce/Classes/Yosemite/DeauthenticatedState.swift).
 
 Each of the implementations of the `StoresManagerState` aggregates a collection of subclasses of `Store` protocol. That’s how we enforce certain concerns (i.e. Orders) to require users to be authenticated.
 
@@ -24,7 +24,7 @@ As mentioned in the previous section, the business logic pertaining each domain 
 
 `Store` is an implementation of the `ActionsProcessor` protocol. We will discuss this protocol later, but for now, let’s say it is _something that can process an action_.
 
-`Store` is injected with a reference to a [`Dispatcher`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Yosemite/Yosemite/Base/Dispatcher.swift), an implementation of the  [`StorageManagerType`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Storage/Storage/Protocols/StorageManagerType.swift)  protocol (the storage stack) and an implementation of the [`Network`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Networking/Networking/Network/Network.swift) protocol (the networking stack).
+`Store` is injected with a reference to a [`Dispatcher`](../Yosemite/Yosemite/Base/Dispatcher.swift), an implementation of the  [`StorageManagerType`](../Storage/Storage/Protocols/StorageManagerType.swift)  protocol (the storage stack) and an implementation of the [`Network`](../Networking/Networking/Network/Network.swift) protocol (the networking stack).
 
 As a quick aside, please note this pattern: dependencies are usually injected.
 

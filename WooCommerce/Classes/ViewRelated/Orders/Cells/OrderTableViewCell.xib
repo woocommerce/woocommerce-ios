@@ -9,18 +9,18 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="OrderTableViewCell" rowHeight="86" id="fpH-Wv-Xy6" userLabel="OrderTableViewCell" customClass="OrderTableViewCell" customModule="WooCommerce" customModuleProvider="target">
-            <rect key="frame" x="0.0" y="0.0" width="375" height="86"/>
+        <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" accessoryType="disclosureIndicator" indentationWidth="10" reuseIdentifier="OrderTableViewCell" rowHeight="107" id="fpH-Wv-Xy6" userLabel="OrderTableViewCell" customClass="OrderTableViewCell" customModule="WooCommerce" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="107"/>
             <autoresizingMask key="autoresizingMask"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="fpH-Wv-Xy6" id="C8B-hF-50d">
-                <rect key="frame" x="0.0" y="0.0" width="348" height="86"/>
+                <rect key="frame" x="0.0" y="0.0" width="348" height="107"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="w2s-RF-ahH">
-                        <rect key="frame" x="15" y="19" width="326" height="48"/>
+                        <rect key="frame" x="15" y="19" width="326" height="69"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="top" spacing="6" translatesAutoresizingMaskIntoConstraints="NO" id="wZx-1J-JYV">
-                                <rect key="frame" x="0.0" y="0.0" width="106" height="48"/>
+                                <rect key="frame" x="0.0" y="0.0" width="106" height="69"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="Date" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ylK-xx-FWE" userLabel="Date Label">
                                         <rect key="frame" x="0.0" y="0.0" width="26.5" height="14.5"/>
@@ -29,13 +29,13 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="240" verticalHuggingPriority="260" text="#00 First Last" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Nzo-QV-IP1">
-                                        <rect key="frame" x="0.0" y="20.5" width="106" height="20.5"/>
+                                        <rect key="frame" x="0.0" y="21.5" width="106" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="260" verticalHuggingPriority="240" verticalCompressionResistancePriority="749" text="Order Status" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="6EE-dX-ERE" customClass="PaddedLabel" customModule="WooCommerce" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="47" width="97.5" height="1"/>
+                                        <rect key="frame" x="0.0" y="48.5" width="97.5" height="20.5"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -43,7 +43,7 @@
                                 </subviews>
                             </stackView>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="1000" horizontalCompressionResistancePriority="1000" text="$75,894.63" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9oo-9a-Tey">
-                                <rect key="frame" x="237" y="0.0" width="89" height="48"/>
+                                <rect key="frame" x="237" y="0.0" width="89" height="69"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -65,7 +65,7 @@
                 <outlet property="titleLabel" destination="Nzo-QV-IP1" id="c4l-JL-JKc"/>
                 <outlet property="totalLabel" destination="9oo-9a-Tey" id="OzG-Y4-pOm"/>
             </connections>
-            <point key="canvasLocation" x="130" y="154"/>
+            <point key="canvasLocation" x="128.80000000000001" y="163.26836581709148"/>
         </tableViewCell>
     </objects>
 </document>

@@ -76,17 +76,17 @@ The sequence for the UI layer to trigger a request to fetch data would be:
 
 The full listing:
 
-```
-    func syncTopPerformers(onCompletion: ((Error?) -> Void)? = nil) {
-        let action = StatsAction.retrieveTopEarnerStats(siteID: siteID,
-                                                        granularity: granularity,
-                                                        latestDateToInclude: Date()) { [weak self] error in
-			// Error handling removed for brevity
-            onCompletion?(error)
-        }
-
-        ServiceLocator.storesManager.dispatch(action)
+```swift
+func syncTopPerformers(onCompletion: ((Error?) -> Void)? = nil) {
+    let action = StatsAction.retrieveTopEarnerStats(siteID: siteID,
+                                                    granularity: granularity,
+                                                    latestDateToInclude: Date()) { [weak self] error in
+        // Error handling removed for brevity
+        onCompletion?(error)
     }
+
+    ServiceLocator.storesManager.dispatch(action)
+}
 ```
 
 ## Rationale?

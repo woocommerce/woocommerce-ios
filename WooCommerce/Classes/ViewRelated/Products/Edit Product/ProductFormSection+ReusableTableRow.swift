@@ -42,9 +42,9 @@ extension ProductFormSection.PrimaryFieldRow: ReusableTableRow {
         case .images:
             return ProductImagesHeaderTableViewCell.self
         case .name(let name):
-            return name?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
+            return name?.isNotEmpty == true ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         case .description(let description):
-            return description?.isEmpty == false ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
+            return description?.isNotEmpty == true ? ImageAndTitleAndTextTableViewCell.self: BasicTableViewCell.self
         }
     }
 }

@@ -105,7 +105,7 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configureName(cell: UITableViewCell, name: String?) {
-        if let name = name, name.isEmpty == false {
+        if let name = name, name.isNotEmpty {
             guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
                 fatalError()
             }
@@ -126,7 +126,7 @@ private extension ProductFormTableViewDataSource {
     }
 
     func configureDescription(cell: UITableViewCell, description: String?) {
-        if let description = description, description.isEmpty == false {
+        if let description = description, description.isNotEmpty {
             guard let cell = cell as? ImageAndTitleAndTextTableViewCell else {
                 fatalError()
             }

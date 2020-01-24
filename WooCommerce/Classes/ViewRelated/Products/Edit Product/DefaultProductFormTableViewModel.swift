@@ -32,7 +32,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func primaryFieldRows(product: Product) -> [ProductFormSection.PrimaryFieldRow] {
-        guard canEditImages || product.images.isEmpty == false else {
+        guard canEditImages || product.images.isNotEmpty else {
             return [
                 .name(name: product.name),
                 .description(description: product.trimmedFullDescription)
@@ -95,7 +95,7 @@ private extension DefaultProductFormTableViewModel {
                 let formattedDate = dateFormatter.string(from: dateOnSaleEnd)
                 priceDetails.append(String.localizedStringWithFormat(Constants.saleDateFormatTo, formattedDate))
             }
-        } else if product.price.isEmpty == false {
+        } else if product.price.isNotEmpty {
             let formattedPrice = currencyFormatter.formatAmount(product.regularPrice ?? product.price, with: currency) ?? ""
             priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedPrice))
         }

@@ -453,7 +453,7 @@ private extension OrdersViewController {
             // "All" is the current filter so bail
             return
         }
-        guard currentSiteStatuses.isEmpty == false else {
+        guard currentSiteStatuses.isNotEmpty else {
             self.statusFilter = nil
             return
         }

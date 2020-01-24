@@ -196,7 +196,7 @@ private extension ProductStore {
     /// Validates the Product SKU against other Products in storage.
     ///
     func validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
-        guard let sku = sku, sku.isEmpty == false else {
+        guard let sku = sku, sku.isNotEmpty else {
             // It is valid to not have a sku.
             onCompletion(true)
             return

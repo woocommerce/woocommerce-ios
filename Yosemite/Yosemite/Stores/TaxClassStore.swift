@@ -73,7 +73,7 @@ private extension TaxClassStore {
     /// Synchronizes the Tax Class found in a specified Product.
     ///
     func requestMissingTaxClasses(for product: Product, onCompletion: @escaping (TaxClass?, Error?) -> Void) {
-        guard let taxClassFromStorage = product.taxClass, product.taxClass?.isEmpty == false else {
+        guard let taxClassFromStorage = product.taxClass, product.taxClass?.isNotEmpty == true else {
             onCompletion(nil, nil)
             return
         }

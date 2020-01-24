@@ -273,7 +273,7 @@ private extension ShipmentProvidersViewController {
 private extension ShipmentProvidersViewController {
     func resetUIState(searchTerm: String?) {
         guard let searchTerm = searchTerm,
-            searchTerm.isEmpty == false else {
+            searchTerm.isNotEmpty else {
                 viewModel.clearFilters()
                 table.reloadData()
                 presentEmptyStateIfNecessary()

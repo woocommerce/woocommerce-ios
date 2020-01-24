@@ -39,7 +39,7 @@ extension DeviceMediaLibraryPicker: WPMediaPickerViewControllerDelegate {
     }
 
     func mediaPickerController(_ picker: WPMediaPickerViewController, didFinishPicking assets: [WPMediaAsset]) {
-        guard let assets = assets as? [PHAsset], assets.isEmpty == false else {
+        guard let assets = assets as? [PHAsset], assets.isNotEmpty else {
             return
         }
 

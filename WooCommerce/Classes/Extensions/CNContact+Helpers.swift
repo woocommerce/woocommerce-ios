@@ -9,7 +9,7 @@ extension CNContact {
         contact.givenName = address.firstName
         contact.familyName = address.lastName
 
-        if let company = address.company, company.isEmpty == false {
+        if let company = address.company, company.isNotEmpty {
             contact.organizationName = company
         }
 
@@ -17,7 +17,7 @@ extension CNContact {
         // Per US Post Office standardized rules for address lines
         // https://pe.usps.com/text/pub28/28c2_001.htm
         var combinedAddress = address.address1
-        if let addressLine2 = address.address2, addressLine2.isEmpty == false {
+        if let addressLine2 = address.address2, addressLine2.isNotEmpty {
             combinedAddress += " " + addressLine2
         }
         postalAddress.street = combinedAddress

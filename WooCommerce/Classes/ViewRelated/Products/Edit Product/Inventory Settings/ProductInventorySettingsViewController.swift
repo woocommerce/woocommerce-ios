@@ -337,7 +337,7 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         let section = sections[section]
-        guard let errorTitle = section.errorTitle, errorTitle.isEmpty == false else {
+        guard let errorTitle = section.errorTitle, errorTitle.isNotEmpty else {
             return 0
         }
         return UITableView.automaticDimension
@@ -345,7 +345,7 @@ extension ProductInventorySettingsViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
         let section = sections[section]
-        guard let errorTitle = section.errorTitle, errorTitle.isEmpty == false else {
+        guard let errorTitle = section.errorTitle, errorTitle.isNotEmpty else {
             return 0
         }
         return Constants.estimatedSectionHeaderHeight

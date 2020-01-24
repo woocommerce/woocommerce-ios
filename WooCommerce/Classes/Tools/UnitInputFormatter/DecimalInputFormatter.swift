@@ -10,7 +10,7 @@ struct DecimalInputFormatter: UnitInputFormatter {
     }()
 
     func isValid(input: String) -> Bool {
-        guard input.isEmpty == false else {
+        guard input.isNotEmpty else {
             // Allows empty input to be replaced by 0.
             return true
         }
@@ -18,7 +18,7 @@ struct DecimalInputFormatter: UnitInputFormatter {
     }
 
     func format(input text: String?) -> String {
-        guard let text = text, text.isEmpty == false else {
+        guard let text = text, text.isNotEmpty else {
             return "0"
         }
 

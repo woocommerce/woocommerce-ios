@@ -106,7 +106,7 @@ private extension LinkSettingsViewController {
     }
 
     func updateNavigation() {
-        navigationItem.rightBarButtonItem?.isEnabled = linkSettings.url.isEmpty == false
+        navigationItem.rightBarButtonItem?.isEnabled = linkSettings.url.isNotEmpty
     }
 }
 

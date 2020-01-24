@@ -237,7 +237,7 @@ extension RefundDetailsDataSource {
         }()
 
         let reason: Section? = {
-            guard refundReason?.isEmpty == false else {
+            guard refundReason?.isNotEmpty else {
                 return nil
             }
 

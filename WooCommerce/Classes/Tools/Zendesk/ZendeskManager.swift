@@ -195,11 +195,11 @@ class ZendeskManager: NSObject {
             tags.append(Constants.wpComTag)
         }
 
-        if site.plan.isEmpty == false {
+        if site.plan.isNotEmpty {
             tags.append(site.plan)
         }
 
-        if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isEmpty == false {
+        if let sourceTagOrigin = supportSourceTag, sourceTagOrigin.isNotEmpty {
             tags.append(sourceTagOrigin)
         }
 
@@ -682,7 +682,7 @@ private extension ZendeskManager {
     }
 
     func generateDisplayName(from rawEmail: String) -> String {
-        guard rawEmail.isEmpty == false else {
+        guard rawEmail.isNotEmpty else {
             return ""
         }
 

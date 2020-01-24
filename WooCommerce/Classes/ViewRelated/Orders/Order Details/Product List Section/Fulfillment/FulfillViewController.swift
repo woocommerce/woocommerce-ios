@@ -620,7 +620,7 @@ private extension FulfillViewController {
         }()
 
         let note: Section? = {
-            guard let note = order.customerNote, note.isEmpty == false else {
+            guard let note = order.customerNote, note.isNotEmpty else {
                 return nil
             }
 

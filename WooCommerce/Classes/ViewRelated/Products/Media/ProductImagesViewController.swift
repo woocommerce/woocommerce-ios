@@ -135,7 +135,7 @@ private extension ProductImagesViewController {
         defer {
             dismiss(animated: true, completion: nil)
         }
-        guard assets.isEmpty == false else {
+        guard assets.isNotEmpty else {
             return
         }
         // TODO-1713: handle media from photo library

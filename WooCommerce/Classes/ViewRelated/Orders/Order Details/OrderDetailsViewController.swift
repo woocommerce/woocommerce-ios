@@ -423,7 +423,7 @@ private extension OrderDetailsViewController {
             self?.viewModel.dataSource.copyText(at: indexPath)
         }
 
-        if tracking.trackingURL?.isEmpty == false {
+        if tracking.trackingURL?.isNotEmpty == true {
             actionSheet.addDefaultActionWithTitle(TrackingAction.trackShipment) { [weak self] _ in
                 self?.openTrackingDetails(tracking)
             }

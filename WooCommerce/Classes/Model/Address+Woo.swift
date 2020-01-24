@@ -18,11 +18,11 @@ extension Address {
     ///
     var fullNameWithCompany: String {
         var output: [String] = []
-
-        if fullName.isEmpty == false {
+            
+        if fullName.isNotEmpty {
             output.append(fullName)
         }
-        if let company = company, company.isEmpty == false {
+        if let company = company, company.isNotEmpty {
             output.append(company)
         }
 
@@ -41,7 +41,7 @@ extension Address {
     var fullNameWithCompanyAndAddress: String {
         var output: [String] = [fullNameWithCompany]
 
-        if let formattedPostalAddress = formattedPostalAddress, formattedPostalAddress.isEmpty == false {
+        if let formattedPostalAddress = formattedPostalAddress, formattedPostalAddress.isNotEmpty {
             output.append(formattedPostalAddress)
         }
 
@@ -67,13 +67,13 @@ extension Address {
     /// Indicates if there is a Phone Number set (and it's not empty).
     ///
     var hasPhoneNumber: Bool {
-        return phone?.isEmpty == false
+        return phone?.isNotEmpty == true
     }
 
     /// Indicates if there is an Email Address set (and it's not empty).
     ///
     var hasEmailAddress: Bool {
-        return email?.isEmpty == false
+        return email?.isNotEmpty == true
     }
 }
 
@@ -86,7 +86,7 @@ private extension Address {
     /// Per US Post Office standardized rules for address lines. Ref. https://pe.usps.com/text/pub28/28c2_001.htm
     ///
     var combinedAddress: String {
-        guard let address2 = address2, address2.isEmpty == false else {
+        guard let address2 = address2, address2.isNotEmpty else {
             return address1
         }
 

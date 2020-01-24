@@ -591,7 +591,7 @@ extension OrderDetailsDataSource {
         let customerInformation: Section = {
             var rows: [Row] = []
 
-            if customerNote.isEmpty == false {
+            if customerNote.isNotEmpty {
                 rows.append(.customerNote)
             }
 
@@ -752,7 +752,7 @@ extension OrderDetailsDataSource {
     ///   - includeTrailingNewline: If true, insert a trailing newline; defaults to true
     ///
     func sendToPasteboard(_ text: String?, includeTrailingNewline: Bool = true) {
-        guard var text = text, text.isEmpty == false else {
+        guard var text = text, text.isNotEmpty else {
             return
         }
 
@@ -777,7 +777,7 @@ extension OrderDetailsDataSource {
                 return true
             }
         case .tracking:
-            if orderTracking(at: indexPath)?.trackingNumber.isEmpty == false {
+            if orderTracking(at: indexPath)?.trackingNumber.isNotEmpty {
                 return true
             }
         default:

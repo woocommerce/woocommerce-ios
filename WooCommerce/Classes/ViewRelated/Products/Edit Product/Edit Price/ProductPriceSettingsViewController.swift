@@ -75,7 +75,7 @@ final class ProductPriceSettingsViewController: UIViewController {
         let taxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
         standardTaxClass = TaxClass(siteID: product.siteID, name: taxClassName, slug: "standard")
 
-        if let productTaxClassSlug = product.taxClass, productTaxClassSlug.isEmpty == false {
+        if let productTaxClassSlug = product.taxClass, productTaxClassSlug.isNotEmpty {
             taxClass = TaxClass(siteID: product.siteID, name: productTaxClassSlug, slug: productTaxClassSlug)
         }
         else {

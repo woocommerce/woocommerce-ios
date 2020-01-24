@@ -61,6 +61,7 @@
             <inset key="separatorInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
             <connections>
                 <outlet property="contentStackView" destination="w2s-RF-ahH" id="ULq-Dn-l9Q"/>
+                <outlet property="dateCreatedLabel" destination="ylK-xx-FWE" id="gKt-XQ-tYq"/>
                 <outlet property="paymentStatusLabel" destination="6EE-dX-ERE" id="9ur-nE-PKb"/>
                 <outlet property="titleLabel" destination="Nzo-QV-IP1" id="c4l-JL-JKc"/>
                 <outlet property="totalLabel" destination="9oo-9a-Tey" id="OzG-Y4-pOm"/>

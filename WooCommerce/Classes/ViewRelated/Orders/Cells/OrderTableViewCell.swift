@@ -15,6 +15,10 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     ///
     @IBOutlet private var totalLabel: UILabel!
 
+    /// Order's Creation Date
+    ///
+    @IBOutlet private var dateCreatedLabel: UILabel!
+
     /// Payment
     ///
     @IBOutlet private var paymentStatusLabel: PaddedLabel!

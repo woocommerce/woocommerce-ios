@@ -103,11 +103,9 @@ extension DateFormatter {
         ///
         /// Example Output: "2018" or "2017"
         ///
-        public static let chartMarkerYearFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("yyyy")
-            return formatter
-        }()
+        public static var chartMarkerYearFormatter: DateFormatter {
+            yearFormatter
+        }
     }
 
     /// Date formatter used for creating a medium-length **localized** date string to be displayed anywhere.
@@ -125,9 +123,19 @@ extension DateFormatter {
     ///
     /// Example Output: "Dec 30" or "12月30日"
     ///
-    public static let monthAndDayFormatter: DateFormatter = {
+    static let monthAndDayFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("MMM d")
+        return formatter
+    }()
+
+    /// Date formatter used for creating a **localized** string of the year only.
+    ///
+    /// Example Output: "2018" or "2017"
+    ///
+    static let yearFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.setLocalizedDateFormatFromTemplate("yyyy")
         return formatter
     }()
 }

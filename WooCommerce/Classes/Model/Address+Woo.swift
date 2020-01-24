@@ -66,13 +66,13 @@ extension Address {
     /// Indicates if there is a Phone Number set (and it's not empty).
     ///
     var hasPhoneNumber: Bool {
-        return phone?.isNotEmpty == true
+        return phone?.isEmpty == false
     }
 
     /// Indicates if there is an Email Address set (and it's not empty).
     ///
     var hasEmailAddress: Bool {
-        return email?.isNotEmpty == true
+        return email?.isEmpty == false
     }
 }
 

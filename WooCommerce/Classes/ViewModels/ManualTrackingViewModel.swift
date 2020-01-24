@@ -132,7 +132,7 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     var canCommit: Bool {
         return shipmentProvider != nil &&
-            trackingNumber?.isNotEmpty == true
+            trackingNumber?.isEmpty == false
     }
 
     let isAdding: Bool = true
@@ -234,8 +234,8 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     let providerCellAccessoryType = UITableViewCell.AccessoryType.none
 
     var canCommit: Bool {
-        let returnValue = providerName?.isNotEmpty == true &&
-            trackingNumber?.isNotEmpty == true
+        let returnValue = providerName?.isEmpty == false &&
+            trackingNumber?.isEmpty == false
 
         if returnValue {
             saveSelectedCustomShipmentProvider()

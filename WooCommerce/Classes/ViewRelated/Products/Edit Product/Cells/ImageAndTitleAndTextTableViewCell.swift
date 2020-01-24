@@ -41,7 +41,7 @@ extension ImageAndTitleAndTextTableViewCell {
     func updateUI(viewModel: ViewModel) {
         titleLabel.text = viewModel.title
         titleLabel.isHidden = viewModel.title == nil || viewModel.title?.isEmpty == true
-        titleLabel.textColor = viewModel.text?.isNotEmpty == true ? .text: .textSubtle
+        titleLabel.textColor = viewModel.text?.isEmpty == false ? .text: .textSubtle
         descriptionLabel.text = viewModel.text
         descriptionLabel.isHidden = viewModel.text == nil || viewModel.text?.isEmpty == true
         descriptionLabel.numberOfLines = viewModel.numberOfLinesForText

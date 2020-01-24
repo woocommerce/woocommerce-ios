@@ -14,8 +14,8 @@ extension Array {
         return removeFirst()
     }
 
-    /// A Boolean value indicating whether an array has characters.
-    public var isNotEmpty: Bool {
+    /// A Boolean value indicating whether the collection is not empty.
+    var isNotEmpty: Bool {
         return !isEmpty
     }
 }

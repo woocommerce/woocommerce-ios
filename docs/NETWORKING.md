@@ -42,7 +42,7 @@ At the moment, we provide three implementations of `URLRequestConvertible`:
 * [`JetpackRequest`](../Networking/Networking/Requests/JetpackRequest.swift) represents a Jetpack-Tunneled WordPress.com 
 * [`AuthenticatedRequest`](../Networking/Networking/Requests/AuthenticatedRequest.swift) Wraps up a `URLRequestConvertible` instance, and injects credentials (username and token) when required
 
-## [`Mapper`](https://github.com/woocommerce/woocommerce-ios/blob/develop/Networking/Networking/Mapper/Mapper.swift)
+## [`Mapper`](../Networking/Networking/Mapper/Mapper.swift)
 A protocol that abstracts the different parsers.
 
 There are several implementations of this protocol, roughly one per `Remote`, although in some cases there is more than one implementation per remote (roughly, one for a single model object, and another for a collection of the same model object). 

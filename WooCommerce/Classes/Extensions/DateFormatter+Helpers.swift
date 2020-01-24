@@ -114,7 +114,7 @@ extension DateFormatter {
 
     /// Date formatter used for creating a medium-length **localized** date string to be displayed anywhere.
     ///
-    /// Example output: "Jan 28 2018"
+    /// Example output in English: "Jan 28, 2018"
     ///
     public static let mediumLengthLocalizedDateFormatter: DateFormatter = {
         let formatter = DateFormatter()

@@ -31,6 +31,33 @@ final class MockOrders {
                      refunds: [])
     }
 
+    func sampleOrderCreatedInCurrentYear() -> Networking.Order {
+        return Order(siteID: siteID,
+                     orderID: orderID,
+                     parentID: 0,
+                     customerID: 11,
+                     number: "963",
+                     statusKey: "processing",
+                     currency: "USD",
+                     customerNote: "",
+                     dateCreated: Date(),
+                     dateModified: Date(),
+                     datePaid: Date(),
+                     discountTotal: "30.00",
+                     discountTax: "1.20",
+                     shippingTotal: "0.00",
+                     shippingTax: "0.00",
+                     total: "31.20",
+                     totalTax: "1.20",
+                     paymentMethodTitle: "Credit Card (Stripe)",
+                     items: [],
+                     billingAddress: sampleAddress(),
+                     shippingAddress: sampleAddress(),
+                     shippingLines: sampleShippingLines(),
+                     coupons: [],
+                     refunds: [])
+    }
+
     func sampleShippingLines() -> [Networking.ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",

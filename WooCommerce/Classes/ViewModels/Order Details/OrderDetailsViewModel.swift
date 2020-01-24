@@ -18,10 +18,14 @@ final class OrderDetailsViewModel {
         self.order = newOrder
     }
 
-    /// The date displayed on the Orders List
-    /// 
-    var formattedDateCreated: String? {
-        DateFormatter.mediumLengthLocalizedDateFormatter.string(from: order.dateCreated)
+    /// The date displayed on the Orders List.
+    ///
+    /// The value will only include the year if the `createdDate` is not from the current year.
+    ///
+    var formattedDateCreated: String {
+        let isSameYear = order.dateCreated.isSameYear(as: Date())
+        let formatter: DateFormatter = isSameYear ? .monthAndDayFormatter : .mediumLengthLocalizedDateFormatter
+        return formatter.string(from: order.dateCreated)
     }
 
     var summaryTitle: String? {

@@ -25,5 +25,6 @@ class WooCommerceScreenshots: XCTestCase {
             .proceedWithPassword()
             .proceedWith(password: "")
             .continueWithSelectedSite()
+            .dismissTopBannerIfNeeded()
     }
 }

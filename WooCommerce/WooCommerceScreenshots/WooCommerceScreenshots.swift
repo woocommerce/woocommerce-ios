@@ -16,6 +16,8 @@ class WooCommerceScreenshots: XCTestCase {
     func testScreenshots() {
         // UI tests must launch the application that they test.
         let app = XCUIApplication()
+        setupSnapshot(app)
+
         app.launchArguments = ["logout-at-launch", "disable-animations"]
         app.launch()
 
@@ -27,22 +29,22 @@ class WooCommerceScreenshots: XCTestCase {
             .continueWithSelectedSite()
             .dismissTopBannerIfNeeded()
             .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }
-            .then { /* Take Screenshot */ }
+            .then { snapshot("4-view-store-data") }
 
             // Orders
             .tabBar.gotoOrdersScreen()
-            .then { /* Take Screenshot */ }
+            .then { snapshot("1-view-and-manage-orders") }
             .selectOrder(atIndex: 0)
-            .then { /* Take Screenshot */ }
+            .then { snapshot("2-track-order-status") }
             .goBackToOrdersScreen()
 
             .openSearchPane()
-            .then { /* Take Screenshot */ }
+            .then { snapshot("3-look-up-specific-orders") }
             .cancel()
 
             .tabBar.gotoReviewsScreen()
             .selectReview(atIndex: 3)
-            .then { /* Take Screenshot */ }
+            .then { snapshot("5-get-notified-about-customer-reviews") }
             .goBackToReviewsScreen()
     }
 }

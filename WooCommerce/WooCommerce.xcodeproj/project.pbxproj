@@ -616,6 +616,7 @@
 		F997174523DC068500592D8E /* XLPagerStrip+AccessibilityIdentifier.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174323DC065900592D8E /* XLPagerStrip+AccessibilityIdentifier.swift */; };
 		F997174723DC070D00592D8E /* XLPagerStrip+AccessibilityIdentifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174623DC070C00592D8E /* XLPagerStrip+AccessibilityIdentifierTests.swift */; };
 		F997174923DC0A7800592D8E /* PeriodStatsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174823DC0A7800592D8E /* PeriodStatsTable.swift */; };
+		F997174B23DC10B300592D8E /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174A23DC10B300592D8E /* SnapshotHelper.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -1289,6 +1290,7 @@
 		F997174323DC065900592D8E /* XLPagerStrip+AccessibilityIdentifier.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XLPagerStrip+AccessibilityIdentifier.swift"; sourceTree = "<group>"; };
 		F997174623DC070C00592D8E /* XLPagerStrip+AccessibilityIdentifierTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XLPagerStrip+AccessibilityIdentifierTests.swift"; sourceTree = "<group>"; };
 		F997174823DC0A7800592D8E /* PeriodStatsTable.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodStatsTable.swift; sourceTree = "<group>"; };
+		F997174A23DC10B300592D8E /* SnapshotHelper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotHelper.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -2926,6 +2928,7 @@
 		F997173123DBCF1500592D8E /* Utils */ = {
 			isa = PBXGroup;
 			children = (
+				F997174A23DC10B300592D8E /* SnapshotHelper.swift */,
 				F997173223DBCF2800592D8E /* XCTest+Extensions.swift */,
 			);
 			path = Utils;
@@ -3880,6 +3883,7 @@
 			files = (
 				F997173723DBF02400592D8E /* SingleOrderScreen.swift in Sources */,
 				F997172623DBCD6100592D8E /* LinkOrPasswordScreen.swift in Sources */,
+				F997174B23DC10B300592D8E /* SnapshotHelper.swift in Sources */,
 				F997172323DBCD6100592D8E /* LoginPasswordScreen.swift in Sources */,
 				F997172C23DBCD8F00592D8E /* BaseScreen.swift in Sources */,
 				F997172923DBCD6100592D8E /* WelcomeScreen.swift in Sources */,

@@ -10,6 +10,10 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let emptyStateText = NSLocalizedString("No products found", comment: "Search Products (Empty State)")
 
+    let searchBarAccessibilityIdentifier = "product-search-screen-search-field"
+
+    let cancelButtonAccessibilityIdentifier = "product-search-screen-cancel-button"
+
     private let siteID: Int64
 
     init(siteID: Int64) {

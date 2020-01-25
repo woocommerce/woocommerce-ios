@@ -219,6 +219,8 @@ private extension SearchViewController {
     ///
     func configureSearchBar() {
         searchBar.placeholder = searchUICommand.searchBarPlaceholder
+        searchBar.accessibilityIdentifier = searchUICommand.searchBarAccessibilityIdentifier
+
         if #available(iOS 13.0, *) {
             searchBar.searchTextField.textColor = .text
         }
@@ -234,6 +236,7 @@ private extension SearchViewController {
     ///
     func configureCancelButton() {
         cancelButton.applyModalCancelButtonStyle()
+        cancelButton.accessibilityIdentifier = searchUICommand.cancelButtonAccessibilityIdentifier
     }
 
     /// Setup: Actions

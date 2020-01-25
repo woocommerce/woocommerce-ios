@@ -27,5 +27,17 @@ class WooCommerceScreenshots: XCTestCase {
             .continueWithSelectedSite()
             .dismissTopBannerIfNeeded()
             .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }
+            .then { /* Take Screenshot */ }
+
+            // Orders
+            .tabBar.gotoOrdersScreen()
+            .then { /* Take Screenshot */ }
+            .selectOrder(atIndex: 0)
+            .then { /* Take Screenshot */ }
+            .goBackToOrdersScreen()
+
+            .openSearchPane()
+            .then { /* Take Screenshot */ }
+            .cancel()
     }
 }

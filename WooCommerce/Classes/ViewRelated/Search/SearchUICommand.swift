@@ -35,4 +35,10 @@ protocol SearchUICommand {
     ///   - model: search result model.
     ///   - viewController: view controller where the user selects the search result.
     func didSelectSearchResult(model: Model, from viewController: UIViewController)
+
+    /// The Accessibility Identifier for the search bar
+    var searchBarAccessibilityIdentifier: String { get }
+
+    /// The Accessibility Identifier for the cancel button
+    var cancelButtonAccessibilityIdentifier: String { get }
 }

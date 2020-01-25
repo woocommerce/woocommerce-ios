@@ -114,8 +114,11 @@ private extension SummaryTableViewCell {
     ///
     func configureLabels() {
         titleLabel.applyHeadlineStyle()
+        titleLabel.accessibilityIdentifier = "summary-table-view-cell-title-label"
         createdLabel.applyFootnoteStyle()
+        createdLabel.accessibilityIdentifier = "summary-table-view-cell-created-label"
         paymentStatusLabel.applyPaddedLabelDefaultStyles()
+        paymentStatusLabel.accessibilityIdentifier = "summary-table-view-cell-payment-status-label"
     }
 
     func configureIcon() {

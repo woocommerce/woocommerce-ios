@@ -115,6 +115,7 @@ private extension LoginPrologueViewController {
         let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
         loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
         loginButton.setTitle(title, for: .normal)
+        loginButton.accessibilityIdentifier = "login-prologue-login-with-jetpack"
         loginButton.applySecondaryButtonStyle()
         // This is an exception where we always show the Log In button in the Light color scheme to have a better constrast to the background.
         if #available(iOS 13.0, *) {

@@ -18,5 +18,12 @@ class WooCommerceScreenshots: XCTestCase {
         let app = XCUIApplication()
         app.launchArguments = ["logout-at-launch", "disable-animations"]
         app.launch()
+
+        WelcomeScreen()
+            .selectLogin()
+            .proceedWith(email: "")
+            .proceedWithPassword()
+            .proceedWith(password: "")
+            .continueWithSelectedSite()
     }
 }

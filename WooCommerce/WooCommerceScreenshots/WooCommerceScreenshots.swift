@@ -39,5 +39,10 @@ class WooCommerceScreenshots: XCTestCase {
             .openSearchPane()
             .then { /* Take Screenshot */ }
             .cancel()
+
+            .tabBar.gotoReviewsScreen()
+            .selectReview(atIndex: 3)
+            .then { /* Take Screenshot */ }
+            .goBackToReviewsScreen()
     }
 }

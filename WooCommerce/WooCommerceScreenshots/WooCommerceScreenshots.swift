@@ -26,5 +26,6 @@ class WooCommerceScreenshots: XCTestCase {
             .proceedWith(password: "")
             .continueWithSelectedSite()
             .dismissTopBannerIfNeeded()
+            .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }
     }
 }

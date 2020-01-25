@@ -69,6 +69,7 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
         /// Hide the ImageView:
         /// We don't use it, and if / when "Ghostified" produces a quite awful placeholder UI!
         cell.imageView.isHidden = true
+        cell.accessibilityIdentifier = indicatorInfo.accessibilityIdentifier
 
         /// Flip the cells back to their proper state for RTL languages.
         if traitCollection.layoutDirection == .rightToLeft {

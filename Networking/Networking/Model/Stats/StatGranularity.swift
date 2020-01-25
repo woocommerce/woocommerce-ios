@@ -22,6 +22,9 @@ public enum StatGranularity: String, Decodable {
         }
     }
 
+    public var accessibilityIdentifier: String {
+        return "granularity-\(self.rawValue)"
+    }
 }
 
 // MARK: - StringConvertible Conformance

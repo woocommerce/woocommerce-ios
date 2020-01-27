@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-10 00:54:03+0000 */
+/* Translation-Revision-Date: 2020-01-22 00:54:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -27,11 +27,20 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* <item total> (<item individual price> multipled by <quantity>) */
+"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+
+/* 1 Item */
+"%@ Item" = "%@ article";
+
+/* For example, '5 Items' */
+"%@ Items" = "%@ articles";
+
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ a laissé un avis sur %2$@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@ – %3$@" = "%1$@ via %2$@ – %3$@";
+"%1$@ via %2$@" = "%1$@ via %2$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld en stock";
@@ -50,6 +59,9 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Un code vérification ne peut contenir seulement que des chiffres.";
+
+/* Action to add photos on the Product images screen */
+"ADD PHOTOS" = "AJOUTER DES PHOTOS";
 
 /* About this app (information page title) */
 "About" = "À propos";
@@ -95,6 +107,12 @@
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Tous les avis marqués comme lus";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow" = "Autoriser";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow, but notify customer" = "Autoriser, mais avertir le client";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "On y est presque ! Veuillez saisir le code de vérification de votre app d’authentification.";
@@ -148,6 +166,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Géré automatiquement sur ce site";
 
+/* Subtitle of the cell in Product Price Settings > Schedule sale */
+"Automatically start and end a sale" = "Commencer et terminer automatiquement une vente";
+
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "En attente du paiement via %@";
@@ -157,6 +178,10 @@
 
 /* Application's Background State */
 "Background" = "Arrière-plan";
+
+/* Product backorders setting list selector navigation title
+   Title of the cell in Product Inventory Settings > Backorders */
+"Backorders" = "Commandes en réapprovisionnement";
 
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "Commandes en réapprovisionnement :";
@@ -192,6 +217,9 @@
 /* Button title. Tapping it cancels the login flow.
    Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "Annuler";
+
+/* The title of the alert when there is an error updating the product */
+"Cannot update Product" = "Impossible de mettre le produit à jour";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Suivez vos sites favoris et rejoignez la conversation n’importe où, n’importe quand.";
@@ -345,6 +373,9 @@
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Ignorer";
 
+/* Display label for the product's inventory backorders setting option */
+"Do not allow" = "Ne pas autoriser";
+
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Vous n'avez pas encore de compte ? _S'inscrire_";
 
@@ -408,14 +439,12 @@
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Saisir le nom du fournisseur";
 
-/* Label for button to log in using your site address. */
+/* Instruction text on the login's site addresss screen.
+   Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "Saisissez l’adresse du site WordPress que vous souhaitez connecter.";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Entrez l’adresse de votre boutique WooCommerce que vous aimeriez connecter.";
-
-/* Instruction text on the login's site addresss screen. */
-"Enter the address of your WordPress site you'd like to connect." = "Saisissez l’adresse de votre site WordPress que vous voulez connecter.";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Saisir le mot de passe de votre compte WordPress.com.";
@@ -446,6 +475,9 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Demande de fonctionnalité";
 
+/* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
+"Fill with password manager" = "Remplir à l'aide du gestionnaire de mots de passe";
+
 /* Filter the orders list. */
 "Filter orders" = "Filtrer les commandes";
 
@@ -454,6 +486,9 @@
 
 /* User role badge */
 "Follower" = "Abonné";
+
+/* Title of the cell in Product Price Settings > Schedule sale From a certain date */
+"From" = "À partir du";
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "Exécuter la commande n° (order.number)";
@@ -516,6 +551,9 @@
 /* H6 Aztec Style */
 "Heading 6" = "Titre 6";
 
+/* Title of the cell in Product Shipping Settings > Height */
+"Height" = "Hauteur";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "Aide";
@@ -529,7 +567,8 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Aidez-nous à améliorer l’application";
 
-/* Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
+   Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "Caché";
 
 /* Detail label for yes/no switch. */
@@ -566,6 +605,9 @@
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Insérer un lien";
 
+/* The title of the alert when there is an error updating the product SKU */
+"Invalid Product SKU" = "UGS du produit non valide";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Adresse du site invalide";
 
@@ -582,7 +624,7 @@
 "Invalid username" = "Identifiant non valide";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Title of the Inventory Settings row on Product main screen */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "Stock";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -607,8 +649,14 @@
    The action of the top banner on Dashboard that indicates new stats is unavailable */
 "Learn more" = "En apprendre plus";
 
+/* Title of the cell in Product Shipping Settings > Length */
+"Length" = "Longueur";
+
 /* Licenses (information page title) */
 "Licenses" = "Licences";
+
+/* Title of the cell in Product Inventory Settings > Limit one per order */
+"Limit one per order" = "Limite : un par commande";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Limite atteinte. Vous pouvez ressayer dans 1 minute. Avant cela, un nouvelle tentative ne fera qu'augmenter l'attente avant que l'interdiction soit levée. Si vous pensez qu'il s'agît d'une erreur, contactez le support.";
@@ -669,6 +717,9 @@
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Gérez les commandes, suivez l’évolution des ventes et surveillez l’activité de la boutique avec des alertes en temps réel.";
+
+/* Title of the cell in Product Inventory Settings > Manage stock */
+"Manage stock" = "Gestion du stock";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "Gérer votre site propulsé par Jetpack sur le pouce. Vous avez WordPress dans votre poche.";
@@ -771,10 +822,19 @@
 "No results for the selected criteria" = "Aucun résultat pour les critères sélectionnés";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
+"No results found for (term)\nAdd a custom provider" = "Aucun résultat pour (terme)\nAjouter un prestataire personnalisé";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Pas de revenus durant cette période";
+
+/* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
+"No shipping classes yet" = "Pas encore de classes de livraison";
+
+/* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
+"No tax classes yet" = "Pas encore de classes de taxes";
+
+/* Display label for the product's tax status setting option */
+"None" = "Aucune";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Non encore livré";
@@ -786,7 +846,7 @@
 "Number of files:" = "Nombre de fichiers :";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -824,6 +884,9 @@
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Ouvre une liste des états disponibles.";
+
+/* Placeholder of the cell text field in Product Inventory Settings > SKU */
+"Optional" = "Facultatif";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Informations de suivi facultatives";
@@ -875,8 +938,8 @@
 /* The title for the customer payment cell */
 "Paid By Customer" = "Payé par le client";
 
-/* Login dialog password placeholder
-   Password placeholder */
+/* Accessibility label for the password text field in the self-hosted login page.
+   Login dialog password placeholder - Password placeholder */
 "Password" = "Mot de passe";
 
 /* Paste without Formatting Menu Item */
@@ -895,6 +958,9 @@
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Numéro de téléphone : %@";
+
+/* Product images (Product images page title) */
+"Photos" = "Photos";
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Sélectionner la boutique à laquelle se connecter";
@@ -941,8 +1007,11 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Merci d'ouvrir votre boîte de réception et de rechercher un e-mail de WordPress.com.";
 
+/* Message of the in-progress UI while updating the Product remotely */
+"Please wait while we publish this product to your store" = "Veuillez patienter pendant que nous publions ce produit dans votre boutique.";
+
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Title of the Price Settings row on Product main screen */
+   Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
 "Price" = "Prix";
 
 /* Product Details - pricing and inventory section title */
@@ -978,6 +1047,9 @@
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produits";
 
+/* Label for computed value `product refunds + taxes = subtotal`. */
+"Products Refund" = "Produits remboursés";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Invitations avec l’option d’appeler ou d’envoyer un SMS au client de facturation.";
 
@@ -989,6 +1061,9 @@
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publié depuis le parc. Bloguer depuis le bus. Commenter depuis un café. WordPress vous suit partout.";
+
+/* Title of the in-progress UI while updating the Product remotely */
+"Publishing your product..." = "Publication de votre produit en cours…";
 
 /* Product Details - purchase details section title */
 "Purchase Details" = "Détails de l'achat";
@@ -1004,6 +1079,9 @@
    Section header title - abbreviation for quantity */
 "Qty" = "Qté";
 
+/* Title of the cell in Product Inventory Settings > Quantity */
+"Quantity" = "Quantité";
+
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "Quantité : %ld";
 
@@ -1016,8 +1094,30 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Lisez notre politique de confidentialité";
 
+/* Refund note section title */
+"Reason for Refund" = "Motif du remboursement";
+
+/* It reads: Refund #<refund ID> */
+"Refund #%@" = "Remboursement #%@";
+
+/* Refund Details page > Refund Details section > The label that marks the refunded amount */
+"Refund Amount" = "Montant du remboursement";
+
+/* Refund Details section title */
+"Refund Details" = "Détails du remboursement";
+
 /* The title for the refunded amount cell */
 "Refunded" = "Remboursé";
+
+/* Order > Order Details > 'N Items' cell tapped > Refunded Products title
+   Refunded Products section title - Section title */
+"Refunded Products" = "Produits remboursés";
+
+/* It reads, 'Refunded manually via <payment method>' */
+"Refunded manually via %@" = "Remboursement effectué manuellement via %@";
+
+/* It reads, 'Refunded via <payment method>' */
+"Refunded via %@" = "Remboursement effectué via %@";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Domaine enregistré";
@@ -1063,27 +1163,44 @@
 /* Post Rich content */
 "Rich Content" = "Contenu enrichi";
 
-/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
+   Title of the cell in Product Inventory Settings > SKU */
 "SKU" = "UGS";
+
+/* The message of the alert when there is an error updating the product SKU */
+"SKU already in use by another product" = "Cette UGS est déjà utilisée par un autre produit";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
    A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "UGS :";
 
-/* Format of the SKU on the Inventory Settings row */
+/* Format of the SKU on the Inventory Settings row
+   SKU label, followed by the SKU */
 "SKU: %@" = "UGS : %@";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS envoyé";
 
 /* Format of the sale period on the Price Settings row */
-"Sale dates: %1$@-%2$@" = "Dates de vente : %1$@-%2$@";
+"Sale dates: %@" = "Dates de vente : %@";
+
+/* Format of the sale period on the Price Settings row from a certain date */
+"Sale dates: From %@" = "Dates de vente : À partir du %@";
+
+/* Format of the sale period on the Price Settings row until a certain date */
+"Sale dates: Until %@" = "Dates de vente : Avant le %@";
+
+/* Title of the cell in Product Price Settings > Sale price */
+"Sale price" = "Tarif promotionnel";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "Tarif promo :";
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Tarif promo : %@";
+
+/* Title of the cell in Product Price Settings > Schedule sale */
+"Schedule sale" = "Planifier une vente";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Rechercher toutes les commandes";
@@ -1131,7 +1248,7 @@
 "Shipped %@" = "Livré le %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
+   Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Expédition";
 
 /* Shipping method title for customer info cell */
@@ -1140,8 +1257,14 @@
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Transporteurs";
 
+/* Title of the cell in Product Shipping Settings > Shipping class */
+"Shipping class" = "Classe de livraison";
+
 /* Label prefix. Example: 'Shipping class: Free Shipping' */
 "Shipping class:" = "Classe de livraison :";
+
+/* Navigation bar title of the Product shipping class selector screen */
+"Shipping classes" = "Classes de livraison";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Détails de livraison";
@@ -1149,11 +1272,26 @@
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Avis d'expédition de la commande";
 
+/* Display label for the product's tax status setting option */
+"Shipping only" = "Livraison uniquement";
+
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Transporteur";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show a list of refunded order items for this order." = "Afficher la liste des articles remboursés pour cette commande.";
+
+/* Accessibility label for the “Show password“ button in the login page's password field. */
+"Show password" = "Afficher le mot de passe";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information. */
+"Show refund details for this order." = "Affichez les informations de remboursement liées à cette commande.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Affichez les informations de facturation liées à cette commande.";
+
+/* Accessibility value if login page's password field is displaying the password. */
+"Shown" = "Affiché";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Affiche plus d'options.";
@@ -1172,6 +1310,9 @@
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Redirection de site";
+
+/* Accessibility label of the site address field shown when adding a self-hosted site. */
+"Site address" = "Adresse du site";
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "L'adresse du site doit au moins contenir 4 caractères.";
@@ -1232,6 +1373,9 @@
    Verb, spam a comment */
 "Spam" = "Indésirables";
 
+/* The name of the default Tax Class in Product Price Settings */
+"Standard rate" = "Taux standard";
+
 /* Aztec's Text Placeholder */
 "Start writing..." = "Commencez à écrire...";
 
@@ -1240,6 +1384,10 @@
 
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "Quantité en stock :";
+
+/* Product stock status list selector navigation title
+   Title of the cell in Product Inventory Settings > Stock status */
+"Stock status" = "État du stock";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "État du stock :";
@@ -1261,6 +1409,9 @@
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Barrer";
+
+/* Subtotal label for a refund details view */
+"Subtotal" = "Sous-total";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Changer de boutique";
@@ -1343,8 +1494,32 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "Appuyer pour basculer sur le style de paragraphe";
 
+/* Tax label for a refund details view */
+"Tax" = "Taxe";
+
+/* Section header title for product tax settings */
+"Tax Settings" = "Paramètres d'imposition";
+
+/* Navigation bar title of the Product tax status selector screen */
+"Tax Status" = "État de la taxe";
+
+/* Title of the cell in Product Price Settings > Tax class */
+"Tax class" = "Classe de taxe";
+
+/* Navigation bar title of the Product tax class selector screen */
+"Tax classes" = "Classes de taxes";
+
+/* Title of the cell in Product Price Settings > Tax status */
+"Tax status" = "État de la taxe";
+
 /* Tax label for total taxes line */
 "Tax:" = "TVA :";
+
+/* Tax label for total taxes line, followed by the tax amount. */
+"Tax: %@" = "Taxe : %@";
+
+/* Display label for the product's tax status setting option */
+"Taxable" = "Taxable";
 
 /* Taxes label for payment view */
 "Taxes" = "Taxes";
@@ -1419,6 +1594,9 @@
    Top Performers section title - this month */
 "This Month" = "Ce mois-ci";
 
+/* The message of the alert when there is an error updating the product SKU */
+"This SKU is used on another product or is invalid." = "Cette UGS est utilisée par un autre produit ou n'est pas valide.";
+
 /* Tab selector title that shows the statistics for this week
    Top Performers section title - this week */
 "This Week" = "Cette semaine";
@@ -1452,6 +1630,9 @@
 
 /* Placeholder in the Product Title row on Product form screen. */
 "Title (required)" = "Titre (obligatoire)";
+
+/* Title of the cell in Product Price Settings > Schedule sale To a certain date */
+"To" = "Date";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Pour créer votre nouveau compte WordPress.com, veuillez saisir votre adresse e-mail.";
@@ -1505,7 +1686,7 @@
 
 /* Display label for the review's trash status
    Move a comment to the trash */
-"Trash" = "Trash";
+"Trash" = "Déplacer vers la corbeille";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "Faire confiance";
@@ -1608,7 +1789,8 @@
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Enregistre jusqu'à sept jours de rapports de bugs.";
 
-/* Label action for updating a link on the editor */
+/* Action for updating a Product remotely
+   Label action for updating a link on the editor */
 "Update" = "Mettre à jour";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
@@ -1646,8 +1828,8 @@
    Updated on <date> */
 "Updated on %@" = "Mises à jour le %@";
 
-/* Login dialog username placeholder
-   Username placeholder */
+/* Accessibility label for the username text field in the self-hosted login page.
+   Login dialog username placeholder - Username placeholder */
 "Username" = "Identifiant";
 
 /* No comment provided by engineer. */
@@ -1673,14 +1855,17 @@
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Voir les produits affiliés";
 
-/* This text is linked so the user can view refund details. */
-"View details" = "Voir les détails";
-
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Voir les précédents tickets de support envoyés";
 
 /* The descriptive label. Tapping the row will open the product's page in a web view. */
 "View product on store" = "Voir les produits dans la boutique";
+
+/* Accessibility label for the 'View details' refund button */
+"View refund details" = "Afficher les détails du remboursement";
+
+/* Accessibility label for the '<number> Products' button */
+"View refunded order items" = "Voir les articles de la commande remboursée";
 
 /* User role badge */
 "Viewer" = "Lecteur";
@@ -1724,6 +1909,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Semaines";
 
+/* Title of the cell in Product Shipping Settings > Weight */
+"Weight" = "Poids";
+
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "Poids :";
 
@@ -1744,6 +1932,9 @@
 
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Oups, ce n’est pas un code de vérification deux facteurs valide. Vérifiez à nouveau et réessayez.";
+
+/* Title of the cell in Product Shipping Settings > Width */
+"Width" = "Largeur";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";

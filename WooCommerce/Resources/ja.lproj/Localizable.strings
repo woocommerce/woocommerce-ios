@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-09 00:54:03+0000 */
+/* Translation-Revision-Date: 2020-01-23 00:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -27,11 +27,20 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* <item total> (<item individual price> multipled by <quantity>) */
+"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+
+/* 1 Item */
+"%@ Item" = "%@個のアイテム";
+
+/* For example, '5 Items' */
+"%@ Items" = "%@個のアイテム";
+
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ さんが %2$@ に関するレビューを書きました";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@ – %3$@" = "%2$@ 経由 %1$@ – %3$@";
+"%1$@ via %2$@" = "%2$@ 経由 %1$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "在庫%ld個";
@@ -50,6 +59,9 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "認証コードは数字だけで構成されます。";
+
+/* Action to add photos on the Product images screen */
+"ADD PHOTOS" = "画像を追加";
 
 /* About this app (information page title) */
 "About" = "このサイトについて";
@@ -95,6 +107,12 @@
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "すべての既読レビュー";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow" = "許可する";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow, but notify customer" = "許可し、顧客に通知する";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "もう少しで完了です。認証アプリから認証コードを入力してください。";
@@ -148,6 +166,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "このサイトで自動管理";
 
+/* Subtitle of the cell in Product Price Settings > Schedule sale */
+"Automatically start and end a sale" = "セールを自動的に開始、終了する";
+
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "%@ による決済待ち";
@@ -157,6 +178,10 @@
 
 /* Application's Background State */
 "Background" = "背景";
+
+/* Product backorders setting list selector navigation title
+   Title of the cell in Product Inventory Settings > Backorders */
+"Backorders" = "入荷待ち";
 
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "入荷待ち :";
@@ -192,6 +217,9 @@
 /* Button title. Tapping it cancels the login flow.
    Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "キャンセル";
+
+/* The title of the alert when there is an error updating the product */
+"Cannot update Product" = "商品を更新できません";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
@@ -345,6 +373,9 @@
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "非表示";
 
+/* Display label for the product's inventory backorders setting option */
+"Do not allow" = "許可しない";
+
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "アカウントをお持ちでない場合は_登録_してください。";
 
@@ -408,14 +439,12 @@
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "プロバイダ名を入力";
 
-/* Label for button to log in using your site address. */
+/* Instruction text on the login's site addresss screen.
+   Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "連携する WordPress サイトのアドレスを入力してください。";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "連携させる WooCommerce ストアのアドレスを入力してください。";
-
-/* Instruction text on the login's site addresss screen. */
-"Enter the address of your WordPress site you'd like to connect." = "連携する WordPress サイトのアドレスを入力してください。";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "WordPress.com アカウント用のパスワードを入力します。";
@@ -446,6 +475,9 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "機能のリクエスト";
 
+/* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
+"Fill with password manager" = "パスワードマネージャーで入力";
+
 /* Filter the orders list. */
 "Filter orders" = "注文を絞り込み";
 
@@ -454,6 +486,9 @@
 
 /* User role badge */
 "Follower" = "フォロワー";
+
+/* Title of the cell in Product Price Settings > Schedule sale From a certain date */
+"From" = "送信元";
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "注文番号 (order.number) を履行";
@@ -516,6 +551,9 @@
 /* H6 Aztec Style */
 "Heading 6" = "見出し6";
 
+/* Title of the cell in Product Shipping Settings > Height */
+"Height" = "高さ";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "ヘルプ";
@@ -529,7 +567,8 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "アプリの改善にご協力ください";
 
-/* Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
+   Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "非表示";
 
 /* Detail label for yes/no switch. */
@@ -566,6 +605,9 @@
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "リンクを挿入";
 
+/* The title of the alert when there is an error updating the product SKU */
+"Invalid Product SKU" = "無効な商品 SKU";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "無効なサイトアドレスです";
 
@@ -582,7 +624,7 @@
 "Invalid username" = "無効なユーザー名";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Title of the Inventory Settings row on Product main screen */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "在庫";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -607,8 +649,14 @@
    The action of the top banner on Dashboard that indicates new stats is unavailable */
 "Learn more" = "さらに詳しく";
 
+/* Title of the cell in Product Shipping Settings > Length */
+"Length" = "長さ";
+
 /* Licenses (information page title) */
 "Licenses" = "ライセンス";
+
+/* Title of the cell in Product Inventory Settings > Limit one per order */
+"Limit one per order" = "1回の注文あたり1個に制限";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "ログイン試行の上限に達しました。1分後にもう一度お試しいただけます。それ以前にログインしようとした場合、制限解除までの時間がさらに延長されます。エラーだと思われる場合はサポートにご連絡ください。";
@@ -669,6 +717,9 @@
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "注文を管理し、売り上げをトラッキングし、ストアのアクティビティをリアルタイムのアラートでモニターします。";
+
+/* Title of the cell in Product Inventory Settings > Manage stock */
+"Manage stock" = "在庫管理";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "外出先でも Jetpack 連携サイトを管理。WordPress をどこへでも持ち歩けます。";
@@ -771,10 +822,19 @@
 "No results for the selected criteria" = "選択した基準と一致する結果はありません";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
+"No results found for (term)\nAdd a custom provider" = "(term) の検索結果は0件でした\nカスタムプロバイダーを追加";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "この期間には収益がありません";
+
+/* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
+"No shipping classes yet" = "送料区分がまだありません";
+
+/* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
+"No tax classes yet" = "税区分がまだありません";
+
+/* Display label for the product's tax status setting option */
+"None" = "なし";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "まだ出荷されていません";
@@ -786,7 +846,7 @@
 "Number of files:" = "ファイル数 :";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -824,6 +884,9 @@
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "利用可能なステータスのリストを開きます。";
+
+/* Placeholder of the cell text field in Product Inventory Settings > SKU */
+"Optional" = "オプション";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "オプションのトラッキング情報";
@@ -875,8 +938,8 @@
 /* The title for the customer payment cell */
 "Paid By Customer" = "顧客から支払われた金額";
 
-/* Login dialog password placeholder
-   Password placeholder */
+/* Accessibility label for the password text field in the self-hosted login page.
+   Login dialog password placeholder - Password placeholder */
 "Password" = "パスワード";
 
 /* Paste without Formatting Menu Item */
@@ -895,6 +958,9 @@
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "電話番号: %@";
+
+/* Product images (Product images page title) */
+"Photos" = "写真";
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "連携するストアを選択";
@@ -941,8 +1007,11 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "メールアプリを開いて、WordPress.com からのメールを探してください。";
 
+/* Message of the in-progress UI while updating the Product remotely */
+"Please wait while we publish this product to your store" = "この製品をストアに公開するまでしばらくお待ちください";
+
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Title of the Price Settings row on Product main screen */
+   Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
 "Price" = "価格";
 
 /* Product Details - pricing and inventory section title */
@@ -978,6 +1047,9 @@
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "商品";
 
+/* Label for computed value `product refunds + taxes = subtotal`. */
+"Products Refund" = "商品の返金";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "請求対象の顧客に電話で連絡するかメッセージを送信するか選択するよう求めます。";
 
@@ -989,6 +1061,9 @@
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "公園で投稿を公開。バスからブログに投稿。カフェでコメントを送信。WordPress をどこでも使えます。";
+
+/* Title of the in-progress UI while updating the Product remotely */
+"Publishing your product..." = "商品を公開しています...";
 
 /* Product Details - purchase details section title */
 "Purchase Details" = "購入情報";
@@ -1004,6 +1079,9 @@
    Section header title - abbreviation for quantity */
 "Qty" = "数量";
 
+/* Title of the cell in Product Inventory Settings > Quantity */
+"Quantity" = "数量";
+
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "数 :%ld";
 
@@ -1016,8 +1094,30 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "個人情報保護方針を読む";
 
+/* Refund note section title */
+"Reason for Refund" = "返金の理由";
+
+/* It reads: Refund #<refund ID> */
+"Refund #%@" = "#%@ を返金";
+
+/* Refund Details page > Refund Details section > The label that marks the refunded amount */
+"Refund Amount" = "返金額";
+
+/* Refund Details section title */
+"Refund Details" = "返金詳細";
+
 /* The title for the refunded amount cell */
 "Refunded" = "返金済み";
+
+/* Order > Order Details > 'N Items' cell tapped > Refunded Products title
+   Refunded Products section title - Section title */
+"Refunded Products" = "返金済み商品";
+
+/* It reads, 'Refunded manually via <payment method>' */
+"Refunded manually via %@" = "%@ 経由で手動で返金済み";
+
+/* It reads, 'Refunded via <payment method>' */
+"Refunded via %@" = "%@ 経由で返金済み";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "登録済みドメイン";
@@ -1063,27 +1163,44 @@
 /* Post Rich content */
 "Rich Content" = "リッチコンテンツ";
 
-/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
+   Title of the cell in Product Inventory Settings > SKU */
 "SKU" = "SKU";
+
+/* The message of the alert when there is an error updating the product SKU */
+"SKU already in use by another product" = "すでに別の製品で使用されている SKU";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
    A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "商品コード:";
 
-/* Format of the SKU on the Inventory Settings row */
+/* Format of the SKU on the Inventory Settings row
+   SKU label, followed by the SKU */
 "SKU: %@" = "商品コード :%@";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS 送信完了";
 
 /* Format of the sale period on the Price Settings row */
-"Sale dates: %1$@-%2$@" = "セール期間 :%1$@～%2$@";
+"Sale dates: %@" = "セール期間 :%@";
+
+/* Format of the sale period on the Price Settings row from a certain date */
+"Sale dates: From %@" = "セール期間 :%@ から";
+
+/* Format of the sale period on the Price Settings row until a certain date */
+"Sale dates: Until %@" = "セール期間 :%@ まで";
+
+/* Title of the cell in Product Price Settings > Sale price */
+"Sale price" = "セール価格";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "セール価格 :";
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "セール価格 :%@";
+
+/* Title of the cell in Product Price Settings > Schedule sale */
+"Schedule sale" = "セールの予定を設定";
 
 /* Orders Search Placeholder */
 "Search all orders" = "すべての注文を検索";
@@ -1131,7 +1248,7 @@
 "Shipped %@" = "出荷日: %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
+   Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "配送";
 
 /* Shipping method title for customer info cell */
@@ -1140,8 +1257,14 @@
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "配送業者";
 
+/* Title of the cell in Product Shipping Settings > Shipping class */
+"Shipping class" = "送料区分";
+
 /* Label prefix. Example: 'Shipping class: Free Shipping' */
 "Shipping class:" = "送料区分 :";
+
+/* Navigation bar title of the Product shipping class selector screen */
+"Shipping classes" = "配送クラス";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "配送詳細";
@@ -1149,11 +1272,26 @@
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "注文の配送に関するお知らせ";
 
+/* Display label for the product's tax status setting option */
+"Shipping only" = "配送対象";
+
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "配送業者";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show a list of refunded order items for this order." = "この注文で返金された注文アイテムのリストを表示します。";
+
+/* Accessibility label for the “Show password“ button in the login page's password field. */
+"Show password" = "パスワードを表示";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information. */
+"Show refund details for this order." = "この注文の返金の詳細を表示します。";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "この注文の請求詳細を表示";
+
+/* Accessibility value if login page's password field is displaying the password. */
+"Shown" = "表示内容";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "オプションをさらに表示します。";
@@ -1172,6 +1310,9 @@
 
 /* Describes a site redirect domain */
 "Site Redirect" = "サイト転送";
+
+/* Accessibility label of the site address field shown when adding a self-hosted site. */
+"Site address" = "サイトアドレス";
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "サイトアドレスは4文字以上にしてください。";
@@ -1232,6 +1373,9 @@
    Verb, spam a comment */
 "Spam" = "スパム";
 
+/* The name of the default Tax Class in Product Price Settings */
+"Standard rate" = "標準税率";
+
 /* Aztec's Text Placeholder */
 "Start writing..." = "執筆を開始…";
 
@@ -1240,6 +1384,10 @@
 
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "在庫数 :";
+
+/* Product stock status list selector navigation title
+   Title of the cell in Product Inventory Settings > Stock status */
+"Stock status" = "在庫状況";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "在庫状況 :";
@@ -1261,6 +1409,9 @@
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "取り消し線";
+
+/* Subtotal label for a refund details view */
+"Subtotal" = "小計";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "ストアを切り替える";
@@ -1343,8 +1494,32 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "タップして段落スタイルを切り替えます";
 
+/* Tax label for a refund details view */
+"Tax" = "税";
+
+/* Section header title for product tax settings */
+"Tax Settings" = "税設定";
+
+/* Navigation bar title of the Product tax status selector screen */
+"Tax Status" = "税状況";
+
+/* Title of the cell in Product Price Settings > Tax class */
+"Tax class" = "税区分";
+
+/* Navigation bar title of the Product tax class selector screen */
+"Tax classes" = "税区分";
+
+/* Title of the cell in Product Price Settings > Tax status */
+"Tax status" = "税状況";
+
 /* Tax label for total taxes line */
 "Tax:" = "税:";
+
+/* Tax label for total taxes line, followed by the tax amount. */
+"Tax: %@" = "税 :%@";
+
+/* Display label for the product's tax status setting option */
+"Taxable" = "課税";
 
 /* Taxes label for payment view */
 "Taxes" = "税";
@@ -1419,6 +1594,9 @@
    Top Performers section title - this month */
 "This Month" = "今月";
 
+/* The message of the alert when there is an error updating the product SKU */
+"This SKU is used on another product or is invalid." = "この SKU は別の製品で使用されているか、無効です。";
+
 /* Tab selector title that shows the statistics for this week
    Top Performers section title - this week */
 "This Week" = "今週";
@@ -1452,6 +1630,9 @@
 
 /* Placeholder in the Product Title row on Product form screen. */
 "Title (required)" = "タイトル (必須)";
+
+/* Title of the cell in Product Price Settings > Schedule sale To a certain date */
+"To" = "送信先";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "新しい WordPress.com アカウントを作成するには、メールアドレスを入力してください。";
@@ -1608,7 +1789,8 @@
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "最大7日間分のログが保存されます。";
 
-/* Label action for updating a link on the editor */
+/* Action for updating a Product remotely
+   Label action for updating a link on the editor */
 "Update" = "更新";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
@@ -1646,8 +1828,8 @@
    Updated on <date> */
 "Updated on %@" = "%@ に更新";
 
-/* Login dialog username placeholder
-   Username placeholder */
+/* Accessibility label for the username text field in the self-hosted login page.
+   Login dialog username placeholder - Username placeholder */
 "Username" = "ユーザー名";
 
 /* No comment provided by engineer. */
@@ -1673,14 +1855,17 @@
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "アフィリエイト向け商品を表示";
 
-/* This text is linked so the user can view refund details. */
-"View details" = "詳細を表示";
-
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "送信済みのサポートチケットを表示";
 
 /* The descriptive label. Tapping the row will open the product's page in a web view. */
 "View product on store" = "ストアで商品を表示";
+
+/* Accessibility label for the 'View details' refund button */
+"View refund details" = "返金の詳細を表示";
+
+/* Accessibility label for the '<number> Products' button */
+"View refunded order items" = "返金された注文アイテムを表示";
 
 /* User role badge */
 "Viewer" = "読者";
@@ -1724,6 +1909,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "週";
 
+/* Title of the cell in Product Shipping Settings > Weight */
+"Weight" = "重さ";
+
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "重量 :";
 
@@ -1744,6 +1932,9 @@
 
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "正しい二段階認証コードではありません。コードを再確認してもう一度お試しください。";
+
+/* Title of the cell in Product Shipping Settings > Width */
+"Width" = "横幅";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";

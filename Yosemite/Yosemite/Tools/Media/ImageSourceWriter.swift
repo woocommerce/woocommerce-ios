@@ -8,7 +8,10 @@ protocol ImageSourceWriter {
     ///   - url: File URL where the image should be written.
     ///   - sourceUTType: The UTType of the image source.
     ///   - options: Image export options.
-    func writeImageSource(_ source: CGImageSource, to url: URL, sourceUTType: CFString, options: MediaImageExportOptions) throws -> ImageSourceWriteResultProperties
+    func writeImageSource(_ source: CGImageSource,
+                          to url: URL,
+                          sourceUTType: CFString,
+                          options: MediaImageExportOptions) throws -> ImageSourceWriteResultProperties
 }
 
 /// Struct for returned result from writing an image, and any properties worth keeping track of.
@@ -21,7 +24,10 @@ struct ImageSourceWriteResultProperties {
 /// Default implementation of `ImageSourceWriter` via CGImageDestination.
 ///
 struct DefaultImageSourceWriter: ImageSourceWriter {
-    func writeImageSource(_ source: CGImageSource, to url: URL, sourceUTType: CFString, options: MediaImageExportOptions) throws -> ImageSourceWriteResultProperties {
+    func writeImageSource(_ source: CGImageSource,
+                          to url: URL,
+                          sourceUTType: CFString,
+                          options: MediaImageExportOptions) throws -> ImageSourceWriteResultProperties {
         // Create the destination with the URL, or error
         guard let destination = CGImageDestinationCreateWithURL(url as CFURL, sourceUTType, 1, nil) else {
             throw ImageSourceWriterError.imageSourceDestinationWithURLFailed

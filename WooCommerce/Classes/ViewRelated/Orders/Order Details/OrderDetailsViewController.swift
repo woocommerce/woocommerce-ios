@@ -47,6 +47,8 @@ final class OrderDetailsViewController: UIViewController {
         registerTableViewHeaderFooters()
         configureEntityListener()
         configureViewModel()
+
+        // FIXME: this is a hack. https://github.com/woocommerce/woocommerce-ios/issues/1779
         reloadTableViewSectionsAndData()
     }
 

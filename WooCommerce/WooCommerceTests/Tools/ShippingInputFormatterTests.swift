@@ -29,12 +29,12 @@ final class ShippingInputFormatterTests: XCTestCase {
 
     func testLeadingPointInputIsValid() {
         let input = "."
-        XCTAssertFalse(formatter.isValid(input: input))
+        XCTAssertTrue(formatter.isValid(input: input))
     }
     
     func testNumberDashesAndPercentuageIsValid() {
         let input = "-707--87%.21,22"
-        XCTAssertFalse(formatter.isValid(input: input))
+        XCTAssertTrue(formatter.isValid(input: input))
     }
 
     // MARK: test cases for `format(input:)`

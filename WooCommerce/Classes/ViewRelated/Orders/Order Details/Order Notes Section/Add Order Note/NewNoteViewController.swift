@@ -340,4 +340,3 @@ private extension NewNoteViewController {
         }
     }
 }
-

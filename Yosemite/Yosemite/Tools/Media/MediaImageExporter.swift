@@ -42,16 +42,20 @@ final class MediaImageExporter: MediaExporter {
     private let filename: String?
     private let typeHint: String?
 
+    private let imageSourceWriter: ImageSourceWriter
+
     init(data: Data,
          filename: String?,
          typeHint: String? = nil,
          options: MediaImageExportOptions,
-         mediaDirectoryType: MediaDirectory = .uploads) {
+         mediaDirectoryType: MediaDirectory = .uploads,
+         imageSourceWriter: ImageSourceWriter = DefaultImageSourceWriter()) {
         self.filename = filename
         self.data = data
         self.typeHint = typeHint
         self.options = options
         self.mediaDirectoryType = mediaDirectoryType
+        self.imageSourceWriter = imageSourceWriter
     }
 
     func export(onCompletion: @escaping MediaExportCompletion) {
@@ -107,9 +111,7 @@ final class MediaImageExporter: MediaExporter {
             let url = try mediaFileManager.createLocalMediaURL(filename: filename,
                                                                fileExtension: URL.fileExtensionForUTType(type))
 
-            // Checks export options and configures the image writer as needed.
-            let writer = ImageSourceWriter(url: url, sourceUTType: type as CFString)
-            _ = try writer.writeImageSource(source, options: options)
+            _ = try imageSourceWriter.writeImageSource(source, to: url, sourceUTType: type as CFString, options: options)
 
             let exported = UploadableMedia(localURL: url,
                                            filename: url.lastPathComponent,

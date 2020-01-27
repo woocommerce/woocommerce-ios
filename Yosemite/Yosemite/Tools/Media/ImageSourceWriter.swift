@@ -1,30 +1,27 @@
-/// Writes an image to a URL from a CGImageSource, via CGImageDestination, particular to the needs of a `MediaImageExporter`.
+/// Writes an image to a URL from a CGImageSource, particular to the needs of a `MediaImageExporter`.
 ///
-struct ImageSourceWriter {
-
-    /// File URL where the image should be written.
-    ///
-    private let url: URL
-
-    /// The UTType of the image source.
-    ///
-    private let sourceUTType: CFString
-
-    init(url: URL, sourceUTType: CFString) {
-        self.url = url
-        self.sourceUTType = sourceUTType
-    }
-
-    /// Struct for returned result from writing an image, and any properties worth keeping track of.
-    ///
-    struct WriteResultProperties {
-        let width: CGFloat?
-        let height: CGFloat?
-    }
-
+protocol ImageSourceWriter {
     /// Write a given image source, succeeds unless an error is thrown, returns the resulting properties if available.
     ///
-    func writeImageSource(_ source: CGImageSource, options: MediaImageExportOptions) throws -> WriteResultProperties {
+    /// - Parameters:
+    ///   - source: Image source data.
+    ///   - url: File URL where the image should be written.
+    ///   - sourceUTType: The UTType of the image source.
+    ///   - options: Image export options.
+    func writeImageSource(_ source: CGImageSource, to url: URL, sourceUTType: CFString, options: MediaImageExportOptions) throws -> ImageSourceWriteResultProperties
+}
+
+/// Struct for returned result from writing an image, and any properties worth keeping track of.
+///
+struct ImageSourceWriteResultProperties {
+    let width: CGFloat?
+    let height: CGFloat?
+}
+
+/// Default implementation of `ImageSourceWriter` via CGImageDestination.
+///
+struct DefaultImageSourceWriter: ImageSourceWriter {
+    func writeImageSource(_ source: CGImageSource, to url: URL, sourceUTType: CFString, options: MediaImageExportOptions) throws -> ImageSourceWriteResultProperties {
         // Create the destination with the URL, or error
         guard let destination = CGImageDestinationCreateWithURL(url as CFURL, sourceUTType, 1, nil) else {
             throw ImageSourceWriterError.imageSourceDestinationWithURLFailed
@@ -89,12 +86,12 @@ struct ImageSourceWriter {
         }
 
         // Return the result with any interesting properties.
-        return WriteResultProperties(width: width,
-                                     height: height)
+        return ImageSourceWriteResultProperties(width: width,
+                                                height: height)
     }
 }
 
-extension ImageSourceWriter {
+extension DefaultImageSourceWriter {
     enum ImageSourceWriterError: Error {
         case imageSourceDestinationWithURLFailed
         case imageSourceThumbnailGenerationFailed

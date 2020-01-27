@@ -9,7 +9,7 @@ final class MockupFileManager: FileManager {
         return dataByFilePath[path] != nil
     }
 
-    override func createFile(atPath path: String, contents data: Data?, attributes attr: [FileAttributeKey : Any]? = nil) -> Bool {
+    override func createFile(atPath path: String, contents data: Data?, attributes attr: [FileAttributeKey: Any]? = nil) -> Bool {
         dataByFilePath[path] = data
         return true
     }

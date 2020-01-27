@@ -24,6 +24,12 @@ final class OrderDetailsDataSource: NSObject {
         return order.statusKey == OrderStatusEnum.processing.rawValue
     }
 
+    /// Is this order fully refunded?
+    ///
+    private var isRefundedStatus: Bool {
+        return order.statusKey == OrderStatusEnum.refunded.rawValue
+    }
+
     /// Is the shipment tracking plugin available?
     ///
     var trackingIsReachable: Bool = false
@@ -389,7 +395,8 @@ private extension OrderDetailsDataSource {
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        guard let _ = refundedProducts else {
+        let refundsEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds)
+        guard aggregateOrderItems.count > 0 && refundsEnabled else {
             let item = items[indexPath.row]
             let product = lookUpProduct(by: item.productOrVariationID)
             let itemViewModel = ProductDetailsCellViewModel(item: item,
@@ -565,20 +572,46 @@ extension OrderDetailsDataSource {
                 return nil
             }
 
-            var rows: [Row] = refunds.count == 0
-                ? Array(repeating: .orderItem, count: items.count)
-                : Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
+            // Order Items section with Refunds hidden
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
+                var rows: [Row] = Array(repeating: .orderItem, count: items.count)
+
+                if isProcessingPayment {
+                    rows.append(.fulfillButton)
+                } else {
+                    rows.append(.details)
+                }
+
+                return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+            }
+
+            var rows = [Row]()
+            if refundedProductsCount > 0 {
+                rows = Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
+            } else {
+                rows = Array(repeating: .orderItem, count: items.count)
+            }
 
             if isProcessingPayment {
                 rows.append(.fulfillButton)
-            } else {
+            } else if isRefundedStatus == false {
                 rows.append(.details)
+            }
+
+            if rows.count == 0 {
+                return nil
             }
 
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()
 
         let refundedProducts: Section? = {
+            // Refunds off
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
+                return nil
+            }
+
+            // Refunds on
             guard refundedProductsCount > 0 else {
                 return nil
             }

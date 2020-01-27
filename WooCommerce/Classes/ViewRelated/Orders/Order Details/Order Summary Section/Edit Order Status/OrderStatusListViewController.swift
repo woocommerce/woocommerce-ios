@@ -10,7 +10,9 @@ final class OrderStatusListViewController: UIViewController {
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
-        let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
+        let predicate = NSPredicate(format: "siteID == %lld && slug != %@",
+                                    ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min,
+                                    OrderStatusEnum.refunded.rawValue)
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])

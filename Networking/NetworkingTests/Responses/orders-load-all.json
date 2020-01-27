@@ -398,7 +398,7 @@
                      {
                          "id": 2848,
                          "key": "_stripe_net",
-                         "value": "969.94"
+                         "value": "906.94"
                      },
                      {
                          "id": 2849,
@@ -408,7 +408,7 @@
                      {
                          "id": 2871,
                          "key": "_stripe_refund_id",
-                         "value": "re_1Fyny9J71fgCH5kvtYr3AiYw"
+                         "value": "re_1G4BNIJ71fgCH5kvS6zKuvgZ"
                      },
                      {
                          "id": 2971,
@@ -1248,6 +1248,11 @@
                  "coupon_lines": [],
                  "refunds": [
                      {
+                         "id": 1172,
+                         "reason": "Take an order item down to quantity of zero",
+                         "total": "-63.00"
+                     },
+                     {
                          "id": 1025,
                          "reason": "Testing mark 2 for refunded products screen!",
                          "total": "-117.00"
@@ -1282,5 +1287,5 @@
                      ]
                  }
              }
-             ]
+        ]
 }

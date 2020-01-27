@@ -67,7 +67,7 @@ final class MediaImageExporter: MediaExporter {
     /// - Parameters:
     ///     - data: Image data.
     ///     - fileName: Filename if it's known.
-    ///     - typeHint: The UTType of data, if it's known.
+    ///     - typeHint: The UTType of data, if it's known. It is used as the preferred type.
     ///     - onCompletion: Called when the image export completes.
     ///
     private func exportImage(data: Data,
@@ -85,7 +85,7 @@ final class MediaImageExporter: MediaExporter {
             }
             exportImageSource(source,
                               filename: fileName,
-                              type: utType as String,
+                              type: typeHint ?? utType as String,
                               onCompletion: onCompletion)
         } catch {
             onCompletion(nil, error)

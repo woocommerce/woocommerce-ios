@@ -326,7 +326,7 @@ into a ReadOnly instance:
         C.      "Weak Entities" are okay not to conform to this protocol. In turn, their parent (strong entities) can be observed.
 
 
-## **WooCommerce**
+## WooCommerce
 
 The outer layer is where the UI and the business logic associated to it belongs to. 
 
@@ -334,6 +334,6 @@ It is important to note that at the moment there is not a global unified archite
 
 That being said, there are some high-level abstractions that are starting to pop up.
 
-### Global depdencies
+### Global Dependencies
 
-Global dependencies are provided by an implementation of the Service Locator pattern. In WooCommerce, a `ServiceLocator` is just a set of static getters to the high-level global abstractions (i.e. stats, stores manager) and set of setters that allow overriding the actual implementation of those abstractions for better testability. 
+Global dependencies are provided by an implementation of the Service Locator pattern. In WooCommerce, a [`ServiceLocator`](../WooCommerce/Classes/ServiceLocator/ServiceLocator.swift) is just a set of static getters to the high-level global abstractions (i.e. stats, stores manager) and set of setters that allow overriding the actual implementation of those abstractions for better testability. 

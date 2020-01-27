@@ -2,15 +2,6 @@ import MobileCoreServices
 import XCTest
 @testable import Yosemite
 
-final class MockupImageSourceWriter: ImageSourceWriter {
-    var url: URL?
-
-    func writeImageSource(_ source: CGImageSource, to url: URL, sourceUTType: CFString, options: MediaImageExportOptions) throws -> ImageSourceWriteResultProperties {
-        self.url = url
-        return ImageSourceWriteResultProperties(width: nil, height: nil)
-    }
-}
-
 final class MediaImageExporterTests: XCTestCase {
     func testExportingAnImageWithTypeHint() {
         let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()

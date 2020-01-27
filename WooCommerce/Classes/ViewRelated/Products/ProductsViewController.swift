@@ -119,13 +119,6 @@ private extension ProductsViewController {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
         nc.addObserver(self, selector: #selector(defaultSiteWasUpdated), name: .StoresManagerDidUpdateDefaultSite, object: nil)
-        nc.addObserver(self, selector: #selector(stopListeningToNotifications), name: .logOutEventReceived, object: nil)
-    }
-
-    /// Stops listening to all related Notifications
-    ///
-    @objc func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     /// Runs whenever the default Account is updated.

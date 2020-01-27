@@ -9,9 +9,8 @@ final class MediaExportService {
     ///
     typealias MediaExportCompletion = (UploadableMedia?, Error?) -> Void
 
-    private lazy var exportQueue: DispatchQueue = {
-        return DispatchQueue(label: "com.woocommerce.mediaExportService", autoreleaseFrequency: .workItem)
-    }()
+    private lazy var exportQueue: DispatchQueue = DispatchQueue(label: "com.woocommerce.mediaExportService",
+                                                                autoreleaseFrequency: .workItem)
 
     // MARK: - Instance methods
 

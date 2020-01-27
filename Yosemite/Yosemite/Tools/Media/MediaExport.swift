@@ -1,8 +1,6 @@
 import Foundation
 import Networking
 
-typealias UploadableMedia = Networking.UploadableMedia
-
 /// Completion block when a media item is exported.
 ///
 typealias MediaExportCompletion = (UploadableMedia?, Error?) -> Void

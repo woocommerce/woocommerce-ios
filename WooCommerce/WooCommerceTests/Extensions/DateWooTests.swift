@@ -125,4 +125,36 @@ final class DateWooTests: XCTestCase {
         let futureDate2 = Calendar.current.date(byAdding: .year, value: 1, to: Date())!
         XCTAssertEqual(futureDate2.relativelyFormattedUpdateString, momentsAgo)
     }
+
+    func testIsSameYearReturnsTrueIfTheDatesAreFromTheSameYear() {
+        let calendar = Calendar.current
+        let thisDate: Date = {
+            let components = DateComponents(calendar: calendar, year: 2018, month: 12, day: 25)
+            return calendar.date(from: components)!
+        }()
+        let thatDate: Date = {
+            let components = DateComponents(calendar: calendar, year: 2018, month: 1, day: 1)
+            return calendar.date(from: components)!
+        }()
+
+        let isSameYear = thisDate.isSameYear(as: thatDate)
+
+        XCTAssertTrue(isSameYear)
+    }
+
+    func testIsSameYearReturnsFalseIfTheDatesAreNotFromTheSameYear() {
+        let calendar = Calendar.current
+        let thisDate: Date = {
+            let components = DateComponents(calendar: calendar, year: 2018, month: 12, day: 25)
+            return calendar.date(from: components)!
+        }()
+        let thatDate: Date = {
+            let components = DateComponents(calendar: calendar, year: 2019, month: 1, day: 1)
+            return calendar.date(from: components)!
+        }()
+
+        let isSameYear = thisDate.isSameYear(as: thatDate)
+
+        XCTAssertFalse(isSameYear)
+    }
 }

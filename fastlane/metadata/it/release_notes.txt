@@ -1,3 +1,0 @@
-- Nella schermata Evadi ordine, anziché tagliare le (eventuali) note fornite dal cliente dopo ogni singola riga, viene visualizzato l'intero contenuto di tali note in modo da permetterti di vedere tutti i dettagli su una singola schermata.
-- Il conteggio sulla barra della scheda Ordini adesso viene aggiornato correttamente quando passi da un negozio all'altro.
-- Le stranezze possono essere intriganti nelle persone, ma molto meno nelle app, quindi abbiamo corretto qualche bug che causava delle anormalità di visualizzazione (in particolare, quando si cambiavano le dimensioni dei caratteri di sistema).

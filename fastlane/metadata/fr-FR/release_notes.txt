@@ -1,3 +1,0 @@
-- L’écran des commandes affiche la totalité des notes fournies par le client (lorsqu’il y en a une) au lieu de les couper après une ligne. Vous pouvez ainsi voir tous les détails sur un seul écran.
-- Désormais le compte affiché sur l’onglet des Commandes se rafraîchit lorsque vous passez d’une boutique à l’autre.
-- Les excentricités peuvent être intrigantes chez une personne, mais beaucoup moins dans des applications. Nous nous sommes donc occupés d’un certain nombre de certains bugs qui causaient des excentricités sur le plan visuel (modification des tailles de police par exemple).

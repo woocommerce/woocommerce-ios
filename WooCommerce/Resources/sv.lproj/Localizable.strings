@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-09 00:54:03+0000 */
+/* Translation-Revision-Date: 2020-01-26 18:45:28+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -27,11 +27,20 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@-%2$@";
 
+/* <item total> (<item individual price> multipled by <quantity>) */
+"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+
+/* 1 Item */
+"%@ Item" = "%@ Item";
+
+/* For example, '5 Items' */
+"%@ Items" = "%@ Items";
+
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ lämnade en recension om %2$@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@ – %3$@" = "%1$@ via %2$@ – %3$@";
+"%1$@ via %2$@" = "%1$@ via %2$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld i lager";
@@ -50,6 +59,9 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Verifieringskoden innehåller endast siffror.";
+
+/* Action to add photos on the Product images screen */
+"ADD PHOTOS" = "LÄGG TILL FOTON";
 
 /* About this app (information page title) */
 "About" = "Om";
@@ -95,6 +107,12 @@
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alla recensioner har markerats som lästa";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow" = "Tillåt";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow, but notify customer" = "Tillåt, men avisera kund";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Nästan klart! Skriv in verifieringskoden från din autentiserings-app.";
@@ -148,6 +166,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Automatiskt hanterat på denna webbplats";
 
+/* Subtitle of the cell in Product Price Settings > Schedule sale */
+"Automatically start and end a sale" = "Automatically start and end a sale";
+
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "Väntar på betalning via %@";
@@ -157,6 +178,10 @@
 
 /* Application's Background State */
 "Background" = "Bakgrund";
+
+/* Product backorders setting list selector navigation title
+   Title of the cell in Product Inventory Settings > Backorders */
+"Backorders" = "Restordrar";
 
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "Beställningsvaror:";
@@ -192,6 +217,9 @@
 /* Button title. Tapping it cancels the login flow.
    Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "Avbryt";
+
+/* The title of the alert when there is an error updating the product */
+"Cannot update Product" = "Kan inte uppdatera produkt";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Håll koll på dina favoritwebbplatser och delta i diskussionen varsomhelt, närsomhelst.";
@@ -345,6 +373,9 @@
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Stäng";
 
+/* Display label for the product's inventory backorders setting option */
+"Do not allow" = "Tillåt inte";
+
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Har du inget konto? _Registrera dig_";
 
@@ -403,19 +434,17 @@
 "Empty URL" = "URL ej angiven";
 
 /* The text placeholder for the Text Editor screen */
-"Enter a title..." = "Skriv en rubrik...";
+"Enter a title..." = "Ange en rubrik…";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Ange leverantörens namn";
 
-/* Label for button to log in using your site address. */
+/* Instruction text on the login's site addresss screen.
+   Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "Skriv in adressen för den WordPress-webbplats du vill ansluta.";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Ange adressen till den WooCommerce-butik som du vill ansluta.";
-
-/* Instruction text on the login's site addresss screen. */
-"Enter the address of your WordPress site you'd like to connect." = "Skriv in adressen till din WordPress-webbplats du vill ansluta.";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Ange lösenordet för ditt konto på WordPress.com.";
@@ -446,6 +475,9 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Funktionsförfrågan";
 
+/* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
+"Fill with password manager" = "Fill with password manager";
+
 /* Filter the orders list. */
 "Filter orders" = "Filtrera beställningar";
 
@@ -454,6 +486,9 @@
 
 /* User role badge */
 "Follower" = "Följare";
+
+/* Title of the cell in Product Price Settings > Schedule sale From a certain date */
+"From" = "Från";
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "Fullfölj order med nummer (order.number)";
@@ -516,6 +551,9 @@
 /* H6 Aztec Style */
 "Heading 6" = "Rubrik 6";
 
+/* Title of the cell in Product Shipping Settings > Height */
+"Height" = "Höjd";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "Hjälp";
@@ -529,7 +567,8 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Hjälp till att förbättra appen";
 
-/* Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
+   Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "Dold";
 
 /* Detail label for yes/no switch. */
@@ -566,6 +605,9 @@
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Infoga länk";
 
+/* The title of the alert when there is an error updating the product SKU */
+"Invalid Product SKU" = "Invalid Product SKU";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Ogiltig adress till webbplatsen";
 
@@ -582,7 +624,7 @@
 "Invalid username" = "Ogiltigt användarnamn";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Title of the Inventory Settings row on Product main screen */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "Lagersaldo";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -607,8 +649,14 @@
    The action of the top banner on Dashboard that indicates new stats is unavailable */
 "Learn more" = "Läs mer";
 
+/* Title of the cell in Product Shipping Settings > Length */
+"Length" = "Längd";
+
 /* Licenses (information page title) */
 "Licenses" = "Licenser";
+
+/* Title of the cell in Product Inventory Settings > Limit one per order */
+"Limit one per order" = "Limit one per order";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Gräns nådd. Du kan försöka igen om 1 minut. Att försöka igen innan kommer bara öka tiden du måste vänta innan förbudet är upphävt. Vänligen kontakta support om du tror detta är ett fel.";
@@ -669,6 +717,9 @@
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Hantera ordrar, spåra försäljning och övervaka butiksaktivitet med varningar i realtid.";
+
+/* Title of the cell in Product Inventory Settings > Manage stock */
+"Manage stock" = "Handera lager";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "Hantera din Jetpack-utrustade webbplats varsomhelst – WordPress finns i din ficka.";
@@ -771,10 +822,19 @@
 "No results for the selected criteria" = "Inga resultat för de valda kriterierna";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
+"No results found for (term)\nAdd a custom provider" = "Inga resultat hittades för (term)\\n\nLägg till en anpassad leverantör";
 
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Inga inkomster för denna period";
+
+/* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
+"No shipping classes yet" = "No shipping classes yet";
+
+/* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
+"No tax classes yet" = "No tax classes yet";
+
+/* Display label for the product's tax status setting option */
+"None" = "Ingen";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Inte skickad ännu";
@@ -786,7 +846,7 @@
 "Number of files:" = "Antal filer:";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -824,6 +884,9 @@
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Öppnar en lista med tillgängliga statusar.";
+
+/* Placeholder of the cell text field in Product Inventory Settings > SKU */
+"Optional" = "Valfritt";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Valfri spårningsinformation";
@@ -867,7 +930,7 @@
 "Other" = "Andra";
 
 /* Display label for the product's inventory stock status */
-"Out of stock" = "Ej i lager";
+"Out of stock" = "Slut i lager";
 
 /* Product section title */
 "PRODUCT" = "PRODUKT";
@@ -875,8 +938,8 @@
 /* The title for the customer payment cell */
 "Paid By Customer" = "Betald av kund";
 
-/* Login dialog password placeholder
-   Password placeholder */
+/* Accessibility label for the password text field in the self-hosted login page.
+   Login dialog password placeholder - Password placeholder */
 "Password" = "Lösenord";
 
 /* Paste without Formatting Menu Item */
@@ -895,6 +958,9 @@
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Telefonnummer %@";
+
+/* Product images (Product images page title) */
+"Photos" = "Foton";
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Välj butik att ansluta";
@@ -941,8 +1007,11 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Öppna ditt e-postprogram och hitta ett brev från WordPress.com.";
 
+/* Message of the in-progress UI while updating the Product remotely */
+"Please wait while we publish this product to your store" = "Please wait while we publish this product to your store";
+
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Title of the Price Settings row on Product main screen */
+   Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
 "Price" = "Pris";
 
 /* Product Details - pricing and inventory section title */
@@ -978,6 +1047,9 @@
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Produkter";
 
+/* Label for computed value `product refunds + taxes = subtotal`. */
+"Products Refund" = "Produktåterbetalning";
+
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Anvisningar med alternativet att ringa eller skicka meddelande till faktureringskunden.";
 
@@ -989,6 +1061,9 @@
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publicera från parkbänken. Blogga på bussen. Kommentera på ditt favoritkafé. WordPress har du alltid med dig.";
+
+/* Title of the in-progress UI while updating the Product remotely */
+"Publishing your product..." = "Publicerar din produkt…";
 
 /* Product Details - purchase details section title */
 "Purchase Details" = "Köpinformation";
@@ -1004,6 +1079,9 @@
    Section header title - abbreviation for quantity */
 "Qty" = "Antal";
 
+/* Title of the cell in Product Inventory Settings > Quantity */
+"Quantity" = "Antal";
+
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "Antal: %ld";
 
@@ -1016,8 +1094,30 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Läs integritetspolicyn";
 
+/* Refund note section title */
+"Reason for Refund" = "Orsak till återbetalning";
+
+/* It reads: Refund #<refund ID> */
+"Refund #%@" = "Refund #%@";
+
+/* Refund Details page > Refund Details section > The label that marks the refunded amount */
+"Refund Amount" = "Återbetalningsbelopp";
+
+/* Refund Details section title */
+"Refund Details" = "Återbetalningsdetaljer";
+
 /* The title for the refunded amount cell */
 "Refunded" = "Återbetalad";
+
+/* Order > Order Details > 'N Items' cell tapped > Refunded Products title
+   Refunded Products section title - Section title */
+"Refunded Products" = "Återbetalda produkter";
+
+/* It reads, 'Refunded manually via <payment method>' */
+"Refunded manually via %@" = "Återbetalt manuellt  via %@";
+
+/* It reads, 'Refunded via <payment method>' */
+"Refunded via %@" = "Refunded via %@";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Registrerad domän";
@@ -1032,7 +1132,7 @@
 "Remove Filters" = "Ta bort filter";
 
 /* Label action for removing a link from the editor */
-"Remove Link" = "Ta bort länken";
+"Remove Link" = "Ta bort länk";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "Rapportera krascher";
@@ -1063,27 +1163,44 @@
 /* Post Rich content */
 "Rich Content" = "Formaterat innehåll";
 
-/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
+   Title of the cell in Product Inventory Settings > SKU */
 "SKU" = "Artikelnr";
+
+/* The message of the alert when there is an error updating the product SKU */
+"SKU already in use by another product" = "SKU already in use by another product";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
    A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "Artikelnr:";
 
-/* Format of the SKU on the Inventory Settings row */
+/* Format of the SKU on the Inventory Settings row
+   SKU label, followed by the SKU */
 "SKU: %@" = "Artikelnr: %@";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS skickat";
 
 /* Format of the sale period on the Price Settings row */
-"Sale dates: %1$@-%2$@" = "Försäljningsdatum: %1$@-%2$@";
+"Sale dates: %@" = "Sale dates: %@";
+
+/* Format of the sale period on the Price Settings row from a certain date */
+"Sale dates: From %@" = "Sale dates: From %@";
+
+/* Format of the sale period on the Price Settings row until a certain date */
+"Sale dates: Until %@" = "Sale dates: Until %@";
+
+/* Title of the cell in Product Price Settings > Sale price */
+"Sale price" = "Reapris";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "Reapris:";
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Reapris: %@";
+
+/* Title of the cell in Product Price Settings > Schedule sale */
+"Schedule sale" = "Tidsinställ rea";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Sök alla ordrar";
@@ -1131,7 +1248,7 @@
 "Shipped %@" = "Skickad %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
+   Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Frakt";
 
 /* Shipping method title for customer info cell */
@@ -1140,8 +1257,14 @@
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Transportleverantörer";
 
+/* Title of the cell in Product Shipping Settings > Shipping class */
+"Shipping class" = "Shipping class";
+
 /* Label prefix. Example: 'Shipping class: Free Shipping' */
 "Shipping class:" = "Fraktklass:";
+
+/* Navigation bar title of the Product shipping class selector screen */
+"Shipping classes" = "Shipping classes";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Leveransadress";
@@ -1149,11 +1272,26 @@
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Fraktmeddelande om beställningen";
 
+/* Display label for the product's tax status setting option */
+"Shipping only" = "Shipping only";
+
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Transportleverantör";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show a list of refunded order items for this order." = "Show a list of refunded order items for this order.";
+
+/* Accessibility label for the “Show password“ button in the login page's password field. */
+"Show password" = "Visa lösenord";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information. */
+"Show refund details for this order." = "Show refund details for this order.";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Visa faktureringsinformationen för den här ordern.";
+
+/* Accessibility value if login page's password field is displaying the password. */
+"Shown" = "Visas";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Visa fler alternativ.";
@@ -1172,6 +1310,9 @@
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Omdirigera webbplats";
+
+/* Accessibility label of the site address field shown when adding a self-hosted site. */
+"Site address" = "Webbplatsadress";
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Adressen till webbplatsen måste bestå av minst 4 bokstäver.";
@@ -1232,6 +1373,9 @@
    Verb, spam a comment */
 "Spam" = "Skräppost";
 
+/* The name of the default Tax Class in Product Price Settings */
+"Standard rate" = "Standard rate";
+
 /* Aztec's Text Placeholder */
 "Start writing..." = "Börja skriva...";
 
@@ -1240,6 +1384,10 @@
 
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "Lagerantal:";
+
+/* Product stock status list selector navigation title
+   Title of the cell in Product Inventory Settings > Stock status */
+"Stock status" = "Lagerstatus";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "Lagerstatus:";
@@ -1261,6 +1409,9 @@
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Genomstrykning";
+
+/* Subtotal label for a refund details view */
+"Subtotal" = "Delsumma";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Växla butik";
@@ -1299,43 +1450,43 @@
 "Tap to insert a Link" = "Tryck för att infoga en länk";
 
 /* Accessibility hint for block quote button on formatting toolbar. */
-"Tap to toggle Block Quote" = "Tryck för att ändra Citatblock";
+"Tap to toggle Block Quote" = "Tryck för att slå på\/av blockcitat";
 
 /* Accessibility hint for bold button on formatting toolbar. */
-"Tap to toggle Bold text" = "Tryck för att ändra Fet text";
+"Tap to toggle Bold text" = "Tryck för att slå på\/av fet text";
 
 /* Accessibility hint for HTML button on formatting toolbar. */
-"Tap to toggle HTML mode" = "Tryck för att ändra HTML-läge";
+"Tap to toggle HTML mode" = "Tryck för att slå på\/av HTML-läge";
 
 /* Accessibility hint for selecting h1 paragraph style button on the formatting toolbar. */
-"Tap to toggle Header 1" = "Tryck för att ändra Rubrik 1";
+"Tap to toggle Header 1" = "Tryck för att slå på\/av rubrik 1";
 
 /* Accessibility hint for selecting h2 paragraph style button on the formatting toolbar. */
-"Tap to toggle Header 2" = "Tryck för att ändra Rubrik 2";
+"Tap to toggle Header 2" = "Tryck för att slå på\/av rubrik 2";
 
 /* Accessibility hint for selecting h3 paragraph style button on the formatting toolbar. */
-"Tap to toggle Header 3" = "Tryck för att ändra Rubrik 3";
+"Tap to toggle Header 3" = "Tryck för att slå på\/av rubrik 3";
 
 /* Accessibility hint for selecting h4 paragraph style button on the formatting toolbar. */
-"Tap to toggle Header 4" = "Tryck för att ändra Rubrik 4";
+"Tap to toggle Header 4" = "Tryck för att slå på\/av rubrik 4";
 
 /* Accessibility hint for selecting h5 paragraph style button on the formatting toolbar. */
-"Tap to toggle Header 5" = "Tryck för att ändra Rubrik 5";
+"Tap to toggle Header 5" = "Tryck för att slå på\/av rubrik 5";
 
 /* Accessibility hint for selecting h6 paragraph style button on the formatting toolbar. */
-"Tap to toggle Header 6" = "Tryck för att ändra Rubrik 6";
+"Tap to toggle Header 6" = "Tryck för att slå på\/av rubrik 6";
 
 /* Accessibility hint for italic button on formatting toolbar. */
-"Tap to toggle Italic text" = "Tryck för att ändra Kursiv text";
+"Tap to toggle Italic text" = "Tryck för att slå på\/av kursiv text";
 
 /* Accessibility hint for Ordered list button on formatting toolbar. */
 "Tap to toggle Ordered List" = "Tryck för att ändra Sorterad lista";
 
 /* Accessibility hint for strikethrough button on formatting toolbar. */
-"Tap to toggle Strike Through" = "Tryck för att ändra Genomstrykning";
+"Tap to toggle Strike Through" = "Tryck för att slå på\/av linje genom";
 
 /* Accessibility hint for underline button on formatting toolbar. */
-"Tap to toggle Underline" = "Tryck för att ändra Understrykning";
+"Tap to toggle Underline" = "Tryck för att slå på\/av understreck";
 
 /* Accessibility hint for unordered list button on formatting toolbar. */
 "Tap to toggle Unordered List" = "Tryck för att ändra Osorterad lista";
@@ -1343,8 +1494,32 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "Tryck för att ändra styckeformat";
 
+/* Tax label for a refund details view */
+"Tax" = "Moms";
+
+/* Section header title for product tax settings */
+"Tax Settings" = "Momsinställningar";
+
+/* Navigation bar title of the Product tax status selector screen */
+"Tax Status" = "Momsstatus";
+
+/* Title of the cell in Product Price Settings > Tax class */
+"Tax class" = "Momsklass";
+
+/* Navigation bar title of the Product tax class selector screen */
+"Tax classes" = "Momsklasser";
+
+/* Title of the cell in Product Price Settings > Tax status */
+"Tax status" = "Momsstatus";
+
 /* Tax label for total taxes line */
 "Tax:" = "Moms:";
+
+/* Tax label for total taxes line, followed by the tax amount. */
+"Tax: %@" = "Moms: %@";
+
+/* Display label for the product's tax status setting option */
+"Taxable" = "Taxable";
 
 /* Taxes label for payment view */
 "Taxes" = "Skatter";
@@ -1419,6 +1594,9 @@
    Top Performers section title - this month */
 "This Month" = "Den här månaden";
 
+/* The message of the alert when there is an error updating the product SKU */
+"This SKU is used on another product or is invalid." = "This SKU is used on another product or is invalid.";
+
 /* Tab selector title that shows the statistics for this week
    Top Performers section title - this week */
 "This Week" = "Den här veckan";
@@ -1452,6 +1630,9 @@
 
 /* Placeholder in the Product Title row on Product form screen. */
 "Title (required)" = "Rubrik (krävs)";
+
+/* Title of the cell in Product Price Settings > Schedule sale To a certain date */
+"To" = "Till";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Fyll i din e-postadress för att skapa ditt nya WordPress.com-konto.";
@@ -1511,7 +1692,7 @@
 "Trust" = "Godkänn";
 
 /* The action of the top banner on Dashboard that indicates new stats is available */
-"Try It Now" = "Prova nu";
+"Try It Now" = "Prova det nu";
 
 /* Button to trigger connection to another account in store picker */
 "Try another account" = "Prova med ett annat konto";
@@ -1608,7 +1789,8 @@
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Upp till sju dagar med loggar sparas.";
 
-/* Label action for updating a link on the editor */
+/* Action for updating a Product remotely
+   Label action for updating a link on the editor */
 "Update" = "Uppdatera";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
@@ -1646,8 +1828,8 @@
    Updated on <date> */
 "Updated on %@" = "Uppdaterad den %@";
 
-/* Login dialog username placeholder
-   Username placeholder */
+/* Accessibility label for the username text field in the self-hosted login page.
+   Login dialog username placeholder - Username placeholder */
 "Username" = "Användarnamn:";
 
 /* No comment provided by engineer. */
@@ -1673,14 +1855,17 @@
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Visa relaterad produkt";
 
-/* This text is linked so the user can view refund details. */
-"View details" = "Visa detaljer";
-
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Visa tidigare inskickade supportärenden";
 
 /* The descriptive label. Tapping the row will open the product's page in a web view. */
 "View product on store" = "Visa produkt i butik";
+
+/* Accessibility label for the 'View details' refund button */
+"View refund details" = "Visa återbetalningsdetaljer";
+
+/* Accessibility label for the '<number> Products' button */
+"View refunded order items" = "View refunded order items";
 
 /* User role badge */
 "Viewer" = "Läsare";
@@ -1724,6 +1909,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Veckor";
 
+/* Title of the cell in Product Shipping Settings > Weight */
+"Weight" = "Vikt";
+
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "Vikt:";
 
@@ -1744,6 +1932,9 @@
 
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Ojdå. Den där var ingen giltig bekräftelsekod för tvåfaktorautentisering. Dubbelkolla koden och försök en gång till!";
+
+/* Title of the cell in Product Shipping Settings > Width */
+"Width" = "Bredd";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
@@ -1830,5 +2021,5 @@
 "© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
 
 /* Customer note, wrapped in quotes */
-"“%@”" = "\"%@\"";
+"“%@”" = "”%@”";
 

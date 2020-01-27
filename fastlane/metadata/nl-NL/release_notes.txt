@@ -1,3 +1,0 @@
-- Het scherm Bestelling voltooien geeft de volledige inhoud van klantopmerkingen weer (als die er zijn) in plaats van ze af te breken na één regel. Zo kun je alle informatie zien op één scherm.
-- Het aantal in het scherm Bestellingen wordt nu juist bijgewerkt als je schakelt tussen winkels.
-- Eigenaardigheden vinden we leuk bij mensen, maar een stuk minder in apps. Daarom hebben we een aantal bugs opgelost die zorgden voor visuele eigenaardigheden (vooral bij het veranderen van lettertypegrootten).

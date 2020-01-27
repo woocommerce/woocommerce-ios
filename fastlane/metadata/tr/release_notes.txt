@@ -1,3 +1,0 @@
-- Sipariş Tamamlama ekranında, müşteri tarafından sağlanan notların tek satırdan sonra kırpılmış hali yerine tüm içeriği gösterilir (bir tane varsa), böylece bir ekranda tüm detayları görebilirsiniz.
-- Siparişler sekmesi çubuğundaki sayı, mağazalar arasında geçiş yaptığınızda artık doğru şekilde yenilenir.
-- Bazı tuhaflıklar insanları rahatsız ediyor ve bu, uygulamalarda da söz konusu. Bu yüzden görsel tuhaflıklara (özellikle sistem yazı tipi boyutunu değiştirirken ortaya çıkan) yol açan bazı hataları giderdik.

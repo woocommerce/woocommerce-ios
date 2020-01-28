@@ -50,7 +50,7 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertTrue(fileManager.fileExists(atPath: targetURL.path))
 
         let uploadableMedia = createSampleUploadableMedia(targetURL: targetURL)
-        let mediaExportService = MockupMediaExportService(uploadableMedia: uploadableMedia)
+        let mediaExportService = MockMediaExportService(uploadableMedia: uploadableMedia)
         let mediaStore = MediaStore(mediaExportService: mediaExportService,
                                     dispatcher: dispatcher,
                                     storageManager: storageManager,
@@ -94,7 +94,7 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertTrue(fileManager.fileExists(atPath: targetURL.path))
 
         let uploadableMedia = createSampleUploadableMedia(targetURL: targetURL)
-        let mediaExportService = MockupMediaExportService(uploadableMedia: uploadableMedia)
+        let mediaExportService = MockMediaExportService(uploadableMedia: uploadableMedia)
         let mediaStore = MediaStore(mediaExportService: mediaExportService,
                                     dispatcher: dispatcher,
                                     storageManager: storageManager,

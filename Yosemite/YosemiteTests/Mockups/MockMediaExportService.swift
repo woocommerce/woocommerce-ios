@@ -1,6 +1,6 @@
 @testable import Yosemite
 
-struct MockupMediaExportService: MediaExportService {
+struct MockMediaExportService: MediaExportService {
     private let uploadableMedia: UploadableMedia?
 
     init(uploadableMedia: UploadableMedia?) {

@@ -49,14 +49,14 @@ private extension MediaStore {
                      mediaAsset: ExportableAsset,
                      onCompletion: @escaping (_ uploadedMedia: Media?, _ error: Error?) -> Void) {
         mediaExportService.export(mediaAsset,
-                             onCompletion: { [weak self] (uploadableMedia, error) in
-                                guard let uploadableMedia = uploadableMedia, error == nil else {
-                                    onCompletion(nil, error)
-                                    return
-                                }
-                                self?.uploadMedia(siteID: siteID,
-                                                  uploadableMedia: uploadableMedia,
-                                                  onCompletion: onCompletion)
+                                  onCompletion: { [weak self] (uploadableMedia, error) in
+                                    guard let uploadableMedia = uploadableMedia, error == nil else {
+                                        onCompletion(nil, error)
+                                        return
+                                    }
+                                    self?.uploadMedia(siteID: siteID,
+                                                      uploadableMedia: uploadableMedia,
+                                                      onCompletion: onCompletion)
         })
     }
 

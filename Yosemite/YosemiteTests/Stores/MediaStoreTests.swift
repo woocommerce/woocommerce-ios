@@ -3,21 +3,6 @@ import XCTest
 @testable import Yosemite
 @testable import Networking
 
-struct MockupMediaExportService: MediaExportService {
-    private let targetURL: URL
-
-    init(targetURL: URL) {
-        self.targetURL = targetURL
-    }
-
-    func export(_ exportable: ExportableAsset, onCompletion: @escaping MediaExportCompletion) {
-        let uploadable = UploadableMedia(localURL: targetURL,
-                                         filename: "test.jpg",
-                                         mimeType: "image/jpeg")
-        onCompletion(uploadable, nil)
-    }
-}
-
 final class MediaStoreTests: XCTestCase {
     /// Mockup Dispatcher!
     ///
@@ -64,7 +49,8 @@ final class MediaStoreTests: XCTestCase {
         // Verifies that the temporary file exists.
         XCTAssertTrue(fileManager.fileExists(atPath: targetURL.path))
 
-        let mediaExportService = MockupMediaExportService(targetURL: targetURL)
+        let uploadableMedia = createSampleUploadableMedia(targetURL: targetURL)
+        let mediaExportService = MockupMediaExportService(uploadableMedia: uploadableMedia)
         let mediaStore = MediaStore(mediaExportService: mediaExportService,
                                     dispatcher: dispatcher,
                                     storageManager: storageManager,
@@ -107,7 +93,8 @@ final class MediaStoreTests: XCTestCase {
         // Verifies that the temporary file exists.
         XCTAssertTrue(fileManager.fileExists(atPath: targetURL.path))
 
-        let mediaExportService = MockupMediaExportService(targetURL: targetURL)
+        let uploadableMedia = createSampleUploadableMedia(targetURL: targetURL)
+        let mediaExportService = MockupMediaExportService(uploadableMedia: uploadableMedia)
         let mediaStore = MediaStore(mediaExportService: mediaExportService,
                                     dispatcher: dispatcher,
                                     storageManager: storageManager,
@@ -130,5 +117,13 @@ final class MediaStoreTests: XCTestCase {
 
         mediaStore.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+}
+
+private extension MediaStoreTests {
+    func createSampleUploadableMedia(targetURL: URL) -> UploadableMedia {
+        return UploadableMedia(localURL: targetURL,
+                               filename: "test.jpg",
+                               mimeType: "image/jpeg")
     }
 }

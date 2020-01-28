@@ -69,7 +69,7 @@ private extension MediaStore {
                             // Removes local media after the upload API request.
                             do {
                                 try MediaFileManager().removeLocalMedia(at: media.localURL)
-                            } catch(let error) {
+                            } catch {
                                 onCompletion(nil, error)
                                 return
                             }

@@ -11,14 +11,7 @@ protocol ImageSourceWriter {
     func writeImageSource(_ source: CGImageSource,
                           to url: URL,
                           sourceUTType: CFString,
-                          options: MediaImageExportOptions) throws -> ImageSourceWriteResultProperties
-}
-
-/// Struct for returned result from writing an image, and any properties worth keeping track of.
-///
-struct ImageSourceWriteResultProperties {
-    let width: CGFloat?
-    let height: CGFloat?
+                          options: MediaImageExportOptions) throws
 }
 
 /// Default implementation of `ImageSourceWriter` via CGImageDestination.
@@ -27,7 +20,7 @@ struct DefaultImageSourceWriter: ImageSourceWriter {
     func writeImageSource(_ source: CGImageSource,
                           to url: URL,
                           sourceUTType: CFString,
-                          options: MediaImageExportOptions) throws -> ImageSourceWriteResultProperties {
+                          options: MediaImageExportOptions) throws {
         // Create the destination with the URL, or error
         guard let destination = CGImageDestinationCreateWithURL(url as CFURL, sourceUTType, 1, nil) else {
             throw ImageSourceWriterError.imageSourceDestinationWithURLFailed
@@ -38,10 +31,6 @@ struct DefaultImageSourceWriter: ImageSourceWriter {
         var imageProperties: [NSString: Any] = (CGImageSourceCopyPropertiesAtIndex(source, 0, nil) as? Dictionary) ?? [:]
         // Configure destination properties
         imageProperties[kCGImageDestinationLossyCompressionQuality] = options.imageCompressionQuality
-
-        // Keep track of the image's width and height
-        var width: CGFloat?
-        var height: CGFloat?
 
         // Configure orientation properties to default .up or 1
         imageProperties[kCGImagePropertyOrientation] = Int(CGImagePropertyOrientation.up.rawValue) as CFNumber
@@ -81,19 +70,11 @@ struct DefaultImageSourceWriter: ImageSourceWriter {
         // Add the thumbnail image as the destination's image.
         CGImageDestinationAddImage(destination, image, imageProperties as CFDictionary?)
 
-        // Get the dimensions from the CGImage itself
-        width = CGFloat(image.width)
-        height = CGFloat(image.height)
-
         // Write the image to the file URL
         let written = CGImageDestinationFinalize(destination)
         guard written == true else {
             throw ImageSourceWriterError.imageSourceDestinationWriteFailed
         }
-
-        // Return the result with any interesting properties.
-        return ImageSourceWriteResultProperties(width: width,
-                                                height: height)
     }
 }
 

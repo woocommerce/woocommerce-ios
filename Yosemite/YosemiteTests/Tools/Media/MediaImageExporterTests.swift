@@ -23,7 +23,7 @@ final class MediaImageExporterTests: XCTestCase {
                                      fileExtension: URL.fileExtensionForUTType(typeHint))
             let expectation = self.expectation(description: "Export image data")
             exporter.export { (uploadableMedia, error) in
-                XCTAssertEqual(mockImageSourceWriter.url, expectedImageURL)
+                XCTAssertEqual(mockImageSourceWriter.targetURL, expectedImageURL)
                 expectation.fulfill()
             }
             waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -51,7 +51,7 @@ final class MediaImageExporterTests: XCTestCase {
                                      fileExtension: "png")
             let expectation = self.expectation(description: "Export image data")
             exporter.export { (uploadableMedia, error) in
-                XCTAssertEqual(mockImageSourceWriter.url, expectedImageURL)
+                XCTAssertEqual(mockImageSourceWriter.targetURL, expectedImageURL)
                 expectation.fulfill()
             }
             waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)

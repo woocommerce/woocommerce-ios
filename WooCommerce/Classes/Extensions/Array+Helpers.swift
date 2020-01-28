@@ -13,6 +13,11 @@ extension Array {
 
         return removeFirst()
     }
+    
+    /// A Boolean value indicating whether an array has characters.
+    var isNotEmpty: Bool {
+        return !isEmpty
+    }
 }
 
 

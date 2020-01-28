@@ -7,7 +7,6 @@ import Yosemite
 ///
 final class OrderDetailsDataSource: NSObject {
     private(set) var order: Order
-    private let currencyFormatter = CurrencyFormatter()
     private let couponLines: [OrderCouponLine]?
 
     /// Haptic Feedback!
@@ -33,12 +32,6 @@ final class OrderDetailsDataSource: NSObject {
     /// Is the shipment tracking plugin available?
     ///
     var trackingIsReachable: Bool = false
-
-    /// Anything above 999.99 or below -999.99 should display a truncated amount
-    ///
-    var totalFriendlyString: String? {
-        return currencyFormatter.formatHumanReadableAmount(order.total, with: order.currency, roundSmallNumbers: false) ?? String()
-    }
 
     /// For example, #560 Pamela Nguyen
     ///

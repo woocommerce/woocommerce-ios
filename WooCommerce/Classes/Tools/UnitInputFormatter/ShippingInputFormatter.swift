@@ -26,8 +26,8 @@ struct ShippingInputFormatter: UnitInputFormatter {
             .replacingOccurrences(of: "^0+([1-9]+)", with: "$1", options: .regularExpression)
             // Maximum one leading 0.
             .replacingOccurrences(of: "^(0+)", with: "0", options: .regularExpression)
-            // Replace all the occurrences of regex
-            .replacingOccurrences(of: regex, with: "", options: .regularExpression)
+            // Replace all the occurrences of regex plus all the points or comma (but not the last `.` or `,`)
+            .replacingOccurrences(of: "(?:[.,](?=.*[.,])|" + regex + ")+", with: "$1", options: .regularExpression)
         return formattedText
     }
 }

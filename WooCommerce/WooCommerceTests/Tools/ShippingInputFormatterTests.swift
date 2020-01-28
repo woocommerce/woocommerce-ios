@@ -49,9 +49,19 @@ final class ShippingInputFormatterTests: XCTestCase {
         XCTAssertEqual(formatter.format(input: input), "123.91")
     }
 
+    func testFormattingInputWithMultipleDecimalSeparator() {
+        let input = "00123.91.232.32"
+        XCTAssertEqual(formatter.format(input: input), "12391232.32")
+    }
+
     func testFormattingInputWithLeadingZerosFollowedByDecimalPoint() {
         let input = "000.91"
         XCTAssertEqual(formatter.format(input: input), "0.91")
+    }
+
+    func testFormattingInputWithEndingDecimalSeparator() {
+        let input = "239."
+        XCTAssertEqual(formatter.format(input: input), "239.")
     }
 
     func testFormattingDecimalInput() {

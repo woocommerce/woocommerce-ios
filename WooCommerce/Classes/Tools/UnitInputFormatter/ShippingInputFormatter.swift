@@ -1,6 +1,6 @@
 import Foundation
 
-/// `UnitInputFormatter` implementation for shipping input.
+/// `UnitInputFormatter` implementation for shipping input, like weight and dimensions (width/height/length)
 ///
 struct ShippingInputFormatter: UnitInputFormatter {
 

@@ -4,8 +4,8 @@ import Foundation
 ///
 struct ShippingInputFormatter: UnitInputFormatter {
 
-    // Match all the characters not included in the set: numbers between 0 and 9, and - . , %
-    private let regex = "[^-0-9%.,]"
+    // Match all the characters not included in the set: numbers between 0 and 9, and - . ,
+    private let regex = "[^-0-9.,]"
 
     func isValid(input: String) -> Bool {
         guard input.isEmpty == false else {

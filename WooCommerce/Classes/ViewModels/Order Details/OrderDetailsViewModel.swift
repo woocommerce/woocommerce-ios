@@ -5,7 +5,10 @@ import Yosemite
 import MessageUI
 
 final class OrderDetailsViewModel {
+    private let currencyFormatter = CurrencyFormatter()
+
     private(set) var order: Order
+
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
@@ -36,10 +39,12 @@ final class OrderDetailsViewModel {
 
     let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
 
-    /// Anything above 999.99 or below -999.99 should display a truncated amount
+    /// The localized unabbreviated total which includes the currency.
+    ///
+    /// Example: $48,415,504.20
     ///
     var totalFriendlyString: String? {
-        return dataSource.totalFriendlyString
+        currencyFormatter.formatAmount(order.total, with: order.currency)
     }
 
     /// Products from an Order

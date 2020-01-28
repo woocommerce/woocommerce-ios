@@ -49,10 +49,7 @@ private extension KeyboardFrameObserver {
     }
 
     mutating func keyboardWillHide(_ notification: Foundation.Notification) {
-        guard let keyboardFrame = keyboardRect(from: notification) else {
-            return
-        }
-        self.keyboardFrame = keyboardFrame
+        self.keyboardFrame = .zero
     }
 }
 

@@ -162,6 +162,133 @@ final class ProductVariationStoreTests: XCTestCase {
         store.onAction(action)
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
+
+    /// Verifies that syncing for the first page deletes stored models for the given site ID and product ID.
+    ///
+    func testSyncingProductVariationsOnTheFirstPageResetsStoredModels() {
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // Inserts a Product Variation into the storage with two site IDs.
+        let siteID1: Int64 = 134
+        let siteID2: Int64 = 591
+
+        let productID: Int64 = 123
+
+        // This variation ID should not exist in the network response.
+        let variationID: Int64 = 1
+
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: sampleProductVariation(siteID: siteID1,
+                                                                                                     productID: productID,
+                                                                                                     id: variationID))
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: sampleProductVariation(siteID: siteID2,
+                                                                                                     productID: productID,
+                                                                                                     id: variationID))
+
+        let expectation = self.expectation(description: "Persist product variation list")
+
+        network.simulateResponse(requestUrlSuffix: "products/\(productID)/variations", filename: "product-variations-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
+
+        let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID1,
+                                                                         productID: productID,
+                                                                         pageNumber: Store.Default.firstPageNumber,
+                                                                         pageSize: defaultPageSize) { error in
+            XCTAssertNil(error)
+
+            // The previously upserted ProductVariation for siteID1 should be deleted.
+            let storedVariationForSite1 = self.viewStorage.loadProductVariation(siteID: siteID1, productVariationID: variationID)
+            XCTAssertNil(storedVariationForSite1)
+
+            // The previously upserted ProductVariation for siteID2 should stay in storage.
+            let storedVariationForSite2 = self.viewStorage.loadProductVariation(siteID: siteID2, productVariationID: variationID)
+            XCTAssertNotNil(storedVariationForSite2)
+
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that syncing after the first page does not delete stored models for the given site ID and product ID.
+    ///
+    func testSyncingProductVariationsAfterTheFirstPage() {
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // Inserts one ProductVariation into the storage.
+        let siteID: Int64 = 134
+        let productID: Int64 = 888
+
+        // This variation ID should not exist in the network response.
+        let variationID: Int64 = 1002
+
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: sampleProductVariation(siteID: siteID,
+                                                                                                     productID: productID,
+                                                                                                     id: variationID))
+
+        let expectation = self.expectation(description: "Persist product variation list")
+
+        network.simulateResponse(requestUrlSuffix: "products/\(productID)/variations", filename: "product-variations-load-all")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+
+        let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID,
+                                                                         productID: productID,
+                                                                         pageNumber: 3,
+                                                                         pageSize: defaultPageSize) { error in
+            XCTAssertNil(error)
+
+            // The previously upserted ProductVariation's should stay in storage.
+            let storedVariation = self.viewStorage.loadProductVariation(siteID: siteID, productVariationID: variationID)
+            XCTAssertNotNil(storedVariation)
+
+            XCTAssertGreaterThan(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that syncing for the first page does not delete stored ProductVariations if the API call fails.
+    ///
+    func testSyncingProductVariationsOnTheFirstPageDoesNotDeleteStoredProductsUponResponseError() {
+        let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // Inserts one ProductVariation into the storage.
+        let siteID: Int64 = 134
+        let productID: Int64 = 888
+
+        // This variation ID should not exist in the network response.
+        let variationID: Int64 = 1002
+
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: sampleProductVariation(siteID: siteID,
+                                                                                                     productID: productID,
+                                                                                                     id: variationID))
+
+        let expectation = self.expectation(description: "Persist product variation list")
+
+        network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+
+        let action = ProductVariationAction.synchronizeProductVariations(siteID: siteID,
+                                                                         productID: productID,
+                                                                         pageNumber: Store.Default.firstPageNumber,
+                                                                         pageSize: defaultPageSize) { error in
+                                                                            XCTAssertNotNil(error)
+
+            // The previously upserted Product's should stay in storage.
+            let storedVariation = self.viewStorage.loadProductVariation(siteID: siteID, productVariationID: variationID)
+            XCTAssertNotNil(storedVariation)
+
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 1)
+
+            expectation.fulfill()
+        }
+
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 }
 
 
@@ -175,9 +302,17 @@ private extension ProductVariationStoreTests {
     }
 
     func sampleProductVariation(id: Int64) -> Yosemite.ProductVariation {
+        return sampleProductVariation(siteID: sampleSiteID,
+                                      productID: sampleProductID,
+                                      id: id)
+    }
+
+    func sampleProductVariation(siteID: Int64,
+                                productID: Int64,
+                                id: Int64) -> Yosemite.ProductVariation {
         let imageSource = "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0002-1.jpeg?fit=4288%2C2848&ssl=1"
-        return ProductVariation(siteID: sampleSiteID,
-                                productID: sampleProductID,
+        return ProductVariation(siteID: siteID,
+                                productID: productID,
                                 productVariationID: id,
                                 attributes: sampleProductVariationAttributes(),
                                 image: ProductImage(imageID: 1063,

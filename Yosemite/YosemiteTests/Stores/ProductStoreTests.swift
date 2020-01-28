@@ -28,19 +28,19 @@ class ProductStoreTests: XCTestCase {
 
     /// Testing SiteID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     /// Testing SiteID #2
     ///
-    private let sampleSiteID2 = 999
+    private let sampleSiteID2: Int64 = 999
 
     /// Testing ProductID
     ///
-    private let sampleProductID = 282
+    private let sampleProductID: Int64 = 282
 
     /// Testing Variation Type ProductID
     ///
-    private let sampleVariationTypeProductID = 295
+    private let sampleVariationTypeProductID: Int64 = 295
 
     /// Testing Page Number
     ///
@@ -116,10 +116,10 @@ class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // Upserts some Products into the storage with two site IDs.
-        let siteID1 = 134
-        let siteID2 = 591
+        let siteID1: Int64 = 134
+        let siteID2: Int64 = 591
 
-        let productID = 123
+        let productID: Int64 = 123
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID1, productID: productID), in: viewStorage)
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID2, productID: productID), in: viewStorage)
 
@@ -129,7 +129,7 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 2)
 
         let action = ProductAction.synchronizeProducts(siteID: siteID1,
-                                                       pageNumber: ProductStore.Constants.firstPageNumber,
+                                                       pageNumber: ProductStore.Default.firstPageNumber,
                                                        pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
 
@@ -155,10 +155,10 @@ class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // Upserts some Products into the storage.
-        let siteID = 134
+        let siteID: Int64 = 134
 
         // This product ID should not exist in the network response.
-        let productID = 888
+        let productID: Int64 = 888
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID, productID: productID), in: viewStorage)
 
         let expectation = self.expectation(description: "Persist product list")
@@ -188,10 +188,10 @@ class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // Upserts some Products into the storage.
-        let siteID = 134
+        let siteID: Int64 = 134
 
         // This product ID should not exist in the network response.
-        let productID = 888
+        let productID: Int64 = 888
         productStore.upsertStoredProduct(readOnlyProduct: sampleProduct(siteID, productID: productID), in: viewStorage)
 
         let expectation = self.expectation(description: "Retrieve products error response")
@@ -199,7 +199,7 @@ class ProductStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products", filename: "generic_error")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
 
-        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: ProductStore.Constants.firstPageNumber, pageSize: defaultPageSize) { error in
+        let action = ProductAction.synchronizeProducts(siteID: siteID, pageNumber: ProductStore.Default.firstPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNotNil(error)
 
             // The previously upserted Product's should stay in storage.
@@ -602,7 +602,7 @@ class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
 
         // A product that is expected to be in the search results.
-        let expectedProductID = 67
+        let expectedProductID: Int64 = 67
         let expectedProductName = "Photo"
 
         let keyword = "photo"
@@ -726,26 +726,61 @@ class ProductStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Update product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let expectedProductID = 847
+        let expectedProductID: Int64 = 847
         let expectedProductName = "This is my new product name!"
         let expectedProductDescription = "Learn something!"
+        let expectedProductShippingClassID: Int64 = 96987515
+        let expectedProductShippingClassSlug = "two-days"
+        let expectedProductSKU = "94115"
+        let expectedProductManageStock = true
+        let expectedProductSoldIndividually = false
+        let expectedStockQuantity = 99
+        let expectedBackordersSetting = ProductBackordersSetting.allowed
+        let expectedStockStatus = ProductStockStatus.inStock
+        let expectedProductRegularPrice = "12.00"
+        let expectedProductSalePrice = "10.00"
+        let expectedProductSaleStart = date(with: "2019-10-15T21:30:11")
+        let expectedProductSaleEnd = date(with: "2019-10-27T21:29:50")
+        let expectedProductTaxStatus = "taxable"
+        let expectedProductTaxClass = "reduced-rate"
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         let product = sampleProduct(productID: expectedProductID)
+
+        // Saves an existing Product into storage.
+        // Note: the fields to be tested should be different in the sample model and network response.
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 1)
+
         let action = ProductAction.updateProduct(product: product) { (product, error) in
             XCTAssertNil(error)
             XCTAssertNotNil(product)
             XCTAssertEqual(product?.productID, expectedProductID)
             XCTAssertEqual(product?.name, expectedProductName)
             XCTAssertEqual(product?.fullDescription, expectedProductDescription)
+            // Shipping settings.
+            XCTAssertEqual(product?.shippingClassID, expectedProductShippingClassID)
+            XCTAssertEqual(product?.shippingClass, expectedProductShippingClassSlug)
+            // Inventory settings.
+            XCTAssertEqual(product?.sku, expectedProductSKU)
+            XCTAssertEqual(product?.manageStock, expectedProductManageStock)
+            XCTAssertEqual(product?.soldIndividually, expectedProductSoldIndividually)
+            XCTAssertEqual(product?.stockQuantity, expectedStockQuantity)
+            XCTAssertEqual(product?.backordersSetting, expectedBackordersSetting)
+            XCTAssertEqual(product?.productStockStatus, expectedStockStatus)
+            // Price settings.
+            XCTAssertEqual(product?.regularPrice, expectedProductRegularPrice)
+            XCTAssertEqual(product?.salePrice, expectedProductSalePrice)
+            XCTAssertEqual(product?.dateOnSaleStart, expectedProductSaleStart)
+            XCTAssertEqual(product?.dateOnSaleEnd, expectedProductSaleEnd)
+            XCTAssertEqual(product?.taxStatusKey, expectedProductTaxStatus)
+            XCTAssertEqual(product?.taxClass, expectedProductTaxClass)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
             XCTAssertNotNil(storedProduct)
             XCTAssertNotNil(readOnlyStoredProduct)
-            XCTAssertEqual(readOnlyStoredProduct?.productID, expectedProductID)
-            XCTAssertEqual(readOnlyStoredProduct?.name, expectedProductName)
-            XCTAssertEqual(readOnlyStoredProduct?.fullDescription, expectedProductDescription)
+            XCTAssertEqual(readOnlyStoredProduct, product)
 
             expectation.fulfill()
         }
@@ -761,10 +796,20 @@ class ProductStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Update product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let expectedProductID = 847
+        let expectedProductID: Int64 = 847
 
         network.simulateResponse(requestUrlSuffix: "products/\(expectedProductID)", filename: "product-update")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+
+        // Inserts the expected shipping class model.
+        let existingShippingClass = ProductShippingClass(count: 2020,
+                                                         descriptionHTML: "Arriving in 2 days!",
+                                                         name: "2 Days",
+                                                         shippingClassID: 96987515,
+                                                         siteID: sampleSiteID,
+                                                         slug: "2-days")
+        let existingStorageShippingClass = viewStorage.insertNewObject(ofType: StorageProductShippingClass.self)
+        existingStorageShippingClass.update(with: existingShippingClass)
 
         let product = sampleProduct(productID: expectedProductID)
         let action = ProductAction.updateProduct(product: product) { (product, error) in
@@ -777,11 +822,15 @@ class ProductStoreTests: XCTestCase {
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDimensions.self), 1)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductAttribute.self), 5)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductDefaultAttribute.self), 0)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductShippingClass.self), 1)
 
             let storedProduct = self.viewStorage.loadProduct(siteID: self.sampleSiteID, productID: expectedProductID)
             let readOnlyStoredProduct = storedProduct?.toReadOnly()
             XCTAssertNotNil(storedProduct)
             XCTAssertNotNil(readOnlyStoredProduct)
+
+            // Asserts updated relationships.
+            XCTAssertEqual(readOnlyStoredProduct?.productShippingClass, existingShippingClass)
 
             expectation.fulfill()
         }
@@ -854,7 +903,7 @@ class ProductStoreTests: XCTestCase {
 //
 private extension ProductStoreTests {
 
-    func sampleProduct(_ siteID: Int? = nil, productID: Int? = nil) -> Networking.Product {
+    func sampleProduct(_ siteID: Int64? = nil, productID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         let testProductID = productID ?? sampleProductID
         return Product(siteID: testSiteID,
@@ -995,7 +1044,7 @@ private extension ProductStoreTests {
         return [download1, download2, download3]
     }
 
-    func sampleProductMutated(_ siteID: Int? = nil) -> Networking.Product {
+    func sampleProductMutated(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
 
         return Product(siteID: testSiteID,
@@ -1118,7 +1167,7 @@ private extension ProductStoreTests {
         return [defaultAttribute1]
     }
 
-    func sampleVariationTypeProduct(_ siteID: Int? = nil) -> Networking.Product {
+    func sampleVariationTypeProduct(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         return Product(siteID: testSiteID,
                        productID: sampleVariationTypeProductID,

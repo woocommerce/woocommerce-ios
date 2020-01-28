@@ -34,6 +34,8 @@ class AccountMapperTests: XCTestCase {
         XCTAssertEqual(first.url, "https://some-testing-url.testing.blog")
         XCTAssertEqual(first.isWooCommerceActive, true)
         XCTAssertEqual(first.isWordPressStore, true)
+        XCTAssertEqual(first.gmtOffset, 3.5)
+        XCTAssertEqual(first.siteTimezone, TimeZone(secondsFromGMT: 12600))
 
         let second = sites!.last!
         XCTAssertEqual(second.siteID, 11122333344446666)
@@ -42,6 +44,8 @@ class AccountMapperTests: XCTestCase {
         XCTAssertEqual(second.url, "https://thoughts.testing.blog")
         XCTAssertEqual(second.isWooCommerceActive, false)
         XCTAssertEqual(second.isWordPressStore, false)
+        XCTAssertEqual(second.gmtOffset, -4)
+        XCTAssertEqual(second.siteTimezone, TimeZone(secondsFromGMT: -14400))
     }
 
     /// Verifies that the Plan field for Site is properly parsed.

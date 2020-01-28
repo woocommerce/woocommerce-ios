@@ -9,7 +9,7 @@ extension Storage.ProductCategory: ReadOnlyConvertible {
     /// Updates the Storage.ProductCategory with the ReadOnly.
     ///
     public func update(with category: Yosemite.ProductCategory) {
-        categoryID = Int64(category.categoryID)
+        categoryID = category.categoryID
         name = category.name
         slug = category.slug
     }
@@ -17,7 +17,7 @@ extension Storage.ProductCategory: ReadOnlyConvertible {
     /// Returns a ReadOnly version of the receiver.
     ///
     public func toReadOnly() -> Yosemite.ProductCategory {
-        return ProductCategory(categoryID: Int(categoryID),
+        return ProductCategory(categoryID: categoryID,
                                name: name,
                                slug: slug)
     }

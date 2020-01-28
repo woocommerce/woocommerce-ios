@@ -6,25 +6,25 @@ import Storage
 public enum AppSettingsAction: Action {
     /// Adds a shipment tracking provider with `providerName` associated with the `siteID`
     ///
-    case addTrackingProvider(siteID: Int,
+    case addTrackingProvider(siteID: Int64,
         providerName: String,
         onCompletion: (Error?) -> Void)
 
     /// Loads the stored shipment tracking provider associated with the `siteID`
     ///
-    case loadTrackingProvider(siteID: Int,
+    case loadTrackingProvider(siteID: Int64,
         onCompletion: (ShipmentTrackingProvider?, ShipmentTrackingProviderGroup?, Error?) -> Void)
 
     /// Adds a custom shipment tracking provider with `providerName` and `providerURL` associated with the `siteID`
     ///
-    case addCustomTrackingProvider(siteID: Int,
+    case addCustomTrackingProvider(siteID: Int64,
         providerName: String,
         providerURL: String?,
         onCompletion: (Error?) -> Void)
 
     /// Loads the stored shipment tracking provider associated with the `siteID`
     ///
-    case loadCustomTrackingProvider(siteID: Int,
+    case loadCustomTrackingProvider(siteID: Int64,
         onCompletion: (ShipmentTrackingProvider?, Error?) -> Void)
 
     /// Clears the stored providers
@@ -35,7 +35,7 @@ public enum AppSettingsAction: Action {
 
     /// Loads the stats version to be shown given the latest app settings associated with the `siteID`
     ///
-    case loadInitialStatsVersionToShow(siteID: Int,
+    case loadInitialStatsVersionToShow(siteID: Int64,
         onCompletion: (StatsVersion?) -> Void)
 
     /// Loads whether a stats verion banner should be shown
@@ -44,7 +44,7 @@ public enum AppSettingsAction: Action {
 
     /// Loads the eligible stats version given the latest app settings associated with the `siteID`
     ///
-    case loadStatsVersionEligible(siteID: Int,
+    case loadStatsVersionEligible(siteID: Int64,
         onCompletion: (StatsVersion?) -> Void)
 
     /// Sets whether a stats version banner should be shown
@@ -53,17 +53,17 @@ public enum AppSettingsAction: Action {
 
     /// Sets the latest highest eligible stats version associated with the `siteID`
     ///
-    case setStatsVersionEligible(siteID: Int,
+    case setStatsVersionEligible(siteID: Int64,
         statsVersion: StatsVersion)
 
     /// Sets the last shown stats version associated with the `siteID`
     ///
-    case setStatsVersionLastShown(siteID: Int,
+    case setStatsVersionLastShown(siteID: Int64,
         statsVersion: StatsVersion)
 
     /// Sets the user preferred stats version associated with the `siteID`
     ///
-    case setStatsVersionPreference(siteID: Int,
+    case setStatsVersionPreference(siteID: Int64,
         statsVersion: StatsVersion)
 
     /// Loads the user preferred Product Features visibility given the latest app settings

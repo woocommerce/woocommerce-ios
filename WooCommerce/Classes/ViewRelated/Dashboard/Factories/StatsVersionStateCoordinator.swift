@@ -38,7 +38,7 @@ final class StatsVersionStateCoordinator {
     /// Called when stats version UI state is set.
     var onStateChange: StateChangeCallback?
 
-    private let siteID: Int
+    private let siteID: Int64
 
     private var state: StatsVersionState? {
         didSet {
@@ -52,7 +52,7 @@ final class StatsVersionStateCoordinator {
     ///
     /// - Parameters:
     ///   - siteID: the ID of a site/store where the stats version is concerned.
-    init(siteID: Int) {
+    init(siteID: Int64) {
         self.siteID = siteID
     }
 

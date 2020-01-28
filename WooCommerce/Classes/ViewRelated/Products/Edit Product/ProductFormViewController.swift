@@ -10,6 +10,7 @@ final class ProductFormViewController: UIViewController {
         didSet {
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
+            tableViewDataSource.configureActions(onAddImage: showProductImages)
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
         }
@@ -30,6 +31,7 @@ final class ProductFormViewController: UIViewController {
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
+        tableViewDataSource.configureActions(onAddImage: showProductImages)
     }
 
     required init?(coder: NSCoder) {
@@ -40,13 +42,20 @@ final class ProductFormViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigationBar()
+        configureMainView()
         configureTableView()
     }
 }
 
 private extension ProductFormViewController {
     func configureNavigationBar() {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(updateProduct))
+        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
+        removeNavigationBackBarButtonText()
+    }
+
+    func configureMainView() {
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
@@ -83,18 +92,59 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     @objc func updateProduct() {
+        let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
+        let message = NSLocalizedString("Please wait while we publish this product to your store",
+                                        comment: "Message of the in-progress UI while updating the Product remotely")
+        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
+        // Before iOS 13, a modal with transparent background requires certain
+        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
+        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+
         let action = ProductAction.updateProduct(product: product) { [weak self] (product, error) in
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
                 DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                self?.displayError(error: error)
                 return
             }
             self?.product = product
 
-            // Temporarily dismisses the Product form before the navigation is implemented.
-            self?.dismiss(animated: true)
+            // Dismisses the in-progress UI.
+            self?.navigationController?.dismiss(animated: true, completion: nil)
         }
         ServiceLocator.stores.dispatch(action)
+    }
+
+    func showProductImages() {
+        let imagesViewController = ProductImagesViewController(product: product)
+        navigationController?.pushViewController(imagesViewController, animated: true)
+    }
+
+    func displayError(error: ProductUpdateError?) {
+        let title = NSLocalizedString("Cannot update Product", comment: "The title of the alert when there is an error updating the product")
+
+        let message = error?.alertMessage
+
+        displayErrorAlert(title: title, message: message)
+    }
+
+    func displayErrorAlert(title: String?, message: String?) {
+        let alert = UIAlertController(title: title,
+                                      message: message,
+                                      preferredStyle: .alert)
+        let cancel = UIAlertAction(title: NSLocalizedString(
+            "OK",
+            comment: "Dismiss button on the alert when there is an error updating the product"
+        ), style: .cancel, handler: nil)
+        alert.addAction(cancel)
+
+        present(alert, animated: true, completion: nil)
     }
 }
 
@@ -114,11 +164,16 @@ extension ProductFormViewController: UITableViewDelegate {
             case .description:
                 editProductDescription()
             }
-        case .settings:
-            // TODO-1422: Shipping Settings
-            // TODO-1423: Price Settings
-            // TODO-1424: Inventory Settings
-            return
+        case .settings(let rows):
+            let row = rows[indexPath.row]
+            switch row {
+            case .price:
+                editPriceSettings()
+            case .shipping:
+                editShippingSettings()
+            case .inventory:
+                editInventorySettings()
+            }
         }
     }
 
@@ -172,7 +227,7 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Description
+// MARK: Action - Edit Product Parameters
 //
 private extension ProductFormViewController {
     func editProductDescription() {
@@ -193,7 +248,98 @@ private extension ProductFormViewController {
     }
 }
 
-// MARK: Action - Edit Product Description
+// MARK: Action - Edit Product Price Settings
+//
+private extension ProductFormViewController {
+    func editPriceSettings() {
+        let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
+            (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
+            self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
+                                                salePrice: salePrice,
+                                                dateOnSaleStart: dateOnSaleStart,
+                                                dateOnSaleEnd: dateOnSaleEnd,
+                                                taxStatus: taxStatus,
+                                                taxClass: taxClass)
+        }
+        navigationController?.pushViewController(priceSettingsViewController, animated: true)
+    }
+
+    func onEditPriceSettingsCompletion(regularPrice: String?,
+                                       salePrice: String?,
+                                       dateOnSaleStart: Date?,
+                                       dateOnSaleEnd: Date?,
+                                       taxStatus: ProductTaxStatus,
+                                       taxClass: TaxClass?) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+
+        guard regularPrice != product.regularPrice ||
+            salePrice != product.salePrice ||
+            dateOnSaleStart != product.dateOnSaleStart ||
+            dateOnSaleEnd != product.dateOnSaleEnd ||
+            taxStatus != product.productTaxStatus ||
+            taxClass?.slug != product.taxClass else {
+            return
+        }
+        self.product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice,
+                                                           salePrice: salePrice,
+                                                           dateOnSaleStart: dateOnSaleStart,
+                                                           dateOnSaleEnd: dateOnSaleEnd,
+                                                           taxStatus: taxStatus,
+                                                           taxClass: taxClass)
+    }
+}
+
+// MARK: Action - Edit Product Shipping Settings
+//
+private extension ProductFormViewController {
+    func editShippingSettings() {
+        let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) { [weak self] (weight, dimensions, shippingClass) in
+            self?.onEditShippingSettingsCompletion(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
+        }
+        navigationController?.pushViewController(shippingSettingsViewController, animated: true)
+    }
+
+    func onEditShippingSettingsCompletion(weight: String?, dimensions: ProductDimensions, shippingClass: ProductShippingClass?) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        guard weight != self.product.weight || dimensions != self.product.dimensions || shippingClass != product.productShippingClass else {
+            return
+        }
+        self.product = productUpdater.shippingSettingsUpdated(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
+    }
+}
+
+// MARK: Action - Edit Product Inventory Settings
+//
+private extension ProductFormViewController {
+    func editInventorySettings() {
+        let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
+            self?.onEditInventorySettingsCompletion(data: data)
+        }
+        navigationController?.pushViewController(inventorySettingsViewController, animated: true)
+    }
+
+    func onEditInventorySettingsCompletion(data: ProductInventoryEditableData) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        let originalData = ProductInventoryEditableData(product: product)
+        guard originalData != data else {
+            return
+        }
+        self.product = productUpdater.inventorySettingsUpdated(sku: data.sku,
+                                                               manageStock: data.manageStock,
+                                                               soldIndividually: data.soldIndividually,
+                                                               stockQuantity: data.stockQuantity,
+                                                               backordersSetting: data.backordersSetting,
+                                                               stockStatus: data.stockStatus)
+    }
+}
+
+// MARK: Constants
 //
 private extension ProductFormViewController {
     enum Constants {

@@ -15,7 +15,7 @@ public class OrdersRemote: Remote {
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllOrders(for siteID: Int,
+    public func loadAllOrders(for siteID: Int64,
                               statusKey: String? = nil,
                               pageNumber: Int = Defaults.pageNumber,
                               pageSize: Int = Defaults.pageSize,
@@ -41,7 +41,7 @@ public class OrdersRemote: Remote {
     ///     - orderID: Identifier of the Order.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadOrder(for siteID: Int, orderID: Int, completion: @escaping (Order?, Error?) -> Void) {
+    public func loadOrder(for siteID: Int64, orderID: Int64, completion: @escaping (Order?, Error?) -> Void) {
         let parameters = [
             ParameterKeys.fields: ParameterValues.fieldValues
         ]
@@ -60,7 +60,7 @@ public class OrdersRemote: Remote {
     ///     - orderID: Identifier of the Order.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadOrderNotes(for siteID: Int, orderID: Int, completion: @escaping ([OrderNote]?, Error?) -> Void) {
+    public func loadOrderNotes(for siteID: Int64, orderID: Int64, completion: @escaping ([OrderNote]?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.notesPath)/"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = OrderNotesMapper()
@@ -77,7 +77,7 @@ public class OrdersRemote: Remote {
     ///     - pageSize: Number of Orders to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func searchOrders(for siteID: Int,
+    public func searchOrders(for siteID: Int64,
                              keyword: String,
                              pageNumber: Int = Defaults.pageNumber,
                              pageSize: Int = Defaults.pageSize,
@@ -105,7 +105,7 @@ public class OrdersRemote: Remote {
     ///     - status: New Status to be set.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func updateOrder(from siteID: Int, orderID: Int, statusKey: String, completion: @escaping (Order?, Error?) -> Void) {
+    public func updateOrder(from siteID: Int64, orderID: Int64, statusKey: String, completion: @escaping (Order?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID)
         let parameters = [ParameterKeys.statusKey: statusKey]
         let mapper = OrderMapper(siteID: siteID)
@@ -124,7 +124,7 @@ public class OrdersRemote: Remote {
     ///     - note: The note to be posted.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func addOrderNote(for siteID: Int, orderID: Int, isCustomerNote: Bool, with note: String, completion: @escaping (OrderNote?, Error?) -> Void) {
+    public func addOrderNote(for siteID: Int64, orderID: Int64, isCustomerNote: Bool, with note: String, completion: @escaping (OrderNote?, Error?) -> Void) {
         let path = "\(Constants.ordersPath)/" + String(orderID) + "/" + "\(Constants.notesPath)"
         let parameters = [ParameterKeys.note: note,
                           ParameterKeys.customerNote: String(isCustomerNote),
@@ -142,7 +142,7 @@ public class OrdersRemote: Remote {
     ///     - ststusKey: the order status slug
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func countOrders(for siteID: Int, statusKey: String, completion: @escaping (OrderCount?, Error?) -> Void) {
+    public func countOrders(for siteID: Int64, statusKey: String, completion: @escaping (OrderCount?, Error?) -> Void) {
         let parameters = [ParameterKeys.statusKey: statusKey]
 
         let mapper = OrderCountMapper(siteID: siteID)

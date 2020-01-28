@@ -4,13 +4,13 @@ import Foundation
 /// Represents a ProductTag entity.
 ///
 public struct ProductTag: Decodable {
-    public let tagID: Int
+    public let tagID: Int64
     public let name: String
     public let slug: String
 
     /// ProductTag initializer.
     ///
-    public init(tagID: Int,
+    public init(tagID: Int64,
                 name: String,
                 slug: String) {
         self.tagID = tagID
@@ -23,7 +23,7 @@ public struct ProductTag: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let tagID = try container.decode(Int.self, forKey: .tagID)
+        let tagID = try container.decode(Int64.self, forKey: .tagID)
         let name = try container.decode(String.self, forKey: .name)
         let slug = try container.decode(String.self, forKey: .slug)
 

@@ -5,7 +5,7 @@ import XCTest
 final class PaginatedListViewControllerStateCoordinatorTests: XCTestCase {
 
     func testTransitioningToSyncingState() {
-        let hasExistingData = true
+        let pageNumber = 3
 
         let expectationForLeavingState = expectation(description: "Wait for leaving state")
         expectationForLeavingState.expectedFulfillmentCount = 1
@@ -17,12 +17,12 @@ final class PaginatedListViewControllerStateCoordinatorTests: XCTestCase {
         let expectationForEnteringState = expectation(description: "Wait for entering state")
         expectationForEnteringState.expectedFulfillmentCount = 1
         let onEnteringState = { (state: PaginatedListViewControllerState) in
-            XCTAssertEqual(state, .syncing(withExistingData: hasExistingData))
+            XCTAssertEqual(state, .syncing(pageNumber: pageNumber))
             expectationForEnteringState.fulfill()
         }
         let stateCoordinator = PaginatedListViewControllerStateCoordinator(onLeavingState: onLeavingState, onEnteringState: onEnteringState)
 
-        stateCoordinator.transitionToSyncingState(withExistingData: hasExistingData)
+        stateCoordinator.transitionToSyncingState(pageNumber: pageNumber)
         waitForExpectations(timeout: 0.1, handler: nil)
     }
 

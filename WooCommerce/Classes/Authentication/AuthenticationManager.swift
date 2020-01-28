@@ -40,7 +40,7 @@ class AuthenticationManager: Authentication {
                                                 textButtonHighlightColor: .accentDark,
                                                 instructionColor: .textSubtle,
                                                 subheadlineColor: .systemColor(.secondaryLabel),
-                                                placeholderColor: .gray(.shade20),
+                                                placeholderColor: .placeholderImage,
                                                 viewControllerBackgroundColor: .listBackground,
                                                 textFieldBackgroundColor: .listForeground,
                                                 navBarImage: StyleManager.navBarImage,
@@ -50,8 +50,14 @@ class AuthenticationManager: Authentication {
                                                      jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                      siteLoginInstructions: AuthenticationConstants.siteInstructions)
 
+        let displayImages = WordPressAuthenticatorDisplayImages(
+            magicLink: .loginMagicLinkImage,
+            siteAddressModalPlaceholder: .loginSiteAddressInfoImage
+        )
+
         WordPressAuthenticator.initialize(configuration: configuration,
                                           style: style,
+                                          displayImages: displayImages,
                                           displayStrings: displayStrings)
         WordPressAuthenticator.shared.delegate = self
     }

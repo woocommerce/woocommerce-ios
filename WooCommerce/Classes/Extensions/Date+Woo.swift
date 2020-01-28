@@ -8,11 +8,12 @@ extension Date {
     /// Returns the String Representation of the receiver, with the specified Date + Time Styles applied.
     /// The string returned will be localised in the device's current locale.
     ///
-    func toString(dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style) -> String {
+    func toString(dateStyle: DateFormatter.Style, timeStyle: DateFormatter.Style, timeZone: TimeZone = .current) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = dateStyle
         formatter.timeStyle = timeStyle
         formatter.locale = Locale.current
+        formatter.timeZone = timeZone
 
         return formatter.string(from: self)
     }

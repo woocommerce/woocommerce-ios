@@ -8,7 +8,7 @@ extension OrderStatsV4 {
         return NSFetchRequest<OrderStatsV4>(entityName: "OrderStatsV4")
     }
 
-    @NSManaged public var siteID: Int
+    @NSManaged public var siteID: Int64
     @NSManaged public var granularity: String
     @NSManaged public var timeRange: String
     @NSManaged public var totals: OrderStatsV4Totals?

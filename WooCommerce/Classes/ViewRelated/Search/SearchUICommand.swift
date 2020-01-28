@@ -23,7 +23,7 @@ protocol SearchUICommand {
     func createCellViewModel(model: Model) -> CellViewModel
 
     /// Synchronizes the models matching a given keyword.
-    func synchronizeModels(siteID: Int,
+    func synchronizeModels(siteID: Int64,
                            keyword: String,
                            pageNumber: Int,
                            pageSize: Int,

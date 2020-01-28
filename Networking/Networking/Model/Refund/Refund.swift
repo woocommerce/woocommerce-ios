@@ -4,16 +4,16 @@ import Foundation
 /// Represents a decoded Refund entity.
 ///
 public struct Refund: Codable {
-    public let refundID: Int
-    public let orderID: Int
-    public let siteID: Int
+    public let refundID: Int64
+    public let orderID: Int64
+    public let siteID: Int64
     public let dateCreated: Date // gmt
     public let amount: String
     public let reason: String
-    public let refundedByUserID: Int
+    public let refundedByUserID: Int64
 
-    /// If true, the automatic refund is used.
-    /// When false, manual refund process is used.
+    /// If true, the automatic refund was used.
+    /// When false, manual refund process was used.
     ///
     public let isAutomated: Bool?
 
@@ -26,13 +26,13 @@ public struct Refund: Codable {
 
     /// Refund struct initializer
     ///
-    public init(refundID: Int,
-                orderID: Int,
-                siteID: Int,
+    public init(refundID: Int64,
+                orderID: Int64,
+                siteID: Int64,
                 dateCreated: Date,
                 amount: String,
                 reason: String,
-                refundedByUserID: Int,
+                refundedByUserID: Int64,
                 isAutomated: Bool?,
                 createAutomated: Bool?,
                 items: [OrderItemRefund]) {
@@ -51,21 +51,21 @@ public struct Refund: Codable {
     // The public initializer for a Refund
     ///
     public init(from decoder: Decoder) throws {
-        guard let orderID = decoder.userInfo[.orderID] as? Int else {
+        guard let orderID = decoder.userInfo[.orderID] as? Int64 else {
             throw RefundDecodingError.missingOrderID
         }
 
-        guard let siteID = decoder.userInfo[.siteID] as? Int else {
+        guard let siteID = decoder.userInfo[.siteID] as? Int64 else {
             throw RefundDecodingError.missingSiteID
         }
 
         let container = try decoder.container(keyedBy: DecodingKeys.self)
 
-        let refundID = try container.decode(Int.self, forKey: .refundID)
+        let refundID = try container.decode(Int64.self, forKey: .refundID)
         let dateCreated = try container.decodeIfPresent(Date.self, forKey: .dateCreated) ?? Date()
         let amount = try container.decode(String.self, forKey: .amount)
         let reason = try container.decode(String.self, forKey: .reason)
-        let refundedByUserID = try container.decode(Int.self, forKey: .refundedByUserID)
+        let refundedByUserID = try container.decode(Int64.self, forKey: .refundedByUserID)
         let isAutomated = try container.decode(Bool.self, forKey: .automatedRefund)
         let items = try container.decode([OrderItemRefund].self, forKey: .items)
 

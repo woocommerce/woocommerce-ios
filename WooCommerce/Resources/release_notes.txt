@@ -1,3 +1,2 @@
-- The Fulfill Order screen displays the full contents of customer-provided notes (when there is one) instead of cutting them off after single line, so you can see all the detail on one screen.
-- The count on the Orders tab bar now correctly refreshes when you switch between stores.
-- Quirks are intriguing in people and a lot less intriguing in apps, so we took care of a few bugs that caused some visual quirks (in particular, when changing system font sizes).
+- A well-designed app is a joy to use, so we took care of an alignment bug on the order details screen, made some enhancements to dark mode, hid the shipping address for virtual products on the order details screen, and added a nice placeholder image when there are no products to show in a product list.
+- There are three fewer bugs in the world: if you ever tapped on a new order push notification and ended up looking at reviews instead of orders, switched stores and ended up with an incorrect product listing, or didn’t see you product variations on a single product screen, those are now experiences of the past.

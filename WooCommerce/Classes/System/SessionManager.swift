@@ -72,13 +72,13 @@ struct SessionManager {
 
     /// Default AccountID: Returns the last known Account's User ID.
     ///
-    var defaultAccountID: Int? {
+    var defaultAccountID: Int64? {
         return defaults[.defaultAccountID]
     }
 
     /// Default StoreID.
     ///
-    var defaultStoreID: Int? {
+    var defaultStoreID: Int64? {
         get {
             return defaults[.defaultStoreID]
         }

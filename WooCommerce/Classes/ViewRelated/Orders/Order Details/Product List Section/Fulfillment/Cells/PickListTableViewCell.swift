@@ -88,8 +88,32 @@ final class PickListTableViewCell: UITableViewCell {
 /// MARK: - Public Methods
 ///
 extension PickListTableViewCell {
-    func configure(item: OrderItemViewModel) {
-        productImageView.setImage(with: item.imageURL?.absoluteString, placeholder: UIImage.productPlaceholderImage)
+    func configure(item: OrderItemViewModel, imageService: ImageService) {
+        imageService.downloadAndCacheImageForImageView(productImageView,
+                                                       with: item.imageURL?.absoluteString,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
+
+        name = item.name
+        quantity = item.quantity
+
+        guard let skuText = item.sku else {
+            skuLabel.isHidden = true
+            return
+        }
+
+        sku = skuText
+    }
+
+    /// Configure a refunded order item
+    ///
+    func configure(item: OrderItemRefundViewModel, imageService: ImageService) {
+        imageService.downloadAndCacheImageForImageView(productImageView,
+                                                       with: item.imageURL?.absoluteString,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
         name = item.name
         quantity = item.quantity
 

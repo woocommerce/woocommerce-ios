@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-09 00:54:03+0000 */
+/* Translation-Revision-Date: 2020-01-21 00:54:04+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -27,11 +27,20 @@
 /* Displays a date range for a stats interval */
 "%1$@-%2$@" = "%1$@–%2$@";
 
+/* <item total> (<item individual price> multipled by <quantity>) */
+"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+
+/* 1 Item */
+"%@ Item" = "%@ элемент";
+
+/* For example, '5 Items' */
+"%@ Items" = "%@ элемент.";
+
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "Пользователь %1$@ оставил отзыв о %2$@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@ – %3$@" = "%1$@ через %2$@ – %3$@";
+"%1$@ via %2$@" = "%1$@ через %2$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld в наличии";
@@ -50,6 +59,9 @@
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Код проверки будет содержать только цифры.";
+
+/* Action to add photos on the Product images screen */
+"ADD PHOTOS" = "ДОБАВИТЬ ФОТОГРАФИИ";
 
 /* About this app (information page title) */
 "About" = "О нас";
@@ -85,7 +97,7 @@
 "Add a tracking" = "Добавить отслеживание";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
-"Adds tracking to an order." = "Adds tracking to an order.";
+"Adds tracking to an order." = "Добавляет отслеживание для заказа.";
 
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Специальный инструмент для анализа состояния приложения";
@@ -95,6 +107,12 @@
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Все отзывы помечены как прочитанные";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow" = "Разрешить";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow, but notify customer" = "Разрешить, но уведомить клиента";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "Почти готово! Введите проверочный код из приложения Authenticator.";
@@ -118,7 +136,7 @@
 "An error occurred while processing your request: " = "Возникла ошибка при обработке вашего запроса:";
 
 /* Message shown when Apple authentication fails. */
-"Apple authentication failed." = "Авторизация Apple не удалась.";
+"Apple authentication failed." = "Аутентификация Apple не удалась.";
 
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "Журналы приложения";
@@ -148,6 +166,9 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "Автоматически управляется на этом сайте";
 
+/* Subtitle of the cell in Product Price Settings > Schedule sale */
+"Automatically start and end a sale" = "Автоматически начинать и завершать распродажу";
+
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
 "Awaiting payment via %@" = "Ожидание оплаты через %@";
@@ -157,6 +178,10 @@
 
 /* Application's Background State */
 "Background" = "Фон";
+
+/* Product backorders setting list selector navigation title
+   Title of the cell in Product Inventory Settings > Backorders */
+"Backorders" = "Задержанные заказы";
 
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "Отложенные заказы:";
@@ -192,6 +217,9 @@
 /* Button title. Tapping it cancels the login flow.
    Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
 "Cancel" = "Отмена";
+
+/* The title of the alert when there is an error updating the product */
+"Cannot update Product" = "Не удается обновить продукт";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Следите за обновлениями любимых сайтов и присоединяйтесь к беседе в любом месте и в любое время.";
@@ -282,7 +310,7 @@
 
 /* Add custom shipping provider. Content of cell titled Shipping Provider
    Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
-"Custom Provider" = "Custom Provider";
+"Custom Provider" = "Другая служба";
 
 /* Customer info section title */
 "Customer" = "Заказчик";
@@ -295,7 +323,7 @@
 "Customer Provided Note" = "Примечание клиента";
 
 /* Add / Edit shipping provider. Title of cell date shipped */
-"Date shipped" = "Date shipped";
+"Date shipped" = "Дата отправки";
 
 /* Statistical unit - a single day */
 "Day" = "День";
@@ -311,7 +339,7 @@
 
 /* Delete a Shipment Tracking
    Delete tracking button title */
-"Delete Tracking" = "Delete Tracking";
+"Delete Tracking" = "Отменить отслеживание";
 
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
 "Deletes a shipment's tracking information." = "Удаление данных об отслеживании посылки.";
@@ -344,6 +372,9 @@
 /* A unit test string for a button title
    Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Игнорировать";
+
+/* Display label for the product's inventory backorders setting option */
+"Do not allow" = "Запретить";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "Нет учетной записи? _Зарегистрироваться_";
@@ -408,14 +439,12 @@
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "Введите название компании-поставщика";
 
-/* Label for button to log in using your site address. */
+/* Instruction text on the login's site addresss screen.
+   Label for button to log in using your site address. */
 "Enter the address of the WordPress site you'd like to connect." = "Введите адрес сайта WordPress, к которому требуется подключиться.";
 
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "Введите адрес магазина WooCommerce, к которому требуется подключиться.";
-
-/* Instruction text on the login's site addresss screen. */
-"Enter the address of your WordPress site you'd like to connect." = "Введите адрес сайта WordPress, к которому требуется подключиться.";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "Введите пароль вашей учетной записи WordPress.com.";
@@ -446,6 +475,9 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "Запрос функции";
 
+/* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
+"Fill with password manager" = "Заполнить с помощью диспетчера паролей";
+
 /* Filter the orders list. */
 "Filter orders" = "Фильтровать заказы";
 
@@ -454,6 +486,9 @@
 
 /* User role badge */
 "Follower" = "Читатель";
+
+/* Title of the cell in Product Price Settings > Schedule sale From a certain date */
+"From" = "С";
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "Выполнить заказ №(order.number)";
@@ -516,6 +551,9 @@
 /* H6 Aztec Style */
 "Heading 6" = "Заголовок 6";
 
+/* Title of the cell in Product Shipping Settings > Height */
+"Height" = "Высота";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "Помощь";
@@ -524,12 +562,13 @@
 "Help & Support" = "Помощь и техническая поддержка";
 
 /* Browse our help documentation website title */
-"Help Center" = "Help Center";
+"Help Center" = "Справочный центр";
 
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "Помогите улучшить приложение";
 
-/* Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
+   Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
 "Hidden" = "Скрыто";
 
 /* Detail label for yes/no switch. */
@@ -566,6 +605,9 @@
 /* Accessibility label for insert link button on formatting toolbar. */
 "Insert Link" = "Вставить ссылку";
 
+/* The title of the alert when there is an error updating the product SKU */
+"Invalid Product SKU" = "Неверный артикул продукта";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "Неверный адрес сайта";
 
@@ -582,7 +624,7 @@
 "Invalid username" = "Неверное имя пользователя";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Title of the Inventory Settings row on Product main screen */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "Наличие";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -607,8 +649,14 @@
    The action of the top banner on Dashboard that indicates new stats is unavailable */
 "Learn more" = "Подробнее";
 
+/* Title of the cell in Product Shipping Settings > Length */
+"Length" = "Длина";
+
 /* Licenses (information page title) */
 "Licenses" = "Лицензии";
+
+/* Title of the cell in Product Inventory Settings > Limit one per order */
+"Limit one per order" = "Ограничить одним на заказ";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "Достигнут лимит попыток. Вы можете попробовать снова через 1 минуту. Если вы попытаетесь подключиться раньше, время ожидания только увеличится. Если вы считаете, что произошла ошибка, обратитесь в службу поддержки.";
@@ -630,7 +678,7 @@
 "Loading Order" = "Загрузка заказа";
 
 /* Displayed when an Product is being retrieved */
-"Loading Product" = "Loading Product";
+"Loading Product" = "Загрузка продукта";
 
 /* Button title.  Tapping takes the user to the login form.
    Log In button label. */
@@ -659,7 +707,7 @@
 "Log in with your WordPress.com account email address to manage your WooCommerce stores." = "Для управления магазинами WooCommerce выполните вход, указав адрес электронной почты своей учетной записи WordPress.com.";
 
 /* Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps. */
-"Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.";
+"Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue." = "Похоже, ваш сайт не настроен для этого приложения. Перед тем как продолжить, убедитесь, что на сайте установлен Jetpack.";
 
 /* Title of a button. */
 "Lost your password?" = "Забыли пароль?";
@@ -669,6 +717,9 @@
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "Управляйте заказами, следите за продажами и контролируйте работу магазина с помощью уведомлений в реальном времени.";
+
+/* Title of the cell in Product Inventory Settings > Manage stock */
+"Manage stock" = "Управлять запасами";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "Управляйте сайтом, созданным с помощью Jetpack, где угодно — WordPress можно всегда носить с собой.";
@@ -776,6 +827,15 @@
 /* Text displayed when no order data are available for the selected time range. */
 "No revenue this period" = "Нет доходов за указанный период";
 
+/* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
+"No shipping classes yet" = "Классов доставки пока нет";
+
+/* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
+"No tax classes yet" = "Налоговых классов пока нет";
+
+/* Display label for the product's tax status setting option */
+"None" = "Нет";
+
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "Еще не отправлено";
 
@@ -786,7 +846,7 @@
 "Number of files:" = "Количество файлов:";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "Хорошо";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -824,6 +884,9 @@
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Открывает список доступных статусов.";
+
+/* Placeholder of the cell text field in Product Inventory Settings > SKU */
+"Optional" = "Необязательно";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "Дополнительная информация об отслеживании";
@@ -875,8 +938,8 @@
 /* The title for the customer payment cell */
 "Paid By Customer" = "Оплачивается заказчиком";
 
-/* Login dialog password placeholder
-   Password placeholder */
+/* Accessibility label for the password text field in the self-hosted login page.
+   Login dialog password placeholder - Password placeholder */
 "Password" = "Пароль";
 
 /* Paste without Formatting Menu Item */
@@ -895,6 +958,9 @@
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "Номер телефона: %@";
+
+/* Product images (Product images page title) */
+"Photos" = "Фотографии";
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Выберите магазин для подключения";
@@ -941,8 +1007,11 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Пожалуйста, откройте ваше приложение email и найдите сообщение от WordPress.com.";
 
+/* Message of the in-progress UI while updating the Product remotely */
+"Please wait while we publish this product to your store" = "Подождите, пока мы не опубликуем этот продукт в вашем магазине";
+
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
-   Title of the Price Settings row on Product main screen */
+   Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
 "Price" = "Цена";
 
 /* Product Details - pricing and inventory section title */
@@ -966,7 +1035,7 @@
 "Product" = "Товар";
 
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
-"Product %ld has been removed from your store" = "Product %ld has been removed from your store";
+"Product %ld has been removed from your store" = "Продукт %ld удален из вашего магазина";
 
 /* Title of the view containing a single Product Review */
 "Product Review" = "Отзыв на продукт";
@@ -977,6 +1046,9 @@
 /* My Store > Settings > Experimental features > Switch Products
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
 "Products" = "Товары";
+
+/* Label for computed value `product refunds + taxes = subtotal`. */
+"Products Refund" = "Возврат средств за продукты";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "Позвонить или отправить сообщение плательщику.";
@@ -989,6 +1061,9 @@
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Публикуйте записи, гуляя в парке. Ведите блог прямо из автобуса. Отправляйте комментарии из-за столика в кафе. WordPress можно брать с собой повсюду!";
+
+/* Title of the in-progress UI while updating the Product remotely */
+"Publishing your product..." = "Публикация продукта...";
 
 /* Product Details - purchase details section title */
 "Purchase Details" = "Подробные сведения о приобретении";
@@ -1004,6 +1079,9 @@
    Section header title - abbreviation for quantity */
 "Qty" = "Кол-во";
 
+/* Title of the cell in Product Inventory Settings > Quantity */
+"Quantity" = "Количество";
+
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "Количество: %ld";
 
@@ -1016,8 +1094,30 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "Прочитать политику конфиденциальности";
 
+/* Refund note section title */
+"Reason for Refund" = "Причина возврата средств";
+
+/* It reads: Refund #<refund ID> */
+"Refund #%@" = "Возвратить средства по заказу №%@";
+
+/* Refund Details page > Refund Details section > The label that marks the refunded amount */
+"Refund Amount" = "Сумма возврата";
+
+/* Refund Details section title */
+"Refund Details" = "Описание возврата платежа";
+
 /* The title for the refunded amount cell */
 "Refunded" = "Средства возвращены";
+
+/* Order > Order Details > 'N Items' cell tapped > Refunded Products title
+   Refunded Products section title - Section title */
+"Refunded Products" = "Продукты, по которым возвращены средства";
+
+/* It reads, 'Refunded manually via <payment method>' */
+"Refunded manually via %@" = "Средства возвращены вручную через %@";
+
+/* It reads, 'Refunded via <payment method>' */
+"Refunded via %@" = "Средства возвращены через %@";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "Зарегистрированный домен";
@@ -1063,27 +1163,44 @@
 /* Post Rich content */
 "Rich Content" = "Форматированное содержимое";
 
-/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
+   Title of the cell in Product Inventory Settings > SKU */
 "SKU" = "Артикул";
+
+/* The message of the alert when there is an error updating the product SKU */
+"SKU already in use by another product" = "Артикул уже используется для другого продукта";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
    A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
 "SKU:" = "АРТИКУЛ:";
 
-/* Format of the SKU on the Inventory Settings row */
+/* Format of the SKU on the Inventory Settings row
+   SKU label, followed by the SKU */
 "SKU: %@" = "АРТИКУЛ: %@";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "SMS отправлено";
 
 /* Format of the sale period on the Price Settings row */
-"Sale dates: %1$@-%2$@" = "Даты продажи: %1$@–%2$@";
+"Sale dates: %@" = "Даты распродажи: %@";
+
+/* Format of the sale period on the Price Settings row from a certain date */
+"Sale dates: From %@" = "Даты распродажи: с %@";
+
+/* Format of the sale period on the Price Settings row until a certain date */
+"Sale dates: Until %@" = "Даты распродажи: до %@";
+
+/* Title of the cell in Product Price Settings > Sale price */
+"Sale price" = "Цена со скидкой";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "Цена со скидкой:";
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Цена со скидкой: %@";
+
+/* Title of the cell in Product Price Settings > Schedule sale */
+"Schedule sale" = "Запланировать распродажу";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Поиск по всем заказам";
@@ -1131,17 +1248,23 @@
 "Shipped %@" = "Отправлено %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
+   Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "Доставка";
 
 /* Shipping method title for customer info cell */
 "Shipping Method" = "Способ доставки";
 
 /* Title of view displaying all available Shipment Tracking Providers */
-"Shipping Providers" = "Shipping Providers";
+"Shipping Providers" = "Службы доставки";
+
+/* Title of the cell in Product Shipping Settings > Shipping class */
+"Shipping class" = "Класс доставки";
 
 /* Label prefix. Example: 'Shipping class: Free Shipping' */
 "Shipping class:" = "Класс отправления:";
+
+/* Navigation bar title of the Product shipping class selector screen */
+"Shipping classes" = "Классы доставки";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "Сведения о доставке";
@@ -1149,11 +1272,26 @@
 /* VoiceOver accessibility label for the shipping notice about the order */
 "Shipping notice about the order" = "Уведомление о доставке заказа";
 
+/* Display label for the product's tax status setting option */
+"Shipping only" = "Только доставка";
+
 /* Add / Edit shipping provider. Title of cell presenting name */
-"Shipping provider" = "Shipping provider";
+"Shipping provider" = "Служба доставки";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show a list of refunded order items for this order." = "Показать список элементов заказа, по которым возвращены средства.";
+
+/* Accessibility label for the “Show password“ button in the login page's password field. */
+"Show password" = "Показать пароль";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information. */
+"Show refund details for this order." = "Показать сведения о возврате средств по этому заказу.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "Показать платёжную информацию по этому заказу.";
+
+/* Accessibility value if login page's password field is displaying the password. */
+"Shown" = "Показан";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "Другие опции.";
@@ -1172,6 +1310,9 @@
 
 /* Describes a site redirect domain */
 "Site Redirect" = "Перенаправление сайта";
+
+/* Accessibility label of the site address field shown when adding a self-hosted site. */
+"Site address" = "Адрес сайта";
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "Адрес сайта должен содержать не менее 4 символов.";
@@ -1232,6 +1373,9 @@
    Verb, spam a comment */
 "Spam" = "Спамить";
 
+/* The name of the default Tax Class in Product Price Settings */
+"Standard rate" = "Стандартный тариф";
+
 /* Aztec's Text Placeholder */
 "Start writing..." = "Напишите что-нибудь...";
 
@@ -1240,6 +1384,10 @@
 
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "Количество товара в наличии:";
+
+/* Product stock status list selector navigation title
+   Title of the cell in Product Inventory Settings > Stock status */
+"Stock status" = "Статус на складе";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "Данные о наличии товара:";
@@ -1261,6 +1409,9 @@
 
 /* Accessibility label for strikethrough button on formatting toolbar. */
 "Strike Through" = "Зачеркнутый";
+
+/* Subtotal label for a refund details view */
+"Subtotal" = "Подытог";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
 "Switch Store" = "Переключиться на другой магазин";
@@ -1343,8 +1494,32 @@
 /* Accessibility hint for selecting paragraph style button on formatting toolbar. */
 "Tap to toggle paragraph style" = "Нажмите, чтобы переключить стиль абзаца";
 
+/* Tax label for a refund details view */
+"Tax" = "Налог";
+
+/* Section header title for product tax settings */
+"Tax Settings" = "Настройки налога";
+
+/* Navigation bar title of the Product tax status selector screen */
+"Tax Status" = "Статус налога";
+
+/* Title of the cell in Product Price Settings > Tax class */
+"Tax class" = "Налоговый класс";
+
+/* Navigation bar title of the Product tax class selector screen */
+"Tax classes" = "Налоговые классы";
+
+/* Title of the cell in Product Price Settings > Tax status */
+"Tax status" = "Статус налога";
+
 /* Tax label for total taxes line */
 "Tax:" = "Налог:";
+
+/* Tax label for total taxes line, followed by the tax amount. */
+"Tax: %@" = "Налог: %@";
+
+/* Display label for the product's tax status setting option */
+"Taxable" = "Налогооблагаемый";
 
 /* Taxes label for payment view */
 "Taxes" = "Налоги";
@@ -1419,6 +1594,9 @@
    Top Performers section title - this month */
 "This Month" = "В этом месяце";
 
+/* The message of the alert when there is an error updating the product SKU */
+"This SKU is used on another product or is invalid." = "Этот артикул используется для другого продукта или недействителен.";
+
 /* Tab selector title that shows the statistics for this week
    Top Performers section title - this week */
 "This Week" = "На этой неделе";
@@ -1444,7 +1622,7 @@
 "This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "В этом заказе используются расширения для расчета суммы доставки. Возможно, показаны не все способы доставки.";
 
 /* Message displayed when loading a specific product fails */
-"This product couldn't be loaded" = "This product couldn't be loaded";
+"This product couldn't be loaded" = "Этот продукт не может быть загружен";
 
 /* Product details screen — product title descriptive label
    The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
@@ -1452,6 +1630,9 @@
 
 /* Placeholder in the Product Title row on Product form screen. */
 "Title (required)" = "Название (обязательно)";
+
+/* Title of the cell in Product Price Settings > Schedule sale To a certain date */
+"To" = "до";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "Для создания новой учетной записи WordPress.com, пожалуйста, введите ваш адрес эл.почты.";
@@ -1497,7 +1678,7 @@
 "Tracking link (optional)" = "Ссылка на отслеживание (не обязательно)";
 
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
-"Tracking number" = "Tracking number";
+"Tracking number" = "Номер отслеживания";
 
 /* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
    Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
@@ -1539,7 +1720,7 @@
 "Unable to add note to order #(viewModel.order.orderID)" = "Не удалось добавить примечание к заказу #(viewModel.order.orderID)";
 
 /* Content of error presented when Add Shipment Tracking Action Failed. It reads: Unable to add tracking to order #{order number} */
-"Unable to add tracking to order #(orderID)" = "Unable to add tracking to order #(orderID)";
+"Unable to add tracking to order #(orderID)" = "Не удается добавить отслеживание для заказа № (идентификатор заказа)";
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "Не удалось изменить статус заказа #(orderID)";
@@ -1548,7 +1729,7 @@
 "Unable to delete tracking for order #(order.orderID)" = "Не удалось удалить отслеживание заказа № (order.orderID)";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
-"Unable to delete tracking for order #(orderID)" = "Unable to delete tracking for order #(orderID)";
+"Unable to delete tracking for order #(orderID)" = "Не удается отменить отслеживание для заказа № (идентификатор заказа)";
 
 /* Displayed during the Login flow, whenever the user has no woo stores associated. */
 "Unable to find WooCommerce stores connected to this account" = "Не удалось найти магазины WooCommerce, подключенные к этой учётной записи";
@@ -1557,7 +1738,7 @@
 "Unable to fulfill order #(orderID)" = "Не удалось выполнить заказ #(orderID)";
 
 /* Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers */
-"Unable to load Shipment Providers" = "Unable to load Shipment Providers";
+"Unable to load Shipment Providers" = "Не удается загрузить службы доставки";
 
 /* Load Action Failed */
 "Unable to load content" = "Не удалось загрузить содержимое";
@@ -1569,7 +1750,7 @@
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "Не удалось найти веб-сайт WordPress по этому URL-адресу. Нажмите кнопку «Нужна помощь?», чтобы просмотреть ответы на часто задаваемые вопросы.";
 
 /* Notice displayed when an error occurs while refreshing a product. It reads: Unable to refresh product #{product number} */
-"Unable to refresh Product #%ld" = "Unable to refresh Product #%ld";
+"Unable to refresh Product #%ld" = "Не удается обновить продукт № %ld";
 
 /* Refresh Action Failed */
 "Unable to refresh list" = "Не удалось обновить список";
@@ -1608,7 +1789,8 @@
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "Журналы хранятся в течение 7 дней.";
 
-/* Label action for updating a link on the editor */
+/* Action for updating a Product remotely
+   Label action for updating a link on the editor */
 "Update" = "Обновить";
 
 /* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
@@ -1646,8 +1828,8 @@
    Updated on <date> */
 "Updated on %@" = "Обновлено %@";
 
-/* Login dialog username placeholder
-   Username placeholder */
+/* Accessibility label for the username text field in the self-hosted login page.
+   Login dialog username placeholder - Username placeholder */
 "Username" = "Имя пользователя";
 
 /* No comment provided by engineer. */
@@ -1673,14 +1855,17 @@
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "Показать партнерский продукт";
 
-/* This text is linked so the user can view refund details. */
-"View details" = "Подробности";
-
 /* subtitle for My Tickets */
 "View previously submitted support tickets" = "Посмотреть ранее отправленные запросы в службу поддержки";
 
 /* The descriptive label. Tapping the row will open the product's page in a web view. */
 "View product on store" = "Показать продукт в магазине";
+
+/* Accessibility label for the 'View details' refund button */
+"View refund details" = "Просмотреть сведения о возврате средств";
+
+/* Accessibility label for the '<number> Products' button */
+"View refunded order items" = "Просмотреть элементы заказа, по которым возвращены средства";
 
 /* User role badge */
 "Viewer" = "Обозреватель";
@@ -1724,6 +1909,9 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "Недели";
 
+/* Title of the cell in Product Shipping Settings > Weight */
+"Weight" = "Вес";
+
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "Вес:";
 
@@ -1744,6 +1932,9 @@
 
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "Проверочный код для двухфакторной аутентификации недействителен. Проверьте код и повторите попытку.";
+
+/* Title of the cell in Product Shipping Settings > Width */
+"Width" = "Ширина";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";

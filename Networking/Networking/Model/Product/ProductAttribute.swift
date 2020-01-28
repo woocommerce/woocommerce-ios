@@ -4,7 +4,7 @@ import Foundation
 /// Represents a ProductAttribute entity.
 ///
 public struct ProductAttribute: Decodable {
-    public let attributeID: Int
+    public let attributeID: Int64
     public let name: String
     public let position: Int
     public let visible: Bool
@@ -19,7 +19,7 @@ public struct ProductAttribute: Decodable {
 
     /// ProductAttribute initializer.
     ///
-    public init(attributeID: Int,
+    public init(attributeID: Int64,
                 name: String,
                 position: Int,
                 visible: Bool,
@@ -39,7 +39,7 @@ public struct ProductAttribute: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
-        let attributeID = container.failsafeDecodeIfPresent(Int.self, forKey: .attributeID) ?? 0
+        let attributeID = container.failsafeDecodeIfPresent(Int64.self, forKey: .attributeID) ?? 0
         let name = container.failsafeDecodeIfPresent(String.self, forKey: .name) ?? String()
         let position = container.failsafeDecodeIfPresent(Int.self, forKey: .position) ?? 0
         let visible = container.failsafeDecodeIfPresent(Bool.self, forKey: .visible) ?? true

@@ -8,9 +8,19 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let currency: String
     private let currencyFormatter: CurrencyFormatter
 
-    init(product: Product, currency: String, currencyFormatter: CurrencyFormatter = CurrencyFormatter()) {
+    // Timezone of the website
+    //
+    var siteTimezone: TimeZone = TimeZone.siteTimezone
+
+    private let canEditImages: Bool
+
+    init(product: Product,
+         currency: String,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(),
+         canEditImages: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
+        self.canEditImages = canEditImages
         configureSections(product: product)
     }
 }
@@ -22,6 +32,13 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func primaryFieldRows(product: Product) -> [ProductFormSection.PrimaryFieldRow] {
+        guard canEditImages || product.images.isEmpty == false else {
+            return [
+                .name(name: product.name),
+                .description(description: product.trimmedFullDescription)
+            ]
+        }
+
         return [
             .images(product: product),
             .name(name: product.name),
@@ -30,6 +47,13 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func settingsRows(product: Product) -> [ProductFormSection.SettingsRow] {
+        guard product.downloadable == false && product.virtual == false else {
+            return [
+                .price(viewModel: priceSettingsRow(product: product)),
+                .inventory(viewModel: inventorySettingsRow(product: product))
+            ]
+        }
+
         return [
             .price(viewModel: priceSettingsRow(product: product)),
             .shipping(viewModel: shippingSettingsRow(product: product)),
@@ -40,7 +64,7 @@ private extension DefaultProductFormTableViewModel {
 
 private extension DefaultProductFormTableViewModel {
     func priceSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.priceImage.applyProductFormSettingsStyle()
+        let icon = UIImage.priceImage
         let title = Constants.priceSettingsTitle
 
         var priceDetails = [String]()
@@ -53,9 +77,26 @@ private extension DefaultProductFormTableViewModel {
             priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedRegularPrice))
             priceDetails.append(String.localizedStringWithFormat(Constants.salePriceFormat, formattedSalePrice))
 
-            // TODO-1505: show sale period
+            if let dateOnSaleStart = product.dateOnSaleStart, let dateOnSaleEnd = product.dateOnSaleEnd {
+                let dateIntervalFormatter = DateIntervalFormatter.mediumLengthLocalizedDateIntervalFormatter
+                dateIntervalFormatter.timeZone = siteTimezone
+                let formattedTimeRange = dateIntervalFormatter.string(from: dateOnSaleStart, to: dateOnSaleEnd)
+                priceDetails.append(String.localizedStringWithFormat(Constants.saleDatesFormat, formattedTimeRange))
+            }
+            else if let dateOnSaleStart = product.dateOnSaleStart, product.dateOnSaleEnd == nil {
+                let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
+                dateFormatter.timeZone = siteTimezone
+                let formattedDate = dateFormatter.string(from: dateOnSaleStart)
+                priceDetails.append(String.localizedStringWithFormat(Constants.saleDateFormatFrom, formattedDate))
+            }
+            else if let dateOnSaleEnd = product.dateOnSaleEnd, product.dateOnSaleStart == nil {
+                let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
+                dateFormatter.timeZone = siteTimezone
+                let formattedDate = dateFormatter.string(from: dateOnSaleEnd)
+                priceDetails.append(String.localizedStringWithFormat(Constants.saleDateFormatTo, formattedDate))
+            }
         } else if product.price.isEmpty == false {
-            let formattedPrice = currencyFormatter.formatAmount(product.price, with: currency) ?? ""
+            let formattedPrice = currencyFormatter.formatAmount(product.regularPrice ?? product.price, with: currency) ?? ""
             priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedPrice))
         }
 
@@ -66,7 +107,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func inventorySettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.inventoryImage.applyProductFormSettingsStyle()
+        let icon = UIImage.inventoryImage
         let title = Constants.inventorySettingsTitle
 
         var inventoryDetails = [String]()
@@ -90,7 +131,7 @@ private extension DefaultProductFormTableViewModel {
     }
 
     func shippingSettingsRow(product: Product) -> ProductFormSection.SettingsRow.ViewModel {
-        let icon = UIImage.shippingImage.applyProductFormSettingsStyle()
+        let icon = UIImage.shippingImage
         let title = Constants.shippingSettingsTitle
 
         var shippingDetails = [String]()
@@ -150,8 +191,12 @@ private extension DefaultProductFormTableViewModel {
                                                           comment: "Format of the regular price on the Price Settings row")
         static let salePriceFormat = NSLocalizedString("Sale price: %@",
                                                        comment: "Format of the sale price on the Price Settings row")
-        static let saleDatesFormat = NSLocalizedString("Sale dates: %1$@-%2$@",
+        static let saleDatesFormat = NSLocalizedString("Sale dates: %@",
                                                        comment: "Format of the sale period on the Price Settings row")
+        static let saleDateFormatFrom = NSLocalizedString("Sale dates: From %@",
+                                                    comment: "Format of the sale period on the Price Settings row from a certain date")
+        static let saleDateFormatTo = NSLocalizedString("Sale dates: Until %@",
+                                                    comment: "Format of the sale period on the Price Settings row until a certain date")
 
         // Inventory
         static let skuFormat = NSLocalizedString("SKU: %@",

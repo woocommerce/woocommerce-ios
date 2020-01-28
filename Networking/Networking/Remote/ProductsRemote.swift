@@ -19,7 +19,7 @@ public class ProductsRemote: Remote {
     ///     - order: ascending or descending order. Default to ascending.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadAllProducts(for siteID: Int,
+    public func loadAllProducts(for siteID: Int64,
                                 context: String? = nil,
                                 pageNumber: Int = Default.pageNumber,
                                 pageSize: Int = Default.pageSize,
@@ -51,7 +51,7 @@ public class ProductsRemote: Remote {
     ///     - productIDs: The array of product IDs that are requested.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProducts(for siteID: Int, by productIDs: [Int], completion: @escaping ([Product]?, Error?) -> Void) {
+    public func loadProducts(for siteID: Int64, by productIDs: [Int64], completion: @escaping ([Product]?, Error?) -> Void) {
         let stringOfProductIDs = productIDs.map { String($0) }
             .filter { !$0.isEmpty }
             .joined(separator: ",")
@@ -71,7 +71,7 @@ public class ProductsRemote: Remote {
     ///     - productID: Identifier of the Product.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func loadProduct(for siteID: Int, productID: Int, completion: @escaping (Product?, Error?) -> Void) {
+    public func loadProduct(for siteID: Int64, productID: Int64, completion: @escaping (Product?, Error?) -> Void) {
         let path = "\(Path.products)/\(productID)"
         let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: nil)
         let mapper = ProductMapper(siteID: siteID)
@@ -88,7 +88,7 @@ public class ProductsRemote: Remote {
     ///     - pageSize: Number of products to be retrieved per page.
     ///     - completion: Closure to be executed upon completion.
     ///
-    public func searchProducts(for siteID: Int,
+    public func searchProducts(for siteID: Int64,
                                keyword: String,
                                pageNumber: Int,
                                pageSize: Int,
@@ -143,7 +143,7 @@ public extension ProductsRemote {
 
     enum Default {
         public static let pageSize: Int   = 25
-        public static let pageNumber: Int = 1
+        public static let pageNumber: Int = Remote.Default.firstPageNumber
         public static let context: String = "view"
     }
 

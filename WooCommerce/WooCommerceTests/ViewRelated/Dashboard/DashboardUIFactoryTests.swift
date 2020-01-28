@@ -4,7 +4,7 @@ import Yosemite
 @testable import WooCommerce
 
 final class DashboardUIFactoryTests: XCTestCase {
-    private let mockSiteID: Int = 1134
+    private let mockSiteID: Int64 = 1134
 
     private var dashboardUIFactory: DashboardUIFactory!
     private var mockStoresManager: MockupStatsVersionStoresManager!

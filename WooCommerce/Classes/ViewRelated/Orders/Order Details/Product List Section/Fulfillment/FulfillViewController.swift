@@ -67,6 +67,8 @@ final class FulfillViewController: UIViewController {
     ///
     private var trackingIsReachable: Bool = false
 
+    private let imageService: ImageService = ServiceLocator.imageService
+
     /// Designated Initializer
     ///
     init(order: Order, products: [Product]?) {
@@ -220,7 +222,7 @@ private extension FulfillViewController {
 
     /// Returns an Order Update Action that will result in the specified Order Status updated accordingly.
     ///
-    func updateOrderAction(siteID: Int, orderID: Int, statusKey: String) -> Action {
+    func updateOrderAction(siteID: Int64, orderID: Int64, statusKey: String) -> Action {
         return OrderAction.updateOrder(siteID: siteID, orderID: orderID, statusKey: statusKey, onCompletion: { error in
             guard let error = error else {
                 NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
@@ -247,7 +249,7 @@ private extension FulfillViewController {
 
     /// Displays the `Unable to Fulfill Order` Notice.
     ///
-    func displayErrorNotice(orderID: Int) {
+    func displayErrorNotice(orderID: Int64) {
         let title = NSLocalizedString(
             "Unable to fulfill order #\(orderID)",
             comment: "Content of error presented when Fullfill Order Action Failed. It reads: Unable to fulfill order #{order number}"
@@ -262,7 +264,7 @@ private extension FulfillViewController {
 
     /// Displays the product detail screen for the provided ProductID
     ///
-    func productWasPressed(for productID: Int) {
+    func productWasPressed(for productID: Int64) {
         let loaderViewController = ProductLoaderViewController(productID: productID,
                                                                siteID: order.siteID,
                                                                currency: order.currency)
@@ -347,7 +349,7 @@ private extension FulfillViewController {
         let product = lookUpProduct(by: item.productID)
         let viewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
         cell.selectionStyle = .default
-        cell.configure(item: viewModel)
+        cell.configure(item: viewModel, imageService: imageService)
     }
 
     /// Setup: Customer Note Cell
@@ -430,6 +432,7 @@ private extension FulfillViewController {
 
         let cellTextContent = NSLocalizedString("Add Tracking", comment: "Add Tracking row label")
         cell.leftImage = .addOutlineImage
+        cell.imageView?.tintColor = .accent
         cell.labelText = cellTextContent
 
         cell.isAccessibilityElement = true
@@ -537,7 +540,7 @@ private extension FulfillViewController {
 
     /// Displays the `Unable to delete tracking` Notice.
     ///
-    func displayDeleteErrorNotice(orderID: Int, tracking: ShipmentTracking) {
+    func displayDeleteErrorNotice(orderID: Int64, tracking: ShipmentTracking) {
         let title = NSLocalizedString(
             "Unable to delete tracking for order #\(orderID)",
             comment: "Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}"
@@ -599,7 +602,7 @@ private extension FulfillViewController {
         return orderTracking[orderIndex]
     }
 
-    func lookUpProduct(by productID: Int) -> Product? {
+    func lookUpProduct(by productID: Int64) -> Product? {
         return products?.filter({ $0.productID == productID }).first
     }
 }
@@ -627,24 +630,25 @@ private extension FulfillViewController {
             return Section(title: title, secondaryTitle: nil, rows: [row])
         }()
 
-        let address: Section = {
+        let address: Section? = {
             var rows: [Row] = []
 
             if shippingLines.count > 0 {
                 rows.append(.shippingMethod)
             }
 
+            let orderContainsOnlyVirtualProducts = products?.filter { (product) -> Bool in
+                return order.items.first(where: { $0.productID == product.productID}) != nil
+            }.allSatisfy { $0.virtual == true }
+
             let title = NSLocalizedString("Customer Information", comment: "Section title for the customer's billing and shipping address")
-            if let shippingAddress = order.shippingAddress {
+            if let shippingAddress = order.shippingAddress, orderContainsOnlyVirtualProducts == false {
                 let row = Row.address(shipping: shippingAddress)
                 rows.insert(row, at: 0)
                 return Section(title: title, secondaryTitle: nil, rows: rows)
             }
 
-            let row = Row.address(shipping: order.billingAddress)
-            rows.insert(row, at: 0)
-
-            return Section(title: title, secondaryTitle: nil, rows: rows)
+            return nil
         }()
 
         let tracking: Section? = {

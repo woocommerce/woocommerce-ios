@@ -16,6 +16,7 @@
 - bugfix/enhancement: on the Products tab, if there are no Products the "Work In Progress" banner is shown with an image placeholder below now.
 - bugfix: the deleted Product Variations should not show up after syncing anymore.
 - bugfix: now the shipping address in the Order Detail is hidden if the order contains only virtual products
+- bugfix: when logged out, Contact Support should be enabled now after typing a valid email address with an email keyboard type.
 
 3.3
 -----

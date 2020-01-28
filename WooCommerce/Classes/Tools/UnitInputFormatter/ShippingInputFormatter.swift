@@ -18,7 +18,7 @@ struct ShippingInputFormatter: UnitInputFormatter {
 
     func format(input text: String?) -> String {
         guard let text = text, text.isEmpty == false else {
-            return "0"
+            return ""
         }
 
         let formattedText = text

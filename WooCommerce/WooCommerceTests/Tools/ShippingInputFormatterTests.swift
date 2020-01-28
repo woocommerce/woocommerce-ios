@@ -32,7 +32,7 @@ final class ShippingInputFormatterTests: XCTestCase {
         XCTAssertTrue(formatter.isValid(input: input))
     }
 
-    func testNumberDashesAndPercentuageIsValid() {
+    func testNumberDashesAndPercentageIsValid() {
         let input = "-707--87%.2122"
         XCTAssertTrue(formatter.isValid(input: input))
     }
@@ -41,7 +41,7 @@ final class ShippingInputFormatterTests: XCTestCase {
 
     func testFormattingEmptyInput() {
         let input = ""
-        XCTAssertEqual(formatter.format(input: input), "0")
+        XCTAssertEqual(formatter.format(input: input), "")
     }
 
     func testFormattingInputWithLeadingZeros() {

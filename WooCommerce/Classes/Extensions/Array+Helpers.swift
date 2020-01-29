@@ -14,7 +14,7 @@ extension Array {
         return removeFirst()
     }
 
-    /// A Boolean value indicating whether an array has characters.
+    /// A Boolean value indicating whether a collection is not empty.
     var isNotEmpty: Bool {
         return !isEmpty
     }

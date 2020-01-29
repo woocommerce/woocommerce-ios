@@ -39,6 +39,12 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     private let resultsController: ResultsController<Command.ResultsControllerModel>
 
+    /// The controller of the view to show if there are no search results.
+    ///
+    /// - SeeAlso: State.starter
+    ///
+    private var starterViewController: UIViewController?
+
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
@@ -111,6 +117,7 @@ where Cell.SearchModel == Command.CellViewModel {
         configureSearchBarBordersView()
         configureTableView()
         configureResultsController()
+        configureStarterViewController()
 
         startListeningToNotifications()
     }
@@ -258,6 +265,32 @@ private extension SearchViewController {
     func configureResultsController() {
         resultsController.startForwardingEvents(to: tableView)
         try? resultsController.performFetch()
+    }
+
+    func configureStarterViewController() {
+        guard let starterViewController = searchUICommand.createStarterViewController(),
+            let starterView = starterViewController.view else {
+                return
+        }
+
+        starterView.translatesAutoresizingMaskIntoConstraints = false
+
+        add(starterViewController)
+        view.addSubview(starterView)
+
+        // Match the position and size to the `tableView`.
+        NSLayoutConstraint.activate([
+            starterView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            starterView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
+            starterView.topAnchor.constraint(equalTo: tableView.topAnchor),
+            starterView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+        ])
+
+        starterViewController.didMove(toParent: self)
+
+        starterView.isHidden = true
+
+        self.starterViewController = starterViewController
     }
 
     /// Setup: Sync'ing Coordinator

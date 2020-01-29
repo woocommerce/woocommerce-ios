@@ -39,7 +39,9 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     private let resultsController: ResultsController<Command.ResultsControllerModel>
 
-    /// The controller of the view to show if there are no search results.
+    /// The controller of the view to show if there is no search `keyword` entered.
+    ///
+    /// If `nil`, the `tableView` will be shown instead.
     ///
     /// - SeeAlso: State.starter
     ///

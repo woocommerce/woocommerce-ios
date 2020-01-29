@@ -412,22 +412,28 @@ private extension SearchViewController {
 
     func didEnter(state: State) {
         switch state {
+        case .starter:
+            tableView.isHidden = true
+            starterViewController?.view.isHidden = false
         case .empty:
             displayEmptyState()
         case .syncing:
             ensureFooterSpinnerIsStarted()
-        case .results:
+        case .results, .notInitialized:
             break
         }
     }
 
     func didLeave(state: State) {
         switch state {
+        case .starter:
+            starterViewController?.view.isHidden = true
+            tableView.isHidden = false
         case .empty:
             removeEmptyState()
         case .syncing:
             ensureFooterSpinnerIsStopped()
-        case .results:
+        case .results, .notInitialized:
             break
         }
     }

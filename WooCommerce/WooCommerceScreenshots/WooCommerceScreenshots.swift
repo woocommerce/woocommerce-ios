@@ -23,9 +23,9 @@ class WooCommerceScreenshots: XCTestCase {
 
         WelcomeScreen()
             .selectLogin()
-            .proceedWith(email: "")
+            .proceedWith(email: ApiCredentials.screenshotEmailAddress)
             .proceedWithPassword()
-            .proceedWith(password: "")
+            .proceedWith(password: ApiCredentials.screenshotPassword)
             .continueWithSelectedSite()
             .dismissTopBannerIfNeeded()
             .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }

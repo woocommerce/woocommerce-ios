@@ -617,6 +617,7 @@
 		F997174723DC070D00592D8E /* XLPagerStrip+AccessibilityIdentifierTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174623DC070C00592D8E /* XLPagerStrip+AccessibilityIdentifierTests.swift */; };
 		F997174923DC0A7800592D8E /* PeriodStatsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174823DC0A7800592D8E /* PeriodStatsTable.swift */; };
 		F997174B23DC10B300592D8E /* SnapshotHelper.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174A23DC10B300592D8E /* SnapshotHelper.swift */; };
+		F9F01DDC23E214D800418BE8 /* ApiCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = B5A8F8A720B84D3F00D211DE /* ApiCredentials.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -640,6 +641,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = B56DB3C52049BFAA00D4AA8E;
 			remoteInfo = WooCommerce;
+		};
+		F9F01DDF23E2151B00418BE8 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B56DB3BE2049BFAA00D4AA8E /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B55D4C0F20B612F300D7A50F;
+			remoteInfo = GenerateCredentials;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -3009,6 +3017,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				F9F01DE023E2151B00418BE8 /* PBXTargetDependency */,
 				F997170823DBB97500592D8E /* PBXTargetDependency */,
 			);
 			name = WooCommerceScreenshots;
@@ -3902,6 +3911,7 @@
 				F997172523DBCD6100592D8E /* LoginEpilogueScreen.swift in Sources */,
 				F997174223DC006F00592D8E /* SingleReviewScreen.swift in Sources */,
 				F997173D23DBFBBF00592D8E /* OrderSearchScreen.swift in Sources */,
+				F9F01DDC23E214D800418BE8 /* ApiCredentials.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -3922,6 +3932,11 @@
 			isa = PBXTargetDependency;
 			target = B56DB3C52049BFAA00D4AA8E /* WooCommerce */;
 			targetProxy = F997170723DBB97500592D8E /* PBXContainerItemProxy */;
+		};
+		F9F01DE023E2151B00418BE8 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B55D4C0F20B612F300D7A50F /* GenerateCredentials */;
+			targetProxy = F9F01DDF23E2151B00418BE8 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 

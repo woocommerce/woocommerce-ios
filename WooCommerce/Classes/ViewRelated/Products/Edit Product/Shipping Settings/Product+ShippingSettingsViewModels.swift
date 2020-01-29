@@ -11,7 +11,7 @@ extension Product {
                                   unit: unit,
                                   value: value,
                                   keyboardType: .decimalPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
     }
 
@@ -24,7 +24,7 @@ extension Product {
                                   unit: unit,
                                   value: length.isEmpty ? "0": length,
                                   keyboardType: .decimalPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
     }
 
@@ -37,7 +37,7 @@ extension Product {
                                   unit: unit,
                                   value: width.isEmpty ? "0": width,
                                   keyboardType: .decimalPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
     }
 
@@ -50,7 +50,7 @@ extension Product {
                                   unit: unit,
                                   value: height.isEmpty ? "0": height,
                                   keyboardType: .decimalPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
     }
 }

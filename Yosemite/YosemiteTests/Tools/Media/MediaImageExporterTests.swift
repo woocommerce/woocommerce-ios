@@ -4,6 +4,7 @@ import XCTest
 
 final class MediaImageExporterTests: XCTestCase {
     func testExportingAnImageWithTypeHint() {
+        // Loads the test image into png data.
         let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
         let filename = "test"
         let typeHint = kUTTypeJPEG as String
@@ -32,7 +33,8 @@ final class MediaImageExporterTests: XCTestCase {
         }
     }
 
-    func testExportingAnImageWithoutTypeHint() {
+    func testExportingAnImageWithAnUnknownTypeHintUsesTheImageDataType() {
+        // Loads the test image into png data.
         let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
         let filename = "test"
         let mockImageSourceWriter = MockImageSourceWriter()

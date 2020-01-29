@@ -37,7 +37,7 @@ struct PriceInputFormatter: UnitInputFormatter {
 
     func format(input text: String?) -> String {
         guard let text = text, text.isEmpty == false else {
-            return "0"
+            return ""
         }
 
         // Replace any characters not in the set of 0-9 with the current decimal separator configured on website

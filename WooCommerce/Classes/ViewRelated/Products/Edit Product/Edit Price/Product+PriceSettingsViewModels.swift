@@ -14,6 +14,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
+                                  placeholder: "0",
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)
@@ -32,6 +33,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
+                                  placeholder: "0",
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)

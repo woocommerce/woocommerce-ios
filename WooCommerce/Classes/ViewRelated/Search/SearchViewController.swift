@@ -422,7 +422,24 @@ private enum Settings {
 // MARK: - FSM States
 //
 private enum State {
-    case syncing
+    /// The view has not been loaded yet.
+    ///
+    case notInitialized
+    /// The state when there is no search `keyword` and the `starterViewController` is shown.
+    ///
+    /// This state is never reached if `starterViewController` is `nil`.
+    ///
+    case starter
+    /// The state when there are search results.
+    ///
+    /// This is also the default `state` if there is no `starterViewController`. Search result
+    /// providers (i.e. `SearchUICommand`) can opt to show a default list of items in this case.
+    ///
     case results
+    /// The state when a `keyword` is entered and a search is in progress.
+    ///
+    case syncing
+    /// The state when the search has finished but there are no results.
+    ///
     case empty
 }

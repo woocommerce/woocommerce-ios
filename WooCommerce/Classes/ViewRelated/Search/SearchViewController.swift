@@ -441,7 +441,7 @@ private extension SearchViewController {
     /// Should be called before Sync'ing. Transitions to either `results` state.
     ///
     func transitionToSyncingState() {
-        state = .syncing
+        state = keyword.isEmpty ? stateIfSearchKeywordIsEmpty : .syncing
     }
 
     /// Should be called whenever new results have been retrieved. Transitions to `.results` / `.empty` accordingly.

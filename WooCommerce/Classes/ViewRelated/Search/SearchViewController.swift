@@ -61,7 +61,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// UI Active State
     ///
-    private var state: State = .results {
+    private var state: State = .notInitialized {
         didSet {
             didLeave(state: oldValue)
             didEnter(state: state)

@@ -7,7 +7,7 @@ final class MediaImageExporterTests: XCTestCase {
         let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
         let filename = "test"
         let typeHint = kUTTypeJPEG as String
-        let mockImageSourceWriter = MockupImageSourceWriter()
+        let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData!,
                                           filename: filename,
                                           typeHint: typeHint,
@@ -35,7 +35,7 @@ final class MediaImageExporterTests: XCTestCase {
     func testExportingAnImageWithoutTypeHint() {
         let mockData = UIImage(named: "image", in: Bundle(for: type(of: self)), compatibleWith: nil)!.pngData()
         let filename = "test"
-        let mockImageSourceWriter = MockupImageSourceWriter()
+        let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData!,
                                           filename: filename,
                                           typeHint: nil,
@@ -64,7 +64,7 @@ final class MediaImageExporterTests: XCTestCase {
         let mockData = Data()
         let filename = "test"
         let typeHint = kUTTypeJPEG as String
-        let mockImageSourceWriter = MockupImageSourceWriter()
+        let mockImageSourceWriter = MockImageSourceWriter()
         let exporter = MediaImageExporter(data: mockData,
                                           filename: filename,
                                           typeHint: typeHint,

@@ -1,6 +1,6 @@
 @testable import Yosemite
 
-final class MockupImageSourceWriter: ImageSourceWriter {
+final class MockImageSourceWriter: ImageSourceWriter {
     private(set) var targetURL: URL?
 
     func writeImageSource(_ source: CGImageSource,

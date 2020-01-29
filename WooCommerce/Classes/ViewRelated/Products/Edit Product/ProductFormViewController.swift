@@ -306,7 +306,6 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-
         guard regularPrice != product.regularPrice ||
             salePrice != product.salePrice ||
             dateOnSaleStart != product.dateOnSaleStart ||

@@ -24,6 +24,10 @@ final class ProductSearchUICommand: SearchUICommand {
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }
 
+    func createStarterViewController() -> UIViewController? {
+        nil
+    }
+
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {
         return ProductsTabProductViewModel(product: model)
     }

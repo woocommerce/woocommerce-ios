@@ -28,6 +28,10 @@ final class OrderSearchUICommand: SearchUICommand {
         return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
     }
 
+    func createStarterViewController() -> UIViewController? {
+        nil
+    }
+
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {
         let orderDetailsViewModel = OrderDetailsViewModel(order: model)
         let orderStatus = lookUpOrderStatus(for: model)

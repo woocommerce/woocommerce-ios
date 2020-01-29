@@ -120,6 +120,8 @@ where Cell.SearchModel == Command.CellViewModel {
         configureStarterViewController()
 
         startListeningToNotifications()
+
+        transitionToResultsUpdatedState()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -430,6 +432,12 @@ private extension SearchViewController {
         }
     }
 
+    /// The state to use if the `keyword` is empty.
+    ///
+    var stateIfSearchKeywordIsEmpty: State {
+        starterViewController != nil ? .starter : .results
+    }
+
     /// Should be called before Sync'ing. Transitions to either `results` state.
     ///
     func transitionToSyncingState() {
@@ -439,7 +447,17 @@ private extension SearchViewController {
     /// Should be called whenever new results have been retrieved. Transitions to `.results` / `.empty` accordingly.
     ///
     func transitionToResultsUpdatedState() {
-        state = isEmpty ? .empty : .results
+        let nextState: State
+
+        if keyword.isEmpty {
+            nextState = stateIfSearchKeywordIsEmpty
+        } else if isEmpty {
+            nextState = .empty
+        } else {
+            nextState = .results
+        }
+
+        state = nextState
     }
 }
 

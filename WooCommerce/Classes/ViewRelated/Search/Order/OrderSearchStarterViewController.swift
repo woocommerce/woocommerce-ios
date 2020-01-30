@@ -23,11 +23,25 @@ final class OrderSearchStarterViewController: UIViewController {
         super.viewDidLoad()
 
         configureTableView()
-        
+
         viewModel.activate(using: tableView)
     }
 
     private func configureTableView() {
         tableView.backgroundColor = .listBackground
+        tableView.delegate = self
+    }
+}
+
+extension OrderSearchStarterViewController: UITableViewDelegate {
+
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let alertController = UIAlertController(title: "Not available",
+                                                message: "This is still under development.",
+                                                preferredStyle: .alert)
+        alertController.addActionWithTitle("Fine, I guess", style: .default) { _ in
+            tableView.deselectSelectedRowWithAnimation(true)
+        }
+        present(alertController, animated: true, completion: nil)
     }
 }

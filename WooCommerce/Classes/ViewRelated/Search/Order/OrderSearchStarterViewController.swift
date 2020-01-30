@@ -2,6 +2,8 @@
 import Foundation
 import UIKit
 
+/// The view shown in Orders Search if there is no search keyword entered.
+///
 final class OrderSearchStarterViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
 

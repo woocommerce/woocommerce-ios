@@ -3,6 +3,10 @@ import Foundation
 import UIKit
 import Yosemite
 
+/// ViewModel for `OrderSearchStarterViewController`.
+///
+/// This mainly acts as the `UITableViewDataSource`.
+///
 final class OrderSearchStarterViewModel {
     private lazy var dataSource = DataSource()
 
@@ -18,6 +22,8 @@ final class OrderSearchStarterViewModel {
 
 
 private extension OrderSearchStarterViewModel {
+    /// Encpsulates data loading and presentation of the `UITableViewCells`.
+    ///
     final class DataSource: NSObject, UITableViewDataSource {
         private lazy var storageManager = ServiceLocator.storageManager
 
@@ -27,14 +33,24 @@ private extension OrderSearchStarterViewModel {
                                                          sortedBy: [descriptor])
         }()
 
+        /// Run the query to fetch all the `OrderStatus`.
+        ///
         func performFetch() throws {
             try resultsController.performFetch()
         }
 
+        /// Attach events so the `tableView` is always kept up to date.
+        ///
+        /// This should only be called once.
+        ///
         func startForwardingEvents(to tableView: UITableView) {
             resultsController.startForwardingEvents(to: tableView)
         }
 
+        /// Register the `UITableViewCells` that will be used.
+        ///
+        /// This should only be called once.
+        ///
         func registerCells(for tableView: UITableView) {
             tableView.register(BasicTableViewCell.loadNib(),
                                forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)

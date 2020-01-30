@@ -16,6 +16,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: "",
                                   value: "\(stockQuantity ?? 0)",
+                                  placeholder: "0",
                                   keyboardType: .numberPad,
                                   inputFormatter: IntegerInputFormatter(),
                                   onInputChange: onInputChange)

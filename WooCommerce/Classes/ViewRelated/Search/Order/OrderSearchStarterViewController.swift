@@ -3,7 +3,6 @@ import Foundation
 import UIKit
 
 final class OrderSearchStarterViewController: UIViewController {
-
     @IBOutlet private var tableView: UITableView!
 
     private lazy var viewModel = OrderSearchStarterViewModel()
@@ -19,13 +18,15 @@ final class OrderSearchStarterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureTableView()
+        view.backgroundColor = .listBackground
 
-        #warning("temp")
-        tableView.backgroundColor = .red
+        configureTableView()
     }
 
     private func configureTableView() {
+        tableView.backgroundColor = .listBackground
+        tableView.delegate = self
+
         viewModel.configureDataSource(for: tableView)
     }
 }

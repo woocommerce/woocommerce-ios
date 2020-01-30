@@ -42,16 +42,20 @@ final class MediaImageExporter: MediaExporter {
     private let filename: String?
     private let typeHint: String?
 
+    private let imageSourceWriter: ImageSourceWriter
+
     init(data: Data,
          filename: String?,
          typeHint: String? = nil,
          options: MediaImageExportOptions,
-         mediaDirectoryType: MediaDirectory = .uploads) {
+         mediaDirectoryType: MediaDirectory = .uploads,
+         imageSourceWriter: ImageSourceWriter = DefaultImageSourceWriter()) {
         self.filename = filename
         self.data = data
         self.typeHint = typeHint
         self.options = options
         self.mediaDirectoryType = mediaDirectoryType
+        self.imageSourceWriter = imageSourceWriter
     }
 
     func export(onCompletion: @escaping MediaExportCompletion) {
@@ -63,7 +67,7 @@ final class MediaImageExporter: MediaExporter {
     /// - Parameters:
     ///     - data: Image data.
     ///     - fileName: Filename if it's known.
-    ///     - typeHint: The UTType of data, if it's known.
+    ///     - typeHint: The UTType of data, if it's known. It is used as the preferred type.
     ///     - onCompletion: Called when the image export completes.
     ///
     private func exportImage(data: Data,
@@ -81,7 +85,7 @@ final class MediaImageExporter: MediaExporter {
             }
             exportImageSource(source,
                               filename: fileName,
-                              type: utType as String,
+                              type: typeHint ?? utType as String,
                               onCompletion: onCompletion)
         } catch {
             onCompletion(nil, error)
@@ -107,9 +111,7 @@ final class MediaImageExporter: MediaExporter {
             let url = try mediaFileManager.createLocalMediaURL(filename: filename,
                                                                fileExtension: URL.fileExtensionForUTType(type))
 
-            // Checks export options and configures the image writer as needed.
-            let writer = ImageSourceWriter(url: url, sourceUTType: type as CFString)
-            _ = try writer.writeImageSource(source, options: options)
+            _ = try imageSourceWriter.writeImageSource(source, to: url, sourceUTType: type as CFString, options: options)
 
             let exported = UploadableMedia(localURL: url,
                                            filename: url.lastPathComponent,

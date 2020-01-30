@@ -13,6 +13,8 @@ final class ProductImagesViewController: UIViewController {
 
     private let siteID: Int64
     private let productID: Int64
+
+    private let productImagesService: ProductImagesService
     private var productImageStatuses: [ProductImageStatus] {
         didSet {
             imagesViewController.updateProductImageStatuses(productImageStatuses)
@@ -44,9 +46,10 @@ final class ProductImagesViewController: UIViewController {
 
     private let onCompletion: Completion
 
-    init(product: Product, completion: @escaping Completion) {
+    init(product: Product, productImagesService: ProductImagesService, completion: @escaping Completion) {
         self.siteID = product.siteID
         self.productID = product.productID
+        self.productImagesService = productImagesService
         self.productImageStatuses = product.images.map({ ProductImageStatus.remote(image: $0) })
         self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)
@@ -130,7 +133,7 @@ private extension ProductImagesViewController {
     }
 
     func onDeletion(productImage: ProductImage) {
-        productImageStatuses.removeAll { (status) -> Bool in
+        productImageStatuses.removeAll { status -> Bool in
             guard case .remote(let image) = status else {
                 return false
             }
@@ -164,7 +167,55 @@ extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
-        // TODO-1713: upload a media asset to the site media library.
+        productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] (productImage, error) in
+            guard let self = self else {
+                return
+            }
+
+            guard let assetIndex = self.index(of: asset) else {
+                self.displayErrorAlert(error: nil)
+                return
+            }
+
+            guard let productImage = productImage, error == nil else {
+                self.updateProductImageStatus(at: assetIndex, error: error)
+                return
+            }
+
+            self.updateProductImageStatus(at: assetIndex, productImage: productImage)
+        }
+    }
+
+    func updateProductImageStatus(at index: Int, productImage: ProductImage) {
+        productImageStatuses[index] = .remote(image: productImage)
+    }
+
+    func updateProductImageStatus(at index: Int, error: Error?) {
+        displayErrorAlert(error: error)
+        productImageStatuses.remove(at: index)
+    }
+
+    func index(of asset: PHAsset) -> Int? {
+        return productImageStatuses.firstIndex(where: { status -> Bool in
+            switch status {
+            case .uploading(let uploadingAsset):
+                return uploadingAsset == asset
+            default:
+                return false
+            }
+        })
+    }
+
+    func addMediaToProduct(mediaItems: [Media]) {
+        let newProductImageStatuses = mediaItems.map({
+            ProductImage(imageID: $0.mediaID,
+            dateCreated: Date(),
+            dateModified: nil,
+            src: $0.src,
+            name: $0.name,
+            alt: $0.alt)
+        }).map({ ProductImageStatus.remote(image: $0) })
+        self.productImageStatuses = newProductImageStatuses + productImageStatuses
     }
 }
 

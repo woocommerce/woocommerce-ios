@@ -33,4 +33,10 @@ enum FeatureFlag: Int {
     /// Refunds
     ///
     case refunds
+
+    /// Order List Redesign
+    ///
+    /// See https://github.com/woocommerce/woocommerce-ios/issues/956.
+    ///
+    case orderListRedesign
 }

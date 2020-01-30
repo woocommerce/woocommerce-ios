@@ -25,7 +25,6 @@ final class OrderSearchStarterViewController: UIViewController {
 
     private func configureTableView() {
         tableView.backgroundColor = .listBackground
-        tableView.delegate = self
 
         viewModel.configureDataSource(for: tableView)
     }

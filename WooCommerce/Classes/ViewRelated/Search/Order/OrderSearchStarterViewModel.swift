@@ -32,11 +32,14 @@ private extension OrderSearchStarterViewModel {
     /// Encpsulates data loading and presentation of the `UITableViewCells`.
     ///
     final class DataSource: NSObject, UITableViewDataSource {
-        private lazy var storageManager = ServiceLocator.storageManager
+        private let storageManager = ServiceLocator.storageManager
+        private let siteID = ServiceLocator.stores.sessionManager.defaultStoreID ?? Int64.min
 
         private lazy var resultsController: ResultsController<StorageOrderStatus> = {
             let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+            let predicate = NSPredicate(format: "siteID == %lld", siteID)
             return ResultsController<StorageOrderStatus>(storageManager: storageManager,
+                                                         matching: predicate,
                                                          sortedBy: [descriptor])
         }()
 

@@ -13,6 +13,7 @@ public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus
 public typealias Credentials = Networking.Credentials
 public typealias DotcomDevice = Networking.DotcomDevice
+public typealias Media = Networking.Media
 public typealias MetaContainer = Networking.MetaContainer
 public typealias Note = Networking.Note
 public typealias NoteBlock = Networking.NoteBlock

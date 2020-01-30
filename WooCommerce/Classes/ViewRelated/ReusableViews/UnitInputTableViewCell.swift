@@ -4,6 +4,7 @@ struct UnitInputViewModel {
     let title: String
     let unit: String
     let value: String?
+    let placeholder: String?
     let keyboardType: UIKeyboardType
     let inputFormatter: UnitInputFormatter
     let onInputChange: ((_ input: String?) -> Void)?
@@ -36,6 +37,7 @@ final class UnitInputTableViewCell: UITableViewCell {
         unitLabel.text = viewModel.unit
         unitLabel.isHidden = viewModel.unit.isEmpty
         inputTextField.text = viewModel.value
+        inputTextField.placeholder = viewModel.placeholder
         inputTextField.keyboardType = viewModel.keyboardType
         inputFormatter = viewModel.inputFormatter
         onInputChange = viewModel.onInputChange

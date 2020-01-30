@@ -40,11 +40,12 @@ struct PriceInputFormatter: UnitInputFormatter {
             return ""
         }
 
-        // Replace any characters not in the set of 0-9 with the current decimal separator configured on website
-        let formattedText = text.replacingOccurrences(of: "[^0-9]", with: CurrencySettings.shared.decimalSeparator, options: .regularExpression)
+        let formattedText = text
+            // Replace any characters not in the set of 0-9 with the current decimal separator configured on website
+            .replacingOccurrences(of: "[^0-9]", with: CurrencySettings.shared.decimalSeparator, options: .regularExpression)
             // Remove any initial zero number in the string. Es. 00224.30 will be 2224.30
             .replacingOccurrences(of: "^0+([1-9]+)", with: "$1", options: .regularExpression)
-            // Replace all the occurrences of regex plus all the points or comma (but not the last `.` or `,`)
+            // Replace all the occurrences of regex plus all the points or comma (but not the last `.` or `,`) like thousand separators
             .replacingOccurrences(of: "(?:[.,](?=.*[.,])|)+", with: "$1", options: .regularExpression)
         return formattedText
     }

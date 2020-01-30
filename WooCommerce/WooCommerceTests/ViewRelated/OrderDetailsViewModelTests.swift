@@ -36,4 +36,24 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         XCTAssert(receivedEvents.contains(WooAnalyticsStat.orderTrackingDelete.rawValue))
     }
+
+    func testFormattedDateCreatedDoesNotIncludeTheYearForDatesWithTheSameYear() {
+        let order = MockOrders().sampleOrderCreatedInCurrentYear()
+        let viewModel = OrderDetailsViewModel(order: order)
+        let expectedYearString = DateFormatter.yearFormatter.string(from: order.dateCreated)
+
+        let formatted = viewModel.formattedDateCreated
+
+        XCTAssertFalse(formatted.contains(expectedYearString))
+    }
+
+    func testFormattedDateCreatedIncludesTheYearForDatesThatAreNotInTheSameYear() {
+        let order = MockOrders().sampleOrder()
+        let viewModel = OrderDetailsViewModel(order: order)
+        let expectedYearString = DateFormatter.yearFormatter.string(from: order.dateCreated)
+
+        let formatted = viewModel.formattedDateCreated
+
+        XCTAssertTrue(formatted.contains(expectedYearString))
+    }
 }

@@ -54,6 +54,9 @@
 		02FF056523DE9C8B0058E6E7 /* MediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056423DE9C8B0058E6E7 /* MediaStore.swift */; };
 		02FF056723DEB2180058E6E7 /* MediaStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056623DEB2180058E6E7 /* MediaStoreTests.swift */; };
 		02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */; };
+		02FF056923DECD5B0058E6E7 /* MediaImageExporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056823DECD5B0058E6E7 /* MediaImageExporterTests.swift */; };
+		02FF056B23DED3670058E6E7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02FF056A23DED3670058E6E7 /* Media.xcassets */; };
+		02FF056D23DEDCB90058E6E7 /* MockImageSourceWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */; };
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
 		450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */; };
@@ -247,6 +250,9 @@
 		02FF056423DE9C8B0058E6E7 /* MediaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStore.swift; sourceTree = "<group>"; };
 		02FF056623DEB2180058E6E7 /* MediaStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStoreTests.swift; sourceTree = "<group>"; };
 		02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaExportService.swift; sourceTree = "<group>"; };
+		02FF056823DECD5B0058E6E7 /* MediaImageExporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaImageExporterTests.swift; sourceTree = "<group>"; };
+		02FF056A23DED3670058E6E7 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
+		02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageSourceWriter.swift; sourceTree = "<group>"; };
 		35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45010692239A6C9F00E24722 /* TaxClassStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassStore.swift; sourceTree = "<group>"; };
@@ -520,6 +526,7 @@
 				02FF055823D9846A0058E6E7 /* MediaDirectoryTests.swift */,
 				02FF055923D9846A0058E6E7 /* MediaFileManagerTests.swift */,
 				02FF055E23D985710058E6E7 /* URL+MediaTests.swift */,
+				02FF056823DECD5B0058E6E7 /* MediaImageExporterTests.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -754,6 +761,7 @@
 				B5BC736620D1AA8F00B5B6FA /* Stores */,
 				B5F2AE9320EBAD5200FEDC59 /* Tools */,
 				B5C9DE052087FEC0006B910A /* Info.plist */,
+				02FF056A23DED3670058E6E7 /* Media.xcassets */,
 			);
 			path = YosemiteTests;
 			sourceTree = "<group>";
@@ -798,6 +806,7 @@
 				B5C9DE202087FF20006B910A /* MockupAcount.swift */,
 				02FF055523D984310058E6E7 /* MockupFileManager.swift */,
 				02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */,
+				02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */,
 				B5C9DE212087FF20006B910A /* MockupSite.swift */,
 				B5A01CA020D19C4700E3207E /* MockupStorage.swift */,
 				B53A569F211245E0000776C9 /* MockupStorage+Sample.swift */,
@@ -963,6 +972,7 @@
 			files = (
 				D8BD6A4C229D07C9007CAD6C /* custom-shipment-provider.plist in Resources */,
 				B5BC71DD21139EDD005CF5AA /* Responses in Resources */,
+				02FF056B23DED3670058E6E7 /* Media.xcassets in Resources */,
 				D87F61602265B2400031A13B /* shipment-provider.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1196,10 +1206,12 @@
 				CECC504023675DF4004540EA /* RefundStoreTests.swift in Sources */,
 				D831E2E8230E74EF000037D0 /* ProductReviewStoreTests.swift in Sources */,
 				02FF055B23D9846A0058E6E7 /* MediaDirectoryTests.swift in Sources */,
+				02FF056D23DEDCB90058E6E7 /* MockImageSourceWriter.swift in Sources */,
 				741F34842195F752005F5BD9 /* CommentStoreTests.swift in Sources */,
 				B5C9DE282087FF20006B910A /* MockupSite.swift in Sources */,
 				B5BC736820D1AA8F00B5B6FA /* AccountStoreTests.swift in Sources */,
 				D87F615E2265B1BC0031A13B /* AppSettingsStoreTests.swift in Sources */,
+				02FF056923DECD5B0058E6E7 /* MediaImageExporterTests.swift in Sources */,
 				02BA23C622EEF092009539E7 /* StatsV4AvailabilityStoreTests.swift in Sources */,
 				0202B6972387AFBF00F3EBE0 /* MockInMemoryStorage.swift in Sources */,
 				028BCE2422DE22BB00056966 /* SiteVisitStatsStoreErrorTests.swift in Sources */,

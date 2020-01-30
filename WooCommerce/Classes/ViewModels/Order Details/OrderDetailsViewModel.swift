@@ -5,7 +5,10 @@ import Yosemite
 import MessageUI
 
 final class OrderDetailsViewModel {
+    private let currencyFormatter = CurrencyFormatter()
+
     private(set) var order: Order
+
     var orderStatus: OrderStatus? {
         return lookUpOrderStatus(for: order)
     }
@@ -18,6 +21,16 @@ final class OrderDetailsViewModel {
         self.order = newOrder
     }
 
+    /// The date displayed on the Orders List.
+    ///
+    /// The value will only include the year if the `createdDate` is not from the current year.
+    ///
+    var formattedDateCreated: String {
+        let isSameYear = order.dateCreated.isSameYear(as: Date())
+        let formatter: DateFormatter = isSameYear ? .monthAndDayFormatter : .mediumLengthLocalizedDateFormatter
+        return formatter.string(from: order.dateCreated)
+    }
+
     var summaryTitle: String? {
         return dataSource.summaryTitle
     }
@@ -26,10 +39,12 @@ final class OrderDetailsViewModel {
 
     let productRightTitle = NSLocalizedString("QTY", comment: "Quantity abbreviation for section title")
 
-    /// Anything above 999.99 or below -999.99 should display a truncated amount
+    /// The localized unabbreviated total which includes the currency.
+    ///
+    /// Example: $48,415,504.20
     ///
     var totalFriendlyString: String? {
-        return dataSource.totalFriendlyString
+        currencyFormatter.formatAmount(order.total, with: order.currency)
     }
 
     /// Products from an Order

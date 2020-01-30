@@ -174,6 +174,9 @@
 		02E4FD812306AA890049610C /* StatsTimeRangeBarViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */; };
 		02E6B97823853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E6B97623853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift */; };
 		02E6B97923853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02E6B97723853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib */; };
+		02E8B17723E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17523E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift */; };
+		02E8B17823E2C49000A43403 /* InProgressProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02E8B17623E2C49000A43403 /* InProgressProductImageCollectionViewCell.xib */; };
+		02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */; };
 		02F49ADA23BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F49AD923BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift */; };
 		02F49ADC23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02F49ADB23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift */; };
 		02F49ADE23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02F49ADD23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib */; };
@@ -785,6 +788,9 @@
 		02E4FD802306AA890049610C /* StatsTimeRangeBarViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeBarViewModelTests.swift; sourceTree = "<group>"; };
 		02E6B97623853D81000A36F0 /* SettingTitleAndValueTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingTitleAndValueTableViewCell.swift; sourceTree = "<group>"; };
 		02E6B97723853D81000A36F0 /* SettingTitleAndValueTableViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = SettingTitleAndValueTableViewCell.xib; sourceTree = "<group>"; };
+		02E8B17523E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InProgressProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
+		02E8B17623E2C49000A43403 /* InProgressProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = InProgressProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
+		02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CircleSpinnerView.swift; sourceTree = "<group>"; };
 		02F49AD923BF356E00FA0BFA /* TitleAndTextFieldTableViewCell.ViewModel+State.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TitleAndTextFieldTableViewCell.ViewModel+State.swift"; sourceTree = "<group>"; };
 		02F49ADB23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorSectionHeaderView.swift; sourceTree = "<group>"; };
 		02F49ADD23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ErrorSectionHeaderView.xib; sourceTree = "<group>"; };
@@ -1701,6 +1707,8 @@
 		451A04ED2386F79600E368C9 /* Collection View Cells */ = {
 			isa = PBXGroup;
 			children = (
+				02E8B17523E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift */,
+				02E8B17623E2C49000A43403 /* InProgressProductImageCollectionViewCell.xib */,
 				451A04EE2386F7B500E368C9 /* ProductImageCollectionViewCell.swift */,
 				451A04EF2386F7B500E368C9 /* ProductImageCollectionViewCell.xib */,
 				451A04F22386F7C900E368C9 /* AddProductImageCollectionViewCell.swift */,
@@ -2731,6 +2739,7 @@
 				02F49ADB23BF3A0100FA0BFA /* ErrorSectionHeaderView.swift */,
 				02F49ADD23BF3A4100FA0BFA /* ErrorSectionHeaderView.xib */,
 				0286B27E23C70557003D784B /* ColumnFlowLayout.swift */,
+				02E8B17923E2C4BD00A43403 /* CircleSpinnerView.swift */,
 			);
 			path = ReusableViews;
 			sourceTree = "<group>";
@@ -3039,6 +3048,7 @@
 				CE32B11620BF8779006FBCF4 /* FulfillButtonTableViewCell.xib in Resources */,
 				45C8B2672316AB460002FA77 /* BillingAddressTableViewCell.xib in Resources */,
 				B557652D20F6827900185843 /* StoreTableViewCell.xib in Resources */,
+				02E8B17823E2C49000A43403 /* InProgressProductImageCollectionViewCell.xib in Resources */,
 				7493BB8F2149852A003071A9 /* TopPerformersHeaderView.xib in Resources */,
 				CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */,
 				CE35F11C2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib in Resources */,
@@ -3258,6 +3268,7 @@
 				CE1D5A55228A0AD200DF3715 /* TwoColumnTableViewCell.swift in Sources */,
 				74460D4222289C7A00D7316A /* StorePickerCoordinator.swift in Sources */,
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
+				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,
 				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,
@@ -3387,6 +3398,7 @@
 				B55D4C0620B6027200D7A50F /* AuthenticationManager.swift in Sources */,
 				451A04F02386F7B500E368C9 /* ProductImageCollectionViewCell.swift in Sources */,
 				02695770237281A9001BA0BF /* AztecTextViewAttachmentHandler.swift in Sources */,
+				02E8B17723E2C49000A43403 /* InProgressProductImageCollectionViewCell.swift in Sources */,
 				CE5F462C23AACBC4006B1A5C /* RefundDetailsResultController.swift in Sources */,
 				0230535B2374FB6800487A64 /* AztecSourceCodeFormatBarCommand.swift in Sources */,
 				B57C5C9221B80E3C00FF82B2 /* APNSDevice+Woo.swift in Sources */,

@@ -11,6 +11,10 @@ final class OrderSearchStarterViewController: UIViewController {
 
     private lazy var viewModel = OrderSearchStarterViewModel()
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+    }()
+
     init() {
         super.init(nibName: type(of: self).nibName, bundle: nil)
     }
@@ -30,6 +34,8 @@ final class OrderSearchStarterViewController: UIViewController {
     private func configureTableView() {
         tableView.backgroundColor = .listBackground
         tableView.delegate = self
+
+        keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }
 
@@ -43,5 +49,11 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
             tableView.deselectSelectedRowWithAnimation(true)
         }
         present(alertController, animated: true, completion: nil)
+    }
+}
+
+extension OrderSearchStarterViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        tableView
     }
 }

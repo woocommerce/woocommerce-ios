@@ -36,7 +36,8 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
         collectionView.backgroundColor = .basicBackground
 
         collectionView.register(ProductImageCollectionViewCell.loadNib(), forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
-        collectionView.register(InProgressProductImageCollectionViewCell.loadNib(), forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
+        collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
+                                forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
 
         collectionView.reloadData()
     }

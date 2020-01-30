@@ -50,7 +50,7 @@ msgstr ""
 msgctxt "v3.5-whats-new"
 msgid ""
 "- If the app is in the foreground and you get a push notification, the badges on the Orders tab and Reviews tab will update correctly based on the type of the notification.\n"
-"- Sometimes after logging out and back in, the Product List would be empty even though you clearly have products. The Product List now lives up to its name and shows products from the correct store.\n"
+"- Sometimes after logging out and back in, the Product List would be empty even though you clearly have products. The Product List now lives up to its name and shows products from the correct store. Can’t find the Products list? Go into the “Experimental Features” menu in Settings to enable the sneak preview.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

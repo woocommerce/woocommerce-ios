@@ -23,7 +23,7 @@ extension Product {
         let unit = shippingSettingsService.dimensionUnit ?? ""
         return UnitInputViewModel(title: title,
                                   unit: unit,
-                                  value: length.isEmpty ? "": length,
+                                  value: length,
                                   placeholder: "0",
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),
@@ -37,7 +37,7 @@ extension Product {
         let unit = shippingSettingsService.dimensionUnit ?? ""
         return UnitInputViewModel(title: title,
                                   unit: unit,
-                                  value: width.isEmpty ? "": width,
+                                  value: width,
                                   placeholder: "0",
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),
@@ -51,7 +51,7 @@ extension Product {
         let unit = shippingSettingsService.dimensionUnit ?? ""
         return UnitInputViewModel(title: title,
                                   unit: unit,
-                                  value: height.isEmpty ? "": height,
+                                  value: height,
                                   placeholder: "0",
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),

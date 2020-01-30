@@ -29,7 +29,7 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func createStarterViewController() -> UIViewController? {
-        nil
+        OrderSearchStarterViewController()
     }
 
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {

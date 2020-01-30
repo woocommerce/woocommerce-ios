@@ -5,12 +5,19 @@ import Yosemite
 
 /// ViewModel for `OrderSearchStarterViewController`.
 ///
-/// This mainly acts as the `UITableViewDataSource`.
+/// This encapsulates all the `OrderStatus` data loading and `UITableViewCell` presentation.
 ///
 final class OrderSearchStarterViewModel {
     private lazy var dataSource = DataSource()
 
-    func configureDataSource(for tableView: UITableView) {
+    /// Start all the operations that this `ViewModel` is responsible for.
+    ///
+    /// This should only be called once in the lifetime of `OrderSearchStarterViewController`.
+    ///
+    /// - Parameters:
+    ///     - tableView: The table to use for the results. This is not retained by this class.
+    ///
+    func activate(using tableView: UITableView) {
         tableView.dataSource = dataSource
 
         dataSource.registerCells(for: tableView)

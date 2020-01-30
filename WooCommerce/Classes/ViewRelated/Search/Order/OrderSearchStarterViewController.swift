@@ -4,6 +4,8 @@ import UIKit
 
 /// The view shown in Orders Search if there is no search keyword entered.
 ///
+/// This shows a list of `OrderStatus` that the user can pick to filter Orders by status.
+///
 final class OrderSearchStarterViewController: UIViewController {
     @IBOutlet private var tableView: UITableView!
 
@@ -21,11 +23,11 @@ final class OrderSearchStarterViewController: UIViewController {
         super.viewDidLoad()
 
         configureTableView()
+        
+        viewModel.activate(using: tableView)
     }
 
     private func configureTableView() {
         tableView.backgroundColor = .listBackground
-
-        viewModel.configureDataSource(for: tableView)
     }
 }

@@ -271,6 +271,8 @@ private extension SearchViewController {
         try? resultsController.performFetch()
     }
 
+    /// Create and add `starterViewController` to the `view.`
+    ///
     func configureStarterViewController() {
         guard let starterViewController = searchUICommand.createStarterViewController(),
             let starterView = starterViewController.view else {

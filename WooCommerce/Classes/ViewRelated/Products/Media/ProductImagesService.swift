@@ -14,7 +14,9 @@ struct ProductImagesService {
         let action = MediaAction.uploadMedia(siteID: siteID,
                                              mediaAsset: asset) { (media, error) in
                                                 guard let media = media else {
-                                                    completion(nil, error)
+                                                    DispatchQueue.main.async {
+                                                        completion(nil, error)
+                                                    }
                                                     return
                                                 }
                                                 let productImage = ProductImage(imageID: media.mediaID,
@@ -23,7 +25,9 @@ struct ProductImagesService {
                                                                                 src: media.src,
                                                                                 name: media.name,
                                                                                 alt: media.alt)
-                                                completion(productImage, nil)
+                                                DispatchQueue.main.async {
+                                                    completion(productImage, nil)
+                                                }
         }
         ServiceLocator.stores.dispatch(action)
     }

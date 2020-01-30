@@ -9,7 +9,9 @@ final class OrderSearchStarterViewModel {
     func configureDataSource(for tableView: UITableView) {
         tableView.dataSource = dataSource
 
+        dataSource.registerCells(for: tableView)
         dataSource.startForwardingEvents(to: tableView)
+
         try? dataSource.performFetch()
     }
 }
@@ -33,15 +35,23 @@ private extension OrderSearchStarterViewModel {
             resultsController.startForwardingEvents(to: tableView)
         }
 
+        func registerCells(for tableView: UITableView) {
+            tableView.register(BasicTableViewCell.loadNib(),
+                               forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
+        }
+
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             resultsController.numberOfObjects
         }
 
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-            let status = resultsController.object(at: indexPath)
+            let cell = tableView.dequeueReusableCell(withIdentifier: BasicTableViewCell.reuseIdentifier,
+                                                     for: indexPath)
+            let orderStatus = resultsController.object(at: indexPath)
 
-            let cell = UITableViewCell()
-            cell.textLabel?.text = status.name
+            cell.accessoryType = .disclosureIndicator
+            cell.selectionStyle = .default
+            cell.textLabel?.text = orderStatus.name
 
             return cell
         }

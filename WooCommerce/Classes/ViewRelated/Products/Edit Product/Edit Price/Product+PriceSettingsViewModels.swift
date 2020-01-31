@@ -1,6 +1,9 @@
 import Yosemite
 
 extension Product {
+
+    private static let placeholder = "0"
+
     static func createRegularPriceViewModel(regularPrice: String?,
                                             using currencySettings: CurrencySettings,
                                        onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
@@ -9,12 +12,12 @@ extension Product {
         let currencyFormatter = CurrencyFormatter()
         let currencyCode = CurrencySettings.shared.currencyCode
         let unit = CurrencySettings.shared.symbol(from: currencyCode)
-        var value = currencyFormatter.formatAmount(regularPrice ?? "", with: unit) ?? "0"
+        var value = currencyFormatter.formatAmount(regularPrice ?? "", with: unit) ?? ""
         value = value.replacingOccurrences(of: unit, with: "")
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
-                                  placeholder: "0",
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)
@@ -28,12 +31,12 @@ extension Product {
         let currencyFormatter = CurrencyFormatter()
         let currencyCode = CurrencySettings.shared.currencyCode
         let unit = CurrencySettings.shared.symbol(from: currencyCode)
-        var value = currencyFormatter.formatAmount(salePrice ?? "", with: unit) ?? "0"
+        var value = currencyFormatter.formatAmount(salePrice ?? "", with: unit) ?? ""
         value = value.replacingOccurrences(of: unit, with: "")
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
-                                  placeholder: "0",
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)

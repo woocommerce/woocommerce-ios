@@ -7,6 +7,8 @@ extension Product {
     //
     private static let regexThousandSeparators = "(?:[.,](?=.*[.,])|)+"
 
+    private static let placeholder = "0"
+
     static func createRegularPriceViewModel(regularPrice: String?,
                                             using currencySettings: CurrencySettings,
                                        onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
@@ -22,7 +24,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
-                                  placeholder: "0",
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)
@@ -43,7 +45,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
-                                  placeholder: "0",
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)

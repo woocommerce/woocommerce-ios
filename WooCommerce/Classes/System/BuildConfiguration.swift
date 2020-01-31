@@ -1,7 +1,7 @@
 enum BuildConfiguration: String {
     /// Development build, usually run from Xcode
     case localDeveloper
-    
+
     /// Production-like build but with more enabled to help people test branches
     /// that might be behind feature flags.
     case alpha

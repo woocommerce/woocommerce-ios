@@ -237,7 +237,6 @@ private extension ProductFormViewController {
                                                         placeholder: placeholder,
                                                         navigationTitle: navigationTitle
         ) { [weak self] (newProductName) in
-            ServiceLocator.analytics.track(.productNameDoneButtonTapped)
             self?.onEditProductNameCompletion(newName: newProductName ?? "")
         }
         textViewController.delegate = self
@@ -249,7 +248,11 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        guard newName != product.name else {
+
+        let hasChangedData = newName != product.name
+        ServiceLocator.analytics.track(.productNameDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.nameUpdated(name: newName)
@@ -274,7 +277,6 @@ extension ProductFormViewController: TextViewViewControllerDelegate {
 private extension ProductFormViewController {
     func editProductDescription() {
         let editorViewController = EditorFactory().productDescriptionEditor(product: product) { [weak self] content in
-            ServiceLocator.analytics.track(.aztecEditorDoneButtonTapped)
             self?.onEditProductDescriptionCompletion(newDescription: content)
         }
         navigationController?.pushViewController(editorViewController, animated: true)
@@ -284,7 +286,10 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        guard newDescription != product.fullDescription else {
+        let hasChangedData = newDescription != product.fullDescription
+        ServiceLocator.analytics.track(.productDescriptionDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.descriptionUpdated(description: newDescription)
@@ -297,7 +302,6 @@ private extension ProductFormViewController {
     func editPriceSettings() {
         let priceSettingsViewController = ProductPriceSettingsViewController(product: product) { [weak self]
             (regularPrice, salePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass) in
-            ServiceLocator.analytics.track(.productPriceSettingsDoneButtonTapped)
             self?.onEditPriceSettingsCompletion(regularPrice: regularPrice,
                                                 salePrice: salePrice,
                                                 dateOnSaleStart: dateOnSaleStart,
@@ -318,14 +322,21 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
 
-        guard regularPrice != product.regularPrice ||
-            salePrice != product.salePrice ||
-            dateOnSaleStart != product.dateOnSaleStart ||
-            dateOnSaleEnd != product.dateOnSaleEnd ||
-            taxStatus != product.productTaxStatus ||
-            taxClass?.slug != product.taxClass else {
+        var hasChangedData = false
+        if regularPrice != product.regularPrice ||
+        salePrice != product.salePrice ||
+        dateOnSaleStart != product.dateOnSaleStart ||
+        dateOnSaleEnd != product.dateOnSaleEnd ||
+        taxStatus != product.productTaxStatus ||
+            taxClass?.slug != product.taxClass {
+            hasChangedData = true
+        }
+
+        ServiceLocator.analytics.track(.productPriceSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+        guard hasChangedData else {
             return
         }
+
         self.product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice,
                                                            salePrice: salePrice,
                                                            dateOnSaleStart: dateOnSaleStart,
@@ -340,7 +351,6 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editShippingSettings() {
         let shippingSettingsViewController = ProductShippingSettingsViewController(product: product) { [weak self] (weight, dimensions, shippingClass) in
-            ServiceLocator.analytics.track(.productShippingSettingsDoneButtonTapped)
             self?.onEditShippingSettingsCompletion(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
         }
         navigationController?.pushViewController(shippingSettingsViewController, animated: true)
@@ -350,7 +360,13 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        guard weight != self.product.weight || dimensions != self.product.dimensions || shippingClass != product.productShippingClass else {
+        var hasChangedData = false
+        if weight != self.product.weight || dimensions != self.product.dimensions || shippingClass != product.productShippingClass {
+            hasChangedData = true
+        }
+        ServiceLocator.analytics.track(.productShippingSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.shippingSettingsUpdated(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
@@ -362,7 +378,6 @@ private extension ProductFormViewController {
 private extension ProductFormViewController {
     func editInventorySettings() {
         let inventorySettingsViewController = ProductInventorySettingsViewController(product: product) { [weak self] data in
-            ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped)
             self?.onEditInventorySettingsCompletion(data: data)
         }
         navigationController?.pushViewController(inventorySettingsViewController, animated: true)
@@ -373,7 +388,10 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
         let originalData = ProductInventoryEditableData(product: product)
-        guard originalData != data else {
+        let hasChangedData = originalData != data
+        ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.inventorySettingsUpdated(sku: data.sku,

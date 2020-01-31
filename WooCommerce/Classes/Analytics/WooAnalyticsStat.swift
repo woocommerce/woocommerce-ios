@@ -263,7 +263,7 @@ public enum WooAnalyticsStat: String {
     case productDetailViewShippingSettingsTapped = "product_detail_view_shipping_settings_tapped"
     case productDetailViewInventorySettingsTapped = "product_detail_view_inventory_settings_tapped"
     case productNameDoneButtonTapped            = "product_name_done_button_tapped"
-    case aztecEditorDoneButtonTapped            = "aztec_editor_done_button_tapped"
+    case productDescriptionDoneButtonTapped     = "product_description_done_button_tapped"
     case productPriceSettingsDoneButtonTapped   = "product_price_settings_done_button_tapped"
     case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
     case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
@@ -274,6 +274,10 @@ public enum WooAnalyticsStat: String {
     case productVariationListLoaded             = "product_variants_loaded"
     case productVariationListLoadError          = "product_variants_load_error"
     case productVariationListPulledToRefresh    = "product_variants_pulled_to_refresh"
+
+    // Azted editor
+    //
+    case aztecEditorDoneButtonTapped            = "aztec_editor_done_button_tapped"
 
     // Jetpack Tunnel Events
     //

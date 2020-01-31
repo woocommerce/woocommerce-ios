@@ -1,6 +1,9 @@
 import Yosemite
 
 extension Product {
+    
+    private static let placeholder = "0"
+    
     static func createShippingWeightViewModel(weight: String?,
                                               using shippingSettingsService: ShippingSettingsService,
                                               onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
@@ -10,7 +13,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
-                                  placeholder: "0",
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
@@ -24,7 +27,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: length,
-                                  placeholder: "0",
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
@@ -38,7 +41,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: width,
-                                  placeholder: "0",
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
@@ -52,7 +55,7 @@ extension Product {
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: height,
-                                  placeholder: "0",
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)

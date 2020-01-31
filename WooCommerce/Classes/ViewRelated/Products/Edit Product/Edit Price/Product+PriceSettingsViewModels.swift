@@ -1,9 +1,9 @@
 import Yosemite
 
 extension Product {
-    
+
     private static let placeholder = "0"
-    
+
     static func createRegularPriceViewModel(regularPrice: String?,
                                             using currencySettings: CurrencySettings,
                                        onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {

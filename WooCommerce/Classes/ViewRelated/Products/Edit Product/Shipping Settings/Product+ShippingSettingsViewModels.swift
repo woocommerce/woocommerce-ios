@@ -1,9 +1,9 @@
 import Yosemite
 
 extension Product {
-    
+
     private static let placeholder = "0"
-    
+
     static func createShippingWeightViewModel(weight: String?,
                                               using shippingSettingsService: ShippingSettingsService,
                                               onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {

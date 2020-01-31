@@ -69,7 +69,7 @@ class OrderStoreTests: XCTestCase {
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 3)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
 
             expectation.fulfill()
         }
@@ -90,7 +90,7 @@ class OrderStoreTests: XCTestCase {
 
         let action = OrderAction.synchronizeOrders(siteID: sampleSiteID, statusKey: nil, pageNumber: defaultPageNumber, pageSize: defaultPageSize) { error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 4)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 3)
+            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderRefundCondensed.self), 4)
             XCTAssertNil(error)
 
             expectation.fulfill()

@@ -1,3 +1,0 @@
-– Genomför beställningsskärmen visar fullständigt innehåll för användarangivna anteckningar (om det finns några) i stället för att beskära dem efter en rad så att du kan se all information på en sida.
-– Antal i fliken Beställningar uppdateras nu som den ska när du växlar mellan butiker.
-– Egenheter är charmiga hos människor, mindre charmiga hos appar. Därför har vi tagit hand om en del buggar som orsakade lite visuella egenheter (särskilt när man bytte teckenstorlek i systemet).

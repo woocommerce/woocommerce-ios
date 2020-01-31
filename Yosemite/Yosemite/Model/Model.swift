@@ -13,6 +13,7 @@ public typealias APNSDevice = Networking.APNSDevice
 public typealias CommentStatus = Networking.CommentStatus
 public typealias Credentials = Networking.Credentials
 public typealias DotcomDevice = Networking.DotcomDevice
+public typealias Media = Networking.Media
 public typealias MetaContainer = Networking.MetaContainer
 public typealias Note = Networking.Note
 public typealias NoteBlock = Networking.NoteBlock
@@ -110,3 +111,7 @@ public typealias StorageSiteVisitStatsItem = Storage.SiteVisitStatsItem
 public typealias StorageTopEarnerStats = Storage.TopEarnerStats
 public typealias StorageTopEarnerStatsItem = Storage.TopEarnerStatsItem
 public typealias StorageTaxClass = Storage.TaxClass
+
+// MARK: - Internal ReadOnly Models
+
+typealias UploadableMedia = Networking.UploadableMedia

@@ -1,3 +1,0 @@
-- La pantalla Realizar pedido muestra el contenido completo de las notas proporcionadas por el cliente (cuando las hay) en lugar de cortarlas después de una sola línea, de modo que se puede ver toda la información en una pantalla.
-- El recuento de la barra de pestañas Pedidos ahora se actualiza correctamente al cambiar de tienda.
-- Las excentricidades hacen que las personas sean interesantes, pero no las aplicaciones, así que nos hemos encargado de algunos errores que causaban fallos visuales (en particular, al cambiar el tamaño de las fuentes del sistema).

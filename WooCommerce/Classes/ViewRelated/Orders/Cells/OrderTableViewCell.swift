@@ -15,6 +15,10 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     ///
     @IBOutlet private var totalLabel: UILabel!
 
+    /// Order's Creation Date
+    ///
+    @IBOutlet private var dateCreatedLabel: UILabel!
+
     /// Payment
     ///
     @IBOutlet private var paymentStatusLabel: PaddedLabel!
@@ -37,6 +41,7 @@ final class OrderTableViewCell: UITableViewCell & SearchResultCell {
     func configureCell(viewModel: OrderDetailsViewModel, orderStatus: OrderStatus?) {
         titleLabel.text = viewModel.summaryTitle
         totalLabel.text = viewModel.totalFriendlyString
+        dateCreatedLabel.text = viewModel.formattedDateCreated
 
         if let orderStatus = orderStatus {
             paymentStatusLabel.applyStyle(for: orderStatus.status)
@@ -117,5 +122,7 @@ private extension OrderTableViewCell {
         totalLabel.numberOfLines = 0
         paymentStatusLabel.applyFootnoteStyle()
         paymentStatusLabel.numberOfLines = 0
+
+        dateCreatedLabel.applyCaption1Style()
     }
 }

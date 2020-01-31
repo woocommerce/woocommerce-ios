@@ -46,6 +46,11 @@ final class PriceInputFormatterTests: XCTestCase {
 
     func testFormattingEmptyInput() {
         let input = ""
+        XCTAssertEqual(formatter.format(input: input), "")
+    }
+
+    func testFormattingZeroInput() {
+        let input = "0"
         XCTAssertEqual(formatter.format(input: input), "0")
     }
 

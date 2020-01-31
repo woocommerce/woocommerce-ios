@@ -328,7 +328,7 @@ private extension ProductFormViewController {
         dateOnSaleStart != product.dateOnSaleStart ||
         dateOnSaleEnd != product.dateOnSaleEnd ||
         taxStatus != product.productTaxStatus ||
-            taxClass?.slug != product.taxClass {
+        taxClass?.slug != product.taxClass {
             hasChangedData = true
         }
 

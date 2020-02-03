@@ -7,6 +7,8 @@ import UIKit
 ///
 final class OrdersMasterViewController: UIViewController {
 
+    private lazy var analytics = ServiceLocator.analytics
+
     private lazy var viewModel = OrdersMasterViewModel()
 
     /// The view controller that shows the list of Orders.
@@ -49,8 +51,30 @@ final class OrdersMasterViewController: UIViewController {
         self.ordersViewController = ordersViewController
     }
 
+    /// Show the list of Order statuses can be filtered with.
+    ///
     @objc private func displayFiltersAlert() {
+        analytics.track(.ordersListFilterTapped)
 
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
+        actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
+            self?.ordersViewController?.statusFilter = nil
+        }
+
+        for orderStatus in viewModel.currentSiteStatuses {
+            actionSheet.addDefaultActionWithTitle(orderStatus.name) { [weak self] _ in
+                self?.ordersViewController?.statusFilter = orderStatus
+            }
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
+        popoverController?.sourceView = self.view
+
+        present(actionSheet, animated: true)
     }
 
     private func createFilterBarButtonItem() -> UIBarButtonItem {
@@ -67,5 +91,13 @@ final class OrdersMasterViewController: UIViewController {
         button.accessibilityIdentifier = "order-filter-button"
 
         return button
+    }
+
+    enum FilterAction {
+        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
+        static let displayAll = NSLocalizedString(
+            "All",
+            comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
+        )
     }
 }

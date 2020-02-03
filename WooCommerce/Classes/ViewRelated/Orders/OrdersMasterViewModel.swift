@@ -20,4 +20,10 @@ final class OrdersMasterViewModel {
     var currentSiteStatuses: [OrderStatus] {
         return statusResultsController.fetchedObjects
     }
+
+    /// Start all the operations that this `ViewModel` is responsible for.
+    ///
+    func activate() {
+        try? statusResultsController.performFetch()
+    }
 }

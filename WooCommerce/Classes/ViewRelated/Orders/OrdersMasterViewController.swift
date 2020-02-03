@@ -7,6 +7,8 @@ import UIKit
 ///
 final class OrdersMasterViewController: UIViewController {
 
+    private lazy var viewModel = OrdersMasterViewModel()
+
     /// The view controller that shows the list of Orders.
     ///
     private var ordersViewController: OrdersViewController?
@@ -27,6 +29,8 @@ final class OrdersMasterViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+
+        viewModel.activate()
 
         navigationItem.rightBarButtonItem = createFilterBarButtonItem()
 

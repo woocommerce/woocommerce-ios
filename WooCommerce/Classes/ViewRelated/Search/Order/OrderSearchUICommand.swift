@@ -12,6 +12,10 @@ final class OrderSearchUICommand: SearchUICommand {
 
     let emptyStateText = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
 
+    let searchBarAccessibilityIdentifier = "order-search-screen-search-field"
+
+    let cancelButtonAccessibilityIdentifier = "order-search-screen-cancel-button"
+
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)

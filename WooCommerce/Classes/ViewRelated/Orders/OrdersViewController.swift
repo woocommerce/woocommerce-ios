@@ -224,6 +224,7 @@ private extension OrdersViewController {
                 "Retrieves a list of orders that contain a given keyword.",
                 comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
             )
+            button.accessibilityIdentifier = "order-search-button"
 
             return button
         }()
@@ -239,6 +240,7 @@ private extension OrdersViewController {
                 "Filters the order list by payment status.",
                 comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list."
             )
+            button.accessibilityIdentifier = "order-filter-button"
 
             return button
         }()
@@ -269,6 +271,7 @@ private extension OrdersViewController {
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
         tabBarItem.image = .pagesImage
+        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
 
     /// Setup: TableView

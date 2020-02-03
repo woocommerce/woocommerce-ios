@@ -18,10 +18,13 @@ final class ReviewsViewController: UIViewController {
     /// Mark all as read nav bar button
     ///
     private lazy var rightBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(image: .checkmarkImage,
+        let item = UIBarButtonItem(image: .checkmarkImage,
                                style: .plain,
                                target: self,
                                action: #selector(markAllAsRead))
+        item.accessibilityIdentifier = "reviews-mark-all-as-read-button"
+
+        return item
     }()
 
     private let viewModel = ReviewsViewModel(data: DefaultReviewsDataSource())
@@ -156,6 +159,7 @@ private extension ReviewsViewController {
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
         tabBarItem.image = .commentImage
+        tabBarItem.accessibilityIdentifier = "tab-bar-reviews-item"
     }
 
     /// Setup: Navigation

@@ -7,6 +7,10 @@ import UIKit
 ///
 final class OrdersMasterViewController: UIViewController {
 
+    /// The view controller that shows the list of Orders.
+    ///
+    private var ordersViewController: OrdersViewController?
+
     init() {
         super.init(nibName: Self.nibName, bundle: nil)
 
@@ -35,5 +39,7 @@ final class OrdersMasterViewController: UIViewController {
         view.addSubview(ordersView)
         ordersView.pinSubviewToAllEdges(view)
         ordersViewController.didMove(toParent: self)
+
+        self.ordersViewController = ordersViewController
     }
 }

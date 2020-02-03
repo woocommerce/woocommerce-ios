@@ -6,6 +6,8 @@ final class OrderSearchUICommand: SearchUICommand {
     typealias CellViewModel = OrderSearchCellViewModel
     typealias ResultsControllerModel = StorageOrder
 
+    private lazy var featureFlagService = ServiceLocator.featureFlagService
+
     let searchBarPlaceholder = NSLocalizedString("Search all orders", comment: "Orders Search Placeholder")
 
     let emptyStateText = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
@@ -29,7 +31,7 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func createStarterViewController() -> UIViewController? {
-        nil
+        featureFlagService.isFeatureFlagEnabled(.orderListRedesign) ? OrderSearchStarterViewController() : nil
     }
 
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {

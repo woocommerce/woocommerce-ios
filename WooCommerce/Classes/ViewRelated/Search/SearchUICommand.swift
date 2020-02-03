@@ -16,6 +16,18 @@ protocol SearchUICommand {
     /// Creates a results controller for the search results. The result model's readonly type matches the search result model.
     func createResultsController() -> ResultsController<ResultsControllerModel>
 
+    /// The controller of the view to show if there is no text entered in the search bar.
+    ///
+    /// This will only be called once when `SearchViewController` is loaded and will be retained
+    /// until `SearchViewController` is deallocated.
+    ///
+    /// The `view` of this controller will be added and constrained to the same size as the
+    /// `SearchViewController`'s `tableView`.
+    ///
+    /// If `nil`, the search results tableView will be shown as the starter instead.
+    ///
+    func createStarterViewController() -> UIViewController?
+
     /// Creates a view model for the search result cell.
     ///
     /// - Parameter model: search result model.

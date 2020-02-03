@@ -39,6 +39,14 @@ where Cell.SearchModel == Command.CellViewModel {
     ///
     private let resultsController: ResultsController<Command.ResultsControllerModel>
 
+    /// The controller of the view to show if there is no search `keyword` entered.
+    ///
+    /// If `nil`, the `tableView` will be shown instead.
+    ///
+    /// - SeeAlso: State.starter
+    ///
+    private var starterViewController: UIViewController?
+
     /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
     ///
     private let syncingCoordinator = SyncingCoordinator()
@@ -61,7 +69,7 @@ where Cell.SearchModel == Command.CellViewModel {
 
     /// UI Active State
     ///
-    private var state: State = .results {
+    private var state: State = .notInitialized {
         didSet {
             didLeave(state: oldValue)
             didEnter(state: state)
@@ -111,8 +119,11 @@ where Cell.SearchModel == Command.CellViewModel {
         configureSearchBarBordersView()
         configureTableView()
         configureResultsController()
+        configureStarterViewController()
 
         startListeningToNotifications()
+
+        transitionToResultsUpdatedState()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -260,6 +271,34 @@ private extension SearchViewController {
         try? resultsController.performFetch()
     }
 
+    /// Create and add `starterViewController` to the `view.`
+    ///
+    func configureStarterViewController() {
+        guard let starterViewController = searchUICommand.createStarterViewController(),
+            let starterView = starterViewController.view else {
+                return
+        }
+
+        starterView.translatesAutoresizingMaskIntoConstraints = false
+
+        add(starterViewController)
+        view.addSubview(starterView)
+
+        // Match the position and size to the `tableView`.
+        NSLayoutConstraint.activate([
+            starterView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            starterView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
+            starterView.topAnchor.constraint(equalTo: tableView.topAnchor),
+            starterView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
+        ])
+
+        starterViewController.didMove(toParent: self)
+
+        starterView.isHidden = true
+
+        self.starterViewController = starterViewController
+    }
+
     /// Setup: Sync'ing Coordinator
     ///
     func configureSyncingCoordinator() {
@@ -377,36 +416,62 @@ private extension SearchViewController {
 
     func didEnter(state: State) {
         switch state {
+        case .starter:
+            tableView.isHidden = true
+            starterViewController?.view.isHidden = false
         case .empty:
             displayEmptyState()
         case .syncing:
             ensureFooterSpinnerIsStarted()
-        case .results:
+        case .results, .notInitialized:
             break
         }
     }
 
     func didLeave(state: State) {
         switch state {
+        case .starter:
+            starterViewController?.view.isHidden = true
+            tableView.isHidden = false
         case .empty:
             removeEmptyState()
         case .syncing:
             ensureFooterSpinnerIsStopped()
-        case .results:
+        case .results, .notInitialized:
             break
         }
     }
 
-    /// Should be called before Sync'ing. Transitions to either `results` state.
+    /// The state to use if the `keyword` is empty.
     ///
-    func transitionToSyncingState() {
-        state = .syncing
+    var stateIfSearchKeywordIsEmpty: State {
+        starterViewController != nil ? .starter : .results
     }
 
-    /// Should be called whenever new results have been retrieved. Transitions to `.results` / `.empty` accordingly.
+    /// Transition to the appropriate `State` after a search request was executed.
+    ///
+    /// See `State` for the rules.
+    ///
+    func transitionToSyncingState() {
+        state = keyword.isEmpty ? stateIfSearchKeywordIsEmpty : .syncing
+    }
+
+    /// Transition to the appropriate `State` after search results were received.
+    ///
+    /// See `State` for the rules.
     ///
     func transitionToResultsUpdatedState() {
-        state = isEmpty ? .empty : .results
+        let nextState: State
+
+        if keyword.isEmpty {
+            nextState = stateIfSearchKeywordIsEmpty
+        } else if isEmpty {
+            nextState = .empty
+        } else {
+            nextState = .results
+        }
+
+        state = nextState
     }
 }
 
@@ -422,7 +487,24 @@ private enum Settings {
 // MARK: - FSM States
 //
 private enum State {
-    case syncing
+    /// The view has not been loaded yet.
+    ///
+    case notInitialized
+    /// The state when there is no search `keyword` and the `starterViewController` is shown.
+    ///
+    /// This state is never reached if `starterViewController` is `nil`.
+    ///
+    case starter
+    /// The state when there are search results.
+    ///
+    /// This is also the default `state` if there is no `starterViewController`. Search result
+    /// providers (i.e. `SearchUICommand`) can opt to show a default list of items in this case.
+    ///
     case results
+    /// The state when a `keyword` is entered and a search is in progress.
+    ///
+    case syncing
+    /// The state when the search has finished but there are no results.
+    ///
     case empty
 }

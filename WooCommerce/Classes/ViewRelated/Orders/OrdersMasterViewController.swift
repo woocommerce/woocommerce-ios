@@ -28,6 +28,8 @@ final class OrdersMasterViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        navigationItem.rightBarButtonItem = createFilterBarButtonItem()
+
         guard let ordersViewController = OrdersViewController.instantiatedViewControllerFromStoryboard(),
             let ordersView = ordersViewController.view else {
             return
@@ -41,5 +43,25 @@ final class OrdersMasterViewController: UIViewController {
         ordersViewController.didMove(toParent: self)
 
         self.ordersViewController = ordersViewController
+    }
+
+    @objc private func displayFiltersAlert() {
+
+    }
+
+    private func createFilterBarButtonItem() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: .filterImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(displayFiltersAlert))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
+        button.accessibilityHint = NSLocalizedString(
+            "Filters the order list by payment status.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list."
+        )
+        button.accessibilityIdentifier = "order-filter-button"
+
+        return button
     }
 }

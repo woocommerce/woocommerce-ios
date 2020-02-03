@@ -36,8 +36,7 @@ enum FeatureFlag: Int {
 
     /// Order List Redesign
     ///
-    /// This will be removed once the redesign is complete.
-    /// See https://github.com/woocommerce/woocommerce-ios/issues/956.
+    /// TODO: Remove when the redesign is complete. See https://github.com/woocommerce/woocommerce-ios/issues/956.
     ///
     case orderListRedesign
 }

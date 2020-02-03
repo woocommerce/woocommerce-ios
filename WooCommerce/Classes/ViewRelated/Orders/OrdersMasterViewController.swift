@@ -9,6 +9,10 @@ final class OrdersMasterViewController: UIViewController {
 
     init() {
         super.init(nibName: Self.nibName, bundle: nil)
+
+        tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
+        tabBarItem.image = .pagesImage
+        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
 
     required init?(coder: NSCoder) {

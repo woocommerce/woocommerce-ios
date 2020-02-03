@@ -7,4 +7,11 @@ import UIKit
 ///
 final class OrdersMasterViewController: UIViewController {
 
+    init() {
+        super.init(nibName: Self.nibName, bundle: nil)
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("Not supported")
+    }
 }

@@ -58,7 +58,11 @@ extension WooTab {
 
 
 // MARK: - MainTabBarController
-//
+
+/// A view controller that shows the tabs Store, Orders, Products, and Reviews.
+///
+/// TODO Migrate the `viewControllers` management from `Main.storyboard` to here (as code).
+///
 final class MainTabBarController: UITabBarController {
 
     /// For picking up the child view controller's status bar styling
@@ -101,12 +105,25 @@ final class MainTabBarController: UITabBarController {
         return navController
     }()
 
+    private lazy var ordersTabViewController: UIViewController = {
+        let masterViewController = OrdersMasterViewController()
+        return WooNavigationController(rootViewController: masterViewController)
+    }()
+
 
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
+
+        // Add the Orders tab
+        viewControllers = {
+            let index = WooTab.orders.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
+            var controllers = viewControllers ?? []
+            controllers.insert(ordersTabViewController, at: index)
+            return controllers
+        }()
     }
 
     override func viewWillAppear(_ animated: Bool) {

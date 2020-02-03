@@ -27,8 +27,26 @@ final class OrdersMasterViewModel {
     /// This should only be called once in the lifetime of `OrdersMasterViewController`.
     ///
     func activate() {
+        // Initialize `statusResultsController`
         refreshStatusPredicate()
         try? statusResultsController.performFetch()
+
+        // Listen to notifications
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
+        nc.addObserver(self, selector: #selector(stopListeningToNotifications), name: .logOutEventReceived, object: nil)
+    }
+
+    /// Runs whenever the default Account is updated.
+    ///
+    @objc private func defaultAccountWasUpdated() {
+        refreshStatusPredicate()
+    }
+
+    /// Stops listening to all related Notifications
+    ///
+    @objc private func stopListeningToNotifications() {
+        NotificationCenter.default.removeObserver(self)
     }
 
     /// Update the `siteID` predicate of `statusResultsController` to the current `siteID`.

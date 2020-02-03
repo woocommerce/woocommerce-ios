@@ -5,7 +5,7 @@ import UIKit
 ///
 extension UIAlertController {
 
-    /// Save Changes Action Sheet
+    /// Discard Changes Action Sheet
     ///
     static func presentDiscardChangesActionSheet(viewController: UIViewController,
                                               onDiscard: (() -> Void)?, onCancel: (() -> Void)? = nil) {
@@ -30,9 +30,9 @@ extension UIAlertController {
 
 private enum ActionSheetStrings {
     static let message = NSLocalizedString("Are you sure you want to discard these changes?",
-                                           comment: "Message title for Save Changes Action Sheet")
+                                           comment: "Message title for Discard Changes Action Sheet")
     static let discard = NSLocalizedString("Discard changes",
-                                          comment: "Button title Discard Changes in Save Changes Action Sheet")
+                                          comment: "Button title Discard Changes in Discard Changes Action Sheet")
     static let cancel = NSLocalizedString("Cancel",
-                                          comment: "Button title Cancel in Save Changes Action Sheet")
+                                          comment: "Button title Cancel in Discard Changes Action Sheet")
 }

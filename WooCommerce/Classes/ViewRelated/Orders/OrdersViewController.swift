@@ -122,9 +122,6 @@ class OrdersViewController: UIViewController {
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
-
-        // This 👇 should be called in init so the tab is correctly localized when the app launches
-        configureTabBarItem()
     }
 
     override func viewDidLoad() {
@@ -272,14 +269,6 @@ private extension OrdersViewController {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
-    }
-
-    /// Setup: TabBar Item
-    ///
-    func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
-        tabBarItem.image = .pagesImage
-        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
 
     /// Setup: TableView

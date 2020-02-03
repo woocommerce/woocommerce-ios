@@ -18,4 +18,20 @@ final class OrdersMasterViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("Not supported")
     }
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+
+        guard let ordersViewController = OrdersViewController.instantiatedViewControllerFromStoryboard(),
+            let ordersView = ordersViewController.view else {
+            return
+        }
+
+        ordersView.translatesAutoresizingMaskIntoConstraints = false
+
+        add(ordersViewController)
+        view.addSubview(ordersView)
+        ordersView.pinSubviewToAllEdges(view)
+        ordersViewController.didMove(toParent: self)
+    }
 }

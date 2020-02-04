@@ -147,7 +147,6 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        resetStatusFilterIfNeeded()
         syncingCoordinator.synchronizeFirstPage()
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
@@ -406,24 +405,6 @@ private extension OrdersViewController {
 
         let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
         ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Reset the current status filter if needed (e.g. when changing stores and the currently
-    /// selected filter does not exist in the new store)
-    ///
-    func resetStatusFilterIfNeeded() {
-        guard let statusFilter = statusFilter else {
-            // "All" is the current filter so bail
-            return
-        }
-        guard currentSiteStatuses.isEmpty == false else {
-            self.statusFilter = nil
-            return
-        }
-
-        if !currentSiteStatuses.contains(where: { $0.name == statusFilter.name && $0.slug == statusFilter.slug }) {
-            self.statusFilter = nil
-        }
     }
 }
 

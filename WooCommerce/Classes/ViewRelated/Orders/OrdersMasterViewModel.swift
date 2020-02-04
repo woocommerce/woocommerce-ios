@@ -61,6 +61,8 @@ final class OrdersMasterViewModel {
     /// Fetch all `OrderStatus` from the API
     ///
     func syncOrderStatuses() {
+        resetStatusFilterIfNeeded()
+
         guard let siteID = sessionManager.defaultStoreID else {
             return
         }
@@ -72,8 +74,8 @@ final class OrdersMasterViewModel {
             if let error = error {
                 DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
             }
-            #warning("restore this feature")
-//            self?.resetStatusFilterIfNeeded()
+
+            self?.resetStatusFilterIfNeeded()
         }
 
         stores.dispatch(action)
@@ -115,5 +117,23 @@ final class OrdersMasterViewModel {
         }
 
         statusResultsController.predicate = NSPredicate(format: "siteID == %lld", sessionManager.defaultStoreID ?? Int.min)
+    }
+
+    /// Reset the current status filter if needed (e.g. when changing stores and the currently
+    /// selected filter does not exist in the new store)
+    ///
+    func resetStatusFilterIfNeeded() {
+        guard let statusFilter = statusFilter else {
+            // "All" is the current filter so bail
+            return
+        }
+        guard currentSiteStatuses.isEmpty == false else {
+            self.statusFilter = nil
+            return
+        }
+
+        if !currentSiteStatuses.contains(where: { $0.name == statusFilter.name && $0.slug == statusFilter.slug }) {
+            self.statusFilter = nil
+        }
     }
 }

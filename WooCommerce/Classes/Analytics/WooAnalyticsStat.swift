@@ -252,12 +252,32 @@ public enum WooAnalyticsStat: String {
     case productListSearched                    = "product_list_searched"
     case productListMenuSearchTapped            = "product_list_menu_search_tapped"
 
+    // Edit Product Events
+    //
+    case productDetailUpdateButtonTapped        = "product_detail_update_button_tapped"
+    case productDetailUpdateSuccess             = "product_detail_update_success"
+    case productDetailUpdateError               = "product_detail_update_error"
+    case productDetailViewProductNameTapped     = "product_detail_view_product_name_tapped"
+    case productDetailViewProductDescriptionTapped = "product_detail_view_product_description_tapped"
+    case productDetailViewPriceSettingsTapped   = "product_detail_view_price_settings_tapped"
+    case productDetailViewShippingSettingsTapped = "product_detail_view_shipping_settings_tapped"
+    case productDetailViewInventorySettingsTapped = "product_detail_view_inventory_settings_tapped"
+    case productNameDoneButtonTapped            = "product_name_done_button_tapped"
+    case productDescriptionDoneButtonTapped     = "product_description_done_button_tapped"
+    case productPriceSettingsDoneButtonTapped   = "product_price_settings_done_button_tapped"
+    case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
+    case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
+
     // Readonly Product Variations Events
     //
     case productDetailsProductVariantsTapped    = "product_detail_view_product_variants_tapped"
     case productVariationListLoaded             = "product_variants_loaded"
     case productVariationListLoadError          = "product_variants_load_error"
     case productVariationListPulledToRefresh    = "product_variants_pulled_to_refresh"
+
+    // Azted editor
+    //
+    case aztecEditorDoneButtonTapped            = "aztec_editor_done_button_tapped"
 
     // Jetpack Tunnel Events
     //

@@ -225,6 +225,7 @@ private extension AztecEditorViewController {
 extension AztecEditorViewController {
     @objc private func saveButtonTapped() {
         let content = getHTML()
+        ServiceLocator.analytics.track(.aztecEditorDoneButtonTapped)
         onContentSave?(content)
     }
 

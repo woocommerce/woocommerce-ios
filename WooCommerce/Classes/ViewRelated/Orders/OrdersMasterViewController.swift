@@ -1,5 +1,6 @@
 
 import UIKit
+import struct Yosemite.OrderStatus
 
 /// The main Orders view controller that is shown when the Orders tab is accessed.
 ///
@@ -9,7 +10,9 @@ final class OrdersMasterViewController: UIViewController {
 
     private lazy var analytics = ServiceLocator.analytics
 
-    private lazy var viewModel = OrdersMasterViewModel()
+    private lazy var viewModel = OrdersMasterViewModel(statusFilterChanged: { [weak self] (status: OrderStatus?) in
+        self?.statusFilterChanged(status: status)
+    })
 
     /// The view controller that shows the list of Orders.
     ///
@@ -61,6 +64,12 @@ final class OrdersMasterViewController: UIViewController {
         viewModel.syncOrderStatuses()
     }
 
+    /// Called when the ViewModel's `statusFilter` changed.
+    ///
+    private func statusFilterChanged(status: OrderStatus?) {
+        ordersViewController?.statusFilter = status
+    }
+
     /// Show the list of Order statuses can be filtered with.
     ///
     @objc private func displayFiltersAlert() {
@@ -71,12 +80,12 @@ final class OrdersMasterViewController: UIViewController {
 
         actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
         actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
-            self?.ordersViewController?.statusFilter = nil
+            self?.viewModel.filterBy(orderStatus: nil)
         }
 
         for orderStatus in viewModel.currentSiteStatuses {
             actionSheet.addDefaultActionWithTitle(orderStatus.name) { [weak self] _ in
-                self?.ordersViewController?.statusFilter = orderStatus
+                self?.viewModel.filterBy(orderStatus: orderStatus)
             }
         }
 

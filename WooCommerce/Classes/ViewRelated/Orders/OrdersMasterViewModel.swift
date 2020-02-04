@@ -23,6 +23,22 @@ final class OrdersMasterViewModel {
         return statusResultsController.fetchedObjects
     }
 
+    /// The current `OrderStatus` to filter by.
+    ///
+    /// If the this is `nil`, that means that all orders should be shown.
+    ///
+    private var statusFilter: OrderStatus?
+
+    /// Called when the selected `OrderStatus` for filtering was changed.
+    ///
+    private let statusFilterChanged: (OrderStatus?) -> ()
+
+    /// Designated initializer.
+    ///
+    init(statusFilterChanged: @escaping (OrderStatus?) -> ()) {
+        self.statusFilterChanged = statusFilterChanged
+    }
+
     /// Start all the operations that this `ViewModel` is responsible for.
     ///
     /// This should only be called once in the lifetime of `OrdersMasterViewController`.
@@ -57,6 +73,17 @@ final class OrdersMasterViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    /// Change the current `OrderStatus` filter.
+    ///
+    /// The `statusFilterChanged` callback will be called after.
+    ///
+    /// - SeeAlso: statusFilter
+    ///
+    func filterBy(orderStatus: OrderStatus?) {
+        statusFilter = orderStatus
+        statusFilterChanged(statusFilter)
     }
 
     /// Runs whenever the default Account is updated.

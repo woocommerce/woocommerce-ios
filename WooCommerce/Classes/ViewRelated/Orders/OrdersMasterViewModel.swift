@@ -27,7 +27,11 @@ final class OrdersMasterViewModel {
     ///
     /// If the this is `nil`, that means that all orders should be shown.
     ///
-    private var statusFilter: OrderStatus?
+    private var statusFilter: OrderStatus? {
+        didSet {
+            statusFilterChanged(statusFilter)
+        }
+    }
 
     /// Called when the selected `OrderStatus` for filtering was changed.
     ///
@@ -83,7 +87,6 @@ final class OrdersMasterViewModel {
     ///
     func filterBy(orderStatus: OrderStatus?) {
         statusFilter = orderStatus
-        statusFilterChanged(statusFilter)
     }
 
     /// Runs whenever the default Account is updated.

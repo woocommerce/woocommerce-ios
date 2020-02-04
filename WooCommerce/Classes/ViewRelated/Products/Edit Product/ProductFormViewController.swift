@@ -322,15 +322,14 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
 
-        var hasChangedData = false
-        if regularPrice != product.regularPrice ||
-        salePrice != product.salePrice ||
-        dateOnSaleStart != product.dateOnSaleStart ||
-        dateOnSaleEnd != product.dateOnSaleEnd ||
-        taxStatus != product.productTaxStatus ||
-        taxClass?.slug != product.taxClass {
-            hasChangedData = true
-        }
+        let hasChangedData: Bool = {
+            regularPrice != product.regularPrice ||
+                salePrice != product.salePrice ||
+                dateOnSaleStart != product.dateOnSaleStart ||
+                dateOnSaleEnd != product.dateOnSaleEnd ||
+                taxStatus != product.productTaxStatus ||
+                taxClass?.slug != product.taxClass
+        }()
 
         ServiceLocator.analytics.track(.productPriceSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
         guard hasChangedData else {
@@ -360,10 +359,11 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        var hasChangedData = false
-        if weight != self.product.weight || dimensions != self.product.dimensions || shippingClass != product.productShippingClass {
-            hasChangedData = true
-        }
+        let hasChangedData: Bool = {
+            weight != self.product.weight ||
+                dimensions != self.product.dimensions ||
+                shippingClass != product.productShippingClass
+        }()
         ServiceLocator.analytics.track(.productShippingSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
 
         guard hasChangedData else {

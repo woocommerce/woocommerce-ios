@@ -61,6 +61,7 @@ final class TextViewViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigation()
+        configureView()
         configureTextView()
         configurePlaceholderLabel()
         refreshPlaceholderVisibility()
@@ -113,6 +114,10 @@ private extension TextViewViewController {
         title = navigationTitle
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeEditing))
+    }
+    
+    func configureView() {
+        view.backgroundColor = .basicBackground
     }
 
     func configureTextView() {

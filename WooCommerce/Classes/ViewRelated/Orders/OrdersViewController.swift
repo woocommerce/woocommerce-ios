@@ -105,6 +105,9 @@ class OrdersViewController: UIViewController {
         }
     }
 
+    /// Called when `self` is about to fetch Orders from the API.
+    ///
+    var willSynchronizeOrders: (() -> ())?
 
     // MARK: - View Lifecycle
 
@@ -144,7 +147,6 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncOrderStatus()
         resetStatusFilterIfNeeded()
         syncingCoordinator.synchronizeFirstPage()
         if AppRatingManager.shared.shouldPromptForAppReview() {
@@ -362,7 +364,7 @@ extension OrdersViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
-        syncOrderStatus()
+        willSynchronizeOrders?()
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
@@ -461,26 +463,6 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         ServiceLocator.stores.dispatch(action)
     }
-
-    func syncOrderStatus(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
-            return
-        }
-
-        // First, let's verify our FRC predicate is up to date
-        refreshStatusPredicate()
-
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (_, error) in
-            if let error = error {
-                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
-            }
-            self?.resetStatusFilterIfNeeded()
-            onCompletion?(error)
-        }
-
-        ServiceLocator.stores.dispatch(action)
-    }
 }
 
 
@@ -549,7 +531,7 @@ private extension OrdersViewController {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.syncOrderStatus()
+            self?.willSynchronizeOrders?()
             self?.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 

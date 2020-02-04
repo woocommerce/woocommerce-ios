@@ -8,6 +8,7 @@ final class OrdersMasterViewModel {
 
     private lazy var storageManager = ServiceLocator.storageManager
     private lazy var stores = ServiceLocator.stores
+    private lazy var sessionManager = stores.sessionManager
 
     /// ResultsController: Handles all things order status
     ///
@@ -37,6 +38,27 @@ final class OrdersMasterViewModel {
         nc.addObserver(self, selector: #selector(stopListeningToNotifications), name: .logOutEventReceived, object: nil)
     }
 
+    /// Fetch all `OrderStatus` from the API
+    ///
+    func syncOrderStatuses() {
+        guard let siteID = sessionManager.defaultStoreID else {
+            return
+        }
+
+        // First, let's verify our FRC predicate is up to date
+        refreshStatusPredicate()
+
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (_, error) in
+            if let error = error {
+                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
+            }
+            #warning("restore this feature")
+//            self?.resetStatusFilterIfNeeded()
+        }
+
+        stores.dispatch(action)
+    }
+
     /// Runs whenever the default Account is updated.
     ///
     @objc private func defaultAccountWasUpdated() {
@@ -62,6 +84,6 @@ final class OrdersMasterViewModel {
                 return
         }
 
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", stores.sessionManager.defaultStoreID ?? Int.min)
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", sessionManager.defaultStoreID ?? Int.min)
     }
 }

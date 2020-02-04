@@ -49,6 +49,16 @@ final class OrdersMasterViewController: UIViewController {
         ordersViewController.didMove(toParent: self)
 
         self.ordersViewController = ordersViewController
+
+        ordersViewController.willSynchronizeOrders = { [weak self] in
+            self?.viewModel.syncOrderStatuses()
+        }
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        viewModel.syncOrderStatuses()
     }
 
     /// Show the list of Order statuses can be filtered with.

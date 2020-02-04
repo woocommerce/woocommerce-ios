@@ -115,7 +115,7 @@ private extension TextViewViewController {
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeEditing))
     }
-    
+
     func configureView() {
         view.backgroundColor = .basicBackground
     }

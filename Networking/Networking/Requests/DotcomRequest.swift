@@ -8,7 +8,7 @@ struct DotcomRequest: URLRequestConvertible {
 
     /// WordPress.com Base URL
     ///
-    static let wordpressApiBaseURL = "https://public-api.wordpress.com/"
+    let wordpressApiBaseURL: String
 
     /// WordPress.com API Version
     ///
@@ -40,12 +40,13 @@ struct DotcomRequest: URLRequestConvertible {
         self.method = method
         self.path = path
         self.parameters = parameters ?? [:]
+        self.wordpressApiBaseURL = UserDefaults.standard.string(forKey: "wpcom-api-base-url") ?? "https://public-api.wordpress.com/"
     }
 
     /// Returns a URLRequest instance representing the current WordPress.com Request.
     ///
     func asURLRequest() throws -> URLRequest {
-        let dotcomURL = URL(string: DotcomRequest.wordpressApiBaseURL + wordpressApiVersion.path + path)!
+        let dotcomURL = URL(string: wordpressApiBaseURL + wordpressApiVersion.path + path)!
         let dotcomRequest = try URLRequest(url: dotcomURL, method: method, headers: nil)
 
         return try URLEncoding.default.encode(dotcomRequest, with: parameters)

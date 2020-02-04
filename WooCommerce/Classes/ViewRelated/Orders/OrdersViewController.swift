@@ -234,22 +234,6 @@ private extension OrdersViewController {
             return button
         }()
 
-        navigationItem.rightBarButtonItem = {
-            let button = UIBarButtonItem(image: .filterImage,
-                                                 style: .plain,
-                                                 target: self,
-                                                 action: #selector(displayFiltersAlert))
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
-            button.accessibilityHint = NSLocalizedString(
-                "Filters the order list by payment status.",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list."
-            )
-            button.accessibilityIdentifier = "order-filter-button"
-
-            return button
-        }()
-
         // Don't show the Order title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
@@ -374,29 +358,6 @@ extension OrdersViewController {
         let navigationController = WooNavigationController(rootViewController: searchViewController)
 
         present(navigationController, animated: true, completion: nil)
-    }
-
-    @IBAction func displayFiltersAlert() {
-        ServiceLocator.analytics.track(.ordersListFilterTapped)
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-
-        actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
-        actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
-            self?.statusFilter = nil
-        }
-
-        for orderStatus in currentSiteStatuses {
-            actionSheet.addDefaultActionWithTitle(orderStatus.name) { [weak self] _ in
-                self?.statusFilter = orderStatus
-            }
-        }
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
-        popoverController?.sourceView = self.view
-
-        present(actionSheet, animated: true)
     }
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {

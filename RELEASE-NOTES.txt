@@ -9,6 +9,7 @@
 -----
 - bugfix: when the app is in the foreground while receiving a push notification, the badge on the Orders tab and Reviews tab should be updated correctly based on the type of the notification.
 - bugfix: after logging out and in, the Product list should be loaded to the correct store instead of being empty.
+- bugfix: in Contact Support, a message should always be sent successfully now.
 
 3.4
 -----

@@ -72,19 +72,17 @@ private extension ProductImagesCollectionViewController {
     func configureCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
         switch productImageStatus {
         case .remote(let image):
-            guard let cell = cell as? ProductImageCollectionViewCell else {
-                fatalError("Unexpected cell type for status: \(productImageStatus)")
-            }
             configureRemoteImageCell(cell, image: image)
         case .uploading(let asset):
-            guard let cell = cell as? InProgressProductImageCollectionViewCell else {
-                fatalError("Unexpected cell type for status: \(productImageStatus)")
-            }
             configureUploadingImageCell(cell, asset: asset)
         }
     }
 
-    func configureRemoteImageCell(_ cell: ProductImageCollectionViewCell, image: ProductImage) {
+    func configureRemoteImageCell(_ cell: UICollectionViewCell, image: ProductImage) {
+        guard let cell = cell as? ProductImageCollectionViewCell else {
+            fatalError()
+        }
+
         imageService.downloadAndCacheImageForImageView(cell.imageView,
                                                        with: image.src,
                                                        placeholder: .productPlaceholderImage,
@@ -99,7 +97,11 @@ private extension ProductImagesCollectionViewController {
         }
     }
 
-    func configureUploadingImageCell(_ cell: InProgressProductImageCollectionViewCell, asset: PHAsset) {
+    func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
+        guard let cell = cell as? InProgressProductImageCollectionViewCell else {
+            fatalError()
+        }
+
         let manager = PHImageManager.default()
         manager.requestImage(for: asset,
                              targetSize: cell.bounds.size,

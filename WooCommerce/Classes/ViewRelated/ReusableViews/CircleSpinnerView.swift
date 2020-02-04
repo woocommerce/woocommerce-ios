@@ -2,12 +2,10 @@ import UIKit
 
 /// An animatable circular spinner.
 ///
-@IBDesignable
 final class CircleSpinnerView: UIView {
 
     // MARK: Configurable properties
 
-    @IBInspectable
     var color: UIColor = .brand {
         didSet {
             layer.strokeColor = color.cgColor

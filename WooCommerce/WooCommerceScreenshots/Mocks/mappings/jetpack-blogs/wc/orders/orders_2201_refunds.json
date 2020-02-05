@@ -1,0 +1,24 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "equalTo": "/wc/v3/orders/2201/refunds&_method=get&include="
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": []
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

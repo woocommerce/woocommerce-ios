@@ -31,6 +31,18 @@ extension XCUIElement {
         self.typeText(text)
     }
 
+    func pasteText(text: String) -> Void {
+        let previousPasteboardContents = UIPasteboard.general.string
+        UIPasteboard.general.string = text
+
+        self.press(forDuration: 1.2)
+        XCUIApplication().menuItems.firstMatch.tap()
+
+        if let string = previousPasteboardContents {
+            UIPasteboard.general.string = string
+        }
+    }
+
     var stringValue: String? {
         return self.value as? String
     }

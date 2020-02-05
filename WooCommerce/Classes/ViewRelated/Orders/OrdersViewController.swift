@@ -41,7 +41,7 @@ class OrdersViewController: UIViewController {
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
-    /// ResultsController: Handles all things order status
+    /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
@@ -55,6 +55,9 @@ class OrdersViewController: UIViewController {
     private let syncingCoordinator = SyncingCoordinator()
 
     /// OrderStatus that must be matched by retrieved orders.
+    ///
+    /// This is set and changed by `OrdersMasterViewModel`. This shouldn't be updated internally
+    /// by this `self`.
     ///
     var statusFilter: OrderStatus? {
         didSet {

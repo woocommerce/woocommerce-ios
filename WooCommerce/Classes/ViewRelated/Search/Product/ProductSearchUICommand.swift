@@ -10,6 +10,10 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let emptyStateText = NSLocalizedString("No products found", comment: "Search Products (Empty State)")
 
+    let searchBarAccessibilityIdentifier = "product-search-screen-search-field"
+
+    let cancelButtonAccessibilityIdentifier = "product-search-screen-cancel-button"
+
     private let siteID: Int64
 
     init(siteID: Int64) {
@@ -22,6 +26,10 @@ final class ProductSearchUICommand: SearchUICommand {
         let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
         return ResultsController<StorageProduct>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+    }
+
+    func createStarterViewController() -> UIViewController? {
+        nil
     }
 
     func createCellViewModel(model: Product) -> ProductsTabProductViewModel {

@@ -1,0 +1,37 @@
+# A list of devices you want to take the screenshots from
+devices([
+  "iPhone 11 Pro Max",
+  "iPhone 8 Plus",
+  "iPad Pro (12.9-inch) (2nd generation)",
+  "iPad Pro (12.9-inch) (3rd generation)",
+])
+
+languages([
+  "de-DE",
+  "en-US",
+  "es-ES",
+  "fr-FR",
+  "id",
+  "it",
+  "ja",
+  "ko",
+  "nl-NL",
+  "pt-BR",
+  "ru",
+  "sv",
+  "tr",
+  "zh-Hans",
+  "zh-Hant",
+])
+
+# The name of the scheme which contains the UI Tests
+scheme("WooCommerceScreenshots")
+
+# Where should the resulting screenshots be stored?
+output_directory(File.join(Dir.pwd, "fastlane", "screenshots"))
+
+clear_previous_screenshots(true)
+
+concurrent_simulators(false)
+
+erase_simulator(true)

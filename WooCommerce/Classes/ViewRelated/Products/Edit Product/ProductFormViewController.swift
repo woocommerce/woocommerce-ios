@@ -92,6 +92,7 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     @objc func updateProduct() {
+        ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
         let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
         let message = NSLocalizedString("Please wait while we publish this product to your store",
                                         comment: "Message of the in-progress UI while updating the Product remotely")
@@ -110,6 +111,7 @@ private extension ProductFormViewController {
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
                 DDLogError("⛔️ Error updating Product: \(errorDescription)")
+                ServiceLocator.analytics.track(.productDetailUpdateError)
                 // Dismisses the in-progress UI then presents the error alert.
                 self?.navigationController?.dismiss(animated: true) {
                     self?.displayError(error: error)
@@ -118,6 +120,7 @@ private extension ProductFormViewController {
             }
             self?.product = product
 
+            ServiceLocator.analytics.track(.productDetailUpdateSuccess)
             // Dismisses the in-progress UI.
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }
@@ -158,18 +161,23 @@ extension ProductFormViewController: UITableViewDelegate {
             case .images:
                 break
             case .name:
+                ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
                 editProductName()
             case .description:
+                ServiceLocator.analytics.track(.productDetailViewProductDescriptionTapped)
                 editProductDescription()
             }
         case .settings(let rows):
             let row = rows[indexPath.row]
             switch row {
             case .price:
+                ServiceLocator.analytics.track(.productDetailViewPriceSettingsTapped)
                 editPriceSettings()
             case .shipping:
+                ServiceLocator.analytics.track(.productDetailViewShippingSettingsTapped)
                 editShippingSettings()
             case .inventory:
+                ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
             }
         }
@@ -241,7 +249,11 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        guard newName != product.name else {
+
+        let hasChangedData = newName != product.name
+        ServiceLocator.analytics.track(.productNameDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.nameUpdated(name: newName)
@@ -275,7 +287,10 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        guard newDescription != product.fullDescription else {
+        let hasChangedData = newDescription != product.fullDescription
+        ServiceLocator.analytics.track(.productDescriptionDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.descriptionUpdated(description: newDescription)
@@ -308,14 +323,20 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
 
-        guard regularPrice != product.regularPrice ||
-            salePrice != product.salePrice ||
-            dateOnSaleStart != product.dateOnSaleStart ||
-            dateOnSaleEnd != product.dateOnSaleEnd ||
-            taxStatus != product.productTaxStatus ||
-            taxClass?.slug != product.taxClass else {
+        let hasChangedData: Bool = {
+            regularPrice != product.regularPrice ||
+                salePrice != product.salePrice ||
+                dateOnSaleStart != product.dateOnSaleStart ||
+                dateOnSaleEnd != product.dateOnSaleEnd ||
+                taxStatus != product.productTaxStatus ||
+                taxClass?.slug != product.taxClass
+        }()
+
+        ServiceLocator.analytics.track(.productPriceSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+        guard hasChangedData else {
             return
         }
+
         self.product = productUpdater.priceSettingsUpdated(regularPrice: regularPrice,
                                                            salePrice: salePrice,
                                                            dateOnSaleStart: dateOnSaleStart,
@@ -339,7 +360,14 @@ private extension ProductFormViewController {
         defer {
             navigationController?.popViewController(animated: true)
         }
-        guard weight != self.product.weight || dimensions != self.product.dimensions || shippingClass != product.productShippingClass else {
+        let hasChangedData: Bool = {
+            weight != self.product.weight ||
+                dimensions != self.product.dimensions ||
+                shippingClass != product.productShippingClass
+        }()
+        ServiceLocator.analytics.track(.productShippingSettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.shippingSettingsUpdated(weight: weight, dimensions: dimensions, shippingClass: shippingClass)
@@ -361,7 +389,10 @@ private extension ProductFormViewController {
             navigationController?.popViewController(animated: true)
         }
         let originalData = ProductInventoryEditableData(product: product)
-        guard originalData != data else {
+        let hasChangedData = originalData != data
+        ServiceLocator.analytics.track(.productInventorySettingsDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
+
+        guard hasChangedData else {
             return
         }
         self.product = productUpdater.inventorySettingsUpdated(sku: data.sku,

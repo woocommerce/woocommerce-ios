@@ -71,6 +71,7 @@ class StorePickerViewController: UIViewController {
         didSet {
             actionButton.backgroundColor = .clear
             actionButton.titleFont = StyleManager.actionButtonTitleFont
+            actionButton.accessibilityIdentifier = "login-epilogue-continue-button"
         }
     }
 

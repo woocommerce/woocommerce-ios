@@ -180,6 +180,12 @@ extension ProductPriceSettingsViewController {
     @objc private func completeUpdating() {
         let newSalePrice = salePrice == "0" ? nil : salePrice
 
+        // Check if the sale price is populated, and the regular price is not.
+        if getDecimalPrice(salePrice) != nil, getDecimalPrice(regularPrice) == nil {
+            displaySalePriceWithoutRegularPriceErrorNotice()
+            return
+        }
+
         // Check if the sale price is less of the regular price, else show an error.
         if let decimalSalePrice = getDecimalPrice(salePrice), let decimalRegularPrice = getDecimalPrice(regularPrice) {
             let comparison = decimalSalePrice.compare(decimalRegularPrice)
@@ -193,9 +199,7 @@ extension ProductPriceSettingsViewController {
     }
 
     private func presentBackNavigationActionSheet() {
-        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
-            self?.completeUpdating()
-        }, onDiscard: { [weak self] in
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
     }
@@ -216,6 +220,17 @@ private extension ProductPriceSettingsViewController {
 // MARK: - Error handling
 //
 private extension ProductPriceSettingsViewController {
+
+    /// Displays a Notice onscreen, indicating that you can't add a sale price without adding before the regular price
+    ///
+    func displaySalePriceWithoutRegularPriceErrorNotice() {
+        UIApplication.shared.keyWindow?.endEditing(true)
+        let message = NSLocalizedString("The sale price can't be added without the regular price.",
+                                        comment: "Product price error notice message, when the sale price is added but the regular price is not")
+
+        let notice = Notice(title: message, feedbackType: .error)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
 
     /// Displays a Notice onscreen, indicating that the sale price need to be higher than the regular price
     ///

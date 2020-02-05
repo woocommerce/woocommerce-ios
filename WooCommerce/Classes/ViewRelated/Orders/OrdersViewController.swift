@@ -321,7 +321,6 @@ extension OrdersViewController {
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        statusFilter = nil
         refreshStatusPredicate()
         syncingCoordinator.resetInternalState()
     }

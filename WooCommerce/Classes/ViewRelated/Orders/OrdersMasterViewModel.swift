@@ -85,6 +85,7 @@ final class OrdersMasterViewModel {
     /// Runs whenever the default Account is updated.
     ///
     @objc private func defaultAccountWasUpdated() {
+        statusFilter = nil
         refreshStatusPredicate()
     }
 

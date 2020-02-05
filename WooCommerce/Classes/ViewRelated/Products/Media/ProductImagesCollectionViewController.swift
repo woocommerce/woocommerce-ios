@@ -83,6 +83,8 @@ private extension ProductImagesCollectionViewController {
             fatalError()
         }
 
+        cell.imageView.contentMode = .center
+
         imageService.downloadAndCacheImageForImageView(cell.imageView,
                                                        with: image.src,
                                                        placeholder: .productPlaceholderImage,
@@ -90,9 +92,6 @@ private extension ProductImagesCollectionViewController {
                                                         let success = image != nil && error == nil
                                                         if success {
                                                             cell.imageView.contentMode = .scaleAspectFit
-                                                        }
-                                                        else {
-                                                            cell.imageView.contentMode = .center
                                                         }
         }
     }

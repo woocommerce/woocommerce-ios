@@ -117,7 +117,7 @@ private extension ProductImagesViewController {
 
     @objc func doneButtonTapped() {
         guard productImageStatuses.count == productImages.count else {
-            presentSaveChangesActionSheet()
+            presentDiscardChangesActionSheet()
             return
         }
         completeEditing()
@@ -148,16 +148,14 @@ private extension ProductImagesViewController {
 extension ProductImagesViewController {
     override func shouldPopOnBackButton() -> Bool {
         guard productImageStatuses.count == productImages.count else {
-            presentSaveChangesActionSheet()
+            presentDiscardChangesActionSheet()
             return false
         }
         return true
     }
 
-    private func presentSaveChangesActionSheet() {
-        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
-            self?.completeEditing()
-        }, onDiscard: { [weak self] in
+    private func presentDiscardChangesActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
     }

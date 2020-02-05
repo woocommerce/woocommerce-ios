@@ -5,10 +5,17 @@ import WordPressUI
 import SafariServices
 import StoreKit
 
+protocol OrdersViewControllerDelegate: class {
+    /// Called when `OrdersViewController` is about to fetch Orders from the API.
+    ///
+    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController)
+}
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
 ///
 class OrdersViewController: UIViewController {
+
+    weak var delegate: OrdersViewControllerDelegate?
 
     /// Main TableView.
     ///
@@ -107,10 +114,6 @@ class OrdersViewController: UIViewController {
             didEnter(state: state)
         }
     }
-
-    /// Called when `self` is about to fetch Orders from the API.
-    ///
-    var willSynchronizeOrders: (() -> ())?
 
     // MARK: - View Lifecycle
 
@@ -365,7 +368,7 @@ extension OrdersViewController {
 
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
-        willSynchronizeOrders?()
+        delegate?.ordersViewControllerWillSynchronizeOrders(self)
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
@@ -514,8 +517,12 @@ private extension OrdersViewController {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.willSynchronizeOrders?()
-            self?.sync(pageNumber: pageNumber, pageSize: pageSize)
+            guard let self = self else {
+                return
+            }
+
+            self.delegate?.ordersViewControllerWillSynchronizeOrders(self)
+            self.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

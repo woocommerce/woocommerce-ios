@@ -51,11 +51,8 @@ final class OrdersMasterViewController: UIViewController {
         ordersView.pinSubviewToAllEdges(view)
         ordersViewController.didMove(toParent: self)
 
+        ordersViewController.delegate = self
         self.ordersViewController = ordersViewController
-
-        ordersViewController.willSynchronizeOrders = { [weak self] in
-            self?.viewModel.syncOrderStatuses()
-        }
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -118,5 +115,13 @@ final class OrdersMasterViewController: UIViewController {
             "All",
             comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
         )
+    }
+}
+
+// MARK: - OrdersViewControllerDelegate
+
+extension OrdersMasterViewController: OrdersViewControllerDelegate {
+    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController) {
+        viewModel.syncOrderStatuses()
     }
 }

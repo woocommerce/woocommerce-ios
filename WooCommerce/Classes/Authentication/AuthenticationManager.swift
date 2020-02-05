@@ -1,6 +1,7 @@
 import Foundation
 import WordPressAuthenticator
 import Yosemite
+import Networking
 
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
@@ -14,13 +15,11 @@ class AuthenticationManager: Authentication {
     /// Initializes the WordPress Authenticator.
     ///
     func initialize() {
-        let wordpressApiBaseURL = UserDefaults.standard.string(forKey: "wpcom-api-base-url") ?? "https://public-api.wordpress.com/"
-
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.termsOfServiceUrl.absoluteString,
-                                                                wpcomAPIBaseURL: wordpressApiBaseURL,
+                                                                wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,

@@ -34,7 +34,7 @@ class DotcomRequestTests: XCTestCase {
     func testRequestUrlContainsExpectedComponents() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: sampleRPC)
 
-        let expectedURL = URL(string: request.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC)!
+        let expectedURL = URL(string: Settings.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC)!
         let generatedURL = try! request.asURLRequest().url!
         XCTAssertEqual(expectedURL, generatedURL)
     }
@@ -44,7 +44,7 @@ class DotcomRequestTests: XCTestCase {
     func testParametersAreSerializedAsPartOfTheUrlQueryWhenMethodIsSetToGet() {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: sampleRPC, parameters: sampleParameters)
 
-        let expectedURL = URL(string: request.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC + sampleParametersForQuery)!
+        let expectedURL = URL(string: Settings.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC + sampleParametersForQuery)!
         let generatedURL = try! request.asURLRequest().url!
 
         /// Note: Why not compare URL's directly?. As of iOS 12, URLQueryItem's serialization to string can result in swizzled entries.
@@ -68,7 +68,7 @@ class DotcomRequestTests: XCTestCase {
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .post, path: sampleRPC, parameters: sampleParameters)
 
         let generatedURL = try! request.asURLRequest().url!
-        let expectedURL = URL(string: request.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC)!
+        let expectedURL = URL(string: Settings.wordpressApiBaseURL + request.wordpressApiVersion.path + sampleRPC)!
         XCTAssertEqual(expectedURL, generatedURL)
     }
 

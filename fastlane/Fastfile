@@ -350,6 +350,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
       # Retry a few times if something is a little flaky
       number_of_retries: 3,
+
+      # Allow the caller to invoke dark mode
+      dark_mode: options[:dark_mode] == nil ? false : options[:dark_mode].to_s.downcase == "true"
     )
   end
 

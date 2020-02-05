@@ -237,7 +237,7 @@ public struct Product: Codable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let productID = try container.decode(Int64.self, forKey: .productID)
-        let name = try container.decode(String.self, forKey: .name)
+        let name = try container.decode(String.self, forKey: .name).strippedHTML
         let slug = try container.decode(String.self, forKey: .slug)
         let permalink = try container.decode(String.self, forKey: .permalink)
 

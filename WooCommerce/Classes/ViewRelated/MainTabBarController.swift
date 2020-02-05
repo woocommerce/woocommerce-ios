@@ -325,10 +325,11 @@ extension MainTabBarController {
         switch note.kind {
         case .storeOrder:
             switchToOrdersTab {
-                guard let ordersViewController: OrdersViewController = childViewController() else {
+                guard let ordersMasterVC: OrdersMasterViewController = childViewController() else {
                     return
                 }
-                ordersViewController.presentDetails(for: note)
+
+                ordersMasterVC.presentDetails(for: note)
             }
         case .comment:
             switchToReviewsTab {

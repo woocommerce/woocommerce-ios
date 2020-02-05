@@ -1,6 +1,7 @@
 
 import UIKit
 import struct Yosemite.OrderStatus
+import struct Yosemite.Note
 
 /// The main Orders view controller that is shown when the Orders tab is accessed.
 ///
@@ -50,6 +51,18 @@ final class OrdersMasterViewController: UIViewController {
         super.viewWillAppear(animated)
 
         viewModel.syncOrderStatuses()
+    }
+
+    /// Presents the Details for the Notification with the specified Identifier.
+    ///
+    func presentDetails(for note: Note) {
+        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
+            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
+            return
+        }
+
+        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
+        navigationController?.pushViewController(loaderViewController, animated: true)
     }
 
     /// Called when the ViewModel's `statusFilter` changed.

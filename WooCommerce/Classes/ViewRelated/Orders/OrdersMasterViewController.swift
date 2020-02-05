@@ -84,9 +84,26 @@ final class OrdersMasterViewController: UIViewController {
         present(actionSheet, animated: true)
     }
 
+}
+
+// MARK: - OrdersViewControllerDelegate
+
+extension OrdersMasterViewController: OrdersViewControllerDelegate {
+    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController) {
+        viewModel.syncOrderStatuses()
+    }
+
+    func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController) {
+        viewModel.statusFilter = nil
+    }
+}
+
+// MARK: - Creators
+
+private extension OrdersMasterViewController {
     /// Create a `UIBarButtonItem` to be used as the filter button on the top-right.
     ///
-    private func createFilterBarButtonItem() -> UIBarButtonItem {
+    func createFilterBarButtonItem() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: .filterImage,
                                      style: .plain,
                                      target: self,
@@ -104,7 +121,7 @@ final class OrdersMasterViewController: UIViewController {
 
     /// Creates an `OrdersViewController` and attaches its view to `self.view`.
     ///
-    private func createAndAttachOrdersViewController() -> OrdersViewController? {
+    func createAndAttachOrdersViewController() -> OrdersViewController? {
         guard let ordersViewController = OrdersViewController.instantiatedViewControllerFromStoryboard(),
             let ordersView = ordersViewController.view else {
                 return nil
@@ -126,18 +143,6 @@ final class OrdersMasterViewController: UIViewController {
             "All",
             comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
         )
-    }
-}
-
-// MARK: - OrdersViewControllerDelegate
-
-extension OrdersMasterViewController: OrdersViewControllerDelegate {
-    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController) {
-        viewModel.syncOrderStatuses()
-    }
-
-    func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController) {
-        viewModel.statusFilter = nil
     }
 }
 

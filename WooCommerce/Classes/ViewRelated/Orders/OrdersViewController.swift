@@ -146,7 +146,6 @@ class OrdersViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        refreshTitle()
         refreshResultsPredicate()
         refreshStatusPredicate()
         registerTableViewCells()
@@ -174,28 +173,6 @@ class OrdersViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension OrdersViewController {
-
-    /// Setup: Title
-    ///
-    func refreshTitle() {
-        guard let filterName = statusFilter?.name else {
-            navigationItem.title = NSLocalizedString(
-                "Orders",
-                comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order)."
-            )
-            return
-        }
-
-        let title = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Orders: %@",
-                comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"
-            ),
-            filterName
-        )
-        navigationItem.title = title
-    }
-
     /// Setup: Order filtering
     ///
     func refreshResultsPredicate() {
@@ -396,8 +373,6 @@ private extension OrdersViewController {
         ServiceLocator.analytics.track(.ordersListFilterOrSearch,
                                   withProperties: ["filter": newFilter?.slug ?? String(),
                                                    "search": ""])
-        // Display the Filter in the Title
-        refreshTitle()
 
         // Filter right away the cached orders
         refreshResultsPredicate()

@@ -53,6 +53,7 @@ final class OrdersMasterViewController: UIViewController {
     ///
     private func statusFilterChanged(status: OrderStatus?) {
         ordersViewController?.statusFilter = status
+        navigationItem.title = status.titleForNavigationItem
     }
 
     /// Show the list of Order statuses can be filtered with.
@@ -135,5 +136,26 @@ extension OrdersMasterViewController: OrdersViewControllerDelegate {
 
     func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController) {
         viewModel.statusFilter = nil
+    }
+}
+
+private extension Optional where Wrapped == OrderStatus {
+    /// A localized title to use as the `OrdersMasterViewController`'s navigation title.
+    ///
+    var titleForNavigationItem: String {
+        guard let filterName = self?.name else {
+            return NSLocalizedString(
+                "Orders",
+                comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order)."
+            )
+        }
+
+        return String.localizedStringWithFormat(
+            NSLocalizedString(
+                "Orders: %@",
+                comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"
+            ),
+            filterName
+        )
     }
 }

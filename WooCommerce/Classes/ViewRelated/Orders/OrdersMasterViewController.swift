@@ -39,20 +39,8 @@ final class OrdersMasterViewController: UIViewController {
 
         navigationItem.rightBarButtonItem = createFilterBarButtonItem()
 
-        guard let ordersViewController = OrdersViewController.instantiatedViewControllerFromStoryboard(),
-            let ordersView = ordersViewController.view else {
-            return
-        }
-
-        ordersView.translatesAutoresizingMaskIntoConstraints = false
-
-        add(ordersViewController)
-        view.addSubview(ordersView)
-        ordersView.pinSubviewToAllEdges(view)
-        ordersViewController.didMove(toParent: self)
-
-        ordersViewController.delegate = self
-        self.ordersViewController = ordersViewController
+        ordersViewController = createAndAttachOrdersViewController()
+        ordersViewController?.delegate = self
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -93,6 +81,8 @@ final class OrdersMasterViewController: UIViewController {
         present(actionSheet, animated: true)
     }
 
+    /// Create a `UIBarButtonItem` to be used as the filter button on the top-right.
+    ///
     private func createFilterBarButtonItem() -> UIBarButtonItem {
         let button = UIBarButtonItem(image: .filterImage,
                                      style: .plain,
@@ -107,6 +97,24 @@ final class OrdersMasterViewController: UIViewController {
         button.accessibilityIdentifier = "order-filter-button"
 
         return button
+    }
+
+    /// Creates an `OrdersViewController` and attaches its view to `self.view`.
+    ///
+    private func createAndAttachOrdersViewController() -> OrdersViewController? {
+        guard let ordersViewController = OrdersViewController.instantiatedViewControllerFromStoryboard(),
+            let ordersView = ordersViewController.view else {
+                return nil
+        }
+
+        ordersView.translatesAutoresizingMaskIntoConstraints = false
+
+        add(ordersViewController)
+        view.addSubview(ordersView)
+        ordersView.pinSubviewToAllEdges(view)
+        ordersViewController.didMove(toParent: self)
+
+        return ordersViewController
     }
 
     enum FilterAction {

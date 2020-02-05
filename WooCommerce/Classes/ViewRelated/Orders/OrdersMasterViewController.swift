@@ -124,4 +124,8 @@ extension OrdersMasterViewController: OrdersViewControllerDelegate {
     func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController) {
         viewModel.syncOrderStatuses()
     }
+
+    func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController) {
+        viewModel.statusFilter = nil
+    }
 }

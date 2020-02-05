@@ -17,6 +17,12 @@ final class OrdersMasterViewModel {
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
     }()
 
+    /// The current `storeID`.
+    ///
+    var storeID: Int64? {
+        sessionManager.defaultStoreID
+    }
+
     /// The current list of order statuses for the default site
     ///
     var currentSiteStatuses: [OrderStatus] {
@@ -64,7 +70,7 @@ final class OrdersMasterViewModel {
     func syncOrderStatuses() {
         resetStatusFilterIfNeeded()
 
-        guard let siteID = sessionManager.defaultStoreID else {
+        guard let siteID = storeID else {
             return
         }
 
@@ -108,7 +114,7 @@ final class OrdersMasterViewModel {
                 return
         }
 
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", sessionManager.defaultStoreID ?? Int.min)
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", storeID ?? Int.min)
     }
 
     /// Reset the current status filter if needed (e.g. when changing stores and the currently

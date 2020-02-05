@@ -74,7 +74,7 @@ class OrdersViewController: UIViewController {
     /// OrderStatus that must be matched by retrieved orders.
     ///
     /// This is set and changed by `OrdersMasterViewModel`. This shouldn't be updated internally
-    /// by this `self`.
+    /// by `self`.
     ///
     var statusFilter: OrderStatus? {
         didSet {

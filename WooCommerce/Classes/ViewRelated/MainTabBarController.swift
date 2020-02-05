@@ -309,18 +309,6 @@ extension MainTabBarController {
 //
 extension MainTabBarController {
 
-    /// Displays the Orders List with the specified Filter applied.
-    ///
-    static func presentOrders(statusFilter: OrderStatus) {
-        switchToOrdersTab()
-
-        guard let ordersViewController: OrdersViewController = childViewController() else {
-            return
-        }
-
-        ordersViewController.statusFilter = statusFilter
-    }
-
     /// Syncs the notification given the ID, and handles the notification based on its notification kind.
     ///
     static func presentNotificationDetails(for noteID: Int64) {
@@ -395,6 +383,8 @@ private extension MainTabBarController {
         notificationsBadge.badgeCountWasUpdated(newValue: newValue, tab: tab, in: tabBar, tabIndex: tabIndex)
     }
 }
+
+// MARK: - Orders Tab Badge
 
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {

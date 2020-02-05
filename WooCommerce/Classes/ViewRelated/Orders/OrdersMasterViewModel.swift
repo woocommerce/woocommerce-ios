@@ -25,15 +25,16 @@ final class OrdersMasterViewModel {
 
     /// The current `OrderStatus` to filter by.
     ///
-    /// If the this is `nil`, that means that all orders should be shown.
+    /// If the this is `nil`, that means that all orders should be shown. The `statusFilterChanged`
+    /// callback will be called whenever this is changed.
     ///
-    private var statusFilter: OrderStatus? {
+    var statusFilter: OrderStatus? {
         didSet {
             statusFilterChanged(statusFilter)
         }
     }
 
-    /// Called when the selected `OrderStatus` for filtering was changed.
+    /// Called whenever `statusFilter` is changed.
     ///
     private let statusFilterChanged: (OrderStatus?) -> ()
 
@@ -79,16 +80,6 @@ final class OrdersMasterViewModel {
         }
 
         stores.dispatch(action)
-    }
-
-    /// Change the current `OrderStatus` filter.
-    ///
-    /// The `statusFilterChanged` callback will be called after.
-    ///
-    /// - SeeAlso: statusFilter
-    ///
-    func filterBy(orderStatus: OrderStatus?) {
-        statusFilter = orderStatus
     }
 
     /// Runs whenever the default Account is updated.

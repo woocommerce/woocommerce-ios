@@ -80,12 +80,12 @@ final class OrdersMasterViewController: UIViewController {
 
         actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
         actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
-            self?.viewModel.filterBy(orderStatus: nil)
+            self?.viewModel.statusFilter = nil
         }
 
         for orderStatus in viewModel.currentSiteStatuses {
             actionSheet.addDefaultActionWithTitle(orderStatus.name) { [weak self] _ in
-                self?.viewModel.filterBy(orderStatus: orderStatus)
+                self?.viewModel.statusFilter = orderStatus
             }
         }
 

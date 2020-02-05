@@ -227,9 +227,6 @@ private extension OrdersViewController {
 
             return button
         }()
-
-        // Don't show the Order title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 
     /// Setup: Results Controller

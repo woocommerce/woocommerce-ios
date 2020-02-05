@@ -38,6 +38,8 @@ final class OrdersMasterViewController: UIViewController {
         viewModel.activate()
 
         navigationItem.rightBarButtonItem = createFilterBarButtonItem()
+        // Don't show the Order title in the next-view's back button
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
 
         ordersViewController = createAndAttachOrdersViewController()
         ordersViewController?.delegate = self
@@ -138,6 +140,8 @@ extension OrdersMasterViewController: OrdersViewControllerDelegate {
         viewModel.statusFilter = nil
     }
 }
+
+// MARK: - Optional<OrderStatus> Extension
 
 private extension Optional where Wrapped == OrderStatus {
     /// A localized title to use as the `OrdersMasterViewController`'s navigation title.

@@ -151,7 +151,6 @@ class OrdersViewController: UIViewController {
         registerTableViewCells()
 
         configureSyncingCoordinator()
-        configureNavigation()
         configureTableView()
         configureGhostableTableView()
         configureResultsControllers()
@@ -207,26 +206,6 @@ private extension OrdersViewController {
         }
 
         statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
-    }
-
-    /// Setup: Navigation Item
-    ///
-    func configureNavigation() {
-        navigationItem.leftBarButtonItem = {
-            let button = UIBarButtonItem(image: .searchImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(displaySearchOrders))
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
-            button.accessibilityHint = NSLocalizedString(
-                "Retrieves a list of orders that contain a given keyword.",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
-            )
-            button.accessibilityIdentifier = "order-search-button"
-
-            return button
-        }()
     }
 
     /// Setup: Results Controller
@@ -334,22 +313,6 @@ extension OrdersViewController {
 // MARK: - Actions
 //
 extension OrdersViewController {
-
-    @IBAction func displaySearchOrders() {
-        guard let storeID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
-        ServiceLocator.analytics.track(.ordersListSearchTapped)
-
-        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
-                                                                                                  command: OrderSearchUICommand(),
-                                                                                                  cellType: OrderTableViewCell.self)
-        let navigationController = WooNavigationController(rootViewController: searchViewController)
-
-        present(navigationController, animated: true, completion: nil)
-    }
-
     @IBAction func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.ordersViewControllerWillSynchronizeOrders(self)

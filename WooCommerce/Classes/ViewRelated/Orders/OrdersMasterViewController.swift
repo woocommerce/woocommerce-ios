@@ -37,6 +37,7 @@ final class OrdersMasterViewController: UIViewController {
 
         viewModel.activate()
 
+        navigationItem.leftBarButtonItem = createSearchBarButtonItem()
         navigationItem.rightBarButtonItem = createFilterBarButtonItem()
         // Don't show the Order title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
@@ -84,6 +85,22 @@ final class OrdersMasterViewController: UIViewController {
         present(actionSheet, animated: true)
     }
 
+    /// Shows `SearchViewController`.
+    ///
+    @objc private func displaySearchOrders() {
+        guard let storeID = viewModel.storeID else {
+            return
+        }
+
+        analytics.track(.ordersListSearchTapped)
+
+        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
+                                                                                                  command: OrderSearchUICommand(),
+                                                                                                  cellType: OrderTableViewCell.self)
+        let navigationController = WooNavigationController(rootViewController: searchViewController)
+
+        present(navigationController, animated: true, completion: nil)
+    }
 }
 
 // MARK: - OrdersViewControllerDelegate
@@ -115,6 +132,24 @@ private extension OrdersMasterViewController {
             comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list."
         )
         button.accessibilityIdentifier = "order-filter-button"
+
+        return button
+    }
+
+    /// Create a `UIBarButtonItem` to be used as the search button on the top-left.
+    ///
+    func createSearchBarButtonItem() -> UIBarButtonItem {
+        let button = UIBarButtonItem(image: .searchImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(displaySearchOrders))
+        button.accessibilityTraits = .button
+        button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
+        button.accessibilityHint = NSLocalizedString(
+            "Retrieves a list of orders that contain a given keyword.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
+        )
+        button.accessibilityIdentifier = "order-search-button"
 
         return button
     }

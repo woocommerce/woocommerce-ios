@@ -127,20 +127,12 @@ class OrdersViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    /// Create an instance of `Self` from its corresponding storyboard.
-    ///
-    static func instantiatedViewControllerFromStoryboard() -> Self? {
-        let storyboard = UIStoryboard.orders
-        let identifier = "OrdersViewController"
-        return storyboard.instantiateViewController(withIdentifier: identifier) as? Self
-    }
-
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        fatalError()
+    init() {
+        super.init(nibName: Self.nibName, bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        fatalError("Not supported")
     }
 
     override func viewDidLoad() {

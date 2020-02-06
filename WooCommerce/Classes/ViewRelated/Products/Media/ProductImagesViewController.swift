@@ -21,6 +21,7 @@ final class ProductImagesViewController: UIViewController {
         }
     }
 
+    private let originalProductImages: [ProductImage]
     private var productImages: [ProductImage] {
         return productImageStatuses.compactMap { status in
             switch status {
@@ -51,6 +52,7 @@ final class ProductImagesViewController: UIViewController {
         self.productID = product.productID
         self.productImagesService = productImagesService
         self.productImageStatuses = product.images.map({ ProductImageStatus.remote(image: $0) })
+        self.originalProductImages = product.images
         self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -116,14 +118,6 @@ private extension ProductImagesViewController {
     }
 
     @objc func doneButtonTapped() {
-        guard productImageStatuses.count == productImages.count else {
-            presentDiscardChangesActionSheet()
-            return
-        }
-        completeEditing()
-    }
-
-    func completeEditing() {
         onCompletion(productImages)
     }
 
@@ -147,7 +141,7 @@ private extension ProductImagesViewController {
 //
 extension ProductImagesViewController {
     override func shouldPopOnBackButton() -> Bool {
-        guard productImageStatuses.count == productImages.count else {
+        guard hasOutstandingChanges() == false else {
             presentDiscardChangesActionSheet()
             return false
         }
@@ -158,6 +152,10 @@ extension ProductImagesViewController {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
+    }
+
+    private func hasOutstandingChanges() -> Bool {
+        return originalProductImages != productImages
     }
 }
 

@@ -137,8 +137,8 @@ private extension OrdersMasterViewController {
     func configureNavigationButtons() {
         navigationItem.leftBarButtonItem = createSearchBarButtonItem()
         navigationItem.rightBarButtonItem = createFilterBarButtonItem()
-        // Don't show the Order title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+
+        removeNavigationBackBarButtonText()
     }
 
     /// For `viewDidLoad` only, initialize and set up bindings for `self.ordersViewController`.

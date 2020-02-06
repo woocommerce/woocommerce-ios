@@ -584,7 +584,12 @@ extension OrdersViewController: UITableViewDelegate {
             return
         }
 
-        performSegue(withIdentifier: Segues.orderDetails, sender: detailsViewModel(at: indexPath))
+        guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
+            return
+        }
+        orderDetailsVC.viewModel = detailsViewModel(at: indexPath)
+
+        navigationController?.pushViewController(orderDetailsVC, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -685,10 +690,6 @@ private extension OrdersViewController {
         static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
-    }
-
-    enum Segues {
-        static let orderDetails = "ShowOrderDetailsViewController"
     }
 
     enum State {

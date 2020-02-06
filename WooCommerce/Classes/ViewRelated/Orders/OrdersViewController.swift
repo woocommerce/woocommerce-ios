@@ -681,14 +681,6 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    enum FilterAction {
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let displayAll = NSLocalizedString(
-            "All",
-            comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
-        )
-    }
-
     enum Settings {
         static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)

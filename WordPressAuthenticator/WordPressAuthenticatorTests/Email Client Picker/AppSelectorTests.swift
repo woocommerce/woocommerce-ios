@@ -32,7 +32,7 @@ class AppSelectorTests: XCTestCase {
         let urlHandler = MockUrlHandler()
         urlHandler.canOpenUrlExpectation = expectation(description: "canOpenUrl called")
         // When
-        let appSelector = AppSelector(with: URLMocks.mockAppList, urlHandler: urlHandler)
+        let appSelector = AppSelector(with: URLMocks.mockAppList, sourceView: UIView(), urlHandler: urlHandler)
         // Then
         XCTAssertNotNil(appSelector)
         XCTAssertNotNil(appSelector?.alertController)
@@ -48,7 +48,7 @@ class AppSelectorTests: XCTestCase {
         // Given
         let urlHandler = MockUrlHandler()
         // When
-        let appSelector = AppSelector(with: [:], urlHandler: urlHandler)
+        let appSelector = AppSelector(with: [:], sourceView: UIView(), urlHandler: urlHandler)
         // Then
         XCTAssertNil(appSelector)
     }
@@ -59,7 +59,7 @@ class AppSelectorTests: XCTestCase {
         urlHandler.canOpenUrlExpectation = expectation(description: "canOpenUrl called")
         urlHandler.shouldOpenUrls = false
         // When
-        let appSelector = AppSelector(with: URLMocks.mockAppList, urlHandler: urlHandler)
+        let appSelector = AppSelector(with: URLMocks.mockAppList, sourceView: UIView(), urlHandler: urlHandler)
         // Then
         XCTAssertNil(appSelector)
         waitForExpectations(timeout: 4) { error in

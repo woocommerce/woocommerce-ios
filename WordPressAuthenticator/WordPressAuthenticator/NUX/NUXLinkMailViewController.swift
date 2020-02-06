@@ -104,8 +104,10 @@ class NUXLinkMailViewController: LoginViewController {
                 }
             }
         }
+
         let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
-        linkMailPresenter.presentEmailClients(on: self)
+        let appSelector = AppSelector(sourceView: sender)
+        linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)
     }
 
     @IBAction func handleUsePasswordTapped(_ sender: UIButton) {

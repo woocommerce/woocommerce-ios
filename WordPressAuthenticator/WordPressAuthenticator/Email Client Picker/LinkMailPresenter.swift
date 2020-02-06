@@ -18,7 +18,7 @@ class LinkMailPresenter {
     ///   - appSelector: the app picker that contains the available clients. Nil if no clients are available
     ///                  reads the supported email clients from EmailClients.plist
     func presentEmailClients(on viewController: UIViewController,
-                             appSelector: AppSelector? = AppSelector()) {
+                             appSelector: AppSelector?) {
 
         guard let picker = appSelector else {
             // fall back to Apple Mail if no other clients are installed

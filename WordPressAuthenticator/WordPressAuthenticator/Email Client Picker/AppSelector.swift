@@ -11,9 +11,11 @@ class AppSelector {
     /// - Parameters:
     ///   - appList: collection of apps to be added to the selector
     ///   - defaultAction: default action, if not nil, will be the first element of the list
+    ///   - sourceView: the sourceView to anchor the action sheet to
     ///   - urlHandler: object that handles app URL schemes; defaults to UIApplication.shared
     init?(with appList: [String: String],
           defaultAction: UIAlertAction? = nil,
+          sourceView: UIView,
           urlHandler: URLHandler = UIApplication.shared) {
         /// inline method that builds a list of app calls to be inserted in the action sheet
         func makeAlertActions(from appList: [String: String]) -> [UIAlertAction]? {
@@ -49,6 +51,8 @@ class AppSelector {
         }
 
         alertController = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        alertController.popoverPresentationController?.sourceView = sourceView
+        alertController.popoverPresentationController?.sourceRect = sourceView.bounds
         appCalls.forEach {
             alertController.addAction($0)
         }
@@ -59,17 +63,22 @@ class AppSelector {
 /// Initializers for Email Picker
 extension AppSelector {
     /// initializes the picker with a plist file in a specified bundle
-    convenience init?(with plistFile: String, in bundle: Bundle, defaultAction: UIAlertAction? = nil) {
+    convenience init?(with plistFile: String,
+                      in bundle: Bundle,
+                      defaultAction: UIAlertAction? = nil,
+                      sourceView: UIView) {
 
         guard let plistPath = bundle.path(forResource: plistFile, ofType: "plist"),
             let availableApps = NSDictionary(contentsOfFile: plistPath) as? [String: String] else {
             return nil
         }
-        self.init(with: availableApps, defaultAction: defaultAction)
+        self.init(with: availableApps,
+                  defaultAction: defaultAction,
+                  sourceView: sourceView)
     }
 
     /// Convenience init for a picker that calls supported email clients apps, defined in EmailClients.plist
-    convenience init?() {
+    convenience init?(sourceView: UIView) {
         guard let bundlePath = Bundle(for: type(of: self))
             .path(forResource: "WordPressAuthenticatorResources", ofType: "bundle"),
             let wpAuthenticatorBundle = Bundle(path: bundlePath) else {
@@ -85,7 +94,10 @@ extension AppSelector {
                 UIApplication.shared.open(url)
             }
         }
-        self.init(with: plistFile, in: wpAuthenticatorBundle, defaultAction: defaultAction)
+        self.init(with: plistFile,
+                  in: wpAuthenticatorBundle,
+                  defaultAction: defaultAction,
+                  sourceView: sourceView)
     }
 }
 

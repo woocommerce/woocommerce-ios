@@ -10,6 +10,10 @@ public struct Order: Decodable {
     public let customerID: Int64
 
     public let number: String
+    /// The Order status.
+    ///
+    /// Maps to `OrderStatus.slug`.
+    ///
     public let statusKey: String
     public let currency: String
     public let customerNote: String?

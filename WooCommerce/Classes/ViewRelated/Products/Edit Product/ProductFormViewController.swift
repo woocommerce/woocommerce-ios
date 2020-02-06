@@ -62,7 +62,7 @@ private extension ProductFormViewController {
         let moreButton = UIBarButtonItem(image: .moreImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(updateProduct))
+                                     action: #selector(presentMoreActionSheet))
         moreButton.accessibilityTraits = .button
         moreButton.accessibilityLabel = NSLocalizedString("Show more", comment: "Accessibility label for the Edit Product More action sheet")
         moreButton.accessibilityHint = NSLocalizedString(
@@ -419,6 +419,35 @@ private extension ProductFormViewController {
                                                                stockQuantity: data.stockQuantity,
                                                                backordersSetting: data.backordersSetting,
                                                                stockStatus: data.stockStatus)
+    }
+}
+
+// MARK: Action Sheet
+//
+private extension ProductFormViewController {
+
+    /// More Action Sheet
+    ///
+    @objc func presentMoreActionSheet() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { _ in
+        }
+
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = view
+        popoverController?.sourceRect = view.bounds
+
+        present(actionSheet, animated: true)
+    }
+
+    enum ActionSheetStrings {
+        static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Action Sheet")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Action Sheet")
     }
 }
 

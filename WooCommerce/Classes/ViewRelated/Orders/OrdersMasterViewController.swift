@@ -37,9 +37,7 @@ final class OrdersMasterViewController: UIViewController {
         viewModel.activate()
 
         configureNavigationButtons()
-
-        ordersViewController = createAndAttachOrdersViewController()
-        ordersViewController?.delegate = self
+        configureOrdersViewController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -141,6 +139,13 @@ private extension OrdersMasterViewController {
         navigationItem.rightBarButtonItem = createFilterBarButtonItem()
         // Don't show the Order title in the next-view's back button
         navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+    }
+
+    /// For `viewDidLoad` only, initialize and set up bindings for `self.ordersViewController`.
+    ///
+    func configureOrdersViewController() {
+        ordersViewController = createAndAttachOrdersViewController()
+        ordersViewController?.delegate = self
     }
 }
 

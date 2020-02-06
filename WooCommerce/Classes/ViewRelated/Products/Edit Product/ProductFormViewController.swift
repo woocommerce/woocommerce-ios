@@ -53,23 +53,23 @@ private extension ProductFormViewController {
         navigationItem.rightBarButtonItems = [UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))]
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
-            navigationItem.rightBarButtonItems?.insert(moreBarButton(), at: 0)
+            navigationItem.rightBarButtonItems?.insert(moreOptionsBarButton(), at: 0)
         }
         removeNavigationBackBarButtonText()
     }
 
-    func moreBarButton() -> UIBarButtonItem {
+    func moreOptionsBarButton() -> UIBarButtonItem {
         let moreButton = UIBarButtonItem(image: .moreImage,
                                      style: .plain,
                                      target: self,
-                                     action: #selector(presentMoreActionSheet))
+                                     action: #selector(presentMoreOptionsActionSheet))
         moreButton.accessibilityTraits = .button
-        moreButton.accessibilityLabel = NSLocalizedString("Show more", comment: "Accessibility label for the Edit Product More action sheet")
+        moreButton.accessibilityLabel = NSLocalizedString("Show more options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityHint = NSLocalizedString(
-            "Action for show the More action sheet in Edit Product.",
-            comment: "VoiceOver accessibility hint, informing the user the button can be used to show the More action sheet."
+            "Action for show the More Options action sheet in Edit Product.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to show the More Options action sheet."
         )
-        moreButton.accessibilityIdentifier = "edit-product-more-button"
+        moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
     }
 
@@ -426,9 +426,9 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
 
-    /// More Action Sheet
+    /// More Options Action Sheet
     ///
-    @objc func presentMoreActionSheet() {
+    @objc func presentMoreOptionsActionSheet() {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
@@ -446,8 +446,8 @@ private extension ProductFormViewController {
     }
 
     enum ActionSheetStrings {
-        static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Action Sheet")
-        static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Action Sheet")
+        static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
     }
 }
 

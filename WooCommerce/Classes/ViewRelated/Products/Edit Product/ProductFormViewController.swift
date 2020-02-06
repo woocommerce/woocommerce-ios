@@ -50,8 +50,27 @@ final class ProductFormViewController: UIViewController {
 private extension ProductFormViewController {
     func configureNavigationBar() {
         let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))]
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
+            navigationItem.rightBarButtonItems?.insert(moreBarButton(), at: 0)
+        }
         removeNavigationBackBarButtonText()
+    }
+
+    func moreBarButton() -> UIBarButtonItem {
+        let moreButton = UIBarButtonItem(image: .moreImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(updateProduct))
+        moreButton.accessibilityTraits = .button
+        moreButton.accessibilityLabel = NSLocalizedString("Show more", comment: "Accessibility label for the Edit Product More action sheet")
+        moreButton.accessibilityHint = NSLocalizedString(
+            "Action for show the More action sheet in Edit Product.",
+            comment: "VoiceOver accessibility hint, informing the user the button can be used to show the More action sheet."
+        )
+        moreButton.accessibilityIdentifier = "edit-product-more-button"
+        return moreButton
     }
 
     func configureMainView() {

@@ -94,7 +94,7 @@ final class OrdersMasterViewController: UIViewController {
     /// Shows `SearchViewController`.
     ///
     @objc private func displaySearchOrders() {
-        guard let storeID = viewModel.storeID else {
+        guard let storeID = viewModel.siteID else {
             return
         }
 

@@ -1,7 +1,7 @@
 import Foundation
 import WordPressAuthenticator
 import Yosemite
-import Networking
+import struct Networking.Settings
 
 
 /// Encapsulates all of the interactions with the WordPress Authenticator

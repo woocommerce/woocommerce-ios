@@ -36,10 +36,7 @@ final class OrdersMasterViewController: UIViewController {
 
         viewModel.activate()
 
-        navigationItem.leftBarButtonItem = createSearchBarButtonItem()
-        navigationItem.rightBarButtonItem = createFilterBarButtonItem()
-        // Don't show the Order title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        configureNavigationButtons()
 
         ordersViewController = createAndAttachOrdersViewController()
         ordersViewController?.delegate = self
@@ -135,6 +132,15 @@ private extension OrdersMasterViewController {
         tabBarItem.title = title
         tabBarItem.image = .pagesImage
         tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
+    }
+
+    /// For `viewDidLoad` only, set up `navigationItem` buttons.
+    ///
+    func configureNavigationButtons() {
+        navigationItem.leftBarButtonItem = createSearchBarButtonItem()
+        navigationItem.rightBarButtonItem = createFilterBarButtonItem()
+        // Don't show the Order title in the next-view's back button
+        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
     }
 }
 

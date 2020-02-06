@@ -46,10 +46,10 @@ public struct WordPressAuthenticatorConfiguration {
     let userAgent: String
 
     /// Flag indicating which Log In flow to display.
-    /// In the new flow, when Log In is selected, a button view is displayed with options.
-    /// In the old flow, when Log In is selected, the email login view is displayed with alternative options.
+    /// If enabled, when Log In is selected, a button view is displayed with options.
+    /// If disabled, when Log In is selected, the email login view is displayed with alternative options.
     ///
-    let showNewLoginFlow: Bool
+    let showLoginOptions: Bool
 
     /// Flag indicating if the login options button view should be displayed in the site address flow.
     /// If enabled, the options button view will be displayed after the site address has been entered
@@ -73,7 +73,7 @@ public struct WordPressAuthenticatorConfiguration {
                  googleLoginServerClientId: String,
                  googleLoginScheme: String,
                  userAgent: String,
-                 showNewLoginFlow: Bool = false,
+                 showLoginOptions: Bool = false,
                  showLoginOptionsFromSiteAddress: Bool = false,
                  enableSignInWithApple: Bool = false) {
 
@@ -87,7 +87,7 @@ public struct WordPressAuthenticatorConfiguration {
         self.googleLoginServerClientId = googleLoginServerClientId
         self.googleLoginScheme = googleLoginScheme
         self.userAgent = userAgent
-        self.showNewLoginFlow = showNewLoginFlow
+        self.showLoginOptions = showLoginOptions
         self.showLoginOptionsFromSiteAddress = showLoginOptionsFromSiteAddress
         self.enableSignInWithApple = enableSignInWithApple
     }

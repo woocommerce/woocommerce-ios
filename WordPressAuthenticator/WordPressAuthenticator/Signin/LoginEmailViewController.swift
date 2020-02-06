@@ -29,7 +29,7 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
     var didFindSafariSharedCredentials = false
     var didRequestSafariSharedCredentials = false
     open var offerSignupOption = false
-    private let showNewLoginFlow = WordPressAuthenticator.shared.configuration.showNewLoginFlow
+    private let showLoginOptions = WordPressAuthenticator.shared.configuration.showLoginOptions
 
     private struct Constants {
         static let alternativeLogInAnimationDuration: TimeInterval = 0.33
@@ -46,8 +46,8 @@ open class LoginEmailViewController: LoginViewController, NUXKeyboardResponder {
         localizeControls()
         setupOnePasswordButtonIfNeeded()
         
-        alternativeLoginLabel?.isHidden = showNewLoginFlow
-        if !showNewLoginFlow {
+        alternativeLoginLabel?.isHidden = showLoginOptions
+        if !showLoginOptions {
             addGoogleButton()
         }
 

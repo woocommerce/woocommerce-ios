@@ -280,7 +280,7 @@ extension OrdersViewController {
 // MARK: - Actions
 //
 extension OrdersViewController {
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+    @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.ordersViewControllerWillSynchronizeOrders(self)
         syncingCoordinator.synchronizeFirstPage {

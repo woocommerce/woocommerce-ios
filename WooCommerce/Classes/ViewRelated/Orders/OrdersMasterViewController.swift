@@ -86,7 +86,7 @@ final class OrdersMasterViewController: UIViewController {
 
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.barButtonItem = navigationItem.rightBarButtonItem
-        popoverController?.sourceView = self.view
+        popoverController?.sourceView = view
 
         present(actionSheet, animated: true)
     }

@@ -4,6 +4,12 @@ import Yosemite
 
 /// Encapsulates data management for `OrdersMasterViewController`.
 ///
+/// ## Always Active
+///
+/// The corresponding view, `OrdersMaterViewController`, is never deallocated even if the user has
+/// already logged out. There are some considerations in this class like `resetStatusPredicate` to
+/// accommodate this behavior.
+///
 final class OrdersMasterViewModel {
 
     private lazy var storageManager = ServiceLocator.storageManager
@@ -62,7 +68,6 @@ final class OrdersMasterViewModel {
         // Listen to notifications
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-        nc.addObserver(self, selector: #selector(stopListeningToNotifications), name: .logOutEventReceived, object: nil)
     }
 
     /// Fetch all `OrderStatus` from the API
@@ -93,12 +98,6 @@ final class OrdersMasterViewModel {
     @objc private func defaultAccountWasUpdated() {
         statusFilter = nil
         refreshStatusPredicate()
-    }
-
-    /// Stops listening to all related Notifications
-    ///
-    @objc private func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     /// Update the `siteID` predicate of `statusResultsController` to the current `siteID`.

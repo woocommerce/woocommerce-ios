@@ -24,9 +24,7 @@ final class OrdersMasterViewController: UIViewController {
 
         title = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
 
-        tabBarItem.title = title
-        tabBarItem.image = .pagesImage
-        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
+        configureTabBarItem()
     }
 
     required init?(coder: NSCoder) {
@@ -125,6 +123,18 @@ extension OrdersMasterViewController: OrdersViewControllerDelegate {
 
     func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController) {
         viewModel.statusFilter = nil
+    }
+}
+
+// MARK: - Initialization and Loading (Not Reusable)
+
+private extension OrdersMasterViewController {
+    /// Set up properties for `self` as a root tab bar controller.
+    ///
+    func configureTabBarItem() {
+        tabBarItem.title = title
+        tabBarItem.image = .pagesImage
+        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
     }
 }
 

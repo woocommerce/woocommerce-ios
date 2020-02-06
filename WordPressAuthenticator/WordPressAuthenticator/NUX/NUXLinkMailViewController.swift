@@ -1,5 +1,4 @@
 import UIKit
-import MessageUI
 import WordPressShared
 
 
@@ -105,29 +104,11 @@ class NUXLinkMailViewController: LoginViewController {
                 }
             }
         }
-        if MFMailComposeViewController.canSendMail() {
-            let url = URL(string: "message://")!
-            UIApplication.shared.open(url)
-        } else if let googleMailURL = URL(string: "googlegmail://"),
-            UIApplication.shared.canOpenURL(googleMailURL) {
-            UIApplication.shared.open(googleMailURL)
-        } else {
-            showAlertToCheckEmail()
-        }
+
+        let linkMailPresenter = LinkMailPresenter(emailAddress: loginFields.username)
+        let appSelector = AppSelector(sourceView: sender)
+        linkMailPresenter.presentEmailClients(on: self, appSelector: appSelector)
     }
-
-    func showAlertToCheckEmail() {
-        let title = NSLocalizedString("Please check your email", comment: "Alert title for check your email during logIn/signUp.")
-        let message = NSLocalizedString("Please open your email app and look for an email from WordPress.com.", comment: "Message to ask the user to check their email and look for a WordPress.com email.")
-
-        let alertController =  UIAlertController(title: title,
-                                                 message: message,
-                                                 preferredStyle: .alert)
-        alertController.addCancelActionWithTitle(NSLocalizedString("OK",
-                                                                   comment: "Button title. An acknowledgement of the message displayed in a prompt."))
-        self.present(alertController, animated: true, completion: nil)
-    }
-
 
     @IBAction func handleUsePasswordTapped(_ sender: UIButton) {
         WordPressAuthenticator.track(.loginMagicLinkExited)

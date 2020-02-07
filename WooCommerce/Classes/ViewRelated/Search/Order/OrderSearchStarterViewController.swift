@@ -43,7 +43,10 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let orderStatus = viewModel.orderStatus(at: indexPath)
+
         let ordersViewController = OrdersViewController(statusFilter: orderStatus)
+        ordersViewController.title =
+            orderStatus.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter.")
 
         navigationController?.pushViewController(ordersViewController, animated: true)
 

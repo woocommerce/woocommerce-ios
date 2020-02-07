@@ -3,6 +3,7 @@
 - Orders tab: Orders to fulfill badge shows numbers 1-99, and now 99+ for anything over 99. Previously, it was 9+.
 - Orders tab: The full total amount is now shown.
 - Order Details & Product UI: if a Product name has HTML escape characters, they should be decoded in the app.
+- Order Details: if the Order has multiple Products, tapping on any Product should open the same Product now.
 
 3.5
 -----

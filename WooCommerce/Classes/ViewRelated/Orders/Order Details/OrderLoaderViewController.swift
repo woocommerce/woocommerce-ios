@@ -181,8 +181,7 @@ private extension OrderLoaderViewController {
     /// Presents the OrderDetailsViewController, as a childViewController, for a given Order.
     ///
     func presentOrderDetails(for order: Order) {
-        let identifier = OrderDetailsViewController.classNameWithoutNamespaces
-        guard let detailsViewController = UIStoryboard.orders.instantiateViewController(withIdentifier: identifier) as? OrderDetailsViewController else {
+        guard let detailsViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             fatalError()
         }
 

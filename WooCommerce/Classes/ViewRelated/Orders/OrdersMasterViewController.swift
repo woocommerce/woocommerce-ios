@@ -191,9 +191,10 @@ private extension OrdersMasterViewController {
     /// Creates an `OrdersViewController` and attaches its view to `self.view`.
     ///
     func createAndAttachOrdersViewController() -> OrdersViewController? {
-        guard let ordersViewController = OrdersViewController.instantiatedViewControllerFromStoryboard(),
-            let ordersView = ordersViewController.view else {
-                return nil
+        let ordersViewController = OrdersViewController()
+
+        guard let ordersView = ordersViewController.view else {
+            return nil
         }
 
         ordersView.translatesAutoresizingMaskIntoConstraints = false

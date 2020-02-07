@@ -127,20 +127,12 @@ class OrdersViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    /// Create an instance of `Self` from its corresponding storyboard.
-    ///
-    static func instantiatedViewControllerFromStoryboard() -> Self? {
-        let storyboard = UIStoryboard.orders
-        let identifier = "OrdersViewController"
-        return storyboard.instantiateViewController(withIdentifier: identifier) as? Self
-    }
-
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        fatalError()
+    init() {
+        super.init(nibName: Self.nibName, bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        fatalError("Not supported")
     }
 
     override func viewDidLoad() {
@@ -275,13 +267,6 @@ extension OrdersViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-        nc.addObserver(self, selector: #selector(stopListeningToNotifications), name: .logOutEventReceived, object: nil)
-    }
-
-    /// Stops listening to all related Notifications
-    ///
-    @objc func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     /// Runs whenever the default Account is updated.
@@ -295,7 +280,7 @@ extension OrdersViewController {
 // MARK: - Actions
 //
 extension OrdersViewController {
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+    @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.ordersViewControllerWillSynchronizeOrders(self)
         syncingCoordinator.synchronizeFirstPage {
@@ -584,7 +569,13 @@ extension OrdersViewController: UITableViewDelegate {
             return
         }
 
-        performSegue(withIdentifier: Segues.orderDetails, sender: detailsViewModel(at: indexPath))
+        guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
+            assertionFailure("Expected OrderDetailsViewController to be instantiated")
+            return
+        }
+        orderDetailsVC.viewModel = detailsViewModel(at: indexPath)
+
+        navigationController?.pushViewController(orderDetailsVC, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -685,10 +676,6 @@ private extension OrdersViewController {
         static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
-    }
-
-    enum Segues {
-        static let orderDetails = "ShowOrderDetailsViewController"
     }
 
     enum State {

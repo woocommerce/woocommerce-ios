@@ -61,11 +61,9 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Order, from viewController: UIViewController) {
-        let identifier = OrderDetailsViewController.classNameWithoutNamespaces
-        guard let detailsViewController = UIStoryboard.orders.instantiateViewController(withIdentifier: identifier) as? OrderDetailsViewController else {
+        guard let detailsViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             fatalError()
         }
-
         detailsViewController.viewModel = OrderDetailsViewModel(order: model)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)

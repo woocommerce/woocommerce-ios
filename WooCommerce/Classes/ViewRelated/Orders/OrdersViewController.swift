@@ -76,6 +76,8 @@ class OrdersViewController: UIViewController {
     /// This is set and changed by `OrdersMasterViewModel`. This shouldn't be updated internally
     /// by `self`.
     ///
+    /// TODO Make this `let`.
+    ///
     var statusFilter: OrderStatus? {
         didSet {
             guard isViewLoaded else {
@@ -127,7 +129,12 @@ class OrdersViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    init() {
+    /// Designated initializer.
+    ///
+    /// - Parameter statusFilter The filter to use.
+    ///
+    init(statusFilter: OrderStatus? = nil) {
+        self.statusFilter = statusFilter
         super.init(nibName: Self.nibName, bundle: nil)
     }
 

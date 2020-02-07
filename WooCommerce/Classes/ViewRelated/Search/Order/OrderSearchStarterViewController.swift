@@ -1,12 +1,15 @@
 
 import Foundation
 import UIKit
+import struct Yosemite.OrderStatus
 
 /// The view shown in Orders Search if there is no search keyword entered.
 ///
 /// This shows a list of `OrderStatus` that the user can pick to filter Orders by status.
 ///
 final class OrderSearchStarterViewController: UIViewController {
+    private lazy var analytics = ServiceLocator.analytics
+
     @IBOutlet private var tableView: UITableView!
 
     private lazy var viewModel = OrderSearchStarterViewModel()
@@ -39,10 +42,14 @@ final class OrderSearchStarterViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDelegate
+
 extension OrderSearchStarterViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let orderStatus = viewModel.orderStatus(at: indexPath)
+
+        analytics.trackSelectionOf(orderStatus: orderStatus)
 
         let ordersViewController = OrdersViewController(statusFilter: orderStatus)
         ordersViewController.title =
@@ -54,8 +61,21 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - KeyboardScrollable
+
 extension OrderSearchStarterViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         tableView
+    }
+}
+
+// MARK: - Analytics
+
+private extension Analytics {
+    /// Submit events depicting selection of an `OrderStatus` in the UI.
+    ///
+    func trackSelectionOf(orderStatus: OrderStatus) {
+        track(.filterOrdersOptionSelected, withProperties: ["status": orderStatus.slug])
+        track(.ordersListFilterOrSearch, withProperties: ["filter": orderStatus.slug, "search": ""])
     }
 }

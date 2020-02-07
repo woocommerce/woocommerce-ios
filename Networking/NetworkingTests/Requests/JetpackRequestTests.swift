@@ -25,7 +25,7 @@ final class JetpackRequestTests: XCTestCase {
     /// Base URL: Mapping the Sample Site + Jetpack Tunneling API
     ///
     private var jetpackEndpointBaseURL: String {
-        return DotcomRequest.wordpressApiBaseURL + JetpackRequest.wordpressApiVersion.path + "jetpack-blogs/" + String(sampleSiteID) + "/rest-api/"
+        return Settings.wordpressApiBaseURL + JetpackRequest.wordpressApiVersion.path + "jetpack-blogs/" + String(sampleSiteID) + "/rest-api/"
     }
 
 

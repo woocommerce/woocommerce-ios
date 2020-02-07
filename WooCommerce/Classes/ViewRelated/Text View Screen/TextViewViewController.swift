@@ -61,6 +61,7 @@ final class TextViewViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigation()
+        configureView()
         configureTextView()
         configurePlaceholderLabel()
         refreshPlaceholderVisibility()
@@ -100,9 +101,7 @@ extension TextViewViewController {
     }
 
     private func presentBackNavigationActionSheet() {
-        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
-            self?.completeEditing()
-        }, onDiscard: { [weak self] in
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
     }
@@ -115,6 +114,10 @@ private extension TextViewViewController {
         title = navigationTitle
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeEditing))
+    }
+
+    func configureView() {
+        view.backgroundColor = .basicBackground
     }
 
     func configureTextView() {

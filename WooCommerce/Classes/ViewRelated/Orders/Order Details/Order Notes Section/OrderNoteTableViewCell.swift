@@ -82,7 +82,7 @@ private extension OrderNoteTableViewCell {
         if isCustomerNote {
             iconButton.backgroundColor = .primary
             let template =
-                NSLocalizedString("%1$@ - %@$@ (To Customer)",
+                NSLocalizedString("%1$@ - %2$@ (To Customer)",
                                   comment: "Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer)")
             statusLabel.text = String.localizedStringWithFormat(template, dateOfCreation, theAuthor)
         } else if isSystemAuthor {

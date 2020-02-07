@@ -6,10 +6,6 @@ import Alamofire
 ///
 struct DotcomRequest: URLRequestConvertible {
 
-    /// WordPress.com Base URL
-    ///
-    static let wordpressApiBaseURL = "https://public-api.wordpress.com/"
-
     /// WordPress.com API Version
     ///
     let wordpressApiVersion: WordPressAPIVersion
@@ -45,7 +41,7 @@ struct DotcomRequest: URLRequestConvertible {
     /// Returns a URLRequest instance representing the current WordPress.com Request.
     ///
     func asURLRequest() throws -> URLRequest {
-        let dotcomURL = URL(string: DotcomRequest.wordpressApiBaseURL + wordpressApiVersion.path + path)!
+        let dotcomURL = URL(string: Settings.wordpressApiBaseURL + wordpressApiVersion.path + path)!
         let dotcomRequest = try URLRequest(url: dotcomURL, method: method, headers: nil)
 
         return try URLEncoding.default.encode(dotcomRequest, with: parameters)

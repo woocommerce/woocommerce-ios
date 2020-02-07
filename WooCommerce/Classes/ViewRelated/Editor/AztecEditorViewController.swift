@@ -225,6 +225,7 @@ private extension AztecEditorViewController {
 extension AztecEditorViewController {
     @objc private func saveButtonTapped() {
         let content = getHTML()
+        ServiceLocator.analytics.track(.aztecEditorDoneButtonTapped)
         onContentSave?(content)
     }
 
@@ -242,9 +243,7 @@ extension AztecEditorViewController {
     }
 
     private func presentBackNavigationActionSheet() {
-        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
-            self?.saveButtonTapped()
-        }, onDiscard: { [weak self] in
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
             self?.navigationController?.popViewController(animated: true)
         })
     }

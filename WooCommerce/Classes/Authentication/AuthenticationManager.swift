@@ -1,6 +1,7 @@
 import Foundation
 import WordPressAuthenticator
 import Yosemite
+import struct Networking.Settings
 
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
@@ -18,6 +19,7 @@ class AuthenticationManager: Authentication {
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.termsOfServiceUrl.absoluteString,
+                                                                wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,

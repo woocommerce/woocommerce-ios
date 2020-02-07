@@ -63,12 +63,7 @@ private extension ProductFormViewController {
                                      style: .plain,
                                      target: self,
                                      action: #selector(presentMoreOptionsActionSheet))
-        moreButton.accessibilityTraits = .button
-        moreButton.accessibilityLabel = NSLocalizedString("Show more options", comment: "Accessibility label for the Edit Product More Options action sheet")
-        moreButton.accessibilityHint = NSLocalizedString(
-            "Action for show the More Options action sheet in Edit Product.",
-            comment: "VoiceOver accessibility hint, informing the user the button can be used to show the More Options action sheet."
-        )
+        moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
     }

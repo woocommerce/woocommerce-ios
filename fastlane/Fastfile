@@ -301,26 +301,56 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   desc "Take Screenshots"
   lane :screenshots do | options |
 
-    languages = get_required_env("MAGNIFICENT_16").split() + ["en"]
+    fastlane_directory = File.expand_path File.dirname(__FILE__)
+    derived_data_path = File.join(fastlane_directory, "DerivedData")
+
+    # By default, clear previous screenshots
+    should_clear_previous_screenshots = true
+    languages = "ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant".split()
 
     if options[:languages] != nil
-      languages = languages & options[:languages].split(",")
+      languages = languages & options[:languages].split()
+      should_clear_previous_screenshots = false
     end
 
-    snapshot(
-      clean: true,
-      devices: [
-        'iPhone 8',
-      ],
-      languages: languages,
+    puts "Creating screenshots for #{languages}"
+
+    # Ensure we're using the latest Pods
+    sh('bundle exec pod install')
+
+    scan(
+      workspace: File.join(fastlane_directory, "../WooCommerce.xcworkspace"),
       scheme: "WooCommerceScreenshots",
-      output_directory: "./fastlane/screenshots",
-      clear_previous_screenshots: true,
-      erase_simulator: false,
-      localize_simulator: true,
-      concurrent_simulators: true,
+      build_for_testing: true,
+      derived_data_path: derived_data_path,
     )
 
+    capture_ios_screenshots(
+      scheme: "WooCommerceScreenshots",
+
+      localize_simulator: true,
+      languages: languages,
+
+      devices: [
+        "iPhone 11 Pro Max",
+        "iPhone 8 Plus",
+        "iPad Pro (12.9-inch) (2nd generation)",
+        "iPad Pro (12.9-inch) (3rd generation)",
+      ],
+
+      # Don't rebuild the app for every new locale / device type, and specify where to find the binaries
+      test_without_building: true,
+      derived_data_path: derived_data_path,
+
+      # Where should the screenshots go, and should we delete them before starting?
+      output_directory: "./fastlane/screenshots",
+      clear_previous_screenshots: should_clear_previous_screenshots,
+
+      concurrent_simulators: false,
+
+      # Retry a few times if something is a little flaky
+      number_of_retries: 3,
+    )
   end
 
   desc "Download App Store Translations"

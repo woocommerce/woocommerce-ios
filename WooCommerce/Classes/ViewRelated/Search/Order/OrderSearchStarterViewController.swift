@@ -42,13 +42,12 @@ final class OrderSearchStarterViewController: UIViewController {
 extension OrderSearchStarterViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let alertController = UIAlertController(title: "Not available",
-                                                message: "This is still under development.",
-                                                preferredStyle: .alert)
-        alertController.addActionWithTitle("Fine, I guess", style: .default) { _ in
-            tableView.deselectSelectedRowWithAnimation(true)
-        }
-        present(alertController, animated: true, completion: nil)
+        let orderStatus = viewModel.orderStatus(at: indexPath)
+        let ordersViewController = OrdersViewController(statusFilter: orderStatus)
+
+        navigationController?.pushViewController(ordersViewController, animated: true)
+
+        tableView.deselectSelectedRowWithAnimation(true)
     }
 }
 

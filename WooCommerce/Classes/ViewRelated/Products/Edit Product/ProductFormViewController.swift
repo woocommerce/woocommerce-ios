@@ -53,22 +53,17 @@ private extension ProductFormViewController {
         navigationItem.rightBarButtonItems = [UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))]
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
-            navigationItem.rightBarButtonItems?.insert(moreOptionsBarButton(), at: 0)
+            navigationItem.rightBarButtonItems?.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
         removeNavigationBackBarButtonText()
     }
 
-    func moreOptionsBarButton() -> UIBarButtonItem {
+    func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
         let moreButton = UIBarButtonItem(image: .moreImage,
                                      style: .plain,
                                      target: self,
                                      action: #selector(presentMoreOptionsActionSheet))
-        moreButton.accessibilityTraits = .button
-        moreButton.accessibilityLabel = NSLocalizedString("Show more options", comment: "Accessibility label for the Edit Product More Options action sheet")
-        moreButton.accessibilityHint = NSLocalizedString(
-            "Action for show the More Options action sheet in Edit Product.",
-            comment: "VoiceOver accessibility hint, informing the user the button can be used to show the More Options action sheet."
-        )
+        moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
         moreButton.accessibilityIdentifier = "edit-product-more-options-button"
         return moreButton
     }

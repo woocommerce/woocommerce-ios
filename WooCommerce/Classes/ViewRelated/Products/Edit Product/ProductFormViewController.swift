@@ -50,8 +50,22 @@ final class ProductFormViewController: UIViewController {
 private extension ProductFormViewController {
     func configureNavigationBar() {
         let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
+        navigationItem.rightBarButtonItems = [UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))]
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
+            navigationItem.rightBarButtonItems?.insert(createMoreOptionsBarButtonItem(), at: 0)
+        }
         removeNavigationBackBarButtonText()
+    }
+
+    func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
+        let moreButton = UIBarButtonItem(image: .moreImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentMoreOptionsActionSheet))
+        moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
+        moreButton.accessibilityIdentifier = "edit-product-more-options-button"
+        return moreButton
     }
 
     func configureMainView() {
@@ -401,6 +415,35 @@ private extension ProductFormViewController {
                                                                stockQuantity: data.stockQuantity,
                                                                backordersSetting: data.backordersSetting,
                                                                stockStatus: data.stockStatus)
+    }
+}
+
+// MARK: Action Sheet
+//
+private extension ProductFormViewController {
+
+    /// More Options Action Sheet
+    ///
+    @objc func presentMoreOptionsActionSheet() {
+        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
+        actionSheet.view.tintColor = .text
+
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { _ in
+        }
+
+        actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
+        }
+
+        let popoverController = actionSheet.popoverPresentationController
+        popoverController?.sourceView = view
+        popoverController?.sourceRect = view.bounds
+
+        present(actionSheet, animated: true)
+    }
+
+    enum ActionSheetStrings {
+        static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+        static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
     }
 }
 

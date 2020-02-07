@@ -92,6 +92,14 @@ class OrdersViewController: UIViewController {
         }
     }
 
+    /// If `true`, the "Remove Filters" action will be shown on the Filtered Empty View.
+    ///
+    /// Defaults to `true`.
+    ///
+    /// - SeeAlso: displayEmptyFilteredOverlay
+    ///
+    private let showsRemoveFilterActionOnFilteredEmptyView: Bool
+
     /// The current list of order statuses for the default site
     ///
     private var currentSiteStatuses: [OrderStatus] {
@@ -133,8 +141,10 @@ class OrdersViewController: UIViewController {
     ///
     /// - Parameter statusFilter The filter to use.
     ///
-    init(statusFilter: OrderStatus? = nil) {
+    init(statusFilter: OrderStatus? = nil,
+         showsRemoveFilterActionOnFilteredEmptyView: Bool = true) {
         self.statusFilter = statusFilter
+        self.showsRemoveFilterActionOnFilteredEmptyView = showsRemoveFilterActionOnFilteredEmptyView
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -484,6 +494,8 @@ private extension OrdersViewController {
                 self.delegate?.ordersViewControllerRequestsToClearStatusFilter(self)
             }
         }
+
+        overlayView.actionVisible = showsRemoveFilterActionOnFilteredEmptyView
 
         overlayView.attach(to: view)
     }

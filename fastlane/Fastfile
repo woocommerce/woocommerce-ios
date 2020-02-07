@@ -307,7 +307,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
     # By default, clear previous screenshots
     should_clear_previous_screenshots = true
-    languages = "ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant".split()
+    languages = "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
 
     if options[:languages] != nil
       languages = languages & options[:languages].split()

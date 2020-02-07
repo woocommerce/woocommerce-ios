@@ -101,7 +101,9 @@ final class OrderDetailsDataSource: NSObject {
     /// Yosemite.OrderItem
     /// The original list of order items a user purchased
     ///
-    private(set) var items: [OrderItem]
+    var items: [OrderItem] {
+        return order.items
+    }
 
     /// Combine refunded order items to show refunded products
     ///
@@ -152,7 +154,6 @@ final class OrderDetailsDataSource: NSObject {
     init(order: Order) {
         self.order = order
         self.couponLines = order.coupons
-        self.items = order.items
 
         super.init()
     }

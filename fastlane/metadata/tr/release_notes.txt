@@ -1,0 +1,2 @@
+- Uygulama ön plandaysa ve anında bildirim alırsanız Siparişler sekmesindeki ve Yorumlar sekmesindeki rozetler bildirimin türüne göre doğru bir şekilde güncellenir.
+- Bazen oturumu kapatıp tekrar oturum açtıktan sonra, ürünleriniz olsa bile Ürün Listesi boş görünebilir. Ürün Listesi artık adının hakkını veriyor ve doğru mağazaya ait ürünler gösteriyor. Ürünler listesini bulamıyor musunuz? Önizlemeyi etkinleştirmek için Ayarlar'daki “Deneysel İşlevler” menüsüne gidin.

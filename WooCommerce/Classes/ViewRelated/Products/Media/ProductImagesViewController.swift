@@ -13,15 +13,29 @@ final class ProductImagesViewController: UIViewController {
 
     private let siteID: Int64
     private let productID: Int64
-    private var productImages: [ProductImage] {
+
+    private let productImagesService: ProductImagesService
+    private var productImageStatuses: [ProductImageStatus] {
         didSet {
-            imagesViewController.updateProductImages(productImages)
+            imagesViewController.updateProductImageStatuses(productImageStatuses)
+        }
+    }
+
+    private let originalProductImages: [ProductImage]
+    private var productImages: [ProductImage] {
+        return productImageStatuses.compactMap { status in
+            switch status {
+            case .remote(let productImage):
+                return productImage
+            default:
+                return nil
+            }
         }
     }
 
     // Child view controller.
     private lazy var imagesViewController: ProductImagesCollectionViewController = {
-        let viewController = ProductImagesCollectionViewController(images: productImages,
+        let viewController = ProductImagesCollectionViewController(imageStatuses: productImageStatuses,
                                                                    onDeletion: onDeletion)
         return viewController
     }()
@@ -33,10 +47,12 @@ final class ProductImagesViewController: UIViewController {
 
     private let onCompletion: Completion
 
-    init(product: Product, completion: @escaping Completion) {
+    init(product: Product, productImagesService: ProductImagesService, completion: @escaping Completion) {
         self.siteID = product.siteID
         self.productID = product.productID
-        self.productImages = product.images
+        self.productImagesService = productImagesService
+        self.productImageStatuses = product.images.map({ ProductImageStatus.remote(image: $0) })
+        self.originalProductImages = product.images
         self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)
     }
@@ -66,7 +82,7 @@ private extension ProductImagesViewController {
     func configureNavigation() {
         title = NSLocalizedString("Photos", comment: "Product images (Product images page title)")
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(completeEditing))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(doneButtonTapped))
 
         removeNavigationBackBarButtonText()
     }
@@ -101,7 +117,7 @@ private extension ProductImagesViewController {
         showOptionsMenu()
     }
 
-    @objc func completeEditing() {
+    @objc func doneButtonTapped() {
         onCompletion(productImages)
     }
 
@@ -111,8 +127,91 @@ private extension ProductImagesViewController {
     }
 
     func onDeletion(productImage: ProductImage) {
-        productImages.removeAll(where: { $0.imageID == productImage.imageID })
+        productImageStatuses.removeAll { status -> Bool in
+            guard case .remote(let image) = status else {
+                return false
+            }
+            return image.imageID == productImage.imageID
+        }
         navigationController?.popViewController(animated: true)
+    }
+}
+
+// MARK: - Navigation actions handling
+//
+extension ProductImagesViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        guard hasOutstandingChanges() == false else {
+            presentDiscardChangesActionSheet()
+            return false
+        }
+        return true
+    }
+
+    private func presentDiscardChangesActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
+    }
+
+    private func hasOutstandingChanges() -> Bool {
+        return originalProductImages != productImages
+    }
+}
+
+// MARK: - Image upload to WP Media Library and Product
+//
+private extension ProductImagesViewController {
+    func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
+        productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] (productImage, error) in
+            guard let self = self else {
+                return
+            }
+
+            guard let assetIndex = self.index(of: asset) else {
+                self.displayErrorAlert(error: nil)
+                return
+            }
+
+            guard let productImage = productImage, error == nil else {
+                self.updateProductImageStatus(at: assetIndex, error: error)
+                return
+            }
+
+            self.updateProductImageStatus(at: assetIndex, productImage: productImage)
+        }
+    }
+
+    func updateProductImageStatus(at index: Int, productImage: ProductImage) {
+        productImageStatuses[index] = .remote(image: productImage)
+    }
+
+    func updateProductImageStatus(at index: Int, error: Error?) {
+        displayErrorAlert(error: error)
+        productImageStatuses.remove(at: index)
+    }
+
+    func index(of asset: PHAsset) -> Int? {
+        return productImageStatuses.firstIndex(where: { status -> Bool in
+            switch status {
+            case .uploading(let uploadingAsset):
+                return uploadingAsset == asset
+            default:
+                return false
+            }
+        })
+    }
+
+    func addMediaToProduct(mediaItems: [Media]) {
+        let newProductImageStatuses = mediaItems.map({
+            ProductImage(imageID: $0.mediaID,
+            dateCreated: Date(),
+            dateModified: nil,
+            src: $0.src,
+            name: $0.name,
+            alt: $0.alt)
+        }).map({ ProductImageStatus.remote(image: $0) })
+        self.productImageStatuses = newProductImageStatuses + productImageStatuses
     }
 }
 
@@ -120,11 +219,12 @@ private extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func onCameraCaptureCompletion(asset: PHAsset?, error: Error?) {
-        guard let _ = asset else {
+        guard let asset = asset else {
             displayErrorAlert(error: error)
             return
         }
-        // TODO-1713: handle media from camera
+        productImageStatuses = [.uploading(asset: asset)] + productImageStatuses
+        uploadMediaAssetToSiteMediaLibrary(asset: asset)
     }
 }
 
@@ -138,7 +238,10 @@ private extension ProductImagesViewController {
         guard assets.isEmpty == false else {
             return
         }
-        // TODO-1713: handle media from photo library
+        assets.forEach { asset in
+            productImageStatuses = [.uploading(asset: asset)] + productImageStatuses
+            uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        }
     }
 }
 

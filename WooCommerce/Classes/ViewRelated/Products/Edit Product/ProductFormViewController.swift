@@ -210,7 +210,8 @@ extension ProductFormViewController: UITableViewDelegate {
 //
 private extension ProductFormViewController {
     func showProductImages() {
-        let imagesViewController = ProductImagesViewController(product: product) { [weak self] images in
+        let productImagesService = ProductImagesService(siteID: product.siteID)
+        let imagesViewController = ProductImagesViewController(product: product, productImagesService: productImagesService) { [weak self] images in
             self?.onEditProductImagesCompletion(images: images)
         }
         navigationController?.pushViewController(imagesViewController, animated: true)

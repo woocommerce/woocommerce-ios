@@ -1,3 +1,4 @@
+import Photos
 import UIKit
 import Yosemite
 
@@ -5,15 +6,15 @@ import Yosemite
 ///
 final class ProductImagesCollectionViewController: UICollectionViewController {
 
-    private var productImages: [ProductImage]
+    private var productImageStatuses: [ProductImageStatus]
 
     private let imageService: ImageService
     private let onDeletion: ProductImageViewController.Deletion
 
-    init(images: [ProductImage],
+    init(imageStatuses: [ProductImageStatus],
          imageService: ImageService = ServiceLocator.imageService,
          onDeletion: @escaping ProductImageViewController.Deletion) {
-        self.productImages = images
+        self.productImageStatuses = imageStatuses
         self.imageService = imageService
         self.onDeletion = onDeletion
         let columnLayout = ColumnFlowLayout(
@@ -35,12 +36,14 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
         collectionView.backgroundColor = .basicBackground
 
         collectionView.register(ProductImageCollectionViewCell.loadNib(), forCellWithReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier)
+        collectionView.register(InProgressProductImageCollectionViewCell.loadNib(),
+                                forCellWithReuseIdentifier: InProgressProductImageCollectionViewCell.reuseIdentifier)
 
         collectionView.reloadData()
     }
 
-    func updateProductImages(_ productImages: [ProductImage]) {
-        self.productImages = productImages
+    func updateProductImageStatuses(_ productImageStatuses: [ProductImageStatus]) {
+        self.productImageStatuses = productImageStatuses
 
         collectionView.reloadData()
     }
@@ -51,31 +54,67 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 extension ProductImagesCollectionViewController {
 
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return productImages.count
+        return productImageStatuses.count
     }
 
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: ProductImageCollectionViewCell.reuseIdentifier,
-                                                            for: indexPath) as? ProductImageCollectionViewCell else {
-                                                                fatalError()
+        let productImageStatus = productImageStatuses[indexPath.row]
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: productImageStatus.cellReuseIdentifier,
+                                                      for: indexPath)
+        configureCell(cell, productImageStatus: productImageStatus)
+        return cell
+    }
+}
+
+// MARK: Cell configurations
+//
+private extension ProductImagesCollectionViewController {
+    func configureCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
+        switch productImageStatus {
+        case .remote(let image):
+            configureRemoteImageCell(cell, image: image)
+        case .uploading(let asset):
+            configureUploadingImageCell(cell, asset: asset)
+        }
+    }
+
+    func configureRemoteImageCell(_ cell: UICollectionViewCell, image: ProductImage) {
+        guard let cell = cell as? ProductImageCollectionViewCell else {
+            fatalError()
         }
 
-        let productImage = productImages[indexPath.row]
+        cell.imageView.contentMode = .center
 
         imageService.downloadAndCacheImageForImageView(cell.imageView,
-                                                       with: productImage.src,
+                                                       with: image.src,
                                                        placeholder: .productPlaceholderImage,
                                                        progressBlock: nil) { (image, error) in
                                                         let success = image != nil && error == nil
                                                         if success {
                                                             cell.imageView.contentMode = .scaleAspectFit
                                                         }
-                                                        else {
-                                                            cell.imageView.contentMode = .center
-                                                        }
+        }
+    }
+
+    func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
+        guard let cell = cell as? InProgressProductImageCollectionViewCell else {
+            fatalError()
         }
 
-        return cell
+        let manager = PHImageManager.default()
+        manager.requestImage(for: asset,
+                             targetSize: cell.bounds.size,
+                             contentMode: .aspectFit,
+                             options: nil,
+                             resultHandler: { (result, info) in
+            if let result = result {
+                cell.imageView.image = result
+                cell.imageView.contentMode = .scaleAspectFit
+            }
+            else {
+                cell.imageView.contentMode = .center
+            }
+        })
     }
 }
 
@@ -83,8 +122,13 @@ extension ProductImagesCollectionViewController {
 //
 extension ProductImagesCollectionViewController {
     override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        let productImage = productImages[indexPath.row]
-        let productImageViewController = ProductImageViewController(productImage: productImage, onDeletion: onDeletion)
-        navigationController?.pushViewController(productImageViewController, animated: true)
+        let status = productImageStatuses[indexPath.row]
+        switch status {
+        case .remote(let productImage):
+            let productImageViewController = ProductImageViewController(productImage: productImage, onDeletion: onDeletion)
+            navigationController?.pushViewController(productImageViewController, animated: true)
+        default:
+            return
+        }
     }
 }

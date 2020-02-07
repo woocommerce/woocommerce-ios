@@ -161,6 +161,14 @@ private extension ProductFormViewController {
 
         present(alert, animated: true, completion: nil)
     }
+
+    func shareProduct() {
+        guard let url = URL(string: product.permalink) else {
+            return
+        }
+
+        SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
+    }
 }
 
 extension ProductFormViewController: UITableViewDelegate {
@@ -428,7 +436,8 @@ private extension ProductFormViewController {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
-        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { _ in
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
+            self?.shareProduct()
         }
 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in

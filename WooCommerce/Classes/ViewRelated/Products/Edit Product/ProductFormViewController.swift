@@ -53,12 +53,12 @@ private extension ProductFormViewController {
         navigationItem.rightBarButtonItems = [UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))]
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
-            navigationItem.rightBarButtonItems?.insert(moreOptionsBarButton(), at: 0)
+            navigationItem.rightBarButtonItems?.insert(createMoreOptionsBarButtonItem(), at: 0)
         }
         removeNavigationBackBarButtonText()
     }
 
-    func moreOptionsBarButton() -> UIBarButtonItem {
+    func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
         let moreButton = UIBarButtonItem(image: .moreImage,
                                      style: .plain,
                                      target: self,

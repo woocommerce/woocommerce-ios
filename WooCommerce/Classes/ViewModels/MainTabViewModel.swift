@@ -68,7 +68,8 @@ private extension MainTabViewModel {
     }
 
     private func readableCount(_ count: Int) -> String {
-        return count > 99 ? Constants.ninetyNinePlus : String(count)
+        let localizedCount = NumberFormatter.localizedString(from: NSNumber(value: count), number: .none)
+        return count > 99 ? Constants.ninetyNinePlus : localizedCount
     }
 
     private func observeBadgeRefreshNotifications() {

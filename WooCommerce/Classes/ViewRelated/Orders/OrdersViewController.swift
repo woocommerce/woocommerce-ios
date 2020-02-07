@@ -570,6 +570,7 @@ extension OrdersViewController: UITableViewDelegate {
         }
 
         guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
+            assertionFailure("Expected OrderDetailsViewController to be instantiated")
             return
         }
         orderDetailsVC.viewModel = detailsViewModel(at: indexPath)

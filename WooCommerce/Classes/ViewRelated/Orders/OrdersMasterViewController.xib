@@ -11,6 +11,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrdersMasterViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="buttonBarView" destination="7lu-ed-U2a" id="CeJ-gT-RxY"/>
+                <outlet property="containerView" destination="VD7-Yu-YwE" id="3vO-sb-eUc"/>
                 <outlet property="view" destination="xuO-pm-Bnd" id="21G-dF-888"/>
             </connections>
         </placeholder>

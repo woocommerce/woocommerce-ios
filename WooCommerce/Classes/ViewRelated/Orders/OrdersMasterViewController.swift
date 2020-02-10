@@ -1,13 +1,13 @@
 
 import UIKit
+import XLPagerTabStrip
 import struct Yosemite.OrderStatus
+import enum Yosemite.OrderStatusEnum
 import struct Yosemite.Note
 
 /// The main Orders view controller that is shown when the Orders tab is accessed.
 ///
-/// TODO This should contain the tabs "Processing" and "All Orders".
-///
-final class OrdersMasterViewController: UIViewController {
+final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
 
     private lazy var analytics = ServiceLocator.analytics
 
@@ -37,7 +37,6 @@ final class OrdersMasterViewController: UIViewController {
         viewModel.activate()
 
         configureNavigationButtons()
-        configureOrdersViewController()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -107,6 +106,32 @@ final class OrdersMasterViewController: UIViewController {
 
         present(navigationController, animated: true, completion: nil)
     }
+
+    // MARK: - ButtonBarPagerTabStripViewController Conformance
+
+    /// Return the ViewControllers for "Processing" and "All Orders".
+    ///
+    override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
+        let processingOrderStatus = OrderStatus(
+            name: OrderStatusEnum.processing.rawValue,
+            siteID: Int64.max,
+            slug: OrderStatusEnum.processing.rawValue,
+            total: 0
+        )
+        let processingOrdersVC = OrdersViewController(
+            title: NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab."),
+            statusFilter: processingOrderStatus,
+            showsRemoveFilterActionOnFilteredEmptyView: true)
+        processingOrdersVC.delegate = self
+
+        let allOrdersVC = OrdersViewController(
+            title: NSLocalizedString("All Orders", comment: "Title for the second page in the Orders tab."),
+            statusFilter: nil,
+            showsRemoveFilterActionOnFilteredEmptyView: true)
+        allOrdersVC.delegate = self
+
+        return [processingOrdersVC, allOrdersVC]
+    }
 }
 
 // MARK: - OrdersViewControllerDelegate
@@ -139,13 +164,6 @@ private extension OrdersMasterViewController {
         navigationItem.rightBarButtonItem = createFilterBarButtonItem()
 
         removeNavigationBackBarButtonText()
-    }
-
-    /// For `viewDidLoad` only, initialize and set up bindings for `self.ordersViewController`.
-    ///
-    func configureOrdersViewController() {
-        ordersViewController = createAndAttachOrdersViewController()
-        ordersViewController?.delegate = self
     }
 }
 
@@ -186,26 +204,6 @@ private extension OrdersMasterViewController {
         button.accessibilityIdentifier = "order-search-button"
 
         return button
-    }
-
-    /// Creates an `OrdersViewController` and attaches its view to `self.view`.
-    ///
-    func createAndAttachOrdersViewController() -> OrdersViewController? {
-        #warning("temp")
-        let ordersViewController = OrdersViewController(title: "")
-
-        guard let ordersView = ordersViewController.view else {
-            return nil
-        }
-
-        ordersView.translatesAutoresizingMaskIntoConstraints = false
-
-        add(ordersViewController)
-        view.addSubview(ordersView)
-        ordersView.pinSubviewToAllEdges(view)
-        ordersViewController.didMove(toParent: self)
-
-        return ordersViewController
     }
 
     enum FilterAction {

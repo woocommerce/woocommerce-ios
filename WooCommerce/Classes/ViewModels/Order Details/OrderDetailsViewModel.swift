@@ -19,6 +19,7 @@ final class OrderDetailsViewModel {
 
     func update(order newOrder: Order) {
         self.order = newOrder
+        dataSource.update(order: order)
     }
 
     /// The date displayed on the Orders List.
@@ -56,7 +57,7 @@ final class OrderDetailsViewModel {
     /// Sorted order items
     ///
     private var items: [OrderItem] {
-        return order.items
+        return dataSource.items
     }
 
     /// Refunded products from an Order
@@ -138,7 +139,6 @@ extension OrderDetailsViewModel {
 
     func updateOrderStatus(order: Order) {
         update(order: order)
-        dataSource.update(order: order)
     }
 }
 

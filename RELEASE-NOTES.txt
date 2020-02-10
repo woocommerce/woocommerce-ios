@@ -1,3 +1,7 @@
+3.7
+-----
+- Redesigned Orders List: Processing and All Orders are now shown in front. Filtering were moved to the Search view.
+
 3.6
 -----
 - Orders tab: Orders to fulfill badge shows numbers 1-99, and now 99+ for anything over 99. Previously, it was 9+.

@@ -155,7 +155,7 @@ extension WPStyleGuide {
         
         let button: UIButton
 
-        if WordPressAuthenticator.shared.configuration.showNewLoginFlow {
+        if WordPressAuthenticator.shared.configuration.showLoginOptions {
             let baseString =  NSLocalizedString("Or log in by _entering your site address_.", comment: "Label for button to log in using site address. Underscores _..._ denote underline.")
             
             let attrStrNormal = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonColor)

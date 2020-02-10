@@ -105,7 +105,7 @@ class LoginPrologueViewController: LoginViewController {
     // MARK: - Actions
 
     private func loginTapped() {
-        if WordPressAuthenticator.shared.configuration.showNewLoginFlow {
+        if WordPressAuthenticator.shared.configuration.showLoginOptions {
             performSegue(withIdentifier: .showLoginMethod, sender: self)
         } else {
             performSegue(withIdentifier: .showEmailLogin, sender: self)

@@ -32,11 +32,14 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
     }
 
     override func viewDidLoad() {
+        // `configureTabStrip` must be called before `super.viewDidLoad()` or else the selection
+        // highlight will be black. ¯\_(ツ)_/¯
+        configureTabStrip()
+        configureNavigationButtons()
+
         super.viewDidLoad()
 
         viewModel.activate()
-
-        configureNavigationButtons()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -149,6 +152,30 @@ extension OrdersMasterViewController: OrdersViewControllerDelegate {
 // MARK: - Initialization and Loading (Not Reusable)
 
 private extension OrdersMasterViewController {
+    /// Initialize the tab bar containing the "Processing" and "All Orders" buttons.
+    ///
+    func configureTabStrip() {
+        settings.style.buttonBarBackgroundColor = .listForeground
+        settings.style.buttonBarItemBackgroundColor = .listForeground
+        settings.style.selectedBarBackgroundColor = .primary
+        settings.style.buttonBarItemFont = StyleManager.subheadlineFont
+        settings.style.selectedBarHeight = TabStripDimensions.selectedBarHeight
+        settings.style.buttonBarItemTitleColor = .text
+        settings.style.buttonBarItemLeftRightMargin = TabStripDimensions.buttonLeftRightMargin
+
+        changeCurrentIndexProgressive = {
+            (oldCell: ButtonBarViewCell?,
+            newCell: ButtonBarViewCell?,
+            progressPercentage: CGFloat,
+            changeCurrentIndex: Bool,
+            animated: Bool) -> Void in
+
+            guard changeCurrentIndex == true else { return }
+            oldCell?.label.textColor = .textSubtle
+            newCell?.label.textColor = .primary
+        }
+    }
+
     /// Set up properties for `self` as a root tab bar controller.
     ///
     func configureTabBarItem() {
@@ -164,6 +191,11 @@ private extension OrdersMasterViewController {
         navigationItem.rightBarButtonItem = createFilterBarButtonItem()
 
         removeNavigationBackBarButtonText()
+    }
+
+    enum TabStripDimensions {
+        static let buttonLeftRightMargin: CGFloat   = 14.0
+        static let selectedBarHeight: CGFloat       = 3.0
     }
 }
 

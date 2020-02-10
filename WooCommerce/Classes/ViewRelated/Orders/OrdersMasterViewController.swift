@@ -13,10 +13,6 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
 
     private lazy var viewModel = OrdersMasterViewModel()
 
-    /// The view controller that shows the list of Orders.
-    ///
-    private var ordersViewController: OrdersViewController?
-
     init() {
         super.init(nibName: Self.nibName, bundle: nil)
 

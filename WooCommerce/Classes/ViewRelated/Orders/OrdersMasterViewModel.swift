@@ -7,7 +7,7 @@ import Yosemite
 /// ## Always Active
 ///
 /// The corresponding view, `OrdersMaterViewController`, is never deallocated even if the user has
-/// already logged out. There are some considerations in this class like `resetStatusPredicate` to
+/// already logged out. There are some considerations in this class like `refreshStatusPredicate` to
 /// accommodate this behavior.
 ///
 final class OrdersMasterViewModel {
@@ -27,12 +27,6 @@ final class OrdersMasterViewModel {
     ///
     var siteID: Int64? {
         sessionManager.defaultStoreID
-    }
-
-    /// The current list of order statuses for the default site
-    ///
-    var currentSiteStatuses: [OrderStatus] {
-        return statusResultsController.fetchedObjects
     }
 
     /// Start all the operations that this `ViewModel` is responsible for.

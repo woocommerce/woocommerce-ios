@@ -85,7 +85,7 @@ extension UIImage {
     static var closeButton: UIImage {
         return Gridicon.iconOfType(.cross)
     }
-    
+
     /// Cog Icon
     ///
     static var cogImage: UIImage {

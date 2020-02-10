@@ -548,6 +548,11 @@ private extension ZendeskManager {
                 return ""
         }
 
+        // Truncates the log text so it fits in the ticket field.
+        if logText.count > Constants.logFieldCharacterLimit {
+            return String(logText.suffix(Constants.logFieldCharacterLimit))
+        }
+
         return logText
     }
 
@@ -798,6 +803,7 @@ private extension ZendeskManager {
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
+        static let logFieldCharacterLimit = 64000
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"
         static let networkTypeLabel = "Network Type:"

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-22 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-02-06 00:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: tr */
@@ -51,17 +51,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld varyasyonları";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
-"9+" = "9+";
+/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+"99+" = "99+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Kimlik doğrulama bağlantısının gönderilebilmesi için geçerli bir e-posta adresi gerekir. Geçerli bir e-posta adresi sağlamak için lütfen önceki ekrana dönün.";
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Bir doğrulama kodu yalnızca sayı içerecektir.";
-
-/* Action to add photos on the Product images screen */
-"ADD PHOTOS" = "FOTOĞRAF EKLE";
 
 /* About this app (information page title) */
 "About" = "Hakkında";
@@ -81,6 +78,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Ekle";
+
+/* Action to add photos on the Product images screen */
+"Add Photos" = "Fotoğraf ekle";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -154,8 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "Yorumu onaylar";
 
+/* Message title for Save Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "Bu değişiklikleri atmak istediğinizden emin misiniz?";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "%@ hesabının oturumunu kapatmak istediğinizden emin misiniz?";
+
+/* Message on the alert when the user taps to delete a Product image */
+"Are you sure you want to remove this image?" = "Bu görseli kaldırmak istediğinizden emin misiniz?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Doğrulanıyor";
@@ -211,21 +217,30 @@
 /* Call phone number button title */
 "Call" = "Ara";
 
+/* Error message format when capturing a unsupported media type with device camera */
+"Camera capture should not support media type: %@" = "Kamera çekimi şu medya türünü desteklemez: %@";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Bağlantı istenemiyor";
 
-/* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
+/* Button title Cancel in Save Changes Action Sheet
+   Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "İptal";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Ürün güncellenemiyor";
+
+/* Title of the alert when there is an error uploading image(s) */
+"Cannot upload image" = "Resim yüklenemiyor";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Her an, her yerde sevdiğiniz siteleri kontrol edip sohbetin bir parçası olun.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Sertifika hatası";
+
+/* Menu option for selecting media from the device's photo library. */
+"Choose from device" = "Cihazdan seç";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Bilgi topla";
@@ -366,11 +381,14 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Ölçüler: %1$@%2$@";
 
+/* Button title Discard Changes in Save Changes Action Sheet */
+"Discard changes" = "Değişiklikleri iptal et";
+
 /* Discount label for payment view */
 "Discount" = "İndirim";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Kapat";
 
 /* Display label for the product's inventory backorders setting option */
@@ -846,7 +864,7 @@
 "Number of files:" = "Dosya sayısı:";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "Tamam";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -965,6 +983,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Bağlanılacak Mağazayı Seç";
 
+/* Product title error notice message, when the title is empty */
+"Please add a title" = "Lütfen bir başlık ekleyin";
+
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "Lütfen e-postanıza bakın";
 
@@ -1003,6 +1024,9 @@
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Farklı bir wordpress.com sitesine bağlanmadan önce lütfen oturumunuzu kapatın";
+
+/* Error message when an image captured by camera cannot be saved to the device Photos library */
+"Please make sure the app can access Photos in device settings" = "Lütfen cihaz ayarlarında uygulamanın Fotoğraflar'a erişebildiğinden emin olun";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Lütfen e-posta uygulamanızı açın ve WordPress.com’dan gelen e-postayı arayın.";
@@ -1128,8 +1152,14 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Normal fiyat: %@";
 
+/* Confirm button on the alert when the user taps to delete a Product image */
+"Remove" = "Kaldır";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "Filtreleri Kaldır";
+
+/* Title on the alert when the user taps to delete a Product image */
+"Remove Image" = "Görseli Kaldır";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "Bağlantıyı Kaldır";
@@ -1171,7 +1201,7 @@
 "SKU already in use by another product" = "SKU başka bir ürün için kullanılıyor";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
 "SKU:" = "SKU:";
 
 /* Format of the SKU on the Inventory Settings row
@@ -1198,6 +1228,9 @@
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "İndirimli satış fiyatı: %@";
+
+/* Button title for Save Changes Action Sheet */
+"Save changes" = "Değişiklikleri kaydet";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Programlı satış";
@@ -1440,6 +1473,9 @@
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Varsayılan Yazı Tipi Boyutuna geçer";
 
+/* Menu option for taking an image or video with the device's camera. */
+"Take a photo" = "Fotoğraf çek";
+
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Daha fazla format seçeneği için dokunun";
 
@@ -1512,12 +1548,6 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "Vergi durumu";
 
-/* Tax label for total taxes line */
-"Tax:" = "Vergi:";
-
-/* Tax label for total taxes line, followed by the tax amount. */
-"Tax: %@" = "Vergi: %@";
-
 /* Display label for the product's tax status setting option */
 "Taxable" = "Vergilendirilebilir";
 
@@ -1568,6 +1598,9 @@
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "İnceleme kaldırıldı";
+
+/* Product price error notice message, when the sale price is higher than the regular price */
+"The sale price should be lower than the regular price." = "İndirim fiyatı, normal fiyattan daha düşük olmalıdır.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Sunucu boş bir yanıt döndü. Bu genellikle sitenizin hafıza limitini arttırmanız gerektiği anlamına gelir.";
@@ -1777,6 +1810,9 @@
 /* No comment provided by engineer. */
 "Unknown error" = "Bilinmeyen hata";
 
+/* Error message when capturing a unknown media type */
+"Unknown media type" = "Bilinmeyen medya türü";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Sıralanmamış Liste";
 
@@ -1941,6 +1977,9 @@
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS Desteği için WooCommerce";
+
+/* Menu option for selecting media from the site's media library. */
+"WordPress Media Library" = "WordPress Ortam Kitaplığı";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress sürümü çok eski. %1$@ WordPress %2$@ sürümünü kullanıyor. Son sürüme yükseltmenizi ya da en azından %3$@ sürümüne yükseltmenizi öneririz.";

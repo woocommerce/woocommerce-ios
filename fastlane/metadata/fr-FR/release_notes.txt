@@ -1,0 +1,2 @@
+- Si l’application est au premier plan et que vous recevez une notification push, les badges dans les onglets Commandes et Avis sont mis à jour conformément au type de notification.
+- Parfois, après une déconnexion et une reconnexion, la liste de produits peut être vide même si vous disposez bien de produits. La liste de produits porte désormais bien son nom et affiche les produits de la bonne boutique. Vous ne trouvez pas la liste de produits ? Allez dans le menu « Fonctionnalités expérimentales » dans Paramètres pour activer l'aperçu.

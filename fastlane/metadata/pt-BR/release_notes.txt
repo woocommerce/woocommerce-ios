@@ -1,0 +1,2 @@
+- Se o aplicativo estiver em primeiro plano e você receber uma notificação em push, os selos nas guias Pedidos e Avaliações serão atualizados corretamente com base no tipo de notificação.
+- Às vezes, depois de sair e entrar novamente, a lista de produtos ficava vazia, mesmo claramente tendo produtos. A lista de produtos agora faz jus ao seu nome e mostra produtos da loja correta. Não consegue encontrar a lista de produtos? Vá para o menu “Recursos experimentais” em Configurações para ativar a pré-visualização.

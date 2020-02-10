@@ -1,0 +1,2 @@
+- Wenn sich die App im Vordergrund befindet und du eine Push-Benachrichtigung erhältst, werden die Badges auf den Tabs „Bestellungen“ und „Bewertungen“ entsprechend dem Benachrichtigungstyp korrekt aktualisiert.
+- Manchmal war die Produktliste nach dem Abmelden und erneuten Anmelden leer, obwohl offensichtlich Produkte vorhanden waren. Die Produktliste wird nun ihrem Namen gerecht und zeigt die Produkte des korrekten Shops an. Du findest die Produktliste nicht? Navigiere in den Einstellungen zum Menü „Experimentelle Funktionen“ und aktiviere dort die Vorschau.

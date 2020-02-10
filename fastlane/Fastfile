@@ -303,10 +303,11 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
 
     fastlane_directory = File.expand_path File.dirname(__FILE__)
     derived_data_path = File.join(fastlane_directory, "DerivedData")
+    screenshots_directory = File.join(fastlane_directory, "screenshots")
 
     # By default, clear previous screenshots
     should_clear_previous_screenshots = true
-    languages = "ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant".split()
+    languages = "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
 
     if options[:languages] != nil
       languages = languages & options[:languages].split()
@@ -325,32 +326,46 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       derived_data_path: derived_data_path,
     )
 
-    capture_ios_screenshots(
-      scheme: "WooCommerceScreenshots",
+    devices = [
+      "iPhone 11 Pro Max",
+      "iPhone 8 Plus",
+      "iPad Pro (12.9-inch) (2nd generation)",
+      "iPad Pro (12.9-inch) (3rd generation)",
+    ]
 
-      localize_simulator: true,
-      languages: languages,
+    if options[:devices] != nil
+      devices = devices & options[:devices].split()
+      should_clear_previous_screenshots = false
+    end
 
-      devices: [
-        "iPhone 11 Pro Max",
-        "iPhone 8 Plus",
-        "iPad Pro (12.9-inch) (2nd generation)",
-        "iPad Pro (12.9-inch) (3rd generation)",
-      ],
+    FileUtils.rm_f(screenshots_directory) unless !should_clear_previous_screenshots
 
-      # Don't rebuild the app for every new locale / device type, and specify where to find the binaries
-      test_without_building: true,
-      derived_data_path: derived_data_path,
+    [true, false].each { | dark_mode_enabled |
+      capture_ios_screenshots(
+        scheme: "WooCommerceScreenshots",
 
-      # Where should the screenshots go, and should we delete them before starting?
-      output_directory: "./fastlane/screenshots",
-      clear_previous_screenshots: should_clear_previous_screenshots,
+        localize_simulator: true,
+        languages: languages,
 
-      concurrent_simulators: false,
+        devices: devices,
 
-      # Retry a few times if something is a little flaky
-      number_of_retries: 3,
-    )
+        # Don't rebuild the app for every new locale / device type, and specify where to find the binaries
+        test_without_building: true,
+        derived_data_path: derived_data_path,
+
+        # Where should the screenshots go, and should we delete them before starting?
+        output_directory: "./fastlane/screenshots",
+
+        concurrent_simulators: false,
+
+        # Retry a few times if something is a little flaky
+        number_of_retries: 3,
+
+        # Allow the caller to invoke dark mode
+        dark_mode: dark_mode_enabled
+      )
+    }
+
   end
 
   desc "Download App Store Translations"

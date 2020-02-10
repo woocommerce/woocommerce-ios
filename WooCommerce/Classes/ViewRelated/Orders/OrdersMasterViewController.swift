@@ -11,9 +11,7 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
 
     private lazy var analytics = ServiceLocator.analytics
 
-    private lazy var viewModel = OrdersMasterViewModel(statusFilterChanged: { [weak self] (status: OrderStatus?) in
-        self?.statusFilterChanged(status: status)
-    })
+    private lazy var viewModel = OrdersMasterViewModel()
 
     /// The view controller that shows the list of Orders.
     ///
@@ -60,39 +58,6 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
         navigationController?.pushViewController(loaderViewController, animated: true)
     }
 
-    /// Called when the ViewModel's `statusFilter` changed.
-    ///
-    private func statusFilterChanged(status: OrderStatus?) {
-        ordersViewController?.statusFilter = status
-        navigationItem.title = status.titleForNavigationItem
-    }
-
-    /// Show the list of Order statuses can be filtered with.
-    ///
-    @objc private func displayFiltersAlert() {
-        analytics.track(.ordersListFilterTapped)
-
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-
-        actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
-        actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
-            self?.viewModel.statusFilter = nil
-        }
-
-        for orderStatus in viewModel.currentSiteStatuses {
-            actionSheet.addDefaultActionWithTitle(orderStatus.name) { [weak self] _ in
-                self?.viewModel.statusFilter = orderStatus
-            }
-        }
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
-        popoverController?.sourceView = view
-
-        present(actionSheet, animated: true)
-    }
-
     /// Shows `SearchViewController`.
     ///
     @objc private func displaySearchOrders() {
@@ -115,6 +80,7 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
     /// Return the ViewControllers for "Processing" and "All Orders".
     ///
     override func viewControllers(for pagerTabStripController: PagerTabStripViewController) -> [UIViewController] {
+        // TODO This is fake. It's probably better to just pass the `slug` to `OrdersViewController`.
         let processingOrderStatus = OrderStatus(
             name: OrderStatusEnum.processing.rawValue,
             siteID: Int64.max,
@@ -145,7 +111,6 @@ extension OrdersMasterViewController: OrdersViewControllerDelegate {
     }
 
     func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController) {
-        viewModel.statusFilter = nil
     }
 }
 
@@ -188,7 +153,6 @@ private extension OrdersMasterViewController {
     ///
     func configureNavigationButtons() {
         navigationItem.leftBarButtonItem = createSearchBarButtonItem()
-        navigationItem.rightBarButtonItem = createFilterBarButtonItem()
 
         removeNavigationBackBarButtonText()
     }
@@ -202,24 +166,6 @@ private extension OrdersMasterViewController {
 // MARK: - Creators
 
 private extension OrdersMasterViewController {
-    /// Create a `UIBarButtonItem` to be used as the filter button on the top-right.
-    ///
-    func createFilterBarButtonItem() -> UIBarButtonItem {
-        let button = UIBarButtonItem(image: .filterImage,
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(displayFiltersAlert))
-        button.accessibilityTraits = .button
-        button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
-        button.accessibilityHint = NSLocalizedString(
-            "Filters the order list by payment status.",
-            comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list."
-        )
-        button.accessibilityIdentifier = "order-filter-button"
-
-        return button
-    }
-
     /// Create a `UIBarButtonItem` to be used as the search button on the top-left.
     ///
     func createSearchBarButtonItem() -> UIBarButtonItem {
@@ -236,36 +182,5 @@ private extension OrdersMasterViewController {
         button.accessibilityIdentifier = "order-search-button"
 
         return button
-    }
-
-    enum FilterAction {
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let displayAll = NSLocalizedString(
-            "All",
-            comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
-        )
-    }
-}
-
-// MARK: - Optional<OrderStatus> Extension
-
-private extension Optional where Wrapped == OrderStatus {
-    /// A localized title to use as the `OrdersMasterViewController`'s navigation title.
-    ///
-    var titleForNavigationItem: String {
-        guard let filterName = self?.name else {
-            return NSLocalizedString(
-                "Orders",
-                comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order)."
-            )
-        }
-
-        return String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Orders: %@",
-                comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"
-            ),
-            filterName
-        )
     }
 }

@@ -169,6 +169,11 @@ private extension ProductFormViewController {
 
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
     }
+    
+    func displayProductSettings() {
+        let viewController = ProductSettingsViewController(product: product)
+        navigationController?.pushViewController(viewController, animated: true)
+    }
 }
 
 extension ProductFormViewController: UITableViewDelegate {
@@ -439,6 +444,10 @@ private extension ProductFormViewController {
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
             self?.shareProduct()
         }
+        
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
+            self?.displayProductSettings()
+        }
 
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
         }
@@ -452,6 +461,7 @@ private extension ProductFormViewController {
 
     enum ActionSheetStrings {
         static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+        static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
         static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
     }
 }

@@ -20,11 +20,19 @@ extension UIViewController {
 
     /// Show the X close button on the left bar button item position
     ///
-    func addLeftCloseNavigationBarButton() {
-        navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: self, action: #selector(dismiss))
+    func addCloseNavigationBarButton() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: self, action: #selector(dismissVC))
     }
 
-//    private func dismiss() {
-//        dismiss(animated: true, completion: nil)
-//    }
+}
+
+/// Private methods
+///
+private extension UIViewController {
+
+    /// Dismiss method
+    ///
+    @objc func dismissVC() {
+        dismiss(animated: true, completion: nil)
+    }
 }

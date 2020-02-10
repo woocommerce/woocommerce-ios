@@ -1,12 +1,15 @@
 
 import Foundation
 import UIKit
+import struct Yosemite.OrderStatus
 
 /// The view shown in Orders Search if there is no search keyword entered.
 ///
 /// This shows a list of `OrderStatus` that the user can pick to filter Orders by status.
 ///
 final class OrderSearchStarterViewController: UIViewController {
+    private lazy var analytics = ServiceLocator.analytics
+
     @IBOutlet private var tableView: UITableView!
 
     private lazy var viewModel = OrderSearchStarterViewModel()
@@ -39,21 +42,43 @@ final class OrderSearchStarterViewController: UIViewController {
     }
 }
 
+// MARK: - UITableViewDelegate
+
 extension OrderSearchStarterViewController: UITableViewDelegate {
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let alertController = UIAlertController(title: "Not available",
-                                                message: "This is still under development.",
-                                                preferredStyle: .alert)
-        alertController.addActionWithTitle("Fine, I guess", style: .default) { _ in
-            tableView.deselectSelectedRowWithAnimation(true)
-        }
-        present(alertController, animated: true, completion: nil)
+        let orderStatus = viewModel.orderStatus(at: indexPath)
+
+        analytics.trackSelectionOf(orderStatus: orderStatus)
+
+        let ordersViewController = OrdersViewController(
+            statusFilter: orderStatus,
+            showsRemoveFilterActionOnFilteredEmptyView: false
+        )
+        ordersViewController.title =
+            orderStatus.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter.")
+
+        navigationController?.pushViewController(ordersViewController, animated: true)
+
+        tableView.deselectSelectedRowWithAnimation(true)
     }
 }
+
+// MARK: - KeyboardScrollable
 
 extension OrderSearchStarterViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         tableView
+    }
+}
+
+// MARK: - Analytics
+
+private extension Analytics {
+    /// Submit events depicting selection of an `OrderStatus` in the UI.
+    ///
+    func trackSelectionOf(orderStatus: OrderStatus) {
+        track(.filterOrdersOptionSelected, withProperties: ["status": orderStatus.slug])
+        track(.ordersListFilterOrSearch, withProperties: ["filter": orderStatus.slug, "search": ""])
     }
 }

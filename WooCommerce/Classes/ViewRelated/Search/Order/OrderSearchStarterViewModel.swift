@@ -25,6 +25,12 @@ final class OrderSearchStarterViewModel {
 
         try? dataSource.performFetch()
     }
+
+    /// The `OrderStatus` located at `indexPath`.
+    ///
+    func orderStatus(at indexPath: IndexPath) -> OrderStatus {
+        dataSource.orderStatus(at: indexPath)
+    }
 }
 
 
@@ -66,6 +72,12 @@ private extension OrderSearchStarterViewModel {
                                forCellReuseIdentifier: BasicTableViewCell.reuseIdentifier)
         }
 
+        /// The `OrderStatus` located at `indexPath`.
+        ///
+        func orderStatus(at indexPath: IndexPath) -> OrderStatus {
+            resultsController.object(at: indexPath)
+        }
+
         func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
             resultsController.numberOfObjects
         }
@@ -73,7 +85,7 @@ private extension OrderSearchStarterViewModel {
         func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
             let cell = tableView.dequeueReusableCell(withIdentifier: BasicTableViewCell.reuseIdentifier,
                                                      for: indexPath)
-            let orderStatus = resultsController.object(at: indexPath)
+            let orderStatus = self.orderStatus(at: indexPath)
 
             cell.accessoryType = .disclosureIndicator
             cell.selectionStyle = .default

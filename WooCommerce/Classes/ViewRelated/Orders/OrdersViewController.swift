@@ -76,6 +76,8 @@ class OrdersViewController: UIViewController {
     /// This is set and changed by `OrdersMasterViewModel`. This shouldn't be updated internally
     /// by `self`.
     ///
+    /// TODO Make this `let`.
+    ///
     var statusFilter: OrderStatus? {
         didSet {
             guard isViewLoaded else {
@@ -89,6 +91,14 @@ class OrdersViewController: UIViewController {
             didChangeFilter(newFilter: statusFilter)
         }
     }
+
+    /// If `true`, the "Remove Filters" action will be shown on the Filtered Empty View.
+    ///
+    /// Defaults to `true`.
+    ///
+    /// - SeeAlso: displayEmptyFilteredOverlay
+    ///
+    private let showsRemoveFilterActionOnFilteredEmptyView: Bool
 
     /// The current list of order statuses for the default site
     ///
@@ -127,7 +137,14 @@ class OrdersViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    init() {
+    /// Designated initializer.
+    ///
+    /// - Parameter statusFilter The filter to use.
+    ///
+    init(statusFilter: OrderStatus? = nil,
+         showsRemoveFilterActionOnFilteredEmptyView: Bool = true) {
+        self.statusFilter = statusFilter
+        self.showsRemoveFilterActionOnFilteredEmptyView = showsRemoveFilterActionOnFilteredEmptyView
         super.init(nibName: Self.nibName, bundle: nil)
     }
 
@@ -477,6 +494,8 @@ private extension OrdersViewController {
                 self.delegate?.ordersViewControllerRequestsToClearStatusFilter(self)
             }
         }
+
+        overlayView.actionVisible = showsRemoveFilterActionOnFilteredEmptyView
 
         overlayView.attach(to: view)
     }

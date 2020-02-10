@@ -52,11 +52,10 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
         analytics.trackSelectionOf(orderStatus: orderStatus)
 
         let ordersViewController = OrdersViewController(
+            title: orderStatus.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
             statusFilter: orderStatus,
             showsRemoveFilterActionOnFilteredEmptyView: false
         )
-        ordersViewController.title =
-            orderStatus.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter.")
 
         navigationController?.pushViewController(ordersViewController, animated: true)
 

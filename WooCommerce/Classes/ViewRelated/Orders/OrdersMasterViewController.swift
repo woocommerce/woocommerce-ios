@@ -191,7 +191,8 @@ private extension OrdersMasterViewController {
     /// Creates an `OrdersViewController` and attaches its view to `self.view`.
     ///
     func createAndAttachOrdersViewController() -> OrdersViewController? {
-        let ordersViewController = OrdersViewController()
+        #warning("temp")
+        let ordersViewController = OrdersViewController(title: "")
 
         guard let ordersView = ordersViewController.view else {
             return nil

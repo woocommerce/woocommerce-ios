@@ -141,11 +141,13 @@ class OrdersViewController: UIViewController {
     ///
     /// - Parameter statusFilter The filter to use.
     ///
-    init(statusFilter: OrderStatus? = nil,
+    init(title: String,
+         statusFilter: OrderStatus? = nil,
          showsRemoveFilterActionOnFilteredEmptyView: Bool = true) {
         self.statusFilter = statusFilter
         self.showsRemoveFilterActionOnFilteredEmptyView = showsRemoveFilterActionOnFilteredEmptyView
         super.init(nibName: Self.nibName, bundle: nil)
+        self.title = title
     }
 
     required init?(coder aDecoder: NSCoder) {

@@ -40,6 +40,10 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
         super.viewWillAppear(animated)
 
         viewModel.syncOrderStatuses()
+
+        if AppRatingManager.shared.shouldPromptForAppReview() {
+            displayRatingPrompt()
+        }
     }
 
     /// Presents the Details for the Notification with the specified Identifier.

@@ -115,7 +115,7 @@ class OrdersViewController: UIViewController {
         self.statusFilter = statusFilter
 
         super.init(nibName: Self.nibName, bundle: nil)
-        
+
         self.title = title
     }
 
@@ -142,9 +142,6 @@ class OrdersViewController: UIViewController {
         super.viewWillAppear(animated)
 
         syncingCoordinator.synchronizeFirstPage()
-        if AppRatingManager.shared.shouldPromptForAppReview() {
-            displayRatingPrompt()
-        }
     }
 }
 

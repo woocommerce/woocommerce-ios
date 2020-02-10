@@ -18,10 +18,8 @@
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <subviews>
-                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VD7-Yu-YwE">
-                    <rect key="frame" x="87" y="272" width="240" height="128"/>
-                    <viewLayoutGuide key="contentLayoutGuide" id="wX2-x9-Xyb"/>
-                    <viewLayoutGuide key="frameLayoutGuide" id="gJ3-6J-XUd"/>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VD7-Yu-YwE">
+                    <rect key="frame" x="0.0" y="44" width="414" height="818"/>
                 </scrollView>
             </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>

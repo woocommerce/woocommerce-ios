@@ -63,6 +63,8 @@ class OrdersViewController: UIViewController {
 
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
+    /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.
+    ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
@@ -76,24 +78,7 @@ class OrdersViewController: UIViewController {
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
-    /// This is set and changed by `OrdersMasterViewModel`. This shouldn't be updated internally
-    /// by `self`.
-    ///
-    /// TODO Make this `let`.
-    ///
-    var statusFilter: OrderStatus? {
-        didSet {
-            guard isViewLoaded else {
-                return
-            }
-
-            guard oldValue != statusFilter else {
-                return
-            }
-
-            didChangeFilter(newFilter: statusFilter)
-        }
-    }
+    private let statusFilter: OrderStatus?
 
     /// If `true`, the "Remove Filters" action will be shown on the Filtered Empty View.
     ///
@@ -310,43 +295,6 @@ extension OrdersViewController {
         }
     }
 }
-
-
-// MARK: - Filters
-//
-private extension OrdersViewController {
-
-    func didChangeFilter(newFilter: OrderStatus?) {
-        ServiceLocator.analytics.track(.filterOrdersOptionSelected,
-                                  withProperties: ["status": newFilter?.slug ?? String()])
-        ServiceLocator.analytics.track(.ordersListFilterOrSearch,
-                                  withProperties: ["filter": newFilter?.slug ?? String(),
-                                                   "search": ""])
-
-        // Filter right away the cached orders
-        refreshResultsPredicate()
-
-        // Drop Cache (If Needed) + Re-Sync First Page
-        ensureStoredOrdersAreReset { [weak self] in
-            self?.syncingCoordinator.resynchronize()
-        }
-    }
-
-    /// Nukes all of the Stored Orders:
-    /// We're dropping the entire Orders Cache whenever a filter was just removed. This is performed to avoid
-    /// "interleaved Sync'ed Objects", which results in an awful UX while scrolling down
-    ///
-    func ensureStoredOrdersAreReset(onCompletion: @escaping () -> Void) {
-        guard isFiltered == false else {
-            onCompletion()
-            return
-        }
-
-        let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
-        ServiceLocator.stores.dispatch(action)
-    }
-}
-
 
 // MARK: - Sync'ing Helpers
 //

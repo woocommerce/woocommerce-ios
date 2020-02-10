@@ -5,6 +5,9 @@ import WordPressUI
 import SafariServices
 import StoreKit
 
+// Used for protocol conformance of IndicatorInfoProvider only.
+import XLPagerTabStrip
+
 protocol OrdersViewControllerDelegate: class {
     /// Called when `OrdersViewController` is about to fetch Orders from the API.
     ///
@@ -685,6 +688,20 @@ private extension OrdersViewController {
         }
 
         state = .emptyUnfiltered
+    }
+}
+
+// MARK: - IndicatorInfoProvider Conformance
+
+extension OrdersViewController: IndicatorInfoProvider {
+    /// Return `self.title` under `IndicatorInfo`.
+    ///
+    /// This is not used directly by `OrdersViewController`. We only need this because `Self` is
+    /// used as a child of `OrdersMasterViewController` which is a
+    /// `ButtonBarPagerTabStripViewController`.
+    ///
+    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
+        IndicatorInfo(title: title)
     }
 }
 

@@ -17,7 +17,20 @@
         <view contentMode="scaleToFill" id="xuO-pm-Bnd">
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="VD7-Yu-YwE">
+                    <rect key="frame" x="87" y="272" width="240" height="128"/>
+                    <viewLayoutGuide key="contentLayoutGuide" id="wX2-x9-Xyb"/>
+                    <viewLayoutGuide key="frameLayoutGuide" id="gJ3-6J-XUd"/>
+                </scrollView>
+            </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <constraints>
+                <constraint firstItem="VD7-Yu-YwE" firstAttribute="leading" secondItem="rGE-vr-B04" secondAttribute="leading" id="1oC-b9-sf9"/>
+                <constraint firstItem="rGE-vr-B04" firstAttribute="trailing" secondItem="VD7-Yu-YwE" secondAttribute="trailing" id="9vb-3t-PWE"/>
+                <constraint firstItem="VD7-Yu-YwE" firstAttribute="top" secondItem="rGE-vr-B04" secondAttribute="top" id="IM3-TW-7m9"/>
+                <constraint firstItem="rGE-vr-B04" firstAttribute="bottom" secondItem="VD7-Yu-YwE" secondAttribute="bottom" id="LZC-0z-fDh"/>
+            </constraints>
             <viewLayoutGuide key="safeArea" id="rGE-vr-B04"/>
             <point key="canvasLocation" x="-317" y="153"/>
         </view>

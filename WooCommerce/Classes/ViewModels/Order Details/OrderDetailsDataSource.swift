@@ -101,7 +101,9 @@ final class OrderDetailsDataSource: NSObject {
     /// Yosemite.OrderItem
     /// The original list of order items a user purchased
     ///
-    private(set) var items: [OrderItem]
+    var items: [OrderItem] {
+        return order.items
+    }
 
     /// Combine refunded order items to show refunded products
     ///
@@ -152,7 +154,6 @@ final class OrderDetailsDataSource: NSObject {
     init(order: Order) {
         self.order = order
         self.couponLines = order.coupons
-        self.items = order.items
 
         super.init()
     }
@@ -235,8 +236,10 @@ private extension OrderDetailsDataSource {
             configureRefund(cell: cell, at: indexPath)
         case let cell as TwoColumnHeadlineFootnoteTableViewCell where row == .netAmount:
             configureNetAmount(cell: cell)
-        case let cell as ProductDetailsTableViewCell:
+        case let cell as ProductDetailsTableViewCell where row == .orderItem:
             configureOrderItem(cell: cell, at: indexPath)
+        case let cell as ProductDetailsTableViewCell where row == .aggregateOrderItem:
+            configureAggregateOrderItem(cell: cell, at: indexPath)
         case let cell as FulfillButtonTableViewCell:
             configureFulfillmentButton(cell: cell)
         case let cell as OrderTrackingTableViewCell:
@@ -388,16 +391,16 @@ private extension OrderDetailsDataSource {
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
         cell.selectionStyle = .default
 
-        let refundsEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds)
-        guard aggregateOrderItems.count > 0 && refundsEnabled else {
-            let item = items[indexPath.row]
-            let product = lookUpProduct(by: item.productOrVariationID)
-            let itemViewModel = ProductDetailsCellViewModel(item: item,
-                                                            currency: order.currency,
-                                                            product: product)
-            cell.configure(item: itemViewModel, imageService: imageService)
-            return
-        }
+        let item = items[indexPath.row]
+        let product = lookUpProduct(by: item.productOrVariationID)
+        let itemViewModel = ProductDetailsCellViewModel(item: item,
+                                                        currency: order.currency,
+                                                        product: product)
+        cell.configure(item: itemViewModel, imageService: imageService)
+    }
+
+    private func configureAggregateOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
+        cell.selectionStyle = .default
 
         let aggregateItem = aggregateOrderItems[indexPath.row]
         let product = lookUpProduct(by: aggregateItem.productOrVariationID)
@@ -579,7 +582,9 @@ extension OrderDetailsDataSource {
             }
 
             var rows = [Row]()
-            if refundedProductsCount > 0 {
+
+            let refundsEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds)
+            if refundedProductsCount > 0 && refundsEnabled {
                 rows = Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
             } else {
                 rows = Array(repeating: .orderItem, count: items.count)

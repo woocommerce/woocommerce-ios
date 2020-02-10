@@ -80,6 +80,12 @@ extension UIImage {
         return Gridicon.iconOfType(.chevronUp)
     }
 
+    /// Close bar button item
+    ///
+    static var closeButton: UIImage {
+        return Gridicon.iconOfType(.cross)
+    }
+    
     /// Cog Icon
     ///
     static var cogImage: UIImage {

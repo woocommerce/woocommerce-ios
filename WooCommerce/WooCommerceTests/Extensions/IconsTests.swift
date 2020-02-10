@@ -45,6 +45,10 @@ final class IconsTests: XCTestCase {
     func testChevronUpImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.chevronUpImage)
     }
+    
+    func testCloseButtonIconIsNotNil() {
+        XCTAssertNotNil(UIImage.closeButton)
+    }
 
     func testCogImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.cogImage)

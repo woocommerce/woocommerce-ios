@@ -17,4 +17,14 @@ extension UIViewController {
     func removeNavigationBackBarButtonText() {
         navigationItem.backBarButtonItem = UIBarButtonItem(title: "", style: .plain, target: nil, action: nil)
     }
+    
+    /// Show the X close button on the left bar button item position
+    ///
+    func addLeftCloseNavigationBarButton() {
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: .closeButton, style: .plain, target: self, action: #selector(dismiss))
+    }
+    
+//    private func dismiss() {
+//        dismiss(animated: true, completion: nil)
+//    }
 }

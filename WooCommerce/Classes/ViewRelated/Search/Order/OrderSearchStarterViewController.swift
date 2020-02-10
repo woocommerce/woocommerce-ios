@@ -53,8 +53,7 @@ extension OrderSearchStarterViewController: UITableViewDelegate {
 
         let ordersViewController = OrdersViewController(
             title: orderStatus.name ?? NSLocalizedString("Orders", comment: "Default title for Orders List shown when tapping on the Search filter."),
-            statusFilter: orderStatus,
-            showsRemoveFilterActionOnFilteredEmptyView: false
+            statusFilter: orderStatus
         )
 
         navigationController?.pushViewController(ordersViewController, animated: true)

@@ -12,16 +12,6 @@ protocol OrdersViewControllerDelegate: class {
     /// Called when `OrdersViewController` is about to fetch Orders from the API.
     ///
     func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController)
-    /// Called when `OrdersViewController` is requesting to reset the `statusFilter` to `nil`.
-    ///
-    /// `OrdersViewController` does not modify its own `statusFilter`. While it is capable of
-    ///  doing that, we'd rather have that responsibility in the parent
-    ///  `OrdersMasterViewController`.
-    ///
-    ///  TODO There are ways to make secure this intentional behavior. We are keeping this as is
-    ///  for now since we will be significantly refactoring `OrdersViewController` later.
-    ///
-    func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController)
 }
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
@@ -80,14 +70,6 @@ class OrdersViewController: UIViewController {
     ///
     private let statusFilter: OrderStatus?
 
-    /// If `true`, the "Remove Filters" action will be shown on the Filtered Empty View.
-    ///
-    /// Defaults to `true`.
-    ///
-    /// - SeeAlso: displayEmptyFilteredOverlay
-    ///
-    private let showsRemoveFilterActionOnFilteredEmptyView: Bool
-
     /// The current list of order statuses for the default site
     ///
     private var currentSiteStatuses: [OrderStatus] {
@@ -129,12 +111,11 @@ class OrdersViewController: UIViewController {
     ///
     /// - Parameter statusFilter The filter to use.
     ///
-    init(title: String,
-         statusFilter: OrderStatus? = nil,
-         showsRemoveFilterActionOnFilteredEmptyView: Bool = true) {
+    init(title: String, statusFilter: OrderStatus? = nil) {
         self.statusFilter = statusFilter
-        self.showsRemoveFilterActionOnFilteredEmptyView = showsRemoveFilterActionOnFilteredEmptyView
+
         super.init(nibName: Self.nibName, bundle: nil)
+        
         self.title = title
     }
 
@@ -441,14 +422,7 @@ private extension OrdersViewController {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
-        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
-        overlayView.onAction = { [weak self] in
-            if let self = self {
-                self.delegate?.ordersViewControllerRequestsToClearStatusFilter(self)
-            }
-        }
-
-        overlayView.actionVisible = showsRemoveFilterActionOnFilteredEmptyView
+        overlayView.actionVisible = false
 
         overlayView.attach(to: view)
     }

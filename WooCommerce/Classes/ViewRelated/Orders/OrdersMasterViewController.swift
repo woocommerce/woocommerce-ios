@@ -85,14 +85,14 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
         )
         let processingOrdersVC = OrdersViewController(
             title: NSLocalizedString("Processing", comment: "Title for the first page in the Orders tab."),
-            statusFilter: processingOrderStatus,
-            showsRemoveFilterActionOnFilteredEmptyView: true)
+            statusFilter: processingOrderStatus
+        )
         processingOrdersVC.delegate = self
 
         let allOrdersVC = OrdersViewController(
             title: NSLocalizedString("All Orders", comment: "Title for the second page in the Orders tab."),
-            statusFilter: nil,
-            showsRemoveFilterActionOnFilteredEmptyView: true)
+            statusFilter: nil
+        )
         allOrdersVC.delegate = self
 
         return [processingOrdersVC, allOrdersVC]
@@ -104,9 +104,6 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
 extension OrdersMasterViewController: OrdersViewControllerDelegate {
     func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController) {
         viewModel.syncOrderStatuses()
-    }
-
-    func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController) {
     }
 }
 

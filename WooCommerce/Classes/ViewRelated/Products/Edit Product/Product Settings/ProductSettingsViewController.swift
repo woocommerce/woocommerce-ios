@@ -127,6 +127,7 @@ extension ProductSettingsViewController: UITableViewDelegate {
         }
 
         headerView.leftText = sectionTitle
+        headerView.rightText = nil
         
         return headerView
     }

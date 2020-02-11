@@ -6,9 +6,9 @@ import Yosemite
 final class ProductSettingsViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
-    
+
     private var viewModel: ProductSettingsTableViewModel
-    
+
     init(product: Product) {
         viewModel = ProductSettingsTableViewModel(product: product)
         super.init(nibName: nil, bundle: nil)
@@ -17,13 +17,13 @@ final class ProductSettingsViewController: UIViewController {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()
         configureTableView()
     }
-    
+
 }
 
 // MARK: - View Configuration
@@ -32,7 +32,7 @@ private extension ProductSettingsViewController {
 
     func configureNavigationBar() {
         title = NSLocalizedString("Product Settings", comment: "Product Settings navigation title")
-        
+
         removeNavigationBackBarButtonText()
     }
 
@@ -79,7 +79,7 @@ extension ProductSettingsViewController: UITableViewDataSource {
         configure(cell, section: section, indexPath: indexPath)
         return cell
     }
-    
+
     func configure(_ cell: UITableViewCell, section: ProductSettingsSection, indexPath: IndexPath) {
         switch section {
         case .publishSettings( _, let rows):
@@ -88,7 +88,7 @@ extension ProductSettingsViewController: UITableViewDataSource {
             configureCellInMoreOptionsSection(cell, row: rows[indexPath.row])
         }
     }
-    
+
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = viewModel.sections[section]
 
@@ -99,7 +99,7 @@ extension ProductSettingsViewController: UITableViewDataSource {
         case .moreOptions(let title, _):
             sectionTitle = title
         }
-        
+
         guard sectionTitle.isNotEmpty else {
             return nil
         }
@@ -133,9 +133,9 @@ private extension ProductSettingsViewController {
             configureVisibilityCell(cell: cell, visibility: visibility)
         }
     }
-    
+
     func configureVisibilityCell(cell: UITableViewCell, visibility: String?) {
-        
+
     }
 }
 
@@ -148,8 +148,8 @@ private extension ProductSettingsViewController {
             configureSlugCell(cell: cell, slug: slug)
         }
     }
-    
+
     func configureSlugCell(cell: UITableViewCell, slug: String?) {
-        
+
     }
 }

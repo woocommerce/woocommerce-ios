@@ -169,7 +169,7 @@ private extension ProductFormViewController {
 
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
     }
-    
+
     func displayProductSettings() {
         let viewController = ProductSettingsViewController(product: product)
         navigationController?.pushViewController(viewController, animated: true)
@@ -444,7 +444,7 @@ private extension ProductFormViewController {
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.share) { [weak self] _ in
             self?.shareProduct()
         }
-        
+
         actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
             self?.displayProductSettings()
         }

@@ -5,11 +5,11 @@ import Yosemite
 struct ProductSettingsTableViewModel {
 
     private(set) var sections: [ProductSettingsSection] = []
-    
+
     init(product: Product) {
         configureSections(product: product)
     }
-    
+
 }
 
 // MARK: Configure sections and rows in Product Settings
@@ -19,11 +19,11 @@ private extension ProductSettingsTableViewModel {
         sections = [.publishSettings(title: Constants.publishFieldsTitle, rows: configurePublishSettingsRows(product)),
         .moreOptions(title: Constants.moreOptionsTitle, rows: configureMoreOptionsRows(product))]
     }
-    
+
     func configurePublishSettingsRows(_ product: Product) -> [ProductSettingsSection.PublishSettingsRow] {
         return [.visibility(product.catalogVisibilityKey)]
     }
-    
+
     func configureMoreOptionsRows(_ product: Product) -> [ProductSettingsSection.MoreOptionsRow] {
         return [.slug(product.slug)]
     }
@@ -32,7 +32,7 @@ private extension ProductSettingsTableViewModel {
 // MARK: - Register table view cells and headers
 //
 extension ProductSettingsTableViewModel {
-    
+
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells(_ tableView: UITableView) {
@@ -53,7 +53,7 @@ extension ProductSettingsTableViewModel {
             }
         }
     }
-    
+
     /// Registers all of the available TableViewHeaderFooters
     ///
     func registerTableViewHeaderFooters(_ tableView: UITableView) {
@@ -78,11 +78,11 @@ private extension ProductSettingsTableViewModel {
 enum ProductSettingsSection {
     case publishSettings(title: String, rows: [PublishSettingsRow])
     case moreOptions(title: String, rows: [MoreOptionsRow])
-    
+
     enum PublishSettingsRow {
         case visibility(_ visibility: String?)
     }
-    
+
     enum MoreOptionsRow {
         case slug(_ slug: String?)
     }
@@ -112,7 +112,7 @@ extension ProductSettingsSection.PublishSettingsRow: ReusableTableRow {
     var reuseIdentifier: String {
         return cellType.reuseIdentifier
     }
-    
+
     private var cellType: UITableViewCell.Type {
         switch self {
         case .visibility:
@@ -132,7 +132,7 @@ extension ProductSettingsSection.MoreOptionsRow: ReusableTableRow {
     var reuseIdentifier: String {
         return cellType.reuseIdentifier
     }
-    
+
     private var cellType: UITableViewCell.Type {
         switch self {
         case .slug:

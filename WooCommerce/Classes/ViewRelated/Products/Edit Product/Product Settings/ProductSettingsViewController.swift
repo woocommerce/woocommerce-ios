@@ -20,6 +20,8 @@ final class ProductSettingsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        configureNavigationBar()
+        configureTableView()
     }
     
 }
@@ -40,8 +42,9 @@ private extension ProductSettingsViewController {
 
     func configureTableView() {
         viewModel.registerTableViewCells(tableView)
+        viewModel.registerTableViewHeaderFooters(tableView)
 
-        //tableView.dataSource = self
+        tableView.dataSource = self
         tableView.delegate = self
 
         tableView.backgroundColor = .listBackground
@@ -84,6 +87,31 @@ extension ProductSettingsViewController: UITableViewDataSource {
         case .moreOptions( _, let rows):
             configureCellInMoreOptionsSection(cell, row: rows[indexPath.row])
         }
+    }
+    
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let section = viewModel.sections[section]
+
+        var sectionTitle = ""
+        switch section {
+        case .publishSettings(let title, _):
+            sectionTitle = title
+        case .moreOptions(let title, _):
+            sectionTitle = title
+        }
+        
+        guard sectionTitle.isNotEmpty else {
+            return nil
+        }
+
+        let headerID = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
+            fatalError("Unregistered \(TwoColumnSectionHeaderView.self) in UITableView")
+        }
+
+        headerView.leftText = sectionTitle
+
+        return headerView
     }
 }
 

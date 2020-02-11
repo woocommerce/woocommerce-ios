@@ -53,6 +53,16 @@ extension ProductSettingsTableViewModel {
             }
         }
     }
+    
+    /// Registers all of the available TableViewHeaderFooters
+    ///
+    func registerTableViewHeaderFooters(_ tableView: UITableView) {
+        let headersAndFooters = [TwoColumnSectionHeaderView.self]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
+    }
 }
 
 private extension ProductSettingsTableViewModel {
@@ -66,8 +76,8 @@ private extension ProductSettingsTableViewModel {
 
 
 enum ProductSettingsSection {
-    case publishSettings(title: String?, rows: [PublishSettingsRow])
-    case moreOptions(title: String?, rows: [MoreOptionsRow])
+    case publishSettings(title: String, rows: [PublishSettingsRow])
+    case moreOptions(title: String, rows: [MoreOptionsRow])
     
     enum PublishSettingsRow {
         case visibility(_ visibility: String?)
@@ -130,16 +140,3 @@ extension ProductSettingsSection.MoreOptionsRow: ReusableTableRow {
         }
     }
 }
-
-//extension ProductSettingsSection {
-//    func reuseIdentifier(at rowIndex: Int) -> String {
-//        switch self {
-//        case .primaryFields(let rows):
-//            let row = rows[rowIndex]
-//            return row.reuseIdentifier
-//        case .settings(let rows):
-//            let row = rows[rowIndex]
-//            return row.reuseIdentifier
-//        }
-//    }
-//}

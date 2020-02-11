@@ -1,6 +1,6 @@
 3.6
 -----
-- Orders tab: Orders to fulfill badge shows numbers 1-99, and now 99+ for anything over 99. Previously, it was 9+.
+- Orders tab: Orders to fulfill badge shows numbers 1-99, and now 99+ for anything over 99. Previously, it was 9+. 
 
 3.5
 -----

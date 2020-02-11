@@ -16,47 +16,44 @@ struct ProductSettingsTableViewModel {
 //
 private extension ProductSettingsTableViewModel {
     mutating func configureSections(product: Product) {
-        sections = [ProductSettingsSection(title: Constants.publishFieldsTitle, rows: [.visibility]), ProductSettingsSection(title: Constants.moreOptionsTitle, rows: [.slug])]
+        sections = [.publishSettings(title: Constants.publishFieldsTitle, rows: configurePublishSettingsRows(product)),
+        .moreOptions(title: Constants.moreOptionsTitle, rows: configureMoreOptionsRows(product))]
+    }
+    
+    func configurePublishSettingsRows(_ product: Product) -> [ProductSettingsSection.PublishSettingsRow] {
+        return [.visibility(product.catalogVisibilityKey)]
+    }
+    
+    func configureMoreOptionsRows(_ product: Product) -> [ProductSettingsSection.MoreOptionsRow] {
+        return [.slug(product.slug)]
     }
 }
 
-// MARK: - Register table view cells
+// MARK: - Register table view cells and headers
 //
 extension ProductSettingsTableViewModel {
     
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells(_ tableView: UITableView) {
-        for row in ProductSettingsRow.allCases {
-            tableView.register(row.type.loadNib(), forCellReuseIdentifier: row.reuseIdentifier)
-        }
-    }
-}
-
-
-extension ProductSettingsTableViewModel {
-    struct ProductSettingsSection {
-        let title: String?
-        let rows: [ProductSettingsRow]
-    }
-    
-    enum ProductSettingsRow: CaseIterable {
-        case visibility
-        case slug
-        
-        var type: UITableViewCell.Type {
-            switch self {
-            case .visibility, .slug:
-                return BasicTableViewCell.self
+        sections.forEach { section in
+            switch section {
+            case .publishSettings( _, let rows):
+                rows.forEach { row in
+                    row.cellTypes.forEach { cellType in
+                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                    }
+                }
+            case .moreOptions( _, let rows):
+                rows.forEach { row in
+                    row.cellTypes.forEach { cellType in
+                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
+                    }
+                }
             }
         }
-        
-        var reuseIdentifier: String {
-            return type.reuseIdentifier
-        }
     }
 }
-
 
 private extension ProductSettingsTableViewModel {
     enum Constants {
@@ -66,3 +63,83 @@ private extension ProductSettingsTableViewModel {
                                                         comment: "Title of the More Options section on Product Settings screen")
     }
 }
+
+
+enum ProductSettingsSection {
+    case publishSettings(title: String?, rows: [PublishSettingsRow])
+    case moreOptions(title: String?, rows: [MoreOptionsRow])
+    
+    enum PublishSettingsRow {
+        case visibility(_ visibility: String?)
+    }
+    
+    enum MoreOptionsRow {
+        case slug(_ slug: String?)
+    }
+}
+
+extension ProductSettingsSection {
+    func reuseIdentifier(at rowIndex: Int) -> String {
+        switch self {
+        case .publishSettings( _, let rows):
+            let row = rows[rowIndex]
+            return row.reuseIdentifier
+        case .moreOptions( _, let rows):
+            let row = rows[rowIndex]
+            return row.reuseIdentifier
+        }
+    }
+}
+
+extension ProductSettingsSection.PublishSettingsRow: ReusableTableRow {
+    var cellTypes: [UITableViewCell.Type] {
+        switch self {
+        case .visibility:
+            return [BasicTableViewCell.self]
+        }
+    }
+
+    var reuseIdentifier: String {
+        return cellType.reuseIdentifier
+    }
+    
+    private var cellType: UITableViewCell.Type {
+        switch self {
+        case .visibility:
+            return BasicTableViewCell.self
+        }
+    }
+}
+
+extension ProductSettingsSection.MoreOptionsRow: ReusableTableRow {
+    var cellTypes: [UITableViewCell.Type] {
+        switch self {
+        case .slug:
+            return [BasicTableViewCell.self]
+        }
+    }
+
+    var reuseIdentifier: String {
+        return cellType.reuseIdentifier
+    }
+    
+    private var cellType: UITableViewCell.Type {
+        switch self {
+        case .slug:
+            return BasicTableViewCell.self
+        }
+    }
+}
+
+//extension ProductSettingsSection {
+//    func reuseIdentifier(at rowIndex: Int) -> String {
+//        switch self {
+//        case .primaryFields(let rows):
+//            let row = rows[rowIndex]
+//            return row.reuseIdentifier
+//        case .settings(let rows):
+//            let row = rows[rowIndex]
+//            return row.reuseIdentifier
+//        }
+//    }
+//}

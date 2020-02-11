@@ -88,6 +88,23 @@ extension ProductSettingsViewController: UITableViewDataSource {
             configureCellInMoreOptionsSection(cell, row: rows[indexPath.row])
         }
     }
+}
+
+// MARK: - UITableViewDelegate Conformance
+//
+extension ProductSettingsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+    }
+
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
 
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = viewModel.sections[section]
@@ -110,16 +127,8 @@ extension ProductSettingsViewController: UITableViewDataSource {
         }
 
         headerView.leftText = sectionTitle
-
+        
         return headerView
-    }
-}
-
-// MARK: - UITableViewDelegate Conformance
-//
-extension ProductSettingsViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: true)
     }
 }
 
@@ -135,7 +144,13 @@ private extension ProductSettingsViewController {
     }
 
     func configureVisibilityCell(cell: UITableViewCell, visibility: String?) {
+        guard let cell = cell as? BasicTableViewCell else {
+            fatalError()
+        }
 
+        cell.textLabel?.text = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
+        cell.detailTextLabel?.text = visibility
+        cell.accessoryType = .disclosureIndicator
     }
 }
 
@@ -150,6 +165,12 @@ private extension ProductSettingsViewController {
     }
 
     func configureSlugCell(cell: UITableViewCell, slug: String?) {
+        guard let cell = cell as? BasicTableViewCell else {
+            fatalError()
+        }
 
+        cell.textLabel?.text = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
+        cell.detailTextLabel?.text = slug
+        cell.accessoryType = .disclosureIndicator
     }
 }

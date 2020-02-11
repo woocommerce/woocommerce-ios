@@ -65,16 +65,8 @@ extension ProductSettingsTableViewModel {
     }
 }
 
-private extension ProductSettingsTableViewModel {
-    enum Constants {
-        static let publishFieldsTitle = NSLocalizedString("Publish Settings",
-                                                          comment: "Title of the Publish Settings section on Product Settings screen")
-        static let moreOptionsTitle = NSLocalizedString("More Options",
-                                                        comment: "Title of the More Options section on Product Settings screen")
-    }
-}
-
-
+// MARK: - Sections and Rows declaration
+//
 enum ProductSettingsSection {
     case publishSettings(title: String, rows: [PublishSettingsRow])
     case moreOptions(title: String, rows: [MoreOptionsRow])
@@ -138,5 +130,16 @@ extension ProductSettingsSection.MoreOptionsRow: ReusableTableRow {
         case .slug:
             return BasicTableViewCell.self
         }
+    }
+}
+
+// MARK: - Constants
+//
+private extension ProductSettingsTableViewModel {
+    enum Constants {
+        static let publishFieldsTitle = NSLocalizedString("Publish Settings",
+                                                          comment: "Title of the Publish Settings section on Product Settings screen")
+        static let moreOptionsTitle = NSLocalizedString("More Options",
+                                                        comment: "Title of the More Options section on Product Settings screen")
     }
 }

@@ -1,6 +1,7 @@
 3.7
 -----
- 
+- Dashboard: now tapping on a product on "Top Performers" section open the product detail
+
 3.6
 -----
 - Orders tab: Orders to fulfill badge shows numbers 1-99, and now 99+ for anything over 99. Previously, it was 9+.

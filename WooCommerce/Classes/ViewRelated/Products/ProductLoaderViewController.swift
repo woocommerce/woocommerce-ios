@@ -162,7 +162,6 @@ private extension ProductLoaderViewController {
         let viewController: UIViewController
         if product.productType == .simple && isFeatureFlagOn {
             viewController = ProductFormViewController(product: product, currency: currency)
-            // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         } else {
             let viewModel = ProductDetailsViewModel(product: product, currency: currency)
             viewController = ProductDetailsViewController(viewModel: viewModel)

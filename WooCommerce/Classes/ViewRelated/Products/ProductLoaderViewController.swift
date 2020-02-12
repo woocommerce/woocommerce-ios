@@ -56,7 +56,7 @@ final class ProductLoaderViewController: UIViewController {
         configureNavigationTitle()
         configureSpinner()
         configureMainView()
-        configureDismissButton()
+        addCloseNavigationBarButton()
         loadProduct()
     }
 }
@@ -86,17 +86,6 @@ private extension ProductLoaderViewController {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
     }
-
-    /// Setup: Dismiss Button
-    ///
-    func configureDismissButton() {
-        let dismissButtonTitle = NSLocalizedString("Dismiss", comment: "Product details screen - button title for closing the view")
-        let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(dismissButtonTapped))
-        navigationItem.setLeftBarButton(leftBarButton, animated: false)
-    }
 }
 
 
@@ -123,10 +112,6 @@ private extension ProductLoaderViewController {
 
         state = .loading
         ServiceLocator.stores.dispatch(action)
-    }
-
-    @objc func dismissButtonTapped() {
-        dismiss(animated: true, completion: nil)
     }
 }
 
@@ -169,19 +154,28 @@ private extension ProductLoaderViewController {
         }
     }
 
-    /// Presents the ProductDetailsViewController, as a childViewController, for a given Product.
+    /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
-        let detailsViewModel = ProductDetailsViewModel(product: product, currency: currency)
-        let detailsViewController = ProductDetailsViewController(viewModel: detailsViewModel)
+
+        let isFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
+        let viewController: UIViewController
+        if product.productType == .simple && isFeatureFlagOn {
+            viewController = ProductFormViewController(product: product, currency: currency)
+        } else {
+            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
+            viewController = ProductDetailsViewController(viewModel: viewModel)
+        }
 
         // Attach
-        addChild(detailsViewController)
-        attachSubview(detailsViewController.view)
-        detailsViewController.didMove(toParent: self)
+        addChild(viewController)
+        attachSubview(viewController.view)
+        viewController.didMove(toParent: self)
 
-        // And, of course, borrow the Child's Title
-        title = detailsViewController.title
+
+        // And, of course, borrow the Child's Title + right nav bar items
+        title = viewController.title
+        navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
     }
 
     /// Removes all of the children UIViewControllers

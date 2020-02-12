@@ -295,24 +295,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   ########################################################################
   # Screenshot Lanes
   ########################################################################  
-  desc "Take Screenshots"
-  lane :screenshots do | options |
-
-    fastlane_directory = File.expand_path File.dirname(__FILE__)
-    derived_data_path = File.join(fastlane_directory, "DerivedData")
-    screenshots_directory = File.join(fastlane_directory, "screenshots")
-
-    # By default, clear previous screenshots
-    should_clear_previous_screenshots = true
-    languages = "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
-
-    if options[:languages] != nil
-      languages = languages & options[:languages].split()
-      should_clear_previous_screenshots = false
-    end
-
-    puts "Creating screenshots for #{languages}"
-
+  desc "Build Screenshots"
+  lane :build_screenshots do
+    
     # Ensure we're using the latest Pods
     sh('bundle exec pod install')
 
@@ -320,49 +305,112 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       workspace: File.join(fastlane_directory, "../WooCommerce.xcworkspace"),
       scheme: "WooCommerceScreenshots",
       build_for_testing: true,
-      derived_data_path: derived_data_path,
+      derived_data_path: derived_data_directory,
     )
+  end
 
-    devices = [
-      "iPhone 11 Pro Max",
-      "iPhone 8 Plus",
-      "iPad Pro (12.9-inch) (2nd generation)",
-      "iPad Pro (12.9-inch) (3rd generation)",
-    ]
+  desc "Take Screenshots"
+  lane :take_screenshots do | options |
+
+    # By default, clear previous screenshots
+    languages = "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
+
+    if options[:languages] != nil
+      languages = languages & options[:languages].split()
+    end
+
+    puts "Creating screenshots for #{languages}"
+
+    devices = screenshot_devices.map { |device| device[:name] }
 
     if options[:devices] != nil
       devices = devices & options[:devices].split()
-      should_clear_previous_screenshots = false
     end
 
-    FileUtils.rm_f(screenshots_directory) unless !should_clear_previous_screenshots
+    # Erase the simulator between runs in order to get everything back to a default state
+    rebuild_screenshot_devices
 
-    [true, false].each { | dark_mode_enabled |
-      capture_ios_screenshots(
-        scheme: "WooCommerceScreenshots",
+    capture_ios_screenshots(
+      scheme: "WooCommerceScreenshots",
 
-        localize_simulator: true,
-        languages: languages,
+      localize_simulator: true,
+      languages: languages,
 
-        devices: devices,
+      devices: devices,
 
-        # Don't rebuild the app for every new locale / device type, and specify where to find the binaries
-        test_without_building: true,
-        derived_data_path: derived_data_path,
+      # Don't rebuild the app for every new locale / device type, and specify where to find the binaries
+      test_without_building: true,
+      derived_data_path: derived_data_directory,
 
-        # Where should the screenshots go, and should we delete them before starting?
-        output_directory: "./fastlane/screenshots",
+      # Where should the screenshots go, and should we delete them before starting?
+      output_directory: screenshots_directory,
 
-        concurrent_simulators: false,
+      # Output the simulator logs for debugging
+      buildlog_path: "./fastlane/logs",
+      output_simulator_logs: true,
+      result_bundle: true,
+      namespace_log_files: true,
 
-        # Retry a few times if something is a little flaky
-        number_of_retries: 3,
+      concurrent_simulators: false,
 
-        # Allow the caller to invoke dark mode
-        dark_mode: dark_mode_enabled
-      )
+      # Explicitly set the iOS version to ensure we match the created simulators
+      ios_version: simulator_version,
+
+      # Erase the simulator prior to booting the app
+      erase_simulator: true,
+
+      # Retry a few times if something is a little flaky
+      number_of_retries: 3,
+
+      # But fail completely after those 3 retries
+      stop_after_first_error: true,
+
+      # Allow the caller to invoke dark mode
+      dark_mode: options[:mode].to_s.downcase == "dark"
+    )
+
+  end
+
+  desc "Create Screenshots Locally"
+  lane :screenshots do | options |
+
+    FileUtils.rm_f(screenshots_directory)
+
+    build_screenshots(options)
+    take_screenshots(options.merge({ mode: 'light' }))
+    take_screenshots(options.merge({ mode: 'dark' }))
+  end
+
+  desc "Rebuild Screenshot Devices"
+  lane :rebuild_screenshot_devices do
+    require 'simctl'
+
+    device_names = screenshot_devices.map { |device| device[:name] }
+
+    SimCtl.list_devices.each { |device|
+      next unless device_names.include? device.name
+      device.delete
     }
 
+    screenshot_devices.each { | device |
+      runtime = SimCtl.runtime(name: "iOS #{simulator_version}")
+      devicetype = SimCtl.devicetype(name: device[:device_id])
+
+      device = SimCtl.create_device device[:name], devicetype, runtime
+    }
+  end
+
+  desc "Create Screenshot Summary"
+  lane :create_screenshot_summary do
+    fastlane_require 'snapshot'
+
+    # Provide enough information to bootstrap the configuration and generate the HTML report
+    Snapshot.config = FastlaneCore::Configuration.create(Snapshot::Options.available_options, {
+      "workspace": "../WooCommerce.xcworkspace",
+      "scheme": "WooCommerceScreenshots"
+    })
+
+    Snapshot::ReportsGenerator.new.generate
   end
 
   desc "Download App Store Translations"
@@ -510,3 +558,40 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     end
   end
 end
+
+  def fastlane_directory()
+    File.expand_path File.dirname(__FILE__)
+  end
+
+  def derived_data_directory()
+    File.join(fastlane_directory, "DerivedData")
+  end
+
+  def screenshots_directory()
+    File.join(fastlane_directory, "screenshots")
+  end
+
+  def screenshot_devices()
+    [
+      {
+        name: "iPhone 11 Pro Max (screenshots)",
+        device_id: "iPhone 11 Pro Max"
+      },
+      {
+        name: "iPhone 8 Plus (screenshots)",
+        device_id: "iPhone 8 Plus"
+      },
+      {
+        name: "iPad Pro (12.9-inch) (2nd generation) (screenshots)",
+        device_id: "iPad Pro (12.9-inch) (2nd generation)"
+      },
+      {
+        name: "iPad Pro (12.9-inch) (3rd generation) (screenshots)",
+        device_id: "iPad Pro (12.9-inch) (3rd generation)"
+      }
+    ]
+  end
+
+  def simulator_version()
+    return '13.3'
+  end

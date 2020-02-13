@@ -60,4 +60,67 @@ jobs:
         name: screenshot-runner
         path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app
 
+  capture:
+    name: Capture
+    needs: build
+    runs-on: macos-latest
+
+    strategy:
+      matrix:
+        language: [ar, de-DE, es-ES, fr-FR, he, id, it, ja, ko, nl-NL, pt-BR, ru, sv, tr, zh-Hans, zh-Hant, en-US]
+        mode: [light, dark]
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.6.x'
+    
+    - name: Install Bundler
+      run: gem install bundler
+    
+    - name: Restore Ruby Dependency Cache
+      id: restore-ruby-dependency-cache
+      uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+    
+    - name: Install Ruby Dependencies
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    - name: Install Fastlane Dependencies
+      run: bundle exec fastlane run configure_apply
+    
+    - name: Download Screenshot App
+      uses: actions/download-artifact@v1
+      with:
+        name: screenshot-app
+        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app
+
+    - name: Download Screenshot Runner
+      uses: actions/download-artifact@v1
+      with:
+        name: screenshot-runner
+        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app
+
+    - name: Rebuild Screenshot Devices
+      run: "bundle exec fastlane rebuild_screenshot_devices"
+
+    - name: Generate Screenshots
+      run: "bundle exec fastlane take_screenshots languages:${{ matrix.language }} mode:${{ matrix.mode }}"
+
+    - name: Archive Generated Screenshots
+      run: |
+        brew install awscli
+        cd fastlane && mkdir $GITHUB_RUN_ID && mv screenshots $GITHUB_RUN_ID
+        aws s3 cp $GITHUB_RUN_ID s3://$S3_BUCKET/$GITHUB_RUN_ID --recursive --exclude "*.html"
+
+    - name: Store Logs
+      if: always()
+      uses: actions/upload-artifact@v1
+      with:
+        name: "screenshot-log-${{ matrix.language }}-#{{ matrix.mode }}"
+        path: fastlane/logs
 

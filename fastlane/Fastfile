@@ -299,7 +299,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   lane :build_screenshots do
     
     # Ensure we're using the latest Pods
-    sh('bundle exec pod install')
+    sh('bundle exec pod install --verbose')
 
     scan(
       workspace: File.join(fastlane_directory, "../WooCommerce.xcworkspace"),

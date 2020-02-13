@@ -12,7 +12,7 @@ struct DefaultFeatureFlagService: FeatureFlagService {
         case .stats:
             return true
         case .refunds:
-            return BuildConfiguration.current == .localDeveloper
+            return true
         case .orderListRedesign:
             return BuildConfiguration.current == .localDeveloper
         default:

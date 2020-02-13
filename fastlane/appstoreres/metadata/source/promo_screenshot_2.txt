@@ -1,1 +1,2 @@
-View and manage orders
+View and manage
+orders on the go

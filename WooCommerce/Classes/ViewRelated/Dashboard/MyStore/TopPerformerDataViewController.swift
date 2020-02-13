@@ -266,7 +266,7 @@ private extension TopPerformerDataViewController {
                                                                siteID: siteID,
                                                                currency: currency)
         let navController = WooNavigationController(rootViewController: loaderViewController)
-        self.present(navController, animated: true, completion: nil)
+        present(navController, animated: true, completion: nil)
     }
 }
 

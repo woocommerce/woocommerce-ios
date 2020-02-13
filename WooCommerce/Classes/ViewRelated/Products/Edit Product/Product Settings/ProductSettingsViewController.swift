@@ -21,6 +21,7 @@ final class ProductSettingsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         configureNavigationBar()
+        configureMainView()
         configureTableView()
     }
 

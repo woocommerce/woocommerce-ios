@@ -47,10 +47,13 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v3.5-whats-new"
+msgctxt "v3.6-whats-new"
 msgid ""
-"- If the app is in the foreground and you get a push notification, the badges on the Orders tab and Reviews tab will update correctly based on the type of the notification.\n"
-"- Sometimes after logging out and back in, the Product List would be empty even though you clearly have products. The Product List now lives up to its name and shows products from the correct store. Can’t find the Products list? Go into the “Experimental Features” menu in Settings to enable the sneak preview.\n"
+"- You can now view refunds on an order.\n"
+"- The “orders to fulfill” badge now maxes at 99, showing 99+ for anything over 99. Previously, it was 9+.\n"
+"- Fixed a bug where long product names could make the product quantity disappear when viewing an order.\n"
+"- Product names with HTML escape characters should display correctly now.\n"
+"- If an order has multiple products, tapping on any product should open the correct product.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

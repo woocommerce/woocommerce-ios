@@ -5,7 +5,7 @@ import Yosemite
 //
 final class ProductSettingsViewController: UIViewController {
 
-    @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     private var viewModel: ProductSettingsTableViewModel
 

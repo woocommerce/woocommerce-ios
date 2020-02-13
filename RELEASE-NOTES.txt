@@ -8,6 +8,7 @@
 - Orders tab: The full total amount is now shown.
 - Order Details & Product UI: if a Product name has HTML escape characters, they should be decoded in the app.
 - Order Details: if the Order has multiple Products, tapping on any Product should open the same Product now.
+- bugfix: the orders badge on tab bar now is correctly refreshed after switching to a store with badge count equal to zero.
 
 3.5
 -----

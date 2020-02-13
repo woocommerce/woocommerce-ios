@@ -1,0 +1,63 @@
+name: Screenshots
+
+on: [push]
+
+env:
+  S3_BUCKET: ${{ secrets.S3_BUCKET }}
+  AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+  AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+  CONFIGURE_ENCRYPTION_KEY: ${{ secrets.CONFIGURE_ENCRYPTION_KEY }}
+
+jobs:
+  build:
+    name: Build Application
+    if: contains( toJson(github), 'Needs Screenshots' )
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.6.x'
+    
+    - name: Install Bundler
+      run: gem install bundler
+    
+    - name: Restore Ruby Dependency Cache
+      id: restore-ruby-dependency-cache
+      uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+    
+    - name: Install Ruby Dependencies
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+    
+    - name: Restore CocoaPods Dependency Cache
+      id: restore-cocoapods-dependency-cache
+      uses: actions/cache@v1
+      with:
+        path: Pods
+        key: ${{ runner.os }}-pods-${{ hashFiles('**/Podfile.lock') }}
+
+    - name: Install App Dependencies
+      run: bundle exec rake dependencies
+    
+    - name: Compile the App
+      run: bundle exec fastlane build_screenshots
+
+    - name: Archive App
+      uses: actions/upload-artifact@v1
+      with:
+        name: screenshot-app
+        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerce.app
+
+    - name: Archive Runner
+      uses: actions/upload-artifact@v1
+      with:
+        name: screenshot-runner
+        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/WooCommerceScreenshots-Runner.app
+
+

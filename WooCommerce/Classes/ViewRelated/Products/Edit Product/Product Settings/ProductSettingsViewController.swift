@@ -7,10 +7,10 @@ final class ProductSettingsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
-    private var viewModel: ProductSettingsTableViewModel
+    private var viewModel: ProductSettingsViewModel
 
     init(product: Product) {
-        viewModel = ProductSettingsTableViewModel(product: product)
+        viewModel = ProductSettingsViewModel(product: product)
         super.init(nibName: nil, bundle: nil)
     }
 

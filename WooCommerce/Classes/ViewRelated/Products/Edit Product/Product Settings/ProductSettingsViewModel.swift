@@ -2,7 +2,7 @@ import UIKit
 import Yosemite
 
 /// The Product Settings contains 2 sections: Publish Settings and More Options
-struct ProductSettingsTableViewModel {
+struct ProductSettingsViewModel {
 
     private(set) var sections: [ProductSettingsSection] = []
 
@@ -14,7 +14,7 @@ struct ProductSettingsTableViewModel {
 
 // MARK: Configure sections and rows in Product Settings
 //
-private extension ProductSettingsTableViewModel {
+private extension ProductSettingsViewModel {
     mutating func configureSections(product: Product) {
         sections = [.publishSettings(title: Constants.publishFieldsTitle, rows: configurePublishSettingsRows(product)),
         .moreOptions(title: Constants.moreOptionsTitle, rows: configureMoreOptionsRows(product))]
@@ -31,7 +31,7 @@ private extension ProductSettingsTableViewModel {
 
 // MARK: - Register table view cells and headers
 //
-extension ProductSettingsTableViewModel {
+extension ProductSettingsViewModel {
 
     /// Registers all of the available TableViewCells
     ///
@@ -135,7 +135,7 @@ extension ProductSettingsSection.MoreOptionsRow: ReusableTableRow {
 
 // MARK: - Constants
 //
-private extension ProductSettingsTableViewModel {
+private extension ProductSettingsViewModel {
     enum Constants {
         static let publishFieldsTitle = NSLocalizedString("Publish Settings",
                                                           comment: "Title of the Publish Settings section on Product Settings screen")

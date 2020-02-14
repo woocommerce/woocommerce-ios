@@ -7,7 +7,6 @@ import Yosemite
 ///
 final class OrderDetailsDataSource: NSObject {
     private(set) var order: Order
-    private let currencyFormatter = CurrencyFormatter()
     private let couponLines: [OrderCouponLine]?
 
     /// Haptic Feedback!
@@ -24,15 +23,15 @@ final class OrderDetailsDataSource: NSObject {
         return order.statusKey == OrderStatusEnum.processing.rawValue
     }
 
+    /// Is this order fully refunded?
+    ///
+    private var isRefundedStatus: Bool {
+        return order.statusKey == OrderStatusEnum.refunded.rawValue
+    }
+
     /// Is the shipment tracking plugin available?
     ///
     var trackingIsReachable: Bool = false
-
-    /// Anything above 999.99 or below -999.99 should display a truncated amount
-    ///
-    var totalFriendlyString: String? {
-        return currencyFormatter.formatHumanReadableAmount(order.total, with: order.currency, roundSmallNumbers: false) ?? String()
-    }
 
     /// For example, #560 Pamela Nguyen
     ///
@@ -78,19 +77,7 @@ final class OrderDetailsDataSource: NSObject {
     /// OrderItemsRefund Count
     ///
     var refundedProductsCount: Decimal {
-        var refundedItems = [OrderItemRefund]()
-        for refund in refunds {
-            refundedItems.append(contentsOf: refund.items)
-        }
-
-        var quantities = [Decimal]()
-        for item in refundedItems {
-            quantities.append(item.quantity)
-        }
-
-        let decimalCount = quantities.reduce(0, +) // quantities report as negative values
-
-        return abs(decimalCount)
+        return AggregateDataHelper.refundedProductsCount(from: refunds)
     }
 
     /// Refunds on an Order
@@ -111,9 +98,21 @@ final class OrderDetailsDataSource: NSObject {
         return shippingLines.first?.methodTitle ?? String()
     }
 
-    /// All the items inside an order
-    private var items: [OrderItem] {
-        return order.items
+    /// Yosemite.OrderItem
+    /// The original list of order items a user purchased
+    ///
+    private(set) var items: [OrderItem]
+
+    /// Combine refunded order items to show refunded products
+    ///
+    var refundedProducts: [AggregateOrderItem]? {
+        return AggregateDataHelper.combineRefundedProducts(from: refunds)
+    }
+
+    /// Calculate the new order item quantities and totals after refunded products have altered the fields
+    ///
+    var aggregateOrderItems: [AggregateOrderItem] {
+        return AggregateDataHelper.combineOrderItems(items, with: refunds)
     }
 
     /// All the condensed refunds in an order
@@ -130,7 +129,8 @@ final class OrderDetailsDataSource: NSObject {
         }
     }
 
-    /// Note of customer about the order
+    /// Note from the customer about the order
+    ///
     private var customerNote: String {
         return order.customerNote ?? String()
     }
@@ -152,6 +152,8 @@ final class OrderDetailsDataSource: NSObject {
     init(order: Order) {
         self.order = order
         self.couponLines = order.coupons
+        self.items = order.items
+
         super.init()
     }
 
@@ -384,10 +386,25 @@ private extension OrderDetailsDataSource {
     }
 
     private func configureOrderItem(cell: ProductDetailsTableViewCell, at indexPath: IndexPath) {
-        let item = items[indexPath.row]
-        let product = lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
         cell.selectionStyle = .default
+
+        let refundsEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds)
+        guard aggregateOrderItems.count > 0 && refundsEnabled else {
+            let item = items[indexPath.row]
+            let product = lookUpProduct(by: item.productOrVariationID)
+            let itemViewModel = ProductDetailsCellViewModel(item: item,
+                                                            currency: order.currency,
+                                                            product: product)
+            cell.configure(item: itemViewModel, imageService: imageService)
+            return
+        }
+
+        let aggregateItem = aggregateOrderItems[indexPath.row]
+        let product = lookUpProduct(by: aggregateItem.productOrVariationID)
+        let itemViewModel = ProductDetailsCellViewModel(aggregateItem: aggregateItem,
+                                                        currency: order.currency,
+                                                        product: product)
+
         cell.configure(item: itemViewModel, imageService: imageService)
     }
 
@@ -544,21 +561,50 @@ extension OrderDetailsDataSource {
         }()
 
         let products: Section? = {
-            guard items.isEmpty == false else {
+            if items.isEmpty {
                 return nil
             }
 
-            var rows: [Row] = Array(repeating: .orderItem, count: items.count)
+            // Order Items section with Refunds hidden
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
+                var rows: [Row] = Array(repeating: .orderItem, count: items.count)
+
+                if isProcessingPayment {
+                    rows.append(.fulfillButton)
+                } else {
+                    rows.append(.details)
+                }
+
+                return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
+            }
+
+            var rows = [Row]()
+            if refundedProductsCount > 0 {
+                rows = Array(repeating: .aggregateOrderItem, count: aggregateOrderItems.count)
+            } else {
+                rows = Array(repeating: .orderItem, count: items.count)
+            }
+
             if isProcessingPayment {
                 rows.append(.fulfillButton)
-            } else {
+            } else if isRefundedStatus == false {
                 rows.append(.details)
+            }
+
+            if rows.count == 0 {
+                return nil
             }
 
             return Section(title: Title.product, rightTitle: Title.quantity, rows: rows)
         }()
 
         let refundedProducts: Section? = {
+            // Refunds off
+            guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.refunds) else {
+                return nil
+            }
+
+            // Refunds on
             guard refundedProductsCount > 0 else {
                 return nil
             }
@@ -861,6 +907,7 @@ extension OrderDetailsDataSource {
     enum Row {
         case summary
         case orderItem
+        case aggregateOrderItem
         case fulfillButton
         case details
         case refundedProducts
@@ -884,6 +931,8 @@ extension OrderDetailsDataSource {
             case .summary:
                 return SummaryTableViewCell.reuseIdentifier
             case .orderItem:
+                return ProductDetailsTableViewCell.reuseIdentifier
+            case .aggregateOrderItem:
                 return ProductDetailsTableViewCell.reuseIdentifier
             case .fulfillButton:
                 return FulfillButtonTableViewCell.reuseIdentifier

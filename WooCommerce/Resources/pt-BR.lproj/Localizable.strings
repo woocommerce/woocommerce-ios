@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-22 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-02-06 00:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -51,17 +51,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld variantes";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
-"9+" = "9+";
+/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+"99+" = "Mais de 99";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "É necessário um endereço de e-mail válido para enviar um link de autenticação. Retorne para a tela anterior e forneça um endereço de e-mail válido.";
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Um código de verificação só contém números.";
-
-/* Action to add photos on the Product images screen */
-"ADD PHOTOS" = "ADICIONAR FOTOS";
 
 /* About this app (information page title) */
 "About" = "Sobre";
@@ -81,6 +78,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Adicionar";
+
+/* Action to add photos on the Product images screen */
+"Add Photos" = "Adicionar fotos";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -154,8 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "Aprova o comentário";
 
+/* Message title for Save Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "Tem certeza de que deseja descartar essas alterações?";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Tem certeza de que deseja fazer logout da conta %@?";
+
+/* Message on the alert when the user taps to delete a Product image */
+"Are you sure you want to remove this image?" = "Tem certeza de que deseja remover esta imagem?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Autenticando";
@@ -211,21 +217,30 @@
 /* Call phone number button title */
 "Call" = "Ligar";
 
+/* Error message format when capturing a unsupported media type with device camera */
+"Camera capture should not support media type: %@" = "A captura de câmera não deve ser compatível com o tipo de mídia: %@";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Não pode requisitar link";
 
-/* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
+/* Button title Cancel in Save Changes Action Sheet
+   Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "Cancelar";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Não foi possível atualizar o produto";
+
+/* Title of the alert when there is an error uploading image(s) */
+"Cannot upload image" = "Não foi possível carregar a imagem";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Acompanhe seus sites favoritos e junte-se à conversa de qualquer lugar, a qualquer hora.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Erro do certificado";
+
+/* Menu option for selecting media from the device's photo library. */
+"Choose from device" = "Escolher no dispositivo";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Coletar informação";
@@ -366,11 +381,14 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Dimensões: %1$@%2$@";
 
+/* Button title Discard Changes in Save Changes Action Sheet */
+"Discard changes" = "Descartar alterações";
+
 /* Discount label for payment view */
 "Discount" = "Desconto";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Dispensar";
 
 /* Display label for the product's inventory backorders setting option */
@@ -846,7 +864,7 @@
 "Number of files:" = "Número de arquivos:";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -965,6 +983,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Escolha a loja a ser vinculada";
 
+/* Product title error notice message, when the title is empty */
+"Please add a title" = "Adicione um título";
+
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "Confira seu e-mail";
 
@@ -1003,6 +1024,9 @@
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Faça logout antes de se conectar a um site diferente do WordPress.com";
+
+/* Error message when an image captured by camera cannot be saved to the device Photos library */
+"Please make sure the app can access Photos in device settings" = "Certifique-se que o aplicativo tem acesso às Fotos nas configurações do dispositivo";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Acesse seu aplicativo de e-mails e procure por um e-mail do WordPress.com.";
@@ -1128,8 +1152,14 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Preço normal: %@";
 
+/* Confirm button on the alert when the user taps to delete a Product image */
+"Remove" = "Remover";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "Remover filtros";
+
+/* Title on the alert when the user taps to delete a Product image */
+"Remove Image" = "Remover imagem";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "Remover link";
@@ -1171,7 +1201,7 @@
 "SKU already in use by another product" = "O SKU já foi usado por outro produto";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
 "SKU:" = "SKU:";
 
 /* Format of the SKU on the Inventory Settings row
@@ -1198,6 +1228,9 @@
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Preço promocional: %@";
+
+/* Button title for Save Changes Action Sheet */
+"Save changes" = "Salvar alterações";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Agendar oferta";
@@ -1440,6 +1473,9 @@
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Alterna para o tamanho padrão";
 
+/* Menu option for taking an image or video with the device's camera. */
+"Take a photo" = "Tirar uma foto";
+
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Toque para mais opções de formatação";
 
@@ -1512,12 +1548,6 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "Status do imposto";
 
-/* Tax label for total taxes line */
-"Tax:" = "Imposto:";
-
-/* Tax label for total taxes line, followed by the tax amount. */
-"Tax: %@" = "Imposto: %@";
-
 /* Display label for the product's tax status setting option */
 "Taxable" = "Tributável";
 
@@ -1568,6 +1598,9 @@
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "A avaliação foi removida";
+
+/* Product price error notice message, when the sale price is higher than the regular price */
+"The sale price should be lower than the regular price." = "O preço promocional deve ser menor que o preço normal.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "O servidor retornou uma resposta vazia. Isso geralmente significa que você precisa aumentar o limite de memória de seu site.";
@@ -1777,6 +1810,9 @@
 /* No comment provided by engineer. */
 "Unknown error" = "Erro desconhecido";
 
+/* Error message when capturing a unknown media type */
+"Unknown media type" = "Tipo de mídia desconhecido";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Lista fora de ordem";
 
@@ -1941,6 +1977,9 @@
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "WooCommerce compatível com iOS";
+
+/* Menu option for selecting media from the site's media library. */
+"WordPress Media Library" = "Biblioteca de mídia do WordPress";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "Versão muito antiga do WordPress. O site em %1$@ usa o WordPress %2$@. Recomendamos a atualização para a última versão ou pelo menos, a versão %3$@.";

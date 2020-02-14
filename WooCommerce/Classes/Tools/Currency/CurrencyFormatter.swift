@@ -16,6 +16,12 @@ public class CurrencyFormatter {
         let localeDecimalSeparator = Locale.current.decimalSeparator ?? CurrencySettings.shared.decimalSeparator
         var newStringValue = stringValue.replacingOccurrences(of: ",", with: localeDecimalSeparator)
         newStringValue = newStringValue.replacingOccurrences(of: ".", with: localeDecimalSeparator)
+
+        // Removes the currency symbol, if any.
+        let currencyCode = CurrencySettings.shared.currencyCode
+        let unit = CurrencySettings.shared.symbol(from: currencyCode)
+        newStringValue = newStringValue.replacingOccurrences(of: unit, with: "")
+
         let decimalValue = NSDecimalNumber(string: newStringValue, locale: Locale.current)
 
         guard decimalValue != NSDecimalNumber.notANumber else {

@@ -69,10 +69,10 @@ extension ProductListViewController: UITableViewDataSource {
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let item = itemAtIndexPath(indexPath)
-        let product = lookUpProduct(by: item.productID)
-        let itemViewModel = OrderItemViewModel(item: item,
-                                               currency: viewModel.order.currency,
-                                               product: product)
+        let product = lookUpProduct(by: item.productOrVariationID)
+        let itemViewModel = ProductDetailsCellViewModel(item: item,
+                                                        currency: viewModel.order.currency,
+                                                        product: product)
         let cellID = PickListTableViewCell.reuseIdentifier
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellID, for: indexPath) as? PickListTableViewCell else {
             fatalError()

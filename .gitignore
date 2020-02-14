@@ -76,6 +76,7 @@ fastlane/screenshots
 fastlane/test_output
 fastlane/README.md
 Preview.html
+default.profraw
 
 \.DS_Store
 

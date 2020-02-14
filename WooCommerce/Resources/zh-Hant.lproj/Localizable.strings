@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-23 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-02-05 04:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -51,17 +51,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld 個子類選項";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
-"9+" = "9+";
+/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+"99+" = "99 筆以上";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "需要有效的電子郵件地址才能傳送驗證連結。請返回上一個畫面，並提供有效的電子郵件地址。";
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "驗證碼僅包含數字。";
-
-/* Action to add photos on the Product images screen */
-"ADD PHOTOS" = "新增照片";
 
 /* About this app (information page title) */
 "About" = "關於";
@@ -81,6 +78,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "新增";
+
+/* Action to add photos on the Product images screen */
+"Add Photos" = "新增相片";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -154,8 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "核准留言";
 
+/* Message title for Save Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "確定要捨棄這些變更？";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "你確定要登出帳號 %@ 嗎？";
+
+/* Message on the alert when the user taps to delete a Product image */
+"Are you sure you want to remove this image?" = "確定要移除此圖片？";
 
 /* No comment provided by engineer. */
 "Authenticating" = "驗證中";
@@ -211,21 +217,30 @@
 /* Call phone number button title */
 "Call" = "致電";
 
+/* Error message format when capturing a unsupported media type with device camera */
+"Camera capture should not support media type: %@" = "攝影機擷取不應支援媒體類型：%@";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "無法要求連結";
 
-/* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
+/* Button title Cancel in Save Changes Action Sheet
+   Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "取消";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "無法更新商品";
+
+/* Title of the alert when there is an error uploading image(s) */
+"Cannot upload image" = "無法上傳圖片";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "隨時隨地掌握最愛網站的最新動態並加入討論。";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "憑證錯誤";
+
+/* Menu option for selecting media from the device's photo library. */
+"Choose from device" = "從裝置中選擇";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集資訊";
@@ -366,11 +381,14 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "尺寸：%1$@%2$@";
 
+/* Button title Discard Changes in Save Changes Action Sheet */
+"Discard changes" = "捨棄變更";
+
 /* Discount label for payment view */
 "Discount" = "折扣";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "關閉";
 
 /* Display label for the product's inventory backorders setting option */
@@ -846,7 +864,7 @@
 "Number of files:" = "檔案數量：";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "確定";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -965,6 +983,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "挑選要連結的商店";
 
+/* Product title error notice message, when the title is empty */
+"Please add a title" = "請新增標題";
+
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "請查看你的電子郵件";
 
@@ -1003,6 +1024,9 @@
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "請先登出再連結至另一個 WordPress.com 網站";
+
+/* Error message when an image captured by camera cannot be saved to the device Photos library */
+"Please make sure the app can access Photos in device settings" = "請在裝置設定中確認應用程式可以存取相片";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "請開啟電子郵件應用程式，找到 WordPress.com 傳送的電子郵件。";
@@ -1128,8 +1152,14 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "原價：%@";
 
+/* Confirm button on the alert when the user taps to delete a Product image */
+"Remove" = "移除";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "移除篩選條件";
+
+/* Title on the alert when the user taps to delete a Product image */
+"Remove Image" = "移除圖片";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "移除連結";
@@ -1171,7 +1201,7 @@
 "SKU already in use by another product" = "其他商品已使用此貨號";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
 "SKU:" = "貨號：";
 
 /* Format of the SKU on the Inventory Settings row
@@ -1198,6 +1228,9 @@
 
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "折扣價格：%@";
+
+/* Button title for Save Changes Action Sheet */
+"Save changes" = "儲存變更";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "排程折扣";
@@ -1440,6 +1473,9 @@
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "切換至預設的文字大小";
 
+/* Menu option for taking an image or video with the device's camera. */
+"Take a photo" = "拍攝相片";
+
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "點選以取得更多格式選項";
 
@@ -1512,12 +1548,6 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "稅金狀態";
 
-/* Tax label for total taxes line */
-"Tax:" = "稅金：";
-
-/* Tax label for total taxes line, followed by the tax amount. */
-"Tax: %@" = "稅金：%@";
-
 /* Display label for the product's tax status setting option */
 "Taxable" = "應課稅";
 
@@ -1568,6 +1598,9 @@
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "已移除評論";
+
+/* Product price error notice message, when the sale price is higher than the regular price */
+"The sale price should be lower than the regular price." = "銷售價格必須低於正常價格。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "伺服器傳回空白回應。這通常代表你必須增加網站的記憶體限制。";
@@ -1777,6 +1810,9 @@
 /* No comment provided by engineer. */
 "Unknown error" = "發生未知的錯誤";
 
+/* Error message when capturing a unknown media type */
+"Unknown media type" = "未知的媒體類型";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "未排序清單";
 
@@ -1941,6 +1977,9 @@
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS 版 WooCommerce 支援";
+
+/* Menu option for selecting media from the site's media library. */
+"WordPress Media Library" = "WordPress 媒體庫";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress 版本過舊。網址為 %1$@ 的網站使用 WordPress %2$@。建議更新至最新版本，或至少更新至 %3$@";

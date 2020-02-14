@@ -52,6 +52,10 @@ final class TitleAndTextFieldTableViewCell: UITableViewCell {
         textField.textColor = viewModel.state.textColor
         onTextChange = viewModel.onTextChange
     }
+
+    func textFieldBecomeFirstResponder() {
+        textField.becomeFirstResponder()
+    }
 }
 
 private extension TitleAndTextFieldTableViewCell {

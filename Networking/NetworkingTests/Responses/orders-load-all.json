@@ -308,7 +308,7 @@
                  "number": "560",
                  "order_key": "wc_order_f3H9NxhNHBkFU",
                  "created_via": "checkout",
-                 "version": "3.7.1",
+                 "version": "3.8.1",
                  "status": "processing",
                  "currency": "USD",
                  "date_created": "2019-10-01T19:31:17",
@@ -324,6 +324,8 @@
                  "total_tax": "0.00",
                  "prices_include_tax": false,
                  "customer_id": 1,
+                 "customer_ip_address": "50.27.182.78",
+                 "customer_user_agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36",
                  "customer_note": "It's the annual company baseball game! My team needs geared up with hoodies, t-shirts, the works. Be a dear and fill this order quick!",
                  "billing": {
                      "first_name": "Pamela",
@@ -335,7 +337,7 @@
                      "state": "DC",
                      "postcode": "20560",
                      "country": "US",
-                     "email": "example.email+pamela-nguyen-orders@example.com",
+                     "email": "thuy.copeland+pamela-nguyen-orders@gmail.com",
                      "phone": "2022611000"
                  },
                  "shipping": {
@@ -351,11 +353,12 @@
                  },
                  "payment_method": "stripe",
                  "payment_method_title": "Credit Card (Stripe)",
-                 "transaction_id": "this_transactionid",
+                 "transaction_id": "ch_1FOr46J71fgCH5kvqxjdQyqZ",
                  "date_paid": "2019-10-01T19:31:19",
                  "date_paid_gmt": "2019-10-01T19:31:19",
                  "date_completed": null,
                  "date_completed_gmt": null,
+                 "cart_hash": "4218b7625fa74b3af8b8960e25d87c21",
                  "meta_data": [
                      {
                          "id": 2841,
@@ -370,17 +373,17 @@
                      {
                          "id": 2843,
                          "key": "_stripe_customer_id",
-                         "value": "customer_id_string"
+                         "value": "cus_FCoh9BkDSriEIg"
                      },
                      {
                          "id": 2844,
                          "key": "_stripe_source_id",
-                         "value": "source_id_string"
+                         "value": "src_1EiP3mJ71fgCH5kvlceBvufW"
                      },
                      {
                          "id": 2845,
                          "key": "_stripe_intent_id",
-                         "value": "intent_id_string"
+                         "value": "pi_1FOr45J71fgCH5kv1nzfKCfG"
                      },
                      {
                          "id": 2846,
@@ -395,7 +398,7 @@
                      {
                          "id": 2848,
                          "key": "_stripe_net",
-                         "value": "1086.94"
+                         "value": "906.94"
                      },
                      {
                          "id": 2849,
@@ -405,7 +408,7 @@
                      {
                          "id": 2871,
                          "key": "_stripe_refund_id",
-                         "value": "refund_id_string"
+                         "value": "re_1G4BNIJ71fgCH5kvS6zKuvgZ"
                      },
                      {
                          "id": 2971,
@@ -415,17 +418,17 @@
                                  "tracking_provider": "fedex",
                                  "custom_tracking_provider": null,
                                  "custom_tracking_link": null,
-                                 "tracking_number": "780201938860",
+                                 "tracking_number": "780201939860",
                                  "date_shipped": "1571097600",
-                                 "tracking_id": "c1beed131709762223bcdbc361b7320b"
+                                 "tracking_id": "c1beed131709762223bcdbc361b7320a"
                              },
                              {
                                  "tracking_provider": "fedex",
                                  "custom_tracking_provider": null,
                                  "custom_tracking_link": null,
-                                 "tracking_number": "780237487895",
+                                 "tracking_number": "780237489895",
                                  "date_shipped": "1571097600",
-                                 "tracking_id": "f362b0c1f0ab957c97d72d50ed8adce6"
+                                 "tracking_id": "f362b0c1f0cb957c97d72d50ed8adce6"
                              }
                          ]
                      }
@@ -1245,6 +1248,16 @@
                  "coupon_lines": [],
                  "refunds": [
                      {
+                         "id": 1172,
+                         "reason": "Take an order item down to quantity of zero",
+                         "total": "-63.00"
+                     },
+                     {
+                         "id": 1025,
+                         "reason": "Testing mark 2 for refunded products screen!",
+                         "total": "-117.00"
+                     },
+                     {
                          "id": 590,
                          "reason": "Only 1 black hoodie left. Inventory count was off. My bad!",
                          "total": "-18.00"
@@ -1255,7 +1268,24 @@
                          "total": "-27.00"
                      }
                  ],
-                 "currency_symbol": "$"
+                 "currency_symbol": "$",
+                 "_links": {
+                     "self": [
+                         {
+                             "href": "https://thuy-test.mystagingwebsite.com/wp-json/wc/v3/orders/560"
+                         }
+                     ],
+                     "collection": [
+                         {
+                             "href": "https://thuy-test.mystagingwebsite.com/wp-json/wc/v3/orders"
+                         }
+                     ],
+                     "customer": [
+                         {
+                             "href": "https://thuy-test.mystagingwebsite.com/wp-json/wc/v3/customers/1"
+                         }
+                     ]
+                 }
              }
-             ]
+        ]
 }

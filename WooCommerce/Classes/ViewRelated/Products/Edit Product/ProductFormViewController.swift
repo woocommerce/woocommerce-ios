@@ -110,7 +110,10 @@ private extension ProductFormViewController {
             guard let product = product, error == nil else {
                 let errorDescription = error?.localizedDescription ?? "No error specified"
                 DDLogError("⛔️ Error updating Product: \(errorDescription)")
-                self?.displayError(error: error)
+                // Dismisses the in-progress UI then presents the error alert.
+                self?.navigationController?.dismiss(animated: true) {
+                    self?.displayError(error: error)
+                }
                 return
             }
             self?.product = product
@@ -119,11 +122,6 @@ private extension ProductFormViewController {
             self?.navigationController?.dismiss(animated: true, completion: nil)
         }
         ServiceLocator.stores.dispatch(action)
-    }
-
-    func showProductImages() {
-        let imagesViewController = ProductImagesViewController(product: product)
-        navigationController?.pushViewController(imagesViewController, animated: true)
     }
 
     func displayError(error: ProductUpdateError?) {
@@ -200,6 +198,27 @@ extension ProductFormViewController: UITableViewDelegate {
     }
 }
 
+// MARK: Action - Edit Product Images
+//
+private extension ProductFormViewController {
+    func showProductImages() {
+        let imagesViewController = ProductImagesViewController(product: product) { [weak self] images in
+            self?.onEditProductImagesCompletion(images: images)
+        }
+        navigationController?.pushViewController(imagesViewController, animated: true)
+    }
+
+    func onEditProductImagesCompletion(images: [ProductImage]) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        guard images != product.images else {
+            return
+        }
+        self.product = productUpdater.imagesUpdated(images: images)
+    }
+}
+
 // MARK: Action - Edit Product Name
 //
 private extension ProductFormViewController {
@@ -212,6 +231,7 @@ private extension ProductFormViewController {
         ) { [weak self] (newProductName) in
             self?.onEditProductNameCompletion(newName: newProductName ?? "")
         }
+        textViewController.delegate = self
 
         navigationController?.pushViewController(textViewController, animated: true)
     }
@@ -225,6 +245,19 @@ private extension ProductFormViewController {
         }
         self.product = productUpdater.nameUpdated(name: newName)
     }
+}
+
+extension ProductFormViewController: TextViewViewControllerDelegate {
+    func validate(text: String) -> Bool {
+        return !text.isEmpty
+    }
+
+    func validationErrorMessage() -> String {
+        return NSLocalizedString("Please add a title",
+                                 comment: "Product title error notice message, when the title is empty")
+    }
+
+
 }
 
 // MARK: Action - Edit Product Parameters

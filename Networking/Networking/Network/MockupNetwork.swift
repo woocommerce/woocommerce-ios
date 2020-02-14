@@ -66,6 +66,12 @@ class MockupNetwork: Network {
 
         completion(data, nil)
     }
+
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                 to request: URLRequestConvertible,
+                                 completion: @escaping (Data?, Error?) -> Void) {
+        responseData(for: request, completion: completion)
+    }
 }
 
 

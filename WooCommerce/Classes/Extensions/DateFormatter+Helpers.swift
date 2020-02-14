@@ -73,11 +73,9 @@ extension DateFormatter {
         ///
         /// Example Output: "Dec 30" or "12月30日"
         ///
-        public static let chartMarkerDayFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("MMM d")
-            return formatter
-        }()
+        public static var chartMarkerDayFormatter: DateFormatter {
+            monthAndDayFormatter
+        }
 
         /// Date formatter used for creating a **localized** date string displayed on a chart marker for **week** granularity.
         ///
@@ -105,21 +103,39 @@ extension DateFormatter {
         ///
         /// Example Output: "2018" or "2017"
         ///
-        public static let chartMarkerYearFormatter: DateFormatter = {
-            let formatter = DateFormatter()
-            formatter.setLocalizedDateFormatFromTemplate("yyyy")
-            return formatter
-        }()
+        public static var chartMarkerYearFormatter: DateFormatter {
+            yearFormatter
+        }
     }
 
     /// Date formatter used for creating a medium-length **localized** date string to be displayed anywhere.
     ///
-    /// Example output: "Jan 28 2018"
+    /// Example output in English: "Jan 28, 2018"
     ///
     public static let mediumLengthLocalizedDateFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.setLocalizedDateFormatFromTemplate("MMM d yyyy")
 
+        return formatter
+    }()
+
+    /// Date formatter used for creating a **localized** string containing the month and day.
+    ///
+    /// Example Output: "Dec 30" or "12月30日"
+    ///
+    static let monthAndDayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.setLocalizedDateFormatFromTemplate("MMM d")
+        return formatter
+    }()
+
+    /// Date formatter used for creating a **localized** string of the year only.
+    ///
+    /// Example Output: "2018" or "2017"
+    ///
+    static let yearFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.setLocalizedDateFormatFromTemplate("yyyy")
         return formatter
     }()
 }

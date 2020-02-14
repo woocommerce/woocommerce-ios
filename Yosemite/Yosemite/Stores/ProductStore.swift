@@ -202,12 +202,15 @@ private extension ProductStore {
             return
         }
 
-        guard let products = storageManager.viewStorage.loadProducts(siteID: siteID) else {
-            onCompletion(true)
-            return
+        let remote = ProductsRemote(network: network)
+        remote.searchSku(for: siteID, sku: sku) { (result, error) in
+            guard error == nil else {
+                onCompletion(true)
+                return
+            }
+            let isValid = (result != nil && result == sku) ? false : true
+            onCompletion(isValid)
         }
-        let anyProductHasTheSameSKU = products.compactMap({ $0.sku }).contains(sku)
-        onCompletion(anyProductHasTheSameSKU == false)
     }
 }
 
@@ -357,29 +360,19 @@ private extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's images using the provided read-only Product's images
     ///
     func handleProductImages(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-        let siteID = readOnlyProduct.siteID
-        let productID = readOnlyProduct.productID
+        // Removes all the images first.
+        storageProduct.imagesArray.forEach { existingStorageImage in
+            storage.deleteObject(existingStorageImage)
+        }
 
-        // Upsert the images from the read-only product
+        // Inserts the images from the read-only product variation.
+        var storageImages = [StorageProductImage]()
         for readOnlyImage in readOnlyProduct.images {
-            if let existingStorageImage = storage.loadProductImage(siteID: siteID,
-                                                                   productID: productID,
-                                                                   imageID: readOnlyImage.imageID) {
-                existingStorageImage.update(with: readOnlyImage)
-            } else {
-                let newStorageImage = storage.insertNewObject(ofType: Storage.ProductImage.self)
-                newStorageImage.update(with: readOnlyImage)
-                storageProduct.addToImages(newStorageImage)
-            }
+            let newStorageImage = storage.insertNewObject(ofType: Storage.ProductImage.self)
+            newStorageImage.update(with: readOnlyImage)
+            storageImages.append(newStorageImage)
         }
-
-        // Now, remove any objects that exist in storageProduct.images but not in readOnlyProduct.images
-        storageProduct.images?.forEach { storageImage in
-            if readOnlyProduct.images.first(where: { $0.imageID == storageImage.imageID } ) == nil {
-                storageProduct.removeFromImages(storageImage)
-                storage.deleteObject(storageImage)
-            }
-        }
+        storageProduct.images = NSOrderedSet(array: storageImages)
     }
 
     /// Updates, inserts, or prunes the provided StorageProduct's categories using the provided read-only Product's categories

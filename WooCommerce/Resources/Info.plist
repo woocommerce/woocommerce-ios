@@ -53,9 +53,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>To take photos or videos to add to your support tickets.</string>
+	<string>To take photos or videos to add to your Products or support tickets.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To add photos or videos to your support tickets.</string>
+	<string>To save photos from camera for Product images, or to add photos or videos to your Products or support tickets.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Noticons.ttf</string>

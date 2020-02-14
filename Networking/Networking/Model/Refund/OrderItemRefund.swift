@@ -1,7 +1,7 @@
 import Foundation
 
 
-/// Represents an Order Item to be Refunded
+/// Represents an Order Item that was refunded or will be refunded.
 ///
 public struct OrderItemRefund: Codable {
     public let itemID: Int64
@@ -155,5 +155,15 @@ extension OrderItemRefund: Comparable {
         return lhs.itemID < rhs.itemID ||
             (lhs.itemID == rhs.itemID && lhs.productID < rhs.productID) ||
             (lhs.itemID == rhs.itemID && lhs.productID == rhs.productID && lhs.name < rhs.name)
+    }
+}
+
+
+// MARK: - Hashable Conformance
+//
+extension OrderItemRefund: Hashable {
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(productID)
+        hasher.combine(variationID)
     }
 }

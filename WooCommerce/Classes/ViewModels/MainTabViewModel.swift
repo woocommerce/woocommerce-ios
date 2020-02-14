@@ -30,9 +30,9 @@ final class MainTabViewModel {
 
 private extension MainTabViewModel {
     enum Constants {
-        static let ninePlus = NSLocalizedString(
-            "9+",
-            comment: "Content of the badge presented over the Orders icon when there are more than 9 orders processing"
+        static let ninetyNinePlus = NSLocalizedString(
+            "99+",
+            comment: "Content of the badge presented over the Orders icon when there are more than 99 orders processing"
         )
     }
 
@@ -68,7 +68,7 @@ private extension MainTabViewModel {
     }
 
     private func readableCount(_ count: Int) -> String {
-        return count > 9 ? Constants.ninePlus : String(count)
+        return count > 99 ? Constants.ninetyNinePlus : String(count)
     }
 
     private func observeBadgeRefreshNotifications() {

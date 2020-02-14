@@ -1,5 +1,14 @@
 import UIKit
 
+protocol TextViewViewControllerDelegate: class {
+
+    // Text validation.
+    func validate(text: String) -> Bool
+
+    // Error text that will be shown if the text does not pass validation.
+    func validationErrorMessage() -> String
+}
+
 /// Contains an editable text view with a placeholder label when the text is empty.
 ///
 final class TextViewViewController: UIViewController {
@@ -26,6 +35,8 @@ final class TextViewViewController: UIViewController {
     private let keyboardType: UIKeyboardType
     private let autocapitalizationType: UITextAutocapitalizationType
     private let onCompletion: Completion
+
+    weak var delegate: TextViewViewControllerDelegate?
 
     init(text: String?,
          placeholder: String,
@@ -63,9 +74,37 @@ final class TextViewViewController: UIViewController {
     }
 }
 
-private extension TextViewViewController {
-    @objc func completeEditing() {
+// MARK: - Navigation actions handling
+//
+extension TextViewViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        if initialText != textView.text {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    @objc private func completeEditing() {
+        guard delegate != nil else {
+            onCompletion(textView.text)
+            return
+        }
+        guard delegate?.validate(text: textView.text) == true else {
+            if let errorString = delegate?.validationErrorMessage() {
+                displayErrorNotice(error: errorString)
+            }
+            return
+        }
         onCompletion(textView.text)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
+            self?.completeEditing()
+        }, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 
@@ -115,6 +154,19 @@ extension TextViewViewController: UITextViewDelegate {
         refreshPlaceholderVisibility()
     }
 }
+
+// MARK: - Error handling
+//
+private extension TextViewViewController {
+    /// Displays a Notice onscreen, indicating that the text didn't pass the validation.
+    ///
+    func displayErrorNotice(error: String) {
+        UIApplication.shared.keyWindow?.endEditing(true)
+        let notice = Notice(title: error, feedbackType: .error)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
+    }
+}
+
 
 // MARK: - Keyboard management
 //

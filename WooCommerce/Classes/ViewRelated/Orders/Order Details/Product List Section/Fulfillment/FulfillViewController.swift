@@ -346,8 +346,8 @@ private extension FulfillViewController {
             fatalError()
         }
 
-        let product = lookUpProduct(by: item.productID)
-        let viewModel = OrderItemViewModel(item: item, currency: order.currency, product: product)
+        let product = lookUpProduct(by: item.productOrVariationID)
+        let viewModel = ProductDetailsCellViewModel(item: item, currency: order.currency, product: product)
         cell.selectionStyle = .default
         cell.configure(item: viewModel, imageService: imageService)
     }

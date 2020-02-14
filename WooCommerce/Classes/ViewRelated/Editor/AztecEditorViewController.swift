@@ -6,7 +6,7 @@ import WordPressEditor
 final class AztecEditorViewController: UIViewController, Editor {
     var onContentSave: OnContentSave?
 
-    private let content: String
+    private var content: String
 
     private let viewProperties: EditorViewProperties
 
@@ -123,6 +123,10 @@ final class AztecEditorViewController: UIViewController, Editor {
 
         setHTML(content)
 
+        // getHTML() from the Rich Text View removes the HTML tags
+        // so we align the original content to the value of the Rich Text View
+        content = getHTML()
+
         refreshPlaceholderVisibility()
     }
 
@@ -218,10 +222,31 @@ private extension AztecEditorViewController {
 
 // MARK: - Navigation actions
 //
-private extension AztecEditorViewController {
-    @objc func saveButtonTapped() {
+extension AztecEditorViewController {
+    @objc private func saveButtonTapped() {
         let content = getHTML()
         onContentSave?(content)
+    }
+
+    override func shouldPopOnBackButton() -> Bool {
+        guard viewProperties.showSaveChangesActionSheet == true else {
+            return true
+        }
+
+        let editedContent = getHTML()
+        if content != editedContent {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
+            self?.saveButtonTapped()
+        }, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-10 20:21:05+0000 */
+/* Translation-Revision-Date: 2020-02-03 02:54:03+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -31,16 +31,16 @@
 "%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
 
 /* 1 Item */
-"%@ Item" = "%@ Item";
+"%@ Item" = "%@ 个项目";
 
 /* For example, '5 Items' */
-"%@ Items" = "%@ Items";
+"%@ Items" = "%@ 个项目";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ 对 %2$@ 发表了评论";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "%1$@ via %2$@";
+"%1$@ via %2$@" = "%1$@，通过 %2$@ 支付";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld有货";
@@ -51,17 +51,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld 个参数";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
-"9+" = "超过 9 个";
+/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+"99+" = "99+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "必须提供有效电子邮件地址才能发送身份验证链接。请返回上一屏幕并提供有效电子邮件地址。";
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "验证码将仅包含数字。";
-
-/* Action to add photos on the Product images screen */
-"ADD PHOTOS" = "ADD PHOTOS";
 
 /* About this app (information page title) */
 "About" = "关于";
@@ -81,6 +78,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "添加";
+
+/* Action to add photos on the Product images screen */
+"Add Photos" = "Add Photos";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -109,10 +109,10 @@
 "All reviews marked as read" = "所有评论均已标记为已读";
 
 /* Display label for the product's inventory backorders setting option */
-"Allow" = "Allow";
+"Allow" = "允许";
 
 /* Display label for the product's inventory backorders setting option */
-"Allow, but notify customer" = "Allow, but notify customer";
+"Allow, but notify customer" = "允许，但通知客户";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "马上就好！请输入验证器应用程序中的验证码。";
@@ -154,8 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "批准评论";
 
+/* Message title for Save Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "Are you sure you want to discard these changes?";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "是否确定要注销帐户 %@？";
+
+/* Message on the alert when the user taps to delete a Product image */
+"Are you sure you want to remove this image?" = "Are you sure you want to remove this image?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "正在验证";
@@ -167,7 +173,7 @@
 "Auto-managed on this site" = "已自动托管在此站点上";
 
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
-"Automatically start and end a sale" = "Automatically start and end a sale";
+"Automatically start and end a sale" = "自动开始和结束销售";
 
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
@@ -181,7 +187,7 @@
 
 /* Product backorders setting list selector navigation title
    Title of the cell in Product Inventory Settings > Backorders */
-"Backorders" = "Backorders";
+"Backorders" = "缺货";
 
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "预订：";
@@ -211,21 +217,30 @@
 /* Call phone number button title */
 "Call" = "致电";
 
+/* Error message format when capturing a unsupported media type with device camera */
+"Camera capture should not support media type: %@" = "Camera capture should not support media type: %@";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "无法请求链接";
 
-/* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
+/* Button title Cancel in Save Changes Action Sheet
+   Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "取消";
 
 /* The title of the alert when there is an error updating the product */
-"Cannot update Product" = "Cannot update Product";
+"Cannot update Product" = "无法更新产品";
+
+/* Title of the alert when there is an error uploading image(s) */
+"Cannot upload image" = "Cannot upload image";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "密切关注您喜爱的站点，并随时随地加入对话。";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "证书错误";
+
+/* Menu option for selecting media from the device's photo library. */
+"Choose from device" = "Choose from device";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集信息";
@@ -366,15 +381,18 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "尺寸：%1$@%2$@";
 
+/* Button title Discard Changes in Save Changes Action Sheet */
+"Discard changes" = "Discard changes";
+
 /* Discount label for payment view */
 "Discount" = "折扣";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "关闭";
 
 /* Display label for the product's inventory backorders setting option */
-"Do not allow" = "Do not allow";
+"Do not allow" = "不允许";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "还没有帐户？_注册_";
@@ -476,7 +494,7 @@
 "Feature Request" = "功能请求";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
-"Fill with password manager" = "Fill with password manager";
+"Fill with password manager" = "使用密码管理器填写";
 
 /* Filter the orders list. */
 "Filter orders" = "过滤订单";
@@ -488,7 +506,7 @@
 "Follower" = "粉丝";
 
 /* Title of the cell in Product Price Settings > Schedule sale From a certain date */
-"From" = "From";
+"From" = "开始日期";
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "完成订单号 (order.number)";
@@ -552,7 +570,7 @@
 "Heading 6" = "六级标题";
 
 /* Title of the cell in Product Shipping Settings > Height */
-"Height" = "Height";
+"Height" = "高度";
 
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
@@ -606,7 +624,7 @@
 "Insert Link" = "插入链接";
 
 /* The title of the alert when there is an error updating the product SKU */
-"Invalid Product SKU" = "Invalid Product SKU";
+"Invalid Product SKU" = "无效的产品 SKU";
 
 /* No comment provided by engineer. */
 "Invalid Site Address" = "无效站点地址";
@@ -650,13 +668,13 @@
 "Learn more" = "了解更多";
 
 /* Title of the cell in Product Shipping Settings > Length */
-"Length" = "Length";
+"Length" = "长度";
 
 /* Licenses (information page title) */
 "Licenses" = "许可证";
 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
-"Limit one per order" = "Limit one per order";
+"Limit one per order" = "每个订单限一个";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "达到上限。请在 1 分钟后重试。在之前重试只会导致限制时间加长。如果你认为出错了，请联系支持。";
@@ -719,7 +737,7 @@
 "Manage orders, track sales and monitor store activity with real-time alerts." = "通过实时提醒管理订单、跟踪销售情况，以及监控商店活动。";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
-"Manage stock" = "Manage stock";
+"Manage stock" = "管理库存";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "随时随地管理由 Jetpack 提供支持的站点 - 将 WordPress 装进口袋中。";
@@ -828,13 +846,13 @@
 "No revenue this period" = "此时期没有收入";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
-"No shipping classes yet" = "No shipping classes yet";
+"No shipping classes yet" = "尚无运费类";
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
-"No tax classes yet" = "No tax classes yet";
+"No tax classes yet" = "尚无税类";
 
 /* Display label for the product's tax status setting option */
-"None" = "None";
+"None" = "无";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "尚未配送";
@@ -846,7 +864,7 @@
 "Number of files:" = "文件数：";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "确定";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -886,7 +904,7 @@
 "Opens a list of available statuses." = "打开可用状态列表。";
 
 /* Placeholder of the cell text field in Product Inventory Settings > SKU */
-"Optional" = "Optional";
+"Optional" = "可选";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "可选的跟踪信息";
@@ -960,10 +978,13 @@
 "Phone number: %@" = "电话号码：%@";
 
 /* Product images (Product images page title) */
-"Photos" = "Photos";
+"Photos" = "照片";
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "选择要关联的商店";
+
+/* Product title error notice message, when the title is empty */
+"Please add a title" = "Please add a title";
 
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "请检查电子邮件";
@@ -1004,11 +1025,14 @@
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "请先注销，然后再连接到其他 wordpress.com 站点";
 
+/* Error message when an image captured by camera cannot be saved to the device Photos library */
+"Please make sure the app can access Photos in device settings" = "Please make sure the app can access Photos in device settings";
+
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "请打开电子邮件应用程序，查找来自 WordPress.com 的电子邮件。";
 
 /* Message of the in-progress UI while updating the Product remotely */
-"Please wait while we publish this product to your store" = "Please wait while we publish this product to your store";
+"Please wait while we publish this product to your store" = "我们正在将此产品发布到您的商店，请稍候";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
@@ -1048,7 +1072,7 @@
 "Products" = "产品";
 
 /* Label for computed value `product refunds + taxes = subtotal`. */
-"Products Refund" = "Products Refund";
+"Products Refund" = "产品退款";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "可选择给账单付款客户打电话还是发邮件的提示。";
@@ -1063,7 +1087,7 @@
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "在公园中发布文章，在公共汽车上写博客，在咖啡馆中发表评论，WordPress 永远都陪着您。";
 
 /* Title of the in-progress UI while updating the Product remotely */
-"Publishing your product..." = "Publishing your product...";
+"Publishing your product..." = "正在发布您的产品…";
 
 /* Product Details - purchase details section title */
 "Purchase Details" = "购买详情";
@@ -1080,7 +1104,7 @@
 "Qty" = "数量";
 
 /* Title of the cell in Product Inventory Settings > Quantity */
-"Quantity" = "Quantity";
+"Quantity" = "数量";
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "数量：%ld";
@@ -1095,29 +1119,29 @@
 "Read privacy policy" = "阅读隐私政策";
 
 /* Refund note section title */
-"Reason for Refund" = "Reason for Refund";
+"Reason for Refund" = "退款原因";
 
 /* It reads: Refund #<refund ID> */
-"Refund #%@" = "Refund #%@";
+"Refund #%@" = "退款 #%@";
 
 /* Refund Details page > Refund Details section > The label that marks the refunded amount */
-"Refund Amount" = "Refund Amount";
+"Refund Amount" = "退款金额";
 
 /* Refund Details section title */
-"Refund Details" = "Refund Details";
+"Refund Details" = "退款详细信息";
 
 /* The title for the refunded amount cell */
 "Refunded" = "已退款";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
    Refunded Products section title - Section title */
-"Refunded Products" = "Refunded Products";
+"Refunded Products" = "退款产品";
 
 /* It reads, 'Refunded manually via <payment method>' */
-"Refunded manually via %@" = "Refunded manually via %@";
+"Refunded manually via %@" = "已通过 %@ 手动退款";
 
 /* It reads, 'Refunded via <payment method>' */
-"Refunded via %@" = "Refunded via %@";
+"Refunded via %@" = "已通过 %@ 退款";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已注册的域";
@@ -1128,8 +1152,14 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "正常价格：%@";
 
+/* Confirm button on the alert when the user taps to delete a Product image */
+"Remove" = "Remove";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "删除过滤器";
+
+/* Title on the alert when the user taps to delete a Product image */
+"Remove Image" = "Remove Image";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "移除链接";
@@ -1168,10 +1198,10 @@
 "SKU" = "SKU";
 
 /* The message of the alert when there is an error updating the product SKU */
-"SKU already in use by another product" = "SKU already in use by another product";
+"SKU already in use by another product" = "SKU 已用于其他产品";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
 "SKU:" = "SKU：";
 
 /* Format of the SKU on the Inventory Settings row
@@ -1182,16 +1212,16 @@
 "SMS Sent" = "短信已发送";
 
 /* Format of the sale period on the Price Settings row */
-"Sale dates: %@" = "Sale dates: %@";
+"Sale dates: %@" = "促销日期：%@";
 
 /* Format of the sale period on the Price Settings row from a certain date */
-"Sale dates: From %@" = "Sale dates: From %@";
+"Sale dates: From %@" = "促销日期：开始于 %@";
 
 /* Format of the sale period on the Price Settings row until a certain date */
-"Sale dates: Until %@" = "Sale dates: Until %@";
+"Sale dates: Until %@" = "促销日期：截止于 %@";
 
 /* Title of the cell in Product Price Settings > Sale price */
-"Sale price" = "Sale price";
+"Sale price" = "促销价格";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "促销价格：";
@@ -1199,8 +1229,11 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "促销价格：%@";
 
+/* Button title for Save Changes Action Sheet */
+"Save changes" = "Save changes";
+
 /* Title of the cell in Product Price Settings > Schedule sale */
-"Schedule sale" = "Schedule sale";
+"Schedule sale" = "安排促销";
 
 /* Orders Search Placeholder */
 "Search all orders" = "搜索所有订单";
@@ -1258,13 +1291,13 @@
 "Shipping Providers" = "配送服务提供商";
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
-"Shipping class" = "Shipping class";
+"Shipping class" = "运费类";
 
 /* Label prefix. Example: 'Shipping class: Free Shipping' */
 "Shipping class:" = "运费类：";
 
 /* Navigation bar title of the Product shipping class selector screen */
-"Shipping classes" = "Shipping classes";
+"Shipping classes" = "运费类";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "配送详情";
@@ -1273,25 +1306,25 @@
 "Shipping notice about the order" = "关于订单的配送通知";
 
 /* Display label for the product's tax status setting option */
-"Shipping only" = "Shipping only";
+"Shipping only" = "仅限运费";
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "配送服务提供商";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
-"Show a list of refunded order items for this order." = "Show a list of refunded order items for this order.";
+"Show a list of refunded order items for this order." = "显示此订单的退款订单项列表。";
 
 /* Accessibility label for the “Show password“ button in the login page's password field. */
-"Show password" = "Show password";
+"Show password" = "显示密码";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information. */
-"Show refund details for this order." = "Show refund details for this order.";
+"Show refund details for this order." = "显示此订单的退款详细信息。";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "显示此订单的账单详细信息。";
 
 /* Accessibility value if login page's password field is displaying the password. */
-"Shown" = "Shown";
+"Shown" = "已显示";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "显示更多选项。";
@@ -1312,7 +1345,7 @@
 "Site Redirect" = "站点重定向";
 
 /* Accessibility label of the site address field shown when adding a self-hosted site. */
-"Site address" = "Site address";
+"Site address" = "站点地址";
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "站点地址至少要包含 4 个字符。";
@@ -1374,7 +1407,7 @@
 "Spam" = "发表垃圾评论";
 
 /* The name of the default Tax Class in Product Price Settings */
-"Standard rate" = "Standard rate";
+"Standard rate" = "标准税率";
 
 /* Aztec's Text Placeholder */
 "Start writing..." = "开始撰写...";
@@ -1387,7 +1420,7 @@
 
 /* Product stock status list selector navigation title
    Title of the cell in Product Inventory Settings > Stock status */
-"Stock status" = "Stock status";
+"Stock status" = "库存状态";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "库存状态：";
@@ -1439,6 +1472,9 @@
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "切换为默认字体大小";
+
+/* Menu option for taking an image or video with the device's camera. */
+"Take a photo" = "Take a photo";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "轻点以查看更多格式选项";
@@ -1495,31 +1531,25 @@
 "Tap to toggle paragraph style" = "轻点以切换段落样式";
 
 /* Tax label for a refund details view */
-"Tax" = "Tax";
+"Tax" = "税费";
 
 /* Section header title for product tax settings */
-"Tax Settings" = "Tax Settings";
+"Tax Settings" = "税设置";
 
 /* Navigation bar title of the Product tax status selector screen */
-"Tax Status" = "Tax Status";
+"Tax Status" = "税状态";
 
 /* Title of the cell in Product Price Settings > Tax class */
-"Tax class" = "Tax class";
+"Tax class" = "税类";
 
 /* Navigation bar title of the Product tax class selector screen */
-"Tax classes" = "Tax classes";
+"Tax classes" = "税类";
 
 /* Title of the cell in Product Price Settings > Tax status */
-"Tax status" = "Tax status";
-
-/* Tax label for total taxes line */
-"Tax:" = "税费：";
-
-/* Tax label for total taxes line, followed by the tax amount. */
-"Tax: %@" = "Tax: %@";
+"Tax status" = "税状态";
 
 /* Display label for the product's tax status setting option */
-"Taxable" = "Taxable";
+"Taxable" = "应纳税";
 
 /* Taxes label for payment view */
 "Taxes" = "税费";
@@ -1569,6 +1599,9 @@
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "已删除评论";
 
+/* Product price error notice message, when the sale price is higher than the regular price */
+"The sale price should be lower than the regular price." = "The sale price should be lower than the regular price.";
+
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "服务器返回空响应。通常，这表明您需要增加站点的内存限制。";
 
@@ -1595,7 +1628,7 @@
 "This Month" = "本月";
 
 /* The message of the alert when there is an error updating the product SKU */
-"This SKU is used on another product or is invalid." = "This SKU is used on another product or is invalid.";
+"This SKU is used on another product or is invalid." = "此 SKU 已用于其他产品或无效。";
 
 /* Tab selector title that shows the statistics for this week
    Top Performers section title - this week */
@@ -1632,7 +1665,7 @@
 "Title (required)" = "标题（如需要）";
 
 /* Title of the cell in Product Price Settings > Schedule sale To a certain date */
-"To" = "To";
+"To" = "结束日期";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "要创建新的 WordPress.com 帐户，请输入您的电子邮件地址。";
@@ -1777,6 +1810,9 @@
 /* No comment provided by engineer. */
 "Unknown error" = "未知错误";
 
+/* Error message when capturing a unknown media type */
+"Unknown media type" = "Unknown media type";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "无序列表";
 
@@ -1862,10 +1898,10 @@
 "View product on store" = "查看商店中的产品";
 
 /* Accessibility label for the 'View details' refund button */
-"View refund details" = "View refund details";
+"View refund details" = "查看退款详细信息";
 
 /* Accessibility label for the '<number> Products' button */
-"View refunded order items" = "View refunded order items";
+"View refunded order items" = "查看退款的订单项";
 
 /* User role badge */
 "Viewer" = "查看者";
@@ -1910,7 +1946,7 @@
 "Weeks" = "周";
 
 /* Title of the cell in Product Shipping Settings > Weight */
-"Weight" = "Weight";
+"Weight" = "重量";
 
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "重量：";
@@ -1934,13 +1970,16 @@
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "糟糕，双因素验证码无效。请仔细检查代码，然后重试！";
 
 /* Title of the cell in Product Shipping Settings > Width */
-"Width" = "Width";
+"Width" = "宽度";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS 版 WooCommerce 支持";
+
+/* Menu option for selecting media from the site's media library. */
+"WordPress Media Library" = "WordPress Media Library";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress 版本过旧。%1$@ 上的站点采用 WordPress %2$@。我们建议更新至最新版本或至少更新为 %3$@";

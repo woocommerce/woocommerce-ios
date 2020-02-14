@@ -164,10 +164,40 @@ private extension ProductPriceSettingsViewController {
 
 // MARK: - Navigation actions handling
 //
-private extension ProductPriceSettingsViewController {
-    @objc func completeUpdating() {
+extension ProductPriceSettingsViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
         let newSalePrice = salePrice == "0" ? nil : salePrice
+        let newTaxClass = taxClass?.slug == standardTaxClass.slug ? "" : taxClass?.slug
+        if regularPrice != product.regularPrice || newSalePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart ||
+            dateOnSaleEnd != product.dateOnSaleEnd || taxStatus.rawValue != product.taxStatusKey || newTaxClass != product.taxClass {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    @objc private func completeUpdating() {
+        let newSalePrice = salePrice == "0" ? nil : salePrice
+
+        // Check if the sale price is less of the regular price, else show an error.
+        if let decimalSalePrice = getDecimalPrice(salePrice), let decimalRegularPrice = getDecimalPrice(regularPrice) {
+            let comparison = decimalSalePrice.compare(decimalRegularPrice)
+            guard comparison == .orderedAscending else {
+                displaySalePriceErrorNotice()
+                return
+            }
+        }
+
         onCompletion(regularPrice, newSalePrice, dateOnSaleStart, dateOnSaleEnd, taxStatus, taxClass)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
+            self?.completeUpdating()
+        }, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
 
@@ -180,6 +210,22 @@ private extension ProductPriceSettingsViewController {
 
     func handleSalePriceChange(salePrice: String?) {
         self.salePrice = salePrice
+    }
+}
+
+// MARK: - Error handling
+//
+private extension ProductPriceSettingsViewController {
+
+    /// Displays a Notice onscreen, indicating that the sale price need to be higher than the regular price
+    ///
+    func displaySalePriceErrorNotice() {
+        UIApplication.shared.keyWindow?.endEditing(true)
+        let message = NSLocalizedString("The sale price should be lower than the regular price.",
+                                        comment: "Product price error notice message, when the sale price is higher than the regular price")
+
+        let notice = Notice(title: message, feedbackType: .error)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
@@ -457,6 +503,14 @@ private extension ProductPriceSettingsViewController {
         Section(title: nil, rows: saleScheduleRows),
         Section(title: NSLocalizedString("Tax Settings", comment: "Section header title for product tax settings"), rows: [.taxStatus, .taxClass])
         ]
+    }
+
+    func getDecimalPrice(_ price: String?) -> NSDecimalNumber? {
+        guard let price = price else {
+            return nil
+        }
+        let currencyFormatter = CurrencyFormatter()
+        return currencyFormatter.convertToDecimal(from: price)
     }
 }
 

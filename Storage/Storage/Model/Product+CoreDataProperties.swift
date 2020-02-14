@@ -66,7 +66,7 @@ extension Product {
     @NSManaged public var categories: Set<ProductCategory>?
     @NSManaged public var defaultAttributes: Set<ProductDefaultAttribute>?
     @NSManaged public var downloads: Set<ProductDownload>?
-    @NSManaged public var images: Set<ProductImage>?
+    @NSManaged public var images: NSOrderedSet?
     @NSManaged public var tags: Set<ProductTag>?
     @NSManaged public var searchResults: Set<ProductSearchResults>?
     @NSManaged public var productVariations: Set<ProductVariation>?
@@ -145,6 +145,24 @@ extension Product {
 // MARK: Generated accessors for images
 extension Product {
 
+    @objc(insertObject:inImagesAtIndex:)
+    @NSManaged public func insertIntoImages(_ value: ProductImage, at idx: Int)
+
+    @objc(removeObjectFromImagesAtIndex:)
+    @NSManaged public func removeFromImages(at idx: Int)
+
+    @objc(insertImages:atIndexes:)
+    @NSManaged public func insertIntoImages(_ values: [ProductImage], at indexes: NSIndexSet)
+
+    @objc(removeImagesAtIndexes:)
+    @NSManaged public func removeFromImages(at indexes: NSIndexSet)
+
+    @objc(replaceObjectInImagesAtIndex:withObject:)
+    @NSManaged public func replaceImages(at idx: Int, with value: ProductImage)
+
+    @objc(replaceImagesAtIndexes:withImages:)
+    @NSManaged public func replaceImages(at indexes: NSIndexSet, with values: [ProductImage])
+
     @objc(addImagesObject:)
     @NSManaged public func addToImages(_ value: ProductImage)
 
@@ -152,10 +170,10 @@ extension Product {
     @NSManaged public func removeFromImages(_ value: ProductImage)
 
     @objc(addImages:)
-    @NSManaged public func addToImages(_ values: NSSet)
+    @NSManaged public func addToImages(_ values: NSOrderedSet)
 
     @objc(removeImages:)
-    @NSManaged public func removeFromImages(_ values: NSSet)
+    @NSManaged public func removeFromImages(_ values: NSOrderedSet)
 
 }
 

@@ -133,7 +133,7 @@ private extension NewNoteViewController {
         }
 
         cell.iconImage = .asideImage
-        cell.iconTint = isCustomerNote ? .listIcon : .textSubtle
+        cell.iconTint = isCustomerNote ? .primary : .textSubtle
         cell.iconImage?.accessibilityLabel = isCustomerNote ?
             NSLocalizedString("Note to customer",
                               comment: "Spoken accessibility label for an icon image that indicates it's a note to the customer.") :

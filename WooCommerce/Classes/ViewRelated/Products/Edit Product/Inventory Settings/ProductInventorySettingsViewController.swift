@@ -5,6 +5,8 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    private let product: Product
+
     private let siteID: Int64
 
     // Editable data - shared.
@@ -26,6 +28,11 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     private var error: ProductUpdateError?
 
+    // Sku validation
+    private var skuIsValid: Bool = true
+
+    private lazy var throttler: Throttler = Throttler(seconds: 0.5)
+
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
         return keyboardFrameObserver
@@ -36,6 +43,8 @@ final class ProductInventorySettingsViewController: UIViewController {
 
     init(product: Product, completion: @escaping Completion) {
         self.onCompletion = completion
+
+        self.product = product
 
         self.siteID = product.siteID
 
@@ -152,25 +161,43 @@ private extension ProductInventorySettingsViewController {
 
 // MARK: - Navigation actions handling
 //
-private extension ProductInventorySettingsViewController {
-    @objc func completeUpdating() {
-        let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
-            guard let self = self else {
-                return
-            }
-            guard isValid else {
-                self.displayError(error: .duplicatedSKU)
-                return
-            }
+extension ProductInventorySettingsViewController {
+
+    override func shouldPopOnBackButton() -> Bool {
+        guard skuIsValid else {
+            return true
+        }
+
+        if sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually ||
+            stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting || stockStatus != product.productStockStatus {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
+
+    @objc private func completeUpdating() {
+        if skuIsValid {
             let data = ProductInventoryEditableData(sku: self.sku,
-                                                    manageStock: self.manageStockEnabled,
-                                                    soldIndividually: self.soldIndividually,
-                                                    stockQuantity: self.stockQuantity,
-                                                    backordersSetting: self.backordersSetting,
-                                                    stockStatus: self.stockStatus)
+                                            manageStock: self.manageStockEnabled,
+                                            soldIndividually: self.soldIndividually,
+                                            stockQuantity: self.stockQuantity,
+                                            backordersSetting: self.backordersSetting,
+                                            stockStatus: self.stockStatus)
             self.onCompletion(data)
         }
-        ServiceLocator.stores.dispatch(action)
+    }
+
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentSaveChangesActionSheet(viewController: self, onSave: { [weak self] in
+            self?.completeUpdating()
+        }, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
+    }
+
+    private func enableDoneButton(_ enabled: Bool) {
+        navigationItem.rightBarButtonItem?.isEnabled = enabled
     }
 }
 
@@ -179,6 +206,40 @@ private extension ProductInventorySettingsViewController {
 private extension ProductInventorySettingsViewController {
     func handleSKUChange(_ sku: String?) {
         self.sku = sku
+
+        // If the sku is identical to the old one, is always valid
+        guard sku != product.sku else {
+            skuIsValid = true
+            hideError()
+            throttler.cancel()
+            getSkuCell()?.textFieldBecomeFirstResponder()
+            enableDoneButton(true)
+            return
+        }
+
+        // Throttled API call
+        let siteID = self.siteID
+        throttler.throttle {
+            DispatchQueue.main.async {
+                let action = ProductAction.validateProductSKU(sku, siteID: siteID) { [weak self] isValid in
+                    guard let self = self else {
+                        return
+                    }
+                    self.skuIsValid = isValid
+
+                    guard isValid else {
+                        self.displayError(error: .duplicatedSKU)
+                        self.getSkuCell()?.textFieldBecomeFirstResponder()
+                        self.enableDoneButton(false)
+                        return
+                    }
+                    self.hideError()
+                    self.enableDoneButton(true)
+                }
+
+                ServiceLocator.stores.dispatch(action)
+            }
+        }
     }
 
     func handleStockQuantityChange(_ stockQuantity: String?) {
@@ -195,6 +256,14 @@ private extension ProductInventorySettingsViewController {
     func displayError(error: ProductUpdateError) {
         self.error = error
         reloadSections()
+    }
+
+    func hideError() {
+        // This check is useful so we don't reload while typing each letter in the sections
+        if error != nil {
+            error = nil
+            reloadSections()
+        }
     }
 }
 
@@ -367,6 +436,24 @@ private extension ProductInventorySettingsViewController {
 
     func rowAtIndexPath(_ indexPath: IndexPath) -> Row {
         return sections[indexPath.section].rows[indexPath.row]
+    }
+
+    func getIndexPathForRow(_ row: Row) -> IndexPath? {
+        for s in 0 ..< sections.count {
+            for r in 0 ..< sections[s].rows.count {
+                if sections[s].rows[r] == row {
+                    return IndexPath(row: r, section: s)
+                }
+            }
+        }
+        return nil
+    }
+
+    func getSkuCell() -> TitleAndTextFieldTableViewCell? {
+        guard let indexPath = getIndexPathForRow(.sku) else {
+            return nil
+        }
+        return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
     }
 }
 

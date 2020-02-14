@@ -112,7 +112,8 @@ extension ProductSettingsViewController: UITableViewDelegate {
 
         let headerID = TwoColumnSectionHeaderView.reuseIdentifier
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
-            fatalError("Unregistered \(TwoColumnSectionHeaderView.self) in UITableView")
+            assertionFailure("Unregistered \(TwoColumnSectionHeaderView.self) in UITableView")
+            return nil
         }
 
         headerView.leftText = section.title

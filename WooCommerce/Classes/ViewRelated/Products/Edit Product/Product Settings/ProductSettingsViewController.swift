@@ -110,24 +110,12 @@ extension ProductSettingsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let section = viewModel.sections[section]
 
-        var sectionTitle = ""
-        switch section {
-        case .publishSettings(let title, _):
-            sectionTitle = title
-        case .moreOptions(let title, _):
-            sectionTitle = title
-        }
-
-        guard sectionTitle.isNotEmpty else {
-            return nil
-        }
-
         let headerID = TwoColumnSectionHeaderView.reuseIdentifier
         guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: headerID) as? TwoColumnSectionHeaderView else {
             fatalError("Unregistered \(TwoColumnSectionHeaderView.self) in UITableView")
         }
 
-        headerView.leftText = sectionTitle
+        headerView.leftText = section.title
         headerView.rightText = nil
 
         return headerView

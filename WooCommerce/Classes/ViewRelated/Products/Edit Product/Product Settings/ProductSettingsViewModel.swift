@@ -68,6 +68,15 @@ extension ProductSettingsViewModel {
 // MARK: - Sections and Rows declaration
 //
 enum ProductSettingsSection {
+    var title: String {
+        switch self {
+        case .publishSettings(let title, _):
+            return title
+        case .moreOptions(let title, _):
+            return title
+        }
+    }
+
     case publishSettings(title: String, rows: [PublishSettingsRow])
     case moreOptions(title: String, rows: [MoreOptionsRow])
 

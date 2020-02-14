@@ -76,10 +76,10 @@ enum ProductSettingsSection {
             return title
         }
     }
-    
+
     var rowsCount: Int {
         switch self {
-        case .publishSettings(_ , let rows):
+        case .publishSettings(_, let rows):
             return rows.count
         case .moreOptions(_, let rows):
             return rows.count

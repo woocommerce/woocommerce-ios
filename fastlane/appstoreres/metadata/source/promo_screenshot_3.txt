@@ -1,1 +1,2 @@
-Track order status
+Review order details
+and payments

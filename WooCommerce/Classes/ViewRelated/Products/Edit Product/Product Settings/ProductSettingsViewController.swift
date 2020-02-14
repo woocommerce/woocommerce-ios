@@ -64,13 +64,7 @@ extension ProductSettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        let section = viewModel.sections[section]
-        switch section {
-        case .publishSettings( _, let rows):
-            return rows.count
-        case .moreOptions( _, let rows):
-            return rows.count
-        }
+        return viewModel.sections[section].rowsCount
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

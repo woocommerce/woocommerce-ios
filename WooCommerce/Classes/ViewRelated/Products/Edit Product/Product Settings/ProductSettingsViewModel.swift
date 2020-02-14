@@ -4,28 +4,20 @@ import Yosemite
 /// The Product Settings contains 2 sections: Publish Settings and More Options
 struct ProductSettingsViewModel {
 
-    private(set) var sections: [ProductSettingsSection] = []
+    let sections: [ProductSettingsSectionMediator]
 
     init(product: Product) {
-        configureSections(product: product)
+        sections = Self.configureSections(product)
     }
-
 }
 
 // MARK: Configure sections and rows in Product Settings
 //
 private extension ProductSettingsViewModel {
-    mutating func configureSections(product: Product) {
-        sections = [.publishSettings(title: Constants.publishFieldsTitle, rows: configurePublishSettingsRows(product)),
-        .moreOptions(title: Constants.moreOptionsTitle, rows: configureMoreOptionsRows(product))]
-    }
-
-    func configurePublishSettingsRows(_ product: Product) -> [ProductSettingsSection.PublishSettingsRow] {
-        return [.visibility(product.catalogVisibilityKey)]
-    }
-
-    func configureMoreOptionsRows(_ product: Product) -> [ProductSettingsSection.MoreOptionsRow] {
-        return [.slug(product.slug)]
+    static func configureSections(_ product: Product) -> [ProductSettingsSectionMediator] {
+        return [ProductSettingsSections.PublishSettings(product),
+                     ProductSettingsSections.MoreOptions(product)
+        ]
     }
 }
 
@@ -36,21 +28,10 @@ extension ProductSettingsViewModel {
     /// Registers all of the available TableViewCells
     ///
     func registerTableViewCells(_ tableView: UITableView) {
-        sections.forEach { section in
-            switch section {
-            case .publishSettings( _, let rows):
-                rows.forEach { row in
-                    row.cellTypes.forEach { cellType in
-                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
-                    }
-                }
-            case .moreOptions( _, let rows):
-                rows.forEach { row in
-                    row.cellTypes.forEach { cellType in
-                        tableView.register(cellType.loadNib(), forCellReuseIdentifier: cellType.reuseIdentifier)
-                    }
-                }
-            }
+        sections.flatMap {
+            $0.rows.flatMap { $0.cellTypes }
+        }.forEach {
+            tableView.register($0.loadNib(), forCellReuseIdentifier: $0.reuseIdentifier)
         }
     }
 
@@ -65,99 +46,112 @@ extension ProductSettingsViewModel {
     }
 }
 
+// MARK: - Mediators Protocols
+//
+/// Encapsulates configuration and interaction of a UITableView section header.
+protocol ProductSettingsSectionMediator {
+    var title: String { get }
+    var rows: [ProductSettingsRowMediator] { get }
+
+    init(_ product: Product)
+}
+
+/// Encapsulates configuration and interaction of a UITableView row.
+protocol ProductSettingsRowMediator {
+
+        /// Update the cell UI and bind to events if needed.
+        func configure(cell: UITableViewCell)
+
+        /// Show a reusable ViewController like AztecEditorViewController.
+        ///
+        func handleTap(sourceViewController: UIViewController)
+
+        var reuseIdentifier: String { get }
+
+        /// A table row could be presented by different `UITableViewCell` types, depending on the state.
+        var cellTypes: [UITableViewCell.Type] { get }
+
+        init(_ product: Product)
+}
+
+
 // MARK: - Sections and Rows declaration
 //
-enum ProductSettingsSection {
-    var title: String {
-        switch self {
-        case .publishSettings(let title, _):
-            return title
-        case .moreOptions(let title, _):
-            return title
+enum ProductSettingsSections {
+    /// Publish Settings section
+    struct PublishSettings: ProductSettingsSectionMediator {
+        let title = NSLocalizedString("Publish Settings", comment: "Title of the Publish Settings section on Product Settings screen")
+
+        let rows: [ProductSettingsRowMediator]
+
+        init(_ product: Product) {
+            rows = [ProductSettingsRows.Visibility(product)]
         }
     }
 
-    var rowsCount: Int {
-        switch self {
-        case .publishSettings(_, let rows):
-            return rows.count
-        case .moreOptions(_, let rows):
-            return rows.count
-        }
-    }
+    /// More Settings section
+    struct MoreOptions: ProductSettingsSectionMediator {
+        let title = NSLocalizedString("More Options", comment: "Title of the More Options section on Product Settings screen")
 
-    case publishSettings(title: String, rows: [PublishSettingsRow])
-    case moreOptions(title: String, rows: [MoreOptionsRow])
+        let rows: [ProductSettingsRowMediator]
 
-    enum PublishSettingsRow {
-        case visibility(_ visibility: String?)
-    }
-
-    enum MoreOptionsRow {
-        case slug(_ slug: String?)
-    }
-}
-
-extension ProductSettingsSection {
-    func reuseIdentifier(at rowIndex: Int) -> String {
-        switch self {
-        case .publishSettings( _, let rows):
-            let row = rows[rowIndex]
-            return row.reuseIdentifier
-        case .moreOptions( _, let rows):
-            let row = rows[rowIndex]
-            return row.reuseIdentifier
+        init(_ product: Product) {
+            rows = [ProductSettingsRows.Slug(product)]
         }
     }
 }
 
-extension ProductSettingsSection.PublishSettingsRow: ReusableTableRow {
-    var cellTypes: [UITableViewCell.Type] {
-        switch self {
-        case .visibility:
-            return [BasicTableViewCell.self]
+enum ProductSettingsRows {
+
+    struct Visibility: ProductSettingsRowMediator {
+        private var product: Product
+
+        init(_ product: Product) {
+            self.product = product
         }
-    }
 
-    var reuseIdentifier: String {
-        return cellType.reuseIdentifier
-    }
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? BasicTableViewCell else {
+                return
+            }
 
-    private var cellType: UITableViewCell.Type {
-        switch self {
-        case .visibility:
-            return BasicTableViewCell.self
+            cell.textLabel?.text = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
+            cell.detailTextLabel?.text = product.catalogVisibilityKey
+            cell.accessoryType = .disclosureIndicator
         }
-    }
-}
 
-extension ProductSettingsSection.MoreOptionsRow: ReusableTableRow {
-    var cellTypes: [UITableViewCell.Type] {
-        switch self {
-        case .slug:
-            return [BasicTableViewCell.self]
+        func handleTap(sourceViewController: UIViewController) {
+            // TODO: Show a VC
         }
+
+        let reuseIdentifier: String = BasicTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [BasicTableViewCell.self]
     }
 
-    var reuseIdentifier: String {
-        return cellType.reuseIdentifier
-    }
+    struct Slug: ProductSettingsRowMediator {
+        private var product: Product
 
-    private var cellType: UITableViewCell.Type {
-        switch self {
-        case .slug:
-            return BasicTableViewCell.self
+        init(_ product: Product) {
+            self.product = product
         }
-    }
-}
 
-// MARK: - Constants
-//
-private extension ProductSettingsViewModel {
-    enum Constants {
-        static let publishFieldsTitle = NSLocalizedString("Publish Settings",
-                                                          comment: "Title of the Publish Settings section on Product Settings screen")
-        static let moreOptionsTitle = NSLocalizedString("More Options",
-                                                        comment: "Title of the More Options section on Product Settings screen")
+        func configure(cell: UITableViewCell) {
+            guard let cell = cell as? BasicTableViewCell else {
+                return
+            }
+
+            cell.textLabel?.text = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
+            cell.detailTextLabel?.text = product.slug
+            cell.accessoryType = .disclosureIndicator
+        }
+
+        func handleTap(sourceViewController: UIViewController) {
+            // TODO: Show a VC
+        }
+
+        let reuseIdentifier: String = BasicTableViewCell.reuseIdentifier
+
+        let cellTypes: [UITableViewCell.Type] = [BasicTableViewCell.self]
     }
 }

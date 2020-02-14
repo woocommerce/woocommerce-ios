@@ -62,24 +62,18 @@ extension ProductSettingsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return viewModel.sections[section].rowsCount
+        return viewModel.sections[section].rows.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let section = viewModel.sections[indexPath.section]
-        let reuseIdentifier = section.reuseIdentifier(at: indexPath.row)
-        let cell = tableView.dequeueReusableCell(withIdentifier: reuseIdentifier, for: indexPath)
-        configure(cell, section: section, indexPath: indexPath)
-        return cell
-    }
+        let row = section.rows[indexPath.row]
 
-    func configure(_ cell: UITableViewCell, section: ProductSettingsSection, indexPath: IndexPath) {
-        switch section {
-        case .publishSettings( _, let rows):
-            configureCellInPublishSettingsSection(cell, row: rows[indexPath.row])
-        case .moreOptions( _, let rows):
-            configureCellInMoreOptionsSection(cell, row: rows[indexPath.row])
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: row.reuseIdentifier, for: indexPath)
+
+        row.configure(cell: cell)
+
+        return cell
     }
 }
 
@@ -112,48 +106,5 @@ extension ProductSettingsViewController: UITableViewDelegate {
         headerView.rightText = nil
 
         return headerView
-    }
-}
-
-
-// MARK: Configure rows in Publish Settings Section
-//
-private extension ProductSettingsViewController {
-    func configureCellInPublishSettingsSection(_ cell: UITableViewCell, row: ProductSettingsSection.PublishSettingsRow) {
-        switch row {
-        case .visibility(let visibility):
-            configureVisibilityCell(cell: cell, visibility: visibility)
-        }
-    }
-
-    func configureVisibilityCell(cell: UITableViewCell, visibility: String?) {
-        guard let cell = cell as? BasicTableViewCell else {
-            fatalError()
-        }
-
-        cell.textLabel?.text = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
-        cell.detailTextLabel?.text = visibility
-        cell.accessoryType = .disclosureIndicator
-    }
-}
-
-// MARK: Configure rows in More Options Section
-//
-private extension ProductSettingsViewController {
-    func configureCellInMoreOptionsSection(_ cell: UITableViewCell, row: ProductSettingsSection.MoreOptionsRow) {
-        switch row {
-        case .slug(let slug):
-            configureSlugCell(cell: cell, slug: slug)
-        }
-    }
-
-    func configureSlugCell(cell: UITableViewCell, slug: String?) {
-        guard let cell = cell as? BasicTableViewCell else {
-            fatalError()
-        }
-
-        cell.textLabel?.text = NSLocalizedString("Slug", comment: "Slug label in Product Settings")
-        cell.detailTextLabel?.text = slug
-        cell.accessoryType = .disclosureIndicator
     }
 }

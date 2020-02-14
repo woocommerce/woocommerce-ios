@@ -50,8 +50,6 @@ private extension ProductSettingsViewController {
 
         tableView.backgroundColor = .listBackground
         tableView.removeLastCellSeparator()
-
-        tableView.reloadData()
     }
 }
 

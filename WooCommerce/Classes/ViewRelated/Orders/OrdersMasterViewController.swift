@@ -15,10 +15,6 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
 
     init() {
         super.init(nibName: Self.nibName, bundle: nil)
-
-        title = NSLocalizedString("Orders", comment: "The title of the Orders tab.")
-
-        configureTabBarItem()
     }
 
     required init?(coder: NSCoder) {
@@ -29,7 +25,6 @@ final class OrdersMasterViewController: ButtonBarPagerTabStripViewController {
         // `configureTabStrip` must be called before `super.viewDidLoad()` or else the selection
         // highlight will be black. ¯\_(ツ)_/¯
         configureTabStrip()
-        configureNavigationButtons()
 
         super.viewDidLoad()
 
@@ -141,22 +136,6 @@ private extension OrdersMasterViewController {
         }
     }
 
-    /// Set up properties for `self` as a root tab bar controller.
-    ///
-    func configureTabBarItem() {
-        tabBarItem.title = title
-        tabBarItem.image = .pagesImage
-        tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
-    }
-
-    /// For `viewDidLoad` only, set up `navigationItem` buttons.
-    ///
-    func configureNavigationButtons() {
-        navigationItem.leftBarButtonItem = createSearchBarButtonItem()
-
-        removeNavigationBackBarButtonText()
-    }
-
     enum TabStripDimensions {
         static let buttonLeftRightMargin: CGFloat   = 14.0
         static let selectedBarHeight: CGFloat       = 3.0
@@ -165,7 +144,7 @@ private extension OrdersMasterViewController {
 
 // MARK: - Creators
 
-private extension OrdersMasterViewController {
+extension OrdersMasterViewController {
     /// Create a `UIBarButtonItem` to be used as the search button on the top-left.
     ///
     func createSearchBarButtonItem() -> UIBarButtonItem {

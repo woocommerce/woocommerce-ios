@@ -10,6 +10,8 @@
 - Order Details & Product UI: if a Product name has HTML escape characters, they should be decoded in the app.
 - Order Details: if the Order has multiple Products, tapping on any Product should open the same Product now.
 - bugfix: the orders badge on tab bar now is correctly refreshed after switching to a store with badge count equal to zero.
+- The orders tab now localizes item quantities and the order badge.
+
 
 3.5
 -----

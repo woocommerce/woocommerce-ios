@@ -39,11 +39,15 @@ class PeriodDataViewController: UIViewController {
 
     private var lastUpdatedDate: Date?
 
+    private var revenueItems: [Double] {
+        return orderStats?.items?.map({ $0.grossSales }) ?? []
+    }
+
     private var yAxisMinimum: String {
         guard let orderStats = orderStats else {
             return ""
         }
-        let min = orderStats.items?.map({ $0.grossSales }).min() ?? 0
+        let min = revenueItems.min() ?? 0
         return CurrencyFormatter().formatHumanReadableAmount(String(min), with: orderStats.currencyCode) ?? ""
     }
 
@@ -51,7 +55,7 @@ class PeriodDataViewController: UIViewController {
         guard let orderStats = orderStats else {
             return ""
         }
-        let max = orderStats.items?.map({ $0.grossSales }).max() ?? 0
+        let max = revenueItems.max() ?? 0
         return CurrencyFormatter().formatHumanReadableAmount(String(max), with: orderStats.currencyCode) ?? ""
     }
 

@@ -76,15 +76,19 @@ class StoreStatsV4PeriodViewController: UIViewController {
         return CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
     }
 
+    private var revenueItems: [Double] {
+        return orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
+    }
+
     private var yAxisMinimum: String {
-        let min = orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue }).min() ?? 0
+        let min = revenueItems.min() ?? 0
         return CurrencyFormatter().formatHumanReadableAmount(String(min),
                                                              with: currencyCode,
                                                              roundSmallNumbers: false) ?? String()
     }
 
     private var yAxisMaximum: String {
-        let max = orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue }).max() ?? 0
+        let max = revenueItems.max() ?? 0
         return CurrencyFormatter().formatHumanReadableAmount(String(max),
                                                              with: currencyCode,
                                                              roundSmallNumbers: false) ?? String()

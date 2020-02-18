@@ -1,6 +1,7 @@
 3.7
 -----
 - Dashboard: now tapping on a product on "Top Performers" section open the product detail
+- Dashboard stats: any negative revenue (from refunds for example) for a time period should be shown now.
 
 3.6
 -----

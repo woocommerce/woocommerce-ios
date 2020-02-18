@@ -38,8 +38,23 @@ class PeriodDataViewController: UIViewController {
     @IBOutlet private weak var chartAccessibilityView: UIView!
 
     private var lastUpdatedDate: Date?
-    private var yAxisMinimum: String = Constants.chartYAxisMinimum.humanReadableString()
-    private var yAxisMaximum: String = ""
+
+    private var yAxisMinimum: String {
+        guard let orderStats = orderStats else {
+            return ""
+        }
+        let min = orderStats.items?.map({ $0.grossSales }).min() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(min), with: orderStats.currencyCode) ?? ""
+    }
+
+    private var yAxisMaximum: String {
+        guard let orderStats = orderStats else {
+            return ""
+        }
+        let max = orderStats.items?.map({ $0.grossSales }).max() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(max), with: orderStats.currencyCode) ?? ""
+    }
+
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
@@ -367,8 +382,7 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 // Do not show the "0" label on the Y axis
                 return ""
             } else {
-                yAxisMaximum = value.humanReadableString()
-                return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
+                return CurrencyFormatter().formatCurrency(using: value.humanReadableString(),
                                                           at: CurrencySettings.shared.currencyPosition,
                                                           with: currencySymbol,
                                                           isNegative: value.sign == .minus)
@@ -629,6 +643,5 @@ private extension PeriodDataViewController {
         static let chartMarkerArrowSize: CGSize         = CGSize(width: 8, height: 6)
 
         static let chartXAxisGranularity: Double        = 1.0
-        static let chartYAxisMinimum: Double            = 0.0
     }
 }

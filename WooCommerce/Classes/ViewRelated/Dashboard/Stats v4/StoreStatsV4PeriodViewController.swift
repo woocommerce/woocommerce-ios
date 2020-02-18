@@ -707,7 +707,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func hasRevenue() -> Bool {
-        return orderStatsIntervals.map({ $0.revenueValue != 0 }).contains(true)
+        return revenueItems.map({ $0 != 0 }).contains(true)
     }
 
     func reloadLastUpdatedField() {

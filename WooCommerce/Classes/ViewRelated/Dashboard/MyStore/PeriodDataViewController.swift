@@ -301,7 +301,6 @@ private extension PeriodDataViewController {
         yAxis.drawGridLinesEnabled = true
         yAxis.drawAxisLineEnabled = false
         yAxis.drawZeroLineEnabled = true
-        yAxis.axisMinimum = Constants.chartYAxisMinimum
         yAxis.valueFormatter = self
         yAxis.setLabelCount(3, force: true)
     }

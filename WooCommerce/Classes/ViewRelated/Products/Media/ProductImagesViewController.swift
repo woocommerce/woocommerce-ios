@@ -36,13 +36,18 @@ final class ProductImagesViewController: UIViewController {
     // Child view controller.
     private lazy var imagesViewController: ProductImagesCollectionViewController = {
         let viewController = ProductImagesCollectionViewController(imageStatuses: productImageStatuses,
-                                                                   onDeletion: onDeletion)
+                                                                   onDeletion: { [weak self] productImage in
+                                                                    self?.onDeletion(productImage: productImage)
+        })
         return viewController
     }()
 
     private lazy var mediaPickingCoordinator: MediaPickingCoordinator = {
-        return MediaPickingCoordinator(onCameraCaptureCompletion: self.onCameraCaptureCompletion,
-                                       onDeviceMediaLibraryPickerCompletion: self.onDeviceMediaLibraryPickerCompletion(assets:))
+        return MediaPickingCoordinator(onCameraCaptureCompletion: { [weak self] asset, error in
+            self?.onCameraCaptureCompletion(asset: asset, error: error)
+            }, onDeviceMediaLibraryPickerCompletion: { [weak self] assets in
+                self?.onDeviceMediaLibraryPickerCompletion(assets: assets)
+        })
     }()
 
     private let onCompletion: Completion
@@ -205,11 +210,11 @@ private extension ProductImagesViewController {
     func addMediaToProduct(mediaItems: [Media]) {
         let newProductImageStatuses = mediaItems.map({
             ProductImage(imageID: $0.mediaID,
-            dateCreated: Date(),
-            dateModified: nil,
-            src: $0.src,
-            name: $0.name,
-            alt: $0.alt)
+                         dateCreated: Date(),
+                         dateModified: nil,
+                         src: $0.src,
+                         name: $0.name,
+                         alt: $0.alt)
         }).map({ ProductImageStatus.remote(image: $0) })
         self.productImageStatuses = newProductImageStatuses + productImageStatuses
     }

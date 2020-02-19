@@ -10,7 +10,9 @@ final class ProductFormViewController: UIViewController {
         didSet {
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
-            tableViewDataSource.configureActions(onAddImage: showProductImages)
+            tableViewDataSource.configureActions(onAddImage: { [weak self] in
+                self?.showProductImages()
+            })
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
         }
@@ -31,7 +33,9 @@ final class ProductFormViewController: UIViewController {
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
-        tableViewDataSource.configureActions(onAddImage: showProductImages)
+        tableViewDataSource.configureActions(onAddImage: { [weak self] in
+            self?.showProductImages()
+        })
     }
 
     required init?(coder: NSCoder) {

@@ -9,7 +9,11 @@ final class MockPHImageManager: PHImageManager {
         self.imagesByAsset = imagesByAsset
     }
 
-    override func requestImage(for asset: PHAsset, targetSize: CGSize, contentMode: PHImageContentMode, options: PHImageRequestOptions?, resultHandler: @escaping (UIImage?, [AnyHashable : Any]?) -> Void) -> PHImageRequestID {
+    override func requestImage(for asset: PHAsset,
+                               targetSize: CGSize,
+                               contentMode: PHImageContentMode,
+                               options: PHImageRequestOptions?,
+                               resultHandler: @escaping (UIImage?, [AnyHashable: Any]?) -> Void) -> PHImageRequestID {
         resultHandler(imagesByAsset[asset], nil)
         return 0
     }

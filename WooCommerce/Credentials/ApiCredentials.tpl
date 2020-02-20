@@ -45,9 +45,4 @@ struct ApiCredentials {
     /// Zendesk Client ID
     ///
     static let zendeskClientId = "%{zendesk_client_id}"
-
-    /// Screenshot Credentials
-    ///
-    static let screenshotEmailAddress = "%{screenshots_username}"
-    static let screenshotPassword = "%{screenshots_password}"
 }

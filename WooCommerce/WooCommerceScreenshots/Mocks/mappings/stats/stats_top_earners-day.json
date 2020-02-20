@@ -1,0 +1,50 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/wpcom/v2/sites/161477129/stats/top-earners/",
+        "queryParameters": {
+            "unit": {
+                "equalTo": "day"
+            },
+            "limit": {
+                "matches": "[0-9]+"
+            },
+            "date": {
+                "matches": "(.*)"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "date": "{{now format='yyyy-MM-dd'}}",
+            "unit": "day",
+            "limit": "3",
+            "data": [{
+                "ID": 2130,
+                "name": "Black Coral shades",
+                "total": 450,
+                "quantity": 3,
+                "price": 150,
+                "image": "https:\/\/automatticwidgets.com\/wp-content\/uploads\/2020\/01\/Mask-Group-1.png?w=201",
+                "currency": "USD"
+            }, {
+                "ID": 2123,
+                "name": "Malaya shades",
+                "total": 140,
+                "quantity": 1,
+                "price": 140,
+                "image": "https:\/\/automatticwidgets.com\/wp-content\/uploads\/2020\/01\/Mask-Group.png?w=201",
+                "currency": "USD"
+            }, {
+                "ID": 2132,
+                "name": "Rose Gold shades",
+                "total": 120,
+                "quantity": 1,
+                "price": 120,
+                "image": "https:\/\/automatticwidgets.com\/wp-content\/uploads\/2020\/01\/annie-theby-FlP6C5pkMKs-unsplash.png?w=201",
+                "currency": "USD"
+            }]
+        }
+    }
+}

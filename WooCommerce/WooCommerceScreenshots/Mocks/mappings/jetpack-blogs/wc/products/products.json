@@ -1,0 +1,228 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "matches": "/wc/v3/products(.*)"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": [{
+                "id": 2132,
+                "name": "Rose Gold shades",
+                "slug": "rose-gold-shades",
+                "permalink": "https:\/\/automatticwidgets.com\/product\/rose-gold-shades\/",
+                "date_created": "2020-01-28T09:54:59",
+                "date_created_gmt": "2020-01-28T09:54:59",
+                "date_modified": "2020-01-28T16:43:16",
+                "date_modified_gmt": "2020-01-28T16:43:16",
+                "type": "simple",
+                "status": "publish",
+                "featured": false,
+                "catalog_visibility": "visible",
+                "description": "",
+                "short_description": "",
+                "sku": "",
+                "price": "120",
+                "regular_price": "120",
+                "sale_price": "",
+                "date_on_sale_from": null,
+                "date_on_sale_from_gmt": null,
+                "date_on_sale_to": null,
+                "date_on_sale_to_gmt": null,
+                "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>120.00<\/span>",
+                "on_sale": false,
+                "purchasable": true,
+                "total_sales": 3,
+                "virtual": false,
+                "downloadable": false,
+                "downloads": [],
+                "download_limit": -1,
+                "download_expiry": -1,
+                "external_url": "",
+                "button_text": "",
+                "tax_status": "taxable",
+                "tax_class": "",
+                "manage_stock": false,
+                "stock_quantity": null,
+                "stock_status": "outofstock",
+                "backorders": "no",
+                "backorders_allowed": false,
+                "backordered": false,
+                "sold_individually": false,
+                "weight": "",
+                "dimensions": {
+                    "length": "",
+                    "width": "",
+                    "height": ""
+                },
+                "shipping_required": true,
+                "shipping_taxable": true,
+                "shipping_class": "",
+                "shipping_class_id": 0,
+                "reviews_allowed": true,
+                "average_rating": "5.00",
+                "rating_count": 1,
+                "related_ids": [],
+                "upsell_ids": [],
+                "cross_sell_ids": [],
+                "parent_id": 0,
+                "purchase_note": "",
+                "categories": [],
+                "tags": [],
+                "images": [{
+                    "id": 2124,
+                    "date_created": "2020-01-28T09:52:54",
+                    "date_created_gmt": "2020-01-28T09:52:54",
+                    "date_modified": "2020-01-28T09:52:54",
+                    "date_modified_gmt": "2020-01-28T09:52:54",
+                    "src": "https:\/\/i1.wp.com\/automatticwidgets.com\/wp-content\/uploads\/2020\/01\/annie-theby-FlP6C5pkMKs-unsplash.png?fit=201%2C201&ssl=1",
+                    "name": "annie-theby-FlP6C5pkMKs-unsplash",
+                    "alt": ""
+                }],
+                "attributes": [],
+                "default_attributes": [],
+                "variations": [],
+                "grouped_products": [],
+                "menu_order": 0,
+                "meta_data": [{
+                    "id": 2662,
+                    "key": "_product_addons",
+                    "value": []
+                }, {
+                    "id": 2663,
+                    "key": "_product_addons_exclude_global",
+                    "value": "0"
+                }, {
+                    "id": 2679,
+                    "key": "_wpas_done_all",
+                    "value": "1"
+                }],
+                "jetpack_publicize_connections": [],
+                "jetpack_likes_enabled": false,
+                "jetpack_sharing_enabled": true,
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2132"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products"
+                    }]
+                }
+            }, {
+                "id": 2130,
+                "name": "Black Coral shades",
+                "slug": "black-coral-shades",
+                "permalink": "https:\/\/automatticwidgets.com\/product\/black-coral-shades\/",
+                "date_created": "2020-01-28T09:54:00",
+                "date_created_gmt": "2020-01-28T09:54:00",
+                "date_modified": "2020-01-28T16:43:38",
+                "date_modified_gmt": "2020-01-28T16:43:38",
+                "type": "simple",
+                "status": "publish",
+                "featured": false,
+                "catalog_visibility": "visible",
+                "description": "",
+                "short_description": "",
+                "sku": "",
+                "price": "150",
+                "regular_price": "150",
+                "sale_price": "",
+                "date_on_sale_from": null,
+                "date_on_sale_from_gmt": null,
+                "date_on_sale_to": null,
+                "date_on_sale_to_gmt": null,
+                "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#36;<\/span>150.00<\/span>",
+                "on_sale": false,
+                "purchasable": true,
+                "total_sales": 18,
+                "virtual": false,
+                "downloadable": false,
+                "downloads": [],
+                "download_limit": -1,
+                "download_expiry": -1,
+                "external_url": "",
+                "button_text": "",
+                "tax_status": "taxable",
+                "tax_class": "",
+                "manage_stock": false,
+                "stock_quantity": null,
+                "stock_status": "onbackorder",
+                "backorders": "no",
+                "backorders_allowed": false,
+                "backordered": true,
+                "sold_individually": false,
+                "weight": "",
+                "dimensions": {
+                    "length": "",
+                    "width": "",
+                    "height": ""
+                },
+                "shipping_required": true,
+                "shipping_taxable": true,
+                "shipping_class": "",
+                "shipping_class_id": 0,
+                "reviews_allowed": true,
+                "average_rating": "5.00",
+                "rating_count": 2,
+                "related_ids": [],
+                "upsell_ids": [],
+                "cross_sell_ids": [],
+                "parent_id": 0,
+                "purchase_note": "",
+                "categories": [],
+                "tags": [],
+                "images": [{
+                    "id": 2126,
+                    "date_created": "2020-01-28T09:52:57",
+                    "date_created_gmt": "2020-01-28T09:52:57",
+                    "date_modified": "2020-01-28T09:52:57",
+                    "date_modified_gmt": "2020-01-28T09:52:57",
+                    "src": "https:\/\/i0.wp.com\/automatticwidgets.com\/wp-content\/uploads\/2020\/01\/Mask-Group-1.png?fit=201%2C201&ssl=1",
+                    "name": "Mask Group-1",
+                    "alt": ""
+                }],
+                "attributes": [],
+                "default_attributes": [],
+                "variations": [],
+                "grouped_products": [],
+                "menu_order": 0,
+                "meta_data": [{
+                    "id": 2618,
+                    "key": "_product_addons",
+                    "value": []
+                }, {
+                    "id": 2619,
+                    "key": "_product_addons_exclude_global",
+                    "value": "0"
+                }, {
+                    "id": 2635,
+                    "key": "_wpas_done_all",
+                    "value": "1"
+                }],
+                "jetpack_publicize_connections": [],
+                "jetpack_likes_enabled": false,
+                "jetpack_sharing_enabled": true,
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2130"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products"
+                    }]
+                }
+            }]
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

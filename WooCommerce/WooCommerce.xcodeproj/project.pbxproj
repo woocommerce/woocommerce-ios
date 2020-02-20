@@ -464,9 +464,7 @@
 		CCDC49EA2400011F003166BA /* PeriodStatsTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997174823DC0A7800592D8E /* PeriodStatsTable.swift */; };
 		CCDC49EB2400011F003166BA /* TabNavComponent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997172F23DBCEB200592D8E /* TabNavComponent.swift */; };
 		CCDC49ED24000533003166BA /* TestCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49EC24000533003166BA /* TestCredentials.swift */; };
-		CCDC49F0240009B2003166BA /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49EF240009B2003166BA /* SettingsScreen.swift */; };
 		CCDC49F324007BD3003166BA /* XCTest+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997173223DBCF2800592D8E /* XCTest+Extensions.swift */; };
-		CCDC49F424007BE2003166BA /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCDC49EF240009B2003166BA /* SettingsScreen.swift */; };
 		CCFC00B523E9BD1500157A78 /* ScreenshotCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CCFC00B423E9BD1500157A78 /* ScreenshotCredentials.swift */; };
 		CCFC00EE23E9BD5500157A78 /* oauth2_token.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00BC23E9BD5500157A78 /* oauth2_token.json */; };
 		CCFC00EF23E9BD5500157A78 /* auth_options.json in Resources */ = {isa = PBXBuildFile; fileRef = CCFC00BD23E9BD5500157A78 /* auth_options.json */; };
@@ -673,6 +671,14 @@
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
 		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
 		D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F82AC422AF903700B67E4B /* IconsTests.swift */; };
+		F93E8E5324087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
+		F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */; };
+		F93E8E5524087FDA0057FF21 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */; };
+		F93E8E5624087FDA0057FF21 /* SettingsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */; };
+		F93E8E5924087FE10057FF21 /* ProductsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5724087FE10057FF21 /* ProductsScreen.swift */; };
+		F93E8E5A24087FE10057FF21 /* ProductsScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5724087FE10057FF21 /* ProductsScreen.swift */; };
+		F93E8E5B24087FE10057FF21 /* SingleProductScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5824087FE10057FF21 /* SingleProductScreen.swift */; };
+		F93E8E5C24087FE10057FF21 /* SingleProductScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F93E8E5824087FE10057FF21 /* SingleProductScreen.swift */; };
 		F997170523DBB97500592D8E /* WooCommerceScreenshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997170423DBB97500592D8E /* WooCommerceScreenshots.swift */; };
 		F997172223DBCD6100592D8E /* LoginUsernamePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997171923DBCD6000592D8E /* LoginUsernamePasswordScreen.swift */; };
 		F997172323DBCD6100592D8E /* LoginPasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997171A23DBCD6000592D8E /* LoginPasswordScreen.swift */; };
@@ -1209,7 +1215,6 @@
 		CCDC49CC23FFFFF4003166BA /* LoginTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginTests.swift; sourceTree = "<group>"; };
 		CCDC49CE23FFFFF4003166BA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		CCDC49EC24000533003166BA /* TestCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TestCredentials.swift; sourceTree = "<group>"; };
-		CCDC49EF240009B2003166BA /* SettingsScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
 		CCDC49F1240060F3003166BA /* UnitTests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = UnitTests.xctestplan; path = "/Users/rachel/Documents/a8c/Woo/woocommerce-ios/WooCommerce/WooCommerceTests/UnitTests.xctestplan"; sourceTree = "<absolute>"; };
 		CCDC49F224006130003166BA /* UITests.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; name = UITests.xctestplan; path = WooCommerceUITests/UITests.xctestplan; sourceTree = SOURCE_ROOT; };
 		CCFC00B423E9BD1500157A78 /* ScreenshotCredentials.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScreenshotCredentials.swift; sourceTree = "<group>"; };
@@ -1421,6 +1426,10 @@
 		D8D15F84230A18AB00D48B3F /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
+		F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BetaFeaturesScreen.swift; sourceTree = "<group>"; };
+		F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SettingsScreen.swift; sourceTree = "<group>"; };
+		F93E8E5724087FE10057FF21 /* ProductsScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProductsScreen.swift; sourceTree = "<group>"; };
+		F93E8E5824087FE10057FF21 /* SingleProductScreen.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SingleProductScreen.swift; sourceTree = "<group>"; };
 		F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F997170423DBB97500592D8E /* WooCommerceScreenshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceScreenshots.swift; sourceTree = "<group>"; };
 		F997170623DBB97500592D8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2605,7 +2614,6 @@
 			children = (
 				F997172D23DBCDE900592D8E /* MyStoreScreen.swift */,
 				F997174823DC0A7800592D8E /* PeriodStatsTable.swift */,
-				CCDC49EF240009B2003166BA /* SettingsScreen.swift */,
 			);
 			path = MyStore;
 			sourceTree = "<group>";
@@ -3287,6 +3295,8 @@
 				F997173B23DBFBB200592D8E /* Orders */,
 				F997174023DC005B00592D8E /* Reviews */,
 				F997171823DBCD5700592D8E /* Login */,
+				F9BB249623F4B1C60068A420 /* Products */,
+				F9BB249923F501FB0068A420 /* Settings */,
 				F997172B23DBCD8E00592D8E /* BaseScreen.swift */,
 				F997172F23DBCEB200592D8E /* TabNavComponent.swift */,
 			);
@@ -3334,6 +3344,24 @@
 				F997174123DC006F00592D8E /* SingleReviewScreen.swift */,
 			);
 			path = Reviews;
+			sourceTree = "<group>";
+		};
+		F9BB249623F4B1C60068A420 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F93E8E5724087FE10057FF21 /* ProductsScreen.swift */,
+				F93E8E5824087FE10057FF21 /* SingleProductScreen.swift */,
+			);
+			path = Products;
+			sourceTree = "<group>";
+		};
+		F9BB249923F501FB0068A420 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				F93E8E5124087FDA0057FF21 /* BetaFeaturesScreen.swift */,
+				F93E8E5224087FDA0057FF21 /* SettingsScreen.swift */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -4352,9 +4380,12 @@
 			buildActionMask = 2147483647;
 			files = (
 				CCDC49DA2400011F003166BA /* MyStoreScreen.swift in Sources */,
-				CCDC49F0240009B2003166BA /* SettingsScreen.swift in Sources */,
 				CCDC49DB2400011F003166BA /* OrdersScreen.swift in Sources */,
+				F93E8E5C24087FE10057FF21 /* SingleProductScreen.swift in Sources */,
+				F93E8E5A24087FE10057FF21 /* ProductsScreen.swift in Sources */,
 				CCDC49DC2400011F003166BA /* SingleOrderScreen.swift in Sources */,
+				F93E8E5424087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */,
+				F93E8E5624087FDA0057FF21 /* SettingsScreen.swift in Sources */,
 				CCDC49DD2400011F003166BA /* OrderSearchScreen.swift in Sources */,
 				CCDC49DE2400011F003166BA /* ReviewsScreen.swift in Sources */,
 				CCDC49DF2400011F003166BA /* SingleReviewScreen.swift in Sources */,
@@ -4382,9 +4413,9 @@
 				F997173723DBF02400592D8E /* SingleOrderScreen.swift in Sources */,
 				F997172623DBCD6100592D8E /* LinkOrPasswordScreen.swift in Sources */,
 				F997174B23DC10B300592D8E /* SnapshotHelper.swift in Sources */,
+				F93E8E5524087FDA0057FF21 /* SettingsScreen.swift in Sources */,
 				F997172323DBCD6100592D8E /* LoginPasswordScreen.swift in Sources */,
 				CCDC49F324007BD3003166BA /* XCTest+Extensions.swift in Sources */,
-				CCDC49F424007BE2003166BA /* SettingsScreen.swift in Sources */,
 				F997172C23DBCD8F00592D8E /* BaseScreen.swift in Sources */,
 				F997172923DBCD6100592D8E /* WelcomeScreen.swift in Sources */,
 				F997173F23DBFFEF00592D8E /* ReviewsScreen.swift in Sources */,
@@ -4392,7 +4423,10 @@
 				F997172823DBCD6100592D8E /* LoginCheckMagicLinkScreen.swift in Sources */,
 				CCFC00B523E9BD1500157A78 /* ScreenshotCredentials.swift in Sources */,
 				F997173023DBCEB200592D8E /* TabNavComponent.swift in Sources */,
+				F93E8E5B24087FE10057FF21 /* SingleProductScreen.swift in Sources */,
 				F997170523DBB97500592D8E /* WooCommerceScreenshots.swift in Sources */,
+				F93E8E5924087FE10057FF21 /* ProductsScreen.swift in Sources */,
+				F93E8E5324087FDA0057FF21 /* BetaFeaturesScreen.swift in Sources */,
 				F997174923DC0A7800592D8E /* PeriodStatsTable.swift in Sources */,
 				F997172E23DBCDE900592D8E /* MyStoreScreen.swift in Sources */,
 				F997172423DBCD6100592D8E /* LoginEmailScreen.swift in Sources */,

@@ -112,6 +112,7 @@ final class ProductDetailsViewModel {
     ///
     private var currencyFormatter = CurrencyFormatter()
 
+    private let productImagesProvider = ProductImagesProvider()
 
     // MARK: - Intializers
 
@@ -269,7 +270,8 @@ extension ProductDetailsViewModel {
     /// Product Images cell.
     ///
     func configureProductImages(_ cell: ProductImagesHeaderTableViewCell) {
-        cell.configure(with: product, config: .images)
+        let productImageStatuses = product.imageStatuses
+        cell.configure(with: productImageStatuses, config: .images, productImagesProvider: productImagesProvider)
         cell.onImageSelected = { (productImage, indexPath) in
             // TODO: open image detail
         }

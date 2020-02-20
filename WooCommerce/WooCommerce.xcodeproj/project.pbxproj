@@ -102,6 +102,7 @@
 		024DF31E23743045006658FE /* TextList+AztecFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF31C23743045006658FE /* TextList+AztecFormatting.swift */; };
 		024DF31F23743045006658FE /* Header+AztecFormatting.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF31D23743045006658FE /* Header+AztecFormatting.swift */; };
 		024DF32123744798006658FE /* AztecFormatBarCommandCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024DF32023744798006658FE /* AztecFormatBarCommandCoordinator.swift */; };
+		024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024EFA6823FCC10B00F36918 /* Product+Media.swift */; };
 		0257285C230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */; };
 		025B1748237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */; };
 		025B174A237AA49D00C780B4 /* Product+ProductForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025B1749237AA49D00C780B4 /* Product+ProductForm.swift */; };
@@ -763,6 +764,7 @@
 		024DF31C23743045006658FE /* TextList+AztecFormatting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TextList+AztecFormatting.swift"; sourceTree = "<group>"; };
 		024DF31D23743045006658FE /* Header+AztecFormatting.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Header+AztecFormatting.swift"; sourceTree = "<group>"; };
 		024DF32023744798006658FE /* AztecFormatBarCommandCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AztecFormatBarCommandCoordinator.swift; sourceTree = "<group>"; };
+		024EFA6823FCC10B00F36918 /* Product+Media.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+Media.swift"; sourceTree = "<group>"; };
 		0257285B230ACC7E00A288C4 /* StoreStatsV4ChartAxisHelperTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StoreStatsV4ChartAxisHelperTests.swift; sourceTree = "<group>"; };
 		025B1747237A92D800C780B4 /* ProductFormSection+ReusableTableRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductFormSection+ReusableTableRow.swift"; sourceTree = "<group>"; };
 		025B1749237AA49D00C780B4 /* Product+ProductForm.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+ProductForm.swift"; sourceTree = "<group>"; };
@@ -1636,6 +1638,7 @@
 				02357B2923CDB3E300147C2B /* ProductImageViewController.xib */,
 				02E8B17B23E2C78A00A43403 /* ProductImageStatus.swift */,
 				02E8B17D23E2C8D900A43403 /* ProductImagesService.swift */,
+				024EFA6823FCC10B00F36918 /* Product+Media.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -3661,6 +3664,7 @@
 				CE35F11B2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.swift in Sources */,
 				D8C251DB230D288A00F49782 /* PushNotesManager.swift in Sources */,
 				748D34E12148291E00E21A2F /* TopPerformerDataViewController.swift in Sources */,
+				024EFA6923FCC10B00F36918 /* Product+Media.swift in Sources */,
 				5795F23023E26B5300F6707C /* OrderSearchStarterViewModel.swift in Sources */,
 				0202B68D23876BC100F3EBE0 /* ProductsTabProductViewModel+ProductVariation.swift in Sources */,
 				B5A8532220BDBFAF00FAAB4D /* CircularImageView.swift in Sources */,

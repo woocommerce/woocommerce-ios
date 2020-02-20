@@ -8,14 +8,14 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 
     private var productImageStatuses: [ProductImageStatus]
 
-    private let imageService: ImageService
+    private let productImagesProvider: ProductImagesProvider
     private let onDeletion: ProductImageViewController.Deletion
 
     init(imageStatuses: [ProductImageStatus],
-         imageService: ImageService = ServiceLocator.imageService,
+         productImagesProvider: ProductImagesProvider,
          onDeletion: @escaping ProductImageViewController.Deletion) {
         self.productImageStatuses = imageStatuses
-        self.imageService = imageService
+        self.productImagesProvider = productImagesProvider
         self.onDeletion = onDeletion
         let columnLayout = ColumnFlowLayout(
             cellsPerRow: 2,
@@ -72,27 +72,23 @@ private extension ProductImagesCollectionViewController {
     func configureCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
         switch productImageStatus {
         case .remote(let image):
-            configureRemoteImageCell(cell, image: image)
+            configureRemoteImageCell(cell, productImage: image)
         case .uploading(let asset):
             configureUploadingImageCell(cell, asset: asset)
         }
     }
 
-    func configureRemoteImageCell(_ cell: UICollectionViewCell, image: ProductImage) {
+    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage) {
         guard let cell = cell as? ProductImageCollectionViewCell else {
             fatalError()
         }
 
         cell.imageView.contentMode = .center
+        cell.imageView.image = .productsTabProductCellPlaceholderImage
 
-        imageService.downloadAndCacheImageForImageView(cell.imageView,
-                                                       with: image.src,
-                                                       placeholder: .productPlaceholderImage,
-                                                       progressBlock: nil) { (image, error) in
-                                                        let success = image != nil && error == nil
-                                                        if success {
-                                                            cell.imageView.contentMode = .scaleAspectFit
-                                                        }
+        productImagesProvider.requestImage(productImage: productImage) { [weak cell] image in
+            cell?.imageView.contentMode = .scaleAspectFit
+            cell?.imageView.image = image
         }
     }
 
@@ -101,20 +97,13 @@ private extension ProductImagesCollectionViewController {
             fatalError()
         }
 
-        let manager = PHImageManager.default()
-        manager.requestImage(for: asset,
-                             targetSize: cell.bounds.size,
-                             contentMode: .aspectFit,
-                             options: nil,
-                             resultHandler: { (result, info) in
-            if let result = result {
-                cell.imageView.image = result
-                cell.imageView.contentMode = .scaleAspectFit
-            }
-            else {
-                cell.imageView.contentMode = .center
-            }
-        })
+        cell.imageView.contentMode = .center
+        cell.imageView.image = .productsTabProductCellPlaceholderImage
+
+        productImagesProvider.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
+            cell?.imageView.contentMode = .scaleAspectFit
+            cell?.imageView.image = image
+        }
     }
 }
 
@@ -125,8 +114,10 @@ extension ProductImagesCollectionViewController {
         let status = productImageStatuses[indexPath.row]
         switch status {
         case .remote(let productImage):
-            let productImageViewController = ProductImageViewController(productImage: productImage, onDeletion: { [weak self] productImage in
-                self?.onDeletion(productImage)
+            let productImageViewController = ProductImageViewController(productImage: productImage,
+                                                                        productImagesProvider: productImagesProvider,
+                                                                        onDeletion: { [weak self] productImage in
+                                                                            self?.onDeletion(productImage)
             })
             navigationController?.pushViewController(productImageViewController, animated: true)
         default:

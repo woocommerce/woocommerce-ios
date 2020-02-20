@@ -9,7 +9,9 @@ final class ProductFormViewController: UIViewController {
     private var product: Product {
         didSet {
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
-            tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
+            tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
+                                                                 productImageStatuses: productImagesService.productImageStatuses,
+                                                                 productImagesProvider: productImagesProvider)
             tableViewDataSource.configureActions(onAddImage: { [weak self] in
                 self?.showProductImages()
             })
@@ -25,13 +27,22 @@ final class ProductFormViewController: UIViewController {
     private var viewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
 
+    private let productImagesService: ProductImagesService
+    private let productImagesProvider: ProductImagesProvider
+
     private let currency: String
 
     init(product: Product, currency: String) {
         self.currency = currency
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
-        self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
+        self.productImagesProvider = ProductImagesProvider()
+        self.productImagesService = ProductImagesService(siteID: product.siteID,
+                                                         product: product,
+                                                         productImagesProvider: productImagesProvider)
+        self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
+                                                                  productImageStatuses: productImagesService.productImageStatuses,
+                                                                  productImagesProvider: productImagesProvider)
         super.init(nibName: nil, bundle: nil)
         tableViewDataSource.configureActions(onAddImage: { [weak self] in
             self?.showProductImages()
@@ -48,6 +59,20 @@ final class ProductFormViewController: UIViewController {
         configureNavigationBar()
         configureMainView()
         configureTableView()
+
+        productImagesService.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+            guard let self = self else {
+                return
+            }
+
+            if error != nil {
+                let title = NSLocalizedString("Cannot upload image", comment: "The title of the alert when there is an error uploading an image")
+                let message = NSLocalizedString("Please try again.", comment: "The message of the alert when there is an error uploading an image")
+                self.displayErrorAlert(title: title, message: message)
+            }
+
+            self.product = self.productUpdater.imagesUpdated(images: self.productImagesService.productImages)
+        }
     }
 }
 
@@ -236,8 +261,9 @@ extension ProductFormViewController: UITableViewDelegate {
 //
 private extension ProductFormViewController {
     func showProductImages() {
-        let productImagesService = ProductImagesService(siteID: product.siteID)
-        let imagesViewController = ProductImagesViewController(product: product, productImagesService: productImagesService) { [weak self] images in
+        let imagesViewController = ProductImagesViewController(product: product,
+                                                               productImagesService: productImagesService,
+                                                               productImagesProvider: productImagesProvider) { [weak self] images in
             self?.onEditProductImagesCompletion(images: images)
         }
         navigationController?.pushViewController(imagesViewController, animated: true)

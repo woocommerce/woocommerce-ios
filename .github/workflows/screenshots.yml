@@ -131,3 +131,48 @@ jobs:
         cd fastlane && mkdir $GITHUB_RUN_ID && mv screenshots $GITHUB_RUN_ID
         aws s3 cp $GITHUB_RUN_ID s3://$S3_BUCKET/$GITHUB_RUN_ID --recursive --exclude "*.html"
 
+  process:
+    name: "Process Screenshots"
+    needs: capture
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - uses: actions/setup-ruby@v1
+      with:
+        ruby-version: '2.6.x'
+    
+    - name: Install Bundler
+      run: gem install bundler
+    
+    - name: Restore Ruby Dependency Cache
+      id: restore-ruby-dependency-cache
+      uses: actions/cache@v1
+      with:
+        path: vendor/bundle
+        key: ${{ runner.os }}-gems-${{ hashFiles('**/Gemfile.lock') }}
+    
+    - name: Install Ruby Dependencies
+      run: |
+        bundle config path vendor/bundle
+        bundle install --jobs 4 --retry 3
+
+    - name: Install Fastlane Dependencies
+      run: bundle exec fastlane run configure_apply
+
+    - name: Download Generated Screenshots
+      run: |
+        brew install awscli
+        cd fastlane
+        aws s3 cp s3://$S3_BUCKET/$GITHUB_RUN_ID/screenshots screenshots/  --recursive --exclude "*.html"
+    
+    - name: Generate and Upload Screenshot Summary
+      run: |
+        bundle exec fastlane create_screenshot_summary
+        aws s3 cp fastlane/screenshots/screenshots.html s3://$S3_BUCKET/$GITHUB_RUN_ID/screenshots/screenshots.html
+
+    - name: Archive Raw Screenshots
+      uses: actions/upload-artifact@v1
+      with:
+        name: raw-screenshots
+        path: fastlane/screenshots

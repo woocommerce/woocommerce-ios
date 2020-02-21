@@ -6,11 +6,7 @@ class WooCommerceScreenshots: XCTestCase {
 
         continueAfterFailure = false
 
-        if UIDevice.current.userInterfaceIdiom == .pad {
-            XCUIDevice.shared.orientation = UIDeviceOrientation.landscapeLeft
-        } else {
-            XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
-        }
+        XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
     }
 
     func testScreenshots() {

@@ -15,6 +15,7 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         }
         set {
             headlineLabel?.text = newValue
+            headlineLabel?.accessibilityIdentifier = "headline-label"
         }
     }
 
@@ -26,6 +27,7 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
         }
         set {
             bodyLabel?.text = newValue
+            bodyLabel?.accessibilityIdentifier = "body-label"
         }
     }
 

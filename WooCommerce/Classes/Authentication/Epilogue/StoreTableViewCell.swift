@@ -33,6 +33,7 @@ class StoreTableViewCell: UITableViewCell {
         }
         set {
             nameLabel?.text = newValue
+            nameLabel?.accessibilityIdentifier = "name-label"
         }
     }
 
@@ -44,6 +45,7 @@ class StoreTableViewCell: UITableViewCell {
         }
         set {
             urlLabel?.text = newValue
+            urlLabel?.accessibilityIdentifier = "url-label"
         }
     }
 

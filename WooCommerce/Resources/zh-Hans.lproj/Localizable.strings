@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-03 02:54:03+0000 */
+/* Translation-Revision-Date: 2020-02-12 15:27:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@（系统）";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@（对客户可见）";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ 对 %2$@ 发表了评论";
@@ -80,7 +80,7 @@
 "Add" = "添加";
 
 /* Action to add photos on the Product images screen */
-"Add Photos" = "Add Photos";
+"Add Photos" = "添加照片";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -154,14 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "批准评论";
 
-/* Message title for Save Changes Action Sheet */
-"Are you sure you want to discard these changes?" = "Are you sure you want to discard these changes?";
+/* Message title for Discard Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "是否确定要放弃这些更改？";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "是否确定要注销帐户 %@？";
 
 /* Message on the alert when the user taps to delete a Product image */
-"Are you sure you want to remove this image?" = "Are you sure you want to remove this image?";
+"Are you sure you want to remove this image?" = "是否确定要删除此图片？";
 
 /* No comment provided by engineer. */
 "Authenticating" = "正在验证";
@@ -218,20 +218,20 @@
 "Call" = "致电";
 
 /* Error message format when capturing a unsupported media type with device camera */
-"Camera capture should not support media type: %@" = "Camera capture should not support media type: %@";
+"Camera capture should not support media type: %@" = "照相机拍摄不应支持媒体类型：%@";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "无法请求链接";
 
-/* Button title Cancel in Save Changes Action Sheet
-   Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+/* Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "取消";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "无法更新产品";
 
 /* Title of the alert when there is an error uploading image(s) */
-"Cannot upload image" = "Cannot upload image";
+"Cannot upload image" = "无法上传图像";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "密切关注您喜爱的站点，并随时随地加入对话。";
@@ -240,7 +240,7 @@
 "Certificate error" = "证书错误";
 
 /* Menu option for selecting media from the device's photo library. */
-"Choose from device" = "Choose from device";
+"Choose from device" = "从设备中选择";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集信息";
@@ -381,8 +381,8 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "尺寸：%1$@%2$@";
 
-/* Button title Discard Changes in Save Changes Action Sheet */
-"Discard changes" = "Discard changes";
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Discard changes" = "放弃更改";
 
 /* Discount label for payment view */
 "Discount" = "折扣";
@@ -776,6 +776,9 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "更多";
 
+/* Accessibility label for the Edit Product More Options action sheet */
+"More options" = "More options";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "将评论移动至垃圾评论";
 
@@ -922,7 +925,8 @@
 /* Order notes section title */
 "Order Notes" = "订单备注";
 
-/* Change order status screen - Screen title */
+/* Change order status screen - Screen title
+   The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "订单状态";
 
 /* Order Total label for payment view */
@@ -937,8 +941,8 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "有序列表";
 
-/* Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Default title for Orders List shown when tapping on the Search filter.
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "订单";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -984,7 +988,7 @@
 "Pick Store to Connect" = "选择要关联的商店";
 
 /* Product title error notice message, when the title is empty */
-"Please add a title" = "Please add a title";
+"Please add a title" = "请添加标题";
 
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "请检查电子邮件";
@@ -1026,7 +1030,7 @@
 "Please log out before connecting to a different wordpress.com site" = "请先注销，然后再连接到其他 wordpress.com 站点";
 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
-"Please make sure the app can access Photos in device settings" = "Please make sure the app can access Photos in device settings";
+"Please make sure the app can access Photos in device settings" = "请确保设备设置中应用程序有访问照片的权限";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "请打开电子邮件应用程序，查找来自 WordPress.com 的电子邮件。";
@@ -1153,13 +1157,13 @@
 "Regular price: %@" = "正常价格：%@";
 
 /* Confirm button on the alert when the user taps to delete a Product image */
-"Remove" = "Remove";
+"Remove" = "删除";
 
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "删除过滤器";
 
 /* Title on the alert when the user taps to delete a Product image */
-"Remove Image" = "Remove Image";
+"Remove Image" = "删除图片";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "移除链接";
@@ -1229,9 +1233,6 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "促销价格：%@";
 
-/* Button title for Save Changes Action Sheet */
-"Save changes" = "Save changes";
-
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "安排促销";
 
@@ -1265,6 +1266,9 @@
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "设置";
+
+/* Button title Share in Edit Product More Options Action Sheet */
+"Share" = "共享";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "登录到您的 WordPress.com 帐户时，使用分析工具共享关于您使用服务的信息。";
@@ -1474,7 +1478,7 @@
 "Switches to the default Font Size" = "切换为默认字体大小";
 
 /* Menu option for taking an image or video with the device's camera. */
-"Take a photo" = "Take a photo";
+"Take a photo" = "拍照";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "轻点以查看更多格式选项";
@@ -1599,8 +1603,11 @@
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "已删除评论";
 
+/* Product price error notice message, when the sale price is added but the regular price is not */
+"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+
 /* Product price error notice message, when the sale price is higher than the regular price */
-"The sale price should be lower than the regular price." = "The sale price should be lower than the regular price.";
+"The sale price should be lower than the regular price." = "售价应低于正常价格。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "服务器返回空响应。通常，这表明您需要增加站点的内存限制。";
@@ -1811,7 +1818,7 @@
 "Unknown error" = "未知错误";
 
 /* Error message when capturing a unknown media type */
-"Unknown media type" = "Unknown media type";
+"Unknown media type" = "未知媒体类型";
 
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "无序列表";
@@ -1979,7 +1986,7 @@
 "WooCommerce for iOS Support" = "iOS 版 WooCommerce 支持";
 
 /* Menu option for selecting media from the site's media library. */
-"WordPress Media Library" = "WordPress Media Library";
+"WordPress Media Library" = "WordPress 媒体库";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress 版本过旧。%1$@ 上的站点采用 WordPress %2$@。我们建议更新至最新版本或至少更新为 %3$@";

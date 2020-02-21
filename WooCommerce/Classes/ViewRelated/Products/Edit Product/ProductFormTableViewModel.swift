@@ -15,6 +15,7 @@ enum ProductFormSection {
         case price(viewModel: ViewModel)
         case shipping(viewModel: ViewModel)
         case inventory(viewModel: ViewModel)
+        case briefDescription(viewModel: ViewModel)
 
         struct ViewModel {
             let icon: UIImage
@@ -67,6 +68,8 @@ extension ProductFormSection.SettingsRow: Equatable {
         case (let .shipping(viewModel1), let .shipping(viewModel2)):
             return viewModel1 == viewModel2
         case (let .inventory(viewModel1), let .inventory(viewModel2)):
+            return viewModel1 == viewModel2
+        case (let .briefDescription(viewModel1), let .briefDescription(viewModel2)):
             return viewModel1 == viewModel2
         default:
             return false

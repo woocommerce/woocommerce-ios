@@ -3,8 +3,12 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
-final class DefaultProductFormTableViewModelTests: XCTestCase {
-    private let mockFeatureFlagService = MockFeatureFlagService(isEditProductsRelease2On: false)
+/// The same tests as `DefaultProductFormTableViewModelTests`, but with Edit Products M2 feature flag on.
+/// When we fully launch Edit Products M2, we can replace `DefaultProductFormTableViewModelTests` with the test cases here.
+///
+final class DefaultProductFormTableViewModel_EditProductsM2Tests: XCTestCase {
+
+    private let mockFeatureFlagService = MockFeatureFlagService(isEditProductsRelease2On: true)
 
     func testViewModelForSimplePhysicalProductWithoutImagesWhenM2FeatureFlagIsOff() {
         let product = MockProduct().product(downloadable: false,
@@ -15,6 +19,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                                          currency: "$",
                                                          featureFlagService: mockFeatureFlagService)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
+            .images(product: product),
             .name(name: product.name),
             .description(description: product.trimmedFullDescription)
         ])
@@ -23,7 +28,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
-            XCTAssertEqual(rows.count, 3)
+            XCTAssertEqual(rows.count, 4)
 
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
@@ -32,6 +37,9 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                 XCTFail("Unexpected setting section: \(rows[1])")
             }
             if case .inventory(_) = rows[2] {} else {
+                XCTFail("Unexpected setting section: \(rows[1])")
+            }
+            if case .briefDescription(_) = rows[3] {} else {
                 XCTFail("Unexpected setting section: \(rows[1])")
             }
         default:
@@ -58,12 +66,15 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
-            XCTAssertEqual(rows.count, 2)
+            XCTAssertEqual(rows.count, 3)
 
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }
             if case .inventory(_) = rows[1] {} else {
+                XCTFail("Unexpected setting section: \(rows[1])")
+            }
+            if case .briefDescription(_) = rows[2] {} else {
                 XCTFail("Unexpected setting section: \(rows[1])")
             }
         default:
@@ -79,6 +90,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                                          currency: "$",
                                                          featureFlagService: mockFeatureFlagService)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
+            .images(product: product),
             .name(name: product.name),
             .description(description: product.trimmedFullDescription)
         ])
@@ -87,11 +99,14 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
-            XCTAssertEqual(rows.count, 2)
+            XCTAssertEqual(rows.count, 3)
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }
             if case .inventory(_) = rows[1] {} else {
+                XCTFail("Unexpected setting section: \(rows[1])")
+            }
+            if case .briefDescription(_) = rows[2] {} else {
                 XCTFail("Unexpected setting section: \(rows[1])")
             }
         default:
@@ -108,6 +123,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                                          currency: "$",
                                                          featureFlagService: mockFeatureFlagService)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
+            .images(product: product),
             .name(name: product.name),
             .description(description: product.trimmedFullDescription)
         ])
@@ -116,11 +132,14 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
-            XCTAssertEqual(rows.count, 2)
+            XCTAssertEqual(rows.count, 3)
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }
             if case .inventory(_) = rows[1] {} else {
+                XCTFail("Unexpected setting section: \(rows[1])")
+            }
+            if case .briefDescription(_) = rows[2] {} else {
                 XCTFail("Unexpected setting section: \(rows[1])")
             }
         default:
@@ -129,7 +148,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
     }
 }
 
-private extension DefaultProductFormTableViewModelTests {
+private extension DefaultProductFormTableViewModel_EditProductsM2Tests {
     func sampleImages() -> [ProductImage] {
         let image1 = ProductImage(imageID: 19,
                                   dateCreated: Date(),

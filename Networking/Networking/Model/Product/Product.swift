@@ -447,6 +447,9 @@ public struct Product: Codable {
         try container.encode(stockQuantity, forKey: .stockQuantity)
         try container.encode(backordersKey, forKey: .backordersKey)
         try container.encode(stockStatusKey, forKey: .stockStatusKey)
+
+        // Brief description (short description).
+        try container.encode(briefDescription, forKey: .briefDescription)
     }
 }
 

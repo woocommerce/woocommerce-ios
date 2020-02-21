@@ -155,7 +155,7 @@ private extension ProductFormTableViewDataSource {
             fatalError()
         }
         switch row {
-        case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel):
+        case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel), .briefDescription(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
         }
     }

@@ -316,16 +316,18 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     languages = "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
 
     if options[:languages] != nil
-      languages = languages & options[:languages].split()
+      languages = languages & options[:languages].split(",")
     end
 
-    puts "Creating screenshots for #{languages}"
-
-    devices = screenshot_devices.map { |device| device[:name] }
+    devices = screenshot_devices
 
     if options[:devices] != nil
-      devices = devices & options[:devices].split()
+      devices = devices & options[:devices].split(",")
     end
+
+    UI.user_error!("Unable to run on devices: \"#{devices}\"") unless !devices.empty?
+
+    puts "Creating screenshots for #{languages} on #{devices}"
 
     # Erase the simulator between runs in order to get everything back to a default state
     rebuild_screenshot_devices
@@ -351,7 +353,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       result_bundle: true,
       namespace_log_files: true,
 
-      concurrent_simulators: false,
+      concurrent_simulators: true,
 
       # Explicitly set the iOS version to ensure we match the created simulators
       ios_version: simulator_version,
@@ -385,18 +387,19 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   lane :rebuild_screenshot_devices do
     require 'simctl'
 
-    device_names = screenshot_devices.map { |device| device[:name] }
+    device_names = screenshot_devices
 
     SimCtl.list_devices.each { |device|
       next unless device_names.include? device.name
+      puts "Deleting #{device.name} because it already exists."
       device.delete
     }
 
     screenshot_devices.each { | device |
       runtime = SimCtl.runtime(name: "iOS #{simulator_version}")
-      devicetype = SimCtl.devicetype(name: device[:device_id])
+      devicetype = SimCtl.devicetype(name: device)
 
-      device = SimCtl.create_device device[:name], devicetype, runtime
+      device = SimCtl.create_device device, devicetype, runtime
     }
   end
 
@@ -573,22 +576,10 @@ end
 
   def screenshot_devices()
     [
-      {
-        name: "iPhone 11 Pro Max (screenshots)",
-        device_id: "iPhone 11 Pro Max"
-      },
-      {
-        name: "iPhone 8 Plus (screenshots)",
-        device_id: "iPhone 8 Plus"
-      },
-      {
-        name: "iPad Pro (12.9-inch) (2nd generation) (screenshots)",
-        device_id: "iPad Pro (12.9-inch) (2nd generation)"
-      },
-      {
-        name: "iPad Pro (12.9-inch) (3rd generation) (screenshots)",
-        device_id: "iPad Pro (12.9-inch) (3rd generation)"
-      }
+      "iPhone 11 Pro Max",
+      "iPhone 8 Plus",
+      "iPad Pro (12.9-inch) (2nd generation)",
+      "iPad Pro (12.9-inch) (3rd generation)",
     ]
   end
 

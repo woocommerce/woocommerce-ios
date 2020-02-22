@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-18 16:24:54+0000 */
+/* Translation-Revision-Date: 2020-02-22 00:54:36+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (System)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (Till kund)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ – %2$@ (till kund)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ lämnade en recension om %2$@";
@@ -777,7 +777,7 @@
 "More" = "Mer";
 
 /* Accessibility label for the Edit Product More Options action sheet */
-"More options" = "More options";
+"More options" = "Fler alternativ";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Markerar kommentaren som skräppost";
@@ -1604,7 +1604,7 @@
 "The review has been removed" = "Recensionen har tagits bort";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
-"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+"The sale price can't be added without the regular price." = "Reapriset kan inte läggas till utan ordinarie pris.";
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "Reapriset ska vara lägre än ordinarie pris.";

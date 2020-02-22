@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-12 15:27:05+0000 */
+/* Translation-Revision-Date: 2020-02-22 00:54:36+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (系統)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (向顧客顯示)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
@@ -777,7 +777,7 @@
 "More" = "更多";
 
 /* Accessibility label for the Edit Product More Options action sheet */
-"More options" = "More options";
+"More options" = "更多選項";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "將留言移至垃圾留言";
@@ -1604,7 +1604,7 @@
 "The review has been removed" = "已移除評論";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
-"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+"The sale price can't be added without the regular price." = "無法在沒有原價的情況下新增售價。";
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "銷售價格必須低於正常價格。";

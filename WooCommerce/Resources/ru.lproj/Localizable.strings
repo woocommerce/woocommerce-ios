@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-19 16:12:17+0000 */
+/* Translation-Revision-Date: 2020-02-22 00:54:36+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ — %2$@ (система)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %2$@ (To Customer)" = "%1$@ — %2$@ (Для клиента)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ — %2$@ (для заказчика)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "Пользователь %1$@ оставил отзыв о %2$@";
@@ -777,7 +777,7 @@
 "More" = "Больше";
 
 /* Accessibility label for the Edit Product More Options action sheet */
-"More options" = "More options";
+"More options" = "Дополнительные параметры";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Отправить комментарий в «Спам»";
@@ -1604,7 +1604,7 @@
 "The review has been removed" = "Отзыв удалён";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
-"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+"The sale price can't be added without the regular price." = "Нельзя добавить продажную цену без обычной цены.";
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "Распродажная цена должна быть ниже обычной.";

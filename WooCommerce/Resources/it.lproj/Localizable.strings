@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-28 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-02-22 00:54:37+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: it */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (sistema)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (al cliente)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (al cliente)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ ha lasciato una recensione su %2$@";
@@ -52,7 +52,7 @@
 "%ld variants" = "%ld varianti";
 
 /* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
-"99+" = "99+";
+"99+" = "Più di 99";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Per inviare tramite e-mail un link di autenticazione, è necessario un indirizzo e-mail valido. Torna alla schermata precedente e fornisci un indirizzo e-mail valido.";
@@ -80,7 +80,7 @@
 "Add" = "Aggiungi";
 
 /* Action to add photos on the Product images screen */
-"Add Photos" = "Add Photos";
+"Add Photos" = "Aggiungi Foto";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -154,14 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "Approva il commento";
 
-/* Message title for Save Changes Action Sheet */
-"Are you sure you want to discard these changes?" = "Are you sure you want to discard these changes?";
+/* Message title for Discard Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "Desideri eliminare queste modifiche?";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Vuoi davvero disconnetterti dal tuo account %@?";
 
 /* Message on the alert when the user taps to delete a Product image */
-"Are you sure you want to remove this image?" = "Are you sure you want to remove this image?";
+"Are you sure you want to remove this image?" = "Desideri rimuovere questa immagine?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Autenticazione in corso";
@@ -218,20 +218,20 @@
 "Call" = "Chiama";
 
 /* Error message format when capturing a unsupported media type with device camera */
-"Camera capture should not support media type: %@" = "Camera capture should not support media type: %@";
+"Camera capture should not support media type: %@" = "L'acquisizione della fotocamera non supporta il tipo di elemento multimediale: %@";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Può non essere necessario il collegamento";
 
-/* Button title Cancel in Save Changes Action Sheet
-   Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+/* Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "Annulla";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Impossibile aggiornare il prodotto";
 
 /* Title of the alert when there is an error uploading image(s) */
-"Cannot upload image" = "Cannot upload image";
+"Cannot upload image" = "Impossibile caricare l'immagine";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Tieni il passo con i tuoi siti preferiti e partecipa a una conversazione ovunque e in qualsiasi momento.";
@@ -240,7 +240,7 @@
 "Certificate error" = "Errore di certificato";
 
 /* Menu option for selecting media from the device's photo library. */
-"Choose from device" = "Choose from device";
+"Choose from device" = "Scegli da dispositivo";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Raccogli informazioni";
@@ -381,8 +381,8 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Dimensioni: %1$@%2$@";
 
-/* Button title Discard Changes in Save Changes Action Sheet */
-"Discard changes" = "Discard changes";
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Discard changes" = "Annulla le modifiche";
 
 /* Discount label for payment view */
 "Discount" = "Sconto";
@@ -776,6 +776,9 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "Altro";
 
+/* Accessibility label for the Edit Product More Options action sheet */
+"More options" = "Altre opzioni";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Sposta un commento nella cartella spam";
 
@@ -922,7 +925,8 @@
 /* Order notes section title */
 "Order Notes" = "Note ordine";
 
-/* Change order status screen - Screen title */
+/* Change order status screen - Screen title
+   The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "Stato dell'ordine";
 
 /* Order Total label for payment view */
@@ -937,8 +941,8 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Elenco ordinato";
 
-/* Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Default title for Orders List shown when tapping on the Search filter.
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Ordini";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -984,7 +988,7 @@
 "Pick Store to Connect" = "Scegli un negozio da collegare";
 
 /* Product title error notice message, when the title is empty */
-"Please add a title" = "Please add a title";
+"Please add a title" = "Aggiungi un titolo";
 
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "Controlla la tua e-mail";
@@ -1026,7 +1030,7 @@
 "Please log out before connecting to a different wordpress.com site" = "Disconnettiti prima di connetterti a un sito WordPress.com differente";
 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
-"Please make sure the app can access Photos in device settings" = "Please make sure the app can access Photos in device settings";
+"Please make sure the app can access Photos in device settings" = "Assicurati che l'app possa accedere a Foto nelle impostazioni del dispositivo";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Apri la tua app per le e-mail e controlla un'e-mail da WordPress.com.";
@@ -1153,13 +1157,13 @@
 "Regular price: %@" = "Prezzo standard: %@";
 
 /* Confirm button on the alert when the user taps to delete a Product image */
-"Remove" = "Remove";
+"Remove" = "Rimuovi";
 
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "Rimuovi filtri";
 
 /* Title on the alert when the user taps to delete a Product image */
-"Remove Image" = "Remove Image";
+"Remove Image" = "Rimuovi immagine";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "Rimuovi link";
@@ -1229,9 +1233,6 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Prezzo di vendita: %@";
 
-/* Button title for Save Changes Action Sheet */
-"Save changes" = "Save changes";
-
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Programma vendita";
 
@@ -1265,6 +1266,9 @@
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "Impostazioni";
+
+/* Button title Share in Edit Product More Options Action Sheet */
+"Share" = "Condividi";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Condividi informazioni con gli strumenti di analisi relative all'uso dei servizi mentre sei connesso al tuo account WordPress.com.";
@@ -1474,7 +1478,7 @@
 "Switches to the default Font Size" = "Passa alla Dimensione del font predefinita";
 
 /* Menu option for taking an image or video with the device's camera. */
-"Take a photo" = "Take a photo";
+"Take a photo" = "Scatta una foto";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Tocca per ulteriori opzioni di formattazione";
@@ -1599,8 +1603,11 @@
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "La recensione è stata rimossa";
 
+/* Product price error notice message, when the sale price is added but the regular price is not */
+"The sale price can't be added without the regular price." = "Il prezzo di vendita non può essere aggiunto senza un prezzo standard.";
+
 /* Product price error notice message, when the sale price is higher than the regular price */
-"The sale price should be lower than the regular price." = "The sale price should be lower than the regular price.";
+"The sale price should be lower than the regular price." = "Il prezzo di vendita dovrebbe essere più basso del prezzo standard.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Il server ha restituito una risposta vuota. Questo di solito significa che è necessario aumentare il limite di memoria per il tuo sito.";
@@ -1811,7 +1818,7 @@
 "Unknown error" = "Errore sconosciuto";
 
 /* Error message when capturing a unknown media type */
-"Unknown media type" = "Unknown media type";
+"Unknown media type" = "Tipo di elemento multimediale sconosciuto";
 
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Elenco non ordinato";
@@ -1979,7 +1986,7 @@
 "WooCommerce for iOS Support" = "Supporto WooCommerce per iOS";
 
 /* Menu option for selecting media from the site's media library. */
-"WordPress Media Library" = "WordPress Media Library";
+"WordPress Media Library" = "Libreria multimediale WordPress";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "La versione di WordPress è troppo vecchia Il sito %1$@ usa WordPress %2$@. Ti suggeriamo di aggiornare all'ultima versione, o, almeno, alla versione %3$@";

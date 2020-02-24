@@ -1,2 +1,0 @@
-Visualize os dados da loja por
-semana, mês e ano

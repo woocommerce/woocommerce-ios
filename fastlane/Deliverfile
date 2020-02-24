@@ -20,6 +20,8 @@ privacy_url({
   'default' => 'https://automattic.com/privacy/',
 })
 
+team_id "299112"
+
 copyright('2020 WooCommerce')
 
 skip_binary_upload true

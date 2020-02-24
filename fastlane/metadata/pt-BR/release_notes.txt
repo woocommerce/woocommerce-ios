@@ -1,2 +1,5 @@
-- Se o aplicativo estiver em primeiro plano e você receber uma notificação em push, os selos nas guias Pedidos e Avaliações serão atualizados corretamente com base no tipo de notificação.
-- Às vezes, depois de sair e entrar novamente, a lista de produtos ficava vazia, mesmo claramente tendo produtos. A lista de produtos agora faz jus ao seu nome e mostra produtos da loja correta. Não consegue encontrar a lista de produtos? Vá para o menu “Recursos experimentais” em Configurações para ativar a pré-visualização.
+- Agora você pode ver os reembolsos de um pedido.
+- O selo “pedidos a serem atendidos” tem o máximo de 99. Qualquer valor além disso será mostrado como 99+. Antes era 9+.
+- Bug em que a quantidade do produto sumia devido a nomes longos na visualização de um pedido resolvido.
+- Nomes de produtos com caracteres de HTML perdidos serão exibidos corretamente.
+- Para abrir um produto em um pedido com mais de um, basta tocar nele.

@@ -104,7 +104,7 @@ enum ProductSettingsSections {
 enum ProductSettingsRows {
 
     struct Visibility: ProductSettingsRowMediator {
-        private var product: Product
+        private let product: Product
 
         init(_ product: Product) {
             self.product = product
@@ -130,7 +130,7 @@ enum ProductSettingsRows {
     }
 
     struct Slug: ProductSettingsRowMediator {
-        private var product: Product
+        private let product: Product
 
         init(_ product: Product) {
             self.product = product

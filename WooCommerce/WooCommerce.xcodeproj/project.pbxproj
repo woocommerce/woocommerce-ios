@@ -196,6 +196,7 @@
 		451A04F12386F7B500E368C9 /* ProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04EF2386F7B500E368C9 /* ProductImageCollectionViewCell.xib */; };
 		451A04F42386F7C900E368C9 /* AddProductImageCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451A04F22386F7C900E368C9 /* AddProductImageCollectionViewCell.swift */; };
 		451A04F52386F7C900E368C9 /* AddProductImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 451A04F32386F7C900E368C9 /* AddProductImageCollectionViewCell.xib */; };
+		451C77712404518600413F73 /* ProductSettingsSectionsAndRows.swift in Sources */ = {isa = PBXBuildFile; fileRef = 451C77702404518600413F73 /* ProductSettingsSectionsAndRows.swift */; };
 		453227B723C4D6EC00D816B3 /* TimeZone+Woo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */; };
 		453904F323BB88B5007C4956 /* ProductTaxStatusListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorDataSourceTests.swift */; };
 		453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */; };
@@ -897,6 +898,7 @@
 		451A04EF2386F7B500E368C9 /* ProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		451A04F22386F7C900E368C9 /* AddProductImageCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddProductImageCollectionViewCell.swift; sourceTree = "<group>"; };
 		451A04F32386F7C900E368C9 /* AddProductImageCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = AddProductImageCollectionViewCell.xib; sourceTree = "<group>"; };
+		451C77702404518600413F73 /* ProductSettingsSectionsAndRows.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSettingsSectionsAndRows.swift; sourceTree = "<group>"; };
 		453227B623C4D6EC00D816B3 /* TimeZone+Woo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TimeZone+Woo.swift"; sourceTree = "<group>"; };
 		453904F223BB88B5007C4956 /* ProductTaxStatusListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxStatusListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		453904F423BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTaxClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
@@ -1893,6 +1895,7 @@
 				4580BA7223F192D400B5F764 /* ProductSettingsViewController.swift */,
 				4580BA7323F192D400B5F764 /* ProductSettingsViewController.xib */,
 				4580BA7623F19D4A00B5F764 /* ProductSettingsViewModel.swift */,
+				451C77702404518600413F73 /* ProductSettingsSectionsAndRows.swift */,
 			);
 			path = "Product Settings";
 			sourceTree = "<group>";
@@ -4093,6 +4096,7 @@
 				74EC34A5225FE21F004BBC2E /* ProductLoaderViewController.swift in Sources */,
 				CE8CCD43239AC06E009DBD22 /* RefundDetailsViewController.swift in Sources */,
 				B560D68C2195BD1E0027BB7E /* NoteDetailsCommentTableViewCell.swift in Sources */,
+				451C77712404518600413F73 /* ProductSettingsSectionsAndRows.swift in Sources */,
 				743E272021AEF20100D6DC82 /* FancyAlertViewController+Upgrade.swift in Sources */,
 				CEA16F3A20FD0C8C0061B4E1 /* WooAnalytics.swift in Sources */,
 				023053492374528A00487A64 /* AztecBlockquoteFormatBarCommand.swift in Sources */,

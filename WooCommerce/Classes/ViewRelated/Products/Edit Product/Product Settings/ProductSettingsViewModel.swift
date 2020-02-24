@@ -85,7 +85,7 @@ enum ProductSettingsSections {
         let rows: [ProductSettingsRowMediator]
 
         init(_ product: Product) {
-            rows = [ProductSettingsRows.Visibility(product)]
+            rows = [ProductSettingsRows.CatalogVisibility(product)]
         }
     }
 
@@ -103,7 +103,7 @@ enum ProductSettingsSections {
 
 enum ProductSettingsRows {
 
-    struct Visibility: ProductSettingsRowMediator {
+    struct CatalogVisibility: ProductSettingsRowMediator {
         private let product: Product
 
         init(_ product: Product) {
@@ -115,7 +115,7 @@ enum ProductSettingsRows {
                 return
             }
 
-            cell.textLabel?.text = NSLocalizedString("Visibility", comment: "Visibility label in Product Settings")
+            cell.textLabel?.text = NSLocalizedString("Catalog Visibility", comment: "Catalog Visibility label in Product Settings")
             cell.detailTextLabel?.text = product.catalogVisibilityKey
             cell.accessoryType = .disclosureIndicator
         }

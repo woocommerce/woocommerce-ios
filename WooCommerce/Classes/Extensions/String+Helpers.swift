@@ -63,4 +63,9 @@ extension String {
 
         return newText
     }
+
+    /// A Boolean value indicating whether a string has characters.
+    var isNotEmpty: Bool {
+        return !isEmpty
+    }
 }

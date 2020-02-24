@@ -258,6 +258,8 @@ private extension PeriodDataViewController {
                               comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."),
             granularity.pluralizedString
         )
+
+        chartAccessibilityView.accessibilityIdentifier = "revenue-chart-" + granularity.accessibilityIdentifier
     }
 
     func configureBarChart() {
@@ -317,7 +319,10 @@ private extension PeriodDataViewController {
 //
 extension PeriodDataViewController: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: granularity.pluralizedString)
+        return IndicatorInfo(
+            title: granularity.pluralizedString,
+            accessibilityIdentifier: "period-data-" + granularity.accessibilityIdentifier + "-tab"
+        )
     }
 }
 

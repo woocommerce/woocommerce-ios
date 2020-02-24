@@ -58,7 +58,11 @@ extension WooTab {
 
 
 // MARK: - MainTabBarController
-//
+
+/// A view controller that shows the tabs Store, Orders, Products, and Reviews.
+///
+/// TODO Migrate the `viewControllers` management from `Main.storyboard` to here (as code).
+///
 final class MainTabBarController: UITabBarController {
 
     /// For picking up the child view controller's status bar styling
@@ -101,12 +105,25 @@ final class MainTabBarController: UITabBarController {
         return navController
     }()
 
+    private lazy var ordersTabViewController: UIViewController = {
+        let masterViewController = OrdersMasterViewController()
+        return WooNavigationController(rootViewController: masterViewController)
+    }()
+
 
     // MARK: - Overridden Methods
 
     override func viewDidLoad() {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
+
+        // Add the Orders tab
+        viewControllers = {
+            let index = WooTab.orders.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
+            var controllers = viewControllers ?? []
+            controllers.insert(ordersTabViewController, at: index)
+            return controllers
+        }()
     }
 
     override func viewWillAppear(_ animated: Bool) {
@@ -292,18 +309,6 @@ extension MainTabBarController {
 //
 extension MainTabBarController {
 
-    /// Displays the Orders List with the specified Filter applied.
-    ///
-    static func presentOrders(statusFilter: OrderStatus) {
-        switchToOrdersTab()
-
-        guard let ordersViewController: OrdersViewController = childViewController() else {
-            return
-        }
-
-        ordersViewController.statusFilter = statusFilter
-    }
-
     /// Syncs the notification given the ID, and handles the notification based on its notification kind.
     ///
     static func presentNotificationDetails(for noteID: Int64) {
@@ -320,10 +325,11 @@ extension MainTabBarController {
         switch note.kind {
         case .storeOrder:
             switchToOrdersTab {
-                guard let ordersViewController: OrdersViewController = childViewController() else {
+                guard let ordersMasterVC: OrdersMasterViewController = childViewController() else {
                     return
                 }
-                ordersViewController.presentDetails(for: note)
+
+                ordersMasterVC.presentDetails(for: note)
             }
         case .comment:
             switchToReviewsTab {
@@ -379,11 +385,12 @@ private extension MainTabBarController {
     }
 }
 
+// MARK: - Orders Tab Badge
+
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
         viewModel.onBadgeReload = { [weak self] countReadableString in
-            guard let self = self,
-            let badgeText = countReadableString else {
+            guard let self = self else {
                 return
             }
 
@@ -394,7 +401,7 @@ private extension MainTabBarController {
                 return
             }
 
-            orderTab.badgeValue = badgeText
+            orderTab.badgeValue = countReadableString
             orderTab.badgeColor = .primary
         }
 

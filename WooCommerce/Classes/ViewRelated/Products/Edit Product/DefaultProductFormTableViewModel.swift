@@ -70,12 +70,14 @@ private extension DefaultProductFormTableViewModel {
         var priceDetails = [String]()
 
         // Regular price and sale price are both available only when a sale price is set.
-        if let regularPrice = product.regularPrice, !regularPrice.isEmpty,
-            let salePrice = product.salePrice, !salePrice.isEmpty {
+        if let regularPrice = product.regularPrice, regularPrice.isNotEmpty {
             let formattedRegularPrice = currencyFormatter.formatAmount(regularPrice, with: currency) ?? ""
-            let formattedSalePrice = currencyFormatter.formatAmount(salePrice, with: currency) ?? ""
             priceDetails.append(String.localizedStringWithFormat(Constants.regularPriceFormat, formattedRegularPrice))
-            priceDetails.append(String.localizedStringWithFormat(Constants.salePriceFormat, formattedSalePrice))
+
+            if let salePrice = product.salePrice, salePrice.isNotEmpty {
+                let formattedSalePrice = currencyFormatter.formatAmount(salePrice, with: currency) ?? ""
+                priceDetails.append(String.localizedStringWithFormat(Constants.salePriceFormat, formattedSalePrice))
+            }
 
             if let dateOnSaleStart = product.dateOnSaleStart, let dateOnSaleEnd = product.dateOnSaleEnd {
                 let dateIntervalFormatter = DateIntervalFormatter.mediumLengthLocalizedDateIntervalFormatter

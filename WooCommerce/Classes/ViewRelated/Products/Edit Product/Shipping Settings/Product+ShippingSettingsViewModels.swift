@@ -1,17 +1,21 @@
 import Yosemite
 
 extension Product {
+
+    private static let placeholder = "0"
+
     static func createShippingWeightViewModel(weight: String?,
                                               using shippingSettingsService: ShippingSettingsService,
                                               onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Weight", comment: "Title of the cell in Product Shipping Settings > Weight")
         let unit = shippingSettingsService.weightUnit ?? ""
-        let value = weight == nil || weight?.isEmpty == true ? "0": weight
+        let value = weight == nil || weight?.isEmpty == true ? "": weight
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
     }
 
@@ -22,9 +26,10 @@ extension Product {
         let unit = shippingSettingsService.dimensionUnit ?? ""
         return UnitInputViewModel(title: title,
                                   unit: unit,
-                                  value: length.isEmpty ? "0": length,
+                                  value: length,
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
     }
 
@@ -35,9 +40,10 @@ extension Product {
         let unit = shippingSettingsService.dimensionUnit ?? ""
         return UnitInputViewModel(title: title,
                                   unit: unit,
-                                  value: width.isEmpty ? "0": width,
+                                  value: width,
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
     }
 
@@ -48,9 +54,10 @@ extension Product {
         let unit = shippingSettingsService.dimensionUnit ?? ""
         return UnitInputViewModel(title: title,
                                   unit: unit,
-                                  value: height.isEmpty ? "0": height,
+                                  value: height,
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
-                                  inputFormatter: DecimalInputFormatter(),
+                                  inputFormatter: ShippingInputFormatter(),
                                   onInputChange: onInputChange)
     }
 }

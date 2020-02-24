@@ -56,6 +56,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
         setupWormholy()
+        handleLaunchArguments()
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -290,6 +291,16 @@ private extension AppDelegate {
         /// We want to activate it programmatically, not using the shake.
         Wormholy.shakeEnabled = false
         #endif
+    }
+
+    func handleLaunchArguments() {
+        if ProcessInfo.processInfo.arguments.contains("logout-at-launch") {
+          ServiceLocator.stores.deauthenticate()
+        }
+
+        if ProcessInfo.processInfo.arguments.contains("disable-animations") {
+            UIView.setAnimationsEnabled(false)
+        }
     }
 }
 

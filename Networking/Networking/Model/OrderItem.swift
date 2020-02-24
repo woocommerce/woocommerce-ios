@@ -59,7 +59,7 @@ public struct OrderItem: Decodable {
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let itemID = try container.decode(Int64.self, forKey: .itemID)
-        let name = try container.decode(String.self, forKey: .name)
+        let name = try container.decode(String.self, forKey: .name).strippedHTML
         let productID = try container.decode(Int64.self, forKey: .productID)
         let variationID = try container.decode(Int64.self, forKey: .variationID)
 

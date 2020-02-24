@@ -2,24 +2,29 @@ import Foundation
 import CocoaLumberjack
 import Photos
 
-/// Encapsulates exporting assets such as PHAssets, images, videos, or files at URLs to `UploadableMedia`.
+/// Completion handler for a created Media object.
 ///
-final class MediaExportService {
-    /// Completion handler for a created Media object.
-    ///
-    typealias MediaExportCompletion = (UploadableMedia?, Error?) -> Void
+typealias MediaExportCompletion = (UploadableMedia?, Error?) -> Void
 
-    private lazy var exportQueue: DispatchQueue = DispatchQueue(label: "com.woocommerce.mediaExportService",
-                                                                autoreleaseFrequency: .workItem)
-
-    // MARK: - Instance methods
-
+/// Exports media to the local file system for remote upload.
+///
+protocol MediaExportService {
     /// Exports a media asset to the local file system so that it is uploadable, asynchronously.
     ///
     /// - Parameters:
     ///     - exportable: the exportable resource where data will be read from.
     ///     - onCompletion: Called when the Media export finishes.
     ///
+    func export(_ exportable: ExportableAsset, onCompletion: @escaping MediaExportCompletion)
+}
+
+/// Encapsulates exporting assets such as PHAssets, images, videos, or files at URLs to `UploadableMedia`.
+///
+final class DefaultMediaExportService: MediaExportService {
+
+    private lazy var exportQueue: DispatchQueue = DispatchQueue(label: "com.woocommerce.mediaExportService",
+                                                                autoreleaseFrequency: .workItem)
+
     func export(_ exportable: ExportableAsset, onCompletion: @escaping MediaExportCompletion) {
         exportQueue.async {
             guard let exporter = self.createExporter(for: exportable) else {
@@ -38,7 +43,7 @@ final class MediaExportService {
 
 // MARK: MediaExporter
 //
-private extension MediaExportService {
+private extension DefaultMediaExportService {
     func createExporter(for exportable: ExportableAsset) -> MediaExporter? {
         switch exportable {
         case let asset as PHAsset:
@@ -54,7 +59,7 @@ private extension MediaExportService {
 
 // MARK: Error handling
 //
-private extension MediaExportService {
+private extension DefaultMediaExportService {
     /// Handles and logs any error encountered.
     ///
     func handleExportError(_ error: Error?, onCompletion: MediaExportCompletion) {
@@ -67,7 +72,7 @@ private extension MediaExportService {
     }
 }
 
-private extension MediaExportService {
+private extension DefaultMediaExportService {
     enum Defaults {
         ///
         /// - Note: This value may or may not be honored, depending on the export implementation and underlying data.

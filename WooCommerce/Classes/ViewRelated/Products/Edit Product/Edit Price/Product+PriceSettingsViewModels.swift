@@ -1,6 +1,14 @@
 import Yosemite
 
 extension Product {
+
+    // Regex that match all the occurrences of the thousand separators.
+    // All the points or comma (but not the last `.` or `,`)
+    //
+    private static let regexThousandSeparators = "(?:[.,](?=.*[.,])|)+"
+
+    private static let placeholder = "0"
+
     static func createRegularPriceViewModel(regularPrice: String?,
                                             using currencySettings: CurrencySettings,
                                        onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
@@ -9,11 +17,14 @@ extension Product {
         let currencyFormatter = CurrencyFormatter()
         let currencyCode = CurrencySettings.shared.currencyCode
         let unit = CurrencySettings.shared.symbol(from: currencyCode)
-        var value = currencyFormatter.formatAmount(regularPrice ?? "", with: unit) ?? "0"
-        value = value.replacingOccurrences(of: unit, with: "")
+        var value = currencyFormatter.formatAmount(regularPrice ?? "", with: unit) ?? ""
+        value = value
+            .replacingOccurrences(of: unit, with: "")
+            .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)
@@ -27,11 +38,14 @@ extension Product {
         let currencyFormatter = CurrencyFormatter()
         let currencyCode = CurrencySettings.shared.currencyCode
         let unit = CurrencySettings.shared.symbol(from: currencyCode)
-        var value = currencyFormatter.formatAmount(salePrice ?? "", with: unit) ?? "0"
-        value = value.replacingOccurrences(of: unit, with: "")
+        var value = currencyFormatter.formatAmount(salePrice ?? "", with: unit) ?? ""
+        value = value
+            .replacingOccurrences(of: unit, with: "")
+            .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
+                                  placeholder: placeholder,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   onInputChange: onInputChange)

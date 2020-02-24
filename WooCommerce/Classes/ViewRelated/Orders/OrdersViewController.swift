@@ -5,10 +5,27 @@ import WordPressUI
 import SafariServices
 import StoreKit
 
+protocol OrdersViewControllerDelegate: class {
+    /// Called when `OrdersViewController` is about to fetch Orders from the API.
+    ///
+    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController)
+    /// Called when `OrdersViewController` is requesting to reset the `statusFilter` to `nil`.
+    ///
+    /// `OrdersViewController` does not modify its own `statusFilter`. While it is capable of
+    ///  doing that, we'd rather have that responsibility in the parent
+    ///  `OrdersMasterViewController`.
+    ///
+    ///  TODO There are ways to make secure this intentional behavior. We are keeping this as is
+    ///  for now since we will be significantly refactoring `OrdersViewController` later.
+    ///
+    func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController)
+}
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
 ///
 class OrdersViewController: UIViewController {
+
+    weak var delegate: OrdersViewControllerDelegate?
 
     /// Main TableView.
     ///
@@ -41,7 +58,7 @@ class OrdersViewController: UIViewController {
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
-    /// ResultsController: Handles all things order status
+    /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
@@ -56,6 +73,11 @@ class OrdersViewController: UIViewController {
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
+    /// This is set and changed by `OrdersMasterViewModel`. This shouldn't be updated internally
+    /// by `self`.
+    ///
+    /// TODO Make this `let`.
+    ///
     var statusFilter: OrderStatus? {
         didSet {
             guard isViewLoaded else {
@@ -69,6 +91,14 @@ class OrdersViewController: UIViewController {
             didChangeFilter(newFilter: statusFilter)
         }
     }
+
+    /// If `true`, the "Remove Filters" action will be shown on the Filtered Empty View.
+    ///
+    /// Defaults to `true`.
+    ///
+    /// - SeeAlso: displayEmptyFilteredOverlay
+    ///
+    private let showsRemoveFilterActionOnFilteredEmptyView: Bool
 
     /// The current list of order statuses for the default site
     ///
@@ -105,30 +135,31 @@ class OrdersViewController: UIViewController {
         }
     }
 
-
     // MARK: - View Lifecycle
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        fatalError()
+    /// Designated initializer.
+    ///
+    /// - Parameter statusFilter The filter to use.
+    ///
+    init(statusFilter: OrderStatus? = nil,
+         showsRemoveFilterActionOnFilteredEmptyView: Bool = true) {
+        self.statusFilter = statusFilter
+        self.showsRemoveFilterActionOnFilteredEmptyView = showsRemoveFilterActionOnFilteredEmptyView
+        super.init(nibName: Self.nibName, bundle: nil)
     }
 
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-
-        // This 👇 should be called in init so the tab is correctly localized when the app launches
-        configureTabBarItem()
+        fatalError("Not supported")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        refreshTitle()
         refreshResultsPredicate()
         refreshStatusPredicate()
         registerTableViewCells()
 
         configureSyncingCoordinator()
-        configureNavigation()
         configureTableView()
         configureGhostableTableView()
         configureResultsControllers()
@@ -139,8 +170,6 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncOrderStatus()
-        resetStatusFilterIfNeeded()
         syncingCoordinator.synchronizeFirstPage()
         if AppRatingManager.shared.shouldPromptForAppReview() {
             displayRatingPrompt()
@@ -152,28 +181,6 @@ class OrdersViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension OrdersViewController {
-
-    /// Setup: Title
-    ///
-    func refreshTitle() {
-        guard let filterName = statusFilter?.name else {
-            navigationItem.title = NSLocalizedString(
-                "Orders",
-                comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order)."
-            )
-            return
-        }
-
-        let title = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Orders: %@",
-                comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"
-            ),
-            filterName
-        )
-        navigationItem.title = title
-    }
-
     /// Setup: Order filtering
     ///
     func refreshResultsPredicate() {
@@ -210,43 +217,6 @@ private extension OrdersViewController {
         statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }
 
-    /// Setup: Navigation Item
-    ///
-    func configureNavigation() {
-        navigationItem.leftBarButtonItem = {
-            let button = UIBarButtonItem(image: .searchImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(displaySearchOrders))
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
-            button.accessibilityHint = NSLocalizedString(
-                "Retrieves a list of orders that contain a given keyword.",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
-            )
-
-            return button
-        }()
-
-        navigationItem.rightBarButtonItem = {
-            let button = UIBarButtonItem(image: .filterImage,
-                                                 style: .plain,
-                                                 target: self,
-                                                 action: #selector(displayFiltersAlert))
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
-            button.accessibilityHint = NSLocalizedString(
-                "Filters the order list by payment status.",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list."
-            )
-
-            return button
-        }()
-
-        // Don't show the Order title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
-    }
-
     /// Setup: Results Controller
     ///
     func configureResultsControllers() {
@@ -262,13 +232,6 @@ private extension OrdersViewController {
     ///
     func configureSyncingCoordinator() {
         syncingCoordinator.delegate = self
-    }
-
-    /// Setup: TabBar Item
-    ///
-    func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
-        tabBarItem.image = .pagesImage
     }
 
     /// Setup: TableView
@@ -321,87 +284,22 @@ extension OrdersViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-        nc.addObserver(self, selector: #selector(stopListeningToNotifications), name: .logOutEventReceived, object: nil)
-    }
-
-    /// Stops listening to all related Notifications
-    ///
-    @objc func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        statusFilter = nil
         refreshStatusPredicate()
         syncingCoordinator.resetInternalState()
     }
 }
 
-
-// MARK: - Push Notification Handling
-//
-extension OrdersViewController {
-    /// Presents the Details for the Notification with the specified Identifier.
-    ///
-    func presentDetails(for note: Note) {
-        guard let orderID = note.meta.identifier(forKey: .order), let siteID = note.meta.identifier(forKey: .site) else {
-            DDLogError("## Notification with [\(note.noteID)] lacks its OrderID!")
-            return
-        }
-
-        let loaderViewController = OrderLoaderViewController(note: note, orderID: Int64(orderID), siteID: Int64(siteID))
-        navigationController?.pushViewController(loaderViewController, animated: true)
-    }
-}
-
-
 // MARK: - Actions
 //
 extension OrdersViewController {
-
-    @IBAction func displaySearchOrders() {
-        guard let storeID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
-
-        ServiceLocator.analytics.track(.ordersListSearchTapped)
-
-        let searchViewController = SearchViewController<OrderTableViewCell, OrderSearchUICommand>(storeID: storeID,
-                                                                                                  command: OrderSearchUICommand(),
-                                                                                                  cellType: OrderTableViewCell.self)
-        let navigationController = WooNavigationController(rootViewController: searchViewController)
-
-        present(navigationController, animated: true, completion: nil)
-    }
-
-    @IBAction func displayFiltersAlert() {
-        ServiceLocator.analytics.track(.ordersListFilterTapped)
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = .text
-
-        actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
-        actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
-            self?.statusFilter = nil
-        }
-
-        for orderStatus in currentSiteStatuses {
-            actionSheet.addDefaultActionWithTitle(orderStatus.name) { [weak self] _ in
-                self?.statusFilter = orderStatus
-            }
-        }
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
-        popoverController?.sourceView = self.view
-
-        present(actionSheet, animated: true)
-    }
-
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
+    @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
-        syncOrderStatus()
+        delegate?.ordersViewControllerWillSynchronizeOrders(self)
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
@@ -419,8 +317,6 @@ private extension OrdersViewController {
         ServiceLocator.analytics.track(.ordersListFilterOrSearch,
                                   withProperties: ["filter": newFilter?.slug ?? String(),
                                                    "search": ""])
-        // Display the Filter in the Title
-        refreshTitle()
 
         // Filter right away the cached orders
         refreshResultsPredicate()
@@ -443,24 +339,6 @@ private extension OrdersViewController {
 
         let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
         ServiceLocator.stores.dispatch(action)
-    }
-
-    /// Reset the current status filter if needed (e.g. when changing stores and the currently
-    /// selected filter does not exist in the new store)
-    ///
-    func resetStatusFilterIfNeeded() {
-        guard let statusFilter = statusFilter else {
-            // "All" is the current filter so bail
-            return
-        }
-        guard currentSiteStatuses.isEmpty == false else {
-            self.statusFilter = nil
-            return
-        }
-
-        if !currentSiteStatuses.contains(where: { $0.name == statusFilter.name && $0.slug == statusFilter.slug }) {
-            self.statusFilter = nil
-        }
     }
 }
 
@@ -496,26 +374,6 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
             self.transitionToResultsUpdatedState()
             onCompletion?(error == nil)
-        }
-
-        ServiceLocator.stores.dispatch(action)
-    }
-
-    func syncOrderStatus(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
-            return
-        }
-
-        // First, let's verify our FRC predicate is up to date
-        refreshStatusPredicate()
-
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (_, error) in
-            if let error = error {
-                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
-            }
-            self?.resetStatusFilterIfNeeded()
-            onCompletion?(error)
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -588,8 +446,12 @@ private extension OrdersViewController {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.syncOrderStatus()
-            self?.sync(pageNumber: pageNumber, pageSize: pageSize)
+            guard let self = self else {
+                return
+            }
+
+            self.delegate?.ordersViewControllerWillSynchronizeOrders(self)
+            self.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)
@@ -628,8 +490,12 @@ private extension OrdersViewController {
         overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
         overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
         overlayView.onAction = { [weak self] in
-            self?.statusFilter = nil
+            if let self = self {
+                self.delegate?.ordersViewControllerRequestsToClearStatusFilter(self)
+            }
         }
+
+        overlayView.actionVisible = showsRemoveFilterActionOnFilteredEmptyView
 
         overlayView.attach(to: view)
     }
@@ -722,7 +588,13 @@ extension OrdersViewController: UITableViewDelegate {
             return
         }
 
-        performSegue(withIdentifier: Segues.orderDetails, sender: detailsViewModel(at: indexPath))
+        guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
+            assertionFailure("Expected OrderDetailsViewController to be instantiated")
+            return
+        }
+        orderDetailsVC.viewModel = detailsViewModel(at: indexPath)
+
+        navigationController?.pushViewController(orderDetailsVC, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -819,22 +691,10 @@ private extension OrdersViewController {
 //
 private extension OrdersViewController {
 
-    enum FilterAction {
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let displayAll = NSLocalizedString(
-            "All",
-            comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
-        )
-    }
-
     enum Settings {
         static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
-    }
-
-    enum Segues {
-        static let orderDetails = "ShowOrderDetailsViewController"
     }
 
     enum State {

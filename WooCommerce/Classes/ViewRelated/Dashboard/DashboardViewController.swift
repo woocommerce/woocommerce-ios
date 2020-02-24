@@ -70,6 +70,7 @@ private extension DashboardViewController {
         )
         title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? myStore
         tabBarItem.title = myStore
+        tabBarItem.accessibilityIdentifier = "tab-bar-my-store-item"
     }
 
     private func resetTitle() {
@@ -92,6 +93,7 @@ private extension DashboardViewController {
             "Navigates to Settings.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen."
         )
+        rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
         navigationItem.setRightBarButton(rightBarButton, animated: false)
 
         // Don't show the Dashboard title in the next-view's back button

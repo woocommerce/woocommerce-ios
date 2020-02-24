@@ -26,6 +26,7 @@ final class TopBannerView: UIView {
     private lazy var dismissButton: UIButton = {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.accessibilityIdentifier = "top-banner-view-dismiss-button"
         return button
     }()
 

@@ -1,10 +1,6 @@
 import Foundation
 import Networking
 
-/// Completion block when a media item is exported.
-///
-typealias MediaExportCompletion = (UploadableMedia?, Error?) -> Void
-
 /// Exports media to the local file system for remote upload.
 ///
 protocol MediaExporter {

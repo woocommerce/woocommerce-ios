@@ -6,9 +6,15 @@ final class OrderSearchUICommand: SearchUICommand {
     typealias CellViewModel = OrderSearchCellViewModel
     typealias ResultsControllerModel = StorageOrder
 
+    private lazy var featureFlagService = ServiceLocator.featureFlagService
+
     let searchBarPlaceholder = NSLocalizedString("Search all orders", comment: "Orders Search Placeholder")
 
     let emptyStateText = NSLocalizedString("No Orders found", comment: "Search Orders (Empty State)")
+
+    let searchBarAccessibilityIdentifier = "order-search-screen-search-field"
+
+    let cancelButtonAccessibilityIdentifier = "order-search-screen-cancel-button"
 
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
@@ -26,6 +32,10 @@ final class OrderSearchUICommand: SearchUICommand {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
         return ResultsController<StorageOrder>(storageManager: storageManager, sortedBy: [descriptor])
+    }
+
+    func createStarterViewController() -> UIViewController? {
+        featureFlagService.isFeatureFlagEnabled(.orderListRedesign) ? OrderSearchStarterViewController() : nil
     }
 
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {
@@ -51,11 +61,9 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func didSelectSearchResult(model: Order, from viewController: UIViewController) {
-        let identifier = OrderDetailsViewController.classNameWithoutNamespaces
-        guard let detailsViewController = UIStoryboard.orders.instantiateViewController(withIdentifier: identifier) as? OrderDetailsViewController else {
+        guard let detailsViewController = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
             fatalError()
         }
-
         detailsViewController.viewModel = OrderDetailsViewModel(order: model)
 
         viewController.navigationController?.pushViewController(detailsViewController, animated: true)

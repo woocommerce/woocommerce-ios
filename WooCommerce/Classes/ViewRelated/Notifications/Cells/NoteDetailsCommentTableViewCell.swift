@@ -209,15 +209,19 @@ private extension NoteDetailsCommentTableViewCell {
         spamButton.applyNoteDetailsActionStyle(icon: .spamImage)
         spamButton.setTitle(Spam.normalTitle, for: .normal)
         spamButton.accessibilityLabel = Spam.normalLabel
+        spamButton.accessibilityIdentifier = "single-review-spam-button"
 
         trashButton.applyNoteDetailsActionStyle(icon: .trashImage)
         trashButton.setTitle(Trash.normalTitle, for: .normal)
         trashButton.accessibilityLabel = Trash.normalLabel
+        trashButton.accessibilityIdentifier = "single-review-trash-button"
 
         approvalButton.applyNoteDetailsActionStyle(icon: .checkmarkImage)
         approvalButton.setTitle(Approve.normalTitle, for: .normal)
         approvalButton.setTitle(Approve.selectedTitle, for: .selected)
         approvalButton.accessibilityLabel = Approve.normalLabel
+        approvalButton.accessibilityIdentifier = "single-review-approval-button"
+
     }
 
     func configureTitleLabel() {

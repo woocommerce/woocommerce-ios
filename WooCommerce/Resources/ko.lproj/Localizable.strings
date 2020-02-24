@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-07 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-02-12 15:27:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@(시스템)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@(고객에게)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
@@ -154,7 +154,7 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "댓글 승인";
 
-/* Message title for Save Changes Action Sheet */
+/* Message title for Discard Changes Action Sheet */
 "Are you sure you want to discard these changes?" = "이 변경 사항을 취소하시겠습니까?";
 
 /* Alert message to confirm a user meant to log out. */
@@ -223,8 +223,8 @@
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "링크를 요청할 수 없음";
 
-/* Button title Cancel in Save Changes Action Sheet
-   Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+/* Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "취소";
 
 /* The title of the alert when there is an error updating the product */
@@ -381,7 +381,7 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "크기: %1$@%2$@";
 
-/* Button title Discard Changes in Save Changes Action Sheet */
+/* Button title Discard Changes in Discard Changes Action Sheet */
 "Discard changes" = "변경 사항 취소";
 
 /* Discount label for payment view */
@@ -776,6 +776,9 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "더 보기";
 
+/* Accessibility label for the Edit Product More Options action sheet */
+"More options" = "More options";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "댓글을 스팸으로 이동";
 
@@ -922,7 +925,8 @@
 /* Order notes section title */
 "Order Notes" = "주문 메모";
 
-/* Change order status screen - Screen title */
+/* Change order status screen - Screen title
+   The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "주문 상태";
 
 /* Order Total label for payment view */
@@ -937,8 +941,8 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "순서 있는 목록";
 
-/* Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Default title for Orders List shown when tapping on the Search filter.
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "주문";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -1229,9 +1233,6 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "할인 가격: %@";
 
-/* Button title for Save Changes Action Sheet */
-"Save changes" = "변경 사항 저장";
-
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "판매 일정";
 
@@ -1265,6 +1266,9 @@
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "설정";
+
+/* Button title Share in Edit Product More Options Action Sheet */
+"Share" = "공유";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "워드프레스닷컴 계정에 로그인되어 있는 동안 이용하는 서비스에 대한 정보를 워드프레스의 분석 도구와 공유합니다.";
@@ -1598,6 +1602,9 @@
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "리뷰가 제거되었습니다.";
+
+/* Product price error notice message, when the sale price is added but the regular price is not */
+"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "할인 가격은 정상 가격보다 낮아야 합니다.";

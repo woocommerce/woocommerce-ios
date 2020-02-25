@@ -424,6 +424,12 @@ private extension MainTabBarController {
     }
 
     @objc func reloadProductListVisibility() {
+        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) == false else {
+            // If the `editProducts` feature flag is on, the Products tab is always shown.
+            updateProductsTabVisibility(isVisible: true)
+            return
+        }
+
         guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.productList) else {
             updateProductsTabVisibility(isVisible: false)
             return

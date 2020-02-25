@@ -158,9 +158,15 @@ private extension ProductLoaderViewController {
     ///
     func presentProductDetails(for product: Product) {
 
-        let isFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
+        let action = AppSettingsAction.loadEditProducts { [weak self] isEditProductsEnabled in
+            self?.presentProductDetails(for: product, isEditProductsEnabled: isEditProductsEnabled)
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {
         let viewController: UIViewController
-        if product.productType == .simple && isFeatureFlagOn {
+        if product.productType == .simple && isEditProductsEnabled {
             viewController = ProductFormViewController(product: product, currency: currency)
         } else {
             let viewModel = ProductDetailsViewModel(product: product, currency: currency)

@@ -388,7 +388,7 @@ private extension AppSettingsStore {
 
     func loadEditProducts(onCompletion: (Bool) -> Void) {
         guard let existingData: EditProductsPListWrapper = read(from: productsVisibilityURL) else {
-            onCompletion(false)
+            onCompletion(true)
             return
         }
         onCompletion(existingData.isEnabled)

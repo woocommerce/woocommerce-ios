@@ -17,6 +17,7 @@
 		0225512122FC2F3000D98613 /* OrderStatsV4Interval+Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */; };
 		0225512522FC312400D98613 /* OrderStatsV4Interval+DateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */; };
 		0232372922F7DA6E00715FAB /* StatsTimeRangeV4.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */; };
+		024A36112404E63E009F9659 /* AppSettingsStoreTests+EditProducts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 024A36102404E63E009F9659 /* AppSettingsStoreTests+EditProducts.swift */; };
 		025CA2CA238F515600B05C81 /* ProductShippingClassStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA2C9238F515600B05C81 /* ProductShippingClassStore.swift */; };
 		025CA2CC238F518600B05C81 /* ProductShippingClassAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA2CB238F518600B05C81 /* ProductShippingClassAction.swift */; };
 		025CA2CE238F53CB00B05C81 /* ProductShippingClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 025CA2CD238F53CB00B05C81 /* ProductShippingClass+ReadOnlyConvertible.swift */; };
@@ -214,6 +215,7 @@
 		0225512022FC2F3000D98613 /* OrderStatsV4Interval+Date.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+Date.swift"; sourceTree = "<group>"; };
 		0225512422FC312400D98613 /* OrderStatsV4Interval+DateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "OrderStatsV4Interval+DateTests.swift"; sourceTree = "<group>"; };
 		0232372822F7DA6E00715FAB /* StatsTimeRangeV4.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsTimeRangeV4.swift; sourceTree = "<group>"; };
+		024A36102404E63E009F9659 /* AppSettingsStoreTests+EditProducts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "AppSettingsStoreTests+EditProducts.swift"; sourceTree = "<group>"; };
 		025CA2C9238F515600B05C81 /* ProductShippingClassStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClassStore.swift; sourceTree = "<group>"; };
 		025CA2CB238F518600B05C81 /* ProductShippingClassAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductShippingClassAction.swift; sourceTree = "<group>"; };
 		025CA2CD238F53CB00B05C81 /* ProductShippingClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductShippingClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
@@ -672,6 +674,7 @@
 			isa = PBXGroup;
 			children = (
 				D87F615D2265B1BC0031A13B /* AppSettingsStoreTests.swift */,
+				024A36102404E63E009F9659 /* AppSettingsStoreTests+EditProducts.swift */,
 				0202B6982387B01500F3EBE0 /* AppSettingsStoreTests+ProductsVisibility.swift */,
 				02DA641A2313D6D200284168 /* AppSettingsStoreTests+StatsVersion.swift */,
 				B5BC736720D1AA8F00B5B6FA /* AccountStoreTests.swift */,
@@ -1187,6 +1190,7 @@
 				74A7688E20D45ED400F9D437 /* OrderStoreTests.swift in Sources */,
 				02FF056723DEB2180058E6E7 /* MediaStoreTests.swift in Sources */,
 				B5C9DE272087FF20006B910A /* MockupAcount.swift in Sources */,
+				024A36112404E63E009F9659 /* AppSettingsStoreTests+EditProducts.swift in Sources */,
 				02DA641B2313D6D200284168 /* AppSettingsStoreTests+StatsVersion.swift in Sources */,
 				026D52C0238235930092AE05 /* ProductVariationStoreTests.swift in Sources */,
 				7492FAE1217FB87100ED2C69 /* SettingStoreTests.swift in Sources */,

@@ -1,3 +1,6 @@
+3.8
+-----
+ 
 3.7
 -----
 - Dashboard: now tapping on a product on "Top Performers" section open the product detail

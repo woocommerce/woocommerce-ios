@@ -1,0 +1,69 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/wpcom/v2/sites/161477129/stats/orders/",
+        "queryParameters": {
+            "unit": {
+                "equalTo": "day"
+            },
+            "quantity": {
+                "matches": "[0-9]+"
+            },
+            "date": {
+                "matches": "(.*)"
+            },
+            "_fields": {
+                "matches": "date,unit,quantity,fields,data,total_gross_sales,total_net_sales,total_orders,total_products,avg_gross_sales,avg_net_sales,avg_orders,avg_products"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "date": "{{now format='yyyy-MM-dd'}}",
+            "unit": "day",
+            "quantity": "30",
+            "fields": ["period", "orders", "products", "coupons", "coupon_discount", "total_sales", "total_tax", "total_shipping", "total_shipping_tax", "total_refund", "total_tax_refund", "total_shipping_refund", "total_shipping_tax_refund", "currency", "gross_sales", "net_sales", "avg_order_value", "avg_products_per_order"],
+            "data": [
+                ["{{now offset='-29 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 500, 0, 0, 0],
+                ["{{now offset='-28 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 520, 0, 0, 0],
+                ["{{now offset='-27 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 560, 0, 0, 0],
+                ["{{now offset='-26 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 550, 0, 0, 0],
+                ["{{now offset='-25 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 580, 0, 0, 0],
+                ["{{now offset='-24 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 630, 0, 0, 0],
+                ["{{now offset='-23 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 600, 0, 0, 0],
+                ["{{now offset='-22 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 640, 0, 0, 0],
+                ["{{now offset='-21 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 680, 0, 0, 0],
+                ["{{now offset='-20 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 700, 0, 0, 0],
+                ["{{now offset='-19 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 750, 0, 0, 0],
+                ["{{now offset='-18 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 780, 0, 0, 0],
+                ["{{now offset='-17 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 770, 0, 0, 0],
+                ["{{now offset='-16 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 780, 0, 0, 0],
+                ["{{now offset='-15 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 800, 0, 0, 0],
+                ["{{now offset='-14 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 770, 0, 0, 0],
+                ["{{now offset='-13 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 730, 0, 0, 0],
+                ["{{now offset='-12 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 660, 0, 0, 0],
+                ["{{now offset='-11 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 620, 0, 0, 0],
+                ["{{now offset='-10 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 570, 0, 0, 0],
+                ["{{now offset='-9 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 530, 0, 0, 0],
+                ["{{now offset='-8 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 560, 0, 0, 0],
+                ["{{now offset='-7 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 550, 0, 0, 0],
+                ["{{now offset='-6 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 680, 0, 0, 0],
+                ["{{now offset='-5 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 700, 0, 0, 0],
+                ["{{now offset='-4 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 740, 0, 0, 0],
+                ["{{now offset='-3 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 840, 0, 0, 0],
+                ["{{now offset='-2 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 860, 0, 0, 0],
+                ["{{now offset='-1 days' format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 880, 0, 0, 0],
+                ["{{now format='yyyy-MM-dd'}}", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 710, 0, 0, 0]
+            ],
+            "total_gross_sales": 20240,
+            "total_net_sales": 0,
+            "total_orders": 62,
+            "total_products": 0,
+            "avg_gross_sales": 0,
+            "avg_net_sales": 0,
+            "avg_orders": 0,
+            "avg_products": 0
+        }
+    }
+}

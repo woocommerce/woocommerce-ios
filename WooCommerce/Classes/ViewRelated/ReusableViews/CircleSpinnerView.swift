@@ -57,7 +57,13 @@ final class CircleSpinnerView: UIView {
 
     override func didMoveToWindow() {
         super.didMoveToWindow()
+
+        guard window != nil else {
+            return
+        }
+
         animate()
+        startListeningToNotifications()
     }
 
     // MARK: Public interface
@@ -86,6 +92,19 @@ private extension CircleSpinnerView {
         layer.fillColor = nil
         layer.lineWidth = Constants.lineWidth
         layer.strokeEnd = Constants.strokeEnd
+    }
+}
+
+// MARK: Notifications
+//
+private extension CircleSpinnerView {
+    func startListeningToNotifications() {
+        let nc = NotificationCenter.default
+        nc.addObserver(self, selector: #selector(onAppDidBecomeActive), name: UIApplication.didBecomeActiveNotification, object: nil)
+    }
+
+    @objc func onAppDidBecomeActive() {
+        animate()
     }
 }
 

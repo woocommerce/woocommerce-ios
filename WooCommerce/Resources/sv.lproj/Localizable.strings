@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-06 12:47:52+0000 */
+/* Translation-Revision-Date: 2020-02-22 00:54:36+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (System)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (Till kund)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ – %2$@ (till kund)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ lämnade en recension om %2$@";
@@ -154,14 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "Godkänner kommentaren";
 
-/* Message title for Save Changes Action Sheet */
-"Are you sure you want to discard these changes?" = "Är du säker på att du vill kasta dessa ändringar?";
+/* Message title for Discard Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "Är du säker på att du vill åsidosätta de här ändringarna?";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Är du säker på att du vill logga ut från kontot %@?";
 
 /* Message on the alert when the user taps to delete a Product image */
-"Are you sure you want to remove this image?" = "Är du säker på att du vill ta bort denna bild?";
+"Are you sure you want to remove this image?" = "Är du säker på att du vill ta bort den här bilden?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Autentiserar";
@@ -218,20 +218,20 @@
 "Call" = "Ring";
 
 /* Error message format when capturing a unsupported media type with device camera */
-"Camera capture should not support media type: %@" = "Camera capture should not support media type: %@";
+"Camera capture should not support media type: %@" = "Kamerabildtagning ska inte stödja mediatypen: %@";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Kan inte begära länk";
 
-/* Button title Cancel in Save Changes Action Sheet
-   Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+/* Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "Avbryt";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Kan inte uppdatera produkten";
 
 /* Title of the alert when there is an error uploading image(s) */
-"Cannot upload image" = "Kan inte ladda upp bild";
+"Cannot upload image" = "Det går inte att ladda upp bilden";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Håll koll på dina favoritwebbplatser och delta i diskussionen varsomhelt, närsomhelst.";
@@ -240,7 +240,7 @@
 "Certificate error" = "Certifikat-fel";
 
 /* Menu option for selecting media from the device's photo library. */
-"Choose from device" = "Välj från enhet";
+"Choose from device" = "Välj från enheten";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Samla in information";
@@ -381,8 +381,8 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Dimensioner: %1$@%2$@";
 
-/* Button title Discard Changes in Save Changes Action Sheet */
-"Discard changes" = "Kasta ändringar";
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Discard changes" = "Åsidosätt ändringarna";
 
 /* Discount label for payment view */
 "Discount" = "Rabatt";
@@ -776,6 +776,9 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "Mer";
 
+/* Accessibility label for the Edit Product More Options action sheet */
+"More options" = "Fler alternativ";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Markerar kommentaren som skräppost";
 
@@ -922,7 +925,8 @@
 /* Order notes section title */
 "Order Notes" = "Ordernoteringar";
 
-/* Change order status screen - Screen title */
+/* Change order status screen - Screen title
+   The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "Orderstatus";
 
 /* Order Total label for payment view */
@@ -937,8 +941,8 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Sorterad lista";
 
-/* Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Default title for Orders List shown when tapping on the Search filter.
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Ordrar";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -1026,7 +1030,7 @@
 "Please log out before connecting to a different wordpress.com site" = "Logga ut innan du ansluter till någon annan webbplats på wordpress.com";
 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
-"Please make sure the app can access Photos in device settings" = "Se till att appen kan komma åt foton i enhetens inställningar";
+"Please make sure the app can access Photos in device settings" = "Se till att appen har åtkomst till Foton i enhetens inställningar";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Öppna ditt e-postprogram och hitta ett brev från WordPress.com.";
@@ -1229,9 +1233,6 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "Reapris: %@";
 
-/* Button title for Save Changes Action Sheet */
-"Save changes" = "Spara ändringar";
-
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "Schemalägg rea";
 
@@ -1265,6 +1266,9 @@
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "Inställningar";
+
+/* Button title Share in Edit Product More Options Action Sheet */
+"Share" = "Dela";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Dela information med vårt analysverktyg om din användning av olika tjänster medan du är inloggad till ditt konto på WordPress.com.";
@@ -1599,8 +1603,11 @@
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "Recensionen har tagits bort";
 
+/* Product price error notice message, when the sale price is added but the regular price is not */
+"The sale price can't be added without the regular price." = "Reapriset kan inte läggas till utan ordinarie pris.";
+
 /* Product price error notice message, when the sale price is higher than the regular price */
-"The sale price should be lower than the regular price." = "Reapriset ska vara lägre än det ordinarie priset.";
+"The sale price should be lower than the regular price." = "Reapriset ska vara lägre än ordinarie pris.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "Servern skickade tillbaka ett tomt svar. Detta betyder vanligtvis att du behöver öka minnesgränsen för din webbplats.";

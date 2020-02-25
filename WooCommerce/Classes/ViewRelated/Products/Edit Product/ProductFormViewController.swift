@@ -10,7 +10,9 @@ final class ProductFormViewController: UIViewController {
         didSet {
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
-            tableViewDataSource.configureActions(onAddImage: showProductImages)
+            tableViewDataSource.configureActions(onAddImage: { [weak self] in
+                self?.showProductImages()
+            })
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
         }
@@ -31,7 +33,9 @@ final class ProductFormViewController: UIViewController {
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel)
         super.init(nibName: nil, bundle: nil)
-        tableViewDataSource.configureActions(onAddImage: showProductImages)
+        tableViewDataSource.configureActions(onAddImage: { [weak self] in
+            self?.showProductImages()
+        })
     }
 
     required init?(coder: NSCoder) {
@@ -168,6 +172,11 @@ private extension ProductFormViewController {
         }
 
         SharingHelper.shareURL(url: url, title: product.name, from: view, in: self)
+    }
+
+    func displayProductSettings() {
+        let viewController = ProductSettingsViewController(product: product)
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 
@@ -440,6 +449,10 @@ private extension ProductFormViewController {
             self?.shareProduct()
         }
 
+        actionSheet.addDefaultActionWithTitle(ActionSheetStrings.productSettings) { [weak self] _ in
+            self?.displayProductSettings()
+        }
+
         actionSheet.addCancelActionWithTitle(ActionSheetStrings.cancel) { _ in
         }
 
@@ -452,6 +465,7 @@ private extension ProductFormViewController {
 
     enum ActionSheetStrings {
         static let share = NSLocalizedString("Share", comment: "Button title Share in Edit Product More Options Action Sheet")
+        static let productSettings = NSLocalizedString("Product Settings", comment: "Button title Product Settings in Edit Product More Options Action Sheet")
         static let cancel = NSLocalizedString("Cancel", comment: "Button title Cancel in Edit Product More Options Action Sheet")
     }
 }

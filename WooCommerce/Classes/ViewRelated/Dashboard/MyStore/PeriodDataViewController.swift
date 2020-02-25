@@ -39,24 +39,8 @@ class PeriodDataViewController: UIViewController {
 
     private var lastUpdatedDate: Date?
 
-    private var revenueItems: [Double] {
-        return orderStats?.items?.map({ $0.grossSales }) ?? []
-    }
-
-    private var yAxisMinimum: String {
-        guard let orderStats = orderStats else {
-            return ""
-        }
-        let min = revenueItems.min() ?? 0
-        return CurrencyFormatter().formatHumanReadableAmount(String(min), with: orderStats.currencyCode) ?? ""
-    }
-
-    private var yAxisMaximum: String {
-        guard let orderStats = orderStats else {
-            return ""
-        }
-        let max = revenueItems.max() ?? 0
-        return CurrencyFormatter().formatHumanReadableAmount(String(max), with: orderStats.currencyCode) ?? ""
+    private var grossSales: [Double] {
+        (orderStats?.items ?? []).map(\.grossSales)
     }
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
@@ -106,6 +90,8 @@ class PeriodDataViewController: UIViewController {
         return lastUpdatedDate.relativelyFormattedUpdateString
     }
 
+    // MARK: x/y-Axis Values
+
     private var xAxisMinimum: String {
         guard let item = orderStats?.items?.first else {
             return ""
@@ -118,6 +104,22 @@ class PeriodDataViewController: UIViewController {
             return ""
         }
         return formattedAxisPeriodString(for: item)
+    }
+
+    private var yAxisMinimum: String {
+        guard let orderStats = orderStats else {
+            return ""
+        }
+        let min = grossSales.min() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(min), with: orderStats.currencyCode) ?? ""
+    }
+
+    private var yAxisMaximum: String {
+        guard let orderStats = orderStats else {
+            return ""
+        }
+        let max = grossSales.max() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(max), with: orderStats.currencyCode) ?? ""
     }
 
     // MARK: - Initialization

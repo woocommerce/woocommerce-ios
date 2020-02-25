@@ -80,20 +80,6 @@ class StoreStatsV4PeriodViewController: UIViewController {
         return orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
     }
 
-    private var yAxisMinimum: String {
-        let min = revenueItems.min() ?? 0
-        return CurrencyFormatter().formatHumanReadableAmount(String(min),
-                                                             with: currencyCode,
-                                                             roundSmallNumbers: false) ?? String()
-    }
-
-    private var yAxisMaximum: String {
-        let max = revenueItems.max() ?? 0
-        return CurrencyFormatter().formatHumanReadableAmount(String(max),
-                                                             with: currencyCode,
-                                                             roundSmallNumbers: false) ?? String()
-    }
-
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
@@ -129,6 +115,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
         return lastUpdatedDate.relativelyFormattedUpdateString
     }
 
+    // MARK: x/y-Axis Values
+
     private var xAxisMinimum: String {
         guard let item = orderStatsIntervals.first else {
             return ""
@@ -141,6 +129,20 @@ class StoreStatsV4PeriodViewController: UIViewController {
             return ""
         }
         return formattedAxisPeriodString(for: item)
+    }
+
+    private var yAxisMinimum: String {
+        let min = revenueItems.min() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(min),
+                                                             with: currencyCode,
+                                                             roundSmallNumbers: false) ?? String()
+    }
+
+    private var yAxisMaximum: String {
+        let max = revenueItems.max() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(max),
+                                                             with: currencyCode,
+                                                             roundSmallNumbers: false) ?? String()
     }
 
     // MARK: - Initialization
@@ -707,7 +709,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func hasRevenue() -> Bool {
-        return revenueItems.map({ $0 != 0 }).contains(true)
+        return revenueItems.contains { $0 != 0 }
     }
 
     func reloadLastUpdatedField() {

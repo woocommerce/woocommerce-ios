@@ -74,14 +74,6 @@ public enum AppSettingsAction: Action {
     ///
     case setProductsVisibility(isVisible: Bool, onCompletion: () -> Void)
 
-    /// Loads whether Edit Products is enabled given the latest app settings
-    ///
-    case loadEditProducts(onCompletion: (_ isEnabled: Bool) -> Void)
-
-    /// Sets the user preferred Edit Products functionality
-    ///
-    case setEditProducts(isEnabled: Bool, onCompletion: () -> Void)
-
     /// Clears all the states related to stats version
     ///
     case resetStatsVersionStates

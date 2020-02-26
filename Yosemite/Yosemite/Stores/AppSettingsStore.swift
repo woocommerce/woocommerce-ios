@@ -65,13 +65,6 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.productsVisibilityFileName)
     }()
 
-    /// URL to the plist file that we use to determine the Edit Products functionality.
-    ///
-    private lazy var editProductsURL: URL = {
-        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
-        return documents!.appendingPathComponent(Constants.editProductsFileName)
-    }()
-
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -124,10 +117,6 @@ public class AppSettingsStore: Store {
             loadProductsVisibility(onCompletion: onCompletion)
         case .setProductsVisibility(let isVisible, let onCompletion):
             setProductsVisibility(isVisible: isVisible, onCompletion: onCompletion)
-        case .loadEditProducts(let onCompletion):
-            loadEditProducts(onCompletion: onCompletion)
-        case .setEditProducts(let isEnabled, let onCompletion):
-            setEditProducts(isEnabled: isEnabled, onCompletion: onCompletion)
         case .resetStatsVersionStates:
             resetStatsVersionStates()
         }
@@ -386,25 +375,6 @@ private extension AppSettingsStore {
         }
     }
 
-    func loadEditProducts(onCompletion: (Bool) -> Void) {
-        guard let existingData: EditProductsPListWrapper = read(from: productsVisibilityURL) else {
-            onCompletion(true)
-            return
-        }
-        onCompletion(existingData.isEnabled)
-    }
-
-    func setEditProducts(isEnabled: Bool, onCompletion: () -> Void) {
-        let fileURL = productsVisibilityURL
-        let visibilityWrapper = EditProductsPListWrapper(isEnabled: isEnabled)
-        write(visibilityWrapper, to: fileURL) { error in
-            if let error = error {
-                DDLogError("⛔️ Saving the Edit Products preference to \(isEnabled) failed: \(error)")
-            }
-            onCompletion()
-        }
-    }
-
     func resetStatsVersionStates() {
         do {
             try fileStorage.deleteFile(at: statsVersionBannerVisibilityURL)
@@ -470,5 +440,4 @@ private enum Constants {
     static let statsVersionEligibleFileName = "stats-version-eligible.plist"
     static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
     static let productsVisibilityFileName = "products-visibility.plist"
-    static let editProductsFileName = "edit-products.plist"
 }

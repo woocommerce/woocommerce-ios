@@ -192,32 +192,18 @@ private extension BetaFeaturesViewController {
 
         cell.title = title
 
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
-            let action = AppSettingsAction.loadEditProducts { isEnabled in
-                cell.isOn = isEnabled
+        let action = AppSettingsAction.loadProductsVisibility() { isVisible in
+            cell.isOn = isVisible
+        }
+        ServiceLocator.stores.dispatch(action)
+
+        cell.onChange = { isSwitchOn in
+            ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
+
+            let action = AppSettingsAction.setProductsVisibility(isVisible: isSwitchOn) {
+                NotificationCenter.default.post(name: .ProductsVisibilityDidChange, object: self)
             }
             ServiceLocator.stores.dispatch(action)
-
-            cell.onChange = { isSwitchOn in
-                ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
-
-                let action = AppSettingsAction.setEditProducts(isEnabled: isSwitchOn) {}
-                ServiceLocator.stores.dispatch(action)
-            }
-        } else {
-            let action = AppSettingsAction.loadProductsVisibility() { isVisible in
-                cell.isOn = isVisible
-            }
-            ServiceLocator.stores.dispatch(action)
-
-            cell.onChange = { isSwitchOn in
-                ServiceLocator.analytics.track(.settingsBetaFeaturesProductsToggled)
-
-                let action = AppSettingsAction.setProductsVisibility(isVisible: isSwitchOn) {
-                    NotificationCenter.default.post(name: .ProductsVisibilityDidChange, object: self)
-                }
-                ServiceLocator.stores.dispatch(action)
-            }
         }
     }
 

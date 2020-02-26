@@ -7,7 +7,7 @@ public class MediaRemote: Remote {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
-    ///   - pageFirstIndex: The index of the first page from the caller's perspective.
+    ///   - pageFirstIndex: The index of the first page from the caller's perspective, which `pageNumber` is based on.
     ///   - pageNumber: The index of the page of media data to load from.
     ///   - pageSize: The number of media items to return.
     ///   - completion: Closure to be executed upon completion.

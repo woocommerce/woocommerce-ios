@@ -33,7 +33,6 @@ class StoreTableViewCell: UITableViewCell {
         }
         set {
             nameLabel?.text = newValue
-            nameLabel?.accessibilityIdentifier = "name-label"
         }
     }
 
@@ -45,7 +44,6 @@ class StoreTableViewCell: UITableViewCell {
         }
         set {
             urlLabel?.text = newValue
-            urlLabel?.accessibilityIdentifier = "url-label"
         }
     }
 
@@ -101,9 +99,11 @@ private extension StoreTableViewCell {
 
     func configureNameLabel() {
         nameLabel.textColor = .text
+        nameLabel.accessibilityIdentifier = "name-label"
     }
 
     func configureUrlLabel() {
         urlLabel.textColor = .textSubtle
+        urlLabel.accessibilityIdentifier = "url-label"
     }
 }

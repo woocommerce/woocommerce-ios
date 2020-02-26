@@ -1,0 +1,225 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "matches": "/wc/v3/products/reviews(.*)"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": [{
+                "id": 6163,
+                "date_created": "{{#assign 'customformat'}}yyyy-MM-dd'T'HH:mm:ss{{/assign}}{{now format=customformat}}",
+                "date_created_gmt": "{{now format=customformat}}",
+                "product_id": 2132,
+                "status": "hold",
+                "reviewer": "Paytin Lubin",
+                "reviewer_email": "pa@example.com",
+                "review": "<p>Travel in style!<\/p>\n",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/c1204ffc1a5bc3086f26cd3b23389e16?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/c1204ffc1a5bc3086f26cd3b23389e16?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/c1204ffc1a5bc3086f26cd3b23389e16?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6163"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2132"
+                    }]
+                }
+            }, {
+                "id": 6162,
+                "date_created": "{{now offset='-1 days' format=customformat}}",
+                "date_created_gmt": "{{now offset='-1 days' format=customformat}}",
+                "product_id": 2132,
+                "status": "hold",
+                "reviewer": "Lydia Donin",
+                "reviewer_email": "lydia@example.com",
+                "review": "<p>I love these shades! They are super sturdy and stylish at the same time. I\u2019m planning to buy them again for a birthday gift next month.<\/p>\n",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/54d8a49ef3170cf44d2bdc52133d52cf?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/54d8a49ef3170cf44d2bdc52133d52cf?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/54d8a49ef3170cf44d2bdc52133d52cf?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6162"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2132"
+                    }]
+                }
+            }, {
+                "id": 6161,
+                "date_created": "{{now offset='-1 days' format=customformat}}",
+                "date_created_gmt": "{{now offset='-1 days' format=customformat}}",
+                "product_id": 2131,
+                "status": "hold",
+                "reviewer": "Mira Workman",
+                "reviewer_email": "mira@example.com",
+                "review": "<p>Can\u2019t go outside without them anymore!<\/p>\n",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/eb0ecee9cd38f0e1feb4aa66a515b957?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/eb0ecee9cd38f0e1feb4aa66a515b957?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/eb0ecee9cd38f0e1feb4aa66a515b957?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6161"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2131"
+                    }]
+                }
+            }, {
+                "id": 6164,
+                "date_created": "{{now offset='-4 days' format=customformat}}",
+                "date_created_gmt": "{{now offset='-4 days' format=customformat}}",
+                "product_id": 2130,
+                "status": "approved",
+                "reviewer": "Marcus Curtis",
+                "reviewer_email": "marcu@example.com",
+                "review": "<p>Such a great product!<\/p>\n",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/01164960f041ff6fe4dff330968194a4?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/01164960f041ff6fe4dff330968194a4?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/01164960f041ff6fe4dff330968194a4?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6164"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2130"
+                    }]
+                }
+            }, {
+                "id": 6156,
+                "date_created": "{{now offset='-5 days' format=customformat}}",
+                "date_created_gmt": "{{now offset='-5 days' format=customformat}}",
+                "product_id": 2130,
+                "status": "approved",
+                "reviewer": "Lucy Liu",
+                "reviewer_email": "lucy@example.com",
+                "review": "<p>Great UV protection, I've dropped them a few times and they are still holding up perfectly.<\/p>\n",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/7c07b96537fbe2512c7a08fce2f431e4?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/7c07b96537fbe2512c7a08fce2f431e4?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/7c07b96537fbe2512c7a08fce2f431e4?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6156"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2130"
+                    }],
+                    "reviewer": [{
+                        "embeddable": true,
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wp\/v2\/users\/742102"
+                    }]
+                }
+            }, {
+                "id": 6154,
+                "date_created": "{{now offset='-7 days' format=customformat}}",
+                "date_created_gmt": "{{now offset='-7 days' format=customformat}}",
+                "product_id": 2132,
+                "status": "approved",
+                "reviewer": "Wang King",
+                "reviewer_email": "w@example.com",
+                "review": "<p>I love these shades! They are super sturdy and stylish at the same time. I'm planning to buy them again for a birthday gift next month.<\/p>\n",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/1683ce7f573f1af1584ea5b33bbf0e19?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/1683ce7f573f1af1584ea5b33bbf0e19?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/1683ce7f573f1af1584ea5b33bbf0e19?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6154"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2132"
+                    }],
+                    "reviewer": [{
+                        "embeddable": true,
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wp\/v2\/users\/742102"
+                    }]
+                }
+            }, {
+                "id": 6155,
+                "date_created": "{{now offset='-7 days' format=customformat}}",
+                "date_created_gmt": "{{now offset='-7 days' format=customformat}}",
+                "product_id": 2131,
+                "status": "approved",
+                "reviewer": "Mathilde Gerard",
+                "reviewer_email": "m@example.com",
+                "review": "<p>Can't go outside without them anymore!<\/p>\n",
+                "rating": 5,
+                "verified": false,
+                "reviewer_avatar_urls": {
+                    "24": "https:\/\/secure.gravatar.com\/avatar\/e4ba34574a801931a8fc2913a12bf6f0?s=24&d=identicon&r=g",
+                    "48": "https:\/\/secure.gravatar.com\/avatar\/e4ba34574a801931a8fc2913a12bf6f0?s=48&d=identicon&r=g",
+                    "96": "https:\/\/secure.gravatar.com\/avatar\/e4ba34574a801931a8fc2913a12bf6f0?s=96&d=identicon&r=g"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews\/6155"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/reviews"
+                    }],
+                    "up": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/products\/2131"
+                    }],
+                    "reviewer": [{
+                        "embeddable": true,
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wp\/v2\/users\/742102"
+                    }]
+                }
+            }]
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

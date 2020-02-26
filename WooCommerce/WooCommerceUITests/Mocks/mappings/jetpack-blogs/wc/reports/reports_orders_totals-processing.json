@@ -1,0 +1,52 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "equalTo": "/wc/v3/reports/orders/totals&_method=get&status=processing"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": [{
+                "slug": "pending",
+                "name": "Pending payment",
+                "total": 4
+            }, {
+                "slug": "processing",
+                "name": "Processing",
+                "total": 4
+            }, {
+                "slug": "on-hold",
+                "name": "On hold",
+                "total": 0
+            }, {
+                "slug": "completed",
+                "name": "Completed",
+                "total": 13
+            }, {
+                "slug": "cancelled",
+                "name": "Cancelled",
+                "total": 0
+            }, {
+                "slug": "refunded",
+                "name": "Refunded",
+                "total": 0
+            }, {
+                "slug": "failed",
+                "name": "Failed",
+                "total": 0
+            }]
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

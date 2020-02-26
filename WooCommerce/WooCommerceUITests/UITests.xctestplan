@@ -1,0 +1,24 @@
+{
+  "configurations" : [
+    {
+      "id" : "DA512AA1-66D1-4829-BC02-EEFD0E226DE7",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:WooCommerce.xcodeproj",
+        "identifier" : "CCDC49C923FFFFF4003166BA",
+        "name" : "WooCommerceUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

@@ -125,7 +125,7 @@ CLOBBER << "vendor"
 
 desc "Mocks"
 task :mocks do
-  sh "./WooCommerce/WooCommerceScreenshots/Mocks/scripts/start.sh"
+  sh "./WooCommerce/WooCommerceUITests/Mocks/scripts/start.sh"
 end
 
 desc "Build #{XCODE_SCHEME}"

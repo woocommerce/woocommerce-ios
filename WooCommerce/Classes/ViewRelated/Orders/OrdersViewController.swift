@@ -241,6 +241,8 @@ private extension OrdersViewController {
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+        tableView.estimatedSectionHeaderHeight = Settings.estimatedHeaderHeight
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
     }
 
     /// Setup: Ghostable TableView
@@ -564,15 +566,6 @@ extension OrdersViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension OrdersViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return Settings.estimatedHeaderHeight
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return estimatedRowHeights[indexPath] ?? Settings.estimatedRowHeight
     }

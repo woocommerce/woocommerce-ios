@@ -157,7 +157,7 @@ class OrdersViewController: UIViewController {
 
         refreshResultsPredicate()
         refreshStatusPredicate()
-        registerTableViewCells()
+        registerTableViewHeadersAndCells()
 
         configureSyncingCoordinator()
         configureTableView()
@@ -265,15 +265,18 @@ private extension OrdersViewController {
         ghostableTableView.isScrollEnabled = false
     }
 
-    /// Registers all of the available TableViewCells
+    /// Registers all of the available table view cells and headers
     ///
-    func registerTableViewCells() {
+    func registerTableViewHeadersAndCells() {
         let cells = [ OrderTableViewCell.self ]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
             ghostableTableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
+
+        let headerType = TwoColumnSectionHeaderView.self
+        tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
     }
 }
 
@@ -557,9 +560,19 @@ extension OrdersViewController: UITableViewDataSource {
         return cell
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let rawAge = resultsController.sections[section].name
-        return Age(rawValue: rawAge)?.description
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let reuseIdentifier = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? TwoColumnSectionHeaderView else {
+            return nil
+        }
+
+        header.leftText = {
+            let rawAge = resultsController.sections[section].name
+            return Age(rawValue: rawAge)?.description
+        }()
+        header.rightText = nil
+
+        return header
     }
 }
 

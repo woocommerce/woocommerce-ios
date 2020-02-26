@@ -210,6 +210,10 @@ extension ProductFormViewController: UITableViewDelegate {
             case .inventory:
                 ServiceLocator.analytics.track(.productDetailViewInventorySettingsTapped)
                 editInventorySettings()
+            case .briefDescription:
+                // TODO-1879: Edit Products M2 analytics
+                editBriefDescription()
+                break
             }
         }
     }
@@ -432,6 +436,30 @@ private extension ProductFormViewController {
                                                                stockQuantity: data.stockQuantity,
                                                                backordersSetting: data.backordersSetting,
                                                                stockStatus: data.stockStatus)
+    }
+}
+
+// MARK: Action - Edit Product Brief Description (Short Description)
+//
+private extension ProductFormViewController {
+    func editBriefDescription() {
+        let editorViewController = EditorFactory().productBriefDescriptionEditor(product: product) { [weak self] content in
+            self?.onEditBriefDescriptionCompletion(newBriefDescription: content)
+        }
+        navigationController?.pushViewController(editorViewController, animated: true)
+    }
+
+    func onEditBriefDescriptionCompletion(newBriefDescription: String) {
+        defer {
+            navigationController?.popViewController(animated: true)
+        }
+        let hasChangedData = newBriefDescription != product.briefDescription
+        // TODO-1879: Edit Products M2 analytics
+
+        guard hasChangedData else {
+            return
+        }
+        self.product = productUpdater.briefDescriptionUpdated(briefDescription: newBriefDescription)
     }
 }
 

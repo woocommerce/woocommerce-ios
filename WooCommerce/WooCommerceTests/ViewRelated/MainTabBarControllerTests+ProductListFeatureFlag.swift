@@ -54,20 +54,3 @@ class MainTabBarControllerTests: XCTestCase {
     }
 
 }
-
-private struct MockFeatureFlagService: FeatureFlagService {
-    var isProductListFeatureOn: Bool = false
-
-    init(isProductListFeatureOn: Bool) {
-        self.isProductListFeatureOn = isProductListFeatureOn
-    }
-
-    func isFeatureFlagEnabled(_ featureFlag: FeatureFlag) -> Bool {
-        switch featureFlag {
-        case .productList:
-            return isProductListFeatureOn
-        default:
-            return false
-        }
-    }
-}

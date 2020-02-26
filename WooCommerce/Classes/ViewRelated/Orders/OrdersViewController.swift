@@ -243,6 +243,7 @@ private extension OrdersViewController {
         tableView.tableFooterView = footerSpinnerView
         tableView.estimatedSectionHeaderHeight = Settings.estimatedHeaderHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.sectionFooterHeight = .leastNonzeroMagnitude
     }
 
     /// Setup: Ghostable TableView

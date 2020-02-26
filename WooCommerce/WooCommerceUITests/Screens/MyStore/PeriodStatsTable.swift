@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-class PeriodStatsTable: BaseScreen {
+final class PeriodStatsTable: BaseScreen {
 
     struct ElementStringIDs {
         static let daysTab = "period-data-granularity-day-tab"
@@ -11,10 +11,10 @@ class PeriodStatsTable: BaseScreen {
     }
 
 
-    let daysTab = XCUIApplication().cells[ElementStringIDs.daysTab]
-    let weeksTab = XCUIApplication().cells[ElementStringIDs.weeksTab]
-    let monthsTab = XCUIApplication().cells[ElementStringIDs.monthsTab]
-    let yearsTab = XCUIApplication().cells[ElementStringIDs.yearsTab]
+    private let daysTab = XCUIApplication().cells[ElementStringIDs.daysTab]
+    private let weeksTab = XCUIApplication().cells[ElementStringIDs.weeksTab]
+    private let monthsTab = XCUIApplication().cells[ElementStringIDs.monthsTab]
+    private let yearsTab = XCUIApplication().cells[ElementStringIDs.yearsTab]
 
     init() {
 

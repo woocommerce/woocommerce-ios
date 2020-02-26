@@ -6,9 +6,9 @@ private struct ElementStringIDs {
     static let linkButton = "Send Link Button"
 }
 
-class LinkOrPasswordScreen: BaseScreen {
-    let passwordOption: XCUIElement
-    let linkButton: XCUIElement
+final class LinkOrPasswordScreen: BaseScreen {
+    private let passwordOption: XCUIElement
+    private let linkButton: XCUIElement
 
     init() {
         passwordOption = XCUIApplication().buttons[ElementStringIDs.passwordOption]

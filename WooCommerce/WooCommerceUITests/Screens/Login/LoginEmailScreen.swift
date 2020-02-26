@@ -8,11 +8,11 @@ private struct ElementStringIDs {
     static let siteAddressButton = "Self Hosted Login Button"
 }
 
-class LoginEmailScreen: BaseScreen {
-    let navBar: XCUIElement
-    let emailTextField: XCUIElement
-    let nextButton: XCUIElement
-    let siteAddressButton: XCUIElement
+final class LoginEmailScreen: BaseScreen {
+    private let navBar: XCUIElement
+    private let emailTextField: XCUIElement
+    private let nextButton: XCUIElement
+    private let siteAddressButton: XCUIElement
 
     init() {
         let app = XCUIApplication()

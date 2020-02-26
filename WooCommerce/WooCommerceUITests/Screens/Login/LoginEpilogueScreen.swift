@@ -7,10 +7,10 @@ private struct ElementStringIDs {
     static let continueButton = "login-epilogue-continue-button"
 }
 
-class LoginEpilogueScreen: BaseScreen {
-    let continueButton: XCUIElement
-    let displayNameField: XCUIElement
-    let siteUrlField: XCUIElement
+final class LoginEpilogueScreen: BaseScreen {
+    private let continueButton: XCUIElement
+    private let displayNameField: XCUIElement
+    private let siteUrlField: XCUIElement
 
     init() {
         let app = XCUIApplication()

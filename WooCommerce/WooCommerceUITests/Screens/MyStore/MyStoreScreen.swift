@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-class MyStoreScreen: BaseScreen {
+final class MyStoreScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let topBannerCloseButton = "top-banner-view-dismiss-button"
@@ -10,8 +10,8 @@ class MyStoreScreen: BaseScreen {
 
     let tabBar = TabNavComponent()
     let periodStatsTable = PeriodStatsTable()
-    let settingsButton: XCUIElement
-    let topBannerCloseButton: XCUIElement
+    private let settingsButton: XCUIElement
+    private let topBannerCloseButton: XCUIElement
 
     static var isVisible: Bool {
         let settingsButton = XCUIApplication().buttons[ElementStringIDs.settingsButton]

@@ -1,14 +1,14 @@
 import Foundation
 import XCTest
 
-class SingleOrderScreen: BaseScreen {
+final class SingleOrderScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let summaryTitleLabel = "summary-table-view-cell-title-label"
     }
 
     let tabBar = TabNavComponent()
-    let summaryTitleLabel: XCUIElement
+    private let summaryTitleLabel: XCUIElement
 
     static var isVisible: Bool {
         let summaryTitleLabel = XCUIApplication().staticTexts[ElementStringIDs.summaryTitleLabel]

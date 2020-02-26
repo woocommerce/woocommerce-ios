@@ -7,9 +7,9 @@ private struct ElementStringIDs {
     static let errorLabel = "pswdErrorLabel"
 }
 
-class LoginPasswordScreen: BaseScreen {
-    let passwordTextField: XCUIElement
-    let loginButton: XCUIElement
+final class LoginPasswordScreen: BaseScreen {
+    private let passwordTextField: XCUIElement
+    private let loginButton: XCUIElement
 
     init() {
         passwordTextField = XCUIApplication().secureTextFields[ElementStringIDs.passwordTextField]

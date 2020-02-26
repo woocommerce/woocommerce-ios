@@ -8,11 +8,11 @@ private struct ElementStringIDs {
     static let nextButton = "submitButton"
 }
 
-class LoginUsernamePasswordScreen: BaseScreen {
-    let navBar: XCUIElement
-    let usernameTextField: XCUIElement
-    let passwordTextField: XCUIElement
-    let nextButton: XCUIElement
+final class LoginUsernamePasswordScreen: BaseScreen {
+    private let navBar: XCUIElement
+    private let usernameTextField: XCUIElement
+    private let passwordTextField: XCUIElement
+    private let nextButton: XCUIElement
 
     init() {
         let app = XCUIApplication()

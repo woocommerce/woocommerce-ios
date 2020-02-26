@@ -7,10 +7,10 @@ private struct ElementStringIDs {
     static let nextButton = "Site Address Next Button"
 }
 
-class LoginSiteAddressScreen: BaseScreen {
-    let navBar: XCUIElement
-    let siteAddressTextField: XCUIElement
-    let nextButton: XCUIElement
+final class LoginSiteAddressScreen: BaseScreen {
+    private let navBar: XCUIElement
+    private let siteAddressTextField: XCUIElement
+    private let nextButton: XCUIElement
 
     init() {
         let app = XCUIApplication()

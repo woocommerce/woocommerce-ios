@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-class SingleReviewScreen: BaseScreen {
+final class SingleReviewScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let spamButton = "single-review-spam-button"
@@ -10,9 +10,9 @@ class SingleReviewScreen: BaseScreen {
     }
 
     let tabBar = TabNavComponent()
-    let spamButton = XCUIApplication().buttons[ElementStringIDs.spamButton]
-    let trashButton = XCUIApplication().buttons[ElementStringIDs.trashButton]
-    let approveButton = XCUIApplication().buttons[ElementStringIDs.approveButton]
+    private let spamButton = XCUIApplication().buttons[ElementStringIDs.spamButton]
+    private let trashButton = XCUIApplication().buttons[ElementStringIDs.trashButton]
+    private let approveButton = XCUIApplication().buttons[ElementStringIDs.approveButton]
 
     static var isVisible: Bool {
         let spamButton = XCUIApplication().buttons[ElementStringIDs.spamButton]

@@ -1,15 +1,15 @@
 import Foundation
 import XCTest
 
-class OrderSearchScreen: BaseScreen {
+final class OrderSearchScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let searchField = "order-search-screen-search-field"
         static let cancelButton = "order-search-screen-cancel-button"
     }
 
-    let searchField: XCUIElement
-    let cancelButton: XCUIElement
+    private let searchField: XCUIElement
+    private let cancelButton: XCUIElement
 
     static var isVisible: Bool {
         let cancelButton = XCUIApplication().buttons[ElementStringIDs.cancelButton]

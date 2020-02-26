@@ -1,14 +1,14 @@
 import Foundation
 import XCTest
 
-class ReviewsScreen: BaseScreen {
+final class ReviewsScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let markAllAsReadButton = "reviews-mark-all-as-read-button"
     }
 
     let tabBar = TabNavComponent()
-    let markAllAsReadButton: XCUIElement
+    private let markAllAsReadButton: XCUIElement
 
     static var isVisible: Bool {
         let markAllAsReadButton = XCUIApplication().buttons[ElementStringIDs.markAllAsReadButton]

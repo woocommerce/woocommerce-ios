@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-class SettingsScreen: BaseScreen {
+final class SettingsScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let navbar = "Settings"
@@ -10,11 +10,11 @@ class SettingsScreen: BaseScreen {
         static let logOutButton = "log-out-button"
     }
 
-    let navbar: XCUIElement
-    let selectedSiteUrl: XCUIElement
-    let selectedDisplayName: XCUIElement
-    let logOutButton: XCUIElement
-    let logOutAlert: XCUIElement
+    private let navbar: XCUIElement
+    private let selectedSiteUrl: XCUIElement
+    private let selectedDisplayName: XCUIElement
+    private let logOutButton: XCUIElement
+    private let logOutAlert: XCUIElement
 
     init() {
         let app = XCUIApplication()

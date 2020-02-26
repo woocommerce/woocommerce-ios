@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-class TabNavComponent: BaseScreen {
+final class TabNavComponent: BaseScreen {
 
     struct ElementStringIDs {
         static let myStoreTabBarItem = "tab-bar-my-store-item"
@@ -10,9 +10,9 @@ class TabNavComponent: BaseScreen {
     }
 
 
-    let myStoreTabButton: XCUIElement
-    let ordersTabButton: XCUIElement
-    let reviewsTabButton: XCUIElement
+    private let myStoreTabButton: XCUIElement
+    private let ordersTabButton: XCUIElement
+    private let reviewsTabButton: XCUIElement
 
     init() {
         let tabBar = XCUIApplication().tabBars.firstMatch

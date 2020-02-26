@@ -1,7 +1,7 @@
 import Foundation
 import XCTest
 
-class OrdersScreen: BaseScreen {
+final class OrdersScreen: BaseScreen {
 
     struct ElementStringIDs {
         static let searchButton = "order-search-button"
@@ -9,8 +9,8 @@ class OrdersScreen: BaseScreen {
     }
 
     let tabBar = TabNavComponent()
-    let searchButton: XCUIElement
-    let filterButton: XCUIElement
+    private let searchButton: XCUIElement
+    private let filterButton: XCUIElement
 
     static var isVisible: Bool {
         let searchButton = XCUIApplication().buttons[ElementStringIDs.searchButton]

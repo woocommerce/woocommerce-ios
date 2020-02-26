@@ -1,13 +1,13 @@
 import Foundation
 import XCTest
 
-class WelcomeScreen: BaseScreen {
+final class WelcomeScreen: BaseScreen {
 
     private struct ElementStringIDs {
         static let loginButton = "login-prologue-login-with-jetpack"
     }
 
-    let logInButton: XCUIElement
+    private let logInButton: XCUIElement
 
     init() {
         logInButton = XCUIApplication().buttons[ElementStringIDs.loginButton]

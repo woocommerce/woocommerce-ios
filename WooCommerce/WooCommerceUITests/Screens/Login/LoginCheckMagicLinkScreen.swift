@@ -6,10 +6,10 @@ private struct ElementStringIDs {
     static let mailButton = "Open Mail Button"
 }
 
-class LoginCheckMagicLinkScreen: BaseScreen {
-    let passwordOption: XCUIElement
-    let mailButton: XCUIElement
-    let mailAlert: XCUIElement
+final class LoginCheckMagicLinkScreen: BaseScreen {
+    private let passwordOption: XCUIElement
+    private let mailButton: XCUIElement
+    private let mailAlert: XCUIElement
 
     init() {
         let app = XCUIApplication()

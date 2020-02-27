@@ -1,0 +1,64 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/notifications",
+        "queryParameters": {
+            "fields": {
+                "equalTo": "id,note_hash"
+            },
+            "locale": {
+                "matches": "(.*)"
+            },
+            "number": {
+                "equalTo": "100"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "last_seen_time": "1556227558",
+            "number": 13,
+            "notes": [{
+                "id": 3937001537,
+                "note_hash": 387323422
+            }, {
+                "id": 4431306742,
+                "note_hash": 3680100703
+            }, {
+                "id": 4431305161,
+                "note_hash": 34973553
+            }, {
+                "id": 4431304171,
+                "note_hash": 2073171817
+            }, {
+                "id": 4431303676,
+                "note_hash": 3740715417
+            }, {
+                "id": 4431300867,
+                "note_hash": 2466435447
+            }, {
+                "id": 4431298454,
+                "note_hash": 931821282
+            }, {
+                "id": 4431297656,
+                "note_hash": 2775683672
+            }, {
+                "id": 4017469898,
+                "note_hash": 1638692677
+            }, {
+                "id": 4017468734,
+                "note_hash": 3552456435
+            }, {
+                "id": 4017462509,
+                "note_hash": 11932674
+            }, {
+                "id": 3937052102,
+                "note_hash": 2184710703
+            }, {
+                "id": 3928326026,
+                "note_hash": 2174217949
+            }]
+        }
+    }
+}

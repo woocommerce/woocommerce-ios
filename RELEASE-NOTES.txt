@@ -1,18 +1,29 @@
 3.7
 -----
 - Redesigned Orders List: Processing and All Orders are now shown in front. Filtering were moved to the Search view.
+3.8
+-----
+ 
+3.7
+-----
+- Dashboard: now tapping on a product on "Top Performers" section open the product detail
 
 3.6
 -----
+- Order Details: see a list of issued refunds inside the order detail screen
 - Orders tab: Orders to fulfill badge shows numbers 1-99, and now 99+ for anything over 99. Previously, it was 9+.
 - Orders tab: The full total amount is now shown.
 - Order Details & Product UI: if a Product name has HTML escape characters, they should be decoded in the app.
 - Order Details: if the Order has multiple Products, tapping on any Product should open the same Product now.
+- bugfix: the orders badge on tab bar now is correctly refreshed after switching to a store with badge count equal to zero.
+- The orders tab now localizes item quantities and the order badge.
+
 
 3.5
 -----
 - bugfix: when the app is in the foreground while receiving a push notification, the badge on the Orders tab and Reviews tab should be updated correctly based on the type of the notification.
 - bugfix: after logging out and in, the Product list should be loaded to the correct store instead of being empty.
+- bugfix: in Contact Support, a message should always be sent successfully now.
 
 3.4
 -----

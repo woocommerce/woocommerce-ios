@@ -1,2 +1,0 @@
-Mağaza verilerini haftalık,
-aylık ve yıllık olarak görüntüleyin

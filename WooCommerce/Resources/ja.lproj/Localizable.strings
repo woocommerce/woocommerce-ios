@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-23 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-02-12 15:27:05+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (システム)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (顧客向け)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ さんが %2$@ に関するレビューを書きました";
@@ -51,17 +51,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld個のバリエーション";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
-"9+" = "9+";
+/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+"99+" = "99+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "認証リンクをメールで送信するには、有効なメールアドレスが必要です。前の画面に戻り、有効なメールアドレスを入力してください。";
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "認証コードは数字だけで構成されます。";
-
-/* Action to add photos on the Product images screen */
-"ADD PHOTOS" = "画像を追加";
 
 /* About this app (information page title) */
 "About" = "このサイトについて";
@@ -81,6 +78,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "追加";
+
+/* Action to add photos on the Product images screen */
+"Add Photos" = "画像を追加";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -154,8 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "コメントを承認する";
 
+/* Message title for Discard Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "この変更を破棄してもよいですか ?";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "アカウント %@ からログアウトしてもよいですか ?";
+
+/* Message on the alert when the user taps to delete a Product image */
+"Are you sure you want to remove this image?" = "画像を削除してもよいですか ?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "認証中";
@@ -211,21 +217,30 @@
 /* Call phone number button title */
 "Call" = "通話";
 
+/* Error message format when capturing a unsupported media type with device camera */
+"Camera capture should not support media type: %@" = "カメラのキャプチャ機能は次のメディアタイプに対応していません ：%@";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "リンクをリクエストできません";
 
-/* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
+/* Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "キャンセル";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "商品を更新できません";
+
+/* Title of the alert when there is an error uploading image(s) */
+"Cannot upload image" = "画像をアップロードできません";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "証明書エラー";
+
+/* Menu option for selecting media from the device's photo library. */
+"Choose from device" = "デバイスから選択";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "情報を収集";
@@ -366,11 +381,14 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "サイズ :%1$@%2$@";
 
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Discard changes" = "変更を破棄";
+
 /* Discount label for payment view */
 "Discount" = "割引";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "非表示";
 
 /* Display label for the product's inventory backorders setting option */
@@ -758,6 +776,9 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "その他";
 
+/* Accessibility label for the Edit Product More Options action sheet */
+"More options" = "More options";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "コメントをスパムに移動する";
 
@@ -846,7 +867,7 @@
 "Number of files:" = "ファイル数 :";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -904,7 +925,8 @@
 /* Order notes section title */
 "Order Notes" = "注文メモ";
 
-/* Change order status screen - Screen title */
+/* Change order status screen - Screen title
+   The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "注文ステータス";
 
 /* Order Total label for payment view */
@@ -919,8 +941,8 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "順序付きリスト";
 
-/* Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Default title for Orders List shown when tapping on the Search filter.
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "注文";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -965,6 +987,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "連携するストアを選択";
 
+/* Product title error notice message, when the title is empty */
+"Please add a title" = "タイトルを追加してください";
+
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "メールを確認してください";
 
@@ -1003,6 +1028,9 @@
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "別の wordpress.com サイトに接続する前にログアウトしてください";
+
+/* Error message when an image captured by camera cannot be saved to the device Photos library */
+"Please make sure the app can access Photos in device settings" = "デバイスの設定で、アプリが写真にアクセスできることを確認してください。";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "メールアプリを開いて、WordPress.com からのメールを探してください。";
@@ -1128,8 +1156,14 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "標準価格 :%@";
 
+/* Confirm button on the alert when the user taps to delete a Product image */
+"Remove" = "削除";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "フィルターを削除";
+
+/* Title on the alert when the user taps to delete a Product image */
+"Remove Image" = "画像を削除";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "リンクを削除";
@@ -1171,7 +1205,7 @@
 "SKU already in use by another product" = "すでに別の製品で使用されている SKU";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
 "SKU:" = "商品コード:";
 
 /* Format of the SKU on the Inventory Settings row
@@ -1232,6 +1266,9 @@
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "設定";
+
+/* Button title Share in Edit Product More Options Action Sheet */
+"Share" = "共有";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "WordPress.com アカウントへのログイン中のサービス利用の情報を分析ツールと共有してください。";
@@ -1440,6 +1477,9 @@
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "デフォルトのフォントサイズに変更する";
 
+/* Menu option for taking an image or video with the device's camera. */
+"Take a photo" = "写真を撮る";
+
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "タップしてその他の書式設定オプションを表示します";
 
@@ -1512,12 +1552,6 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "税状況";
 
-/* Tax label for total taxes line */
-"Tax:" = "税:";
-
-/* Tax label for total taxes line, followed by the tax amount. */
-"Tax: %@" = "税 :%@";
-
 /* Display label for the product's tax status setting option */
 "Taxable" = "課税";
 
@@ -1568,6 +1602,12 @@
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "レビューを削除しました";
+
+/* Product price error notice message, when the sale price is added but the regular price is not */
+"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+
+/* Product price error notice message, when the sale price is higher than the regular price */
+"The sale price should be lower than the regular price." = "セール価格は通常価格よりも低く設定する必要があります。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "サーバーが空のレスポンスを返しました。これは通常、サイトのメモリ上限を上げる必要があることを意味しています。";
@@ -1777,6 +1817,9 @@
 /* No comment provided by engineer. */
 "Unknown error" = "不明なエラー";
 
+/* Error message when capturing a unknown media type */
+"Unknown media type" = "不明なメディアタイプ";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "順序なしリスト";
 
@@ -1941,6 +1984,9 @@
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS 対応 WooCommerce サポート";
+
+/* Menu option for selecting media from the site's media library. */
+"WordPress Media Library" = "WordPress メディアライブラリ";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress バージョンが古すぎます。%1$@ のサイトは WordPress %2$@ を使用しています。最新バージョンか、最低でも %3$@ に更新することをおすすめします。";

@@ -4,14 +4,16 @@ import XCTest
 @testable import Yosemite
 
 final class DefaultProductFormTableViewModelTests: XCTestCase {
-    func testViewModelForSimplePhysicalProductWithoutImages() {
+    private let mockFeatureFlagService = MockFeatureFlagService(isEditProductsRelease2On: false)
+
+    func testViewModelForSimplePhysicalProductWithoutImagesWhenM2FeatureFlagIsOff() {
         let product = MockProduct().product(downloadable: false,
                                             name: "woo",
                                             productType: .simple,
                                             virtual: false)
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         canEditImages: false)
+                                                         featureFlagService: mockFeatureFlagService)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .name(name: product.name),
             .description(description: product.trimmedFullDescription)
@@ -21,6 +23,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
+            XCTAssertEqual(rows.count, 3)
+
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }
@@ -43,7 +47,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                             images: sampleImages())
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         canEditImages: false)
+                                                         featureFlagService: mockFeatureFlagService)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .images(product: product),
             .name(name: product.name),
@@ -54,6 +58,8 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
+            XCTAssertEqual(rows.count, 2)
+
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }
@@ -71,7 +77,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                             productType: .simple)
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         canEditImages: false)
+                                                         featureFlagService: mockFeatureFlagService)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .name(name: product.name),
             .description(description: product.trimmedFullDescription)
@@ -81,6 +87,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
+            XCTAssertEqual(rows.count, 2)
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }
@@ -99,7 +106,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
                                             virtual: true)
         let viewModel = DefaultProductFormTableViewModel(product: product,
                                                          currency: "$",
-                                                         canEditImages: false)
+                                                         featureFlagService: mockFeatureFlagService)
         let primaryFieldsSection = ProductFormSection.primaryFields(rows: [
             .name(name: product.name),
             .description(description: product.trimmedFullDescription)
@@ -109,6 +116,7 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         let settingFieldsSection = viewModel.sections[1]
         switch settingFieldsSection {
         case .settings(let rows):
+            XCTAssertEqual(rows.count, 2)
             if case .price(_) = rows[0] {} else {
                 XCTFail("Unexpected setting section: \(rows[0])")
             }

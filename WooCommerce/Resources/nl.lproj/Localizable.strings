@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-22 00:54:05+0000 */
+/* Translation-Revision-Date: 2020-02-22 00:54:36+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (systeem)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (naar klant)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (aan klant)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ heeft een beoordeling geplaatst over %2$@";
@@ -51,17 +51,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld varianten";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
-"9+" = "9+";
+/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+"99+" = "99+";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Er is een geldig e-mailadres vereist om een verificatielink te mailen. Ga terug naar het vorige scherm en voer een geldig e-mailadres in.";
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "Een verificatiecode bevat alleen getallen.";
-
-/* Action to add photos on the Product images screen */
-"ADD PHOTOS" = "FOTO’S TOEVOEGEN";
 
 /* About this app (information page title) */
 "About" = "Over";
@@ -81,6 +78,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "Voeg toe";
+
+/* Action to add photos on the Product images screen */
+"Add Photos" = "Foto's toevoegen";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -154,8 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "De reactie wordt goedgekeurd";
 
+/* Message title for Discard Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "Weet je zeker dat je deze wijzigingen wilt annuleren?";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "Weet je zeker dat je wilt uitloggen bij het account %@?";
+
+/* Message on the alert when the user taps to delete a Product image */
+"Are you sure you want to remove this image?" = "Weet je zeker dat je deze afbeelding wilt verwijderen?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "Authenticatie";
@@ -211,21 +217,30 @@
 /* Call phone number button title */
 "Call" = "Bellen";
 
+/* Error message format when capturing a unsupported media type with device camera */
+"Camera capture should not support media type: %@" = "De camera-opname mag het volgende mediatype niet ondersteunen: %@";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "Kan link niet aanvragen";
 
-/* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
+/* Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "Annuleren";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Kan product niet bijwerken";
+
+/* Title of the alert when there is an error uploading image(s) */
+"Cannot upload image" = "De afbeelding kan niet geüpload worden";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Volg je favoriete sites en neem altijd en overal deel aan het gesprek.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "Certificaat fout";
+
+/* Menu option for selecting media from the device's photo library. */
+"Choose from device" = "Kiezen op apparaat";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "Verzamel informatie";
@@ -366,11 +381,14 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "Afmetingen: %1$@%2$@";
 
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Discard changes" = "Wijzigingen annuleren";
+
 /* Discount label for payment view */
 "Discount" = "Korting";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "Afbreken";
 
 /* Display label for the product's inventory backorders setting option */
@@ -758,6 +776,9 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "Meer";
 
+/* Accessibility label for the Edit Product More Options action sheet */
+"More options" = "Meer opties";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "Verplaatst een reactie naar spam";
 
@@ -846,7 +867,7 @@
 "Number of files:" = "Aantal bestanden:";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "OK";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -904,7 +925,8 @@
 /* Order notes section title */
 "Order Notes" = "Berichten van bestelling";
 
-/* Change order status screen - Screen title */
+/* Change order status screen - Screen title
+   The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "Bestelstatus";
 
 /* Order Total label for payment view */
@@ -919,8 +941,8 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "Geordende lijst";
 
-/* Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Default title for Orders List shown when tapping on the Search filter.
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "Bestellingen";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -965,6 +987,9 @@
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "Kies te koppelen winkel";
 
+/* Product title error notice message, when the title is empty */
+"Please add a title" = "Voeg een titel toe";
+
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "Controleer jouw e-mail";
 
@@ -1003,6 +1028,9 @@
 
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "Log uit voordat je verbinding maakt met een andere WordPress.com-site";
+
+/* Error message when an image captured by camera cannot be saved to the device Photos library */
+"Please make sure the app can access Photos in device settings" = "Controleer in de apparaatinstellingen of de app toegang heeft tot Foto's";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Open jouw e-mail app en kijk naar een e-mail van WordPress.com.";
@@ -1128,8 +1156,14 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "Reguliere prijs: %@";
 
+/* Confirm button on the alert when the user taps to delete a Product image */
+"Remove" = "Verwijderen";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "Filters verwijderen";
+
+/* Title on the alert when the user taps to delete a Product image */
+"Remove Image" = "Afbeelding verwijderen";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "Koppeling verwijderen";
@@ -1171,7 +1205,7 @@
 "SKU already in use by another product" = "SKU wordt al door een ander product gebruikt";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
 "SKU:" = "SKU:";
 
 /* Format of the SKU on the Inventory Settings row
@@ -1232,6 +1266,9 @@
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "Instellingen";
+
+/* Button title Share in Edit Product More Options Action Sheet */
+"Share" = "Delen";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "Deel informatie met onze analysetool over hoe je services gebruikt terwijl je bent ingelogd op je WordPress.com-account.";
@@ -1440,6 +1477,9 @@
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "Schakelt over naar de standaard lettertypegrootte";
 
+/* Menu option for taking an image or video with the device's camera. */
+"Take a photo" = "Een foto maken";
+
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "Tik voor meer formatteringsopties";
 
@@ -1512,12 +1552,6 @@
 /* Title of the cell in Product Price Settings > Tax status */
 "Tax status" = "Status belasting";
 
-/* Tax label for total taxes line */
-"Tax:" = "Belasting:";
-
-/* Tax label for total taxes line, followed by the tax amount. */
-"Tax: %@" = "Belasting: %@";
-
 /* Display label for the product's tax status setting option */
 "Taxable" = "Belastbaar";
 
@@ -1568,6 +1602,12 @@
 
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "De beoordeling is verwijderd";
+
+/* Product price error notice message, when the sale price is added but the regular price is not */
+"The sale price can't be added without the regular price." = "De verkoopprijs kan niet worden toegevoegd zonder de reguliere prijs.";
+
+/* Product price error notice message, when the sale price is higher than the regular price */
+"The sale price should be lower than the regular price." = "De verkoopprijs moet lager zijn dan de reguliere prijs.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "De server heeft een lege respons teruggestuurd. Dat betekent meestal dat je de geheugenlimiet voor je site moet verhogen.";
@@ -1777,6 +1817,9 @@
 /* No comment provided by engineer. */
 "Unknown error" = "Onbekende fout";
 
+/* Error message when capturing a unknown media type */
+"Unknown media type" = "Onbekend mediatype";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "Ongeordende lijst";
 
@@ -1941,6 +1984,9 @@
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "Ondersteuning WooCommerce voor iOS";
+
+/* Menu option for selecting media from the site's media library. */
+"WordPress Media Library" = "WordPress-mediabibliotheek";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress versie te oud. De site op %1$@ gebruikt WordPress %2$@. We raden aan bij te werken naar de nieuwste versie of minimaal %3$@";

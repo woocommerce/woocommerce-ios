@@ -95,13 +95,10 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       app_store_keywords: File.join(source_metadata_folder, "keywords.txt"),
       "app_store_promo_text" => File.join(source_metadata_folder, "app_store_promo_text.txt"),
       "app_store_screenshot-1" => File.join(source_metadata_folder, "promo_screenshot_1.txt"),
-      "app_store_screenshot-1_b" => File.join(source_metadata_folder, "promo_screenshot_1_b.txt"),
       "app_store_screenshot-2" => File.join(source_metadata_folder, "promo_screenshot_2.txt"),
       "app_store_screenshot-3" => File.join(source_metadata_folder, "promo_screenshot_3.txt"),
       "app_store_screenshot-4" => File.join(source_metadata_folder, "promo_screenshot_4.txt"),
       "app_store_screenshot-5" => File.join(source_metadata_folder, "promo_screenshot_5.txt"),
-      "app_store_screenshot-6" => File.join(source_metadata_folder, "promo_screenshot_6.txt"),
-      "app_store_screenshot-7" => File.join(source_metadata_folder, "promo_screenshot_7.txt"),
     }
 
     ios_update_metadata_source(po_file_path: prj_folder + "/WooCommerce/Resources/AppStoreStrings.pot", 
@@ -170,6 +167,13 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_update_metadata(options) unless ios_current_branch_is_hotfix
     ios_bump_version_beta() unless ios_current_branch_is_hotfix
     ios_final_tag(options)
+
+    # Wrap up
+    version = ios_get_app_version()
+    removebranchprotection(repository:GHHELPER_REPO, branch: "release/#{version}")
+    setfrozentag(repository:GHHELPER_REPO, milestone: version, freeze: false)
+    create_new_milestone(repository:GHHELPER_REPO)
+    close_milestone(repository:GHHELPER_REPO, milestone: version)
   end
 
   #####################################################################################
@@ -285,6 +289,15 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       notify_testers: false 
     )
 
+    # Install SentryCLI prior to trying to upload dSYMs
+    sh("curl -sL https://sentry.io/get-cli/ | bash")
+
+    sentry_upload_dsym(
+      auth_token: get_required_env("SENTRY_AUTH_TOKEN"),
+      org_slug: 'a8c',
+      project_slug: 'woocommerce-ios',
+      dsym_path: "./build/WooCommerce.app.dSYM.zip",
+    )
 
     download_url = Actions.lane_context[SharedValues::APPCENTER_DOWNLOAD_LINK]
     UI.message("Successfully built and uploaded installable build here: #{download_url}")
@@ -298,32 +311,42 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   ########################################################################
   # Screenshot Lanes
   ########################################################################  
-  desc "Take Screenshots"
-  lane :screenshots do | options |
-
-    fastlane_directory = File.expand_path File.dirname(__FILE__)
-    derived_data_path = File.join(fastlane_directory, "DerivedData")
-
-    # By default, clear previous screenshots
-    should_clear_previous_screenshots = true
-    languages = "ar de-DE en-US es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant".split()
-
-    if options[:languages] != nil
-      languages = languages & options[:languages].split()
-      should_clear_previous_screenshots = false
-    end
-
-    puts "Creating screenshots for #{languages}"
-
+  desc "Build Screenshots"
+  lane :build_screenshots do
+    
     # Ensure we're using the latest Pods
-    sh('bundle exec pod install')
+    sh('bundle exec pod install --verbose')
 
     scan(
       workspace: File.join(fastlane_directory, "../WooCommerce.xcworkspace"),
       scheme: "WooCommerceScreenshots",
       build_for_testing: true,
-      derived_data_path: derived_data_path,
+      derived_data_path: derived_data_directory,
     )
+  end
+
+  desc "Take Screenshots"
+  lane :take_screenshots do | options |
+
+    # By default, clear previous screenshots
+    languages = "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
+
+    if options[:languages] != nil
+      languages = languages & options[:languages].split(",")
+    end
+
+    devices = screenshot_devices
+
+    if options[:devices] != nil
+      devices = devices & options[:devices].split(",")
+    end
+
+    UI.user_error!("Unable to run on devices: \"#{devices}\"") unless !devices.empty?
+
+    puts "Creating screenshots for #{languages} on #{devices}"
+
+    # Erase the simulator between runs in order to get everything back to a default state
+    rebuild_screenshot_devices
 
     capture_ios_screenshots(
       scheme: "WooCommerceScreenshots",
@@ -331,26 +354,82 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       localize_simulator: true,
       languages: languages,
 
-      devices: [
-        "iPhone 11 Pro Max",
-        "iPhone 8 Plus",
-        "iPad Pro (12.9-inch) (2nd generation)",
-        "iPad Pro (12.9-inch) (3rd generation)",
-      ],
+      devices: devices,
 
       # Don't rebuild the app for every new locale / device type, and specify where to find the binaries
       test_without_building: true,
-      derived_data_path: derived_data_path,
+      derived_data_path: derived_data_directory,
 
       # Where should the screenshots go, and should we delete them before starting?
-      output_directory: "./fastlane/screenshots",
-      clear_previous_screenshots: should_clear_previous_screenshots,
+      output_directory: screenshots_directory,
 
-      concurrent_simulators: false,
+      # Output the simulator logs for debugging
+      buildlog_path: "./fastlane/logs",
+      output_simulator_logs: true,
+      result_bundle: true,
+      namespace_log_files: true,
+
+      concurrent_simulators: true,
+
+      # Explicitly set the iOS version to ensure we match the created simulators
+      ios_version: simulator_version,
+
+      # Erase the simulator prior to booting the app
+      erase_simulator: true,
 
       # Retry a few times if something is a little flaky
       number_of_retries: 3,
+
+      # But fail completely after those 3 retries
+      stop_after_first_error: true,
+
+      # Allow the caller to invoke dark mode
+      dark_mode: options[:mode].to_s.downcase == "dark"
     )
+
+  end
+
+  desc "Create Screenshots Locally"
+  lane :screenshots do | options |
+
+    FileUtils.rm_f(screenshots_directory)
+
+    build_screenshots(options)
+    take_screenshots(options.merge({ mode: 'light' }))
+    take_screenshots(options.merge({ mode: 'dark' }))
+  end
+
+  desc "Rebuild Screenshot Devices"
+  lane :rebuild_screenshot_devices do
+    require 'simctl'
+
+    device_names = screenshot_devices
+
+    SimCtl.list_devices.each { |device|
+      next unless device_names.include? device.name
+      puts "Deleting #{device.name} because it already exists."
+      device.delete
+    }
+
+    screenshot_devices.each { | device |
+      runtime = SimCtl.runtime(name: "iOS #{simulator_version}")
+      devicetype = SimCtl.devicetype(name: device)
+
+      device = SimCtl.create_device device, devicetype, runtime
+    }
+  end
+
+  desc "Create Screenshot Summary"
+  lane :create_screenshot_summary do
+    fastlane_require 'snapshot'
+
+    # Provide enough information to bootstrap the configuration and generate the HTML report
+    Snapshot.config = FastlaneCore::Configuration.create(Snapshot::Options.available_options, {
+      "workspace": "../WooCommerce.xcworkspace",
+      "scheme": "WooCommerceScreenshots"
+    })
+
+    Snapshot::ReportsGenerator.new.generate
   end
 
   desc "Download App Store Translations"
@@ -498,3 +577,28 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     end
   end
 end
+
+  def fastlane_directory()
+    File.expand_path File.dirname(__FILE__)
+  end
+
+  def derived_data_directory()
+    File.join(fastlane_directory, "DerivedData")
+  end
+
+  def screenshots_directory()
+    File.join(fastlane_directory, "screenshots")
+  end
+
+  def screenshot_devices()
+    [
+      "iPhone 11 Pro Max",
+      "iPhone 8 Plus",
+      "iPad Pro (12.9-inch) (2nd generation)",
+      "iPad Pro (12.9-inch) (3rd generation)",
+    ]
+  end
+
+  def simulator_version()
+    return '13.3'
+  end

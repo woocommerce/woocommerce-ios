@@ -18,6 +18,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.bellImage)
     }
 
+    func testBriefDescriptionImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.briefDescriptionImage)
+    }
+
     func testCameraIconIsNotNil() {
         XCTAssertNotNil(UIImage.cameraImage)
     }
@@ -44,6 +48,10 @@ final class IconsTests: XCTestCase {
 
     func testChevronUpImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.chevronUpImage)
+    }
+
+    func testCloseButtonIconIsNotNil() {
+        XCTAssertNotNil(UIImage.closeButton)
     }
 
     func testCogImageIconIsNotNil() {

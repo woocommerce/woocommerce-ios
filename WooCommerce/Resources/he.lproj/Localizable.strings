@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-01-10 20:15:06+0000 */
+/* Translation-Revision-Date: 2020-02-12 15:27:05+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: he_IL */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (מערכת)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (ללקוח)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "המשתמש %1$@ כתב ביקורת על %2$@";
@@ -28,19 +28,19 @@
 "%1$@-%2$@" = "%1$@-%2$@";
 
 /* <item total> (<item individual price> multipled by <quantity>) */
-"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+"%1$@ (%2$@ x %3$@)" = "%1$@ ‏(%2$@ x %3$@)";
 
 /* 1 Item */
-"%@ Item" = "%@ Item";
+"%@ Item" = "פריט %@";
 
 /* For example, '5 Items' */
-"%@ Items" = "%@ Items";
+"%@ Items" = "%@ פריטים";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "המשתמש %1$@ כתב ביקורת על %2$@";
 
 /* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
-"%1$@ via %2$@" = "%1$@ via %2$@";
+"%1$@ via %2$@" = "%1$@ באמצעות %2$@";
 
 /* Label about product's inventory stock status shown on Products tab */
 "%ld in stock" = "%ld במלאי";
@@ -51,17 +51,14 @@
 /* Label about number of variations shown on Products tab */
 "%ld variants" = "%ld משתנים";
 
-/* Content of the badge presented over the Orders icon when there are more than 9 orders processing */
-"9+" = "9+";
+/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+"99+" = "‎99+‎";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "דרושה כתובת אימייל תקפה כדי שנוכל לשלוח קישור לאימות. יש לחזור למסך הקודם ולהזין כתובת אימייל תקפה.";
 
 /* Shown when a user types a non-number into the two factor field. */
 "A verification code will only contain numbers." = "קוד אימות מכיל מספרים בלבד.";
-
-/* Action to add photos on the Product images screen */
-"ADD PHOTOS" = "ADD PHOTOS";
 
 /* About this app (information page title) */
 "About" = "אודות";
@@ -81,6 +78,9 @@
 /* A button title used for a shipment tracking unit test
    A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "הוספה";
+
+/* Action to add photos on the Product images screen */
+"Add Photos" = "להוסיף תמונות";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -109,10 +109,10 @@
 "All reviews marked as read" = "כל הביקורות שמסומנות כ'נקרא'";
 
 /* Display label for the product's inventory backorders setting option */
-"Allow" = "Allow";
+"Allow" = "לאפשר";
 
 /* Display label for the product's inventory backorders setting option */
-"Allow, but notify customer" = "Allow, but notify customer";
+"Allow, but notify customer" = "לאפשר אך להודיע ללקוח";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "כמעט סיימת! יש להזין את קוד האימות מאפליקציית האימות.";
@@ -154,8 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "אישור התגובה";
 
+/* Message title for Discard Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "האם ברצונך לבטל את השינויים האלה?";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "האם ברצונך להתנתק מהחשבון %@?";
+
+/* Message on the alert when the user taps to delete a Product image */
+"Are you sure you want to remove this image?" = "האם ברצונך להסיר את התמונה?";
 
 /* No comment provided by engineer. */
 "Authenticating" = "מאמת";
@@ -167,7 +173,7 @@
 "Auto-managed on this site" = "מנוהל באופן אוטומטי באתר זה";
 
 /* Subtitle of the cell in Product Price Settings > Schedule sale */
-"Automatically start and end a sale" = "Automatically start and end a sale";
+"Automatically start and end a sale" = "להתחיל ולסיים מבצע באופן אוטומטי";
 
 /* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
    Awaiting payment via (payment method title) */
@@ -181,7 +187,7 @@
 
 /* Product backorders setting list selector navigation title
    Title of the cell in Product Inventory Settings > Backorders */
-"Backorders" = "Backorders";
+"Backorders" = "הזמנות בהמתנה";
 
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "הזמנות בהמתנה:";
@@ -211,21 +217,30 @@
 /* Call phone number button title */
 "Call" = "להתקשר";
 
+/* Error message format when capturing a unsupported media type with device camera */
+"Camera capture should not support media type: %@" = "לצילום במצלמה לא צריכה להיות תמיכה בסוג המדיה: ‎%@";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "לא ניתן לבקש קישור";
 
-/* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
+/* Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "ביטול";
 
 /* The title of the alert when there is an error updating the product */
-"Cannot update Product" = "Cannot update Product";
+"Cannot update Product" = "אין אפשרות לעדכן את המוצר";
+
+/* Title of the alert when there is an error uploading image(s) */
+"Cannot upload image" = "לא ניתן להעלות את התמונה";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "אפשר לבדוק את העדכונים באתרים המועדפים עליך ולהצטרף לשיחה בכל מקום ובכל זמן.";
 
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "שגיאה בתעודה";
+
+/* Menu option for selecting media from the device's photo library. */
+"Choose from device" = "לבחור מהמכשיר";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "איסוף מידע";
@@ -366,15 +381,18 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "ממדים: %1$@%2$@";
 
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Discard changes" = "לבטל את השינויים";
+
 /* Discount label for payment view */
 "Discount" = "הנחה";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "בטל";
 
 /* Display label for the product's inventory backorders setting option */
-"Do not allow" = "Do not allow";
+"Do not allow" = "לא לאפשר";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "אין לך חשבון עדיין? _הרשמה_";
@@ -476,7 +494,7 @@
 "Feature Request" = "בקשת תכונה";
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
-"Fill with password manager" = "Fill with password manager";
+"Fill with password manager" = "למלא באמצעות מנהל סיסמאות";
 
 /* Filter the orders list. */
 "Filter orders" = "סינון הזמנות";
@@ -488,7 +506,7 @@
 "Follower" = "עוקב";
 
 /* Title of the cell in Product Price Settings > Schedule sale From a certain date */
-"From" = "From";
+"From" = "מתאריך";
 
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "השלמת הזמנה ‎#(order.number)‎";
@@ -552,7 +570,7 @@
 "Heading 6" = "כותרת ברמה 6";
 
 /* Title of the cell in Product Shipping Settings > Height */
-"Height" = "Height";
+"Height" = "גובה";
 
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
@@ -606,7 +624,7 @@
 "Insert Link" = "להוסיף קישור";
 
 /* The title of the alert when there is an error updating the product SKU */
-"Invalid Product SKU" = "Invalid Product SKU";
+"Invalid Product SKU" = "הקוד של SKU במוצר לא חוקי";
 
 /* No comment provided by engineer. */
 "Invalid Site Address" = "כתובת אתר לא תקנית";
@@ -650,13 +668,13 @@
 "Learn more" = "מידע נוסף";
 
 /* Title of the cell in Product Shipping Settings > Length */
-"Length" = "Length";
+"Length" = "אורך";
 
 /* Licenses (information page title) */
 "Licenses" = "רישיונות";
 
 /* Title of the cell in Product Inventory Settings > Limit one per order */
-"Limit one per order" = "Limit one per order";
+"Limit one per order" = "להגביל פריט אחד בכל הזמנה";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "מגבלת זיכרון. ניתן לנסות שוב בעוד דקה. אם תנסה שוב לפני כן, הדבר רק יגביר את הזמן שאתה צריך לחכות לפני שהאיסור יוסר. אם אתה חושב שמדובר בשגיאה, פנה לתמיכה.";
@@ -719,7 +737,7 @@
 "Manage orders, track sales and monitor store activity with real-time alerts." = "ניהול הזמנות, מעקב אחר מכירות ואחר פעילות החנות באמצעות התראות בזמן אמת.";
 
 /* Title of the cell in Product Inventory Settings > Manage stock */
-"Manage stock" = "Manage stock";
+"Manage stock" = "ניהול מלאי";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "ניהול אתרים שמופעלים על ידי Jetpack מכל מקום - השירות של וורדפרס תמיד בהישג יד.";
@@ -757,6 +775,9 @@
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "עוד";
+
+/* Accessibility label for the Edit Product More Options action sheet */
+"More options" = "More options";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "העברת תגובה לתגובות הזבל";
@@ -828,13 +849,13 @@
 "No revenue this period" = "אין רווחים בתקופה זאת";
 
 /* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
-"No shipping classes yet" = "No shipping classes yet";
+"No shipping classes yet" = "לא נוספו עדיין סיווגי משלוחים";
 
 /* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
-"No tax classes yet" = "No tax classes yet";
+"No tax classes yet" = "לא נוספו עדיין סיווגי מס";
 
 /* Display label for the product's tax status setting option */
-"None" = "None";
+"None" = "ללא";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "טרם נשלח";
@@ -846,7 +867,7 @@
 "Number of files:" = "מספר הקבצים:";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "אישור";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -886,7 +907,7 @@
 "Opens a list of available statuses." = "פתיחת רשימה של מצבים זמינים.";
 
 /* Placeholder of the cell text field in Product Inventory Settings > SKU */
-"Optional" = "Optional";
+"Optional" = "אופציונלי";
 
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "מידע על מעקב אופציונלי";
@@ -904,7 +925,8 @@
 /* Order notes section title */
 "Order Notes" = "הערות להזמנה";
 
-/* Change order status screen - Screen title */
+/* Change order status screen - Screen title
+   The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "מצב ההזמנה";
 
 /* Order Total label for payment view */
@@ -919,8 +941,8 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "רשימה ממוספרת";
 
-/* Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Default title for Orders List shown when tapping on the Search filter.
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "הזמנות";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -960,10 +982,13 @@
 "Phone number: %@" = "מספר טלפון: ‎%@";
 
 /* Product images (Product images page title) */
-"Photos" = "Photos";
+"Photos" = "תמונות";
 
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "בחירה בחנות לחיבור";
+
+/* Product title error notice message, when the title is empty */
+"Please add a title" = "יש להוסיף כותרת";
 
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "יש לבדוק את תיבת האימייל";
@@ -1004,11 +1029,14 @@
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "יש להתנתק לפני ההתחברות לאתר WordPress.com שונה";
 
+/* Error message when an image captured by camera cannot be saved to the device Photos library */
+"Please make sure the app can access Photos in device settings" = "עליך לוודא שלאפליקציה יש הרשאה לגשת לתמונות בהגדרות המכשיר שלך";
+
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "יש לפתוח את אפליקציית האימייל שלך ולחפש את ההודעה שנשלחה מ-WordPress.com.";
 
 /* Message of the in-progress UI while updating the Product remotely */
-"Please wait while we publish this product to your store" = "Please wait while we publish this product to your store";
+"Please wait while we publish this product to your store" = "יש להמתין מעט לפרסום המוצר הזה בחנות שלך";
 
 /* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
    Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
@@ -1048,7 +1076,7 @@
 "Products" = "מוצרים";
 
 /* Label for computed value `product refunds + taxes = subtotal`. */
-"Products Refund" = "Products Refund";
+"Products Refund" = "החזר כספי על מוצרים";
 
 /* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "הצגת האפשרות להתקשרות או לשליחת הודעה אל הלקוח המשלם.";
@@ -1063,7 +1091,7 @@
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "שליחה לפרסום כשנמצאים בפארק. כתיבת בלוג כשנוסעים באוטובוס. כתיבת תגובה כשיושבים בבית קפה. השירות של WordPress אתך בכל מקום.";
 
 /* Title of the in-progress UI while updating the Product remotely */
-"Publishing your product..." = "Publishing your product...";
+"Publishing your product..." = "מפרסם את המוצר שלך...";
 
 /* Product Details - purchase details section title */
 "Purchase Details" = "פרטי הרכישה";
@@ -1080,7 +1108,7 @@
 "Qty" = "כמות";
 
 /* Title of the cell in Product Inventory Settings > Quantity */
-"Quantity" = "Quantity";
+"Quantity" = "כמות";
 
 /* Format of the stock quantity on the Inventory Settings row */
 "Quantity: %ld" = "כמות: %ld";
@@ -1095,29 +1123,29 @@
 "Read privacy policy" = "עיון במדיניות פרטיות";
 
 /* Refund note section title */
-"Reason for Refund" = "Reason for Refund";
+"Reason for Refund" = "סיבה להחזר הכספי";
 
 /* It reads: Refund #<refund ID> */
-"Refund #%@" = "Refund #%@";
+"Refund #%@" = "החזר כספי #%@";
 
 /* Refund Details page > Refund Details section > The label that marks the refunded amount */
-"Refund Amount" = "Refund Amount";
+"Refund Amount" = "הסכום של ההחזר הכספי";
 
 /* Refund Details section title */
-"Refund Details" = "Refund Details";
+"Refund Details" = "פרטי ההחזר";
 
 /* The title for the refunded amount cell */
 "Refunded" = "הוחזר";
 
 /* Order > Order Details > 'N Items' cell tapped > Refunded Products title
    Refunded Products section title - Section title */
-"Refunded Products" = "Refunded Products";
+"Refunded Products" = "מוצרים שעליהם ניתן החזר כספי";
 
 /* It reads, 'Refunded manually via <payment method>' */
-"Refunded manually via %@" = "Refunded manually via %@";
+"Refunded manually via %@" = "החזר כספי בוצע באופן ידני באמצעות %@";
 
 /* It reads, 'Refunded via <payment method>' */
-"Refunded via %@" = "Refunded via %@";
+"Refunded via %@" = "החזר כספי בוצע באמצעות %@";
 
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "דומיין רשום";
@@ -1128,8 +1156,14 @@
 /* Format of the regular price on the Price Settings row */
 "Regular price: %@" = "מחיר רגיל: ‎%@";
 
+/* Confirm button on the alert when the user taps to delete a Product image */
+"Remove" = "הסרה";
+
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "הסרת מסננים";
+
+/* Title on the alert when the user taps to delete a Product image */
+"Remove Image" = "להסיר את תמונת הרקע";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "להסיר קישור";
@@ -1168,10 +1202,10 @@
 "SKU" = "מק\"ט";
 
 /* The message of the alert when there is an error updating the product SKU */
-"SKU already in use by another product" = "SKU already in use by another product";
+"SKU already in use by another product" = "הקוד של SKU כבר נמצא בשימוש של מוצר אחר";
 
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
 "SKU:" = "מק\"ט:";
 
 /* Format of the SKU on the Inventory Settings row
@@ -1182,16 +1216,16 @@
 "SMS Sent" = "SMS נשלח";
 
 /* Format of the sale period on the Price Settings row */
-"Sale dates: %@" = "Sale dates: %@";
+"Sale dates: %@" = "תאריכי המבצע: ‎%@";
 
 /* Format of the sale period on the Price Settings row from a certain date */
-"Sale dates: From %@" = "Sale dates: From %@";
+"Sale dates: From %@" = "תאריכי המבצע: מתאריך %@";
 
 /* Format of the sale period on the Price Settings row until a certain date */
-"Sale dates: Until %@" = "Sale dates: Until %@";
+"Sale dates: Until %@" = "תאריכי המבצע: עד %@";
 
 /* Title of the cell in Product Price Settings > Sale price */
-"Sale price" = "Sale price";
+"Sale price" = "מחיר המבצע";
 
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "מחיר מבצע:";
@@ -1200,7 +1234,7 @@
 "Sale price: %@" = "מחיר מבצע: ‎%@";
 
 /* Title of the cell in Product Price Settings > Schedule sale */
-"Schedule sale" = "Schedule sale";
+"Schedule sale" = "לקבוע תאריך למבצע";
 
 /* Orders Search Placeholder */
 "Search all orders" = "חיפוש בכל ההזמנות";
@@ -1233,6 +1267,9 @@
    Settings navigation title */
 "Settings" = "הגדרות";
 
+/* Button title Share in Edit Product More Options Action Sheet */
+"Share" = "שיתוף";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "שיתוף של פרטי השימוש שלך בשירותים השונים עם כלי הניתוח שלנו לאחר ההתחברות לחשבון שלך ב-WordPress.com.";
 
@@ -1258,13 +1295,13 @@
 "Shipping Providers" = "ספקי משלוח";
 
 /* Title of the cell in Product Shipping Settings > Shipping class */
-"Shipping class" = "Shipping class";
+"Shipping class" = "סיווג משלוח";
 
 /* Label prefix. Example: 'Shipping class: Free Shipping' */
 "Shipping class:" = "סיווג משלוח:";
 
 /* Navigation bar title of the Product shipping class selector screen */
-"Shipping classes" = "Shipping classes";
+"Shipping classes" = "סיווגי משלוחים";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "פרטי משלוח";
@@ -1273,25 +1310,25 @@
 "Shipping notice about the order" = "הודעה לגבי המשלוח של הזמנה זו";
 
 /* Display label for the product's tax status setting option */
-"Shipping only" = "Shipping only";
+"Shipping only" = "משלוח בלבד";
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "ספק משלוח";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
-"Show a list of refunded order items for this order." = "Show a list of refunded order items for this order.";
+"Show a list of refunded order items for this order." = "להציג רשימה של פריטי הזמנה שעבורם התקבל החזר כספי בהזמנה זאת.";
 
 /* Accessibility label for the “Show password“ button in the login page's password field. */
-"Show password" = "Show password";
+"Show password" = "להציג סיסמה";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information. */
-"Show refund details for this order." = "Show refund details for this order.";
+"Show refund details for this order." = "להציג את הפרטים של ההחזר הכספי בהזמנה זאת.";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show the billing details for this order." = "להציג את פרטי החיוב להזמנה זאת.";
 
 /* Accessibility value if login page's password field is displaying the password. */
-"Shown" = "Shown";
+"Shown" = "מוצג";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "מציג אפשרויות נוספות.";
@@ -1312,7 +1349,7 @@
 "Site Redirect" = "Site Redirect";
 
 /* Accessibility label of the site address field shown when adding a self-hosted site. */
-"Site address" = "Site address";
+"Site address" = "כתובת אתר";
 
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "כתובת אתר צריכה להכיל לפחות 4 תווים.";
@@ -1374,7 +1411,7 @@
 "Spam" = "תגובת זבל";
 
 /* The name of the default Tax Class in Product Price Settings */
-"Standard rate" = "Standard rate";
+"Standard rate" = "תעריף סטנדרטי";
 
 /* Aztec's Text Placeholder */
 "Start writing..." = "יש להתחיל לכתוב...";
@@ -1387,7 +1424,7 @@
 
 /* Product stock status list selector navigation title
    Title of the cell in Product Inventory Settings > Stock status */
-"Stock status" = "Stock status";
+"Stock status" = "מצב המלאי";
 
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "מצב מלאי:";
@@ -1439,6 +1476,9 @@
 
 /* Accessibility Identifier for the Default Font Aztec Style. */
 "Switches to the default Font Size" = "מבצע החלפה לגודל גופן שבברירת מחדל בכותרת";
+
+/* Menu option for taking an image or video with the device's camera. */
+"Take a photo" = "לצלם תמונה";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "יש להקיש כדי להציג אפשרויות עיצוב נוספות";
@@ -1495,31 +1535,25 @@
 "Tap to toggle paragraph style" = "יש להקיש כדי לשנות את סגנונות הפסקה";
 
 /* Tax label for a refund details view */
-"Tax" = "Tax";
+"Tax" = "מס";
 
 /* Section header title for product tax settings */
-"Tax Settings" = "Tax Settings";
+"Tax Settings" = "הגדרות מס";
 
 /* Navigation bar title of the Product tax status selector screen */
-"Tax Status" = "Tax Status";
+"Tax Status" = "מצב מס";
 
 /* Title of the cell in Product Price Settings > Tax class */
-"Tax class" = "Tax class";
+"Tax class" = "סיווג מס";
 
 /* Navigation bar title of the Product tax class selector screen */
-"Tax classes" = "Tax classes";
+"Tax classes" = "סיווגי מס";
 
 /* Title of the cell in Product Price Settings > Tax status */
-"Tax status" = "Tax status";
-
-/* Tax label for total taxes line */
-"Tax:" = "מס:";
-
-/* Tax label for total taxes line, followed by the tax amount. */
-"Tax: %@" = "Tax: %@";
+"Tax status" = "מצב מס";
 
 /* Display label for the product's tax status setting option */
-"Taxable" = "Taxable";
+"Taxable" = "חייב במיסים";
 
 /* Taxes label for payment view */
 "Taxes" = "מיסים";
@@ -1569,6 +1603,12 @@
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "הביקורת הוסרה";
 
+/* Product price error notice message, when the sale price is added but the regular price is not */
+"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+
+/* Product price error notice message, when the sale price is higher than the regular price */
+"The sale price should be lower than the regular price." = "מחיר המבצע צריך להיות נמוך מהמחיר הרגיל.";
+
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "השרת החזיר תשובה ריקה. בדרך כלל הדבר אומר שצריך להגדיל את מגבלת הזיכרון לאתר.";
 
@@ -1595,7 +1635,7 @@
 "This Month" = "החודש";
 
 /* The message of the alert when there is an error updating the product SKU */
-"This SKU is used on another product or is invalid." = "This SKU is used on another product or is invalid.";
+"This SKU is used on another product or is invalid." = "הקוד של SKU נמצא בשימוש של מוצר אחר או שאינו חוקי.";
 
 /* Tab selector title that shows the statistics for this week
    Top Performers section title - this week */
@@ -1632,7 +1672,7 @@
 "Title (required)" = "כותרת (נדרש)";
 
 /* Title of the cell in Product Price Settings > Schedule sale To a certain date */
-"To" = "To";
+"To" = "עד";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "כדי ליצור חשבון WordPress.com חדש, יש להזין את כתובת האימייל שלך.";
@@ -1777,6 +1817,9 @@
 /* No comment provided by engineer. */
 "Unknown error" = "שגיאה לא ידועה";
 
+/* Error message when capturing a unknown media type */
+"Unknown media type" = "סוג מדיה לא מוכר";
+
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "רשימה לא ממוספרת";
 
@@ -1862,10 +1905,10 @@
 "View product on store" = "צפייה במוצר בחנות";
 
 /* Accessibility label for the 'View details' refund button */
-"View refund details" = "View refund details";
+"View refund details" = "לצפייה בפרטים של ההחזר הכספי";
 
 /* Accessibility label for the '<number> Products' button */
-"View refunded order items" = "View refunded order items";
+"View refunded order items" = "לצפייה בפריטי ההזמנה שעליהם ניתן החזר כספי";
 
 /* User role badge */
 "Viewer" = "צופה";
@@ -1910,7 +1953,7 @@
 "Weeks" = "שבועות";
 
 /* Title of the cell in Product Shipping Settings > Weight */
-"Weight" = "Weight";
+"Weight" = "משקל";
 
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "משקל:";
@@ -1934,13 +1977,16 @@
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "הקוד לאימות דו-שלבי אינו תקף. יש לבדוק שוב את הקוד ולנסות שנית!";
 
 /* Title of the cell in Product Shipping Settings > Width */
-"Width" = "Width";
+"Width" = "רוחב";
 
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "תמיכה ב-WooCommerce ל-iOS";
+
+/* Menu option for selecting media from the site's media library. */
+"WordPress Media Library" = "ספריית המדיה של WordPress";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "גרסת WordPress ישנה מדי. האתר %1$@ משתמש ב-WordPress בגרסה %2$@. מומלץ לשדרג לגרסה העדכנית ביותר, או לפחות לגרסה %3$@";

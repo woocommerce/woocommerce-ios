@@ -1,0 +1,5 @@
+- Agora você pode ver os reembolsos de um pedido.
+- O selo “pedidos a serem atendidos” tem o máximo de 99. Qualquer valor além disso será mostrado como 99+. Antes era 9+.
+- Bug em que a quantidade do produto sumia devido a nomes longos na visualização de um pedido resolvido.
+- Nomes de produtos com caracteres de HTML perdidos serão exibidos corretamente.
+- Para abrir um produto em um pedido com mais de um, basta tocar nele.

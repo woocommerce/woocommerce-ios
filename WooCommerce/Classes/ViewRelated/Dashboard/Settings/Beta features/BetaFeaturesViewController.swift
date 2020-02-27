@@ -181,9 +181,16 @@ private extension BetaFeaturesViewController {
     func configureProductsSwitch(cell: SwitchTableViewCell) {
         configureCommonStylesForSwitchCell(cell)
 
-        let statsVersionTitle = NSLocalizedString("Products",
-                                                  comment: "My Store > Settings > Experimental features > Switch Products")
-        cell.title = statsVersionTitle
+        let title: String
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
+            title = NSLocalizedString("Product editing",
+                                      comment: "My Store > Settings > Experimental features > Product editing")
+        } else {
+            title = NSLocalizedString("Products",
+                                      comment: "My Store > Settings > Experimental features > Switch Products")
+        }
+
+        cell.title = title
 
         let action = AppSettingsAction.loadProductsVisibility() { isVisible in
             cell.isOn = isVisible
@@ -202,8 +209,16 @@ private extension BetaFeaturesViewController {
 
     func configureProductsDescription(cell: BasicTableViewCell) {
         configureCommonStylesForDescriptionCell(cell)
-        cell.textLabel?.text = NSLocalizedString("Test out the new products section as we get ready to launch",
-                                                 comment: "My Store > Settings > Experimental features > Products description")
+
+        let description: String
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts) {
+            description = NSLocalizedString("Test out the new product editing functionality as we get ready to launch",
+                                            comment: "My Store > Settings > Experimental features > Product editing")
+        } else {
+            description = NSLocalizedString("Test out the new products section as we get ready to launch",
+                                            comment: "My Store > Settings > Experimental features > Switch Products")
+        }
+        cell.textLabel?.text = description
     }
 }
 

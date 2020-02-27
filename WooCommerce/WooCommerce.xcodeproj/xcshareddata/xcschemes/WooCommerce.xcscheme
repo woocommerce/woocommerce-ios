@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scheme
    LastUpgradeVersion = "1110"
-   version = "1.3">
+   version = "1.7">
    <BuildAction
       parallelizeBuildables = "YES"
       buildImplicitDependencies = "YES">
@@ -36,6 +36,15 @@
             ReferencedContainer = "container:WooCommerce.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
+      <TestPlans>
+         <TestPlanReference
+            reference = "container:WooCommerceTests/UnitTests.xctestplan"
+            default = "YES">
+         </TestPlanReference>
+         <TestPlanReference
+            reference = "container:WooCommerceUITests/UITests.xctestplan">
+         </TestPlanReference>
+      </TestPlans>
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -75,6 +84,16 @@
                BuildableName = "YosemiteTests.xctest"
                BlueprintName = "YosemiteTests"
                ReferencedContainer = "container:../Yosemite/Yosemite.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "CCDC49C923FFFFF4003166BA"
+               BuildableName = "WooCommerceUITests.xctest"
+               BlueprintName = "WooCommerceUITests"
+               ReferencedContainer = "container:WooCommerce.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

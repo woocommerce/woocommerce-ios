@@ -33,6 +33,12 @@ extension UIImage {
         return Gridicon.iconOfType(.bell)
     }
 
+    /// Brief Description Icon
+    ///
+    static var briefDescriptionImage: UIImage {
+        return Gridicon.iconOfType(.alignLeft, withSize: CGSize(width: 24, height: 24))
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {
@@ -78,6 +84,12 @@ extension UIImage {
     ///
     static var chevronUpImage: UIImage {
         return Gridicon.iconOfType(.chevronUp)
+    }
+
+    /// Close bar button item
+    ///
+    static var closeButton: UIImage {
+        return Gridicon.iconOfType(.cross)
     }
 
     /// Cog Icon

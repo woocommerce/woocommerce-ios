@@ -99,9 +99,11 @@ private extension StoreTableViewCell {
 
     func configureNameLabel() {
         nameLabel.textColor = .text
+        nameLabel.accessibilityIdentifier = "name-label"
     }
 
     func configureUrlLabel() {
         urlLabel.textColor = .textSubtle
+        urlLabel.accessibilityIdentifier = "url-label"
     }
 }

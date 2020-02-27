@@ -390,8 +390,7 @@ private extension MainTabBarController {
 private extension MainTabBarController {
     func startListeningToOrdersBadge() {
         viewModel.onBadgeReload = { [weak self] countReadableString in
-            guard let self = self,
-            let badgeText = countReadableString else {
+            guard let self = self else {
                 return
             }
 
@@ -402,7 +401,7 @@ private extension MainTabBarController {
                 return
             }
 
-            orderTab.badgeValue = badgeText
+            orderTab.badgeValue = countReadableString
             orderTab.badgeColor = .primary
         }
 

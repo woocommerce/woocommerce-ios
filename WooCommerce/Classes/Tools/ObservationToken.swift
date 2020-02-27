@@ -1,4 +1,5 @@
 /// An observation token that contains a closure when the observation is cancelled.
+/// Example usage can be found in `ProductImagesService`.
 ///
 final class ObservationToken {
     private let onCancel: () -> Void

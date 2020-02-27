@@ -10,6 +10,9 @@ import Yosemite
 /// If we eventually get XLPagerTabStrip replaced, we can merge this class with
 /// `OrdersMasterViewController`.
 ///
+/// If you need to add additional logic, probably consider adding it to `OrdersMasterViewController`
+/// instead if possible.
+///
 final class OrdersRootViewController: UIViewController {
 
     // MARK: Child view controller
@@ -47,6 +50,7 @@ final class OrdersRootViewController: UIViewController {
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
+        // The magical fix for XLPagerTabStrip landscape issue. h/t @jaclync https://git.io/JvzgK
         ordersViewController.view.frame = containerView.bounds
     }
 

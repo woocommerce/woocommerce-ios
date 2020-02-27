@@ -52,7 +52,6 @@ final class ProductImagesServiceTests: XCTestCase {
         productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
-                XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
                 waitForStatusUpdates.fulfill()
             }
         }
@@ -64,9 +63,13 @@ final class ProductImagesServiceTests: XCTestCase {
             waitForAssetUpload.fulfill()
         }
 
+        // When
         productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
     }
 
     func testUploadingMediaUnsuccessfully() {
@@ -91,21 +94,23 @@ final class ProductImagesServiceTests: XCTestCase {
         ]
 
         let expectation = self.expectation(description: "Wait for image upload")
-        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        expectation.expectedFulfillmentCount = 1
 
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
         productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
-                XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
                 expectation.fulfill()
             }
         }
 
+        // When
         productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
 
-        expectation.expectedFulfillmentCount = 1
-
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
     }
 
     func testDeletingProductImage() {
@@ -125,21 +130,23 @@ final class ProductImagesServiceTests: XCTestCase {
         ]
 
         let expectation = self.expectation(description: "Wait for image upload")
-        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        expectation.expectedFulfillmentCount = 1
 
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
         productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
-                XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
                 expectation.fulfill()
             }
         }
 
+        // When
         productImagesService.deleteProductImage(mockProductImages[0])
 
-        expectation.expectedFulfillmentCount = 1
-
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Then
+        XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
     }
 }
 

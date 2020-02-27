@@ -183,7 +183,7 @@ private extension ProductsViewController {
                 comment: "VoiceOver accessibility hint, informing the user the button can be used to search products."
             )
             button.accessibilityIdentifier = "product-search-button"
-            
+
             return button
         }()
     }

@@ -80,20 +80,7 @@ final class ProductImagesViewController: UIViewController {
         configureAddButton()
         configureAddButtonBottomBorderView()
         configureImagesContainerView()
-
-        productImageStatusesObservationToken = productImagesService.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
-            guard let self = self else {
-                return
-            }
-
-            self.productImageStatuses = productImageStatuses
-
-            if let error = error {
-                self.displayErrorAlert(error: error)
-            }
-
-            self.imagesViewController.updateProductImageStatuses(productImageStatuses)
-        }
+        configureProductImagesObservation()
     }
 }
 
@@ -131,6 +118,22 @@ private extension ProductImagesViewController {
 
         imagesViewController.view.translatesAutoresizingMaskIntoConstraints = false
         imagesContainerView.pinSubviewToSafeArea(imagesViewController.view)
+    }
+
+    func configureProductImagesObservation() {
+        productImageStatusesObservationToken = productImagesService.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+            guard let self = self else {
+                return
+            }
+
+            self.productImageStatuses = productImageStatuses
+
+            if let error = error {
+                self.displayErrorAlert(error: error)
+            }
+
+            self.imagesViewController.updateProductImageStatuses(productImageStatuses)
+        }
     }
 }
 

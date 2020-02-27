@@ -1,6 +1,15 @@
 import UIKit
 import Yosemite
 
+/// The root tab controller for Orders.
+///
+/// This is really just a container for `OrdersMasterViewController` with subtle fixes for the
+/// XLPagerTabStrip bug in landscape. See PR#1851 (https://git.io/Jvzg8) for more information
+/// about the bug.
+///
+/// If we eventually get XLPagerTabStrip replaced, we can merge this class with
+/// `OrdersMasterViewController`.
+///
 final class OrdersRootViewController: UIViewController {
 
     // MARK: Child view controller

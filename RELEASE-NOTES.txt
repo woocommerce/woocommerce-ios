@@ -1,8 +1,6 @@
-3.7
------
-- Redesigned Orders List: Processing and All Orders are now shown in front. Filtering were moved to the Search view.
 3.8
 -----
+- Redesigned Orders List: Processing and All Orders are now shown in front. Filtering was moved to the Search view.
  
 3.7
 -----

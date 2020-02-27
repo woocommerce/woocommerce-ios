@@ -106,8 +106,8 @@ final class MainTabBarController: UITabBarController {
     }()
 
     private lazy var ordersTabViewController: UIViewController = {
-        let masterViewController = OrdersRootViewController()
-        return WooNavigationController(rootViewController: masterViewController)
+        let rootViewController = OrdersRootViewController()
+        return WooNavigationController(rootViewController: rootViewController)
     }()
 
 

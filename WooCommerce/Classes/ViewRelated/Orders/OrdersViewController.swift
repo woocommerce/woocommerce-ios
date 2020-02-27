@@ -157,7 +157,7 @@ class OrdersViewController: UIViewController {
 
         refreshResultsPredicate()
         refreshStatusPredicate()
-        registerTableViewCells()
+        registerTableViewHeadersAndCells()
 
         configureSyncingCoordinator()
         configureTableView()
@@ -241,6 +241,9 @@ private extension OrdersViewController {
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+        tableView.estimatedSectionHeaderHeight = Settings.estimatedHeaderHeight
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.sectionFooterHeight = .leastNonzeroMagnitude
     }
 
     /// Setup: Ghostable TableView
@@ -262,15 +265,18 @@ private extension OrdersViewController {
         ghostableTableView.isScrollEnabled = false
     }
 
-    /// Registers all of the available TableViewCells
+    /// Registers all of the available table view cells and headers
     ///
-    func registerTableViewCells() {
+    func registerTableViewHeadersAndCells() {
         let cells = [ OrderTableViewCell.self ]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
             ghostableTableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
+
+        let headerType = TwoColumnSectionHeaderView.self
+        tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
     }
 }
 
@@ -554,9 +560,19 @@ extension OrdersViewController: UITableViewDataSource {
         return cell
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let rawAge = resultsController.sections[section].name
-        return Age(rawValue: rawAge)?.description
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let reuseIdentifier = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? TwoColumnSectionHeaderView else {
+            return nil
+        }
+
+        header.leftText = {
+            let rawAge = resultsController.sections[section].name
+            return Age(rawValue: rawAge)?.description
+        }()
+        header.rightText = nil
+
+        return header
     }
 }
 
@@ -564,15 +580,6 @@ extension OrdersViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension OrdersViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return Settings.estimatedHeaderHeight
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return estimatedRowHeights[indexPath] ?? Settings.estimatedRowHeight
     }

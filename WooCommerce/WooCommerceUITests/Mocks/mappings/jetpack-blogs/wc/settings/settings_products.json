@@ -1,0 +1,410 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+        "queryParameters": {
+            "json": {
+                "equalTo": "true"
+            },
+            "path": {
+                "equalTo": "/wc/v3/settings/products&_method=get"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "data": [{
+                "id": "woocommerce_shop_page_id",
+                "label": "Shop page",
+                "description": "The base page can also be used in your <a href=\"https:\/\/automatticwidgets.com\/wp-admin\/options-permalink.php\">product permalinks<\/a>.",
+                "type": "select",
+                "default": "",
+                "tip": "This sets the base page of your shop - this is where your product archive will be.",
+                "value": "20",
+                "options": {
+                    "20": "Shop",
+                    "21": "Cart",
+                    "22": "Checkout",
+                    "23": "My account",
+                    "2": "Home",
+                    "3": "Blog"
+                },
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_shop_page_id"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_cart_redirect_after_add",
+                "label": "Add to cart behaviour",
+                "description": "Redirect to the cart page after successful addition",
+                "type": "checkbox",
+                "default": "no",
+                "value": "no",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_cart_redirect_after_add"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_enable_ajax_add_to_cart",
+                "label": "",
+                "description": "Enable AJAX add to cart buttons on archives",
+                "type": "checkbox",
+                "default": "yes",
+                "value": "yes",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_enable_ajax_add_to_cart"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_placeholder_image",
+                "label": "Placeholder image",
+                "description": "",
+                "type": "text",
+                "default": "",
+                "tip": "This is the attachment ID, or image URL, used for placeholder images in the product catalog. Products with no image will use this.",
+                "value": "17",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_placeholder_image"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_weight_unit",
+                "label": "Weight unit",
+                "description": "This controls what unit you will define weights in.",
+                "type": "select",
+                "default": "kg",
+                "options": {
+                    "kg": "kg",
+                    "g": "g",
+                    "lbs": "lbs",
+                    "oz": "oz"
+                },
+                "tip": "This controls what unit you will define weights in.",
+                "value": "oz",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_weight_unit"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_dimension_unit",
+                "label": "Dimensions unit",
+                "description": "This controls what unit you will define lengths in.",
+                "type": "select",
+                "default": "cm",
+                "options": {
+                    "m": "m",
+                    "cm": "cm",
+                    "mm": "mm",
+                    "in": "in",
+                    "yd": "yd"
+                },
+                "tip": "This controls what unit you will define lengths in.",
+                "value": "in",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_dimension_unit"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_enable_reviews",
+                "label": "Enable reviews",
+                "description": "Enable product reviews",
+                "type": "checkbox",
+                "default": "yes",
+                "value": "yes",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_enable_reviews"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_review_rating_verification_label",
+                "label": "",
+                "description": "Show \"verified owner\" label on customer reviews",
+                "type": "checkbox",
+                "default": "yes",
+                "value": "yes",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_review_rating_verification_label"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_review_rating_verification_required",
+                "label": "",
+                "description": "Reviews can only be left by \"verified owners\"",
+                "type": "checkbox",
+                "default": "no",
+                "value": "no",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_review_rating_verification_required"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_enable_review_rating",
+                "label": "Product ratings",
+                "description": "Enable star rating on reviews",
+                "type": "checkbox",
+                "default": "yes",
+                "value": "yes",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_enable_review_rating"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_review_rating_required",
+                "label": "",
+                "description": "Star ratings should be required, not optional",
+                "type": "checkbox",
+                "default": "yes",
+                "value": "yes",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_review_rating_required"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_manage_stock",
+                "label": "Manage stock",
+                "description": "Enable stock management",
+                "type": "checkbox",
+                "default": "yes",
+                "value": "yes",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_manage_stock"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_hold_stock_minutes",
+                "label": "Hold stock (minutes)",
+                "description": "Hold stock (for unpaid orders) for x minutes. When this limit is reached, the pending order will be cancelled. Leave blank to disable.",
+                "type": "number",
+                "default": "60",
+                "value": "60",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_hold_stock_minutes"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_notify_low_stock",
+                "label": "Notifications",
+                "description": "Enable low stock notifications",
+                "type": "checkbox",
+                "default": "yes",
+                "value": "yes",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_notify_low_stock"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_notify_no_stock",
+                "label": "",
+                "description": "Enable out of stock notifications",
+                "type": "checkbox",
+                "default": "yes",
+                "value": "yes",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_notify_no_stock"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_stock_email_recipient",
+                "label": "Notification recipient(s)",
+                "description": "Enter recipients (comma separated) that will receive this notification.",
+                "type": "text",
+                "default": "e2eflowtestingmobile@example.com",
+                "tip": "Enter recipients (comma separated) that will receive this notification.",
+                "value": "e2eflowtestingmobile@example.com",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_stock_email_recipient"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_notify_low_stock_amount",
+                "label": "Low stock threshold",
+                "description": "When product stock reaches this amount you will be notified via email.",
+                "type": "number",
+                "default": "2",
+                "tip": "When product stock reaches this amount you will be notified via email.",
+                "value": "2",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_notify_low_stock_amount"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_notify_no_stock_amount",
+                "label": "Out of stock threshold",
+                "description": "When product stock reaches this amount the stock status will change to \"out of stock\" and you will be notified via email. This setting does not affect existing \"in stock\" products.",
+                "type": "number",
+                "default": "0",
+                "tip": "When product stock reaches this amount the stock status will change to \"out of stock\" and you will be notified via email. This setting does not affect existing \"in stock\" products.",
+                "value": "0",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_notify_no_stock_amount"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_hide_out_of_stock_items",
+                "label": "Out of stock visibility",
+                "description": "Hide out of stock items from the catalog",
+                "type": "checkbox",
+                "default": "no",
+                "value": "no",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_hide_out_of_stock_items"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_stock_format",
+                "label": "Stock display format",
+                "description": "This controls how stock quantities are displayed on the frontend.",
+                "type": "select",
+                "default": "",
+                "options": {
+                    "low_amount": "Only show quantity remaining in stock when low e.g. \"Only 2 left in stock\"",
+                    "no_amount": "Never show quantity remaining in stock"
+                },
+                "tip": "This controls how stock quantities are displayed on the frontend.",
+                "value": "",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_stock_format"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_file_download_method",
+                "label": "File download method",
+                "description": "Forcing downloads will keep URLs hidden, but some servers may serve large files unreliably. If supported, <code>X-Accel-Redirect<\/code> \/ <code>X-Sendfile<\/code> can be used to serve downloads instead (server requires <code>mod_xsendfile<\/code>).",
+                "type": "select",
+                "default": "force",
+                "options": {
+                    "force": "Force downloads",
+                    "xsendfile": "X-Accel-Redirect\/X-Sendfile",
+                    "redirect": "Redirect only"
+                },
+                "tip": "Forcing downloads will keep URLs hidden, but some servers may serve large files unreliably. If supported, <code>X-Accel-Redirect<\/code> \/ <code>X-Sendfile<\/code> can be used to serve downloads instead (server requires <code>mod_xsendfile<\/code>).",
+                "value": "force",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_file_download_method"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_downloads_require_login",
+                "label": "Access restriction",
+                "description": "Downloads require login",
+                "type": "checkbox",
+                "default": "no",
+                "tip": "This setting does not apply to guest purchases.",
+                "value": "no",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_downloads_require_login"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }, {
+                "id": "woocommerce_downloads_grant_access_after_payment",
+                "label": "",
+                "description": "Grant access to downloadable products after payment",
+                "type": "checkbox",
+                "default": "yes",
+                "tip": "Enable this option to grant access to downloads when orders are \"processing\", rather than \"completed\".",
+                "value": "yes",
+                "_links": {
+                    "self": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products\/woocommerce_downloads_grant_access_after_payment"
+                    }],
+                    "collection": [{
+                        "href": "https:\/\/automatticwidgets.com\/wp-json\/wc\/v3\/settings\/products"
+                    }]
+                }
+            }]
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

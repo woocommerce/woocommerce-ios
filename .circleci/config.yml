@@ -46,7 +46,7 @@ jobs:
       - ios/wait-for-simulator
       - ios/xcodebuild:
           command: test-without-building
-          arguments: -xctestrun DerivedData/Build/Products/WooCommerce_iphonesimulator13.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
+          arguments: -xctestrun DerivedData/Build/Products/WooCommerce_UnitTests_iphonesimulator13.2-x86_64.xctestrun -destination "platform=iOS Simulator,id=$SIMULATOR_UDID"
       - ios/save-xcodebuild-artifacts
   Installable Build:
     executor:

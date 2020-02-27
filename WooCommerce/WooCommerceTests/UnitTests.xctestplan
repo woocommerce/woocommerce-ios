@@ -1,0 +1,56 @@
+{
+  "configurations" : [
+    {
+      "id" : "7E8B43A4-950E-425F-A333-D1D696025D02",
+      "name" : "Configuration 1",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "commandLineArgumentEntries" : [
+      {
+        "argument" : "mocked-wpcom-api",
+        "enabled" : false
+      }
+    ],
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:WooCommerce.xcodeproj",
+      "identifier" : "B56DB3C52049BFAA00D4AA8E",
+      "name" : "WooCommerce"
+    }
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:WooCommerce.xcodeproj",
+        "identifier" : "B56DB3DC2049BFAA00D4AA8E",
+        "name" : "WooCommerceTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Networking\/Networking.xcodeproj",
+        "identifier" : "B557D9EB209753AA005962F4",
+        "name" : "NetworkingTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Storage\/Storage.xcodeproj",
+        "identifier" : "B54CA5A120A4BBA600F38CD1",
+        "name" : "StorageTests"
+      }
+    },
+    {
+      "target" : {
+        "containerPath" : "container:..\/Yosemite\/Yosemite.xcodeproj",
+        "identifier" : "B5C9DDFD2087FEC0006B910A",
+        "name" : "YosemiteTests"
+      }
+    }
+  ],
+  "version" : 1
+}

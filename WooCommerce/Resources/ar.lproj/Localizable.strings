@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-04 00:54:32+0000 */
+/* Translation-Revision-Date: 2020-02-12 15:27:05+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (النظام)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %@$@ (To Customer)" = "%1$@ - %@$@ (إلى العميل)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "تركَ %1$@ مراجعة حول %2$@";
@@ -80,7 +80,7 @@
 "Add" = "إضافة";
 
 /* Action to add photos on the Product images screen */
-"Add Photos" = "Add Photos";
+"Add Photos" = "إضافة صور";
 
 /* A title used for a shipment tracking unit test
    Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
@@ -154,14 +154,14 @@
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "يوافق على التعليق";
 
-/* Message title for Save Changes Action Sheet */
-"Are you sure you want to discard these changes?" = "Are you sure you want to discard these changes?";
+/* Message title for Discard Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "هل أنت متأكد من رغبتك في تجاهل هذه التغييرات؟";
 
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "هل أنت متأكد من رغبتك في تسجيل الخروج من الحساب %@؟";
 
 /* Message on the alert when the user taps to delete a Product image */
-"Are you sure you want to remove this image?" = "Are you sure you want to remove this image?";
+"Are you sure you want to remove this image?" = "هل أنت متأكد من رغبتك في إزالة هذه الصورة؟";
 
 /* No comment provided by engineer. */
 "Authenticating" = "مصادقة";
@@ -218,20 +218,20 @@
 "Call" = "اتصال";
 
 /* Error message format when capturing a unsupported media type with device camera */
-"Camera capture should not support media type: %@" = "Camera capture should not support media type: %@";
+"Camera capture should not support media type: %@" = "لا ينبغي أن يدعم التقاط الكاميرا نوع الوسائط: %@";
 
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "يتعذر طلب رابط";
 
-/* Button title Cancel in Save Changes Action Sheet
-   Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
+/* Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "إلغاء";
 
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "يتعذر تحديث المنتج";
 
 /* Title of the alert when there is an error uploading image(s) */
-"Cannot upload image" = "Cannot upload image";
+"Cannot upload image" = "تعذر تحميل الصورة";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "حافظ على مواقعك المفضلة وانضم إلى المحادثة أينما كنت ووقتما تشاء.";
@@ -240,7 +240,7 @@
 "Certificate error" = "خطأ في الشهادة";
 
 /* Menu option for selecting media from the device's photo library. */
-"Choose from device" = "Choose from device";
+"Choose from device" = "الاختيار من جهاز";
 
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "جمع المعلومات";
@@ -381,8 +381,8 @@
 /* Format of one dimension on the Shipping Settings row - dimension[unit] */
 "Dimensions: %1$@%2$@" = "الأبعاد: ‎%1$@%2$@‎";
 
-/* Button title Discard Changes in Save Changes Action Sheet */
-"Discard changes" = "Discard changes";
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Discard changes" = "تجاهل التغييرات";
 
 /* Discount label for payment view */
 "Discount" = "خصم";
@@ -776,6 +776,9 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "المزيد";
 
+/* Accessibility label for the Edit Product More Options action sheet */
+"More options" = "More options";
+
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "ينقل تعليقًا إلى البريد المزعج";
 
@@ -922,7 +925,8 @@
 /* Order notes section title */
 "Order Notes" = "ملاحظات الطلب";
 
-/* Change order status screen - Screen title */
+/* Change order status screen - Screen title
+   The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "حالة الطلب";
 
 /* Order Total label for payment view */
@@ -937,8 +941,8 @@
 /* Accessibility label for Ordered list button on formatting toolbar. */
 "Ordered List" = "قائمة مرتَّبة";
 
-/* Orders stat label on dashboard - should be plural.
-   Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Default title for Orders List shown when tapping on the Search filter.
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "الطلبات";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -984,7 +988,7 @@
 "Pick Store to Connect" = "اختر متجرًا للاتصال به";
 
 /* Product title error notice message, when the title is empty */
-"Please add a title" = "Please add a title";
+"Please add a title" = "يُرجى إضافة عنوان";
 
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "يُرجى التحقق من البريد الإلكتروني";
@@ -1026,7 +1030,7 @@
 "Please log out before connecting to a different wordpress.com site" = "يرجى تسجيل الخروج قبل الاتصال بموقع وردبرس.كوم مختلف";
 
 /* Error message when an image captured by camera cannot be saved to the device Photos library */
-"Please make sure the app can access Photos in device settings" = "Please make sure the app can access Photos in device settings";
+"Please make sure the app can access Photos in device settings" = "يُرجى التأكد من وصول التطبيق إلى الصور في إعدادات الجهاز";
 
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "يُرجى فتح تطبيق البريد الإلكتروني والبحث عن بريد إلكتروني من وردبرس.كوم.";
@@ -1153,13 +1157,13 @@
 "Regular price: %@" = "السعر العادي: %@";
 
 /* Confirm button on the alert when the user taps to delete a Product image */
-"Remove" = "Remove";
+"Remove" = "إزالة";
 
 /* Action: Opens the Store in a browser */
 "Remove Filters" = "حذف عوامل التصفية";
 
 /* Title on the alert when the user taps to delete a Product image */
-"Remove Image" = "Remove Image";
+"Remove Image" = "إزالة الصورة";
 
 /* Label action for removing a link from the editor */
 "Remove Link" = "إزالة الرابط";
@@ -1229,9 +1233,6 @@
 /* Format of the sale price on the Price Settings row */
 "Sale price: %@" = "سعر البيع: %@";
 
-/* Button title for Save Changes Action Sheet */
-"Save changes" = "Save changes";
-
 /* Title of the cell in Product Price Settings > Schedule sale */
 "Schedule sale" = "جدولة البيع";
 
@@ -1265,6 +1266,9 @@
 /* Accessibility label for the Settings button.
    Settings navigation title */
 "Settings" = "إعدادات";
+
+/* Button title Share in Edit Product More Options Action Sheet */
+"Share" = "مشاركة";
 
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "شارك المعلومات مع أداة التحليلات لدينا حول استخدامك الخدمات أثناء تسجيل الدخول إلى حساب وردبرس.كوم الخاص بك.";
@@ -1474,7 +1478,7 @@
 "Switches to the default Font Size" = "يقوم بالتبديل إلى حجم الخط الافتراضي";
 
 /* Menu option for taking an image or video with the device's camera. */
-"Take a photo" = "Take a photo";
+"Take a photo" = "التقاط صورة";
 
 /* Accessibility hint for the More button on formatting toolbar. */
 "Tap for more formatting options" = "الضغط للحصول على مزيد من خيارات التنسيق";
@@ -1599,8 +1603,11 @@
 /* Displayed whenever a review that was onscreen got deleted. */
 "The review has been removed" = "تمت إزالة المراجعة";
 
+/* Product price error notice message, when the sale price is added but the regular price is not */
+"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+
 /* Product price error notice message, when the sale price is higher than the regular price */
-"The sale price should be lower than the regular price." = "The sale price should be lower than the regular price.";
+"The sale price should be lower than the regular price." = "ينبغي أن يكون سعر العرض أقل من السعر العادي.";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "أرجع الخادم استجابة فارغة. يعني ذلك عادة أنك بحاجة إلى زيادة الحد الأقصى لذاكرة موقعك.";
@@ -1811,7 +1818,7 @@
 "Unknown error" = "خطأ غير معروف";
 
 /* Error message when capturing a unknown media type */
-"Unknown media type" = "Unknown media type";
+"Unknown media type" = "نوع وسائط غير معروف";
 
 /* Accessibility label for unordered list button on formatting toolbar. */
 "Unordered List" = "قائمة غير مرتَّبة";
@@ -1979,7 +1986,7 @@
 "WooCommerce for iOS Support" = "WooCommerce لدعم نظام التشغيل iOS";
 
 /* Menu option for selecting media from the site's media library. */
-"WordPress Media Library" = "WordPress Media Library";
+"WordPress Media Library" = "مكتبة وسائط ووردبريس";
 
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "إصدار WordPress قديم جدًا. يستخدم الموقع في %1$@ WordPress %2$@. نوصي بالتحديث إلى أحدث إصدار أو الإصدار %3$@ على الأقل";

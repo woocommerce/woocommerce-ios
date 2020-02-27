@@ -167,6 +167,13 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
     ios_update_metadata(options) unless ios_current_branch_is_hotfix
     ios_bump_version_beta() unless ios_current_branch_is_hotfix
     ios_final_tag(options)
+
+    # Wrap up
+    version = ios_get_app_version()
+    removebranchprotection(repository:GHHELPER_REPO, branch: "release/#{version}")
+    setfrozentag(repository:GHHELPER_REPO, milestone: version, freeze: false)
+    create_new_milestone(repository:GHHELPER_REPO)
+    close_milestone(repository:GHHELPER_REPO, milestone: version)
   end
 
   #####################################################################################
@@ -282,6 +289,15 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       notify_testers: false 
     )
 
+    # Install SentryCLI prior to trying to upload dSYMs
+    sh("curl -sL https://sentry.io/get-cli/ | bash")
+
+    sentry_upload_dsym(
+      auth_token: get_required_env("SENTRY_AUTH_TOKEN"),
+      org_slug: 'a8c',
+      project_slug: 'woocommerce-ios',
+      dsym_path: "./build/WooCommerce.app.dSYM.zip",
+    )
 
     download_url = Actions.lane_context[SharedValues::APPCENTER_DOWNLOAD_LINK]
     UI.message("Successfully built and uploaded installable build here: #{download_url}")

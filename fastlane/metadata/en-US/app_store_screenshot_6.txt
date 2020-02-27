@@ -1,2 +1,0 @@
-View store data by week,
-month, and year

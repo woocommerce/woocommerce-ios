@@ -106,8 +106,8 @@ final class MainTabBarController: UITabBarController {
     }()
 
     private lazy var ordersTabViewController: UIViewController = {
-        let masterViewController = OrdersMasterViewController()
-        return WooNavigationController(rootViewController: masterViewController)
+        let rootViewController = OrdersRootViewController()
+        return WooNavigationController(rootViewController: rootViewController)
     }()
 
 
@@ -325,11 +325,11 @@ extension MainTabBarController {
         switch note.kind {
         case .storeOrder:
             switchToOrdersTab {
-                guard let ordersMasterVC: OrdersMasterViewController = childViewController() else {
+                guard let ordersVC: OrdersRootViewController = childViewController() else {
                     return
                 }
 
-                ordersMasterVC.presentDetails(for: note)
+                ordersVC.presentDetails(for: note)
             }
         case .comment:
             switchToReviewsTab {

@@ -5,20 +5,13 @@ import WordPressUI
 import SafariServices
 import StoreKit
 
+// Used for protocol conformance of IndicatorInfoProvider only.
+import XLPagerTabStrip
+
 protocol OrdersViewControllerDelegate: class {
     /// Called when `OrdersViewController` is about to fetch Orders from the API.
     ///
     func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController)
-    /// Called when `OrdersViewController` is requesting to reset the `statusFilter` to `nil`.
-    ///
-    /// `OrdersViewController` does not modify its own `statusFilter`. While it is capable of
-    ///  doing that, we'd rather have that responsibility in the parent
-    ///  `OrdersMasterViewController`.
-    ///
-    ///  TODO There are ways to make secure this intentional behavior. We are keeping this as is
-    ///  for now since we will be significantly refactoring `OrdersViewController` later.
-    ///
-    func ordersViewControllerRequestsToClearStatusFilter(_ viewController: OrdersViewController)
 }
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
@@ -60,6 +53,8 @@ class OrdersViewController: UIViewController {
 
     /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
     ///
+    /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.
+    ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
         let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
@@ -73,32 +68,7 @@ class OrdersViewController: UIViewController {
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
-    /// This is set and changed by `OrdersMasterViewModel`. This shouldn't be updated internally
-    /// by `self`.
-    ///
-    /// TODO Make this `let`.
-    ///
-    var statusFilter: OrderStatus? {
-        didSet {
-            guard isViewLoaded else {
-                return
-            }
-
-            guard oldValue != statusFilter else {
-                return
-            }
-
-            didChangeFilter(newFilter: statusFilter)
-        }
-    }
-
-    /// If `true`, the "Remove Filters" action will be shown on the Filtered Empty View.
-    ///
-    /// Defaults to `true`.
-    ///
-    /// - SeeAlso: displayEmptyFilteredOverlay
-    ///
-    private let showsRemoveFilterActionOnFilteredEmptyView: Bool
+    private let statusFilter: OrderStatus?
 
     /// The current list of order statuses for the default site
     ///
@@ -141,11 +111,12 @@ class OrdersViewController: UIViewController {
     ///
     /// - Parameter statusFilter The filter to use.
     ///
-    init(statusFilter: OrderStatus? = nil,
-         showsRemoveFilterActionOnFilteredEmptyView: Bool = true) {
+    init(title: String, statusFilter: OrderStatus? = nil) {
         self.statusFilter = statusFilter
-        self.showsRemoveFilterActionOnFilteredEmptyView = showsRemoveFilterActionOnFilteredEmptyView
+
         super.init(nibName: Self.nibName, bundle: nil)
+
+        self.title = title
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -171,9 +142,6 @@ class OrdersViewController: UIViewController {
         super.viewWillAppear(animated)
 
         syncingCoordinator.synchronizeFirstPage()
-        if AppRatingManager.shared.shouldPromptForAppReview() {
-            displayRatingPrompt()
-        }
     }
 }
 
@@ -311,43 +279,6 @@ extension OrdersViewController {
         }
     }
 }
-
-
-// MARK: - Filters
-//
-private extension OrdersViewController {
-
-    func didChangeFilter(newFilter: OrderStatus?) {
-        ServiceLocator.analytics.track(.filterOrdersOptionSelected,
-                                  withProperties: ["status": newFilter?.slug ?? String()])
-        ServiceLocator.analytics.track(.ordersListFilterOrSearch,
-                                  withProperties: ["filter": newFilter?.slug ?? String(),
-                                                   "search": ""])
-
-        // Filter right away the cached orders
-        refreshResultsPredicate()
-
-        // Drop Cache (If Needed) + Re-Sync First Page
-        ensureStoredOrdersAreReset { [weak self] in
-            self?.syncingCoordinator.resynchronize()
-        }
-    }
-
-    /// Nukes all of the Stored Orders:
-    /// We're dropping the entire Orders Cache whenever a filter was just removed. This is performed to avoid
-    /// "interleaved Sync'ed Objects", which results in an awful UX while scrolling down
-    ///
-    func ensureStoredOrdersAreReset(onCompletion: @escaping () -> Void) {
-        guard isFiltered == false else {
-            onCompletion()
-            return
-        }
-
-        let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
-        ServiceLocator.stores.dispatch(action)
-    }
-}
-
 
 // MARK: - Sync'ing Helpers
 //
@@ -494,14 +425,7 @@ private extension OrdersViewController {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
-        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
-        overlayView.onAction = { [weak self] in
-            if let self = self {
-                self.delegate?.ordersViewControllerRequestsToClearStatusFilter(self)
-            }
-        }
-
-        overlayView.actionVisible = showsRemoveFilterActionOnFilteredEmptyView
+        overlayView.actionVisible = false
 
         overlayView.attach(to: view)
     }
@@ -690,6 +614,19 @@ private extension OrdersViewController {
         }
 
         state = .emptyUnfiltered
+    }
+}
+
+// MARK: - IndicatorInfoProvider Conformance
+
+// This conformance is not used directly by `OrdersViewController`. We only need this because
+// `Self` is used as a child of `OrdersMasterViewController` which is a
+// `ButtonBarPagerTabStripViewController`.
+extension OrdersViewController: IndicatorInfoProvider {
+    /// Return `self.title` under `IndicatorInfo`.
+    ///
+    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
+        IndicatorInfo(title: title)
     }
 }
 

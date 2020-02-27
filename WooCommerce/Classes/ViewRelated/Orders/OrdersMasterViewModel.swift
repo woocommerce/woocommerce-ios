@@ -7,7 +7,7 @@ import Yosemite
 /// ## Always Active
 ///
 /// The corresponding view, `OrdersMaterViewController`, is never deallocated even if the user has
-/// already logged out. There are some considerations in this class like `resetStatusPredicate` to
+/// already logged out. There are some considerations in this class like `refreshStatusPredicate` to
 /// accommodate this behavior.
 ///
 final class OrdersMasterViewModel {
@@ -29,33 +29,6 @@ final class OrdersMasterViewModel {
         sessionManager.defaultStoreID
     }
 
-    /// The current list of order statuses for the default site
-    ///
-    var currentSiteStatuses: [OrderStatus] {
-        return statusResultsController.fetchedObjects
-    }
-
-    /// The current `OrderStatus` to filter by.
-    ///
-    /// If the this is `nil`, that means that all orders should be shown. The `statusFilterChanged`
-    /// callback will be called whenever this is changed.
-    ///
-    var statusFilter: OrderStatus? {
-        didSet {
-            statusFilterChanged(statusFilter)
-        }
-    }
-
-    /// Called whenever `statusFilter` is changed.
-    ///
-    private let statusFilterChanged: (OrderStatus?) -> ()
-
-    /// Designated initializer.
-    ///
-    init(statusFilterChanged: @escaping (OrderStatus?) -> ()) {
-        self.statusFilterChanged = statusFilterChanged
-    }
-
     /// Start all the operations that this `ViewModel` is responsible for.
     ///
     /// This should only be called once in the lifetime of `OrdersMasterViewController`.
@@ -73,8 +46,6 @@ final class OrdersMasterViewModel {
     /// Fetch all `OrderStatus` from the API
     ///
     func syncOrderStatuses() {
-        resetStatusFilterIfNeeded()
-
         guard let siteID = siteID else {
             return
         }
@@ -82,12 +53,10 @@ final class OrdersMasterViewModel {
         // First, let's verify our FRC predicate is up to date
         refreshStatusPredicate()
 
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (_, error) in
+        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { (_, error) in
             if let error = error {
                 DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
             }
-
-            self?.resetStatusFilterIfNeeded()
         }
 
         stores.dispatch(action)
@@ -96,7 +65,6 @@ final class OrdersMasterViewModel {
     /// Runs whenever the default Account is updated.
     ///
     @objc private func defaultAccountWasUpdated() {
-        statusFilter = nil
         refreshStatusPredicate()
     }
 
@@ -114,23 +82,5 @@ final class OrdersMasterViewModel {
         }
 
         statusResultsController.predicate = NSPredicate(format: "siteID == %lld", siteID ?? Int.min)
-    }
-
-    /// Reset the current status filter if needed (e.g. when changing stores and the currently
-    /// selected filter does not exist in the new store)
-    ///
-    func resetStatusFilterIfNeeded() {
-        guard let statusFilter = statusFilter else {
-            // "All" is the current filter so bail
-            return
-        }
-        guard currentSiteStatuses.isEmpty == false else {
-            self.statusFilter = nil
-            return
-        }
-
-        if !currentSiteStatuses.contains(where: { $0.name == statusFilter.name && $0.slug == statusFilter.slug }) {
-            self.statusFilter = nil
-        }
     }
 }

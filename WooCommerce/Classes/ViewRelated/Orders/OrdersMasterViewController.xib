@@ -10,6 +10,8 @@
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrdersMasterViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
+                <outlet property="buttonBarView" destination="7lu-ed-U2a" id="CeJ-gT-RxY"/>
+                <outlet property="containerView" destination="VD7-Yu-YwE" id="3vO-sb-eUc"/>
                 <outlet property="view" destination="xuO-pm-Bnd" id="21G-dF-888"/>
             </connections>
         </placeholder>
@@ -17,7 +19,35 @@
         <view contentMode="scaleToFill" id="xuO-pm-Bnd">
             <rect key="frame" x="0.0" y="0.0" width="414" height="896"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="7lu-ed-U2a" customClass="ButtonBarView" customModule="XLPagerTabStrip">
+                    <rect key="frame" x="0.0" y="44" width="414" height="44"/>
+                    <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+                    <constraints>
+                        <constraint firstAttribute="height" constant="44" id="pvM-9u-cnp"/>
+                    </constraints>
+                    <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="10" minimumInteritemSpacing="10" id="lr1-IP-FyX">
+                        <size key="itemSize" width="50" height="50"/>
+                        <size key="headerReferenceSize" width="0.0" height="0.0"/>
+                        <size key="footerReferenceSize" width="0.0" height="0.0"/>
+                        <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
+                    </collectionViewFlowLayout>
+                    <cells/>
+                </collectionView>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="VD7-Yu-YwE">
+                    <rect key="frame" x="0.0" y="88" width="414" height="774"/>
+                </scrollView>
+            </subviews>
             <color key="backgroundColor" systemColor="systemBackgroundColor" cocoaTouchSystemColor="whiteColor"/>
+            <constraints>
+                <constraint firstItem="VD7-Yu-YwE" firstAttribute="leading" secondItem="rGE-vr-B04" secondAttribute="leading" id="1oC-b9-sf9"/>
+                <constraint firstItem="rGE-vr-B04" firstAttribute="trailing" secondItem="VD7-Yu-YwE" secondAttribute="trailing" id="9vb-3t-PWE"/>
+                <constraint firstItem="VD7-Yu-YwE" firstAttribute="top" secondItem="7lu-ed-U2a" secondAttribute="bottom" id="L4N-Ce-OKC"/>
+                <constraint firstItem="rGE-vr-B04" firstAttribute="bottom" secondItem="VD7-Yu-YwE" secondAttribute="bottom" id="LZC-0z-fDh"/>
+                <constraint firstItem="7lu-ed-U2a" firstAttribute="top" secondItem="rGE-vr-B04" secondAttribute="top" id="Rct-WJ-OQP"/>
+                <constraint firstItem="7lu-ed-U2a" firstAttribute="leading" secondItem="rGE-vr-B04" secondAttribute="leading" id="Zdd-er-iM1"/>
+                <constraint firstItem="rGE-vr-B04" firstAttribute="trailing" secondItem="7lu-ed-U2a" secondAttribute="trailing" id="lJ7-pc-DWf"/>
+            </constraints>
             <viewLayoutGuide key="safeArea" id="rGE-vr-B04"/>
             <point key="canvasLocation" x="-317" y="153"/>
         </view>

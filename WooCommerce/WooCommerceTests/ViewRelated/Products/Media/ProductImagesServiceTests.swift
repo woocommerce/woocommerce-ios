@@ -45,20 +45,26 @@ final class ProductImagesServiceTests: XCTestCase {
             [.remote(image: mockUploadedProductImage)] + mockRemoteProductImageStatuses
         ]
 
-        let expectation = self.expectation(description: "Wait for image upload")
-        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
+        let waitForStatusUpdates = self.expectation(description: "Wait for status updates from image upload")
+        waitForStatusUpdates.expectedFulfillmentCount = 1
 
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
         productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
                 XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
-                expectation.fulfill()
+                waitForStatusUpdates.fulfill()
             }
         }
 
-        productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
+        let waitForAssetUpload = self.expectation(description: "Wait for asset upload callback from image upload")
+        productImagesService.addAssetUploadObserver(self) { (asset, productImage) in
+            XCTAssertEqual(asset, mockAsset)
+            XCTAssertEqual(productImage, mockUploadedProductImage)
+            waitForAssetUpload.fulfill()
+        }
 
-        expectation.expectedFulfillmentCount = 1
+        productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }

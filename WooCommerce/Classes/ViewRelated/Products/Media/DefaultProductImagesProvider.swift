@@ -12,10 +12,23 @@ final class DefaultProductImagesProvider: ProductImagesProvider {
     private let imageService: ImageService
     private let phImageManager: PHImageManager
 
-    init(imageService: ImageService = ServiceLocator.imageService,
+    private let productImagesService: ProductImagesService?
+
+    /// - Parameters:
+    ///   - productImagesService: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
+    ///     Set this property when images are being uploaded in the scope.
+    ///   - imageService: provides images given a URL.
+    ///   - phImageManager: provides images given a `PHAsset` asset.
+    init(productImagesService: ProductImagesService? = nil,
+         imageService: ImageService = ServiceLocator.imageService,
          phImageManager: PHImageManager = PHImageManager.default()) {
+        self.productImagesService = productImagesService
         self.imageService = imageService
         self.phImageManager = phImageManager
+
+        productImagesService?.addAssetUploadObserver(self) { [weak self] asset, productImage in
+            self?.update(from: asset, to: productImage)
+        }
     }
 
     func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void) {
@@ -43,7 +56,9 @@ final class DefaultProductImagesProvider: ProductImagesProvider {
             completion(image)
         }
     }
+}
 
+private extension DefaultProductImagesProvider {
     func update(from asset: PHAsset, to productImage: ProductImage) {
         phImageManager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { [weak self] (image, info) in
             guard let image = image else {

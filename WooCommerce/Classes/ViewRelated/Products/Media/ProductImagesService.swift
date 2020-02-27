@@ -4,37 +4,44 @@ import Yosemite
 /// Encapsulates the implementation of Product images actions from the UI.
 ///
 final class ProductImagesService {
-    typealias OnUpdate = ([ProductImageStatus], Error?) -> Void
+    typealias OnAllStatusesUpdate = ([ProductImageStatus], Error?) -> Void
+    typealias OnAssetUpload = (PHAsset, ProductImage) -> Void
 
     private let siteID: Int64
-    private let productImagesProvider: ProductImagesProvider
 
     private(set) var productImageStatuses: [ProductImageStatus] {
         didSet {
-            observations.values.forEach { closure in
+            observations.allStatusesUpdated.values.forEach { closure in
                 closure(productImageStatuses, nil)
             }
         }
     }
 
-    private var observations = [UUID: OnUpdate]()
+    private var observations = (
+        allStatusesUpdated: [UUID: OnAllStatusesUpdate](),
+        assetUploaded: [UUID: OnAssetUpload]()
+    )
 
-    init(siteID: Int64, product: Product, productImagesProvider: ProductImagesProvider) {
+    init(siteID: Int64, product: Product) {
         self.siteID = siteID
         self.productImageStatuses = product.imageStatuses
-        self.productImagesProvider = productImagesProvider
     }
 
+    /// Observes when the image statuses have been updated.
+    ///
+    /// - Parameters:
+    ///   - observer: the observer that `onUpdate` is associated with.
+    ///   - onUpdate: called when the image statuses have been updated, if `observer` is not nil.
     @discardableResult
     func addUpdateObserver<T: AnyObject>(_ observer: T,
-                                         onUpdate: @escaping OnUpdate) -> ObservationToken {
+                                         onUpdate: @escaping OnAllStatusesUpdate) -> ObservationToken {
         let id = UUID()
 
-        observations[id] = { [weak self, weak observer] statuses, error in
+        observations.allStatusesUpdated[id] = { [weak self, weak observer] statuses, error in
             // If the observer has been deallocated, we can
             // automatically remove the observation closure.
             guard observer != nil else {
-                self?.observations.removeValue(forKey: id)
+                self?.observations.allStatusesUpdated.removeValue(forKey: id)
                 return
             }
 
@@ -45,7 +52,33 @@ final class ProductImagesService {
         onUpdate(productImageStatuses, nil)
 
         return ObservationToken { [weak self] in
-            self?.observations.removeValue(forKey: id)
+            self?.observations.allStatusesUpdated.removeValue(forKey: id)
+        }
+    }
+
+    /// Observes when an asset has been uploaded.
+    ///
+    /// - Parameters:
+    ///   - observer: the observer that `onAssetUpload` is associated with.
+    ///   - onAssetUpload: called when an asset has been uploaded, if `observer` is not nil.
+    @discardableResult
+    func addAssetUploadObserver<T: AnyObject>(_ observer: T,
+                                              onAssetUpload: @escaping OnAssetUpload) -> ObservationToken {
+        let id = UUID()
+
+        observations.assetUploaded[id] = { [weak self, weak observer] asset, productImage in
+            // If the observer has been deallocated, we can
+            // automatically remove the observation closure.
+            guard observer != nil else {
+                self?.observations.assetUploaded.removeValue(forKey: id)
+                return
+            }
+
+            onAssetUpload(asset, productImage)
+        }
+
+        return ObservationToken { [weak self] in
+            self?.observations.assetUploaded.removeValue(forKey: id)
         }
     }
 
@@ -105,7 +138,9 @@ private extension ProductImagesService {
 
     func updateProductImageStatus(at index: Int, productImage: ProductImage) {
         if case .uploading(let asset) = productImageStatuses[safe: index] {
-            productImagesProvider.update(from: asset, to: productImage)
+            observations.assetUploaded.values.forEach { closure in
+                closure(asset, productImage)
+            }
         }
 
         productImageStatuses[index] = .remote(image: productImage)

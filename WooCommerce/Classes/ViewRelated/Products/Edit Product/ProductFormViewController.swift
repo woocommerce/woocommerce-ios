@@ -36,10 +36,9 @@ final class ProductFormViewController: UIViewController {
         self.currency = currency
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
-        self.productImagesProvider = DefaultProductImagesProvider()
         self.productImagesService = ProductImagesService(siteID: product.siteID,
-                                                         product: product,
-                                                         productImagesProvider: productImagesProvider)
+                                                         product: product)
+        self.productImagesProvider = DefaultProductImagesProvider(productImagesService: productImagesService)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                   productImageStatuses: productImagesService.productImageStatuses,
                                                                   productImagesProvider: productImagesProvider)

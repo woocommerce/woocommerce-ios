@@ -71,7 +71,7 @@ final class ProductFormViewController: UIViewController {
                 self.displayErrorAlert(title: title, message: message)
             }
 
-            self.product = self.productUpdater.imagesUpdated(images: self.productImagesService.productImages)
+            self.product = self.productUpdater.imagesUpdated(images: productImageStatuses.images)
         }
     }
 }

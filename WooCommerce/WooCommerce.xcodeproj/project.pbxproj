@@ -53,6 +53,7 @@
 		02162729237965E8000208D2 /* ProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02162728237965E8000208D2 /* ProductFormTableViewModel.swift */; };
 		0216272B2379662C000208D2 /* DefaultProductFormTableViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */; };
 		0219B03723964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */; };
+		021AEF9C2407B07300029D28 /* ProductImageStatus+ImagesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021AEF9B2407B07300029D28 /* ProductImageStatus+ImagesTests.swift */; };
 		021E2A1723A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1523A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift */; };
 		021E2A1823A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 021E2A1623A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib */; };
 		021E2A1A23AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 021E2A1923AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift */; };
@@ -794,6 +795,7 @@
 		02162728237965E8000208D2 /* ProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductFormTableViewModel.swift; sourceTree = "<group>"; };
 		0216272A2379662C000208D2 /* DefaultProductFormTableViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultProductFormTableViewModel.swift; sourceTree = "<group>"; };
 		0219B03623964527007DCD5E /* PaginatedProductShippingClassListSelectorDataSource.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSource.swift; sourceTree = "<group>"; };
+		021AEF9B2407B07300029D28 /* ProductImageStatus+ImagesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "ProductImageStatus+ImagesTests.swift"; sourceTree = "<group>"; };
 		021E2A1523A9FE5A00B1DE07 /* ProductInventorySettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductInventorySettingsViewController.swift; sourceTree = "<group>"; };
 		021E2A1623A9FE5A00B1DE07 /* ProductInventorySettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductInventorySettingsViewController.xib; sourceTree = "<group>"; };
 		021E2A1923AA07F800B1DE07 /* Product+InventorySettingsViewModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Product+InventorySettingsViewModels.swift"; sourceTree = "<group>"; };
@@ -1752,6 +1754,7 @@
 			children = (
 				027B8BBC23FE0DE10040944E /* ProductImagesServiceTests.swift */,
 				02A275BD23FE57DC005C560F /* ProductImagesProviderTests.swift */,
+				021AEF9B2407B07300029D28 /* ProductImageStatus+ImagesTests.swift */,
 			);
 			path = Media;
 			sourceTree = "<group>";
@@ -4336,6 +4339,7 @@
 				45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */,
 				453904F523BB8BD5007C4956 /* ProductTaxClassListSelectorDataSourceTests.swift in Sources */,
 				746FC23D2200A62B00C3096C /* DateWooTests.swift in Sources */,
+				021AEF9C2407B07300029D28 /* ProductImageStatus+ImagesTests.swift in Sources */,
 				024A543622BA84DB00F4F38E /* DeveloperEmailCheckerTests.swift in Sources */,
 				B541B2132189E7FD008FE7C1 /* ScannerWooTests.swift in Sources */,
 				B57C5C9A21B80E7100FF82B2 /* DataWooTests.swift in Sources */,

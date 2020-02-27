@@ -17,17 +17,6 @@ final class ProductImagesService {
         }
     }
 
-    var productImages: [ProductImage] {
-        return productImageStatuses.compactMap { status in
-            switch status {
-            case .remote(let productImage):
-                return productImage
-            default:
-                return nil
-            }
-        }
-    }
-
     private var observations = [UUID: OnUpdate]()
 
     init(siteID: Int64, product: Product, productImagesProvider: ProductImagesProvider) {

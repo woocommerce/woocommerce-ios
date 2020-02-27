@@ -104,7 +104,7 @@ private extension ProductImagesService {
     }
 
     func updateProductImageStatus(at index: Int, productImage: ProductImage) {
-        if case .uploading(let asset) = productImageStatuses[index] {
+        if case .uploading(let asset) = productImageStatuses[safe: index] {
             productImagesProvider.update(from: asset, to: productImage)
         }
 

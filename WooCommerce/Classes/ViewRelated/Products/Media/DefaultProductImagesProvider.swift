@@ -10,7 +10,7 @@ import Yosemite
 final class DefaultProductImagesProvider: ProductImagesProvider {
     private var imagesByProductImageID: [Int64: UIImage] = [:]
     private let imageService: ImageService
-    private let phImageManager: PHImageManager
+    private let phAssetImageLoader: PHAssetImageLoader
 
     private let productImagesService: ProductImagesService?
 
@@ -18,13 +18,13 @@ final class DefaultProductImagesProvider: ProductImagesProvider {
     ///   - productImagesService: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
     ///     Set this property when images are being uploaded in the scope.
     ///   - imageService: provides images given a URL.
-    ///   - phImageManager: provides images given a `PHAsset` asset.
+    ///   - phAssetImageLoader: provides images given a `PHAsset` asset.
     init(productImagesService: ProductImagesService? = nil,
          imageService: ImageService = ServiceLocator.imageService,
-         phImageManager: PHImageManager = PHImageManager.default()) {
+         phAssetImageLoader: PHAssetImageLoader = PHImageManager.default()) {
         self.productImagesService = productImagesService
         self.imageService = imageService
-        self.phImageManager = phImageManager
+        self.phAssetImageLoader = phAssetImageLoader
 
         productImagesService?.addAssetUploadObserver(self) { [weak self] asset, productImage in
             self?.update(from: asset, to: productImage)
@@ -49,7 +49,7 @@ final class DefaultProductImagesProvider: ProductImagesProvider {
     }
 
     func requestImage(asset: PHAsset, targetSize: CGSize, completion: @escaping (UIImage) -> Void) {
-        phImageManager.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: nil) { (image, info) in
+        phAssetImageLoader.requestImage(for: asset, targetSize: targetSize, contentMode: .aspectFit, options: nil) { (image, info) in
             guard let image = image else {
                 return
             }
@@ -60,7 +60,7 @@ final class DefaultProductImagesProvider: ProductImagesProvider {
 
 private extension DefaultProductImagesProvider {
     func update(from asset: PHAsset, to productImage: ProductImage) {
-        phImageManager.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { [weak self] (image, info) in
+        phAssetImageLoader.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { [weak self] (image, info) in
             guard let image = image else {
                 return
             }

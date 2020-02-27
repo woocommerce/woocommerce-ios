@@ -17,13 +17,6 @@ extension ProductImageStatus: Equatable {
 }
 
 final class ProductImagesServiceTests: XCTestCase {
-    private var mockStoresManager: MockMediaStoresManager!
-
-    override func tearDown() {
-        mockStoresManager = nil
-        super.tearDown()
-    }
-
     func testUploadingMediaSuccessfully() {
         let mockMedia = createMockMedia()
         let mockUploadedProductImage = ProductImage(imageID: mockMedia.mediaID,
@@ -32,7 +25,7 @@ final class ProductImagesServiceTests: XCTestCase {
                                                     src: mockMedia.src,
                                                     name: mockMedia.name,
                                                     alt: mockMedia.alt)
-        mockStoresManager = MockMediaStoresManager(media: mockMedia, sessionManager: SessionManager.testingInstance)
+        let mockStoresManager = MockMediaStoresManager(media: mockMedia, sessionManager: SessionManager.testingInstance)
         ServiceLocator.setStores(mockStoresManager)
 
         let mockProductImages = [
@@ -41,11 +34,9 @@ final class ProductImagesServiceTests: XCTestCase {
         ]
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
-        let productImagesProvider = MockProductImagesProvider(image: nil)
 
         let productImagesService = ProductImagesService(siteID: 123,
-                                                        product: mockProduct,
-                                                        productImagesProvider: productImagesProvider)
+                                                        product: mockProduct)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -55,12 +46,12 @@ final class ProductImagesServiceTests: XCTestCase {
         ]
 
         let expectation = self.expectation(description: "Wait for image upload")
-        var productImageStatusesArray: [[ProductImageStatus]] = []
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
 
         productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
-            productImageStatusesArray.append(productImageStatuses)
-            if productImageStatusesArray.count >= expectedStatusUpdates.count {
-                XCTAssertEqual(productImageStatusesArray, expectedStatusUpdates)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
+                XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
                 expectation.fulfill()
             }
         }
@@ -73,7 +64,7 @@ final class ProductImagesServiceTests: XCTestCase {
     }
 
     func testUploadingMediaUnsuccessfully() {
-        mockStoresManager = MockMediaStoresManager(media: nil, sessionManager: SessionManager.testingInstance)
+        let mockStoresManager = MockMediaStoresManager(media: nil, sessionManager: SessionManager.testingInstance)
         ServiceLocator.setStores(mockStoresManager)
 
         let mockProductImages = [
@@ -82,11 +73,9 @@ final class ProductImagesServiceTests: XCTestCase {
         ]
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
-        let productImagesProvider = MockProductImagesProvider(image: nil)
 
         let productImagesService = ProductImagesService(siteID: 123,
-                                                        product: mockProduct,
-                                                        productImagesProvider: productImagesProvider)
+                                                        product: mockProduct)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -96,12 +85,12 @@ final class ProductImagesServiceTests: XCTestCase {
         ]
 
         let expectation = self.expectation(description: "Wait for image upload")
-        var productImageStatusesArray: [[ProductImageStatus]] = []
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
 
         productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
-            productImageStatusesArray.append(productImageStatuses)
-            if productImageStatusesArray.count >= expectedStatusUpdates.count {
-                XCTAssertEqual(productImageStatusesArray, expectedStatusUpdates)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
+                XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
                 expectation.fulfill()
             }
         }
@@ -113,18 +102,16 @@ final class ProductImagesServiceTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
-    func testDeletingMedia() {
+    func testDeletingProductImage() {
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
         ]
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
-        let productImagesProvider = MockProductImagesProvider(image: nil)
 
         let productImagesService = ProductImagesService(siteID: 123,
-                                                        product: mockProduct,
-                                                        productImagesProvider: productImagesProvider)
+                                                        product: mockProduct)
 
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
@@ -132,12 +119,12 @@ final class ProductImagesServiceTests: XCTestCase {
         ]
 
         let expectation = self.expectation(description: "Wait for image upload")
-        var productImageStatusesArray: [[ProductImageStatus]] = []
+        var observedProductImageStatusChanges: [[ProductImageStatus]] = []
 
         productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
-            productImageStatusesArray.append(productImageStatuses)
-            if productImageStatusesArray.count >= expectedStatusUpdates.count {
-                XCTAssertEqual(productImageStatusesArray, expectedStatusUpdates)
+            observedProductImageStatusChanges.append(productImageStatuses)
+            if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
+                XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
                 expectation.fulfill()
             }
         }

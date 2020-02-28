@@ -81,6 +81,8 @@ final class ProductReviewsRemoteTests: XCTestCase {
         XCTAssertNil(result.error)
         XCTAssertNotNil(result.reviews)
         XCTAssertEqual(result.reviews?.count, 2)
+
+        XCTAssertNil(result.reviews?.first?.reviewerAvatarURL)
     }
 
     // MARK: - Load single product review tests

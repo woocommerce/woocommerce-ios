@@ -134,6 +134,26 @@ private extension OrdersMasterViewController {
             oldCell?.label.textColor = .textSubtle
             newCell?.label.textColor = .primary
         }
+
+        addBottomBorderToTabStripButtonBarView(buttonBarView)
+    }
+
+    /// Helper for `configureTabStrip()`.
+    ///
+    func addBottomBorderToTabStripButtonBarView(_ buttonBarView: ButtonBarView) {
+        guard let superView = buttonBarView.superview else {
+            return
+        }
+
+        let border = UIView.createBorderView()
+
+        superView.addSubview(border)
+
+        NSLayoutConstraint.activate([
+            border.topAnchor.constraint(equalTo: buttonBarView.bottomAnchor),
+            border.leadingAnchor.constraint(equalTo: buttonBarView.leadingAnchor),
+            border.trailingAnchor.constraint(equalTo: buttonBarView.trailingAnchor)
+        ])
     }
 
     enum TabStripDimensions {

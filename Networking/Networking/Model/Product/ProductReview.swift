@@ -65,8 +65,16 @@ public struct ProductReview: Decodable {
         let statusKey = try container.decode(String.self, forKey: .status)
         let reviewer = try container.decode(String.self, forKey: .reviewer)
         let reviewerEmail = try container.decode(String.self, forKey: .reviewerEmail)
-        let avatarURLs = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .avatarURLs)
-        let reviewerAvatarURL = try avatarURLs.decode(String.self, forKey: .avatar96)
+
+        let reviewerAvatarURL: String? = try {
+            guard container.contains(.avatarURLs) else {
+                return nil
+            }
+
+            let avatarURLs = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .avatarURLs)
+            return try avatarURLs.decode(String.self, forKey: .avatar96)
+        }()
+
         let review = try container.decode(String.self, forKey: .review)
         let rating = try container.decode(Int.self, forKey: .rating)
         let verified = try container.decode(Bool.self, forKey: .verified)

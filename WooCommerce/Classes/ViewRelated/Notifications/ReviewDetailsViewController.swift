@@ -345,8 +345,12 @@ private extension ReviewDetailsViewController {
 
         commentCell.starRating = productReview.rating
 
-        let gravatar = productReview.reviewerAvatarURL
-        let gravatarURL = URL(string: gravatar)
+        let gravatarURL: URL? = {
+            guard let gravatar = productReview.reviewerAvatarURL else {
+                return nil
+            }
+            return URL(string: gravatar)
+        }()
         commentCell.downloadGravatar(with: gravatarURL)
 
         commentCell.isApproveEnabled  = true

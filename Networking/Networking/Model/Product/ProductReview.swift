@@ -13,7 +13,7 @@ public struct ProductReview: Decodable {
 
     public let reviewer: String
     public let reviewerEmail: String
-    public let reviewerAvatarURL: String
+    public let reviewerAvatarURL: String?
 
     public let review: String
     public let rating: Int
@@ -33,7 +33,7 @@ public struct ProductReview: Decodable {
                 statusKey: String,
                 reviewer: String,
                 reviewerEmail: String,
-                reviewerAvatarURL: String,
+                reviewerAvatarURL: String?,
                 review: String,
                 rating: Int,
                 verified: Bool) {

@@ -3,7 +3,7 @@ import Yosemite
 
 /// Provides an image for UI display based on the product image status.
 ///
-protocol ProductImagesProvider {
+protocol ProductUIImageLoader {
     /// Requests an image given a remote Product image asynchronously.
     ///
     func requestImage(productImage: ProductImage, completion: @escaping (UIImage) -> Void)

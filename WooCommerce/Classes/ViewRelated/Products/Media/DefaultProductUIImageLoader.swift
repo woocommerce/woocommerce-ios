@@ -7,7 +7,7 @@ import Yosemite
 /// - Caches the images locally for remote Product images
 /// - When updating from an asset to remote Product image, caches the asset image locally to avoid an extra API request
 ///
-final class DefaultProductImagesProvider: ProductImagesProvider {
+final class DefaultProductUIImageLoader: ProductUIImageLoader {
     private var imagesByProductImageID: [Int64: UIImage] = [:]
     private let imageService: ImageService
     private let phAssetImageLoader: PHAssetImageLoader
@@ -58,7 +58,7 @@ final class DefaultProductImagesProvider: ProductImagesProvider {
     }
 }
 
-private extension DefaultProductImagesProvider {
+private extension DefaultProductUIImageLoader {
     func update(from asset: PHAsset, to productImage: ProductImage) {
         phAssetImageLoader.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { [weak self] (image, info) in
             guard let image = image else {

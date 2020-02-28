@@ -2,7 +2,7 @@ import Photos
 import Yosemite
 @testable import WooCommerce
 
-struct MockProductImagesProvider: ProductImagesProvider {
+struct MockProductImagesProvider: ProductUIImageLoader {
     private let image: UIImage?
 
     init(image: UIImage?) {

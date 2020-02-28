@@ -9,13 +9,13 @@ final class ProductImageViewController: UIViewController {
     @IBOutlet private weak var imageView: UIImageView!
 
     private let productImage: ProductImage
-    private let productImagesProvider: ProductImagesProvider
+    private let productImagesProvider: ProductUIImageLoader
     private let onDeletion: Deletion
 
     private var previousBarTintColor: UIColor?
 
     init(productImage: ProductImage,
-         productImagesProvider: ProductImagesProvider,
+         productImagesProvider: ProductUIImageLoader,
          onDeletion: @escaping Deletion) {
         self.productImage = productImage
         self.productImagesProvider = productImagesProvider

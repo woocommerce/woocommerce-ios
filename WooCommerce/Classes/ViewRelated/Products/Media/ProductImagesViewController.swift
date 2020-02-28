@@ -15,7 +15,7 @@ final class ProductImagesViewController: UIViewController {
     private let productID: Int64
 
     private let productImagesService: ProductImageActionHandler
-    private let productImagesProvider: ProductImagesProvider
+    private let productImagesProvider: ProductUIImageLoader
 
     private let originalProductImages: [ProductImage]
     private var productImageStatuses: [ProductImageStatus] = []
@@ -53,7 +53,7 @@ final class ProductImagesViewController: UIViewController {
 
     init(product: Product,
          productImagesService: ProductImageActionHandler,
-         productImagesProvider: ProductImagesProvider,
+         productImagesProvider: ProductUIImageLoader,
          completion: @escaping Completion) {
         self.siteID = product.siteID
         self.productID = product.productID

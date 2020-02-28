@@ -5,10 +5,10 @@ import Yosemite
 
 final class ProductImagesCollectionViewDataSource: NSObject {
     private let viewModel: ProductImagesViewModel
-    private let productImagesProvider: ProductImagesProvider
+    private let productImagesProvider: ProductUIImageLoader
 
     init(viewModel: ProductImagesViewModel,
-         productImagesProvider: ProductImagesProvider) {
+         productImagesProvider: ProductUIImageLoader) {
         self.viewModel = viewModel
         self.productImagesProvider = productImagesProvider
         super.init()

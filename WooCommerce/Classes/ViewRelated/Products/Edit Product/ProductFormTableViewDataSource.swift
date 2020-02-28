@@ -19,11 +19,11 @@ final class ProductFormTableViewDataSource: NSObject {
     private var onAddImage: (() -> Void)?
 
     private let productImageStatuses: [ProductImageStatus]
-    private let productImagesProvider: ProductImagesProvider
+    private let productImagesProvider: ProductUIImageLoader
 
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
-         productImagesProvider: ProductImagesProvider,
+         productImagesProvider: ProductUIImageLoader,
          canEditImages: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)) {
         self.viewModel = viewModel
         self.canEditImages = canEditImages

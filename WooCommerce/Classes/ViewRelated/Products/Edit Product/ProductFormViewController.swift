@@ -28,7 +28,7 @@ final class ProductFormViewController: UIViewController {
     private var tableViewDataSource: ProductFormTableViewDataSource
 
     private let productImagesService: ProductImageActionHandler
-    private let productImagesProvider: ProductImagesProvider
+    private let productImagesProvider: ProductUIImageLoader
 
     private let currency: String
 
@@ -38,7 +38,7 @@ final class ProductFormViewController: UIViewController {
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.productImagesService = ProductImageActionHandler(siteID: product.siteID,
                                                          product: product)
-        self.productImagesProvider = DefaultProductImagesProvider(productImagesService: productImagesService)
+        self.productImagesProvider = DefaultProductUIImageLoader(productImagesService: productImagesService)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                   productImageStatuses: productImagesService.productImageStatuses,
                                                                   productImagesProvider: productImagesProvider)

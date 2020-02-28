@@ -112,7 +112,7 @@ final class ProductDetailsViewModel {
     ///
     private var currencyFormatter = CurrencyFormatter()
 
-    private let productImagesProvider = DefaultProductImagesProvider()
+    private let productImagesProvider = DefaultProductUIImageLoader()
 
     // MARK: - Intializers
 

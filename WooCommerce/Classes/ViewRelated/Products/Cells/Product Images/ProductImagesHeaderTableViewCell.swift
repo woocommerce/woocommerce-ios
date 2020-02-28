@@ -30,10 +30,14 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 
     /// Configure cell
     ///
-    func configure(with product: Product, config: ProductImagesCellConfig) {
-        let viewModel = ProductImagesViewModel(product: product, config: config)
+    func configure(with productImageStatuses: [ProductImageStatus],
+                   config: ProductImagesCellConfig,
+                   productImagesProvider: ProductImagesProvider) {
+        let viewModel = ProductImagesViewModel(productImageStatuses: productImageStatuses,
+                                               config: config)
         self.viewModel = viewModel
-        dataSource = ProductImagesCollectionViewDataSource(viewModel: viewModel)
+        dataSource = ProductImagesCollectionViewDataSource(viewModel: viewModel,
+                                                           productImagesProvider: productImagesProvider)
 
         configureCollectionView(config: config)
 
@@ -56,8 +60,13 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
 extension ProductImagesHeaderTableViewCell: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         switch viewModel?.items[indexPath.item] {
-        case .image:
-            onImageSelected?(viewModel?.product.images[indexPath.item], indexPath)
+        case .image(let status):
+            switch status {
+            case .remote(let image):
+                onImageSelected?(image, indexPath)
+            default:
+                break
+            }
         case .addImage:
             onAddImage?()
         case .extendedAddImage:

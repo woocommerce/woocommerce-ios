@@ -35,7 +35,7 @@ final class OrderSearchUICommand: SearchUICommand {
     }
 
     func createStarterViewController() -> UIViewController? {
-        featureFlagService.isFeatureFlagEnabled(.orderListRedesign) ? OrderSearchStarterViewController() : nil
+        OrderSearchStarterViewController()
     }
 
     func createCellViewModel(model: Order) -> OrderSearchCellViewModel {

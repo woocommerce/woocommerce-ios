@@ -3,7 +3,7 @@ import Yosemite
 
 final class ProductImagesViewModel {
 
-    let product: Product
+    let productImageStatuses: [ProductImageStatus]
 
     let config: ProductImagesCellConfig
 
@@ -12,8 +12,8 @@ final class ProductImagesViewModel {
 
     private(set) var items: [ProductImagesItem] = []
 
-    init(product: Product, config: ProductImagesCellConfig) {
-        self.product = product
+    init(productImageStatuses: [ProductImageStatus], config: ProductImagesCellConfig) {
+        self.productImageStatuses = productImageStatuses
         self.config = config
 
         configureItems()
@@ -24,12 +24,12 @@ final class ProductImagesViewModel {
 
         switch config {
         case .images:
-            for _ in product.images {
-                items.append(.image)
+            for productImageStatus in productImageStatuses {
+                items.append(.image(status: productImageStatus))
             }
         case .addImages:
-            for _ in product.images {
-                items.append(.image)
+            for productImageStatus in productImageStatuses {
+                items.append(.image(status: productImageStatus))
             }
 
             items.append(.addImage)
@@ -48,6 +48,7 @@ extension ProductImagesViewModel {
     func registerCollectionViewCells(_ collectionView: UICollectionView) {
         let cells = [
             ProductImageCollectionViewCell.self,
+            InProgressProductImageCollectionViewCell.self,
             AddProductImageCollectionViewCell.self,
             ExtendedAddProductImageCollectionViewCell.self
         ]

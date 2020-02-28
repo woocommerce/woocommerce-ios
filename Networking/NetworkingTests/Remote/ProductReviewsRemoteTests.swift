@@ -29,19 +29,25 @@ final class ProductReviewsRemoteTests: XCTestCase {
     /// Verifies that loadAllProductReviews properly parses the `reviews-all` sample response.
     ///
     func testLoadAllProductReviewsProperlyReturnsParsedProductReviews() {
+        // Given
         let remote = ProductReviewsRemote(network: network)
         let expectation = self.expectation(description: "Load All Product Reviews")
 
         network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-all")
 
+        // When
+        var result: (reviews: [ProductReview]?, error: Error?)
         remote.loadAllProductReviews(for: sampleSiteID) { reviews, error in
-            XCTAssertNil(error)
-            XCTAssertNotNil(reviews)
-            XCTAssertEqual(reviews?.count, 2)
+            result = (reviews, error)
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(result.error)
+        XCTAssertNotNil(result.reviews)
+        XCTAssertEqual(result.reviews?.count, 2)
     }
 
     /// Verifies that loadAllProductReviews properly relays Networking Layer errors.

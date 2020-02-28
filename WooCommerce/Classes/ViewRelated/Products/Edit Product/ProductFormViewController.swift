@@ -11,7 +11,7 @@ final class ProductFormViewController: UIViewController {
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                  productImageStatuses: productImagesService.productImageStatuses,
-                                                                 productImagesProvider: productImagesProvider)
+                                                                 productUIImageLoader: productUIImageLoader)
             tableViewDataSource.configureActions(onAddImage: { [weak self] in
                 self?.showProductImages()
             })
@@ -28,7 +28,7 @@ final class ProductFormViewController: UIViewController {
     private var tableViewDataSource: ProductFormTableViewDataSource
 
     private let productImagesService: ProductImageActionHandler
-    private let productImagesProvider: ProductUIImageLoader
+    private let productUIImageLoader: ProductUIImageLoader
 
     private let currency: String
 
@@ -38,10 +38,10 @@ final class ProductFormViewController: UIViewController {
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.productImagesService = ProductImageActionHandler(siteID: product.siteID,
                                                          product: product)
-        self.productImagesProvider = DefaultProductUIImageLoader(productImagesService: productImagesService)
+        self.productUIImageLoader = DefaultProductUIImageLoader(productImagesService: productImagesService)
         self.tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                   productImageStatuses: productImagesService.productImageStatuses,
-                                                                  productImagesProvider: productImagesProvider)
+                                                                  productUIImageLoader: productUIImageLoader)
         super.init(nibName: nil, bundle: nil)
         tableViewDataSource.configureActions(onAddImage: { [weak self] in
             self?.showProductImages()
@@ -271,7 +271,7 @@ private extension ProductFormViewController {
     func showProductImages() {
         let imagesViewController = ProductImagesViewController(product: product,
                                                                productImagesService: productImagesService,
-                                                               productImagesProvider: productImagesProvider) { [weak self] images in
+                                                               productUIImageLoader: productUIImageLoader) { [weak self] images in
             self?.onEditProductImagesCompletion(images: images)
         }
         navigationController?.pushViewController(imagesViewController, animated: true)

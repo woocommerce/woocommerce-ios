@@ -15,7 +15,7 @@ final class ProductImagesViewController: UIViewController {
     private let productID: Int64
 
     private let productImagesService: ProductImageActionHandler
-    private let productImagesProvider: ProductUIImageLoader
+    private let productUIImageLoader: ProductUIImageLoader
 
     private let originalProductImages: [ProductImage]
     private var productImageStatuses: [ProductImageStatus] = []
@@ -34,7 +34,7 @@ final class ProductImagesViewController: UIViewController {
     // Child view controller.
     private lazy var imagesViewController: ProductImagesCollectionViewController = {
         let viewController = ProductImagesCollectionViewController(imageStatuses: productImageStatuses,
-                                                                   productImagesProvider: productImagesProvider,
+                                                                   productUIImageLoader: productUIImageLoader,
                                                                    onDeletion: { [weak self] productImage in
                                                                     self?.onDeletion(productImage: productImage)
         })
@@ -53,12 +53,12 @@ final class ProductImagesViewController: UIViewController {
 
     init(product: Product,
          productImagesService: ProductImageActionHandler,
-         productImagesProvider: ProductUIImageLoader,
+         productUIImageLoader: ProductUIImageLoader,
          completion: @escaping Completion) {
         self.siteID = product.siteID
         self.productID = product.productID
         self.productImagesService = productImagesService
-        self.productImagesProvider = productImagesProvider
+        self.productUIImageLoader = productUIImageLoader
         self.originalProductImages = product.images
         self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)

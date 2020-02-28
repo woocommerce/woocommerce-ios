@@ -5,12 +5,12 @@ import Yosemite
 
 final class ProductImagesCollectionViewDataSource: NSObject {
     private let viewModel: ProductImagesViewModel
-    private let productImagesProvider: ProductUIImageLoader
+    private let productUIImageLoader: ProductUIImageLoader
 
     init(viewModel: ProductImagesViewModel,
-         productImagesProvider: ProductUIImageLoader) {
+         productUIImageLoader: ProductUIImageLoader) {
         self.viewModel = viewModel
-        self.productImagesProvider = productImagesProvider
+        self.productUIImageLoader = productUIImageLoader
         super.init()
     }
 }
@@ -61,7 +61,7 @@ private extension ProductImagesCollectionViewDataSource {
         cell.imageView.contentMode = .center
         cell.imageView.image = .productsTabProductCellPlaceholderImage
 
-        productImagesProvider.requestImage(productImage: productImage) { [weak cell] image in
+        productUIImageLoader.requestImage(productImage: productImage) { [weak cell] image in
             cell?.imageView.contentMode = .scaleAspectFit
             cell?.imageView.image = image
         }
@@ -75,7 +75,7 @@ private extension ProductImagesCollectionViewDataSource {
         cell.imageView.contentMode = .center
         cell.imageView.image = .productsTabProductCellPlaceholderImage
 
-        productImagesProvider.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
+        productUIImageLoader.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
             cell?.imageView.contentMode = .scaleAspectFit
             cell?.imageView.image = image
         }

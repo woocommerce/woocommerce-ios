@@ -8,14 +8,14 @@ final class ProductImagesCollectionViewController: UICollectionViewController {
 
     private var productImageStatuses: [ProductImageStatus]
 
-    private let productImagesProvider: ProductUIImageLoader
+    private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: ProductImageViewController.Deletion
 
     init(imageStatuses: [ProductImageStatus],
-         productImagesProvider: ProductUIImageLoader,
+         productUIImageLoader: ProductUIImageLoader,
          onDeletion: @escaping ProductImageViewController.Deletion) {
         self.productImageStatuses = imageStatuses
-        self.productImagesProvider = productImagesProvider
+        self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
         let columnLayout = ColumnFlowLayout(
             cellsPerRow: 2,
@@ -86,7 +86,7 @@ private extension ProductImagesCollectionViewController {
         cell.imageView.contentMode = .center
         cell.imageView.image = .productsTabProductCellPlaceholderImage
 
-        productImagesProvider.requestImage(productImage: productImage) { [weak cell] image in
+        productUIImageLoader.requestImage(productImage: productImage) { [weak cell] image in
             cell?.imageView.contentMode = .scaleAspectFit
             cell?.imageView.image = image
         }
@@ -100,7 +100,7 @@ private extension ProductImagesCollectionViewController {
         cell.imageView.contentMode = .center
         cell.imageView.image = .productsTabProductCellPlaceholderImage
 
-        productImagesProvider.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
+        productUIImageLoader.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
             cell?.imageView.contentMode = .scaleAspectFit
             cell?.imageView.image = image
         }
@@ -115,7 +115,7 @@ extension ProductImagesCollectionViewController {
         switch status {
         case .remote(let productImage):
             let productImageViewController = ProductImageViewController(productImage: productImage,
-                                                                        productImagesProvider: productImagesProvider,
+                                                                        productUIImageLoader: productUIImageLoader,
                                                                         onDeletion: { [weak self] productImage in
                                                                             self?.onDeletion(productImage)
             })

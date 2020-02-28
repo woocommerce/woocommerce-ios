@@ -32,12 +32,12 @@ final class ProductImagesHeaderTableViewCell: UITableViewCell {
     ///
     func configure(with productImageStatuses: [ProductImageStatus],
                    config: ProductImagesCellConfig,
-                   productImagesProvider: ProductUIImageLoader) {
+                   productUIImageLoader: ProductUIImageLoader) {
         let viewModel = ProductImagesViewModel(productImageStatuses: productImageStatuses,
                                                config: config)
         self.viewModel = viewModel
         dataSource = ProductImagesCollectionViewDataSource(viewModel: viewModel,
-                                                           productImagesProvider: productImagesProvider)
+                                                           productUIImageLoader: productUIImageLoader)
 
         configureCollectionView(config: config)
 

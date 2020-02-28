@@ -12,14 +12,14 @@ final class DefaultProductImagesProvider: ProductImagesProvider {
     private let imageService: ImageService
     private let phAssetImageLoader: PHAssetImageLoader
 
-    private let productImagesService: ProductImagesService?
+    private let productImagesService: ProductImageActionHandler?
 
     /// - Parameters:
     ///   - productImagesService: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
     ///     Set this property when images are being uploaded in the scope.
     ///   - imageService: provides images given a URL.
     ///   - phAssetImageLoader: provides images given a `PHAsset` asset.
-    init(productImagesService: ProductImagesService? = nil,
+    init(productImagesService: ProductImageActionHandler? = nil,
          imageService: ImageService = ServiceLocator.imageService,
          phAssetImageLoader: PHAssetImageLoader = PHImageManager.default()) {
         self.productImagesService = productImagesService

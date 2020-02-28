@@ -14,7 +14,7 @@ final class ProductImagesViewController: UIViewController {
     private let siteID: Int64
     private let productID: Int64
 
-    private let productImagesService: ProductImagesService
+    private let productImagesService: ProductImageActionHandler
     private let productImagesProvider: ProductImagesProvider
 
     private let originalProductImages: [ProductImage]
@@ -52,7 +52,7 @@ final class ProductImagesViewController: UIViewController {
     private let onCompletion: Completion
 
     init(product: Product,
-         productImagesService: ProductImagesService,
+         productImagesService: ProductImageActionHandler,
          productImagesProvider: ProductImagesProvider,
          completion: @escaping Completion) {
         self.siteID = product.siteID

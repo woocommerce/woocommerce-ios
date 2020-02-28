@@ -16,7 +16,7 @@ extension ProductImageStatus: Equatable {
     }
 }
 
-final class ProductImagesServiceTests: XCTestCase {
+final class ProductImageActionHandlerTests: XCTestCase {
     func testUploadingMediaSuccessfully() {
         let mockMedia = createMockMedia()
         let mockUploadedProductImage = ProductImage(imageID: mockMedia.mediaID,
@@ -35,7 +35,7 @@ final class ProductImagesServiceTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
-        let productImagesService = ProductImagesService(siteID: 123,
+        let productImagesService = ProductImageActionHandler(siteID: 123,
                                                         product: mockProduct)
 
         let mockAsset = PHAsset()
@@ -83,7 +83,7 @@ final class ProductImagesServiceTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
-        let productImagesService = ProductImagesService(siteID: 123,
+        let productImagesService = ProductImageActionHandler(siteID: 123,
                                                         product: mockProduct)
 
         let mockAsset = PHAsset()
@@ -121,7 +121,7 @@ final class ProductImagesServiceTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
-        let productImagesService = ProductImagesService(siteID: 123,
+        let productImagesService = ProductImageActionHandler(siteID: 123,
                                                         product: mockProduct)
 
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -150,7 +150,7 @@ final class ProductImagesServiceTests: XCTestCase {
     }
 }
 
-private extension ProductImagesServiceTests {
+private extension ProductImageActionHandlerTests {
     func createMockMedia() -> Media {
         return Media(mediaID: 123,
                      date: Date(),

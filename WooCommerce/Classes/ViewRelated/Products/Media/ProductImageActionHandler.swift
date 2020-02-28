@@ -3,7 +3,7 @@ import Yosemite
 
 /// Encapsulates the implementation of Product images actions from the UI.
 ///
-final class ProductImagesService {
+final class ProductImageActionHandler {
     typealias OnAllStatusesUpdate = ([ProductImageStatus], Error?) -> Void
     typealias OnAssetUpload = (PHAsset, ProductImage) -> Void
 
@@ -124,7 +124,7 @@ final class ProductImagesService {
     }
 }
 
-private extension ProductImagesService {
+private extension ProductImageActionHandler {
     func index(of asset: PHAsset) -> Int? {
         return productImageStatuses.firstIndex(where: { status -> Bool in
             switch status {

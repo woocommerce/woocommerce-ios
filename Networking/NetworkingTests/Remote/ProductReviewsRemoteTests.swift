@@ -48,6 +48,11 @@ final class ProductReviewsRemoteTests: XCTestCase {
         XCTAssertNil(result.error)
         XCTAssertNotNil(result.reviews)
         XCTAssertEqual(result.reviews?.count, 2)
+
+        // Assert proper parsing of reviewer_avatar_urls
+        result.reviews?.forEach {
+            XCTAssertNotNil($0.reviewerAvatarURL)
+        }
     }
 
     /// Verifies that loadAllProductReviews properly relays Networking Layer errors.

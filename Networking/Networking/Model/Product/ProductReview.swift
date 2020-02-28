@@ -65,16 +65,7 @@ public struct ProductReview: Decodable {
         let statusKey = try container.decode(String.self, forKey: .status)
         let reviewer = try container.decode(String.self, forKey: .reviewer)
         let reviewerEmail = try container.decode(String.self, forKey: .reviewerEmail)
-
-        let reviewerAvatarURL: String? = try {
-            guard container.contains(.avatarURLs) else {
-                return nil
-            }
-
-            let avatarURLs = try container.nestedContainer(keyedBy: CodingKeys.self, forKey: .avatarURLs)
-            return try avatarURLs.decode(String.self, forKey: .avatar96)
-        }()
-
+        let avatarURLs = try container.decodeIfPresent(ReviewerAvatarURLs.self, forKey: .avatarURLs)
         let review = try container.decode(String.self, forKey: .review)
         let rating = try container.decode(Int.self, forKey: .rating)
         let verified = try container.decode(Bool.self, forKey: .verified)
@@ -86,7 +77,7 @@ public struct ProductReview: Decodable {
                   statusKey: statusKey,
                   reviewer: reviewer,
                   reviewerEmail: reviewerEmail,
-                  reviewerAvatarURL: reviewerAvatarURL,
+                  reviewerAvatarURL: avatarURLs?.url96,
                   review: review,
                   rating: rating,
                   verified: verified)
@@ -106,12 +97,21 @@ private extension ProductReview {
         case reviewer       = "reviewer"
         case reviewerEmail  = "reviewer_email"
         case avatarURLs     = "reviewer_avatar_urls"
-        /// We are ignoring all avatars except the one marked as 96
-        /// to avoid adding an unecessary intermediate object
-        case avatar96       = "96"
         case review         = "review"
         case rating         = "rating"
         case verified       = "verified"
+    }
+
+    struct ReviewerAvatarURLs: Decodable {
+        /// The URL of the "96" key in the JSON.
+        ///
+        /// We are ignoring all avatars except the one marked as 96
+        /// to avoid adding an unecessary intermediate object
+        let url96: String?
+
+        enum CodingKeys: String, CodingKey {
+            case url96 = "96"
+        }
     }
 }
 

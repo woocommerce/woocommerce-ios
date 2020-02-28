@@ -46,11 +46,7 @@
             "review": "<p>A glowing review with a five star rating for the Colourful dress</p>\n",
             "rating": 5,
             "verified": false,
-            "reviewer_avatar_urls": {
-                "24": "http://0.gravatar.com/avatar/ca0e84fbb6e1cf1584c8b8f3ad5e2965?s=24&d=mm&r=g",
-                "48": "http://0.gravatar.com/avatar/ca0e84fbb6e1cf1584c8b8f3ad5e2965?s=48&d=mm&r=g",
-                "96": "http://0.gravatar.com/avatar/ca0e84fbb6e1cf1584c8b8f3ad5e2965?s=96&d=mm&r=g"
-            },
+            "reviewer_avatar_urls": null,
             "_links": {
                 "self": [
                     {

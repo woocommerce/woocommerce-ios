@@ -26,7 +26,7 @@ final class OrdersScreen: BaseScreen {
 
     @discardableResult
     func selectOrder(atIndex index: Int) -> SingleOrderScreen {
-        XCUIApplication().cells.element(boundBy: index).tap()
+        XCUIApplication().tables.cells.element(boundBy: index).tap()
         return SingleOrderScreen()
     }
 

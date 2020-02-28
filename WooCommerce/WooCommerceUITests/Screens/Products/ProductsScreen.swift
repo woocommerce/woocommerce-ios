@@ -42,7 +42,7 @@ class ProductsScreen: BaseScreen {
 
     @discardableResult
     func selectProduct(atIndex index: Int) -> SingleProductScreen {
-        XCUIApplication().cells.element(boundBy: index).tap()
+        XCUIApplication().tables.cells.element(boundBy: index).tap()
         return SingleProductScreen()
     }
 }

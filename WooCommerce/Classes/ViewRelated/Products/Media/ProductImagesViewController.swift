@@ -14,7 +14,7 @@ final class ProductImagesViewController: UIViewController {
     private let siteID: Int64
     private let productID: Int64
 
-    private let productImagesService: ProductImageActionHandler
+    private let productImageActionHandler: ProductImageActionHandler
     private let productUIImageLoader: ProductUIImageLoader
 
     private let originalProductImages: [ProductImage]
@@ -52,12 +52,12 @@ final class ProductImagesViewController: UIViewController {
     private let onCompletion: Completion
 
     init(product: Product,
-         productImagesService: ProductImageActionHandler,
+         productImageActionHandler: ProductImageActionHandler,
          productUIImageLoader: ProductUIImageLoader,
          completion: @escaping Completion) {
         self.siteID = product.siteID
         self.productID = product.productID
-        self.productImagesService = productImagesService
+        self.productImageActionHandler = productImageActionHandler
         self.productUIImageLoader = productUIImageLoader
         self.originalProductImages = product.images
         self.onCompletion = completion
@@ -121,7 +121,7 @@ private extension ProductImagesViewController {
     }
 
     func configureProductImagesObservation() {
-        productImageStatusesObservationToken = productImagesService.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
                 return
             }
@@ -155,7 +155,7 @@ private extension ProductImagesViewController {
     }
 
     func onDeletion(productImage: ProductImage) {
-        productImagesService.deleteProductImage(productImage)
+        productImageActionHandler.deleteProductImage(productImage)
         navigationController?.popViewController(animated: true)
     }
 }
@@ -186,7 +186,7 @@ extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
-        productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
     }
 }
 

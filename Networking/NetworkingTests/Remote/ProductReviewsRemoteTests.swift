@@ -8,20 +8,26 @@ final class ProductReviewsRemoteTests: XCTestCase {
 
     /// Dummy Network Wrapper
     ///
-    let network = MockupNetwork()
+    private var network: MockupNetwork!
 
     /// Dummy Site ID
     ///
-    let sampleSiteID: Int64 = 1234
+    private let sampleSiteID: Int64 = 1234
 
     /// Dummy Product ID
     ///
-    let sampleReviewID: Int64 = 173
+    private let sampleReviewID: Int64 = 173
 
     /// Repeat always!
     ///
     override func setUp() {
-        network.removeAllSimulatedResponses()
+        super.setUp()
+        network = MockupNetwork()
+    }
+
+    override func tearDown() {
+        network = nil
+        super.tearDown()
     }
 
     // MARK: - Load all product reviews tests

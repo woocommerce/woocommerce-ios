@@ -53,10 +53,10 @@
 		02FF056323DE9C490058E6E7 /* MediaAction.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056223DE9C490058E6E7 /* MediaAction.swift */; };
 		02FF056523DE9C8B0058E6E7 /* MediaStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056423DE9C8B0058E6E7 /* MediaStore.swift */; };
 		02FF056723DEB2180058E6E7 /* MediaStoreTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056623DEB2180058E6E7 /* MediaStoreTests.swift */; };
-		02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */; };
 		02FF056923DECD5B0058E6E7 /* MediaImageExporterTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056823DECD5B0058E6E7 /* MediaImageExporterTests.swift */; };
 		02FF056B23DED3670058E6E7 /* Media.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 02FF056A23DED3670058E6E7 /* Media.xcassets */; };
 		02FF056D23DEDCB90058E6E7 /* MockImageSourceWriter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */; };
+		02FF056F23E04F320058E6E7 /* MockMediaExportService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */; };
 		0E67B79585034C4DD75C8117 /* Pods_Yosemite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C25501C7F936D2FD32FAF3F4 /* Pods_Yosemite.framework */; };
 		36941EA7B9242CAB1FF828BC /* Pods_YosemiteTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 991BBCE6E4A92F0A028885D8 /* Pods_YosemiteTests.framework */; };
 		450106872399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */; };
@@ -249,10 +249,10 @@
 		02FF056223DE9C490058E6E7 /* MediaAction.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaAction.swift; sourceTree = "<group>"; };
 		02FF056423DE9C8B0058E6E7 /* MediaStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStore.swift; sourceTree = "<group>"; };
 		02FF056623DEB2180058E6E7 /* MediaStoreTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaStoreTests.swift; sourceTree = "<group>"; };
-		02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaExportService.swift; sourceTree = "<group>"; };
 		02FF056823DECD5B0058E6E7 /* MediaImageExporterTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MediaImageExporterTests.swift; sourceTree = "<group>"; };
 		02FF056A23DED3670058E6E7 /* Media.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Media.xcassets; sourceTree = "<group>"; };
 		02FF056C23DEDCB90058E6E7 /* MockImageSourceWriter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockImageSourceWriter.swift; sourceTree = "<group>"; };
+		02FF056E23E04F320058E6E7 /* MockMediaExportService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MockMediaExportService.swift; sourceTree = "<group>"; };
 		35381AA86D039850A916E336 /* Pods-YosemiteTests.release-alpha.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-YosemiteTests.release-alpha.xcconfig"; path = "../Pods/Target Support Files/Pods-YosemiteTests/Pods-YosemiteTests.release-alpha.xcconfig"; sourceTree = "<group>"; };
 		450106862399AB3F00E24722 /* TaxClass+ReadOnlyConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TaxClass+ReadOnlyConvertible.swift"; sourceTree = "<group>"; };
 		45010692239A6C9F00E24722 /* TaxClassStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TaxClassStore.swift; sourceTree = "<group>"; };

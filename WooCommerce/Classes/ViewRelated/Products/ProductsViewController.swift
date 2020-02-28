@@ -344,19 +344,16 @@ extension ProductsViewController: UITableViewDelegate {
 
         let product = resultsController.object(at: indexPath)
 
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let currency = CurrencySettings.shared.symbol(from: currencyCode)
-        let isFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
-        let viewController: UIViewController
-        if product.productType == .simple && isFeatureFlagOn {
-            viewController = ProductFormViewController(product: product, currency: currency)
-            // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
-            viewController.hidesBottomBarWhenPushed = true
-        } else {
-            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
-            viewController = ProductDetailsViewController(viewModel: viewModel)
+        let isEditProductsFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
+        guard isEditProductsFeatureFlagOn else {
+            didSelectProduct(product: product, isEditProductsEnabled: false)
+            return
         }
-        navigationController?.pushViewController(viewController, animated: true)
+
+        let action = AppSettingsAction.loadProductsVisibility { [weak self] isEditProductsEnabled in
+            self?.didSelectProduct(product: product, isEditProductsEnabled: isEditProductsEnabled)
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -369,6 +366,23 @@ extension ProductsViewController: UITableViewDelegate {
         // the actual value. AKA no flicker!
         //
         estimatedRowHeights[indexPath] = cell.frame.height
+    }
+}
+
+private extension ProductsViewController {
+    func didSelectProduct(product: Product, isEditProductsEnabled: Bool) {
+        let currencyCode = CurrencySettings.shared.currencyCode
+        let currency = CurrencySettings.shared.symbol(from: currencyCode)
+        let viewController: UIViewController
+        if product.productType == .simple && isEditProductsEnabled {
+            viewController = ProductFormViewController(product: product, currency: currency)
+            // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
+            viewController.hidesBottomBarWhenPushed = true
+        } else {
+            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
+            viewController = ProductDetailsViewController(viewModel: viewModel)
+        }
+        navigationController?.pushViewController(viewController, animated: true)
     }
 }
 

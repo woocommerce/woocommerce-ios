@@ -59,6 +59,23 @@ final class ProductReviewsRemoteTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Tests that loadAllProductReviews can handle responses with missing `reviewer_avatar_urls`.
+    ///
+    func testLoadAllCanHandleMissingReviewerAvatarURLs() {
+        let remote = ProductReviewsRemote(network: network)
+        let expectation = self.expectation(description: "Load All Product Reviews")
+
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-missing-avatar-urls")
+
+        remote.loadAllProductReviews(for: sampleSiteID) { reviews, error in
+            XCTAssertNil(error)
+            XCTAssertNotNil(reviews)
+            XCTAssertEqual(reviews?.count, 2)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
 
     // MARK: - Load single product review tests
 

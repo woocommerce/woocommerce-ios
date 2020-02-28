@@ -11,11 +11,6 @@
             "review": "<p>The fancy chair gets only three stars</p>\n",
             "rating": 3,
             "verified": false,
-            "reviewer_avatar_urls": {
-                "24": "http://2.gravatar.com/avatar/b371b7de1e58a5dcc3fc3aa236784081?s=24&d=mm&r=g",
-                "48": "http://2.gravatar.com/avatar/b371b7de1e58a5dcc3fc3aa236784081?s=48&d=mm&r=g",
-                "96": "http://2.gravatar.com/avatar/b371b7de1e58a5dcc3fc3aa236784081?s=96&d=mm&r=g"
-            },
             "_links": {
                 "self": [
                     {

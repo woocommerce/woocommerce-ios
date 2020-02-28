@@ -47,16 +47,22 @@ final class ProductReviewsRemoteTests: XCTestCase {
     /// Verifies that loadAllProductReviews properly relays Networking Layer errors.
     ///
     func testLoadAllProductReviewsProperlyRelaysNetwokingErrors() {
+        // Given
         let remote = ProductReviewsRemote(network: network)
         let expectation = self.expectation(description: "Load All Product Reviews returns error")
 
+        // When
+        var result: (reviews: [ProductReview]?, error: Error?)
         remote.loadAllProductReviews(for: sampleSiteID) { reviews, error in
-            XCTAssertNil(reviews)
-            XCTAssertNotNil(error)
+            result = (reviews, error)
             expectation.fulfill()
         }
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(result.reviews)
+        XCTAssertNotNil(result.error)
     }
 
     /// Tests that loadAllProductReviews can handle responses with missing `reviewer_avatar_urls`.

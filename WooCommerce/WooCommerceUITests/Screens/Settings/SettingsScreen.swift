@@ -4,14 +4,12 @@ import XCTest
 final class SettingsScreen: BaseScreen {
 
     struct ElementStringIDs {
-        static let navbar = "Settings"
         static let headlineLabel = "headline-label"
         static let bodyLabel = "body-label"
         static let logOutButton = "settings-log-out-button"
         static let betaFeaturesButton = "settings-beta-features-button"
     }
 
-    private let navbar = XCUIApplication().navigationBars[ElementStringIDs.navbar]
     private let selectedSiteUrl = XCUIApplication().cells.staticTexts[ElementStringIDs.headlineLabel]
     private let selectedDisplayName = XCUIApplication().cells.staticTexts[ElementStringIDs.bodyLabel]
     private let logOutButton = XCUIApplication().cells[ElementStringIDs.logOutButton]
@@ -19,7 +17,7 @@ final class SettingsScreen: BaseScreen {
     private let betaFeaturesButton = XCUIApplication().cells[ElementStringIDs.betaFeaturesButton]
 
     init() {
-        super.init(element: navbar)
+        super.init(element: betaFeaturesButton)
 
         XCTAssert(logOutButton.waitForExistence(timeout: 3))
         XCTAssert(betaFeaturesButton.waitForExistence(timeout: 3))

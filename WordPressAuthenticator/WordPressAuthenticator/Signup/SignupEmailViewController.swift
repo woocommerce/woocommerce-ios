@@ -152,12 +152,24 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
             }
             completion(available)
         }, failure: { error in
-            if let error = error {
-                DDLogError("Error checking email availability: \(error.localizedDescription)")
+            guard let error = error else {
+                self.displayError(message: ErrorMessage.availabilityCheckFail.description())
+                completion(false)
+                return
             }
-            // If check failed, display generic error message.
-            self.displayError(message: ErrorMessage.availabilityCheckFail.description())
-            completion(false)
+            
+            DDLogError("Error checking email availability: \(error.localizedDescription)")
+            
+            switch error {
+            case AccountServiceRemoteError.emailAddressInvalid:
+                fallthrough
+            case AccountServiceRemoteError.emailAddressTaken:
+                self.displayError(message: error.localizedDescription)
+                completion(false)
+            default:
+                self.displayError(message: ErrorMessage.availabilityCheckFail.description())
+                completion(false)
+            }
         })
     }
 

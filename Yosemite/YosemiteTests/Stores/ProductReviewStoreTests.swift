@@ -122,6 +122,36 @@ final class ProductReviewStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    /// Tests that reviews with no `reviewer_avatar_urls` can be saved by Core Data.
+    ///
+    func testItCanSaveReviewsWithNoAvatarURLs() {
+        // Given
+        let expectation = self.expectation(description: "Persist product review list")
+
+        network.simulateResponse(requestUrlSuffix: "products/reviews", filename: "reviews-missing-avatar-urls")
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductReview.self), 0)
+
+        var resultError: Error?
+        let action = ProductReviewAction.synchronizeProductReviews(
+            siteID: sampleSiteID,
+            pageNumber: defaultPageNumber,
+            pageSize: defaultPageSize) { error in
+                resultError = error
+                expectation.fulfill()
+        }
+
+        // When
+        store.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertNil(resultError)
+
+        let review = viewStorage.loadProductReview(siteID: sampleSiteID, reviewID: sampleReviewID)?.toReadOnly()
+        XCTAssertNotNil(review)
+        XCTAssertNil(review?.reviewerAvatarURL)
+    }
+
     /// Verifies that ProductReviewAction.synchronizeProductReviews returns an error whenever there is an error response from the backend.
     ///
     func testRetrieveProductReviewsReturnsErrorUponReponseError() {

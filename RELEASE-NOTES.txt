@@ -2,6 +2,7 @@
 -----
 - Dashboard stats: any negative revenue (from refunds for example) for a time period are shown now.
 - Redesigned Orders List: Processing and All Orders are now shown in front. Filtering was moved to the Search view.
+- Fix Reviews sometimes failing to load on some WooCommerce configurations
  
 3.7
 -----

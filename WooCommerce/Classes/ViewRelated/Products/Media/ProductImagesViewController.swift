@@ -14,8 +14,8 @@ final class ProductImagesViewController: UIViewController {
     private let siteID: Int64
     private let productID: Int64
 
-    private let productImagesService: ProductImagesService
-    private let productImagesProvider: ProductImagesProvider
+    private let productImageActionHandler: ProductImageActionHandler
+    private let productUIImageLoader: ProductUIImageLoader
 
     private let originalProductImages: [ProductImage]
     private var productImageStatuses: [ProductImageStatus] = []
@@ -34,7 +34,7 @@ final class ProductImagesViewController: UIViewController {
     // Child view controller.
     private lazy var imagesViewController: ProductImagesCollectionViewController = {
         let viewController = ProductImagesCollectionViewController(imageStatuses: productImageStatuses,
-                                                                   productImagesProvider: productImagesProvider,
+                                                                   productUIImageLoader: productUIImageLoader,
                                                                    onDeletion: { [weak self] productImage in
                                                                     self?.onDeletion(productImage: productImage)
         })
@@ -52,13 +52,13 @@ final class ProductImagesViewController: UIViewController {
     private let onCompletion: Completion
 
     init(product: Product,
-         productImagesService: ProductImagesService,
-         productImagesProvider: ProductImagesProvider,
+         productImageActionHandler: ProductImageActionHandler,
+         productUIImageLoader: ProductUIImageLoader,
          completion: @escaping Completion) {
         self.siteID = product.siteID
         self.productID = product.productID
-        self.productImagesService = productImagesService
-        self.productImagesProvider = productImagesProvider
+        self.productImageActionHandler = productImageActionHandler
+        self.productUIImageLoader = productUIImageLoader
         self.originalProductImages = product.images
         self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)
@@ -121,7 +121,7 @@ private extension ProductImagesViewController {
     }
 
     func configureProductImagesObservation() {
-        productImageStatusesObservationToken = productImagesService.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
+        productImageStatusesObservationToken = productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
                 return
             }
@@ -155,7 +155,7 @@ private extension ProductImagesViewController {
     }
 
     func onDeletion(productImage: ProductImage) {
-        productImagesService.deleteProductImage(productImage)
+        productImageActionHandler.deleteProductImage(productImage)
         navigationController?.popViewController(animated: true)
     }
 }
@@ -186,7 +186,7 @@ extension ProductImagesViewController {
 //
 private extension ProductImagesViewController {
     func uploadMediaAssetToSiteMediaLibrary(asset: PHAsset) {
-        productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: asset)
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: asset)
     }
 }
 

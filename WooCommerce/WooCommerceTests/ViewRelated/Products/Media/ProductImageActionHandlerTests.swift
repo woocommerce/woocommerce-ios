@@ -16,7 +16,7 @@ extension ProductImageStatus: Equatable {
     }
 }
 
-final class ProductImagesServiceTests: XCTestCase {
+final class ProductImageActionHandlerTests: XCTestCase {
     func testUploadingMediaSuccessfully() {
         let mockMedia = createMockMedia()
         let mockUploadedProductImage = ProductImage(imageID: mockMedia.mediaID,
@@ -35,8 +35,8 @@ final class ProductImagesServiceTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
-        let productImagesService = ProductImagesService(siteID: 123,
-                                                        product: mockProduct)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: mockProduct)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -49,7 +49,7 @@ final class ProductImagesServiceTests: XCTestCase {
         waitForStatusUpdates.expectedFulfillmentCount = 1
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
-        productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
+        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
                 waitForStatusUpdates.fulfill()
@@ -57,14 +57,14 @@ final class ProductImagesServiceTests: XCTestCase {
         }
 
         let waitForAssetUpload = self.expectation(description: "Wait for asset upload callback from image upload")
-        productImagesService.addAssetUploadObserver(self) { (asset, productImage) in
+        productImageActionHandler.addAssetUploadObserver(self) { (asset, productImage) in
             XCTAssertEqual(asset, mockAsset)
             XCTAssertEqual(productImage, mockUploadedProductImage)
             waitForAssetUpload.fulfill()
         }
 
         // When
-        productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
@@ -83,8 +83,8 @@ final class ProductImagesServiceTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
-        let productImagesService = ProductImagesService(siteID: 123,
-                                                        product: mockProduct)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: mockProduct)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -97,7 +97,7 @@ final class ProductImagesServiceTests: XCTestCase {
         expectation.expectedFulfillmentCount = 1
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
-        productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
+        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
                 expectation.fulfill()
@@ -105,7 +105,7 @@ final class ProductImagesServiceTests: XCTestCase {
         }
 
         // When
-        productImagesService.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
+        productImageActionHandler.uploadMediaAssetToSiteMediaLibrary(asset: mockAsset)
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
@@ -121,8 +121,8 @@ final class ProductImagesServiceTests: XCTestCase {
         let mockRemoteProductImageStatuses = mockProductImages.map { ProductImageStatus.remote(image: $0) }
         let mockProduct = MockProduct().product(images: mockProductImages)
 
-        let productImagesService = ProductImagesService(siteID: 123,
-                                                        product: mockProduct)
+        let productImageActionHandler = ProductImageActionHandler(siteID: 123,
+                                                                  product: mockProduct)
 
         let expectedStatusUpdates: [[ProductImageStatus]] = [
             mockRemoteProductImageStatuses,
@@ -133,7 +133,7 @@ final class ProductImagesServiceTests: XCTestCase {
         expectation.expectedFulfillmentCount = 1
 
         var observedProductImageStatusChanges: [[ProductImageStatus]] = []
-        productImagesService.addUpdateObserver(self) { (productImageStatuses, error) in
+        productImageActionHandler.addUpdateObserver(self) { (productImageStatuses, error) in
             observedProductImageStatusChanges.append(productImageStatuses)
             if observedProductImageStatusChanges.count >= expectedStatusUpdates.count {
                 expectation.fulfill()
@@ -141,7 +141,7 @@ final class ProductImagesServiceTests: XCTestCase {
         }
 
         // When
-        productImagesService.deleteProductImage(mockProductImages[0])
+        productImageActionHandler.deleteProductImage(mockProductImages[0])
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
 
@@ -150,7 +150,7 @@ final class ProductImagesServiceTests: XCTestCase {
     }
 }
 
-private extension ProductImagesServiceTests {
+private extension ProductImageActionHandlerTests {
     func createMockMedia() -> Media {
         return Media(mediaID: 123,
                      date: Date(),

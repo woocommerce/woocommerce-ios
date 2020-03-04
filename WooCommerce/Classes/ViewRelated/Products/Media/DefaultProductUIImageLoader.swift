@@ -7,26 +7,26 @@ import Yosemite
 /// - Caches the images locally for remote Product images
 /// - When updating from an asset to remote Product image, caches the asset image locally to avoid an extra API request
 ///
-final class DefaultProductImagesProvider: ProductImagesProvider {
+final class DefaultProductUIImageLoader: ProductUIImageLoader {
     private var imagesByProductImageID: [Int64: UIImage] = [:]
     private let imageService: ImageService
     private let phAssetImageLoader: PHAssetImageLoader
 
-    private let productImagesService: ProductImagesService?
+    private let productImageActionHandler: ProductImageActionHandler?
 
     /// - Parameters:
-    ///   - productImagesService: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
+    ///   - productImageActionHandler: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
     ///     Set this property when images are being uploaded in the scope.
     ///   - imageService: provides images given a URL.
     ///   - phAssetImageLoader: provides images given a `PHAsset` asset.
-    init(productImagesService: ProductImagesService? = nil,
+    init(productImageActionHandler: ProductImageActionHandler? = nil,
          imageService: ImageService = ServiceLocator.imageService,
          phAssetImageLoader: PHAssetImageLoader = PHImageManager.default()) {
-        self.productImagesService = productImagesService
+        self.productImageActionHandler = productImageActionHandler
         self.imageService = imageService
         self.phAssetImageLoader = phAssetImageLoader
 
-        productImagesService?.addAssetUploadObserver(self) { [weak self] asset, productImage in
+        productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, productImage in
             self?.update(from: asset, to: productImage)
         }
     }
@@ -58,7 +58,7 @@ final class DefaultProductImagesProvider: ProductImagesProvider {
     }
 }
 
-private extension DefaultProductImagesProvider {
+private extension DefaultProductUIImageLoader {
     func update(from asset: PHAsset, to productImage: ProductImage) {
         phAssetImageLoader.requestImage(for: asset, targetSize: PHImageManagerMaximumSize, contentMode: .aspectFit, options: nil) { [weak self] (image, info) in
             guard let image = image else {

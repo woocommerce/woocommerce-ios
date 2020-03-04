@@ -19,16 +19,16 @@ final class ProductFormTableViewDataSource: NSObject {
     private var onAddImage: (() -> Void)?
 
     private let productImageStatuses: [ProductImageStatus]
-    private let productImagesProvider: ProductImagesProvider
+    private let productUIImageLoader: ProductUIImageLoader
 
     init(viewModel: ProductFormTableViewModel,
          productImageStatuses: [ProductImageStatus],
-         productImagesProvider: ProductImagesProvider,
+         productUIImageLoader: ProductUIImageLoader,
          canEditImages: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)) {
         self.viewModel = viewModel
         self.canEditImages = canEditImages
         self.productImageStatuses = productImageStatuses
-        self.productImagesProvider = productImagesProvider
+        self.productUIImageLoader = productUIImageLoader
         super.init()
     }
 
@@ -94,15 +94,15 @@ private extension ProductFormTableViewDataSource {
         guard canEditImages else {
             cell.configure(with: productImageStatuses,
                            config: .images,
-                           productImagesProvider: productImagesProvider)
+                           productUIImageLoader: productUIImageLoader)
             return
         }
 
         if productImageStatuses.count > 0 {
-            cell.configure(with: productImageStatuses, config: .addImages, productImagesProvider: productImagesProvider)
+            cell.configure(with: productImageStatuses, config: .addImages, productUIImageLoader: productUIImageLoader)
         }
         else {
-            cell.configure(with: productImageStatuses, config: .extendedAddImages, productImagesProvider: productImagesProvider)
+            cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)
         }
 
         cell.onImageSelected = { (productImage, indexPath) in

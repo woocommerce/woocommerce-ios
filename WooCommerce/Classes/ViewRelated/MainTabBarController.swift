@@ -110,6 +110,13 @@ final class MainTabBarController: UITabBarController {
         return WooNavigationController(rootViewController: rootViewController)
     }()
 
+    private lazy var reviewsTabViewController: UIViewController = {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            fatalError()
+        }
+        let rootViewController = ReviewsRootViewController(siteID: siteID)
+        return rootViewController
+    }()
 
     // MARK: - Overridden Methods
 
@@ -119,9 +126,14 @@ final class MainTabBarController: UITabBarController {
 
         // Add the Orders tab
         viewControllers = {
-            let index = WooTab.orders.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
             var controllers = viewControllers ?? []
-            controllers.insert(ordersTabViewController, at: index)
+
+            let ordersTabIndex = WooTab.orders.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
+            controllers.insert(ordersTabViewController, at: ordersTabIndex)
+
+            let reviewsTabIndex = WooTab.reviews.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
+            controllers.insert(reviewsTabViewController, at: reviewsTabIndex)
+
             return controllers
         }()
     }

@@ -17,6 +17,12 @@ extension UIStoryboard {
     static var orders: UIStoryboard {
         return UIStoryboard(name: "Orders", bundle: .main)
     }
+
+    /// Returns a (new) instance of the Notifications Storyboard.
+    ///
+    static var notifications: UIStoryboard {
+        return UIStoryboard(name: "Notifications", bundle: .main)
+    }
 }
 
 // MARK: UIStoryboard Helpers

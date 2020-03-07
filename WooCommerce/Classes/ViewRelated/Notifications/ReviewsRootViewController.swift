@@ -2,9 +2,7 @@ import UIKit
 
 final class ReviewsRootViewController: WooNavigationController {
     init(siteID: Int64) {
-        guard let rootViewController = UIStoryboard.notifications.instantiateViewController(ofClass: ReviewsViewController.self) else {
-            fatalError()
-        }
+        let rootViewController = ReviewsViewController(siteID: siteID)
         super.init(rootViewController: rootViewController)
     }
 

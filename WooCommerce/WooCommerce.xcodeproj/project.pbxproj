@@ -79,8 +79,6 @@
 		02357B2A23CDB3E300147C2B /* ProductImageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02357B2823CDB3E300147C2B /* ProductImageViewController.swift */; };
 		02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02357B2923CDB3E300147C2B /* ProductImageViewController.xib */; };
 		02396251239948470096F34C /* UIImage+TintColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02396250239948470096F34C /* UIImage+TintColor.swift */; };
-		023A059624135C0700E3FC99 /* ReviewsRootViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023A059424135C0700E3FC99 /* ReviewsRootViewController.swift */; };
-		023A059724135C0700E3FC99 /* ReviewsRootViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 023A059524135C0700E3FC99 /* ReviewsRootViewController.xib */; };
 		023A059A24135F2600E3FC99 /* ReviewsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 023A059824135F2600E3FC99 /* ReviewsViewController.swift */; };
 		023A059B24135F2600E3FC99 /* ReviewsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 023A059924135F2600E3FC99 /* ReviewsViewController.xib */; };
 		02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */; };
@@ -824,8 +822,6 @@
 		02357B2823CDB3E300147C2B /* ProductImageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductImageViewController.swift; sourceTree = "<group>"; };
 		02357B2923CDB3E300147C2B /* ProductImageViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductImageViewController.xib; sourceTree = "<group>"; };
 		02396250239948470096F34C /* UIImage+TintColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIImage+TintColor.swift"; sourceTree = "<group>"; };
-		023A059424135C0700E3FC99 /* ReviewsRootViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsRootViewController.swift; sourceTree = "<group>"; };
-		023A059524135C0700E3FC99 /* ReviewsRootViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewsRootViewController.xib; sourceTree = "<group>"; };
 		023A059824135F2600E3FC99 /* ReviewsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ReviewsViewController.swift; sourceTree = "<group>"; };
 		023A059924135F2600E3FC99 /* ReviewsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ReviewsViewController.xib; sourceTree = "<group>"; };
 		02404ED72314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsV3ToV4BannerActionHandler.swift; sourceTree = "<group>"; };
@@ -2496,8 +2492,6 @@
 				D8C2A28E231BD00500F503E9 /* ReviewsViewModel.swift */,
 				B5F8B7DF2194759100DAB7E2 /* ReviewDetailsViewController.swift */,
 				B5F8B7E4219478FA00DAB7E2 /* ReviewDetailsViewController.xib */,
-				023A059424135C0700E3FC99 /* ReviewsRootViewController.swift */,
-				023A059524135C0700E3FC99 /* ReviewsRootViewController.xib */,
 				023A059824135F2600E3FC99 /* ReviewsViewController.swift */,
 				023A059924135F2600E3FC99 /* ReviewsViewController.xib */,
 			);
@@ -3627,7 +3621,6 @@
 				D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */,
 				CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
-				023A059724135C0700E3FC99 /* ReviewsRootViewController.xib in Resources */,
 				74EC34A9225FE69C004BBC2E /* ProductDetailsViewController.xib in Resources */,
 				CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */,
 				B5FD110E21D3CB8500560344 /* OrderTableViewCell.xib in Resources */,
@@ -3924,7 +3917,6 @@
 				CE15524A21FFB10100EAA690 /* ApplicationLogViewController.swift in Sources */,
 				57C503DC23E8C70C00EC0790 /* OrdersMasterViewController.swift in Sources */,
 				02E8B17A23E2C4BD00A43403 /* CircleSpinnerView.swift in Sources */,
-				023A059624135C0700E3FC99 /* ReviewsRootViewController.swift in Sources */,
 				02CA63DD23D1ADD100BBF148 /* MediaPickingContext.swift in Sources */,
 				02CA63DB23D1ADD100BBF148 /* MediaPickingCoordinator.swift in Sources */,
 				B59D49CD219B587E006BF0AD /* UILabel+OrderStatus.swift in Sources */,

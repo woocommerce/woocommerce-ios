@@ -111,8 +111,8 @@ final class MainTabBarController: UITabBarController {
     }()
 
     private lazy var reviewsTabViewController: UIViewController = {
-        let rootViewController = ReviewsRootViewController()
-        return rootViewController
+        let rootViewController = ReviewsViewController()
+        return WooNavigationController(rootViewController: rootViewController)
     }()
 
     // MARK: - Overridden Methods

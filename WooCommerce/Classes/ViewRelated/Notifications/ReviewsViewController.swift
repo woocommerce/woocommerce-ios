@@ -89,7 +89,7 @@ final class ReviewsViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    init(siteID: Int64) {
+    init() {
         super.init(nibName: nil, bundle: nil)
 
         // This 👇 should be called in init so the tab is correctly localized when the app launches

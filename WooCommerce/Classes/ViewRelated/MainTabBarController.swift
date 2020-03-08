@@ -114,7 +114,7 @@ final class MainTabBarController: UITabBarController {
         guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             fatalError()
         }
-        let rootViewController = ReviewsRootViewController(siteID: siteID)
+        let rootViewController = ReviewsRootViewController()
         return rootViewController
     }()
 
@@ -124,7 +124,7 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
 
-        // Add the Orders tab
+        // Add the Orders and Reviews tab
         viewControllers = {
             var controllers = viewControllers ?? []
 

@@ -1,5 +1,2 @@
-- Ora puoi visualizzare i rimborsi di un ordine.
-- Il badge "ordini da evadere" ora raggiunge un massimo di 99, mostrando 99+ per qualsiasi valore superiore a 99. In precedenza era 9+.
-- Risolto un bug a causa del quale i nomi di prodotti lunghi potevano far scomparire la quantità di prodotto durante la visualizzazione di un ordine.
-- Ora i nomi di prodotto con caratteri escape HTML dovrebbero essere visualizzati correttamente.
-- Se in un ordine sono presenti più prodotti, toccando un prodotto qualsiasi, si dovrebbe aprire il prodotto corretto.
+- Nella bacheca, toccando un prodotto nella sezione di quelli con il migliore andamento si aprono i dettagli del prodotto.
+- La scheda degli ordini ora localizza sia le quantità degli articoli sia il badge dell'ordine.

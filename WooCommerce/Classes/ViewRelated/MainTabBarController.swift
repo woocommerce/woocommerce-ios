@@ -111,9 +111,6 @@ final class MainTabBarController: UITabBarController {
     }()
 
     private lazy var reviewsTabViewController: UIViewController = {
-        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            fatalError()
-        }
         let rootViewController = ReviewsRootViewController()
         return rootViewController
     }()

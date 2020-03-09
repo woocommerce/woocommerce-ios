@@ -79,6 +79,8 @@ final class MediaStoreTests: XCTestCase {
                                                       pageNumber: 1,
                                                       pageSize: 20) { mediaItems, error in
                                                         XCTAssertNotNil(error)
+                                                        XCTAssertNotNil(mediaItems)
+                                                        XCTAssertTrue(mediaItems.isEmpty)
                                                         expectation.fulfill()
         }
 

@@ -4,6 +4,7 @@ import Foundation
 ///
 public class MediaRemote: Remote {
     /// Loads an array of media from the site's WP Media Library.
+    /// API reference: https://developer.wordpress.com/docs/api/1.2/get/sites/%24site/media/
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
@@ -16,11 +17,11 @@ public class MediaRemote: Remote {
                                  pageFirstIndex: Int = Constants.pageFirstIndex,
                                  pageNumber: Int = Constants.pageFirstIndex,
                                  pageSize: Int = 25,
-                                 context: String? = nil,
+                                 context: String = Default.context,
                                  completion: @escaping (_ mediaItems: [Media]?, _ error: Error?) -> Void) {
         let parameters: [String: Any] = [
-            ParameterKey.contextKey: context ?? Default.context,
-            ParameterKey.perPage: pageSize,
+            ParameterKey.contextKey: context,
+            ParameterKey.pageSize: pageSize,
             ParameterKey.pageNumber: pageNumber - pageFirstIndex + Constants.pageFirstIndex,
             ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type",
             ParameterKey.mimeType: "image"
@@ -54,7 +55,7 @@ public class MediaRemote: Remote {
         ]
 
         let path = "sites/\(siteID)/media/new"
-        let request = DotcomRequest(wordpressApiVersion: .mark1_1,
+        let request = DotcomRequest(wordpressApiVersion: .mark1_2,
                                     method: .post,
                                     path: path,
                                     parameters: parameters)
@@ -85,7 +86,7 @@ public extension MediaRemote {
 
     private enum ParameterKey {
         static let pageNumber: String = "page"
-        static let perPage: String    = "number"
+        static let pageSize: String   = "number"
         static let fields: String     = "fields"
         static let mimeType: String   = "mime_type"
         static let contextKey: String = "context"

@@ -53,11 +53,7 @@ private extension MediaStore {
                                 pageFirstIndex: pageFirstIndex,
                                 pageNumber: pageNumber,
                                 pageSize: pageSize) { (mediaItems, error) in
-                                    guard let mediaItems = mediaItems, error == nil else {
-                                        onCompletion([], error)
-                                        return
-                                    }
-                                    onCompletion(mediaItems, nil)
+                                    onCompletion(mediaItems ?? [], error)
         }
     }
 

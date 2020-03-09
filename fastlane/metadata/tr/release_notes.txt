@@ -1,0 +1,2 @@
+- Panoda "En İyiler" bölümündeki bir ürüne dokunulduğunda ürün ayrıntıları açılır.
+- Siparişler sekmesinde artık hem öğe adedi hem sipariş rozeti yerelleştirilmiştir.

@@ -1,5 +1,2 @@
-– Nu kan du visa återbetalningar för en order.
-– Märket ”ordrar att fullfölja” har nu ett max på 99 och visar 99+ för allting över. Tidigare var det 9+.
-– Åtgärdade en bugg där långa produktnamn kunde få produktens kvantitet att försvinna när en order visades.
-– Produktnamn med HTML escape-tecken bör visas korrekt nu.
-– Om en order har flera produkter, borde korrekt produkt visas om du trycker på en produkt.
+– På instrumentpanelen öppnar du produktinformationen genom att trycka lätt på en produkt i avsnittet för ”toppresterare”.
+– Beställningsfliken visar nu både artikelantalet och beställningsikonen.

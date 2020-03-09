@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-12 15:27:05+0000 */
+/* Translation-Revision-Date: 2020-03-07 00:54:58+0000 */
 /* Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 && n%100<=10 ? 3 : n%100>=11 && n%100<=99 ? 4 : 5; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ar */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (النظام)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (خاص بالعميل)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "تركَ %1$@ مراجعة حول %2$@";
@@ -233,6 +233,9 @@
 /* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "تعذر تحميل الصورة";
 
+/* Catalog Visibility label in Product Settings */
+"Catalog Visibility" = "رؤية الكتالوج";
+
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "حافظ على مواقعك المفضلة وانضم إلى المحادثة أينما كنت ووقتما تشاء.";
 
@@ -388,7 +391,7 @@
 "Discount" = "خصم";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
 "Dismiss" = "رفض";
 
 /* Display label for the product's inventory backorders setting option */
@@ -685,6 +688,9 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "الحد: %ld من التنزيلات";
 
+/* The title of the Work In Progress top banner on the Products tab */
+"Limited editing available" = "تتوافر وظائف تحرير محدودة";
+
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "إعدادات الرابط";
 
@@ -776,8 +782,11 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "المزيد";
 
+/* Title of the More Options section on Product Settings screen */
+"More Options" = "مزيد من الخيارات";
+
 /* Accessibility label for the Edit Product More Options action sheet */
-"More options" = "More options";
+"More options" = "مزيد من الخيارات";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "ينقل تعليقًا إلى البريد المزعج";
@@ -1068,8 +1077,15 @@
 /* Title of the view containing a single Product Review */
 "Product Review" = "مراجعة المنتج";
 
+/* Button title Product Settings in Edit Product More Options Action Sheet
+   Product Settings navigation title */
+"Product Settings" = "إعدادات المنتج";
+
 /* Product Total label for payment view */
 "Product Total" = "إجمالي المنتجات";
+
+/* My Store > Settings > Experimental features > Product editing */
+"Product editing" = "تحرير المنتج";
 
 /* My Store > Settings > Experimental features > Switch Products
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -1086,6 +1102,9 @@
 
 /* Display label for the product's published status */
 "Publish" = "نشر";
+
+/* Title of the Publish Settings section on Product Settings screen */
+"Publish Settings" = "إعدادات النشر";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "نشر من قائمة الانتظار. تدوين من قائمة النقل. تعليق من المقهى. يذهب وردبرس حيثما تُحدد.";
@@ -1357,6 +1376,9 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "الحجم:";
 
+/* Slug label in Product Settings */
+"Slug" = "الاسم اللطيف";
+
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "شخص ما";
@@ -1561,7 +1583,10 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "شروط الخدمة";
 
-/* My Store > Settings > Experimental features > Products description */
+/* My Store > Settings > Experimental features > Product editing */
+"Test out the new product editing functionality as we get ready to launch" = "جرِّب وظائف تحرير المنتجات الجديدة عند بدء التشغيل";
+
+/* My Store > Settings > Experimental features > Switch Products */
 "Test out the new products section as we get ready to launch" = "اختبار قسم \"المنتجات\" الجديد عندما نصبح جاهزين للبدء";
 
 /* Button title */
@@ -1604,7 +1629,7 @@
 "The review has been removed" = "تمت إزالة المراجعة";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
-"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+"The sale price can't be added without the regular price." = "تتعذر إضافة سعر البيع من دون السعر العادي.";
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "ينبغي أن يكون سعر العرض أقل من السعر العادي.";
@@ -1966,6 +1991,9 @@
 
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "نطرح تحسينات على الإحصاءات الخاصة بالمتاجر باستخدام إضافة مسؤول WooCommerce.";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’ve added editing functionality to simple products. Keep an eye out for editing on other product types soon" = "أضفنا وظائف التحرير إلى المنتجات البسيطة. ترقَّب التحرير على أنواع المنتجات الأخرى قريبًا";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "ما عنوان الموقع الخاص بي؟";

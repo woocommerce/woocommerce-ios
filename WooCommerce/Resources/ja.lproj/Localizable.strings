@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-12 15:27:05+0000 */
+/* Translation-Revision-Date: 2020-03-05 00:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@ (システム)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (顧客向け)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ さんが %2$@ に関するレビューを書きました";
@@ -233,6 +233,9 @@
 /* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "画像をアップロードできません";
 
+/* Catalog Visibility label in Product Settings */
+"Catalog Visibility" = "カタログ表示";
+
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "お気に入りのサイトをいつでもチェックし、いつでもどこからでもコメントできます。";
 
@@ -388,7 +391,7 @@
 "Discount" = "割引";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
 "Dismiss" = "非表示";
 
 /* Display label for the product's inventory backorders setting option */
@@ -685,6 +688,9 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "上限 :%ld件のダウンロード";
 
+/* The title of the Work In Progress top banner on the Products tab */
+"Limited editing available" = "一部の編集機能が利用可能";
+
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "リンク設定";
 
@@ -776,8 +782,11 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "その他";
 
+/* Title of the More Options section on Product Settings screen */
+"More Options" = "追加オプション";
+
 /* Accessibility label for the Edit Product More Options action sheet */
-"More options" = "More options";
+"More options" = "追加オプション";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "コメントをスパムに移動する";
@@ -1068,8 +1077,15 @@
 /* Title of the view containing a single Product Review */
 "Product Review" = "製品のレビュー";
 
+/* Button title Product Settings in Edit Product More Options Action Sheet
+   Product Settings navigation title */
+"Product Settings" = "商品設定";
+
 /* Product Total label for payment view */
 "Product Total" = "商品合計";
+
+/* My Store > Settings > Experimental features > Product editing */
+"Product editing" = "商品編集";
 
 /* My Store > Settings > Experimental features > Switch Products
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -1086,6 +1102,9 @@
 
 /* Display label for the product's published status */
 "Publish" = "公開";
+
+/* Title of the Publish Settings section on Product Settings screen */
+"Publish Settings" = "公開設定";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "公園で投稿を公開。バスからブログに投稿。カフェでコメントを送信。WordPress をどこでも使えます。";
@@ -1357,6 +1376,9 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "寸法 :";
 
+/* Slug label in Product Settings */
+"Slug" = "スラッグ";
+
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "だれか";
@@ -1561,7 +1583,10 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "利用規約";
 
-/* My Store > Settings > Experimental features > Products description */
+/* My Store > Settings > Experimental features > Product editing */
+"Test out the new product editing functionality as we get ready to launch" = "リリースの準備ができ次第、新商品の編集機能をテストしてください";
+
+/* My Store > Settings > Experimental features > Switch Products */
 "Test out the new products section as we get ready to launch" = "リリースの準備ができ次第、新商品セクションをテストしてください";
 
 /* Button title */
@@ -1604,7 +1629,7 @@
 "The review has been removed" = "レビューを削除しました";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
-"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+"The sale price can't be added without the regular price." = "セール価格を標準価格なしで追加することはできません。";
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "セール価格は通常価格よりも低く設定する必要があります。";
@@ -1966,6 +1991,9 @@
 
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "WooCommerce Admin プラグインでストアに強化された統計機能を提供開始します";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’ve added editing functionality to simple products. Keep an eye out for editing on other product types soon" = "シンプルな商品に編集機能が加わりました。他のタイプの商品にも編集機能がまもなく加わる予定です";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "ご使用のサイトアドレス。";

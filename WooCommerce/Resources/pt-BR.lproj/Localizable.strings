@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-20 00:54:45+0000 */
+/* Translation-Revision-Date: 2020-03-04 00:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=(n > 1); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: pt_BR */
@@ -233,6 +233,9 @@
 /* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Não foi possível carregar a imagem";
 
+/* Catalog Visibility label in Product Settings */
+"Catalog Visibility" = "Visibilidade de catálogo";
+
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "Acompanhe seus sites favoritos e junte-se à conversa de qualquer lugar, a qualquer hora.";
 
@@ -388,7 +391,7 @@
 "Discount" = "Desconto";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
 "Dismiss" = "Dispensar";
 
 /* Display label for the product's inventory backorders setting option */
@@ -685,6 +688,9 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "Limite: %ld downloads";
 
+/* The title of the Work In Progress top banner on the Products tab */
+"Limited editing available" = "Recurso de edição limitado disponível";
+
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "Configurações de links";
 
@@ -775,6 +781,9 @@
 /* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
    Accessibility label for the More button on formatting toolbar. */
 "More" = "Mais";
+
+/* Title of the More Options section on Product Settings screen */
+"More Options" = "Mais opções";
 
 /* Accessibility label for the Edit Product More Options action sheet */
 "More options" = "Mais opções";
@@ -1068,8 +1077,15 @@
 /* Title of the view containing a single Product Review */
 "Product Review" = "Avaliação do produto";
 
+/* Button title Product Settings in Edit Product More Options Action Sheet
+   Product Settings navigation title */
+"Product Settings" = "Configurações de produtos";
+
 /* Product Total label for payment view */
 "Product Total" = "Total de produtos";
+
+/* My Store > Settings > Experimental features > Product editing */
+"Product editing" = "Edição de produtos";
 
 /* My Store > Settings > Experimental features > Switch Products
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -1086,6 +1102,9 @@
 
 /* Display label for the product's published status */
 "Publish" = "Publicar";
+
+/* Title of the Publish Settings section on Product Settings screen */
+"Publish Settings" = "Configurações de publicação";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "Publique do parque. Faça um post no ônibus. Comente da cafeteria. WordPress te acompanha, onde você estiver.";
@@ -1357,6 +1376,9 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "Dimensão:";
 
+/* Slug label in Product Settings */
+"Slug" = "Slug";
+
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "Alguém";
@@ -1561,7 +1583,10 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "Termos de serviço";
 
-/* My Store > Settings > Experimental features > Products description */
+/* My Store > Settings > Experimental features > Product editing */
+"Test out the new product editing functionality as we get ready to launch" = "Teste a nova funcionalidade de edição de produtos enquanto preparamos o lançamento";
+
+/* My Store > Settings > Experimental features > Switch Products */
 "Test out the new products section as we get ready to launch" = "Teste a nova seção de produtos enquanto preparamos o lançamento";
 
 /* Button title */
@@ -1966,6 +1991,9 @@
 
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "Estamos aprimorando estatísticas para lojas que usam o plugin WooCommerce Admin";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’ve added editing functionality to simple products. Keep an eye out for editing on other product types soon" = "Adicionamos funcionalidades de edição para produtos simples. Fique de olho nas edições que estão por vir em outros tipos de produtos";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "O que é o endereço do meu site?";

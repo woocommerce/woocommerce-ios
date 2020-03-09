@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-02-12 15:27:05+0000 */
+/* Translation-Revision-Date: 2020-03-05 00:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -13,7 +13,7 @@
 "%1$@ - %2$@ (System)" = "%1$@ - %2$@(시스템)";
 
 /* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
-"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (To Customer)";
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2@(고객에게)";
 
 /* Review title. Reads as {Review author} left a review on {Product}. */
 "%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
@@ -233,6 +233,9 @@
 /* Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "이미지를 업로드할 수 없습니다.";
 
+/* Catalog Visibility label in Product Settings */
+"Catalog Visibility" = "카탈로그 공개 설정";
+
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "언제, 어디서든지 즐겨 찾는 사이트의 최신 소식을 확인하고 대화에 참여하세요.";
 
@@ -388,7 +391,7 @@
 "Discount" = "할인";
 
 /* A unit test string for a button title
-   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet */
 "Dismiss" = "무시";
 
 /* Display label for the product's inventory backorders setting option */
@@ -685,6 +688,9 @@
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "제한: %ld회 다운로드";
 
+/* The title of the Work In Progress top banner on the Products tab */
+"Limited editing available" = "제한적인 편집 가능";
+
 /* Title for screen in editor that allows to configure link options */
 "Link Settings" = "링크 설정";
 
@@ -776,8 +782,11 @@
    Accessibility label for the More button on formatting toolbar. */
 "More" = "더 보기";
 
+/* Title of the More Options section on Product Settings screen */
+"More Options" = "추가 옵션";
+
 /* Accessibility label for the Edit Product More Options action sheet */
-"More options" = "More options";
+"More options" = "추가 옵션";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "댓글을 스팸으로 이동";
@@ -1068,8 +1077,15 @@
 /* Title of the view containing a single Product Review */
 "Product Review" = "제품 검토";
 
+/* Button title Product Settings in Edit Product More Options Action Sheet
+   Product Settings navigation title */
+"Product Settings" = "제품 설정";
+
 /* Product Total label for payment view */
 "Product Total" = "제품 합계";
+
+/* My Store > Settings > Experimental features > Product editing */
+"Product editing" = "제품 편집";
 
 /* My Store > Settings > Experimental features > Switch Products
    Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
@@ -1086,6 +1102,9 @@
 
 /* Display label for the product's published status */
 "Publish" = "게시";
+
+/* Title of the Publish Settings section on Product Settings screen */
+"Publish Settings" = "공개하기 설정";
 
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "공원에서 글을 발행하세요. 버스에서 블로그를 방문하세요. 카페에서 댓글을 다세요. 워드프레스는 어디에서든 사용할 수 있습니다.";
@@ -1357,6 +1376,9 @@
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "크기:";
 
+/* Slug label in Product Settings */
+"Slug" = "슬러그";
+
 /* A unit test for reviews, checking that anonymous users are added as the author named `someone`
    Indicates the reviewer does not have a name. It reads { Someone left a review} */
 "Someone" = "다른 사람";
@@ -1561,7 +1583,10 @@
 /* Opens the Terms of Service web page */
 "Terms of Service" = "서비스 약관";
 
-/* My Store > Settings > Experimental features > Products description */
+/* My Store > Settings > Experimental features > Product editing */
+"Test out the new product editing functionality as we get ready to launch" = "출시 준비가 완료되면 새 제품 편집 기능을 테스트하세요.";
+
+/* My Store > Settings > Experimental features > Switch Products */
 "Test out the new products section as we get ready to launch" = "출시 준비가 완료되면 새 제품 섹션을 테스트하세요.";
 
 /* Button title */
@@ -1604,7 +1629,7 @@
 "The review has been removed" = "리뷰가 제거되었습니다.";
 
 /* Product price error notice message, when the sale price is added but the regular price is not */
-"The sale price can't be added without the regular price." = "The sale price can't be added without the regular price.";
+"The sale price can't be added without the regular price." = "정규 가격이 없으면 판매 가격을 추가할 수 없습니다.";
 
 /* Product price error notice message, when the sale price is higher than the regular price */
 "The sale price should be lower than the regular price." = "할인 가격은 정상 가격보다 낮아야 합니다.";
@@ -1966,6 +1991,9 @@
 
 /* The info of the top banner on Dashboard that indicates new stats is available */
 "We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "WooCommerce 관리자 플러그인을 사용하여 스토어 통계 개선을 점진적으로 실시합니다.";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’ve added editing functionality to simple products. Keep an eye out for editing on other product types soon" = "간단한 제품에 편집 기능을 추가했습니다. 곧 다른 유형 제품에서 편집할 수 있습니다.";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "내 사이트 주소는 무엇인가요?";

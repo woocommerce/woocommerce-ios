@@ -1,5 +1,2 @@
-- Ahora puedes ver los reembolsos de un pedido.
-- La insignia de "pedidos por realizar" ahora tiene un máximo de 99, y se muestra 99+ para las cantidades superiores. Antes, era 9+.
-- Se ha corregido un error por el que los nombres largos de los productos podían hacer que la cantidad de productos desapareciera al ver un pedido.
-- Ahora, los nombres de productos con caracteres de escape HTML se muestran correctamente.
-- Si un pedido tiene varios productos, al pulsar sobre cualquier producto se abrirá el producto correcto.
+- En el escritorio, se abre la información del producto al tocar en “Mejor rendimiento”.
+- Ahora, en la pestaña de pedidos se localizan las cantidades de los artículos y la insignia del pedido.

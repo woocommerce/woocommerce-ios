@@ -52,6 +52,9 @@
 /* Comment Attachment Label */
 "[COMMENT]" = "[COMMENT]";
 
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "A brief excerpt about the product";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address.";
 
@@ -100,8 +103,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Advanced tool to review the app status";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "All";
+/* Title for the second page in the Orders tab. */
+"All Orders" = "All Orders";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "All reviews marked as read";
@@ -234,7 +237,8 @@
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Cannot update Product";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Cannot upload image";
 
 /* Catalog Visibility label in Product Settings */
@@ -505,12 +509,6 @@
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass).  */
 "Fill with password manager" = "Fill with password manager";
-
-/* Filter the orders list. */
-"Filter orders" = "Filter orders";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "Filters the order list by payment status.";
 
 /* User role badge */
 "Follower" = "Follower";
@@ -973,11 +971,8 @@
 "Ordered List" = "Ordered List";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "Orders";
-
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "Orders: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "Other";
@@ -1063,6 +1058,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Please open your email app and look for an email from WordPress.com.";
 
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "Please try again.";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Please wait while we publish this product to your store";
 
@@ -1085,6 +1083,9 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Private note";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "Processing";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1199,9 +1200,6 @@
 
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Remove";
-
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "Remove Filters";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Remove Image";
@@ -1337,6 +1335,10 @@
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "Shipping Providers";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the Short Description row on Product main screen */
+"Short description" = "Short description";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Show a list of refunded order items for this order.";

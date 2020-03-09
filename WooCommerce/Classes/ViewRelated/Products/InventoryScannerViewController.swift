@@ -53,7 +53,7 @@ final class InventoryScannerViewController: UIViewController {
 
     func startLiveVideo() {
         // Enable live stream video
-        self.session.sessionPreset = AVCaptureSession.Preset.photo
+        session.sessionPreset = AVCaptureSession.Preset.photo
 
         guard let captureDevice = AVCaptureDevice.default(for: AVMediaType.video),
             let deviceInput = try? AVCaptureDeviceInput(device: captureDevice) else {
@@ -65,9 +65,9 @@ final class InventoryScannerViewController: UIViewController {
         // Set the quality of the video
         deviceOutput.setSampleBufferDelegate(self, queue: DispatchQueue.global(qos: DispatchQoS.QoSClass.default))
         // What the camera is seeing
-        self.session.addInput(deviceInput)
+        session.addInput(deviceInput)
         // What we will display on the screen
-        self.session.addOutput(deviceOutput)
+        session.addOutput(deviceOutput)
 
         // Show the video as it's being captured
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
@@ -82,34 +82,34 @@ final class InventoryScannerViewController: UIViewController {
             previewLayer.connection?.videoOrientation = .landscapeRight
         }
         previewLayer.videoGravity = .resizeAspectFill
-        previewLayer.frame = self.videoOutputImageView.bounds
-        self.videoOutputImageView.layer.addSublayer(previewLayer)
+        previewLayer.frame = videoOutputImageView.bounds
+        videoOutputImageView.layer.addSublayer(previewLayer)
 
-        self.session.startRunning()
+        session.startRunning()
     }
 
     func startBarcodeDetection() {
-        let barcodeRequest = VNDetectBarcodesRequest(completionHandler: self.detectBarcodeHandler)
+        let barcodeRequest = VNDetectBarcodesRequest(completionHandler: detectBarcodeHandler)
         print("!! \(VNDetectBarcodesRequest.supportedSymbologies)")
         self.requests = [barcodeRequest]
     }
 
     // TODO-jc: remove?
     @IBAction func handleVideoTapGesture(recognizer: UITapGestureRecognizer) {
-        let touchPoint: CGPoint = recognizer.location(in: self.videoOutputImageView)
-        let sublayers: [CALayer] = self.videoOutputImageView.layer.sublayers!
-        let textBoxLayers: [CALayer] = Array(sublayers[(sublayers.count - self.totalNumberOfTextBoxes)...])
+        let touchPoint: CGPoint = recognizer.location(in: videoOutputImageView)
+        let sublayers: [CALayer] = videoOutputImageView.layer.sublayers!
+        let textBoxLayers: [CALayer] = Array(sublayers[(sublayers.count - totalNumberOfTextBoxes)...])
 
         for textBox in textBoxLayers {
             if textBox.frame.contains(touchPoint) {
-                if self.session.isRunning {
-                    self.session.stopRunning()
+                if session.isRunning {
+                    session.stopRunning()
                 }
                 return
             }
         }
 
-        self.toggleSession()
+        toggleSession()
     }
 
     // TODO-jc: remove?
@@ -172,15 +172,15 @@ final class InventoryScannerViewController: UIViewController {
 
         // We are inserting the highlights at the beginning of the sublayer queue
         // To avoid overlapping with the textboxes
-        self.videoOutputImageView.layer.insertSublayer(outline, at: 1)
+        videoOutputImageView.layer.insertSublayer(outline, at: 1)
     }
 
     func drawTextBox(barcodeObservation: VNBarcodeObservation, content: String) {
         let barcodeBounds = self.adjustBoundsToScreen(barcode: barcodeObservation)
 
-        let textLayerFrame: CGRect = CGRect(x: barcodeBounds.origin.x + barcodeBounds.size.width, y: barcodeBounds.origin.y - self.textBoxSize.height,
+        let textLayerFrame: CGRect = CGRect(x: barcodeBounds.origin.x + barcodeBounds.size.width, y: barcodeBounds.origin.y - textBoxSize.height,
                                             width: textBoxSize.width, height: textBoxSize.height)
-        if self.videoOutputImageView.bounds.contains(textLayerFrame) {
+        if videoOutputImageView.bounds.contains(textLayerFrame) {
             // Readjust box locations so that there aren't any overlapping ones...
             guard let readjustedFrame = self.readjustBoxLocationBasedOnExistingLayers(originalBox: textLayerFrame, barcodeSize: barcodeBounds.size) else {
                 return
@@ -189,8 +189,8 @@ final class InventoryScannerViewController: UIViewController {
             let textBox = self.createTextLayer(content: content, frame: readjustedFrame)
             textBox.name = content
 
-            self.videoOutputImageView.layer.addSublayer(textBox)
-            self.totalNumberOfTextBoxes += 1
+            videoOutputImageView.layer.addSublayer(textBox)
+            totalNumberOfTextBoxes += 1
         }
     }
 
@@ -216,10 +216,10 @@ final class InventoryScannerViewController: UIViewController {
 
     func adjustBoundsToScreen(barcode: VNBarcodeObservation) -> CGRect {
         // Current origin is on the bottom-left corner
-        let xCord = barcode.boundingBox.origin.x * self.videoOutputImageView.frame.size.width
-        var yCord = (1 - barcode.boundingBox.origin.y) * self.videoOutputImageView.frame.size.height
-        let width = barcode.boundingBox.size.width * self.videoOutputImageView.frame.size.width
-        var height = -1 * barcode.boundingBox.size.height * self.videoOutputImageView.frame.size.height
+        let xCord = barcode.boundingBox.origin.x * videoOutputImageView.frame.size.width
+        var yCord = (1 - barcode.boundingBox.origin.y) * videoOutputImageView.frame.size.height
+        let width = barcode.boundingBox.size.width * videoOutputImageView.frame.size.width
+        var height = -1 * barcode.boundingBox.size.height * videoOutputImageView.frame.size.height
 
         // Re-adjust origin to be on the top-left corner, so that calculations can be standardized
         yCord += height
@@ -231,12 +231,12 @@ final class InventoryScannerViewController: UIViewController {
     // Re-adjusts the given box's location based on other boxes that exist on other layers, so that boxes don't overlap
     // Returns nil if there is nowhere to place the box on
     func readjustBoxLocationBasedOnExistingLayers(originalBox: CGRect, barcodeSize: CGSize) -> CGRect? {
-        guard let videoOutputLayers: [CALayer] = self.videoOutputImageView.layer.sublayers else {
+        guard let videoOutputLayers: [CALayer] = videoOutputImageView.layer.sublayers else {
             return nil
         }
 
         // Skip the first layer (i.e. the video layer) and outline layers
-        let textBoxLayers: [CALayer] = Array(videoOutputLayers[(videoOutputLayers.count - self.totalNumberOfTextBoxes)...]);
+        let textBoxLayers: [CALayer] = Array(videoOutputLayers[(videoOutputLayers.count - totalNumberOfTextBoxes)...]);
 
         let bottomLeftAnchorBox = originalBox;
         let topLeftAnchorBox = CGRect(x: originalBox.origin.x, y: originalBox.origin.y + originalBox.size.height + barcodeSize.height,
@@ -255,7 +255,7 @@ final class InventoryScannerViewController: UIViewController {
         var potentialBoxToUse: (CGRect?, BoxAnchorLocation) = (nil, .none)
         for layer in textBoxLayers {
             for (type, potentialBox) in potentialBoxes {
-                if self.videoOutputImageView.bounds.contains(potentialBox) && !potentialBox.intersects(layer.frame) {
+                if videoOutputImageView.bounds.contains(potentialBox) && !potentialBox.intersects(layer.frame) {
                     potentialBoxToUse = (potentialBox, type)
                 } else {
                     if potentialBoxToUse.1 == type {

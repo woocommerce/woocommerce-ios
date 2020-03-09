@@ -47,21 +47,18 @@ msgctxt "app_store_promo_text"
 msgid "Run your store wherever you are. The WooCommerce app makes it easy to manage orders and inventory, track sales, and monitor store activity like new orders and reviews."
 msgstr ""
 
-msgctxt "v3.6-whats-new"
+msgctxt "v3.7-whats-new"
 msgid ""
-"- You can now view refunds on an order.\n"
-"- The “orders to fulfill” badge now maxes at 99, showing 99+ for anything over 99. Previously, it was 9+.\n"
-"- Fixed a bug where long product names could make the product quantity disappear when viewing an order.\n"
-"- Product names with HTML escape characters should display correctly now.\n"
-"- If an order has multiple products, tapping on any product should open the correct product.\n"
+"- In the dashboard, tapping on a product in the “Top Performers” section opens the product detail.\n"
+"- The orders tab now localizes both item quantities and the order badge.\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one. 
 msgctxt "app_store_screenshot-1"
 msgid ""
-"Your Store\n"
-"in Your Pocket\n"
+"Track sales and high\n"
+"performing products\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
@@ -75,27 +72,33 @@ msgstr ""
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one. 
 msgctxt "app_store_screenshot-2"
-msgid "View and manage orders"
+msgid ""
+"View and manage\n"
+"orders on the go\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one. 
 msgctxt "app_store_screenshot-3"
-msgid "Track order status"
+msgid ""
+"Review order details\n"
+"and payments\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one. 
 msgctxt "app_store_screenshot-4"
 msgid ""
-"Scroll through, filter,\n"
-"or look up specific orders\n"
+"View products and\n"
+"check inventory\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.
 #. No specified characters limit here, but try to keep as short as the source one. 
 msgctxt "app_store_screenshot-5"
-msgid "Track sales data and high performing products"
+msgid ""
+"Get notified about\n"
+"new reviews\n"
 msgstr ""
 
 #. translators: This is a promo message that will be attached on top of a screenshot in the App Store.

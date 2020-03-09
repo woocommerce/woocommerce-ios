@@ -1,6 +1,10 @@
-3.7
+3.8
 -----
  
+3.7
+-----
+- Dashboard: now tapping on a product on "Top Performers" section open the product detail
+
 3.6
 -----
 - Order Details: see a list of issued refunds inside the order detail screen
@@ -9,6 +13,7 @@
 - Order Details & Product UI: if a Product name has HTML escape characters, they should be decoded in the app.
 - Order Details: if the Order has multiple Products, tapping on any Product should open the same Product now.
 - bugfix: the orders badge on tab bar now is correctly refreshed after switching to a store with badge count equal to zero.
+- The orders tab now localizes item quantities and the order badge.
 - Orders tab: Orders to fulfill badge shows numbers 1-99, and now 99+ for anything over 99. Previously, it was 9+. 
 
 3.5

@@ -91,3 +91,6 @@ default.profraw
 
 # Can't imagine ever needing to commit one of these
 *.bak
+
+# WireMock (UI Tests)
+WooCommerce/WooCommerceScreenshots/Mocks/vendor/

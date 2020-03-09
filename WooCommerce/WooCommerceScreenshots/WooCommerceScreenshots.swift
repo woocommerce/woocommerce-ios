@@ -18,14 +18,14 @@ class WooCommerceScreenshots: XCTestCase {
         let app = XCUIApplication()
         setupSnapshot(app)
 
-        app.launchArguments = ["logout-at-launch", "disable-animations"]
+        app.launchArguments = ["logout-at-launch", "disable-animations", "mocked-wpcom-api"]
         app.launch()
 
         WelcomeScreen()
             .selectLogin()
-            .proceedWith(email: ApiCredentials.screenshotEmailAddress)
+            .proceedWith(email: ScreenshotCredentials.emailAddress)
             .proceedWithPassword()
-            .proceedWith(password: ApiCredentials.screenshotPassword)
+            .proceedWith(password: ScreenshotCredentials.password)
             .continueWithSelectedSite()
             .dismissTopBannerIfNeeded()
             .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }

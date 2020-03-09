@@ -47,7 +47,7 @@ struct ProductDetailsCellViewModel {
     /// Item Quantity as a String
     ///
     var quantity: String {
-        return positiveQuantity.description
+        return NumberFormatter.localizedString(from: positiveQuantity as NSDecimalNumber, number: .decimal)
     }
 
     /// Refunded Product Price

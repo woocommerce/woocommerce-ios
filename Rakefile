@@ -123,6 +123,11 @@ end
 
 CLOBBER << "vendor"
 
+desc "Mocks"
+task :mocks do
+  sh "./WooCommerce/WooCommerceScreenshots/Mocks/scripts/start.sh"
+end
+
 desc "Build #{XCODE_SCHEME}"
 task :build => [:dependencies] do
   xcodebuild(:build)

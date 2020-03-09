@@ -14,7 +14,7 @@
 - Order Details: if the Order has multiple Products, tapping on any Product should open the same Product now.
 - bugfix: the orders badge on tab bar now is correctly refreshed after switching to a store with badge count equal to zero.
 - The orders tab now localizes item quantities and the order badge.
-
+- Orders tab: Orders to fulfill badge shows numbers 1-99, and now 99+ for anything over 99. Previously, it was 9+. 
 
 3.5
 -----

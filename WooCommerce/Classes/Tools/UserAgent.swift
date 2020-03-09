@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import WebKit
 
 
 /// WooCommerce User Agent!
@@ -20,7 +21,7 @@ class UserAgent {
     /// Returns the WebKit User Agent
     ///
     static var webkitUserAgent: String {
-        return UIWebView().stringByEvaluatingJavaScript(from: Constants.loadUserAgentScript) ?? String()
+        return WKWebView.userAgent
     }
 
     /// Returns the Bundle Version ID

@@ -685,6 +685,7 @@
 		D8D15F83230A17A000D48B3F /* ServiceLocator.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F82230A17A000D48B3F /* ServiceLocator.swift */; };
 		D8D15F85230A18AB00D48B3F /* Analytics.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D15F84230A18AB00D48B3F /* Analytics.swift */; };
 		D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F82AC422AF903700B67E4B /* IconsTests.swift */; };
+		F996CC082416E6E600D55E82 /* WKWebView+UserAgent.swift in Sources */ = {isa = PBXBuildFile; fileRef = F996CC072416E6E600D55E82 /* WKWebView+UserAgent.swift */; };
 		F997170523DBB97500592D8E /* WooCommerceScreenshots.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997170423DBB97500592D8E /* WooCommerceScreenshots.swift */; };
 		F997172223DBCD6100592D8E /* LoginUsernamePasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997171923DBCD6000592D8E /* LoginUsernamePasswordScreen.swift */; };
 		F997172323DBCD6100592D8E /* LoginPasswordScreen.swift in Sources */ = {isa = PBXBuildFile; fileRef = F997171A23DBCD6000592D8E /* LoginPasswordScreen.swift */; };
@@ -1445,6 +1446,7 @@
 		D8D15F84230A18AB00D48B3F /* Analytics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Analytics.swift; sourceTree = "<group>"; };
 		D8F82AC422AF903700B67E4B /* IconsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = IconsTests.swift; path = WooCommerceTests/Extensions/IconsTests.swift; sourceTree = SOURCE_ROOT; };
 		D8FBFF1622D4CC2F006E3336 /* docs */ = {isa = PBXFileReference; lastKnownFileType = folder; name = docs; path = ../docs; sourceTree = "<group>"; };
+		F996CC072416E6E600D55E82 /* WKWebView+UserAgent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "WKWebView+UserAgent.swift"; sourceTree = "<group>"; };
 		F997170223DBB97500592D8E /* WooCommerceScreenshots.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WooCommerceScreenshots.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		F997170423DBB97500592D8E /* WooCommerceScreenshots.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WooCommerceScreenshots.swift; sourceTree = "<group>"; };
 		F997170623DBB97500592D8E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -2905,6 +2907,7 @@
 				02784A02238B8BC800BDD6A8 /* UIView+Border.swift */,
 				02396250239948470096F34C /* UIImage+TintColor.swift */,
 				F997174323DC065900592D8E /* XLPagerStrip+AccessibilityIdentifier.swift */,
+				F996CC072416E6E600D55E82 /* WKWebView+UserAgent.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -4087,6 +4090,7 @@
 				02279586237A50C900787C63 /* AztecUnorderedListFormatBarCommand.swift in Sources */,
 				B5A82EE7210263460053ADC8 /* UIViewController+Helpers.swift in Sources */,
 				CE1F512B206985DF00C6C810 /* PaddedLabel.swift in Sources */,
+				F996CC082416E6E600D55E82 /* WKWebView+UserAgent.swift in Sources */,
 				7421344A210A323C00C13890 /* WooAnalyticsStat.swift in Sources */,
 				02404ED82314BF8A00FF1170 /* StatsV3ToV4BannerActionHandler.swift in Sources */,
 				02A275BA23FE50AA005C560F /* ProductUIImageLoader.swift in Sources */,

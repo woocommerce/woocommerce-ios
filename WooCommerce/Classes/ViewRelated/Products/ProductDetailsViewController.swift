@@ -9,6 +9,12 @@ import WordPressUI
 ///
 final class ProductDetailsViewController: UIViewController {
 
+    /// EntityListener: Update / Deletion Notifications.
+    ///
+    private lazy var entityListener: EntityListener<Product> = {
+        return EntityListener(storageManager: ServiceLocator.storageManager, readOnlyEntity: viewModel.product)
+    }()
+
     /// Product view model
     ///
     private let viewModel: ProductDetailsViewModel
@@ -48,6 +54,7 @@ final class ProductDetailsViewController: UIViewController {
 
         // prepare UI
         configureNavigationTitle()
+        configureEntityListener()
         configureMainView()
         configureTableView()
         registerTableViewCells()
@@ -70,16 +77,37 @@ private extension ProductDetailsViewController {
         title = viewModel.title
     }
 
+    /// Setup: EntityListener
+    ///
+    func configureEntityListener() {
+        entityListener.onUpsert = { [weak self] product in
+            guard let self = self else {
+                return
+            }
+
+            self.viewModel.product = product
+            self.reloadTableViewDataIfPossible()
+        }
+        entityListener.onDelete = { [weak self] in
+            guard let self = self else {
+                return
+            }
+
+            self.navigationController?.popViewController(animated: true)
+        }
+    }
+
     /// Setup: main view
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Setup: TableView
     ///
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
+        tableView.separatorColor = .systemColor(.separator)
         tableView.estimatedSectionHeaderHeight = viewModel.sectionHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.refreshControl = refreshControl
@@ -123,7 +151,7 @@ private extension ProductDetailsViewController {
     ///
     func registerTableViewCells() {
         let cells = [
-            LargeImageTableViewCell.self,
+            ProductImagesHeaderTableViewCell.self,
             TitleBodyTableViewCell.self,
             TwoColumnTableViewCell.self,
             ProductReviewsTableViewCell.self,
@@ -152,7 +180,7 @@ private extension ProductDetailsViewController {
 
 // MARK: - Action Handlers
 //
-extension ProductDetailsViewController {
+private extension ProductDetailsViewController {
 
     @objc func pullToRefresh() {
         DDLogInfo("♻️ Requesting product detail data be reloaded...")
@@ -180,7 +208,7 @@ private extension ProductDetailsViewController {
         ), viewModel.productID)
 
         let notice = Notice(title: message, feedbackType: .error)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays a notice indicating that an error occurred while sync'ing.
@@ -196,7 +224,7 @@ private extension ProductDetailsViewController {
             self?.pullToRefresh()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 

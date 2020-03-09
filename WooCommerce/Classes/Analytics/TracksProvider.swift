@@ -51,11 +51,11 @@ public extension TracksProvider {
     /// When a user opts-out, wipe data
     ///
     func clearUsers() {
-        guard WooAnalytics.shared.userHasOptedIn else {
+        guard ServiceLocator.analytics.userHasOptedIn else {
             // To be safe, nil out the anonymousUserID guid so a fresh one is regenerated
             UserDefaults.standard[.defaultAnonymousID] = nil
             UserDefaults.standard[.analyticsUsername] = nil
-            tracksService.switchToAnonymousUser(withAnonymousID: StoresManager.shared.sessionManager.anonymousUserID)
+            tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
             return
         }
 
@@ -69,7 +69,7 @@ public extension TracksProvider {
 private extension TracksProvider {
     func switchTracksUsersIfNeeded() {
         let currentAnalyticsUsername = UserDefaults.standard[.analyticsUsername] as? String ?? ""
-        if StoresManager.shared.isAuthenticated, let account = StoresManager.shared.sessionManager.defaultAccount {
+        if ServiceLocator.stores.isAuthenticated, let account = ServiceLocator.stores.sessionManager.defaultAccount {
             if currentAnalyticsUsername.isEmpty {
                 // No previous username logged
                 UserDefaults.standard[.analyticsUsername] = account.username
@@ -79,12 +79,12 @@ private extension TracksProvider {
                 tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: true)
             } else {
                 // Username changed for some reason - switch back to anonymous first
-                tracksService.switchToAnonymousUser(withAnonymousID: StoresManager.shared.sessionManager.anonymousUserID)
+                tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
                 tracksService.switchToAuthenticatedUser(withUsername: account.username, userID: String(account.userID), skipAliasEventCreation: false)
             }
         } else {
             UserDefaults.standard[.analyticsUsername] = nil
-            tracksService.switchToAnonymousUser(withAnonymousID: StoresManager.shared.sessionManager.anonymousUserID)
+            tracksService.switchToAnonymousUser(withAnonymousID: ServiceLocator.stores.sessionManager.anonymousUserID)
         }
     }
 

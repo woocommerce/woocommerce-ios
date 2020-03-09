@@ -8,14 +8,14 @@ class OrderListMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 242424
+    private let dummySiteID: Int64 = 242424
 
 
     /// Verifies that all of the Order Fields are parsed correctly.
     ///
     func testOrderFieldsAreProperlyParsed() {
         let orders = mapLoadAllOrdersResponse()
-        XCTAssert(orders.count == 3)
+        XCTAssert(orders.count == 4)
 
         let firstOrder = orders[0]
         let dateCreated = DateFormatter.Defaults.dateTimeFormatter.date(from: "2018-04-03T23:05:12")
@@ -52,7 +52,7 @@ class OrderListMapperTests: XCTestCase {
     ///
     func testOrderAddressesAreCorrectlyParsed() {
         let orders = mapLoadAllOrdersResponse()
-        XCTAssert(orders.count == 3)
+        XCTAssert(orders.count == 4)
 
         let firstOrder = orders[0]
         var dummyAddresses = [Address]()

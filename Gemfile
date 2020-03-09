@@ -1,12 +1,12 @@
 source 'https://rubygems.org' do
   gem 'rake'
-  gem 'cocoapods', '~> 1.6.1'
-  gem 'cocoapods-repo-update', '~> 0.0.4'
+  gem 'cocoapods', '~> 1.8.3'
   gem 'xcpretty-travis-formatter'
   gem 'dotenv'
+  gem 'fastlane', '~> 2'
 end
 
 
-gem "fastlane"
+
 plugins_path = File.join(File.dirname(__FILE__), 'fastlane', 'Pluginfile')
 eval_gemfile(plugins_path) if File.exist?(plugins_path)

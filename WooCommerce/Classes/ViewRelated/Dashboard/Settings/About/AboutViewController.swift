@@ -42,6 +42,17 @@ class AboutViewController: UIViewController {
         configureTableViewFooter()
         registerTableViewCells()
     }
+
+    /// Manage device rotation
+    ///
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        configureTableViewInsets()
+    }
+
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.updateFooterHeight()
+    }
 }
 
 
@@ -65,7 +76,7 @@ private extension AboutViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Configure common table properties.
@@ -73,13 +84,23 @@ private extension AboutViewController {
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
+        configureTableViewInsets()
+    }
+
+    func configureTableViewInsets() {
+        guard let tabBarHeight = tabBarController?.tabBar.frame.height else {
+            return
+        }
+        let adjustForTabbarInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 0, bottom: tabBarHeight, right: 0)
+        tableView.contentInset = adjustForTabbarInsets
+        tableView.scrollIndicatorInsets = adjustForTabbarInsets
     }
 
     /// Setup the tableview header.
     ///
     func configureTableViewHeader() {
-        let tintedImage             = UIImage.wooLogoImage(withSize: Constants.headerImageSize, tintColor: StyleManager.wooCommerceBrandColor)
+        let tintedImage             = UIImage.wooLogoImage(withSize: Constants.headerImageSize, tintColor: .primary)
         let imageView               = UIImageView(image: tintedImage)
         imageView.contentMode       = .center
         imageView.frame.size.height += Constants.headerPadding
@@ -93,8 +114,9 @@ private extension AboutViewController {
         /// Hence the container view with a defined frame.
         let footerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Constants.footerHeight))
         let footerView = TableFooterView.instantiateFromNib() as TableFooterView
-        footerView.footnoteText = footerTitleText
-        footerView.footnoteColor = StyleManager.wooGreyMid
+        footerView.footnote.attributedText = nil
+        footerView.footnote.text = footerTitleText
+        footerView.footnote.textColor = .textSubtle
         tableView.tableFooterView = footerContainer
         footerContainer.addSubview(footerView)
     }
@@ -190,6 +212,10 @@ extension AboutViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
+    }
+
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
     }
 

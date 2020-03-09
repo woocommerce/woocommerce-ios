@@ -14,11 +14,15 @@ final class ProductLoaderViewController: UIViewController {
 
     /// Target ProductID
     ///
-    private let productID: Int
+    private let productID: Int64
 
     /// Target Product's SiteID
     ///
-    private let siteID: Int
+    private let siteID: Int64
+
+    /// The Target Product's Currency
+    ///
+    private let currency: String
 
     /// UI Active State
     ///
@@ -31,9 +35,10 @@ final class ProductLoaderViewController: UIViewController {
 
     // MARK: - Initializers
 
-    init(productID: Int, siteID: Int) {
+    init(productID: Int64, siteID: Int64, currency: String) {
         self.productID = productID
         self.siteID = siteID
+        self.currency = currency
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -51,7 +56,7 @@ final class ProductLoaderViewController: UIViewController {
         configureNavigationTitle()
         configureSpinner()
         configureMainView()
-        configureDismissButton()
+        addCloseNavigationBarButton()
         loadProduct()
     }
 }
@@ -70,7 +75,7 @@ private extension ProductLoaderViewController {
     /// Setup: Main View
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
         view.addSubview(activityIndicator)
         view.pinSubviewAtCenter(activityIndicator)
     }
@@ -80,18 +85,6 @@ private extension ProductLoaderViewController {
     func configureSpinner() {
         activityIndicator.hidesWhenStopped = true
         activityIndicator.translatesAutoresizingMaskIntoConstraints = false
-    }
-
-    /// Setup: Dismiss Button
-    ///
-    func configureDismissButton() {
-        let dismissButtonTitle = NSLocalizedString("Dismiss", comment: "Product details screen - button title for closing the view")
-        let leftBarButton = UIBarButtonItem(title: dismissButtonTitle,
-                                            style: .plain,
-                                            target: self,
-                                            action: #selector(dismissButtonTapped))
-        leftBarButton.tintColor = .white
-        navigationItem.setLeftBarButton(leftBarButton, animated: false)
     }
 }
 
@@ -118,11 +111,7 @@ private extension ProductLoaderViewController {
         }
 
         state = .loading
-        StoresManager.shared.dispatch(action)
-    }
-
-    @objc func dismissButtonTapped() {
-        dismiss(animated: true, completion: nil)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -165,19 +154,39 @@ private extension ProductLoaderViewController {
         }
     }
 
-    /// Presents the ProductDetailsViewController, as a childViewController, for a given Product.
+    /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
     ///
     func presentProductDetails(for product: Product) {
-        let detailsViewModel = ProductDetailsViewModel(product: product)
-        let detailsViewController = ProductDetailsViewController(viewModel: detailsViewModel)
+        let isEditProductsFeatureFlagOn = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProducts)
+        guard isEditProductsFeatureFlagOn else {
+            presentProductDetails(for: product, isEditProductsEnabled: false)
+            return
+        }
+
+        let action = AppSettingsAction.loadProductsVisibility { [weak self] isEditProductsEnabled in
+            self?.presentProductDetails(for: product, isEditProductsEnabled: isEditProductsEnabled)
+        }
+        ServiceLocator.stores.dispatch(action)
+    }
+
+    func presentProductDetails(for product: Product, isEditProductsEnabled: Bool) {
+        let viewController: UIViewController
+        if product.productType == .simple && isEditProductsEnabled {
+            viewController = ProductFormViewController(product: product, currency: currency)
+        } else {
+            let viewModel = ProductDetailsViewModel(product: product, currency: currency)
+            viewController = ProductDetailsViewController(viewModel: viewModel)
+        }
 
         // Attach
-        addChild(detailsViewController)
-        attachSubview(detailsViewController.view)
-        detailsViewController.didMove(toParent: self)
+        addChild(viewController)
+        attachSubview(viewController.view)
+        viewController.didMove(toParent: self)
 
-        // And, of course, borrow the Child's Title
-        title = detailsViewController.title
+
+        // And, of course, borrow the Child's Title + right nav bar items
+        title = viewController.title
+        navigationItem.rightBarButtonItems = viewController.navigationItem.rightBarButtonItems
     }
 
     /// Removes all of the children UIViewControllers

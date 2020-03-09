@@ -1,12 +1,13 @@
 import Foundation
 import UIKit
 
+
 // MARK: - TableFooterView
 //
-class TableFooterView: UIView {
+final class TableFooterView: UIView {
 
     @IBOutlet private var icon: UIImageView!
-    @IBOutlet private var footnote: UILabel!
+    @IBOutlet var footnote: UITextView!
     @IBOutlet private var iconHeight: NSLayoutConstraint!
     @IBOutlet private var iconWidth: NSLayoutConstraint!
 
@@ -15,7 +16,7 @@ class TableFooterView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        footnote.applyFootnoteStyle()
+        setupFootnoteTextView()
     }
 
     override func layoutSubviews() {
@@ -55,25 +56,16 @@ extension TableFooterView {
         }
     }
 
-    /// Footnote label text.
+    /// Initialization method for footnote textview
     ///
-    var footnoteText: String? {
-        get {
-            return footnote?.text
-        }
-        set {
-            footnote?.text = newValue
-        }
-    }
-
-    /// Footnote label color.
-    ///
-    var footnoteColor: UIColor? {
-        get {
-            return footnote?.textColor
-        }
-        set {
-            footnote?.textColor = newValue
-        }
+    func setupFootnoteTextView() {
+        footnote.adjustsFontForContentSizeCategory = true
+        footnote.textContainerInset = .zero
+        footnote.textAlignment = .center
+        footnote.linkTextAttributes = [
+            .foregroundColor: UIColor.primary,
+            .underlineColor: UIColor.clear,
+            .underlineStyle: NSUnderlineStyle.single.rawValue
+        ]
     }
 }

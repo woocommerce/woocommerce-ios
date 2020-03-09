@@ -25,21 +25,29 @@ class AuthenticatedState: StoresManagerState {
     /// Designated Initializer
     ///
     init(credentials: Credentials) {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let network = AlamofireNetwork(credentials: credentials)
 
         services = [
             AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: PListFileStorage()),
+            AvailabilityStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            MediaStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductReviewStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
             ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
-            ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+            StatsStore(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network),
+            TaxClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         ]
 
         startListeningToNotifications()
@@ -58,7 +66,7 @@ class AuthenticatedState: StoresManagerState {
     /// Executed before the current state is deactivated.
     ///
     func willLeave() {
-        let pushNotesManager = AppDelegate.shared.pushNotesManager
+        let pushNotesManager = ServiceLocator.pushNotesManager
 
         pushNotesManager.unregisterForRemoteNotifications()
         pushNotesManager.resetBadgeCount()
@@ -95,7 +103,7 @@ private extension AuthenticatedState {
     /// Executed whenever a DotcomError is received (ApplicationLayer). This allows us to have a *Master* error handling flow!
     ///
     func tunnelTimeoutWasReceived(note: Notification) {
-        WooAnalytics.shared.track(.jetpackTunnelTimeout)
+        ServiceLocator.analytics.track(.jetpackTunnelTimeout)
     }
 }
 
@@ -103,6 +111,7 @@ private extension AuthenticatedState {
 private extension AuthenticatedState {
     func resetServices() {
         let resetStoredProviders = AppSettingsAction.resetStoredProviders(onCompletion: nil)
-        StoresManager.shared.dispatch(resetStoredProviders)
+        let resetStoredStatsVersionStates = AppSettingsAction.resetStatsVersionStates
+        ServiceLocator.stores.dispatch([resetStoredProviders, resetStoredStatsVersionStates])
     }
 }

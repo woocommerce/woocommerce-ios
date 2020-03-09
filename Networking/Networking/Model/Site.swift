@@ -7,7 +7,7 @@ public struct Site: Decodable {
 
     /// WordPress.com Site Identifier.
     ///
-    public let siteID: Int
+    public let siteID: Int64
 
     /// Site's Name.
     ///
@@ -33,13 +33,20 @@ public struct Site: Decodable {
     ///
     public let isWordPressStore: Bool
 
+    /// Time zone identifier of the site (TZ database name).
+    ///
+    public let timezone: String
+
+    /// Return the website UTC time offset, showing the difference in hours and minutes from UTC, from the westernmost (−12:00) to the easternmost (+14:00).
+    ///
+    public let gmtOffset: Double
 
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
         let siteContainer = try decoder.container(keyedBy: SiteKeys.self)
 
-        let siteID = try siteContainer.decode(Int.self, forKey: .siteID)
+        let siteID = try siteContainer.decode(Int64.self, forKey: .siteID)
         let name = try siteContainer.decode(String.self, forKey: .name)
         let description = try siteContainer.decode(String.self, forKey: .description)
         let url = try siteContainer.decode(String.self, forKey: .url)
@@ -47,6 +54,8 @@ public struct Site: Decodable {
         let optionsContainer = try siteContainer.nestedContainer(keyedBy: OptionKeys.self, forKey: .options)
         let isWordPressStore = try optionsContainer.decode(Bool.self, forKey: .isWordPressStore)
         let isWooCommerceActive = try optionsContainer.decode(Bool.self, forKey: .isWooCommerceActive)
+        let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
+        let gmtOffset = try optionsContainer.decode(Double.self, forKey: .gmtOffset)
 
         self.init(siteID: siteID,
                   name: name,
@@ -54,12 +63,22 @@ public struct Site: Decodable {
                   url: url,
                   plan: String(), // Not created on init. Added in supplementary API request.
                   isWooCommerceActive: isWooCommerceActive,
-                  isWordPressStore: isWordPressStore)
+                  isWordPressStore: isWordPressStore,
+                  timezone: timezone,
+                  gmtOffset: gmtOffset)
     }
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int, name: String, description: String, url: String, plan: String, isWooCommerceActive: Bool, isWordPressStore: Bool) {
+    public init(siteID: Int64,
+                name: String,
+                description: String,
+                url: String,
+                plan: String,
+                isWooCommerceActive: Bool,
+                isWordPressStore: Bool,
+                timezone: String,
+                gmtOffset: Double) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -67,6 +86,8 @@ public struct Site: Decodable {
         self.plan = plan
         self.isWordPressStore = isWordPressStore
         self.isWooCommerceActive = isWooCommerceActive
+        self.timezone = timezone
+        self.gmtOffset = gmtOffset
     }
 }
 
@@ -81,7 +102,8 @@ extension Site: Comparable {
             lhs.url == rhs.url &&
             lhs.plan == rhs.plan &&
             lhs.isWooCommerceActive == rhs.isWooCommerceActive &&
-            lhs.isWordPressStore == rhs.isWordPressStore
+            lhs.isWordPressStore == rhs.isWordPressStore &&
+            lhs.gmtOffset == rhs.gmtOffset
     }
 
     public static func < (lhs: Site, rhs: Site) -> Bool {
@@ -108,9 +130,24 @@ private extension Site {
     enum OptionKeys: String, CodingKey {
         case isWordPressStore = "is_wpcom_store"
         case isWooCommerceActive = "woocommerce_is_active"
+        case timezone = "timezone"
+        case gmtOffset = "gmt_offset"
     }
 
     enum PlanKeys: String, CodingKey {
         case shortName      = "product_name_short"
     }
+}
+
+/// Computed properties
+///
+public extension Site {
+
+    /// Returns the TimeZone using the gmtOffset
+    ///
+    var siteTimezone: TimeZone {
+        let secondsFromGMT = Int(gmtOffset * 3600)
+        return TimeZone(secondsFromGMT: secondsFromGMT) ?? .current
+    }
+
 }

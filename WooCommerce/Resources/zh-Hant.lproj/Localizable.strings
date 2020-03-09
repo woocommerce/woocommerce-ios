@@ -1,10 +1,58 @@
-/* Translation-Revision-Date: 2019-06-27 11:54:03+0000 */
+/* Translation-Revision-Date: 2020-02-22 00:54:36+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_TW */
 
 /* No comment provided by engineer. */
-"(no title)" = "（沒有標題）";
+"%1$@ (%2$ld options)" = "%1$@ (%2$ld 選項)";
+
+/* Labels an order note. The user know it's not visible to the customer. Reads like 05:30 PM - username (Private) */
+"%1$@ - %2$@ (Private)" = "%1$@ - %2$@ (隱藏)";
+
+/* Labels an order note. The user know it's a system status message. Reads like 05:30 PM - username (System) */
+"%1$@ - %2$@ (System)" = "%1$@ - %2$@ (系統)";
+
+/* Labels an order note. The user know it's visible to the customer. Reads like 05:30 PM - username (To Customer) */
+"%1$@ - %2$@ (To Customer)" = "%1$@ - %2$@ (向顧客顯示)";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
+"%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
+
+/* Payment on <date> received via (payment method title) */
+"%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
+
+/* Displays a time range followed by a specific date/time */
+"%1$@ › %2$@" = "%1$@ › %2$@";
+
+/* Displays a date range for a stats interval */
+"%1$@-%2$@" = "%1$@-%2$@";
+
+/* <item total> (<item individual price> multipled by <quantity>) */
+"%1$@ (%2$@ x %3$@)" = "%1$@ (%2$@ x %3$@)";
+
+/* 1 Item */
+"%@ Item" = "%@ 個品項";
+
+/* For example, '5 Items' */
+"%@ Items" = "%@ 個品項";
+
+/* Review title. Reads as {Review author} left a review on {Product}. */
+"%1$@ left a review on %2$@" = "%1$@ left a review on %2$@";
+
+/* It reads: \"<date> via <refund method type> – View details\". The text `View details` is a link. */
+"%1$@ via %2$@" = "已在 %1$@ 收到 %2$@ 付款";
+
+/* Label about product's inventory stock status shown on Products tab */
+"%ld in stock" = "%ld 尚有存貨";
+
+/* Label about one product variation shown on Products tab */
+"%ld variant" = "%ld 的子類選項";
+
+/* Label about number of variations shown on Products tab */
+"%ld variants" = "%ld 個子類選項";
+
+/* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
+"99+" = "99 筆以上";
 
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "需要有效的電子郵件地址才能傳送驗證連結。請返回上一個畫面，並提供有效的電子郵件地址。";
@@ -27,25 +75,26 @@
 /* The plugin is active on the site and has enabled automatic updates */
 "Active, Autoupdates on" = "已啟用，開啟自動更新";
 
-/* Add a note screen - button title to send the note
-   Add tracking screen - button title to add a tracking */
+/* A button title used for a shipment tracking unit test
+   A button title used for a unit test - Add a note screen - button title to send the note - Add tracking screen - button title to add a tracking */
 "Add" = "新增";
 
-/* Add Tracking row label
-   Add tracking screen - title. */
+/* Action to add photos on the Product images screen */
+"Add Photos" = "新增相片";
+
+/* A title used for a shipment tracking unit test
+   Add Tracking row label - Add tracking screen - title. - The title used for a unit test */
 "Add Tracking" = "新增追蹤";
 
-/* Button text for adding a new order note */
+/* Accessibility label for the 'Add a note' button
+   Button text for adding a new order note */
 "Add a note" = "新增備註";
 
-/* Accessibility label for the 'Add a note' button */
-"Add a note button" = "新增備註按鈕";
+/* Cell text in Add / Edit product when there are no images. */
+"Add a product image" = "請新增產品圖片";
 
 /* Accessibility label for the 'Add a tracking' button */
-"Add a tracking button" = "新增追蹤按鈕";
-
-/* VoiceOver accessibility hint, informing the user that the button can be used to add an order note. */
-"Adds a note to an order" = "在訂單中新增備註";
+"Add a tracking" = "新增追蹤";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to add tracking to an order. Should end with a period. */
 "Adds tracking to an order." = "新增訂單追蹤。";
@@ -53,12 +102,17 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "檢視應用程式狀態的進階工具";
 
-/* Name of the All filter on the Notifications screen - it means all notifications will be displayed.
-   Name of the All filter on the Order List screen - it means all orders will be displayed. */
+/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
 "All" = "全部";
 
-/* Mark all notifications as read notice */
-"All notifications marked as read" = "所有通知已標示為已讀";
+/* Mark all reviews as read notice */
+"All reviews marked as read" = "已將所有評論標記為已讀";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow" = "允許";
+
+/* Display label for the product's inventory backorders setting option */
+"Allow, but notify customer" = "允許，但通知顧客";
 
 /* Instructions for users with two-factor authentication enabled. */
 "Almost there! Please enter the verification code from your authenticator app." = "快完成了！請輸入驗證器應用程式上的驗證碼。";
@@ -81,6 +135,9 @@
 /* Used when a remote response doesn't have a specific message for a specific request */
 "An error occurred while processing your request: " = "處理要求時發生錯誤：";
 
+/* Message shown when Apple authentication fails. */
+"Apple authentication failed." = "Apple 驗證失敗。";
+
 /* Application Logs navigation bar title - this screen is where users view the list of application logs available to them. */
 "Application Logs" = "應用程式記錄檔";
 
@@ -90,14 +147,21 @@
 /* Approve a comment */
 "Approve" = "核准";
 
-/* Unapprove a comment */
+/* Display label for the review's approved status
+   Unapprove a comment */
 "Approved" = "已核准";
 
 /* Approves a comment. Spoken Hint. */
 "Approves the comment" = "核准留言";
 
+/* Message title for Discard Changes Action Sheet */
+"Are you sure you want to discard these changes?" = "確定要捨棄這些變更？";
+
 /* Alert message to confirm a user meant to log out. */
 "Are you sure you want to log out of the account %@?" = "你確定要登出帳號 %@ 嗎？";
+
+/* Message on the alert when the user taps to delete a Product image */
+"Are you sure you want to remove this image?" = "確定要移除此圖片？";
 
 /* No comment provided by engineer. */
 "Authenticating" = "驗證中";
@@ -108,20 +172,44 @@
 /* The plugin can not be manually updated or deactivated */
 "Auto-managed on this site" = "在此網站上自動管理";
 
+/* Subtitle of the cell in Product Price Settings > Schedule sale */
+"Automatically start and end a sale" = "自動開始及結束折扣";
+
+/* A unit test string. It reads: Awaiting payment via <payment method title>.A payment method example is: 'Credit Card (Stripe)'
+   Awaiting payment via (payment method title) */
+"Awaiting payment via %@" = "正在等待透過 %@ 支付的款項";
+
 /* Alert button title - dismisses alert, which cancels the log out attempt */
 "Back" = "上一步";
 
 /* Application's Background State */
 "Background" = "背景";
 
+/* Product backorders setting list selector navigation title
+   Title of the cell in Product Inventory Settings > Backorders */
+"Backorders" = "無庫存下單";
+
 /* A descriptive label prefix. Example: 'Backorders: not allowed' */
 "Backorders:" = "無庫存下單：";
 
-/* VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
+/* VoiceOver accessibility value about a specific bar in the revenue chart.It reads: Bar number {bar number} {summary of bar}.
+   VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}. */
 "Bar number %1$i, %2$@, " = "長條數目 %1$i, %2$@,";
 
-/* Billing title for customer info cell */
-"Billing details" = "帳單詳細資料";
+/* Begin fulfill order button title */
+"Begin Fulfillment" = "開始履行";
+
+/* Section header title for billing address in billing information */
+"Billing Address" = "帳單地址";
+
+/* Billing Information view Title */
+"Billing Information" = "帳單資訊";
+
+/* Accessibility label for block quote button on formatting toolbar. */
+"Block Quote" = "封鎖引文";
+
+/* Accessibility label for bold button on formatting toolbar. */
+"Bold" = "粗體";
 
 /* Legal disclaimer for signup buttons, the underscores _..._ denote underline */
 "By signing up, you agree to our _Terms of Service_." = "註冊即代表你同意我們的「服務條款」。";
@@ -129,12 +217,21 @@
 /* Call phone number button title */
 "Call" = "致電";
 
+/* Error message format when capturing a unsupported media type with device camera */
+"Camera capture should not support media type: %@" = "攝影機擷取不應支援媒體類型：%@";
+
 /* Title of an alert letting the user know */
 "Can Not Request Link" = "無法要求連結";
 
-/* Button title. Tapping it cancels the login flow.
-   Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view */
+/* Button title Cancel in Discard Changes Action Sheet
+   Button title Cancel in Edit Product More Options Action Sheet - Button title. Tapping it cancels the login flow. - Cancel button label - Cancel prompt for user information. - Cancel the action sheet - Change order status screen - button title for closing the view - Dismiss button on the alert when the user taps to delete a Product image */
 "Cancel" = "取消";
+
+/* The title of the alert when there is an error updating the product */
+"Cannot update Product" = "無法更新商品";
+
+/* Title of the alert when there is an error uploading image(s) */
+"Cannot upload image" = "無法上傳圖片";
 
 /* shown in promotional screens during first launch */
 "Catch up with your favorite sites and join the conversation anywhere, any time." = "隨時隨地掌握最愛網站的最新動態並加入討論。";
@@ -142,13 +239,16 @@
 /* Popup title for wrong SSL certificate. */
 "Certificate error" = "憑證錯誤";
 
+/* Menu option for selecting media from the device's photo library. */
+"Choose from device" = "從裝置中選擇";
+
 /* Settings > Privacy Settings > collect info section. Label for the `Collect Information` toggle. */
 "Collect Information" = "收集資訊";
 
 /* Shown while the app waits for the site creation process to complete. */
 "Completing Signup" = "正在完成註冊程序";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped and an email composer view will appear. */
+/* Accessibility hint, informing that a row can be tapped and an email composer view will appear. */
 "Composes a new email message to the billing customer." = "撰寫新的電子郵件訊息給帳單客戶。";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to create a new order note. */
@@ -163,6 +263,9 @@
 /* No comment provided by engineer. */
 "Connecting to WordPress.com" = "正在連線至 WordPress.com";
 
+/* Section header title for contact details in billing information */
+"Contact Details" = "聯絡詳細資料";
+
 /* Contact Email title */
 "Contact Email" = "聯絡電子郵件";
 
@@ -175,8 +278,23 @@
 /* Part of a prompt suggesting that there is more content for the user to read. */
 "Continue reading" = "繼續閱讀";
 
+/* Button title. Tapping begins log in using Google. */
+"Continue with Google" = "繼續使用 Google";
+
+/* Button title. Tapping begins our normal log in process. */
+"Continue with WordPress.com" = "繼續使用 WordPress.com";
+
+/* Shown while logging in with Apple and the app waits for the site creation process to complete. */
+"Continuing with Apple" = "繼續使用 Apple";
+
 /* Copy address text button title — should be one word and as short as possible. */
 "Copy" = "複製";
+
+/* Copy tracking number button title */
+"Copy Tracking Number" = "複製追蹤號碼";
+
+/* Copy email address button title */
+"Copy email address" = "複製電子郵件地址";
 
 /* Message shown when site purchases API failed */
 "Could not check site purchases." = "無法確認網站購買項目。";
@@ -194,7 +312,7 @@
 "Couldn't connect. Required XML-RPC methods are missing on the server." = "無法連線。伺服器缺少必要的 XML-RPC 方法。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 403 error, meaning that the access to the /xmlrpc.php file is forbidden. */
-"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem.";
+"Couldn't connect. We received a 403 error when trying to access your site's XMLRPC endpoint. The app needs that in order to communicate with your site. Contact your host to solve this problem." = "無法連線。嘗試存取網站的 XMLRPC 終端時發生 403 錯誤。此應用程式需要 XMLRPC 終端才能與你的網站通訊。請聯絡你的主機服務提供者，以解決此問題。";
 
 /* Message to show to user when he tries to add a self-hosted site but the host returned a 405 error, meaning that the host is blocking POST requests on /xmlrpc.php file. */
 "Couldn't connect. Your host is blocking POST requests, and the app needs that in order to communicate with your site. Contact your host to solve this problem." = "無法連結。你的主機服務提供者封鎖了 POST 請求，但此應用程式需要使用 POST 請求才能與你的網站通訊。請聯絡你的主機服務提供者，以解決此問題。";
@@ -209,8 +327,10 @@
    Placeholder name of a custom shipment tracking provider - Title of button to add a custom tracking provider if filtering the list yields no results. */
 "Custom Provider" = "自訂供應商";
 
-/* Customer info section title
-   Section title for the customer's billing and shipping address */
+/* Customer info section title */
+"Customer" = "顧客";
+
+/* Section title for the customer's billing and shipping address */
 "Customer Information" = "顧客資料";
 
 /* Customer note section title
@@ -226,6 +346,9 @@
 /* Plural of 'day' — a statistical unit */
 "Days" = "天";
 
+/* Description of the default paragraph formatting style in the editor. */
+"Default" = "預設";
+
 /* Accessibility hint for delete button in an individual Shipment Tracking in the order fulfillment screen */
 "Delete" = "刪除";
 
@@ -236,18 +359,40 @@
 /* Accessibility hint for Delete Shipment button in Order fulfillment screen */
 "Deletes a shipment's tracking information." = "刪除貨件的追蹤資訊。";
 
+/* Placeholder in the Product description row on Product form screen. */
+"Describe your product" = "請描述你的產品";
+
+/* The navigation bar title of the Aztec editor screen.
+   Title in the Product description row on Product form screen when the description is non-empty. */
+"Description" = "說明";
+
 /* The row label to tap for a detailed product list */
 "Details" = "詳細資料";
 
 /* Screen title: Details Order number (number) */
 "Details Order #(viewModel.order.number)" = "訂單編號 (viewModel.order.number) 詳細資料";
 
+/* Format of all 3 dimensions on the Shipping Settings row - L x W x H[unit] */
+"Dimensions: %1$@ x %2$@ x %3$@%4$@" = "尺寸：%1$@ x %2$@ x %3$@%4$@";
+
+/* Format of 2 dimensions on the Shipping Settings row - dimension x dimension[unit] */
+"Dimensions: %1$@ x %2$@%3$@" = "尺寸：%1$@ x %2$@%3$@";
+
+/* Format of one dimension on the Shipping Settings row - dimension[unit] */
+"Dimensions: %1$@%2$@" = "尺寸：%1$@%2$@";
+
+/* Button title Discard Changes in Discard Changes Action Sheet */
+"Discard changes" = "捨棄變更";
+
 /* Discount label for payment view */
 "Discount" = "折扣";
 
-/* Add a note screen - button title for closing the view
-   Dismiss button in store picker - Dismiss the action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
+/* A unit test string for a button title
+   Accessibility label for the transparent space above the login dialog which acts as a button to dismiss the dialog. - Accessibility label for the transparent space above the signup dialog which acts as a button to dismiss the dialog. - Add a note screen - button title for closing the view - Dismiss button in store picker - Dismiss button title shown in alert warning users to upgrade to WC 3.5. - Dismiss button title shown in an alert displaying full purchase note text. - Dismiss the action sheet - Dismiss the media picking action sheet - Dismiss the shipment tracking action sheet - Product details screen - button title for closing the view */
 "Dismiss" = "關閉";
+
+/* Display label for the product's inventory backorders setting option */
+"Do not allow" = "不允許";
 
 /* Label for button to log in using your site address. The underscores _..._ denote underline */
 "Don't have an account? _Sign up_" = "還沒有帳號？_註冊_";
@@ -261,11 +406,17 @@
 /* WordPress.com Missing Token */
 "Dotcom Missing Token" = "Dotcom 缺少 Token";
 
+/* WordPress.com error thrown when the user has no permission to view site stats. */
+"Dotcom No Stats Permission" = "Dotcom 沒有統計資料權限";
+
 /* WordPress.com Request Failure */
 "Dotcom Request Failed" = "Dotcom 要求失敗";
 
 /* WordPress.com Error thrown when the response body is empty */
 "Dotcom Response Empty" = "Dotcom 回應為空白";
+
+/* WordPress.com error thrown when the Jetpack site stats module is disabled. */
+"Dotcom Stats Module Disabled" = "Dotcom 統計資料模組已停用";
 
 /* WordPress.com Invalid Token */
 "Dotcom Token Invalid" = "Dotcom Token 無效";
@@ -300,17 +451,18 @@
 /* Message to show to user when he tries to add a self-hosted site that is an empty URL. */
 "Empty URL" = "空的網址";
 
-/* Error message shown when a URL is invalid. */
-"Enter a valid URL eg. example.com." = "請輸入有效的 URL，例如：example.com。";
+/* The text placeholder for the Text Editor screen */
+"Enter a title..." = "請輸入標題...";
 
 /* Add custom shipping provider. Placeholder of cell presenting provider name */
 "Enter provider name" = "輸入供應商名稱";
 
+/* Instruction text on the login's site addresss screen.
+   Label for button to log in using your site address. */
+"Enter the address of the WordPress site you'd like to connect." = "請輸入要連結的 WordPress 網站位址。";
+
 /* Sign in instructions for logging in with a URL. */
 "Enter the address of your WooCommerce store you'd like to connect." = "請輸入要連結的 WooCommerce 商店位址。";
-
-/* Instruction text on the login's site addresss screen. */
-"Enter the address of your WordPress site you'd like to connect." = "請輸入要連結的 WordPress 網站位址。";
 
 /* Instructional text shown when requesting the user's password for login. */
 "Enter the password for your WordPress.com account." = "請輸入 WordPress.com 帳號的密碼。";
@@ -325,6 +477,10 @@
    Title of a button. */
 "Enter your password instead." = "請改為輸入你的密碼。";
 
+/* Experimental features navigation title
+   Navigates to experimental features screen */
+"Experimental Features" = "實驗性功能";
+
 /* Expiry: 1 day */
 "Expiry: %ld day" = "到期：%ld 天";
 
@@ -337,14 +493,11 @@
 /* Navigates to the feature request screen */
 "Feature Request" = "功能要求";
 
-/* Accessibility label for the Filter notifications button. */
-"Filter notifications" = "篩選通知";
+/* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
+"Fill with password manager" = "使用密碼管理員填寫";
 
 /* Filter the orders list. */
 "Filter orders" = "篩選訂單";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the notifications list. */
-"Filters the notifications list by notification type." = "依通知類型篩選通知。";
 
 /* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
 "Filters the order list by payment status." = "依付款狀態篩選訂單清單";
@@ -352,11 +505,11 @@
 /* User role badge */
 "Follower" = "關注者";
 
+/* Title of the cell in Product Price Settings > Schedule sale From a certain date */
+"From" = "由";
+
 /* Order Fulfillment Title */
 "Fulfill Order #(order.number)" = "履行訂單編號 (order.number)";
-
-/* Fulfill order button title */
-"Fulfill order" = "履行訂單";
 
 /* Description for Top Performers section of My Store tab. */
 "Gain insights into how products are performing on your store" = "深入瞭解產品在商店上的成效";
@@ -373,6 +526,52 @@
 /* My Store > Settings > Help & Support section title */
 "HOW CAN WE HELP?" = "需要哪方面的協助呢？";
 
+/* Accessibility label for HTML button on formatting toolbar.
+   HTML Attachment Label */
+"HTML" = "HTML";
+
+/* Post HTML content */
+"HTML Content" = "HTML 內容";
+
+/* Accessibility label for selecting h1 paragraph style button on the formatting toolbar. */
+"Header 1" = "標題 1";
+
+/* Accessibility label for selecting h2 paragraph style button on the formatting toolbar. */
+"Header 2" = "標題 2";
+
+/* Accessibility label for selecting h3 paragraph style button on the formatting toolbar. */
+"Header 3" = "標題 3";
+
+/* Accessibility label for selecting h4 paragraph style button on the formatting toolbar. */
+"Header 4" = "標題 4";
+
+/* Accessibility label for selecting h5 paragraph style button on the formatting toolbar. */
+"Header 5" = "標題 5";
+
+/* Accessibility label for selecting h6 paragraph style button on the formatting toolbar. */
+"Header 6" = "標題 6";
+
+/* H1 Aztec Style */
+"Heading 1" = "標題 1";
+
+/* H2 Aztec Style */
+"Heading 2" = "標題 2";
+
+/* H3 Aztec Style */
+"Heading 3" = "標題 3";
+
+/* H4 Aztec Style */
+"Heading 4" = "標題 4";
+
+/* H5 Aztec Style */
+"Heading 5" = "標題 5";
+
+/* H6 Aztec Style */
+"Heading 6" = "標題 6";
+
+/* Title of the cell in Product Shipping Settings > Height */
+"Height" = "高度";
+
 /* Help and Support navigation title
    Help button - Help button on store picker screen. */
 "Help" = "幫助";
@@ -386,13 +585,18 @@
 /* My Store > Settings > Privacy settings section */
 "Help Improve The App" = "協助改善應用程式";
 
-/* Footer text to hide the billing cell */
-"Hide billing" = "隱藏帳單";
+/* Accessibility value if login page's password field is hiding the password (i.e. with asterisks).
+   Shown in a Product Variation cell if the variation is not visible (purchasable is false) */
+"Hidden" = "隱藏";
 
 /* Detail label for yes/no switch. */
 "If disabled the note will be private" = "若停用，此備註將變成私人狀態";
 
-/* Display label for the product's inventory stock status */
+/* My Store > Settings > Experimental features > Switch stats version */
+"Improved stats" = "改善的統計資料";
+
+/* Display label for the product's inventory stock status
+   Label about product's inventory stock status shown on Products tab */
 "In stock" = "尚有存貨";
 
 /* Application's Inactive State */
@@ -410,6 +614,18 @@
 /* An error message shown when a user signed in with incorrect credentials. */
 "Incorrect username or password. Please try entering your login details again." = "錯誤的使用者名稱或密碼。請再次嘗試輸入你的登入詳細資料。";
 
+/* Label action for inserting a link on the editor */
+"Insert" = "插入";
+
+/* Accessibility label for insert horizontal ruler button on formatting toolbar. */
+"Insert Horizontal Ruler" = "插入水平尺規";
+
+/* Accessibility label for insert link button on formatting toolbar. */
+"Insert Link" = "插入連結";
+
+/* The title of the alert when there is an error updating the product SKU */
+"Invalid Product SKU" = "無效的商品貨號";
+
 /* No comment provided by engineer. */
 "Invalid Site Address" = "無效的網站位址";
 
@@ -426,7 +642,7 @@
 "Invalid username" = "無效的使用者名稱";
 
 /* Product Details - inventory section title
-   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. */
+   Product Details > Pricing & Inventory > Inventory cell title - Product Details > Pricing and Inventory section > descriptive label for the Inventory cell. - Product Inventory Settings navigation title - Title of the Inventory Settings row on Product main screen */
 "Inventory" = "庫存";
 
 /* An error message shown during log in when the username or password is incorrect. */
@@ -435,11 +651,30 @@
 /* An error message shown when a wpcom user provides the wrong password. */
 "It seems like you've entered an incorrect password. Want to give it another try?" = "輸入的密碼似乎有誤。是否要再試一次？";
 
-/* Settings > Privacy Settings. A text link to the cookie policy. */
+/* Accessibility label for italic button on formatting toolbar. */
+"Italic" = "斜體";
+
+/* Last 24 hours section header */
+"Last 24 hours" = "過去 24 小時";
+
+/* Last 7 days section header */
+"Last 7 days" = "過去 7 天";
+
+/* Opens an internal library called Wormholy. Not visible to users. */
+"Launch Wormholy debug" = "啟動 Wormholy 除錯";
+
+/* Settings > Privacy Settings. A text link to the cookie policy.
+   The action of the top banner on Dashboard that indicates new stats is unavailable */
 "Learn more" = "瞭解更多";
+
+/* Title of the cell in Product Shipping Settings > Length */
+"Length" = "長度";
 
 /* Licenses (information page title) */
 "Licenses" = "授權";
+
+/* Title of the cell in Product Inventory Settings > Limit one per order */
+"Limit one per order" = "每筆訂單僅限一個";
 
 /* Message to show when a request for a WP.com API endpoint is throttled */
 "Limit reached. You can try again in 1 minute. Trying again before that will only increase the time you have to wait before the ban is lifted. If you think this is in error, contact support." = "已達限制。你可以在 1 分鐘後再試一次。如果在 1 分鐘不到之前重試，只會延長你必須等候繼續進行的時間。如果你覺得這是錯誤，請聯絡支援團隊。";
@@ -449,6 +684,13 @@
 
 /* 'Limit: 2 downloads', for example. */
 "Limit: %ld downloads" = "限制：%ld 下載";
+
+/* Title for screen in editor that allows to configure link options */
+"Link Settings" = "連結設定";
+
+/* Label for the text of a link in the editor
+   Navigation bar title for editing the text of a text link */
+"Link Text" = "連結文字";
 
 /* Displayed when an Order is being retrieved */
 "Loading Order" = "正在載入訂單";
@@ -467,17 +709,14 @@
 /* Explains that the files are sorted by LIFO date: most recent day listed first. */
 "Log files by created date" = "依建立日期排列記錄檔案";
 
-/* Label for button to log in using your site address. */
-"Log in by entering your site address." = "藉由輸入你的網站位址來登入。";
-
 /* A generic error message for a failed log in. */
 "Log in failed. Please try again." = "登入失敗，請再試一次。";
 
 /* Instruction text on the login's email address screen. */
-"Log in to WordPress.com using an email address to manage all your WordPress sites." = "使用電子郵件地址登入 WordPress.com，即可管理你的所有 WordPress 網站。";
+"Log in to the WordPress.com account you used to connect Jetpack." = "請登入你用來連結 Jetpack 的 WordPress.com 帳號。";
 
 /* Instruction text on the login's email address screen. */
-"Log in to the WordPress.com account you used to connect Jetpack." = "請登入你用來連結 Jetpack 的 WordPress.com 帳號。";
+"Log in to your WordPress.com account with your email address." = "使用電子郵件地址登入 WordPress.com 帳號。";
 
 /* Authentication Login Button */
 "Log in with Jetpack" = "透過 Jetpack 登入";
@@ -491,11 +730,14 @@
 /* Title of a button. */
 "Lost your password?" = "忘記密碼？";
 
-/* Tagline after the heart icon, displayed to the user */
-"Made with love by Automattic" = "由 Automattic 成員深情打造";
+/* It reads 'Made with love by Automattic. We’re hiring!'. Place \'We’re hiring!' between `<a>` and `</a>` */
+"Made with love by Automattic. <a href=\"https:\/\/automattic.com\/work-with-us\/\">We’re hiring!<\/a>" = "由 Automattic 用心製作。<a href=\"https:\/\/automattic.com\/work-with-us\/\">我們在招募人才！<\/a>";
 
 /* Login Prologue Legend */
 "Manage orders, track sales and monitor store activity with real-time alerts." = "透過即時警示管理訂單、追蹤銷售狀況，並監控商店活動。";
+
+/* Title of the cell in Product Inventory Settings > Manage stock */
+"Manage stock" = "庫存管理";
 
 /* shown in promotional screens during first launch */
 "Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket." = "隨時隨地管理以 Jetpack 建置的網站，就像把 WordPress 裝在口袋隨身帶著走。";
@@ -506,14 +748,14 @@
 /* Describes a domain that was mapped to WordPress.com, but registered elsewhere */
 "Mapped Domain" = "對應網域";
 
-/* Accessibility label for the Mark All Notifications as Read Button */
+/* Accessibility label for the Mark All Reviews as Read Button */
 "Mark All as Read" = "將全部標示為已讀";
 
 /* Fulfill Order Action Button */
 "Mark Order Complete" = "將訂單標示為完成";
 
-/* VoiceOver accessibility hint for the Mark All Notifications as Read Action */
-"Marks Every Notification as Read" = "將所有通知標示為已讀";
+/* VoiceOver accessibility hint for the Mark All Reviews as Read Action */
+"Marks Every Review as Read" = "將所有評論標示為已讀";
 
 /* Error message to show to users when trying to upload a media object with no local file associated */
 "Media doesn't have an associated file to upload." = "媒體沒有可上傳的相關檔案。";
@@ -530,8 +772,12 @@
 /* Plural of 'month' — a statistical unit */
 "Months" = "月";
 
-/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen */
+/* Accessibility hint for more button in an individual Shipment Tracking in the order details screen
+   Accessibility label for the More button on formatting toolbar. */
 "More" = "更多";
+
+/* Accessibility label for the Edit Product More Options action sheet */
+"More options" = "更多選項";
 
 /* Spam Action Spoken hint. */
 "Moves a comment to Spam" = "將留言移至垃圾留言";
@@ -561,52 +807,67 @@
 /* Title of the more help button on alert helping users understand their site address */
 "Need more help?" = "需要更多協助嗎？";
 
+/* The title for the net amount paid cell */
+"Net" = "淨額";
+
 /* Title of a button.
    Title of a button. The text should be capitalized. */
 "Next" = "下一步";
 
-/* Empty Notifications List Message */
-"No Notifications Yet!" = "尚未有任何通知！";
-
 /* Search Orders (Empty State) */
 "No Orders found" = "找不到訂單";
+
+/* Empty Reviews List Message */
+"No Reviews Yet!" = "目前沒有評論！";
 
 /* Default text for Top Performers section when no data exists for a given period. */
 "No activity this period" = "此期間沒有任何活動";
 
-/* Order details > customer info > billing details. This is where the address would normally display.
+/* Order details > customer info > billing information. This is where the address would normally display.
    Order details > customer info > shipping details. This is where the address would normally display. */
 "No address specified." = "指定任何地址";
 
 /* Text displayed when no data is available for revenue chart. */
 "No data available" = "目前沒有資料";
 
-/* Notifications List (Empty State + Filters)
-   Orders List (Empty State + Filters) */
+/* The text on the placeholder overlay when there are no product variations on the Products tab */
+"No product variations yet" = "尚未有任何不同型號產品";
+
+/* Search Products (Empty State) */
+"No products found" = "找不到商品";
+
+/* The text on the placeholder overlay when there are no products on the Products tab */
+"No products yet" = "尚未有任何產品";
+
+/* Orders List (Empty State + Filters) */
 "No results for the selected criteria" = "找不到與指定條件相符的結果";
 
 /* Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider' */
-"No results found for (term)\nAdd a custom provider" = "No results found for (term)\nAdd a custom provider";
+"No results found for (term)\nAdd a custom provider" = "找不到「(term)」的搜尋結果\n新增自訂供應商";
+
+/* Text displayed when no order data are available for the selected time range. */
+"No revenue this period" = "此期間沒有收益";
+
+/* The text on the placeholder overlay when there are no shipping classes on the Shipping Class list picker */
+"No shipping classes yet" = "尚未有運送類別";
+
+/* The text on the placeholder overlay when there are no tax classes on the Tax Class list picker */
+"No tax classes yet" = "尚未有稅金類別";
+
+/* Display label for the product's tax status setting option */
+"None" = "無";
 
 /* Order details > tracking.  This is where the shipping date would normally display. */
 "Not shipped yet" = "尚未運送。";
 
-/* Labels an order note to let user know it's visible to the customer
-   Spoken accessibility label for an icon image that indicates it's a note to the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a note to the customer. */
 "Note to customer" = "給顧客的備註";
-
-/* Title of the Notifications tab — plural form of Notification
-   Title that appears on top of the main Notifications screen when there is no filter applied to the list (plural form of the word Notification). */
-"Notifications" = "通知";
-
-/* Title that appears on top of the Notifications screen when a filter is applied. It reads: Notifications: {name of filter} */
-"Notifications: %@" = "通知：%@";
 
 /* Label prefix. Example: 'Number of files: 2' */
 "Number of files:" = "檔案數量：";
 
 /* Alert dismissal title
-   Button title. An acknowledgement of the message displayed in a prompt. - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
+   Button title. An acknowledgement of the message displayed in a prompt. - Dismiss button on the alert when there is an error updating the product - Dismiss button on the alert when there is an error uploading image(s) - Dismisses the alert - Ok button for dismissing alert helping users understand their site address - Submit button on prompt for user information. */
 "OK" = "確定";
 
 /* Spoken label to indicate switch control is turned off. */
@@ -614,6 +875,9 @@
 
 /* +2 Days Section Header */
 "Older than 2 days" = "超過 2 天";
+
+/* +7 Days Section Header */
+"Older than 7 days" = "超過 7 天";
 
 /* Months Section Header */
 "Older than a Month" = "超過 1 個月";
@@ -636,24 +900,37 @@
 /* Navigates to screen about open source licenses */
 "Open Source Licenses" = "開放原始碼授權";
 
+/* Label for the description of openening a link using a new window */
+"Open in a new Window\/Tab" = "在新視窗\/分頁中開啟";
+
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "開啟可用狀態的清單。";
 
+/* Placeholder of the cell text field in Product Inventory Settings > SKU */
+"Optional" = "選用";
+
 /* No comment provided by engineer. */
 "Optional Tracking Information" = "選用追蹤資訊";
+
+/* Label for button to log in using site address. Underscores _..._ denote underline. */
+"Or log in by _entering your site address_." = "或輸入網站位址登入。";
 
 /* Add a note screen - title. Example: Order #15
    Order number title */
 "Order #(viewModel.order.number)" = "訂單編號 (viewModel.order.number)";
 
-/* Displayed whenever the Details for an Order that just got deleted was onscreen. It reads: Order {order number} has been deleted from your store. */
+/* Displayed whenever an Order gets deleted. It reads: Order {order number} has been deleted from your store. */
 "Order %@ has been deleted from your store" = "已從你的商店刪除訂單　%@";
 
 /* Order notes section title */
 "Order Notes" = "訂單備註";
 
-/* Change order status screen - Screen title */
+/* Change order status screen - Screen title
+   The section title for the list of Order statuses in the Order Search. */
 "Order Status" = "訂單狀態";
+
+/* Order Total label for payment view */
+"Order Total" = "訂單總額";
 
 /* Order fulfillment success notice */
 "Order marked as fulfilled" = "訂單標示為已履行";
@@ -661,8 +938,11 @@
 /* Order status update success notice */
 "Order status updated" = "已更新訂單狀態";
 
-/* Name of the Orders filter on the Notifications screen - it means only order notifications will be displayed. Plural form of the word Order.
-   Orders stat label on dashboard - should be plural. - Title of the Orders tab — plural form of Order - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+/* Accessibility label for Ordered list button on formatting toolbar. */
+"Ordered List" = "已排序清單";
+
+/* Default title for Orders List shown when tapping on the Search filter.
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
 "Orders" = "訂單";
 
 /* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
@@ -677,27 +957,47 @@
 /* Product section title */
 "PRODUCT" = "產品";
 
-/* Login dialog password placeholder
-   Password placeholder */
+/* The title for the customer payment cell */
+"Paid By Customer" = "顧客付款";
+
+/* Accessibility label for the password text field in the self-hosted login page.
+   Login dialog password placeholder - Password placeholder */
 "Password" = "密碼";
+
+/* Paste without Formatting Menu Item */
+"Paste without Formatting" = "貼上並且不設定格式";
 
 /* Payment section title */
 "Payment" = "付款";
 
-/* Payment of <currency symbol><payment total> received via (payment method title) */
-"Payment of (totalValue) received via (order.paymentMethodTitle)" = "已透過 (order.paymentMethodTitle) 收到 (totalValue) 付款";
-
-/* Display label for the product's pending status */
+/* Display label for the product's pending status
+   Display label for the review's pending status */
 "Pending" = "待審核";
+
+/* A unit test string, appended before the title of a review.
+   Indicates a review is pending approval. It reads { Pending Review · Content of the review} */
+"Pending Review" = "待審中";
 
 /* Accessibility label that lets the user know the data is a phone number before speaking the phone number. */
 "Phone number: %@" = "電話號碼：%@";
 
+/* Product images (Product images page title) */
+"Photos" = "照片";
+
 /* Store Picker's Section Title: Displayed whenever there are multiple Stores. */
 "Pick Store to Connect" = "挑選要連結的商店";
 
+/* Product title error notice message, when the title is empty */
+"Please add a title" = "請新增標題";
+
 /* Alert title for check your email during logIn/signUp. */
 "Please check your email" = "請查看你的電子郵件";
+
+/* Placeholder for editing the URL of a text link */
+"Please enter a URL" = "請輸入 URL。";
+
+/* Error message shown when a URL is invalid. */
+"Please enter a complete website address, like example.com." = "請輸入完整的網站位址，例如 example.com。";
 
 /* No comment provided by engineer. */
 "Please enter a site address." = "請輸入網站位址。";
@@ -707,6 +1007,12 @@
 
 /* Error message displayed when the user attempts use an invalid email address. */
 "Please enter a valid email address." = "請輸入有效的電子郵件位址";
+
+/* Placeholder for editing the text of a text link */
+"Please enter some text" = "請輸入一些文字";
+
+/* No comment provided by engineer. */
+"Please enter the password for your WordPress.com account to log in with your Apple ID." = "請輸入 WordPress.com 帳戶的密碼，以便使用 Apple ID 登入。";
 
 /* Popup message to ask for user credentials (fields shown below). */
 "Please enter your credentials" = "請輸入你的密碼";
@@ -723,10 +1029,17 @@
 /* Message for alert to prompt user to logout before connecting to a different wordpress.com site. */
 "Please log out before connecting to a different wordpress.com site" = "請先登出再連結至另一個 WordPress.com 網站";
 
+/* Error message when an image captured by camera cannot be saved to the device Photos library */
+"Please make sure the app can access Photos in device settings" = "請在裝置設定中確認應用程式可以存取相片";
+
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "請開啟電子郵件應用程式，找到 WordPress.com 傳送的電子郵件。";
 
-/* Product Details > Pricing and Inventory section > descriptive label for the Price cell. */
+/* Message of the in-progress UI while updating the Product remotely */
+"Please wait while we publish this product to your store" = "請稍候，我們正在將此商品上架到你的商店";
+
+/* Product Details > Pricing and Inventory section > descriptive label for the Price cell.
+   Product Price Settings navigation title - Section header title for product price - Title of the cell in Product Price Settings > Price - Title of the Price Settings row on Product main screen */
 "Price" = "價格";
 
 /* Product Details - pricing and inventory section title */
@@ -742,8 +1055,7 @@
 /* Display label for the product's private status */
 "Private" = "私人";
 
-/* Labels an order note to let the user know it's private and not seen by the customer
-   Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
+/* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人備註";
 
 /* Description for Top Performers left column header
@@ -753,7 +1065,20 @@
 /* Notice displayed when the onscreen product was just deleted. It reads: Product {product number} has been removed from your store. */
 "Product %ld has been removed from your store" = "已從你的商店移除產品 %ld";
 
-/* VoiceOver accessibility hint, informing the user that the row can be tapped to get to a prompt that lets them call or message the billing customer. */
+/* Title of the view containing a single Product Review */
+"Product Review" = "產品評論";
+
+/* Product Total label for payment view */
+"Product Total" = "產品總額";
+
+/* My Store > Settings > Experimental features > Switch Products
+   Title of the Products tab — plural form of Product - Title that appears on top of the Product List screen (plural form of the word Product). */
+"Products" = "產品";
+
+/* Label for computed value `product refunds + taxes = subtotal`. */
+"Products Refund" = "商品退款";
+
+/* VoiceOver accessibility hint, informing the user that the row can be tapped to call or message the billing customer. */
 "Prompts with the option to call or message the billing customer." = "提示致電或傳簡訊給帳單客戶的選項。";
 
 /* Add Custom shipping provider. Title of cell presenting the provider name */
@@ -765,10 +1090,14 @@
 /* shown in promotional screens during first launch */
 "Publish from the park. Blog from the bus. Comment from the café. WordPress goes where you do." = "在公園發表文章，在公車上寫網誌，或在咖啡館留言，你走到哪，WordPress 跟你到哪。";
 
+/* Title of the in-progress UI while updating the Product remotely */
+"Publishing your product..." = "正在上架你的商品…";
+
 /* Product Details - purchase details section title */
 "Purchase Details" = "購買詳細資料";
 
-/* Product Details > Purchase Details > Purchase note cell title */
+/* Product Details > Purchase Details > Purchase note cell title
+   Title for purchase note alert. */
 "Purchase note" = "購買備註";
 
 /* Quantity abbreviation for section title */
@@ -777,6 +1106,12 @@
 /* Quantity abbreviation for section title
    Section header title - abbreviation for quantity */
 "Qty" = "數量";
+
+/* Title of the cell in Product Inventory Settings > Quantity */
+"Quantity" = "數量";
+
+/* Format of the stock quantity on the Inventory Settings row */
+"Quantity: %ld" = "數量：%ld";
 
 /* Subtitle for Contact Support */
 "Reach our happiness engineers who can help answer tough questions" = "聯絡我們的 happiness engineer，他們很樂於協助解決疑難問題。";
@@ -787,15 +1122,51 @@
 /* Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy. */
 "Read privacy policy" = "閱讀隱私權政策";
 
+/* Refund note section title */
+"Reason for Refund" = "退款原因";
+
+/* It reads: Refund #<refund ID> */
+"Refund #%@" = "退款 #%@";
+
+/* Refund Details page > Refund Details section > The label that marks the refunded amount */
+"Refund Amount" = "退款金額";
+
+/* Refund Details section title */
+"Refund Details" = "退款詳細資料";
+
+/* The title for the refunded amount cell */
+"Refunded" = "已退款";
+
+/* Order > Order Details > 'N Items' cell tapped > Refunded Products title
+   Refunded Products section title - Section title */
+"Refunded Products" = "已退款的商品";
+
+/* It reads, 'Refunded manually via <payment method>' */
+"Refunded manually via %@" = "已透過 %@ 手動退款";
+
+/* It reads, 'Refunded via <payment method>' */
+"Refunded via %@" = "已透過 %@ 退款";
+
 /* Describes a domain that was registered with WordPress.com */
 "Registered Domain" = "已註冊的網域";
 
 /* A descriptive label prefix. Example: 'Regular price: $20.00' */
 "Regular price:" = "原價：";
 
-/* Action: Opens the Store in a browser
-   Action: removes the current filters from the notifications list */
+/* Format of the regular price on the Price Settings row */
+"Regular price: %@" = "原價：%@";
+
+/* Confirm button on the alert when the user taps to delete a Product image */
+"Remove" = "移除";
+
+/* Action: Opens the Store in a browser */
 "Remove Filters" = "移除篩選條件";
+
+/* Title on the alert when the user taps to delete a Product image */
+"Remove Image" = "移除圖片";
+
+/* Label action for removing a link from the editor */
+"Remove Link" = "移除連結";
 
 /* Settings > Privacy Settings > report crashes section. Label for the `Report Crashes` toggle. */
 "Report Crashes" = "報告當機";
@@ -806,6 +1177,9 @@
 /* VoiceOver accessibility hint, informing the user the button can be used to search orders. */
 "Retrieves a list of orders that contain a given keyword." = "擷取內含指定關鍵字的訂單清單。";
 
+/* VoiceOver accessibility hint, informing the user the button can be used to search products. */
+"Retrieves a list of products that contain a given keyword." = "擷取含有指定關鍵字的產品清單。";
+
 /* Retry Action
    Retry the last action */
 "Retry" = "重試";
@@ -814,36 +1188,71 @@
 "Revenue" = "收益";
 
 /* Review moderation success notice message. It reads: Review marked as {new status} */
-"Review marked as %@" = "Review marked as %@";
+"Review marked as %@" = "已將評論標記為%@";
 
-/* Description text used on the UI element displayed when a user has pending orders to process. */
-"Review, prepare, and ship these pending orders" = "檢視、準備和運送這些待處理訂單";
-
-/* Name of the Reviews filter on the Notifications screen - it means only review notifications will be displayed. Plural form of the word Review.
-   Reviews descriptive label */
+/* Reviews descriptive label
+   Title of the Reviews tab — plural form of Review - Title that appears on top of the main Reviews screen (plural form of the word Review). */
 "Reviews" = "評論";
 
-/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products. */
+/* Post Rich content */
+"Rich Content" = "豐富內容";
+
+/* A descriptive title for the SKU cell in Product Details > Inventory, for Grouped products.
+   Title of the cell in Product Inventory Settings > SKU */
 "SKU" = "貨號";
 
+/* The message of the alert when there is an error updating the product SKU */
+"SKU already in use by another product" = "其他商品已使用此貨號";
+
 /* A descriptive label for the SKU prefix. Example: 'SKU: woo-affiliate-beanie'
-   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' - SKU label */
+   A descriptive label prefix. Example: 'SKU: woo-virtual-beanie' */
 "SKU:" = "貨號：";
+
+/* Format of the SKU on the Inventory Settings row
+   SKU label, followed by the SKU */
+"SKU: %@" = "貨號：%@";
 
 /* One Time Code has been sent via SMS */
 "SMS Sent" = "簡訊已傳送";
 
+/* Format of the sale period on the Price Settings row */
+"Sale dates: %@" = "折扣日期：%@";
+
+/* Format of the sale period on the Price Settings row from a certain date */
+"Sale dates: From %@" = "折扣日期：自 %@";
+
+/* Format of the sale period on the Price Settings row until a certain date */
+"Sale dates: Until %@" = "折扣日期：至 %@";
+
+/* Title of the cell in Product Price Settings > Sale price */
+"Sale price" = "折扣價";
+
 /* A descriptive label prefix. Example: 'Sale price: $18.00' */
 "Sale price:" = "折扣價：";
+
+/* Format of the sale price on the Price Settings row */
+"Sale price: %@" = "折扣價格：%@";
+
+/* Title of the cell in Product Price Settings > Schedule sale */
+"Schedule sale" = "排程折扣";
 
 /* Orders Search Placeholder */
 "Search all orders" = "搜尋全部訂單";
 
+/* Products Search Placeholder */
+"Search all products" = "搜尋所有產品";
+
 /* Search Orders */
 "Search orders" = "搜尋訂單";
 
+/* Search Products */
+"Search products" = "搜尋產品";
+
 /* Page title for the select a different store screen */
 "Select Store" = "選取商店";
+
+/* Accessibility label for selecting paragraph style button on formatting toolbar. */
+"Select paragraph style" = "選取段落風格";
 
 /* My Store > Settings > Selected Store information section. This is the heading listed above the information row that displays the store website and their username. */
 "Selected Store" = "已選取商店";
@@ -858,13 +1267,17 @@
    Settings navigation title */
 "Settings" = "設定";
 
+/* Button title Share in Edit Product More Options Action Sheet */
+"Share" = "分享";
+
 /* Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting */
 "Share information with our analytics tool about your use of services while logged in to your WordPress.com account." = "在登入你的 WordPress.com 帳號時，請將你的服務使用情況相關資訊與我們的分析工具分享。";
 
 /* Action: Opens the Store in a browser */
 "Share your Store" = "分享你的商店";
 
-/* Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
+/* A unit test string for order tracking. Reads as: 'Shipment Company HK Post'
+   Accessibility label for Shipment tracking company in Order details screen. Reads like: Shipment Company USPS */
 "Shipment Company %@" = "貨件公司 %@";
 
 /* Accessibility label for Shipment date in Order details screen. Shipped: February 27, 2018.
@@ -872,23 +1285,50 @@
 "Shipped %@" = "已運送 %@";
 
 /* Product Details > Purchase Details > Shipping cell title
-   Shipping label for payment view */
+   Product Shipping Settings navigation title - Shipping label for payment view - Title of the Shipping Settings row on Product main screen */
 "Shipping" = "運送方式";
+
+/* Shipping method title for customer info cell */
+"Shipping Method" = "運送方式";
 
 /* Title of view displaying all available Shipment Tracking Providers */
 "Shipping Providers" = "物流供應商";
 
+/* Title of the cell in Product Shipping Settings > Shipping class */
+"Shipping class" = "運送類別";
+
 /* Label prefix. Example: 'Shipping class: Free Shipping' */
 "Shipping class:" = "運送類別：";
+
+/* Navigation bar title of the Product shipping class selector screen */
+"Shipping classes" = "運送類別";
 
 /* Shipping title for customer info cell */
 "Shipping details" = "運送詳細資料";
 
+/* VoiceOver accessibility label for the shipping notice about the order */
+"Shipping notice about the order" = "訂單的運送通知";
+
+/* Display label for the product's tax status setting option */
+"Shipping only" = "僅限運送";
+
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "物流供應商";
 
-/* Footer text to show the billing cell */
-"Show billing" = "顯示帳單";
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show a list of refunded order items for this order." = "顯示此訂單的退款訂單品項清單。";
+
+/* Accessibility label for the “Show password“ button in the login page's password field. */
+"Show password" = "顯示密碼";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view refund detail information. */
+"Show refund details for this order." = "顯示此訂單的退款詳細資料。";
+
+/* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
+"Show the billing details for this order." = "顯示此訂單的帳單詳細資料。";
+
+/* Accessibility value if login page's password field is displaying the password. */
+"Shown" = "顯示";
 
 /* Accessibility hint for Delete Shipment button in Order details screen */
 "Shows more options." = "顯示更多選項。";
@@ -908,11 +1348,18 @@
 /* Describes a site redirect domain */
 "Site Redirect" = "網站重新導向";
 
+/* Accessibility label of the site address field shown when adding a self-hosted site. */
+"Site address" = "網站位址";
+
 /* No comment provided by engineer. */
 "Site address must be at least 4 characters." = "網站位址至少必須為 4 個字元。";
 
 /* Label prefix. Example: 'Size: 8 x 10 x 10 cm' */
 "Size:" = "大小：";
+
+/* A unit test for reviews, checking that anonymous users are added as the author named `someone`
+   Indicates the reviewer does not have a name. It reads { Someone left a review} */
+"Someone" = "某人";
 
 /* This error message occurs when a user tries to create a username that contains an invalid phrase for WordPress.com. The %@ may include the phrase in question if it was sent down by the API */
 "Sorry, but your username contains an invalid phrase%@." = "很抱歉，你的使用者名稱含有無效的字詞 %@。";
@@ -959,8 +1406,15 @@
 /* No comment provided by engineer. */
 "Sorry, you may not use that site address." = "很抱歉，你不可使用該網站位址。";
 
-/* Verb, spam a comment */
+/* Display label for the review's spam status
+   Verb, spam a comment */
 "Spam" = "垃圾留言";
+
+/* The name of the default Tax Class in Product Price Settings */
+"Standard rate" = "標準稅率";
+
+/* Aztec's Text Placeholder */
+"Start writing..." = "開始撰寫內容…";
 
 /* VoiceOver accessibility value, informs the user about the X-axis min/max values. It reads: Starting date {date}, ending date {date}. */
 "Starting period %1$@, ending period %2$@" = "期限：%1$@ 至 %2$@";
@@ -968,8 +1422,15 @@
 /* A descriptive label prefix. Example: 'Stock quantity: 19' */
 "Stock quantity:" = "存貨數量：";
 
+/* Product stock status list selector navigation title
+   Title of the cell in Product Inventory Settings > Stock status */
+"Stock status" = "庫存狀態";
+
 /* A descriptive label prefix. Example: 'Stock status: In stock' */
 "Stock status:" = "存貨狀態：";
+
+/* Format of the stock status on the Inventory Settings row */
+"Stock status: %@" = "存貨狀態：%@";
 
 /* VoiceOver accessibility label for the store revenue chart. */
 "Store revenue chart" = "商店收益圖";
@@ -983,7 +1444,10 @@
 /* VoiceOver accessibility label for the store revenue chart's Y-axis. */
 "Store revenue chart: Y Axis" = "商店收益圖：Y 軸";
 
-/* Subtotal label for payment view */
+/* Accessibility label for strikethrough button on formatting toolbar. */
+"Strike Through" = "刪除線";
+
+/* Subtotal label for a refund details view */
 "Subtotal" = "小計";
 
 /* This action allows the user to change stores without logging out and logging back in again. */
@@ -992,17 +1456,113 @@
 /* Message presented after users switch to a new store. Reads like: Switched to {store name}. You will only receive notifications from this store. */
 "Switched to (newStoreName). You will only receive notifications from this store." = "已切換至 (newStoreName)。您只會收到此商店傳送的通知。";
 
-/* Labels an order note to let user know it's a system status message */
-"System status" = "系統狀態";
+/* Accessibility Identifier for the H1 Aztec Style */
+"Switches to the Heading 1 font size" = "切換至Heading 1文字大小";
 
-/* Tax label for total taxes line */
-"Tax:" = "稅金：";
+/* Accessibility Identifier for the H2 Aztec Style */
+"Switches to the Heading 2 font size" = "切換至Heading 2文字大小";
+
+/* Accessibility Identifier for the H3 Aztec Style */
+"Switches to the Heading 3 font size" = "切換至Heading 3文字大小";
+
+/* Accessibility Identifier for the H4 Aztec Style */
+"Switches to the Heading 4 font size" = "切換至Heading 4文字大小";
+
+/* Accessibility Identifier for the H5 Aztec Style */
+"Switches to the Heading 5 font size" = "切換至Heading 5文字大小";
+
+/* Accessibility Identifier for the H6 Aztec Style */
+"Switches to the Heading 6 font size" = "切換至Heading 6文字大小";
+
+/* Accessibility Identifier for the Default Font Aztec Style. */
+"Switches to the default Font Size" = "切換至預設的文字大小";
+
+/* Menu option for taking an image or video with the device's camera. */
+"Take a photo" = "拍攝相片";
+
+/* Accessibility hint for the More button on formatting toolbar. */
+"Tap for more formatting options" = "點選以取得更多格式選項";
+
+/* Accessibility hint for insert horizontal ruler button on formatting toolbar. */
+"Tap to insert a Horizontal Ruler" = "點選以插入水平尺規";
+
+/* Accessibility hint for insert link button on formatting toolbar. */
+"Tap to insert a Link" = "點選以插入連結";
+
+/* Accessibility hint for block quote button on formatting toolbar. */
+"Tap to toggle Block Quote" = "點選以切換封鎖引文";
+
+/* Accessibility hint for bold button on formatting toolbar. */
+"Tap to toggle Bold text" = "點選以切換粗體文字";
+
+/* Accessibility hint for HTML button on formatting toolbar. */
+"Tap to toggle HTML mode" = "點選以切換 HTML 模式";
+
+/* Accessibility hint for selecting h1 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 1" = "點選以切換至標題 1";
+
+/* Accessibility hint for selecting h2 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 2" = "點選以切換至標題 2";
+
+/* Accessibility hint for selecting h3 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 3" = "點選以切換至標題 3";
+
+/* Accessibility hint for selecting h4 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 4" = "點選以切換至標題 4";
+
+/* Accessibility hint for selecting h5 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 5" = "點選以切換至標題 5";
+
+/* Accessibility hint for selecting h6 paragraph style button on the formatting toolbar. */
+"Tap to toggle Header 6" = "點選以切換至標題 6";
+
+/* Accessibility hint for italic button on formatting toolbar. */
+"Tap to toggle Italic text" = "點選以切換斜體文字";
+
+/* Accessibility hint for Ordered list button on formatting toolbar. */
+"Tap to toggle Ordered List" = "點選以切換排序清單";
+
+/* Accessibility hint for strikethrough button on formatting toolbar. */
+"Tap to toggle Strike Through" = "點選以切換刪除線";
+
+/* Accessibility hint for underline button on formatting toolbar. */
+"Tap to toggle Underline" = "點選以切換底線";
+
+/* Accessibility hint for unordered list button on formatting toolbar. */
+"Tap to toggle Unordered List" = "點選以切換未排序清單";
+
+/* Accessibility hint for selecting paragraph style button on formatting toolbar. */
+"Tap to toggle paragraph style" = "點選以切換段落風格";
+
+/* Tax label for a refund details view */
+"Tax" = "稅金";
+
+/* Section header title for product tax settings */
+"Tax Settings" = "稅金設定";
+
+/* Navigation bar title of the Product tax status selector screen */
+"Tax Status" = "稅金狀態";
+
+/* Title of the cell in Product Price Settings > Tax class */
+"Tax class" = "稅率類別";
+
+/* Navigation bar title of the Product tax class selector screen */
+"Tax classes" = "稅金類別";
+
+/* Title of the cell in Product Price Settings > Tax status */
+"Tax status" = "稅金狀態";
+
+/* Display label for the product's tax status setting option */
+"Taxable" = "應課稅";
 
 /* Taxes label for payment view */
 "Taxes" = "稅金";
 
 /* Opens the Terms of Service web page */
 "Terms of Service" = "服務條款";
+
+/* My Store > Settings > Experimental features > Products description */
+"Test out the new products section as we get ready to launch" = "新產品推出前的測試階段";
 
 /* Button title */
 "Text me a code instead" = "請改用簡訊傳送驗證碼給我";
@@ -1029,7 +1589,7 @@
 "That username is not allowed." = "不允許使用該使用者名稱。";
 
 /* Description shown when a user logs in with Google but no matching WordPress.com account is found */
-"The Google account \"(loginFields.username)\" doesn't match any account on WordPress.com" = "沒有任何與 Google 帳號「(loginFields.username)」匹配的 WordPress.com 帳號";
+"The Google account \"%@\" doesn't match any account on WordPress.com" = "沒有任何與 Google 帳號「%@」匹配的 WordPress.com 帳號";
 
 /* Fetching an Order Failed */
 "The Order couldn't be loaded!" = "無法載入訂單！";
@@ -1040,8 +1600,14 @@
 /* No comment provided by engineer. */
 "The certificate for this server is invalid. You might be connecting to a server that is pretending to be “%@” which could put your confidential information at risk.\n\nWould you like to trust the certificate anyway?" = "此伺服器的憑證無效。你可能正連線至冒充為「%@」的伺服器，而這可能洩漏你的機密資料。\n\n是否仍然要信任憑證？";
 
-/* Displayed whenever a Notification that was onscreen got deleted. */
-"The notification has been removed" = "通知已移除！";
+/* Displayed whenever a review that was onscreen got deleted. */
+"The review has been removed" = "已移除評論";
+
+/* Product price error notice message, when the sale price is added but the regular price is not */
+"The sale price can't be added without the regular price." = "無法在沒有原價的情況下新增售價。";
+
+/* Product price error notice message, when the sale price is higher than the regular price */
+"The sale price should be lower than the regular price." = "銷售價格必須低於正常價格。";
 
 /* No comment provided by engineer. */
 "The server returned an empty response. This usually means you need to increase the memory limit for your site." = "伺服器傳回空白回應。這通常代表你必須增加網站的記憶體限制。";
@@ -1064,17 +1630,26 @@
 /* Error message informing the user that there was a problem clearing the block on site preventing its posts from displaying in the reader. */
 "There was a problem removing the block for specified site." = "移除指定網站的封鎖時發生問題。";
 
-/* Top Performers section title - this month */
+/* Tab selector title that shows the statistics for this month
+   Top Performers section title - this month */
 "This Month" = "本月";
 
-/* Top Performers section title - this week */
+/* The message of the alert when there is an error updating the product SKU */
+"This SKU is used on another product or is invalid." = "此貨號已用於其他商品或無效。";
+
+/* Tab selector title that shows the statistics for this week
+   Top Performers section title - this week */
 "This Week" = "本週";
 
-/* Top Performers section title - this year */
+/* Tab selector title that shows the statistics for this year
+   Top Performers section title - this year */
 "This Year" = "今年";
 
 /* Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language. */
 "This app requires Jetpack to connect to your Store. <br \/> Read the <a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">configuration instructions<\/a>." = "此應用程式需要 Jetpack 才能連結至你的商店。<br \/>請閱讀<a href=\"https:\/\/jetpack.com\/support\/getting-started-with-jetpack\/\">設定說明<\/a>。";
+
+/* Body text of alert warning users to upgrade to WC 3.5. */
+"This app requires that you install WooCommerce 3.5 on your server, and won't work properly without it. Update as soon as possible to continue using this app." = "此應用程式要求你在伺服器上安裝 WooCommerce 3.5，否則無法正常運作。請儘快更新以繼續使用此應用程式。";
 
 /* An error message informing the user the email address they entered did not match a WordPress.com account. */
 "This email address is not registered on WordPress.com." = "這個電子郵件地址沒有在 WordPress.com 上註冊。";
@@ -1082,11 +1657,22 @@
 /* Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect. */
 "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy." = "這類資訊有助我們改進產品、提供與你更加相關的行銷活動、帶來更為個人化的 WordPress.com 使用體驗；若要瞭解更多詳細內容，請參見我們的「隱私權政策」。";
 
+/* Accessibility label for the Shipping notice
+   Shipping notice row label when there is more than one shipping method */
+"This order is using extensions to calculate shipping. The shipping methods shown might be incomplete." = "此訂單使用延伸模組計算運送資訊。顯示的運送方式可能不完整。";
+
 /* Message displayed when loading a specific product fails */
 "This product couldn't be loaded" = "無法載入此產品";
 
-/* Product details screen — product title descriptive label */
+/* Product details screen — product title descriptive label
+   The navigation bar title of the Text editor screen. - Title in the Product Title row on Product form screen when the description is non-empty. */
 "Title" = "標題";
+
+/* Placeholder in the Product Title row on Product form screen. */
+"Title (required)" = "標題 (必填)";
+
+/* Title of the cell in Product Price Settings > Schedule sale To a certain date */
+"To" = "至";
 
 /* Text instructing the user to enter their email address. */
 "To create your new WordPress.com account, please enter your email address." = "若要建立新的 WordPress.com 帳號，請輸入你的電子郵件地址。";
@@ -1097,18 +1683,21 @@
 /* No comment provided by engineer. */
 "To proceed with this Google account, please first log in with your WordPress.com password. This will only be asked once." = "若要繼續使用這個 Google 帳號，請先使用你的 WordPress.com 密碼登入。系統只會向你要求一次。";
 
-/* Today Section Header
-   Top Performers section title - today */
+/* Tab selector title that shows the statistics for today
+   Today Section Header - Top Performers section title - today */
 "Today" = "今天";
+
+/* Accessibility Identifier for the Aztec Ordered List Style. */
+"Toggles the ordered list style" = "切換至排序清單樣式";
+
+/* Accessibility Identifier for the Aztec Unordered List Style */
+"Toggles the unordered list style" = "切換至未排序清單樣式";
 
 /* Header label for Top Performers section of My Store tab. */
 "Top Performers" = "成效最佳者";
 
 /* Used when a Reader Topic is not found for a specific id */
 "Topic not found for id:" = "找不到 ID 的主題：";
-
-/* Total label for payment view */
-"Total" = "總計";
 
 /* Product details screen - total orders descriptive label */
 "Total Orders" = "總訂單數";
@@ -1131,23 +1720,38 @@
 /* Add / Edit shipping provider. Title of cell presenting tracking number */
 "Tracking number" = "追蹤號碼";
 
-/* Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
+/* A unit test string. Reads as: 'Trackin number XXX_YYY_ZZZ'
+   Accessibility label for Shipment tracking number in Order details screen. Reads like: Tracking Number 1AZ234567890 */
 "Tracking number %@" = "追蹤號碼 %@";
 
-/* Move a comment to the trash */
+/* Display label for the review's trash status
+   Move a comment to the trash */
 "Trash" = "移至垃圾桶";
 
 /* Connect when the SSL certificate is invalid */
 "Trust" = "信任";
 
-/* No comment provided by engineer. */
+/* The action of the top banner on Dashboard that indicates new stats is available */
+"Try It Now" = "立即試試";
+
+/* Button to trigger connection to another account in store picker */
 "Try another account" = "嘗試其他帳號";
+
+/* The title of the top banner on Dashboard that indicates new stats is available */
+"Try our improved stats" = "體驗我們改善的統計資料效能";
+
+/* My Store > Settings > Experimental features > Stats version description */
+"Try the new stats available with the WooCommerce Admin plugin" = "憑藉 WooCommerce Admin 外掛程式嘗試可用的新統計資料";
 
 /* When social login fails, this button offers to let the user try again with a differen email address */
 "Try with another email" = "請嘗試使用其他電子郵件登入";
 
 /* When social login fails, this button offers to let them try tp login using a URL */
 "Try with the site address" = "請嘗試使用網站位址登入";
+
+/* Navigation bar title for editing the URL of a text link
+   URL text field placeholder */
+"URL" = "URL";
 
 /* Shown when a user logs in with Google but it subsequently fails to work as login to WordPress.com */
 "Unable To Connect" = "無法連線";
@@ -1160,6 +1764,9 @@
 
 /* Content of error presented when updating the status of an Order fails. It reads: Unable to change status of order #{order number} */
 "Unable to change status of order #(orderID)" = "無法變更訂單 #(orderID) 的狀態";
+
+/* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
+"Unable to delete tracking for order #(order.orderID)" = "無法刪除訂單 #(order.orderID) 的追蹤";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number} */
 "Unable to delete tracking for order #(orderID)" = "無法刪除訂單 #(orderID) 的追蹤";
@@ -1177,7 +1784,7 @@
 "Unable to load content" = "無法載入內容";
 
 /* Review error notice message. It reads: Unable to mark review as {attempted status} */
-"Unable to mark review as %@" = "Unable to mark review as %@";
+"Unable to mark review as %@" = "無法將評論標記為%@";
 
 /* No comment provided by engineer. */
 "Unable to read the WordPress site at that URL. Tap 'Need Help?' to view the FAQ." = "無法透過該 URL 讀取 WordPress 網站。點選「需要說明？」即可檢視常見問題集。";
@@ -1197,48 +1804,83 @@
 /* Unapproves a comment. Spoken Hint. */
 "Unapproves the comment" = "駁回此留言";
 
+/* Accessibility label for underline button on formatting toolbar. */
+"Underline" = "底線";
+
 /* Undo Action */
 "Undo" = "復原";
 
-/* Unknown Application State */
+/* Unknown Application State
+   Unknown product name, displayed in a review - Unknown Tag Name */
 "Unknown" = "不明";
-
-/* No comment provided by engineer. */
-"Unknown Search Terms" = "不明搜尋字詞";
 
 /* No comment provided by engineer. */
 "Unknown error" = "發生未知的錯誤";
 
+/* Error message when capturing a unknown media type */
+"Unknown media type" = "未知的媒體類型";
+
+/* Accessibility label for unordered list button on formatting toolbar. */
+"Unordered List" = "未排序清單";
+
+/* Display label for the review's unspam status */
+"Unspam" = "取消標記為垃圾";
+
+/* Display label for the review's untrash status */
+"Untrash" = "還原";
+
 /* Footer text below the list of logs explaining the maximum number of logs saved. */
 "Up to seven days՚ worth of logs are saved." = "可儲存最多七天的記錄。";
+
+/* Action for updating a Product remotely
+   Label action for updating a link on the editor */
+"Update" = "更新";
+
+/* Title of alert warning users to upgrade to WC 3.5 WITH a site name. It reads: Update {site name} to WooCommerce 3.5 to use this app */
+"Update %@ to WooCommerce 3.5" = "將 %@ 更新至 WooCommerce 3.5";
+
+/* Update instructions button title shown in alert warning users to upgrade to WC 3.5. */
+"Update Instructions" = "更新指示";
 
 /* Accessibility label for the button to update the order status in Order Details */
 "Update Order Status" = "已更新訂單狀態";
 
-/* Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
+/* Title of alert warning users to upgrade to WC 3.5. */
+"Update to WooCommerce 3.5 to keep using this app" = "更新至 WooCommerce 3.5 以繼續使用此應用程式";
+
+/* A unit test string for a singular time interval
+   Singular of 'hour' — date and time string that represents the time interval since last data update when exactly 1 hour ago. Usage example: Updated 1 hour ago */
 "Updated %ld hour ago" = "%ld 小時前已更新";
 
-/* Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
+/* A unit test string for 1 day, represented as plural time interval in hours
+   A unit test string for a plural time interval in hours - A unit test string for time interval just under 1 day - Plural of 'hour' — date and time string that represents the time interval since last data update when greater than 1 hour ago. Usage example: Updated 14 hours ago */
 "Updated %ld hours ago" = "%ld 小時前已更新";
 
 /* Singular of 'minute' — date and time string that represents the time interval since last data update when exactly 1 minute ago. Usage example: Updated 1 minute ago */
 "Updated %ld minute ago" = "%ld 分鐘前已更新";
 
-/* Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
+/* A unit test string for a plural time interval in minutes
+   A unit test string for time intervals - Plural of 'minute' — date and time string that represents the time interval since last data update when greater than 1 minute ago. Usage example: Updated 55 minutes ago */
 "Updated %ld minutes ago" = "%ld 分鐘前已更新";
 
-/* Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
+/* A unit test string for relative time intervals
+   Deictic expression for a data update that occurred in the very recent past - similar to 'Updated just now' */
 "Updated moments ago" = "不久前已更新";
 
-/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM */
+/* A specific date and time string which represents when the data was last updated. Usage example: Updated on Jan 22, 2019 3:31PM
+   Updated on <date> */
 "Updated on %@" = "更新日期：%@";
 
-/* Login dialog username placeholder
-   Username placeholder */
+/* Accessibility label for the username text field in the self-hosted login page.
+   Login dialog username placeholder - Username placeholder */
 "Username" = "使用者名稱";
 
 /* No comment provided by engineer. */
 "Username must be at least 4 characters." = "使用者名稱至少必須為 4 個字元。";
+
+/* Product Details > descriptive label for the Product Variants cell.
+   Title that appears on top of the Product Variation List screen. */
+"Variations" = "不同型號";
 
 /* two factor code placeholder */
 "Verification code" = "驗證碼";
@@ -1249,6 +1891,10 @@
 /* View application log cell title */
 "View Application Log" = "檢視應用程式記錄檔";
 
+/* Accessibility label for the 'View Billing Information' button
+   Button on bottom of Customer's information to show the billing details */
+"View Billing Information" = "檢視帳單資訊";
+
 /* The descriptive label. Tapping the row will open the affliate product's link in a web view. */
 "View affiliate product" = "查看附屬商品";
 
@@ -1257,6 +1903,12 @@
 
 /* The descriptive label. Tapping the row will open the product's page in a web view. */
 "View product on store" = "查看商店商品";
+
+/* Accessibility label for the 'View details' refund button */
+"View refund details" = "檢視退款詳細資料";
+
+/* Accessibility label for the '<number> Products' button */
+"View refunded order items" = "檢視已退款的訂單品項";
 
 /* User role badge */
 "Viewer" = "讀者";
@@ -1275,6 +1927,9 @@
 
 /* shown in promotional screens during first launch */
 "Watch readers from around the world read and interact with your site — in real time." = "第一時間看到來自世界各地的讀者閱讀你的網站，並與你的網站互動。";
+
+/* The info of the top banner on Dashboard that indicates new stats is unavailable */
+"We have reverted to the old stats. To use the beta stats, please activate the WooCommerce Admin plugin with version 0.23 or higher" = "我們已回復為舊的統計資料。若要使用 Beta 版統計資料，請啟用 0.23 或更新版本的 WooCommerce Admin 外掛程式";
 
 /* Instructional text on how to open the email containing a magic link. */
 "We sent you a magic signup link! Check your email on this device, and tap the link in the email to finish signing up." = "我們已將神奇註冊連結寄給你！用此裝置查看電子郵件，點選電子郵件中的連結就能完成註冊。";
@@ -1297,8 +1952,20 @@
 /* Plural of 'week' — a statistical unit */
 "Weeks" = "週";
 
+/* Title of the cell in Product Shipping Settings > Weight */
+"Weight" = "重量";
+
 /* Label prefix. Example: 'Weight: 1kg' */
 "Weight:" = "重量：";
+
+/* Format of the weight on the Shipping Settings row - weight[unit] */
+"Weight: %1$@%2$@" = "重量：%1$@%2$@";
+
+/* The info of the Work In Progress top banner on the Products tab */
+"We’re hard at work on this new Products section, so you may see some changes as we get ready for launch 🚀" = "我們正在新產品籌備階段，因此也許會在產品推出前發佈一些變更 🚀";
+
+/* The info of the top banner on Dashboard that indicates new stats is available */
+"We’re rolling out improvements to stats for stores using the WooCommerce Admin plugin" = "我們即將為使用 WooCommerce 管理員外掛程式的商店推出統計資料改善功能";
 
 /* Title of alert helping users understand their site address */
 "What's my site address?" = "我的網站位址是？";
@@ -1309,14 +1976,23 @@
 /* Error message shown when an incorrect two factor code is provided. */
 "Whoops, that's not a valid two-factor verification code. Double-check your code and try again!" = "糟糕，此雙重驗證碼無效。請再次檢查你的驗證碼，然後再試一次！";
 
+/* Title of the cell in Product Shipping Settings > Width */
+"Width" = "寬度";
+
 /* Navigates to about WooCommerce app screen */
 "WooCommerce" = "WooCommerce";
 
 /* Subject of new Zendesk ticket. */
 "WooCommerce for iOS Support" = "iOS 版 WooCommerce 支援";
 
+/* Menu option for selecting media from the site's media library. */
+"WordPress Media Library" = "WordPress 媒體庫";
+
 /* No comment provided by engineer. */
 "WordPress version too old. The site at %1$@ uses WordPress %2$@. We recommend to update to the latest version, or at least %3$@" = "WordPress 版本過舊。網址為 %1$@ 的網站使用 WordPress %2$@。建議更新至最新版本，或至少更新至 %3$@";
+
+/* The title of the Work In Progress top banner on the Products tab */
+"Work in progress!" = "正在籌備階段！";
 
 /* Statistical unit - a single year */
 "Year" = "年";
@@ -1330,12 +2006,6 @@
 /* No comment provided by engineer. */
 "You cannot use that email address to signup. We are having problems with them blocking some of our email. Please use another email provider." = "你無法使用該電子郵件地址註冊。我們無法使用這些電子郵件地址，因為它們會阻擋我們的某些郵件。請使用其他電子郵件供應商。";
 
-/* Title text used on the My Store UI when a user has a _single_ pending order to process. */
-"You have %ld order to fulfill" = "你有 %ld 筆訂單尚未履行";
-
-/* Title text used on the My Store UI when a user has _multiple_ pending orders to process. */
-"You have %ld orders to fulfill" = "你有 %ld 筆訂單尚未履行";
-
 /* No comment provided by engineer. */
 "You seem to have installed a mobile plugin from DudaMobile which is preventing the app to connect to your blog" = "你似乎安裝了 DudaMobile 的行動版外掛程式，導致應用程式無法連接至你的網誌";
 
@@ -1348,6 +2018,9 @@
 /* Body text of alert helping users understand their site address */
 "Your site address appears in the bar at the the top of the screen when you visit your site in Safari." = "當你使用 Safari 造訪自己的網站時，網站位址會顯示在畫面上方的網址列中。";
 
+/* Comment Attachment Label */
+"[COMMENT]" = "[留言]";
+
 /* Backorders status. Example: 'Backorders: allowed' */
 "allowed" = "允許";
 
@@ -1359,6 +2032,9 @@
 
 /* Later today */
 "later today" = "今日稍晚";
+
+/* A manual refund is one where the store owner has given the purchaser alternative funds (cash, check, ACH) instead of using the payment gateway to create a refund (credit card or debit card was refunded) */
+"manual refund" = "手動退款";
 
 /* Backorders status. Example: 'Backorders: not allowed' */
 "not allowed" = "不允許";
@@ -1389,4 +2065,7 @@
 
 /* About View's Footer Text. The variable is the current year */
 "© %@ Automattic, Inc." = "© %@ Automattic, Inc.";
+
+/* Customer note, wrapped in quotes */
+"“%@”" = "「%@」";
 

@@ -1,12 +1,12 @@
 import Foundation
 import WordPressAuthenticator
-import WordPressUI
 import Yosemite
+import struct Networking.Settings
 
 
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
-class AuthenticationManager {
+class AuthenticationManager: Authentication {
 
     /// Store Picker Coordinator
     ///
@@ -19,34 +19,47 @@ class AuthenticationManager {
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: ApiCredentials.dotcomAuthScheme,
                                                                 wpcomTermsOfServiceURL: WooConstants.termsOfServiceUrl.absoluteString,
+                                                                wpcomAPIBaseURL: Settings.wordpressApiBaseURL,
                                                                 googleLoginClientId: ApiCredentials.googleClientId,
                                                                 googleLoginServerClientId: ApiCredentials.googleServerId,
                                                                 googleLoginScheme: ApiCredentials.googleAuthScheme,
                                                                 userAgent: UserAgent.defaultUserAgent)
 
-        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: StyleManager.buttonPrimaryColor,
-                                                primaryNormalBorderColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                primaryHighlightBackgroundColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                primaryHighlightBorderColor: StyleManager.buttonPrimaryHighlightedColor,
-                                                secondaryNormalBackgroundColor: StyleManager.buttonSecondaryColor,
-                                                secondaryNormalBorderColor: StyleManager.buttonSecondaryHighlightedColor,
-                                                secondaryHighlightBackgroundColor: StyleManager.buttonSecondaryHighlightedColor,
-                                                secondaryHighlightBorderColor: StyleManager.buttonSecondaryHighlightedColor,
-                                                disabledBackgroundColor: StyleManager.buttonDisabledColor,
-                                                disabledBorderColor: StyleManager.buttonDisabledHighlightedColor,
-                                                primaryTitleColor: StyleManager.buttonPrimaryTitleColor,
-                                                secondaryTitleColor: StyleManager.buttonSecondaryTitleColor,
-                                                disabledTitleColor: StyleManager.buttonDisabledTitleColor,
-                                                subheadlineColor: StyleManager.wooCommerceBrandColor,
-                                                viewControllerBackgroundColor: StyleManager.wooGreyLight,
-                                                navBarImage: StyleManager.navBarImage)
+        let style = WordPressAuthenticatorStyle(primaryNormalBackgroundColor: .primaryButtonBackground,
+                                                primaryNormalBorderColor: .primaryButtonDownBackground,
+                                                primaryHighlightBackgroundColor: .primaryButtonDownBackground,
+                                                primaryHighlightBorderColor: .primaryButtonDownBorder,
+                                                secondaryNormalBackgroundColor: .secondaryButtonBackground,
+                                                secondaryNormalBorderColor: .secondaryButtonBorder,
+                                                secondaryHighlightBackgroundColor: .secondaryButtonDownBackground,
+                                                secondaryHighlightBorderColor: .secondaryButtonDownBorder,
+                                                disabledBackgroundColor: .buttonDisabledBackground,
+                                                disabledBorderColor: .gray(.shade30),
+                                                primaryTitleColor: .primaryButtonTitle,
+                                                secondaryTitleColor: .secondaryButtonTitle,
+                                                disabledTitleColor: .textSubtle,
+                                                textButtonColor: .accent,
+                                                textButtonHighlightColor: .accentDark,
+                                                instructionColor: .textSubtle,
+                                                subheadlineColor: .systemColor(.secondaryLabel),
+                                                placeholderColor: .placeholderImage,
+                                                viewControllerBackgroundColor: .listBackground,
+                                                textFieldBackgroundColor: .listForeground,
+                                                navBarImage: StyleManager.navBarImage,
+                                                navBarBadgeColor: .primary)
 
         let displayStrings = WordPressAuthenticatorDisplayStrings(emailLoginInstructions: AuthenticationConstants.emailInstructions,
                                                      jetpackLoginInstructions: AuthenticationConstants.jetpackInstructions,
                                                      siteLoginInstructions: AuthenticationConstants.siteInstructions)
 
+        let displayImages = WordPressAuthenticatorDisplayImages(
+            magicLink: .loginMagicLinkImage,
+            siteAddressModalPlaceholder: .loginSiteAddressInfoImage
+        )
+
         WordPressAuthenticator.initialize(configuration: configuration,
                                           style: style,
+                                          displayImages: displayImages,
                                           displayStrings: displayStrings)
         WordPressAuthenticator.shared.delegate = self
     }
@@ -56,6 +69,7 @@ class AuthenticationManager {
     func displayAuthentication(from presenter: UIViewController) {
         let prologueViewController = LoginPrologueViewController()
         let navigationController = LoginNavigationController(rootViewController: prologueViewController)
+        navigationController.modalPresentationStyle = .fullScreen
 
         presenter.present(navigationController, animated: true, completion: nil)
     }
@@ -93,6 +107,9 @@ class AuthenticationManager {
 // MARK: - WordPressAuthenticator Delegate
 //
 extension AuthenticationManager: WordPressAuthenticatorDelegate {
+    func userAuthenticatedWithAppleUserID(_ appleUserID: String) {
+        // Sign in with Apple is not supported yet.
+    }
 
     var allowWPComLogin: Bool {
         return true
@@ -136,7 +153,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         let isSelfHosted = false
 
         guard let site = siteInfo, site.hasJetpack == true else {
-            let errorInfo = NSLocalizedString("Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.", comment: "Error message that displays on the 'Log in by entering your site address.' screen. Jetpack is required for logging into the WooCommerce mobile apps.")
+            let errorInfo = NSLocalizedString(
+                "Looks like your site isn't set up to use this app. Make sure your site has Jetpack installed to continue.",
+                comment: "Error message that displays on the 'Log in by entering your site address.' screen. " +
+                "Jetpack is required for logging into the WooCommerce mobile apps.")
             let error = NSError(domain: "WooCommerceAuthenticationErrorDomain",
                                 code: 555,
                                 userInfo: [NSLocalizedDescriptionKey: errorInfo])
@@ -203,18 +223,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             fatalError("Self Hosted sites are not supported. Please review the Authenticator settings!")
         }
 
-        StoresManager.shared.authenticate(credentials: .init(authToken: wpcom.authToken))
+        ServiceLocator.stores.authenticate(credentials: .init(authToken: wpcom.authToken))
         let action = AccountAction.synchronizeAccount { (account, error) in
             if let account = account {
                 let credentials = Credentials(username: account.username, authToken: wpcom.authToken, siteAddress: wpcom.siteURL)
-                StoresManager.shared
+                ServiceLocator.stores
                     .authenticate(credentials: credentials)
                     .synchronizeEntities(onCompletion: onCompletion)
             } else {
-                StoresManager.shared.synchronizeEntities(onCompletion: onCompletion)
+                ServiceLocator.stores.synchronizeEntities(onCompletion: onCompletion)
             }
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Tracks a given Analytics Event.
@@ -224,7 +244,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        WooAnalytics.shared.track(wooEvent)
+        ServiceLocator.analytics.track(wooEvent)
     }
 
     /// Tracks a given Analytics Event, with the specified properties.
@@ -234,7 +254,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        WooAnalytics.shared.track(wooEvent, withProperties: properties)
+        ServiceLocator.analytics.track(wooEvent, withProperties: properties)
     }
 
     /// Tracks a given Analytics Event, with the specified error.
@@ -244,6 +264,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             DDLogWarn("⚠️ Could not convert WPAnalyticsStat with value: \(event.rawValue)")
             return
         }
-        WooAnalytics.shared.track(wooEvent, withError: error)
+        ServiceLocator.analytics.track(wooEvent, withError: error)
     }
 }

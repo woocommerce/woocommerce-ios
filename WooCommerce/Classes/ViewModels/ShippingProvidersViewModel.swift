@@ -13,6 +13,11 @@ final class ShippingProvidersViewModel {
     let title = NSLocalizedString("Shipping Providers",
                                   comment: "Title of view displaying all available Shipment Tracking Providers")
 
+    /// The currently selected tracking provider.
+    private let selectedProvider: ShipmentTrackingProvider?
+    /// The currently selected tracking provider's group name.
+    private let selectedProviderGroupName: String?
+
     // MARK: - Store country
 
     /// Encapsulates the logic to figure out the current store's country
@@ -53,7 +58,7 @@ final class ShippingProvidersViewModel {
     /// ResultsController to fetch the list of shipment providers,
     /// excluding the store country
     private lazy var providersExcludingStoreCountry: ResultsController<StorageShipmentTrackingProvider> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
         let excludingStoreCountry = predicateExcludingStoreCountry(predicate: ResultsControllerConstants.predicateForAllProviders)
@@ -72,7 +77,7 @@ final class ShippingProvidersViewModel {
     /// Results controller, to fetch the list of shipment providers
     /// correspoding to the store country
     private lazy var providersForStoreCountry: ResultsController<StorageShipmentTrackingProvider> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let groupNameKeyPath = ResultsControllerConstants.groupNameKeyPath
         let providerNameKeyPath = ResultsControllerConstants.providerNameKeyPath
 
@@ -105,8 +110,10 @@ final class ShippingProvidersViewModel {
 
     /// Designated initializer
     ///
-    init(order: Order) {
+    init(order: Order, selectedProvider: ShipmentTrackingProvider?, selectedProviderGroupName: String?) {
         self.order = order
+        self.selectedProvider = selectedProvider
+        self.selectedProviderGroupName = selectedProviderGroupName
     }
 
     /// Setup: Results Controller
@@ -247,6 +254,19 @@ extension ShippingProvidersViewModel {
             .name
     }
 
+    /// Indicates if the item at `indexPath` is the same as the currently selected provider.
+    func isSelected(_ indexPath: IndexPath) -> Bool {
+        guard let selectedProvider = selectedProvider,
+            let selectedProviderGroupName = selectedProviderGroupName,
+            let provider = provider(at: indexPath),
+            let groupName = groupName(at: indexPath) else {
+            return false
+        }
+
+        return provider.name == selectedProvider.name &&
+            groupName == selectedProviderGroupName
+    }
+
     private func storeCountrySection() -> ResultsController<StorageShipmentTrackingProvider>.SectionInfo? {
         return providersForStoreCountry
             .sections.first
@@ -278,7 +298,7 @@ extension ShippingProvidersViewModel {
             indexPath.section == Constants.countrySectionIndex {
             return storeCountrySection()?.name
         }
-        return providersExcludingStoreCountry.sections[indexPath.section - delta()].name
+        return providersExcludingStoreCountry.sections[safe: indexPath.section - delta()]?.name
     }
 
     /// Returns the ShipmentTrackingProvider at a given IndexPath
@@ -292,7 +312,10 @@ extension ShippingProvidersViewModel {
             return provider
         }
 
-        let group = providersExcludingStoreCountry.sections[indexPath.section - delta()]
+        guard let group = providersExcludingStoreCountry.sections[safe: indexPath.section - delta()] else {
+            return nil
+        }
+
         let provider = group.objects[indexPath.item]
 
         return provider
@@ -309,7 +332,7 @@ extension ShippingProvidersViewModel {
 private enum ResultsControllerConstants {
     static let predicateForAllProviders =
         NSPredicate(format: "siteID == %lld",
-                    StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+                    ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     static let groupNameKeyPath =
         #keyPath(StorageShipmentTrackingProvider.group.name)
     static let providerNameKeyPath = #keyPath(StorageShipmentTrackingProvider.name)

@@ -73,8 +73,9 @@ class StoreTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        nameLabel.textColor = StyleManager.wooSecondary
-        urlLabel.textColor = StyleManager.wooSecondary
+        configureBackground()
+        configureNameLabel()
+        configureUrlLabel()
     }
 
     /// Displays (or hides) the Checkmark ContainerView, based on the `allowsCheckmark` property.
@@ -87,5 +88,22 @@ class StoreTableViewCell: UITableViewCell {
     ///
     private func refreshCheckmarkImage() {
         checkmarkImageView.image = displaysCheckmark ? .checkmarkStyledImage : nil
+    }
+}
+
+
+private extension StoreTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureNameLabel() {
+        nameLabel.textColor = .text
+        nameLabel.accessibilityIdentifier = "name-label"
+    }
+
+    func configureUrlLabel() {
+        urlLabel.textColor = .textSubtle
+        urlLabel.accessibilityIdentifier = "url-label"
     }
 }

@@ -25,6 +25,10 @@ final class ProductDetailsViewModel {
         }
     }
 
+    /// Yosemite.Order.currency
+    ///
+    let currency: String
+
     /// Nav bar title
     ///
     var title: String {
@@ -47,7 +51,7 @@ final class ProductDetailsViewModel {
 
     /// Product ID
     ///
-    var productID: Int {
+    var productID: Int64 {
         return product.productID
     }
 
@@ -60,16 +64,16 @@ final class ProductDetailsViewModel {
     /// EntityListener: Update / Deletion Notifications.
     ///
     private lazy var entityListener: EntityListener<Product> = {
-        return EntityListener(storageManager: AppDelegate.shared.storageManager,
+        return EntityListener(storageManager: ServiceLocator.storageManager,
                               readOnlyEntity: product)
     }()
 
     /// ResultsController for `WC > Settings > Products > General` from the site.
     ///
     private lazy var resultsController: ResultsController<StorageSiteSetting> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
 
-        let sitePredicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
+        let sitePredicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
         let settingTypePredicate = NSPredicate(format: "settingGroupKey ==[c] %@", SiteSettingGroup.product.rawValue)
         let predicate = NSCompoundPredicate(andPredicateWithSubpredicates: [sitePredicate, settingTypePredicate])
 
@@ -92,28 +96,6 @@ final class ProductDetailsViewModel {
     ///
     var dimensionUnit: String?
 
-    /// Grab the first available image for a product.
-    ///
-    private var imageURL: URL? {
-        guard let productImageURLString = product.images.first?.src else {
-            return nil
-        }
-
-        return URL(string: productImageURLString)
-    }
-
-    /// Check to see if the product has an image URL.
-    ///
-    private var productHasImage: Bool {
-        return imageURL != nil
-    }
-
-    /// Product image height.
-    ///
-    private var productImageHeight: CGFloat {
-        return productHasImage ? Metrics.productImageHeight : Metrics.emptyProductImageHeight
-    }
-
     /// Table section height.
     ///
     var sectionHeight: CGFloat {
@@ -130,13 +112,15 @@ final class ProductDetailsViewModel {
     ///
     private var currencyFormatter = CurrencyFormatter()
 
+    private let productUIImageLoader = DefaultProductUIImageLoader()
 
     // MARK: - Intializers
 
     /// Designated initializer.
     ///
-    init(product: Product) {
+    init(product: Product, currency: String) {
         self.product = product
+        self.currency = currency
 
         refreshResultsController()
     }
@@ -194,8 +178,6 @@ extension ProductDetailsViewModel {
 
     func heightForRow(at indexPath: IndexPath) -> CGFloat {
         switch rowAtIndexPath(indexPath) {
-        case .productPhoto:
-            return productImageHeight
         default:
             return UITableView.automaticDimension
         }
@@ -252,8 +234,8 @@ extension ProductDetailsViewModel {
 
     func configure(_ cell: UITableViewCell, for row: Row, at indexPath: IndexPath) {
         switch cell {
-        case let cell as LargeImageTableViewCell:
-            configureProductImage(cell)
+        case let cell as ProductImagesHeaderTableViewCell:
+            configureProductImages(cell)
         case let cell as TitleBodyTableViewCell where row == .productName:
             configureProductName(cell)
         case let cell as TwoColumnTableViewCell where row == .totalOrders:
@@ -264,6 +246,8 @@ extension ProductDetailsViewModel {
             configurePermalink(cell)
         case let cell as WooBasicTableViewCell where row == .affiliateLink:
             configureAffiliateLink(cell)
+        case let cell as TitleBodyTableViewCell where row == .productVariants:
+            configureProductVariants(cell)
         case let cell as TitleBodyTableViewCell where row == .price:
             configurePrice(cell)
         case let cell as TitleBodyTableViewCell where row == .inventory:
@@ -283,23 +267,13 @@ extension ProductDetailsViewModel {
         }
     }
 
-    /// Product Image cell.
+    /// Product Images cell.
     ///
-    func configureProductImage(_ cell: LargeImageTableViewCell) {
-        guard let mainImageView = cell.mainImageView else {
-            return
-        }
-
-        if productHasImage {
-            cell.heightConstraint.constant = Metrics.productImageHeight
-            mainImageView.downloadImage(from: imageURL, placeholderImage: UIImage.productPlaceholderImage)
-        }
-
-        if product.productStatus != .publish {
-            cell.textBadge?.applyPaddedLabelSubheadStyles()
-            cell.textBadge?.layer.backgroundColor = StyleManager.defaultTextColor.cgColor
-            cell.textBadge?.textColor = StyleManager.wooWhite
-            cell.textBadge?.text = product.productStatus.description
+    func configureProductImages(_ cell: ProductImagesHeaderTableViewCell) {
+        let productImageStatuses = product.imageStatuses
+        cell.configure(with: productImageStatuses, config: .images, productUIImageLoader: productUIImageLoader)
+        cell.onImageSelected = { (productImage, indexPath) in
+            // TODO: open image detail
         }
     }
 
@@ -344,6 +318,7 @@ extension ProductDetailsViewModel {
     func configurePermalink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View product on store",
                                                  comment: "The descriptive label. Tapping the row will open the product's page in a web view.")
+        cell.applyActionableStyle()
         cell.accessoryImage = .externalImage
     }
 
@@ -352,7 +327,24 @@ extension ProductDetailsViewModel {
     func configureAffiliateLink(_ cell: WooBasicTableViewCell) {
         cell.bodyLabel?.text = NSLocalizedString("View affiliate product",
                                                  comment: "The descriptive label. Tapping the row will open the affliate product's link in a web view.")
+        cell.applyActionableStyle()
         cell.accessoryImage = .externalImage
+    }
+
+    /// Product variants cell.
+    ///
+    func configureProductVariants(_ cell: TitleBodyTableViewCell) {
+        cell.titleLabel?.text = NSLocalizedString("Variations", comment: "Product Details > descriptive label for the Product Variants cell.")
+
+        let attributes = product.attributes
+
+        let format = NSLocalizedString("%1$@ (%2$ld options)", comment: "Format for each Product attribute")
+        let bodyText = attributes
+            .map({ String.localizedStringWithFormat(format, $0.name, $0.options.count) })
+            .joined(separator: "\n")
+        cell.bodyLabel.text = bodyText
+
+        cell.accessoryType = .disclosureIndicator
     }
 
     /// Price cell.
@@ -365,17 +357,18 @@ extension ProductDetailsViewModel {
             let salePrice = product.salePrice, !salePrice.isEmpty {
             let regularPricePrefix = NSLocalizedString("Regular price:",
                                                        comment: "A descriptive label prefix. Example: 'Regular price: $20.00'")
-            let regularPriceFormatted = currencyFormatter.formatAmount(regularPrice) ?? ""
+
+            let regularPriceFormatted = currencyFormatter.formatAmount(regularPrice, with: currency) ?? String()
             let bodyText = regularPricePrefix + " " + regularPriceFormatted
 
             let salePricePrefix = NSLocalizedString("Sale price:",
                                                     comment: "A descriptive label prefix. Example: 'Sale price: $18.00'")
-            let salePriceFormatted = currencyFormatter.formatAmount(salePrice) ?? ""
+            let salePriceFormatted = currencyFormatter.formatAmount(salePrice, with: currency) ?? String()
             let secondLineText = salePricePrefix + " " + salePriceFormatted
 
             cell.bodyLabel?.text = bodyText + "\n" + secondLineText
         } else {
-            cell.bodyLabel?.text = product.price.isEmpty ? "--" : currencyFormatter.formatAmount(product.price)
+            cell.bodyLabel?.text = product.price.isEmpty ? "--" : currencyFormatter.formatAmount(product.price, with: currency)
         }
     }
 
@@ -582,21 +575,10 @@ extension ProductDetailsViewModel {
     /// Rebuild the section struct.
     ///
     func reloadSections() {
-        let photo = configurePhoto()
         let summary = configureSummary()
         let pricingAndInventory = configurePricingAndInventory()
         let purchaseDetails = configurePurchaseDetails()
-        sections = [photo, summary, pricingAndInventory, purchaseDetails].compactMap { $0 }
-    }
-
-    /// Large photo section.
-    ///
-    func configurePhoto() -> Section? {
-        if !productHasImage && product.productStatus == .publish {
-            return nil
-        }
-
-        return Section(row: .productPhoto)
+        sections = [summary, pricingAndInventory, purchaseDetails].compactMap { $0 }
     }
 
     /// Summary section.
@@ -607,14 +589,29 @@ extension ProductDetailsViewModel {
             return Section(rows: affiliateRows)
         }
 
-        let rows: [Row] = [.productName, .totalOrders, .reviews, .permalink]
+        var rows = [Row]()
+
+        // Product Images row
+        if product.images.count > 0 {
+            rows.append(.productImages)
+        }
+
+        if shouldShowProductVariantsInfo() {
+            rows += [.productName, .totalOrders, .reviews, .productVariants, .permalink]
+        } else {
+            rows += [.productName, .totalOrders, .reviews, .permalink]
+        }
 
         return Section(rows: rows)
     }
 
     /// Pricing and Inventory Section.
     ///
-    func configurePricingAndInventory() -> Section {
+    func configurePricingAndInventory() -> Section? {
+        guard shouldShowProductVariantsInfo() == false else {
+            return nil
+        }
+
         // For grouped products
         if product.productType == .grouped {
             return groupedProductInventorySection()
@@ -635,7 +632,7 @@ extension ProductDetailsViewModel {
         let title = NSLocalizedString("Purchase Details",
                                       comment: "Product Details - purchase details section title")
         switch product.productType {
-        case .simple, .variable, .custom(_):
+        case .simple, .variable, .custom:
             var rows = [Row]()
 
             // downloadable and a download is specified
@@ -722,6 +719,11 @@ extension ProductDetailsViewModel {
             WebviewHelper.launch(product.permalink, with: sender)
         case .affiliateLink:
             WebviewHelper.launch(product.externalURL, with: sender)
+        case .productVariants:
+            ServiceLocator.analytics.track(.productDetailsProductVariantsTapped)
+            let variationsViewController = ProductVariationsViewController(siteID: product.siteID,
+                                                                           productID: product.productID)
+            sender.navigationController?.pushViewController(variationsViewController, animated: true)
         default:
             break
         }
@@ -745,7 +747,18 @@ extension ProductDetailsViewModel {
             onCompletion?(nil)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
+    }
+}
+
+
+// MARK: - Variants Helpers
+//
+private extension ProductDetailsViewModel {
+    func shouldShowProductVariantsInfo() -> Bool {
+        let isFeatureEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.readonlyProductVariants)
+        let hasVariations = product.variations.isEmpty == false
+        return isFeatureEnabled && hasVariations
     }
 }
 
@@ -777,10 +790,11 @@ extension ProductDetailsViewModel {
     /// Table rows are organized in the order they appear in the UI.
     ///
     enum Row {
-        case productPhoto
+        case productImages
         case productName
         case totalOrders
         case reviews
+        case productVariants
         case permalink
         case affiliateLink
         case price
@@ -793,14 +807,16 @@ extension ProductDetailsViewModel {
 
         var reuseIdentifier: String {
             switch self {
-            case .productPhoto:
-                return LargeImageTableViewCell.reuseIdentifier
+            case .productImages:
+                return ProductImagesHeaderTableViewCell.reuseIdentifier
             case .productName:
                 return TitleBodyTableViewCell.reuseIdentifier
             case .totalOrders:
                 return TwoColumnTableViewCell.reuseIdentifier
             case .reviews:
                 return ProductReviewsTableViewCell.reuseIdentifier
+            case .productVariants:
+                return TitleBodyTableViewCell.reuseIdentifier
             case .permalink:
                 return WooBasicTableViewCell.reuseIdentifier
             case .affiliateLink:
@@ -828,8 +844,6 @@ extension ProductDetailsViewModel {
     enum Metrics {
         static let estimatedRowHeight = CGFloat(86)
         static let sectionHeight = CGFloat(44)
-        static let productImageHeight = CGFloat(374)
-        static let emptyProductImageHeight = CGFloat(86)
     }
 
     enum Keys {

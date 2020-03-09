@@ -14,14 +14,19 @@ public class SiteVisitStatsRemote: Remote {
     ///   - quantity: How many `unit`s to fetch
     ///   - completion: Closure to be executed upon completion.
     ///
-    public func loadSiteVisitorStats(for siteID: Int,
+    public func loadSiteVisitorStats(for siteID: Int64,
+                                     siteTimezone: TimeZone? = nil,
                                      unit: StatGranularity,
                                      latestDateToInclude: Date,
                                      quantity: Int,
                                      completion: @escaping (SiteVisitStats?, Error?) -> Void) {
         let path = "\(Constants.sitesPath)/\(siteID)/\(Constants.siteVisitStatsPath)/"
+        let dateFormatter = DateFormatter.Stats.statsDayFormatter
+        if let siteTimezone = siteTimezone {
+            dateFormatter.timeZone = siteTimezone
+        }
         let parameters = [ParameterKeys.unit: unit.rawValue,
-                          ParameterKeys.date: DateFormatter.Stats.statsDayFormatter.string(from: latestDateToInclude),
+                          ParameterKeys.date: dateFormatter.string(from: latestDateToInclude),
                           ParameterKeys.quantity: String(quantity),
                           ParameterKeys.statFields: Constants.visitorStatFieldValue]
         let request = DotcomRequest(wordpressApiVersion: .mark1_1, method: .get, path: path, parameters: parameters)

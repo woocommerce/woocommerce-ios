@@ -1,1 +1,2 @@
-Get real-time order alerts
+Review order details
+and payments

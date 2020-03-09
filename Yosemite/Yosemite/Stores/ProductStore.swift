@@ -32,10 +32,16 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
+        case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
+            searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .requestMissingProducts(let order, let onCompletion):
             requestMissingProducts(for: order, onCompletion: onCompletion)
+        case .updateProduct(let product, let onCompletion):
+            updateProduct(product: product, onCompletion: onCompletion)
+        case .validateProductSKU(let sku, let siteID, let onCompletion):
+            validateProductSKU(sku, siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -56,15 +62,44 @@ private extension ProductStore {
         onCompletion()
     }
 
-    /// Synchronizes the products associated with a given Site ID (if any!).
+    /// Searches all of the products that contain a given Keyword.
     ///
-    func synchronizeProducts(siteID: Int, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+    func searchProducts(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
+        let remote = ProductsRemote(network: network)
+        remote.searchProducts(for: siteID,
+                              keyword: keyword,
+                              pageNumber: pageNumber,
+                              pageSize: pageSize) { [weak self] (products, error) in
+                                guard let products = products else {
+                                    onCompletion(error)
+                                    return
+                                }
+
+                                self?.upsertSearchResultsInBackground(siteID: siteID,
+                                                                      keyword: keyword,
+                                                                      readOnlyProducts: products) {
+                                    onCompletion(nil)
+                                }
+        }
+    }
+
+    /// Synchronizes the products associated with a given Site ID, sorted by ascending name.
+    ///
+    func synchronizeProducts(siteID: Int64, pageNumber: Int, pageSize: Int, onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
-        remote.loadAllProducts(for: siteID, pageNumber: pageNumber, pageSize: pageSize) { [weak self] (products, error) in
+        remote.loadAllProducts(for: siteID,
+                               pageNumber: pageNumber,
+                               pageSize: pageSize,
+                               orderBy: .name,
+                               order: .ascending) { [weak self] (products, error) in
             guard let products = products else {
                 onCompletion(error)
                 return
+            }
+
+            if pageNumber == Default.firstPageNumber {
+                self?.deleteStoredProducts(siteID: siteID)
             }
 
             self?.upsertStoredProductsInBackground(readOnlyProducts: products) {
@@ -76,11 +111,11 @@ private extension ProductStore {
     /// Synchronizes the Products found in a specified Order.
     ///
     func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
-        let itemIDs = order.items.map { $0.itemID }
+        let itemIDs = order.items.map { $0.productID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
         let storage = storageManager.viewStorage
-        var missingIDs = [Int]()
+        var missingIDs = [Int64]()
         for productID in productIDs {
             let storageProduct = storage.loadProduct(siteID: order.siteID, productID: productID)
             if storageProduct == nil {
@@ -104,8 +139,8 @@ private extension ProductStore {
     /// Retrieves multiple products with a given siteID + productIDs.
     /// - Note: This is NOT a wrapper for retrieving a single product.
     ///
-    func retrieveProducts(siteID: Int,
-                          productIDs: [Int],
+    func retrieveProducts(siteID: Int64,
+                          productIDs: [Int64],
                           onCompletion: @escaping (Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
@@ -123,7 +158,7 @@ private extension ProductStore {
 
     /// Retrieves the product associated with a given siteID + productID (if any!).
     ///
-    func retrieveProduct(siteID: Int, productID: Int, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
+    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Networking.Product?, Error?) -> Void) {
         let remote = ProductsRemote(network: network)
 
         remote.loadProduct(for: siteID, productID: productID) { [weak self] (product, error) in
@@ -140,6 +175,43 @@ private extension ProductStore {
             }
         }
     }
+
+    /// Updates the product.
+    ///
+    func updateProduct(product: Product, onCompletion: @escaping (Product?, ProductUpdateError?) -> Void) {
+        let remote = ProductsRemote(network: network)
+
+        remote.updateProduct(product: product) { [weak self] (product, error) in
+            guard let product = product else {
+                onCompletion(nil, error.map({ ProductUpdateError(error: $0) }))
+                return
+            }
+
+            self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) {
+                onCompletion(product, nil)
+            }
+        }
+    }
+
+    /// Validates the Product SKU against other Products in storage.
+    ///
+    func validateProductSKU(_ sku: String?, siteID: Int64, onCompletion: @escaping (Bool) -> Void) {
+        guard let sku = sku, sku.isEmpty == false else {
+            // It is valid to not have a sku.
+            onCompletion(true)
+            return
+        }
+
+        let remote = ProductsRemote(network: network)
+        remote.searchSku(for: siteID, sku: sku) { (result, error) in
+            guard error == nil else {
+                onCompletion(true)
+                return
+            }
+            let isValid = (result != nil && result == sku) ? false : true
+            onCompletion(isValid)
+        }
+    }
 }
 
 
@@ -149,13 +221,21 @@ private extension ProductStore {
 
     /// Deletes any Storage.Product with the specified `siteID` and `productID`
     ///
-    func deleteStoredProduct(siteID: Int, productID: Int) {
+    func deleteStoredProduct(siteID: Int64, productID: Int64) {
         let storage = storageManager.viewStorage
         guard let product = storage.loadProduct(siteID: siteID, productID: productID) else {
             return
         }
 
         storage.deleteObject(product)
+        storage.saveIfNeeded()
+    }
+
+    /// Deletes any Storage.Product with the specified `siteID`
+    ///
+    func deleteStoredProducts(siteID: Int64) {
+        let storage = storageManager.viewStorage
+        storage.deleteProducts(siteID: siteID)
         storage.saveIfNeeded()
     }
 
@@ -185,6 +265,7 @@ private extension ProductStore {
                 storage.insertNewObject(ofType: Storage.Product.self)
 
             storageProduct.update(with: readOnlyProduct)
+            handleProductShippingClass(storageProduct: storageProduct, storage)
             handleProductDimensions(readOnlyProduct, storageProduct, storage)
             handleProductAttributes(readOnlyProduct, storageProduct, storage)
             handleProductDefaultAttributes(readOnlyProduct, storageProduct, storage)
@@ -203,6 +284,17 @@ private extension ProductStore {
             let newStorageDimensions = storage.insertNewObject(ofType: Storage.ProductDimensions.self)
             newStorageDimensions.update(with: readOnlyProduct.dimensions)
             storageProduct.dimensions = newStorageDimensions
+        }
+    }
+
+    /// Updates the provided StorageProduct's productShippingClass using the existing `ProductShippingClass` in storage, if any
+    ///
+    func handleProductShippingClass(storageProduct: Storage.Product, _ storage: StorageType) {
+        if let existingStorageShippingClass = storage.loadProductShippingClass(siteID: storageProduct.siteID,
+                                                                               remoteID: storageProduct.shippingClassID) {
+            storageProduct.productShippingClass = existingStorageShippingClass
+        } else {
+            storageProduct.productShippingClass = nil
         }
     }
 
@@ -268,29 +360,19 @@ private extension ProductStore {
     /// Updates, inserts, or prunes the provided StorageProduct's images using the provided read-only Product's images
     ///
     func handleProductImages(_ readOnlyProduct: Networking.Product, _ storageProduct: Storage.Product, _ storage: StorageType) {
-        let siteID = readOnlyProduct.siteID
-        let productID = readOnlyProduct.productID
+        // Removes all the images first.
+        storageProduct.imagesArray.forEach { existingStorageImage in
+            storage.deleteObject(existingStorageImage)
+        }
 
-        // Upsert the images from the read-only product
+        // Inserts the images from the read-only product variation.
+        var storageImages = [StorageProductImage]()
         for readOnlyImage in readOnlyProduct.images {
-            if let existingStorageImage = storage.loadProductImage(siteID: siteID,
-                                                                   productID: productID,
-                                                                   imageID: readOnlyImage.imageID) {
-                existingStorageImage.update(with: readOnlyImage)
-            } else {
-                let newStorageImage = storage.insertNewObject(ofType: Storage.ProductImage.self)
-                newStorageImage.update(with: readOnlyImage)
-                storageProduct.addToImages(newStorageImage)
-            }
+            let newStorageImage = storage.insertNewObject(ofType: Storage.ProductImage.self)
+            newStorageImage.update(with: readOnlyImage)
+            storageImages.append(newStorageImage)
         }
-
-        // Now, remove any objects that exist in storageProduct.images but not in readOnlyProduct.images
-        storageProduct.images?.forEach { storageImage in
-            if readOnlyProduct.images.first(where: { $0.imageID == storageImage.imageID } ) == nil {
-                storageProduct.removeFromImages(storageImage)
-                storage.deleteObject(storageImage)
-            }
-        }
+        storageProduct.images = NSOrderedSet(array: storageImages)
     }
 
     /// Updates, inserts, or prunes the provided StorageProduct's categories using the provided read-only Product's categories
@@ -351,6 +433,41 @@ private extension ProductStore {
 }
 
 
+// MARK: - Storage: Search Results
+//
+private extension ProductStore {
+
+    /// Upserts the Products, and associates them to the SearchResults Entity (in Background)
+    ///
+    private func upsertSearchResultsInBackground(siteID: Int64, keyword: String, readOnlyProducts: [Networking.Product], onCompletion: @escaping () -> Void) {
+        let derivedStorage = sharedDerivedStorage
+        derivedStorage.perform { [weak self] in
+            self?.upsertStoredProducts(readOnlyProducts: readOnlyProducts, in: derivedStorage)
+            self?.upsertStoredResults(siteID: siteID, keyword: keyword, readOnlyProducts: readOnlyProducts, in: derivedStorage)
+        }
+
+        storageManager.saveDerivedType(derivedStorage: derivedStorage) {
+            DispatchQueue.main.async(execute: onCompletion)
+        }
+    }
+
+    /// Upserts the Products, and associates them to the Search Results Entity (in the specified Storage)
+    ///
+    private func upsertStoredResults(siteID: Int64, keyword: String, readOnlyProducts: [Networking.Product], in storage: StorageType) {
+        let searchResults = storage.loadProductSearchResults(keyword: keyword) ?? storage.insertNewObject(ofType: Storage.ProductSearchResults.self)
+        searchResults.keyword = keyword
+
+        for readOnlyProduct in readOnlyProducts {
+            guard let storedProduct = storage.loadProduct(siteID: siteID, productID: readOnlyProduct.productID) else {
+                continue
+            }
+
+            searchResults.addToProducts(storedProduct)
+        }
+    }
+}
+
+
 // MARK: - Unit Testing Helpers
 //
 extension ProductStore {
@@ -359,5 +476,45 @@ extension ProductStore {
     ///
     func upsertStoredProduct(readOnlyProduct: Networking.Product, in storage: StorageType) {
         upsertStoredProducts(readOnlyProducts: [readOnlyProduct], in: storage)
+    }
+}
+
+/// An error that occurs while updating a Product.
+///
+/// - duplicatedSKU: the SKU is used by another Product.
+/// - invalidSKU: the SKU is invalid or duplicated.
+/// - unknown: other error cases.
+///
+public enum ProductUpdateError: Error {
+    case duplicatedSKU
+    case invalidSKU
+    case unknown
+
+    init(error: Error) {
+        guard let dotcomError = error as? DotcomError else {
+            self = .unknown
+            return
+        }
+        switch dotcomError {
+        case .unknown(let code, _):
+            guard let errorCode = ErrorCode(rawValue: code) else {
+                self = .unknown
+                return
+            }
+            self = errorCode.error
+        default:
+            self = .unknown
+        }
+    }
+
+    private enum ErrorCode: String {
+        case invalidSKU = "product_invalid_sku"
+
+        var error: ProductUpdateError {
+            switch self {
+            case .invalidSKU:
+                return .invalidSKU
+            }
+        }
     }
 }

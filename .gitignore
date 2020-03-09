@@ -73,11 +73,25 @@ Carthage/Build
 fastlane/report.xml
 fastlane/Preview.html
 fastlane/screenshots
+fastlane/promo_screenshots
 fastlane/test_output
-fastlane/README.md 
+fastlane/README.md
+fastlane/logs
 Preview.html
+default.profraw
 
 \.DS_Store
 
 # Ignore Local Configuration files (like the ones used for Fastlane)
 .env
+
+# All secrets should be stored under .configure-files
+# Everything without a .enc extension is ignored
+.configure-files/*
+!.configure-files/*.enc
+
+# Can't imagine ever needing to commit one of these
+*.bak
+
+# WireMock (UI Tests)
+WooCommerce/WooCommerceScreenshots/Mocks/vendor/

@@ -2,6 +2,69 @@
 
 This file documents changes in the WCiOS Storage data model. Please explain any changes to the data model as well as any custom migrations.
 
+## Model 26 (Release 3.5.0.0)
+- @jaclync 2019-01-14
+- Update `Product`'s `images` relationship to be ordered
+
+## Model 25 (Release 3.4.0.0)
+- @pmusolino 2019-01-7
+- Add `gmtOffset` attribute to `Site` entity
+
+## Model 24 (Release 3.3.0.0)
+- @jaclync 2019-12-2
+- New `ProductShippingClass` entity
+- Add `dateOnSaleStart` attribute to `Product` entity
+- Add `dateOnSaleEnd` attribute to `Product` entity
+- New `TaxClass` entity
+
+## Model 23 (Release 3.2.0.0)
+- @jaclync 2019-11-15
+- New `Attribute` entity
+- New `ProductVariation` entity
+- New `Product.productVariations` relationship
+
+## Model 22 (Release 3.1.0.0)
+- @pmusolino 2019-11-4
+- New `ShippingLine` entity
+- New `Order.shippingLines` relationship
+
+## Model 21 (Release 2.9.0.0)
+- @mindgraffiti 2019-10-11
+- New `OrderItemTax` entity
+- New `OrderItemTaxRefund` entity
+- New `OrderItem.taxes` relationship
+- New `OrderItemRefund` entity
+- New `OrderItemRefund.taxes` relationship
+- New `Refund` entity
+- New `Refund.items` relationship
+
+## Model 20 (Release 2.8.0.0)
+- @jaclync 2019-09-17
+- New `ProductSearchResults` entity
+- New `Product.searchResults` relationship
+
+- @ctarda 2019-09-24
+- Add `reviewerAvatarURL` to `ProductReview` entity
+
+- @mindgraffiti 2019-09-27
+- New `OrderRefundCondensed` entity
+- New `Order.refunds` relationship
+
+## Model 19 (Release 2.6.0.0)
+- @ctarda 2019-08-21
+- Add `ProductReview` entity
+
+- @jaclync 2019-08-14
+- Add `timezone` attribute to `Site` entity
+
+- @jaclync 2019-08-06
+- Add `timeRange` attribute to `OrderStatsV4` entity
+
+## Model 18 (Release 2.5.0.0)
+- @ctarda 2019-07-30
+    - Add `OrderCount` entity
+    - Add `OrderCountItem` entity
+
 ## Model 17 (Release 2.3.0.0)
 - @ctarda 2019-07-10
     - Add `OrderStatsV4` entity

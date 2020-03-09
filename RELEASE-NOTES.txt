@@ -1,7 +1,117 @@
+3.8
+-----
+- Dashboard stats: any negative revenue (from refunds for example) for a time period are shown now.
+- Redesigned Orders List: Processing and All Orders are now shown in front. Filtering was moved to the Search view.
+- Fix Reviews sometimes failing to load on some WooCommerce configurations
+ 
+3.7
+-----
+- Dashboard: now tapping on a product on "Top Performers" section open the product detail
+
+3.6
+-----
+- Order Details: see a list of issued refunds inside the order detail screen
+- Orders tab: Orders to fulfill badge shows numbers 1-99, and now 99+ for anything over 99. Previously, it was 9+.
+- Orders tab: The full total amount is now shown.
+- Order Details & Product UI: if a Product name has HTML escape characters, they should be decoded in the app.
+- Order Details: if the Order has multiple Products, tapping on any Product should open the same Product now.
+- bugfix: the orders badge on tab bar now is correctly refreshed after switching to a store with badge count equal to zero.
+- The orders tab now localizes item quantities and the order badge.
+
+
+3.5
+-----
+- bugfix: when the app is in the foreground while receiving a push notification, the badge on the Orders tab and Reviews tab should be updated correctly based on the type of the notification.
+- bugfix: after logging out and in, the Product list should be loaded to the correct store instead of being empty.
+- bugfix: in Contact Support, a message should always be sent successfully now.
+
+3.4
+-----
+- bugfix: on the Order Details screen, the product quantity title in the 2-column header view aligns to the right now
+- bugfix: tapping on a new Order push notification, it used to go to the Reviews tab. Now it should go to the new Order screen
+- bugfix: on the Products tab, if tapping on a Product and then switching stores, the old Product details used to remain on the Products tab. Now the Product list is always shown on the Products tab after switching stores.
+- Dark mode: colors are updated up to design for the navigation bar, tab bar, Fulfill Order > add tracking icon, Review Details > product link icon.
+- bugfix/enhancement: on the Products tab, if there are no Products the "Work In Progress" banner is shown with an image placeholder below now.
+- bugfix: the deleted Product Variations should not show up after syncing anymore.
+- bugfix: now the shipping address in the Order Detail is hidden if the order contains only virtual products
+- bugfix: when logged out, Contact Support should be enabled now after typing a valid email address with an email keyboard type.
+
+3.3
+-----
+- bugfix: add some padding to an order item image in the Fulfillment view, when no SKU exists
+- bugfix: View Billing Information > Contact Details: the email button wouldn't do anything if you don't have an email account configured in the Mail app. Now an option to copy the email address is presented instead of doing nothing.
+- bugfix: Fulfill Order screen now displays full customer provided note, instead of cutting it to a single line.
+- bugfix: Fixed clipped content on section headings with larger font sizes
+- bugfix: Fixed footer overlapping the last row in Settings > About with larger font sizes
+- bugfix: the Orders badge on tab bar now is correctly refreshed after switching stores
+ 
+3.2.1
+-----
+- bugfix: the order detail status and "Begin fulfillment" button now are correctly updated when the order status changes
+- bugfix: after adding a new order note, now it appear correctly inside the order detail
+
+3.2
+-----
+- Experimental: a Products feature switch is visible in Settings > Experimental Features that shows/hides the Products tab with a Work In Progress banner at the top.
+- Experimental: if a Product has variations, the variants info are shown on the Product Details that navigates to a list of variations with each price or visibility shown.
+- Enhancement: Support for dark mode
+- bugfix: Settings no longer convert to partial dark mode.
+- Experimental: Support the latest wc-admin plugin release, v0.23.0 and up
+ 
+3.1
+-----
+- The order detail view now includes the shipping method of the order.
+- Enhancement: The Reviews tab now presents all the Product Reviews
+- Updated appearance of Order Details - temporarily disabling dark mode.
+- bugfix: fixed UI appearance on cells of Order List when tapping with dark mode enabled.
+- bugfix: Reviews no longer convert to partial dark mode. Dark mode coming soon!
+- bugfix: Order Details now has the right space between cells.
+- bugfix: update the new stats endpoint for WC Admin plugin version 0.22+, and notify the user about the minimum plugin version when they cannot see the new stats. It'd be great to also mention this in the App Store release notes: the new stats UI now requires WC Admin plugin version 0.22+.
+
+3.0
+-----
+- bugfix: for sites with empty site time zone in the API (usually with UTC specified in wp-admin settings) and when the site time zone is not GMT+0, the stats v4 data no longer has the wrong boundaries (example in #1357).
+- bugfix: fixed a UI appearance problem on mail composer on iOS 13.
+ 
+2.9
+-----
+- bugfix: the badge "9+" on the Orders tab doesn't overlap with the tab label on iPhone SE/8 landscape now, and polished based on design spec.
+- bugfix: the Top Performers in the new stats page should not have a dark header bar when launching the app in Dark mode.
+- Enhancement: preselect current Order status when editing the status with a list of order statuses.
+- bugfix: on Orders tab, the order status filter now stays after changing an Order status.
+ 
+2.8
+-----
+ 
+2.7
+-----
+- Enhancement: Enhancements to the Order Details screen, adding more customer information.
+- bugfix: the App Logs shouldn't be editable, only copy / paste.
+- bugfix: Reviews were not localized.
+- bugfix: On log in, some users would see the Continue button but be unable to Continue, due to errors with the account. A new "Try another account" button has been added as an option.
+- bugfix: Product Details page was displaying the Price in the wrong currency.
+- Enhancement: removed the "New Orders" card from the My store tab, now that the Orders tab displays the same information.
+- Added brand new stats page for user with the WooCommerce Admin plugin and provided an option for users to opt in or out directly from the Settings page.
+- bugfix: Order Details: icon on "Details" cell for fulfilled order can be wrong.
+ 
+2.6
+-----
+- bugfix: 9+ orders in the orders badge text is now easier to read
+- bugfix: Keep those sign-in bugs coming! We tracked down and fixed a `Log in with Jetpack` issue, where users with a Byte Order Mark in their `wp-config.php` file were returning error responses during API requests. These users would see their store listed in the sign-in screen, but were unable to tap the Continue button.
+- bugfix: prevents a potential edge case where the login screen could be dismissed in a future version of iOS.
+- bugfix: While tuning up the behind-the-scenes for Order Detail screens, we accidentally lost the ability to automatically download any missing product images. Product image downloads restored!
+
+2.5
+-----
+- bugfix: on certain devices, pulling down to refresh on Order Details screen used to result in weird UI with misplaced labels. Should be fixed in this release.
+- Enhancement: Display a badge in the bottom tab, overlapping the Orders icon, to indicate the number of orders processing.
+- Enhancement: The Notifications tab has been replaced by Reviews 
+
 2.4
 -----
 - New feature: in Order Details > Shipment Tracking, a new action is added to the "more" action menu for copying tracking number.
-- bugfix & improvement: when Jetpack site stats module is turned off, the generic error toast is not shown to the user anymore. Additionally, the visitors stats UI is shown/hidden when the Jetpack module is activated/deactivated respectively.
+- Enhancement: updated the footer in Settings to inform users that we're hiring.
+- bugfix & improvement: when Jetpack site stats module is turned off or when user has no permission to view site stats, the generic error toast is not shown to the user anymore. Additionally, the visitors stats UI is shown/hidden when the Jetpack module is activated/deactivated respectively.
 
 2.3
 -----

@@ -10,9 +10,9 @@ extension OrderItem {
 
     @NSManaged public var itemID: Int64
     @NSManaged public var name: String?
-    @NSManaged public var quantity: NSDecimalNumber
     @NSManaged public var price: NSDecimalNumber?
     @NSManaged public var productID: Int64
+    @NSManaged public var quantity: NSDecimalNumber
     @NSManaged public var sku: String?
     @NSManaged public var subtotal: String?
     @NSManaged public var subtotalTax: String?
@@ -21,4 +21,23 @@ extension OrderItem {
     @NSManaged public var totalTax: String?
     @NSManaged public var variationID: Int64
     @NSManaged public var order: Order
+    @NSManaged public var taxes: Set<OrderItemTax>?
+
+}
+
+// MARK: Generated accessors for taxes
+extension OrderItem {
+
+    @objc(addTaxesObject:)
+    @NSManaged public func addToTaxes(_ value: OrderItemTax)
+
+    @objc(removeTaxesObject:)
+    @NSManaged public func removeFromTaxes(_ value: OrderItemTax)
+
+    @objc(addTaxes:)
+    @NSManaged public func addToTaxes(_ values: NSSet)
+
+    @objc(removeTaxes:)
+    @NSManaged public func removeFromTaxes(_ values: NSSet)
+
 }

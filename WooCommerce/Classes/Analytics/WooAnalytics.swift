@@ -1,14 +1,9 @@
 import Foundation
 import UIKit
 
-
-public class WooAnalytics {
+public class WooAnalytics: Analytics {
 
     // MARK: - Properties
-
-    /// Shared Instance
-    ///
-    static let shared = WooAnalytics(analyticsProvider: TracksProvider())
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
     ///
@@ -39,9 +34,6 @@ public class WooAnalytics {
         self.analyticsProvider = analyticsProvider
     }
 
-    deinit {
-        NotificationCenter.default.removeObserver(self)
-    }
 }
 
 
@@ -191,12 +183,12 @@ private extension WooAnalytics {
     /// This function appends any additional properties to the provided properties dict if needed.
     ///
     func updatePropertiesIfNeeded(for stat: WooAnalyticsStat, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
-        guard stat.shouldSendSiteProperties, StoresManager.shared.isAuthenticated else {
+        guard stat.shouldSendSiteProperties, ServiceLocator.stores.isAuthenticated else {
             return properties
         }
 
         var updatedProperties = properties ?? [:]
-        let site = StoresManager.shared.sessionManager.defaultSite
+        let site = ServiceLocator.stores.sessionManager.defaultSite
         updatedProperties[PropertyKeys.blogIDKey] = site?.siteID
         updatedProperties[PropertyKeys.wpcomStoreKey] = site?.isWordPressStore
         return updatedProperties

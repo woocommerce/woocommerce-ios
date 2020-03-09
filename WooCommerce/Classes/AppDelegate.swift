@@ -8,6 +8,10 @@ import WordPressKit
 import WordPressAuthenticator
 import AutomatticTracks
 
+#if DEBUG
+import Wormholy
+#endif
+
 
 // MARK: - Woo's App Delegate!
 //
@@ -22,27 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// Main Window
     ///
     var window: UIWindow?
-
-    /// WordPressAuthenticator Wrapper
-    ///
-    let authenticationManager = AuthenticationManager()
-
-    /// In-App Notifications Presenter
-    ///
-    let noticePresenter = NoticePresenter()
-
-    /// Push Notifications Manager
-    ///
-    let pushNotesManager = PushNotificationsManager()
-
-    /// CoreData Stack
-    ///
-    let storageManager = CoreDataManager(name: WooConstants.databaseStackName)
-
-    /// Cocoalumberjack DDLog
-    /// The type definition is needed because DDFilelogger doesn't have a nullability specifier (but is still a non-optional).
-    ///
-    let fileLogger: DDFileLogger = DDFileLogger()
 
     /// Tab Bar Controller
     ///
@@ -72,6 +55,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         setupNoticePresenter()
         setupPushNotificationsManagerIfPossible()
         setupAppRatingManager()
+        setupWormholy()
+        handleLaunchArguments()
 
         // Display the Authentication UI
         displayAuthenticatorIfNeeded()
@@ -98,25 +83,25 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             fatalError()
         }
 
-        return authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
+        return ServiceLocator.authenticationManager.handleAuthenticationUrl(url, options: options, rootViewController: rootViewController)
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        guard let defaultStoreID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             return
         }
 
-        pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
+        ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {
-        pushNotesManager.registrationDidFail(with: error)
+        ServiceLocator.pushNotesManager.registrationDidFail(with: error)
     }
 
     func application(_ application: UIApplication,
                      didReceiveRemoteNotification userInfo: [AnyHashable: Any],
                      fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
-        pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
+        ServiceLocator.pushNotesManager.handleNotification(userInfo, completionHandler: completionHandler)
     }
 
     func applicationWillResignActive(_ application: UIApplication) {
@@ -179,38 +164,41 @@ private extension AppDelegate {
         UINavigationBar.applyWooAppearance()
         UILabel.applyWooAppearance()
         UISearchBar.applyWooAppearance()
+        UITabBar.applyWooAppearance()
 
         // Take advantage of a bug in UIAlertController to style all UIAlertControllers with WC color
-        window?.tintColor = StyleManager.wooCommerceBrandColor
+        window?.tintColor = .primary
     }
 
     /// Sets up FancyAlert's UIAppearance.
     ///
     func setupFancyAlertAppearance() {
         let appearance = FancyAlertView.appearance()
-        appearance.bottomDividerColor = StyleManager.wooGreyBorder
-        appearance.topDividerColor = StyleManager.wooGreyBorder
+        appearance.bodyBackgroundColor = .systemColor(.systemBackground)
+        appearance.bottomBackgroundColor = appearance.bodyBackgroundColor
+        appearance.bottomDividerColor = .listSmallIcon
+        appearance.topDividerColor = appearance.bodyBackgroundColor
 
-        appearance.titleTextColor = StyleManager.defaultTextColor
+        appearance.titleTextColor = .text
         appearance.titleFont = UIFont.title2
 
-        appearance.bodyTextColor = StyleManager.defaultTextColor
+        appearance.bodyTextColor = .text
         appearance.bodyFont = UIFont.body
 
         appearance.actionFont = UIFont.headline
         appearance.infoFont = UIFont.subheadline
-        appearance.infoTintColor = StyleManager.wooCommerceBrandColor
-        appearance.headerBackgroundColor = StyleManager.wooGreyLight
+        appearance.infoTintColor = .accent
+        appearance.headerBackgroundColor = .alertHeaderImageBackgroundColor
     }
 
     /// Sets up FancyButton's UIAppearance.
     ///
     func setupFancyButtonAppearance() {
         let appearance = FancyButton.appearance()
-        appearance.primaryNormalBackgroundColor = StyleManager.buttonPrimaryColor
-        appearance.primaryNormalBorderColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.primaryHighlightBackgroundColor = StyleManager.buttonPrimaryHighlightedColor
-        appearance.primaryHighlightBorderColor = StyleManager.buttonPrimaryHighlightedColor
+        appearance.primaryNormalBackgroundColor = .primaryButtonBackground
+        appearance.primaryNormalBorderColor = .primaryButtonBorder
+        appearance.primaryHighlightBackgroundColor = .primaryButtonDownBackground
+        appearance.primaryHighlightBorderColor = .primaryButtonDownBorder
     }
 
     /// Sets up Crash Logging
@@ -228,53 +216,57 @@ private extension AppDelegate {
     /// Sets up the WordPress Authenticator.
     ///
     func setupAnalytics() {
-        WooAnalytics.shared.initialize()
+        ServiceLocator.analytics.initialize()
     }
 
     /// Sets up the WordPress Authenticator.
     ///
     func setupAuthenticationManager() {
-        authenticationManager.initialize()
+        ServiceLocator.authenticationManager.initialize()
     }
 
     /// Sets up CocoaLumberjack logging.
     ///
     func setupCocoaLumberjack() {
+        var fileLogger = ServiceLocator.fileLogger
         fileLogger.rollingFrequency = TimeInterval(60*60*24)  // 24 hours
         fileLogger.logFileManager.maximumNumberOfLogFiles = 7
 
+        guard let logger = fileLogger as? DDFileLogger else {
+            return
+        }
         DDLog.add(DDOSLogger.sharedInstance)
-        DDLog.add(fileLogger)
+        DDLog.add(logger)
     }
 
     /// Sets up the current Log Leve.
     ///
     func setupLogLevel(_ level: DDLogLevel) {
-        let rawLevel = Int32(level.rawValue)
-
-        WPSharedSetLoggingLevel(rawLevel)
-        WPAuthenticatorSetLoggingLevel(rawLevel)
-        WPKitSetLoggingLevel(rawLevel)
+        WPSharedSetLoggingLevel(level)
+        WPAuthenticatorSetLoggingLevel(level)
+        WPKitSetLoggingLevel(level)
     }
 
     /// Setup: Notice Presenter
     ///
     func setupNoticePresenter() {
+        var noticePresenter = ServiceLocator.noticePresenter
         noticePresenter.presentingViewController = window?.rootViewController
     }
 
     /// Push Notifications: Authorization + Registration!
     ///
     func setupPushNotificationsManagerIfPossible() {
-        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore == false else {
+        guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore == false else {
             return
         }
 
         #if targetEnvironment(simulator)
             DDLogVerbose("👀 Push Notifications are not supported in the Simulator!")
         #else
+            let pushNotesManager = ServiceLocator.pushNotesManager
             pushNotesManager.registerForRemoteNotifications()
-            pushNotesManager.ensureAuthorizationIsRequested()
+            pushNotesManager.ensureAuthorizationIsRequested(onCompletion: nil)
         #endif
     }
 
@@ -291,6 +283,25 @@ private extension AppDelegate {
         appRating.systemWideSignificantEventCountRequiredForPrompt = WooConstants.systemEventCount
         appRating.setVersion(version)
     }
+
+    /// Set up Wormholy only in Debug build configuration
+    ///
+    func setupWormholy() {
+        #if DEBUG
+        /// We want to activate it programmatically, not using the shake.
+        Wormholy.shakeEnabled = false
+        #endif
+    }
+
+    func handleLaunchArguments() {
+        if ProcessInfo.processInfo.arguments.contains("logout-at-launch") {
+          ServiceLocator.stores.deauthenticate()
+        }
+
+        if ProcessInfo.processInfo.arguments.contains("disable-animations") {
+            UIView.setAnimationsEnabled(false)
+        }
+    }
 }
 
 
@@ -303,10 +314,10 @@ private extension AppDelegate {
         let versionOfLastRun = UserDefaults.standard[.versionOfLastRun] as? String
         if versionOfLastRun == nil {
             // First run after a fresh install
-            WooAnalytics.shared.track(.applicationInstalled)
+            ServiceLocator.analytics.track(.applicationInstalled)
         } else if versionOfLastRun != currentVersion {
             // App was upgraded
-            WooAnalytics.shared.track(.applicationInstalled, withProperties: ["previous_version": versionOfLastRun ?? String()])
+            ServiceLocator.analytics.track(.applicationInstalled, withProperties: ["previous_version": versionOfLastRun ?? String()])
         }
 
         UserDefaults.standard[.versionOfLastRun] = currentVersion
@@ -321,7 +332,7 @@ extension AppDelegate {
     /// Whenever there is no default WordPress.com Account, let's display the Authentication UI.
     ///
     func displayAuthenticatorIfNeeded() {
-        guard StoresManager.shared.isAuthenticated == false else {
+        guard ServiceLocator.stores.isAuthenticated == false else {
             return
         }
 
@@ -335,13 +346,13 @@ extension AppDelegate {
             fatalError()
         }
 
-        authenticationManager.displayAuthentication(from: rootViewController)
+        ServiceLocator.authenticationManager.displayAuthentication(from: rootViewController)
     }
 
     /// Whenever the app is authenticated but there is no Default StoreID: Let's display the Store Picker.
     ///
     func displayStorePickerIfNeeded() {
-        guard StoresManager.shared.isAuthenticated, StoresManager.shared.needsDefaultStore else {
+        guard ServiceLocator.stores.isAuthenticated, ServiceLocator.stores.needsDefaultStore else {
             return
         }
         guard let tabBar = AppDelegate.shared.tabBarController,
@@ -358,11 +369,11 @@ extension AppDelegate {
     /// Whenever we're in an Authenticated state, let's Sync all of the WC-Y entities.
     ///
     func synchronizeEntitiesIfPossible() {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 
-        StoresManager.shared.synchronizeEntities()
+        ServiceLocator.stores.synchronizeEntities(onCompletion: nil)
     }
 
     /// Runs whenever the Authentication Flow is completed successfully.

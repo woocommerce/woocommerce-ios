@@ -1,7 +1,7 @@
 PODS:
   - 1PasswordExtension (1.8.5)
   - Alamofire (4.7.3)
-  - Automattic-Tracks-iOS (0.4.0):
+  - Automattic-Tracks-iOS (0.4.1):
     - CocoaLumberjack (~> 3.5.2)
     - Reachability (~> 3.1)
     - Sentry (~> 4)
@@ -21,27 +21,33 @@ PODS:
     - "GoogleToolboxForMac/NSDictionary+URLArguments (~> 2.1)"
     - "GoogleToolboxForMac/NSString+URLArguments (~> 2.1)"
     - GTMSessionFetcher/Core (~> 1.1)
-  - GoogleToolboxForMac/DebugUtils (2.2.1):
-    - GoogleToolboxForMac/Defines (= 2.2.1)
-  - GoogleToolboxForMac/Defines (2.2.1)
-  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.2.1)":
-    - GoogleToolboxForMac/DebugUtils (= 2.2.1)
-    - GoogleToolboxForMac/Defines (= 2.2.1)
-    - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.1)"
-  - "GoogleToolboxForMac/NSString+URLArguments (2.2.1)"
-  - Gridicons (0.18)
-  - GTMSessionFetcher/Core (1.2.2)
-  - KeychainAccess (3.2.0)
+  - GoogleToolboxForMac/DebugUtils (2.2.2):
+    - GoogleToolboxForMac/Defines (= 2.2.2)
+  - GoogleToolboxForMac/Defines (2.2.2)
+  - "GoogleToolboxForMac/NSDictionary+URLArguments (2.2.2)":
+    - GoogleToolboxForMac/DebugUtils (= 2.2.2)
+    - GoogleToolboxForMac/Defines (= 2.2.2)
+    - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.2)"
+  - "GoogleToolboxForMac/NSString+URLArguments (2.2.2)"
+  - Gridicons (0.19)
+  - GTMSessionFetcher/Core (1.3.1)
+  - KeychainAccess (3.2.1)
+  - Kingfisher (5.11.0):
+    - Kingfisher/Core (= 5.11.0)
+  - Kingfisher/Core (5.11.0)
   - lottie-ios (2.5.2)
   - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
   - Reachability (3.2)
-  - Sentry (4.3.4):
-    - Sentry/Core (= 4.3.4)
-  - Sentry/Core (4.3.4)
+  - Sentry (4.4.3):
+    - Sentry/Core (= 4.4.3)
+  - Sentry/Core (4.4.3)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.1.4)
-  - WordPressAuthenticator (1.5.2):
+  - WordPress-Aztec-iOS (1.11.0)
+  - WordPress-Editor-iOS (1.11.0):
+    - WordPress-Aztec-iOS (= 1.11.0)
+  - WordPressAuthenticator (1.10.6):
     - 1PasswordExtension (= 1.8.5)
     - Alamofire (= 4.7.3)
     - CocoaLumberjack (~> 3.5)
@@ -50,29 +56,31 @@ PODS:
     - lottie-ios (= 2.5.2)
     - "NSURL+IDN (= 0.3)"
     - SVProgressHUD (= 2.2.5)
-    - WordPressKit (~> 4.1)
+    - WordPressKit (~> 4.5.6-beta.1)
     - WordPressShared (~> 1.8)
-    - WordPressUI (~> 1.3)
-  - WordPressKit (4.1.2):
+    - WordPressUI (~> 1.4-beta.1)
+  - WordPressKit (4.5.6):
     - Alamofire (~> 4.7.3)
     - CocoaLumberjack (~> 3.4)
     - NSObject-SafeExpectations (= 0.0.3)
-    - UIDeviceIdentifier (~> 1.1.4)
+    - UIDeviceIdentifier (~> 1)
     - WordPressShared (~> 1.8.0)
     - wpxmlrpc (= 0.8.4)
-  - WordPressShared (1.8.2):
+  - WordPressShared (1.8.10):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
-  - WordPressUI (1.3.4)
+  - WordPressUI (1.5.0)
+  - Wormholy (1.5.1)
+  - WPMediaPicker (1.6.0)
   - wpxmlrpc (0.8.4)
   - XLPagerTabStrip (9.0.0)
-  - ZendeskSDK (2.3.1):
-    - ZendeskSDK/Providers (= 2.3.1)
-    - ZendeskSDK/UI (= 2.3.1)
-  - ZendeskSDK/Core (2.3.1)
-  - ZendeskSDK/Providers (2.3.1):
+  - ZendeskSDK (4.0.0):
+    - ZendeskSDK/Providers (= 4.0.0)
+    - ZendeskSDK/UI (= 4.0.0)
+  - ZendeskSDK/Core (4.0.0)
+  - ZendeskSDK/Providers (4.0.0):
     - ZendeskSDK/Core
-  - ZendeskSDK/UI (2.3.1):
+  - ZendeskSDK/UI (4.0.0):
     - ZendeskSDK/Core
     - ZendeskSDK/Providers
 
@@ -82,16 +90,20 @@ DEPENDENCIES:
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
-  - Gridicons (~> 0.18)
+  - Gridicons (~> 0.19)
   - KeychainAccess (~> 3.2)
-  - WordPressAuthenticator (~> 1.5.2)
+  - Kingfisher (~> 5.11.0)
+  - WordPress-Editor-iOS (~> 1.11.0)
+  - WordPressAuthenticator (~> 1.10.6)
   - WordPressShared (~> 1.8.2)
-  - WordPressUI (~> 1.3.3)
+  - WordPressUI (~> 1.4)
+  - Wormholy (~> 1.5.1)
+  - WPMediaPicker (~> 1.6.0)
   - XLPagerTabStrip (~> 9.0)
-  - ZendeskSDK (~> 2.3.1)
+  - ZendeskSDK (~> 4.0)
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  trunk:
     - 1PasswordExtension
     - Alamofire
     - Automattic-Tracks-iOS
@@ -103,6 +115,7 @@ SPEC REPOS:
     - Gridicons
     - GTMSessionFetcher
     - KeychainAccess
+    - Kingfisher
     - lottie-ios
     - NSObject-SafeExpectations
     - "NSURL+IDN"
@@ -110,10 +123,14 @@ SPEC REPOS:
     - Sentry
     - SVProgressHUD
     - UIDeviceIdentifier
+    - WordPress-Aztec-iOS
+    - WordPress-Editor-iOS
     - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
+    - Wormholy
+    - WPMediaPicker
     - wpxmlrpc
     - XLPagerTabStrip
     - ZendeskSDK
@@ -121,30 +138,35 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: f7a8284999a5ce2f4e768717d86a640a32f43b7c
+  Automattic-Tracks-iOS: a176848be4c95aa208184fe96d0322594ce230eb
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
-  GoogleToolboxForMac: b3553629623a3b1bff17f555e736cd5a6d95ad55
-  Gridicons: 04261236382e9c62c62c9a104f2f532c1bdf6a78
-  GTMSessionFetcher: 61bb0f61a4cb560030f1222021178008a5727a23
-  KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
+  GoogleToolboxForMac: 800648f8b3127618c1b59c7f97684427630c5ea3
+  Gridicons: dc92efbe5fd60111d2e8ea051d84a60cca552abc
+  GTMSessionFetcher: cea130bbfe5a7edc8d06d3f0d17288c32ffe9925
+  KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
+  Kingfisher: 4569606189149e19c7d9439f47e885d0679b7a90
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  Sentry: 26f0e6492b103e87434d1a5eea2d241a36f2c2a2
+  Sentry: 14bdd673870e8cf64932b149fad5bbbf39a9b390
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
-  WordPressAuthenticator: e8617f67da0cb013ffaade1f4410f8cfbbe30d97
-  WordPressKit: 09a28afc17dc63d35b6bd76c69fa94a7049183eb
-  WordPressShared: 34f7a1386d28d7e4650c1a225c554ee024401ca3
-  WordPressUI: 065de4c33212b9ca3ae458d43c73f2ce2738d3d4
+  WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
+  WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
+  WordPressAuthenticator: de9ef4de7c9d06d89f938f69b01d810aebe9dfc6
+  WordPressKit: 5b37877f273fc4bc7289eb736df3bd3122535bd4
+  WordPressShared: 5561910e9b6635874abeb10e450b7d2a29f23838
+  WordPressUI: 4a4adafd2b052e94e4846c0a0203761773dc4fd5
+  Wormholy: f01b096b449a9fcab864a10f7e5b5693b1225c88
+  WPMediaPicker: e5d28197da6b467d4e5975d64a49255977e39455
   wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
-  ZendeskSDK: cbd49d65efb2f2cdbdcaac84e618896ae87b861e
+  ZendeskSDK: 99679d8420a6d862773e2ddef0ebcc51b282317d
 
-PODFILE CHECKSUM: dffedc66a4f42b53661132fcf59c782238035605
+PODFILE CHECKSUM: e4231e9f0d566658171c431802f78085afec88e1
 
-COCOAPODS: 1.6.1
+COCOAPODS: 1.8.4

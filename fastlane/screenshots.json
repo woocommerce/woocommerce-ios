@@ -1,0 +1,286 @@
+{
+	"version": 0.1,
+	"shadow_offset": 0,
+	"background_color": "#FFFFFF",
+	"stylesheet": "appstoreres/assets/styles/style.css",
+	"devices": [
+		{
+			"name": "iPhone Xs max",
+			"canvas_size": [1242,2688],
+			"text_size": [1042, 313],
+			"text_offset": [100, 192],
+			"font_size": "86px"
+		},
+		{
+			"name": "iPhone 8",
+			"canvas_size": [1242,2208],
+			"text_size": [1042, 313],
+			"text_offset": [100, 192],
+			"font_size": "86px"
+		},
+		{
+			"name": "iPad Pro 12.9",
+			"canvas_size": [2048,2732],
+			"text_size": [1672, 450],
+			"text_offset": [189, 248],
+			"font_size": "128px"
+		},
+		{
+			"name": "iPad Pro X 12.9",
+			"canvas_size": [2048,2732],
+			"text_size": [1672, 450],
+			"text_offset": [189, 248],
+			"font_size": "128px"
+		}
+	],
+	"entries": [
+		// Intro Screen
+		{
+			"device": "iPhone Xs max",
+			"filename": "iphone-x-01.png",
+			"background": "appstoreres/assets/simple/screenshot-1-iphone-x.png",
+			"attachments": [
+				{
+					"text": "metadata/{locale}/app_store_screenshot_1.txt",
+					"font-size": 144,
+					"size": [1042, 600],
+					"position": [100, 889],
+					"stylesheet": "appstoreres/assets/styles/first-screen-heading.css"
+				},
+				{
+					"text": "metadata/{locale}/app_store_screenshot_1b.txt",
+					"font-size": 40,
+					"size": [1042, 250],
+					"position": [100, 2387],
+					"stylesheet": "appstoreres/assets/styles/first-screen-footer.css"
+				}
+			]
+		},
+		// View and manage orders
+		{
+			"device": "iPhone Xs max",
+			"text": "metadata/{locale}/app_store_screenshot_2.txt",
+			"filename": "iphone-x-02.png",
+			"background": "appstoreres/assets/simple/screenshot-2-iphone-x.png"
+		},
+		// Track order status
+		{
+			"device": "iPhone Xs max",
+			"text": "metadata/{locale}/app_store_screenshot_3.txt",
+			"filename": "iphone-x-03.png",
+			"background": "appstoreres/assets/simple/screenshot-3-iphone-x.png"
+		},
+		// Scroll through, filter, or look up specific orders
+		{
+			"device": "iPhone Xs max",
+			"text": "metadata/{locale}/app_store_screenshot_4.txt",
+			"filename": "iphone-x-04.png",
+			"background": "appstoreres/assets/simple/screenshot-4-iphone-x.png"
+		},
+		// Track sales data and high performing products
+		{
+			"device": "iPhone Xs max",
+			"text": "metadata/{locale}/app_store_screenshot_5.txt",
+			"filename": "iphone-x-05.png",
+			"background": "appstoreres/assets/simple/screenshot-5-iphone-x.png"
+		},
+		// Get notified about new customer reviews
+		{
+			"device": "iPhone Xs max",
+			"text": "metadata/{locale}/app_store_screenshot_6.txt",
+			"filename": "iphone-x-06.png",
+			"background": "appstoreres/assets/simple/screenshot-6-iphone-x.png"
+		},
+		// Create and manage products
+		//{
+		//	"device": "iPhone Xs max",
+		//	"text": "metadata/{locale}/app_store_screenshot_7.txt",
+		//	"filename": "07-iphone-x.png",
+		//	"background": "appstoreres/assets/simple/screenshot-7-iphone-x.png"
+		//},
+
+		// iPhone 8
+		// Intro Screen
+		{
+			"device": "iPhone 8",
+			"filename": "iphone-8-01.png",
+			"background": "appstoreres/assets/simple/screenshot-1-iphone-8.png",
+			"attachments": [
+				{
+					"text": "metadata/{locale}/app_store_screenshot_1.txt",
+					"font-size": 144,
+					"size": [1042, 600],
+					"position": [100, 757],
+					"stylesheet": "appstoreres/assets/styles/first-screen-heading.css"
+				},
+				{
+					"text": "metadata/{locale}/app_store_screenshot_1b.txt",
+					"font-size": 40,
+					"size": [1042, 250],
+					"position": [100, 1896],
+					"stylesheet": "appstoreres/assets/styles/first-screen-footer.css"
+				}
+			]
+		},
+		// View and manage orders
+		{
+			"device": "iPhone 8",
+			"text": "metadata/{locale}/app_store_screenshot_2.txt",
+			"filename": "iphone-8-02.png",
+			"background": "appstoreres/assets/simple/screenshot-2-iphone-8.png"
+		},
+		// Track order status
+		{
+			"device": "iPhone 8",
+			"text": "metadata/{locale}/app_store_screenshot_3.txt",
+			"filename": "iphone-8-03.png",
+			"background": "appstoreres/assets/simple/screenshot-3-iphone-8.png"
+		},
+		// Scroll through, filter, or look up specific orders
+		{
+			"device": "iPhone 8",
+			"text": "metadata/{locale}/app_store_screenshot_4.txt",
+			"filename": "iphone-8-04.png",
+			"background": "appstoreres/assets/simple/screenshot-4-iphone-8.png"
+		},
+		// Track sales data and high performing products
+		{
+			"device": "iPhone 8",
+			"text": "metadata/{locale}/app_store_screenshot_5.txt",
+			"filename": "iphone-8-05.png",
+			"background": "appstoreres/assets/simple/screenshot-5-iphone-8.png"
+		},
+		// Get notified about new customer reviews
+		{
+			"device": "iPhone 8",
+			"text": "metadata/{locale}/app_store_screenshot_6.txt",
+			"filename": "iphone-8-06.png",
+			"background": "appstoreres/assets/simple/screenshot-6-iphone-8.png"
+		},
+		// Create and manage products
+		//{
+		//	"device": "iPhone 8",
+		//	"text": "metadata/{locale}/app_store_screenshot_7.txt",
+		//	"filename": "07-iphone-8.png",
+		//	"background": "appstoreres/assets/simple/screenshot-7-iphone-8.png"
+		//},
+
+		/// iPad Pro 12.9 (2nd Generation)
+		// Intro Screen
+		{
+			"device": "iPad Pro 12.9",
+			"filename": "ipad-pro-01.png",
+			"background": "appstoreres/assets/simple/screenshot-1-ipad.png",
+			"attachments": [
+				{
+					"text": "metadata/{locale}/app_store_screenshot_1.txt",
+					"font-size": 175,
+					"size": [1367, 422],
+					"position": [345, 961],
+					"stylesheet": "appstoreres/assets/styles/first-screen-heading.css"
+				},
+				{
+					"text": "metadata/{locale}/app_store_screenshot_1b.txt",
+					"font-size": 96,
+					"size": [1848, 250],
+					"position": [100, 2430],
+					"stylesheet": "appstoreres/assets/styles/first-screen-footer.css"
+				}
+			]
+		},
+		// View and manage orders
+		{
+			"device": "iPad Pro 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_2.txt",
+			"filename": "ipad-pro-02.png",
+			"background": "appstoreres/assets/simple/screenshot-2-ipad.png"
+		},
+		// Track order status
+		{
+			"device": "iPad Pro 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_3.txt",
+			"filename": "ipad-pro-03.png",
+			"background": "appstoreres/assets/simple/screenshot-3-ipad.png"
+		},
+		// Scroll through, filter, or look up specific orders
+		{
+			"device": "iPad Pro 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_4.txt",
+			"filename": "ipad-pro-04.png",
+			"background": "appstoreres/assets/simple/screenshot-4-ipad.png"
+		},
+		// View store data by week, month, and year
+		{
+			"device": "iPad Pro 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_5.txt",
+			"filename": "ipad-pro-05.png",
+			"background": "appstoreres/assets/simple/screenshot-5-ipad.png"
+		},
+		// Get notified about customer reviews
+		{
+			"device": "iPad Pro 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_6.txt",
+			"filename": "ipad-pro-06.png",
+			"background": "appstoreres/assets/simple/screenshot-6-ipad.png"
+		},
+
+		/// iPad Pro 12.9 (3rd Generation)
+		// Intro Screen
+		{
+			"device": "iPad Pro X 12.9",
+			"filename": "ipad-pro-x-01.png",
+			"background": "appstoreres/assets/simple/screenshot-1-ipad.png",
+			"attachments": [
+				{
+					"text": "metadata/{locale}/app_store_screenshot_1.txt",
+					"font-size": 175,
+					"size": [1367, 422],
+					"position": [345, 961],
+					"stylesheet": "appstoreres/assets/styles/first-screen-heading.css"
+				},
+				{
+					"text": "metadata/{locale}/app_store_screenshot_1b.txt",
+					"font-size": 96,
+					"size": [1848, 250],
+					"position": [100, 2430],
+					"stylesheet": "appstoreres/assets/styles/first-screen-footer.css"
+				}
+			]
+		},
+		// View and manage orders
+		{
+			"device": "iPad Pro X 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_2.txt",
+			"filename": "ipad-pro-x-02.png",
+			"background": "appstoreres/assets/simple/screenshot-2-ipad-x.png"
+		},
+		// Track order status
+		{
+			"device": "iPad Pro X 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_3.txt",
+			"filename": "ipad-pro-x-03.png",
+			"background": "appstoreres/assets/simple/screenshot-3-ipad-x.png"
+		},
+		// Scroll through, filter, or look up specific orders
+		{
+			"device": "iPad Pro X 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_4.txt",
+			"filename": "ipad-pro-x-04.png",
+			"background": "appstoreres/assets/simple/screenshot-4-ipad-x.png"
+		},
+		// View store data by week, month, and year
+		{
+			"device": "iPad Pro X 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_5.txt",
+			"filename": "ipad-pro-x-05.png",
+			"background": "appstoreres/assets/simple/screenshot-5-ipad-x.png"
+		},
+		// Get notified about customer reviews
+		{
+			"device": "iPad Pro X 12.9",
+			"text": "metadata/{locale}/app_store_screenshot_6.txt",
+			"filename": "ipad-pro-x-06.png",
+			"background": "appstoreres/assets/simple/screenshot-6-ipad-x.png"
+		}
+	]
+}

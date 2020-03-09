@@ -43,10 +43,10 @@ class RequirementsChecker {
     ///       the WC version alert will *not* be displayed.
     ///
     static func checkMinimumWooVersionForDefaultStore() {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID, siteID != 0 else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID, siteID != 0 else {
             DDLogWarn("⚠️ Cannot check WC version on default store — default siteID is nil or 0.")
             return
         }
@@ -68,9 +68,9 @@ class RequirementsChecker {
     /// - parameter result: Closure param that is the result of the requirement check
     /// - parameter error: Closure param that is any error that occured while checking the WC version
     ///
-    static func checkMinimumWooVersion(for siteID: Int, onCompletion: ((_ result: RequirementCheckResult, _ error: Error?) -> Void)? = nil) {
+    static func checkMinimumWooVersion(for siteID: Int64, onCompletion: ((_ result: RequirementCheckResult, _ error: Error?) -> Void)? = nil) {
         let action = retrieveSiteAPIAction(siteID: siteID, onCompletion: onCompletion)
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -90,10 +90,10 @@ private extension RequirementsChecker {
 
     /// Returns a `SettingAction.retrieveSiteAPI` action
     ///
-    static func retrieveSiteAPIAction(siteID: Int, onCompletion: ((RequirementCheckResult, Error?) -> Void)? = nil) -> SettingAction {
+    static func retrieveSiteAPIAction(siteID: Int64, onCompletion: ((RequirementCheckResult, Error?) -> Void)? = nil) -> SettingAction {
         return SettingAction.retrieveSiteAPI(siteID: siteID) { (siteAPI, error) in
             guard error == nil else {
-                DDLogError("⛔️ An error occured while fetching API info for siteID \(siteID): \(String(describing: error))")
+                DDLogError("⛔️ An error occurred while fetching API info for siteID \(siteID): \(String(describing: error))")
                 onCompletion?(.error, error)
                 return
             }

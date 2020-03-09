@@ -24,7 +24,7 @@ protocol ApplicationAdapter: class {
 
     /// Presents the Details for the specified Notification.
     ///
-    func presentNotificationDetails(for noteID: Int)
+    func presentNotificationDetails(for noteID: Int64)
 }
 
 
@@ -34,7 +34,7 @@ extension UIApplication: ApplicationAdapter {
 
     /// Presents the Details for the specified Notification ID
     ///
-    func presentNotificationDetails(for noteID: Int) {
+    func presentNotificationDetails(for noteID: Int64) {
         MainTabBarController.presentNotificationDetails(for: noteID)
     }
 
@@ -42,6 +42,6 @@ extension UIApplication: ApplicationAdapter {
     ///
     func presentInAppNotification(message: String) {
         let notice = Notice(title: message, message: nil, feedbackType: .success)
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }

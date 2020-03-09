@@ -51,6 +51,7 @@ class SwitchTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         setupTextLabels()
         setupSwitch()
         setupGestureRecognizers()
@@ -66,16 +67,21 @@ class SwitchTableViewCell: UITableViewCell {
 //
 private extension SwitchTableViewCell {
 
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
     func setupTextLabels() {
         textLabel?.text = String()
         textLabel?.applyBodyStyle()
 
         detailTextLabel?.text = String()
         detailTextLabel?.applyFootnoteStyle()
+        detailTextLabel?.numberOfLines = 0
     }
 
     func setupSwitch() {
-        toggleSwitch.onTintColor = StyleManager.wooCommerceBrandColor
+        toggleSwitch.onTintColor = .primary
         toggleSwitch.addTarget(self, action: #selector(toggleSwitchWasPressed), for: .touchUpInside)
         accessoryView = toggleSwitch
     }

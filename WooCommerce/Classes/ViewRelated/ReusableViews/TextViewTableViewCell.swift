@@ -13,7 +13,7 @@ class TextViewTableViewCell: UITableViewCell {
         }
         set {
             noteIconButton.setImage(newValue, for: .normal)
-            noteIconButton.tintColor = .white
+            noteIconButton.tintColor = .listForeground
             noteIconButton.layer.cornerRadius = noteIconButton.frame.width / 2
         }
     }
@@ -31,13 +31,28 @@ class TextViewTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        noteTextView.delegate = self
+
+        configureBackground()
+        configureTextView()
+
         noteIconButton.accessibilityTraits = .image
     }
 }
 
+
 extension TextViewTableViewCell: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         onTextChange?(noteTextView.text)
+    }
+}
+
+private extension TextViewTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureTextView() {
+        noteTextView.delegate = self
+        noteTextView.backgroundColor = .listForeground
     }
 }

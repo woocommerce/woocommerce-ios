@@ -5,14 +5,28 @@ import WordPressUI
 import SafariServices
 import StoreKit
 
+// Used for protocol conformance of IndicatorInfoProvider only.
+import XLPagerTabStrip
+
+protocol OrdersViewControllerDelegate: class {
+    /// Called when `OrdersViewController` is about to fetch Orders from the API.
+    ///
+    func ordersViewControllerWillSynchronizeOrders(_ viewController: OrdersViewController)
+}
 
 /// OrdersViewController: Displays the list of Orders associated to the active Store / Account.
 ///
 class OrdersViewController: UIViewController {
 
+    weak var delegate: OrdersViewControllerDelegate?
+
     /// Main TableView.
     ///
     @IBOutlet private var tableView: UITableView!
+
+    /// Ghostable TableView.
+    ///
+    private(set) var ghostableTableView = UITableView()
 
     /// Pull To Refresh Support.
     ///
@@ -24,21 +38,25 @@ class OrdersViewController: UIViewController {
 
     /// Footer "Loading More" Spinner.
     ///
-    private lazy var footerSpinnerView = FooterSpinnerView()
+    private lazy var footerSpinnerView = {
+        return FooterSpinnerView(tableViewStyle: tableView.style)
+    }()
 
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Orders in sync.
     ///
     private lazy var resultsController: ResultsController<StorageOrder> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(keyPath: \StorageOrder.dateCreated, ascending: false)
 
         return ResultsController<StorageOrder>(storageManager: storageManager, sectionNameKeyPath: "normalizedAgeAsString", sortedBy: [descriptor])
     }()
 
-    /// ResultsController: Handles all things order status
+    /// Used for looking up the `OrderStatus` to show in the `OrderTableViewCell`.
+    ///
+    /// The `OrderStatus` data is fetched from the API by `OrdersMasterViewModel`.
     ///
     private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let descriptor = NSSortDescriptor(key: "slug", ascending: true)
 
         return ResultsController<StorageOrderStatus>(storageManager: storageManager, sortedBy: [descriptor])
@@ -50,19 +68,7 @@ class OrdersViewController: UIViewController {
 
     /// OrderStatus that must be matched by retrieved orders.
     ///
-    var statusFilter: OrderStatus? {
-        didSet {
-            guard isViewLoaded else {
-                return
-            }
-
-            guard oldValue != statusFilter else {
-                return
-            }
-
-            didChangeFilter(newFilter: statusFilter)
-        }
-    }
+    private let statusFilter: OrderStatus?
 
     /// The current list of order statuses for the default site
     ///
@@ -99,35 +105,34 @@ class OrdersViewController: UIViewController {
         }
     }
 
-
     // MARK: - View Lifecycle
 
-    deinit {
-        stopListeningToNotifications()
-    }
+    /// Designated initializer.
+    ///
+    /// - Parameter statusFilter The filter to use.
+    ///
+    init(title: String, statusFilter: OrderStatus? = nil) {
+        self.statusFilter = statusFilter
 
-    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
-        fatalError()
+        super.init(nibName: Self.nibName, bundle: nil)
+
+        self.title = title
     }
 
     required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
-
-        // This 👇 should be called in init so the tab is correctly localized when the app launches
-        configureTabBarItem()
+        fatalError("Not supported")
     }
 
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        refreshTitle()
         refreshResultsPredicate()
         refreshStatusPredicate()
-        registerTableViewCells()
+        registerTableViewHeadersAndCells()
 
         configureSyncingCoordinator()
-        configureNavigation()
         configureTableView()
+        configureGhostableTableView()
         configureResultsControllers()
 
         startListeningToNotifications()
@@ -136,12 +141,7 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncOrderStatus()
-        resetStatusFilterIfNeeded()
         syncingCoordinator.synchronizeFirstPage()
-        if AppRatingManager.shared.shouldPromptForAppReview() {
-            displayRatingPrompt()
-        }
     }
 }
 
@@ -149,28 +149,6 @@ class OrdersViewController: UIViewController {
 // MARK: - User Interface Initialization
 //
 private extension OrdersViewController {
-
-    /// Setup: Title
-    ///
-    func refreshTitle() {
-        guard let filterName = statusFilter?.name else {
-            navigationItem.title = NSLocalizedString(
-                "Orders",
-                comment: "Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order)."
-            )
-            return
-        }
-
-        let title = String.localizedStringWithFormat(
-            NSLocalizedString(
-                "Orders: %@",
-                comment: "Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter}"
-            ),
-            filterName
-        )
-        navigationItem.title = title
-    }
-
     /// Setup: Order filtering
     ///
     func refreshResultsPredicate() {
@@ -199,51 +177,12 @@ private extension OrdersViewController {
         // this will also fire upon logging out, when the account
         // is set to nil. So let's protect against multi-threaded
         // access attempts if the account is indeed nil.
-        guard StoresManager.shared.isAuthenticated,
-            StoresManager.shared.needsDefaultStore == false else {
+        guard ServiceLocator.stores.isAuthenticated,
+            ServiceLocator.stores.needsDefaultStore == false else {
                 return
         }
 
-        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", StoresManager.shared.sessionManager.defaultStoreID ?? Int.min)
-    }
-
-    /// Setup: Navigation Item
-    ///
-    func configureNavigation() {
-        navigationItem.leftBarButtonItem = {
-            let button = UIBarButtonItem(image: .searchImage,
-                                         style: .plain,
-                                         target: self,
-                                         action: #selector(displaySearchOrders))
-            button.tintColor = .white
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Search orders", comment: "Search Orders")
-            button.accessibilityHint = NSLocalizedString(
-                "Retrieves a list of orders that contain a given keyword.",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to search orders."
-            )
-
-            return button
-        }()
-
-        navigationItem.rightBarButtonItem = {
-            let button = UIBarButtonItem(image: .filterImage,
-                                                 style: .plain,
-                                                 target: self,
-                                                 action: #selector(displayFiltersAlert))
-            button.tintColor = .white
-            button.accessibilityTraits = .button
-            button.accessibilityLabel = NSLocalizedString("Filter orders", comment: "Filter the orders list.")
-            button.accessibilityHint = NSLocalizedString(
-                "Filters the order list by payment status.",
-                comment: "VoiceOver accessibility hint, informing the user the button can be used to filter the order list."
-            )
-
-            return button
-        }()
-
-        // Don't show the Order title in the next-view's back button
-        navigationItem.backBarButtonItem = UIBarButtonItem(title: String(), style: .plain, target: nil, action: nil)
+        statusResultsController.predicate = NSPredicate(format: "siteID == %lld", ServiceLocator.stores.sessionManager.defaultStoreID ?? Int.min)
     }
 
     /// Setup: Results Controller
@@ -263,30 +202,49 @@ private extension OrdersViewController {
         syncingCoordinator.delegate = self
     }
 
-    /// Setup: TabBar Item
-    ///
-    func configureTabBarItem() {
-        tabBarItem.title = NSLocalizedString("Orders", comment: "Title of the Orders tab — plural form of Order")
-        tabBarItem.image = .pagesImage
-    }
-
     /// Setup: TableView
     ///
     func configureTableView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
+        tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+        tableView.estimatedSectionHeaderHeight = Settings.estimatedHeaderHeight
+        tableView.sectionHeaderHeight = UITableView.automaticDimension
+        tableView.sectionFooterHeight = .leastNonzeroMagnitude
     }
 
-    /// Registers all of the available TableViewCells
+    /// Setup: Ghostable TableView
     ///
-    func registerTableViewCells() {
+    func configureGhostableTableView() {
+        view.addSubview(ghostableTableView)
+        ghostableTableView.isHidden = true
+
+        ghostableTableView.translatesAutoresizingMaskIntoConstraints = false
+        NSLayoutConstraint.activate([
+            ghostableTableView.widthAnchor.constraint(equalTo: tableView.widthAnchor),
+            ghostableTableView.heightAnchor.constraint(equalTo: tableView.heightAnchor),
+            ghostableTableView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
+            ghostableTableView.topAnchor.constraint(equalTo: tableView.topAnchor)
+        ])
+
+        view.backgroundColor = .listBackground
+        ghostableTableView.backgroundColor = .listBackground
+        ghostableTableView.isScrollEnabled = false
+    }
+
+    /// Registers all of the available table view cells and headers
+    ///
+    func registerTableViewHeadersAndCells() {
         let cells = [ OrderTableViewCell.self ]
 
         for cell in cells {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
+            ghostableTableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
+
+        let headerType = TwoColumnSectionHeaderView.self
+        tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
     }
 }
 
@@ -300,129 +258,27 @@ extension OrdersViewController {
     func startListeningToNotifications() {
         let nc = NotificationCenter.default
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
-        nc.addObserver(self, selector: #selector(stopListeningToNotifications), name: .logOutEventReceived, object: nil)
-    }
-
-    /// Stops listening to all related Notifications
-    ///
-    @objc func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
     }
 
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        statusFilter = nil
         refreshStatusPredicate()
         syncingCoordinator.resetInternalState()
     }
 }
 
-
 // MARK: - Actions
 //
 extension OrdersViewController {
-
-    @IBAction func displaySearchOrders() {
-        guard let storeID = StoresManager.shared.sessionManager.defaultStoreID else {
-            return
-        }
-
-        WooAnalytics.shared.track(.ordersListSearchTapped)
-        let searchViewController = OrderSearchViewController(storeID: storeID)
-        let navigationController = WooNavigationController(rootViewController: searchViewController)
-
-        present(navigationController, animated: true, completion: nil)
-    }
-
-    @IBAction func displayFiltersAlert() {
-        WooAnalytics.shared.track(.ordersListFilterTapped)
-        let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
-        actionSheet.view.tintColor = StyleManager.wooCommerceBrandColor
-
-        actionSheet.addCancelActionWithTitle(FilterAction.dismiss)
-        actionSheet.addDefaultActionWithTitle(FilterAction.displayAll) { [weak self] _ in
-            self?.statusFilter = nil
-        }
-
-        for orderStatus in currentSiteStatuses {
-            actionSheet.addDefaultActionWithTitle(orderStatus.name) { [weak self] _ in
-                self?.statusFilter = orderStatus
-            }
-        }
-
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.barButtonItem = navigationItem.rightBarButtonItem
-        popoverController?.sourceView = self.view
-
-        present(actionSheet, animated: true)
-    }
-
-    @IBAction func pullToRefresh(sender: UIRefreshControl) {
-        WooAnalytics.shared.track(.ordersListPulledToRefresh)
-        syncOrderStatus()
+    @objc func pullToRefresh(sender: UIRefreshControl) {
+        ServiceLocator.analytics.track(.ordersListPulledToRefresh)
+        delegate?.ordersViewControllerWillSynchronizeOrders(self)
         syncingCoordinator.synchronizeFirstPage {
             sender.endRefreshing()
         }
     }
 }
-
-
-// MARK: - Filters
-//
-private extension OrdersViewController {
-
-    func didChangeFilter(newFilter: OrderStatus?) {
-        WooAnalytics.shared.track(.filterOrdersOptionSelected,
-                                  withProperties: ["status": newFilter?.slug ?? String()])
-        WooAnalytics.shared.track(.ordersListFilterOrSearch,
-                                  withProperties: ["filter": newFilter?.slug ?? String(),
-                                                   "search": ""])
-        // Display the Filter in the Title
-        refreshTitle()
-
-        // Filter right away the cached orders
-        refreshResultsPredicate()
-
-        // Drop Cache (If Needed) + Re-Sync First Page
-        ensureStoredOrdersAreReset { [weak self] in
-            self?.syncingCoordinator.resynchronize()
-        }
-    }
-
-    /// Nukes all of the Stored Orders:
-    /// We're dropping the entire Orders Cache whenever a filter was just removed. This is performed to avoid
-    /// "interleaved Sync'ed Objects", which results in an awful UX while scrolling down
-    ///
-    func ensureStoredOrdersAreReset(onCompletion: @escaping () -> Void) {
-        guard isFiltered == false else {
-            onCompletion()
-            return
-        }
-
-        let action = OrderAction.resetStoredOrders(onCompletion: onCompletion)
-        StoresManager.shared.dispatch(action)
-    }
-
-    /// Reset the current status filter if needed (e.g. when changing stores and the currently
-    /// selected filter does not exist in the new store)
-    ///
-    func resetStatusFilterIfNeeded() {
-        guard let statusFilter = statusFilter else {
-            // "All" is the current filter so bail
-            return
-        }
-        guard currentSiteStatuses.isEmpty == false else {
-            self.statusFilter = nil
-            return
-        }
-
-        if currentSiteStatuses.contains(statusFilter) == false {
-            self.statusFilter = nil
-        }
-    }
-}
-
 
 // MARK: - Sync'ing Helpers
 //
@@ -431,7 +287,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
     /// Synchronizes the Orders for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(false)
             return
         }
@@ -442,7 +298,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                                                    statusKey: statusFilter?.slug,
                                                    pageNumber: pageNumber,
                                                    pageSize: pageSize) { [weak self] error in
-            guard let `self` = self else {
+            guard let self = self else {
                 return
             }
 
@@ -450,34 +306,14 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
                 DDLogError("⛔️ Error synchronizing orders: \(error)")
                 self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
             } else {
-                WooAnalytics.shared.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
+                ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
             }
 
             self.transitionToResultsUpdatedState()
             onCompletion?(error == nil)
         }
 
-        StoresManager.shared.dispatch(action)
-    }
-
-    func syncOrderStatus(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
-            onCompletion?(nil)
-            return
-        }
-
-        // First, let's verify our FRC predicate is up to date
-        refreshStatusPredicate()
-
-        let action = OrderStatusAction.retrieveOrderStatuses(siteID: siteID) { [weak self] (_, error) in
-            if let error = error {
-                DDLogError("⛔️ Order List — Error synchronizing order statuses: \(error)")
-            }
-            self?.resetStatusFilterIfNeeded()
-            onCompletion?(error)
-        }
-
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -514,24 +350,30 @@ extension OrdersViewController {
 }
 
 
-// MARK: - Placeholders
+// MARK: - Placeholders & Ghostable Table
 //
 private extension OrdersViewController {
 
-    /// Renders the Placeholder Orders: For safety reasons, we'll also halt ResultsController <> UITableView glue.
+    /// Renders the Placeholder Orders
     ///
     func displayPlaceholderOrders() {
         let options = GhostOptions(reuseIdentifier: OrderTableViewCell.reuseIdentifier, rowsPerSection: Settings.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
 
-        resultsController.stopForwardingEvents()
+        // If the ghostable table view gets stuck for any reason,
+        // let's reset the state before using it again
+        ghostableTableView.removeGhostContent()
+        ghostableTableView.displayGhostContent(options: options,
+                                               style: .wooDefaultGhostStyle)
+        ghostableTableView.startGhostAnimation()
+        ghostableTableView.isHidden = false
     }
 
     /// Removes the Placeholder Orders (and restores the ResultsController <> UITableView link).
     ///
     func removePlaceholderOrders() {
-        tableView.removeGhostContent()
-        resultsController.startForwardingEvents(to: self.tableView)
+        ghostableTableView.isHidden = true
+        ghostableTableView.stopGhostAnimation()
+        ghostableTableView.removeGhostContent()
         tableView.reloadData()
     }
 
@@ -541,11 +383,15 @@ private extension OrdersViewController {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.syncOrderStatus()
-            self?.sync(pageNumber: pageNumber, pageSize: pageSize)
+            guard let self = self else {
+                return
+            }
+
+            self.delegate?.ordersViewControllerWillSynchronizeOrders(self)
+            self.sync(pageNumber: pageNumber, pageSize: pageSize)
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
     /// Displays the Empty State Overlay.
@@ -559,14 +405,14 @@ private extension OrdersViewController {
             guard let `self` = self else {
                 return
             }
-            guard let site = StoresManager.shared.sessionManager.defaultSite else {
+            guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
                 return
             }
             guard let url = URL(string: site.url) else {
                 return
             }
 
-            WooAnalytics.shared.track(.orderShareStoreButtonTapped)
+            ServiceLocator.analytics.track(.orderShareStoreButtonTapped)
             SharingHelper.shareURL(url: url, title: site.name, from: overlayView.actionButtonView, in: self)
         }
 
@@ -579,10 +425,7 @@ private extension OrdersViewController {
         let overlayView: OverlayMessageView = OverlayMessageView.instantiateFromNib()
         overlayView.messageImage = .waitingForCustomersImage
         overlayView.messageText = NSLocalizedString("No results for the selected criteria", comment: "Orders List (Empty State + Filters)")
-        overlayView.actionText = NSLocalizedString("Remove Filters", comment: "Action: Opens the Store in a browser")
-        overlayView.onAction = { [weak self] in
-            self?.statusFilter = nil
-        }
+        overlayView.actionVisible = false
 
         overlayView.attach(to: view)
     }
@@ -593,24 +436,6 @@ private extension OrdersViewController {
         for subview in view.subviews where subview is OverlayMessageView {
             subview.removeFromSuperview()
         }
-    }
-}
-
-// MARK: - App Store Review Prompt
-//
-private extension OrdersViewController {
-    func displayRatingPrompt() {
-        defer {
-            if let wooEvent = WooAnalyticsStat.valueOf(stat: .appReviewsRatedApp) {
-                WooAnalytics.shared.track(wooEvent)
-            }
-        }
-
-        // Show the app store ratings alert
-        // Note: Optimistically assuming our prompting succeeds since we try to stay
-        // in line and not prompt more than two times a year
-        AppRatingManager.shared.ratedCurrentVersion()
-        SKStoreReviewController.requestReview()
     }
 }
 
@@ -659,9 +484,19 @@ extension OrdersViewController: UITableViewDataSource {
         return cell
     }
 
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        let rawAge = resultsController.sections[section].name
-        return Age(rawValue: rawAge)?.description
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        let reuseIdentifier = TwoColumnSectionHeaderView.reuseIdentifier
+        guard let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: reuseIdentifier) as? TwoColumnSectionHeaderView else {
+            return nil
+        }
+
+        header.leftText = {
+            let rawAge = resultsController.sections[section].name
+            return Age(rawValue: rawAge)?.description
+        }()
+        header.rightText = nil
+
+        return header
     }
 }
 
@@ -669,15 +504,6 @@ extension OrdersViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension OrdersViewController: UITableViewDelegate {
-
-    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
-        return Settings.estimatedHeaderHeight
-    }
-
-    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return UITableView.automaticDimension
-    }
-
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return estimatedRowHeights[indexPath] ?? Settings.estimatedRowHeight
     }
@@ -693,7 +519,13 @@ extension OrdersViewController: UITableViewDelegate {
             return
         }
 
-        performSegue(withIdentifier: Segues.orderDetails, sender: detailsViewModel(at: indexPath))
+        guard let orderDetailsVC = OrderDetailsViewController.instantiatedViewControllerFromStoryboard() else {
+            assertionFailure("Expected OrderDetailsViewController to be instantiated")
+            return
+        }
+        orderDetailsVC.viewModel = detailsViewModel(at: indexPath)
+
+        navigationController?.pushViewController(orderDetailsVC, animated: true)
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
@@ -719,7 +551,7 @@ extension OrdersViewController {
             return
         }
 
-        WooAnalytics.shared.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
+        ServiceLocator.analytics.track(.orderOpen, withProperties: ["id": viewModel.order.orderID,
                                                                "status": viewModel.order.statusKey])
         singleOrderViewController.viewModel = viewModel
     }
@@ -785,27 +617,28 @@ private extension OrdersViewController {
     }
 }
 
+// MARK: - IndicatorInfoProvider Conformance
+
+// This conformance is not used directly by `OrdersViewController`. We only need this because
+// `Self` is used as a child of `OrdersMasterViewController` which is a
+// `ButtonBarPagerTabStripViewController`.
+extension OrdersViewController: IndicatorInfoProvider {
+    /// Return `self.title` under `IndicatorInfo`.
+    ///
+    func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
+        IndicatorInfo(title: title)
+    }
+}
+
 
 // MARK: - Nested Types
 //
 private extension OrdersViewController {
 
-    enum FilterAction {
-        static let dismiss = NSLocalizedString("Dismiss", comment: "Dismiss the action sheet")
-        static let displayAll = NSLocalizedString(
-            "All",
-            comment: "Name of the All filter on the Order List screen - it means all orders will be displayed."
-        )
-    }
-
     enum Settings {
         static let estimatedHeaderHeight = CGFloat(43)
         static let estimatedRowHeight = CGFloat(86)
         static let placeholderRowsPerSection = [3]
-    }
-
-    enum Segues {
-        static let orderDetails = "ShowOrderDetailsViewController"
     }
 
     enum State {

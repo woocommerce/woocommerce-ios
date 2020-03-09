@@ -24,6 +24,7 @@ final class LoginPrologueViewController: UIViewController {
     ///
     @IBOutlet var disclaimerTextView: UITextView!
 
+    @IBOutlet private var slantedRectangle: UIImageView!
     /// Jetpack Logo ImageVIew
     ///
     @IBOutlet var jetpackImageView: UIImageView!
@@ -48,6 +49,7 @@ final class LoginPrologueViewController: UIViewController {
         setupMainView()
         setupBackgroundView()
         setupContainerView()
+        setupSlantedRectangle()
         setupJetpackImage()
 
         setupLabels()
@@ -71,22 +73,27 @@ final class LoginPrologueViewController: UIViewController {
 private extension LoginPrologueViewController {
 
     func setupMainView() {
-        view.backgroundColor = .white
+        view.backgroundColor = .basicBackground
     }
 
     func setupBackgroundView() {
-        backgroundView.backgroundColor = StyleManager.wooCommerceBrandColor
+        backgroundView.backgroundColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
     }
 
     func setupContainerView() {
-        containerView.backgroundColor = StyleManager.wooCommerceBrandColor
+        containerView.backgroundColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
     }
 
     func setupUpperLabel() {
         upperLabel.text = NSLocalizedString("Manage orders, track sales and monitor store activity with real-time alerts.", comment: "Login Prologue Legend")
         upperLabel.adjustsFontForContentSizeCategory = true
         upperLabel.font = StyleManager.subheadlineBoldFont
-        upperLabel.textColor = StyleManager.wooCommerceBrandColor
+        upperLabel.textColor = .text
+    }
+
+    func setupSlantedRectangle() {
+        slantedRectangle.image = UIImage.slantedRectangle.withRenderingMode(.alwaysTemplate)
+        slantedRectangle.tintColor = .init(light: .brand, dark: .withColorStudio(.brand, shade: .shade80))
     }
 
     func setupJetpackImage() {
@@ -108,10 +115,12 @@ private extension LoginPrologueViewController {
         let title = NSLocalizedString("Log in with Jetpack", comment: "Authentication Login Button")
         loginButton.titleLabel?.adjustsFontForContentSizeCategory = true
         loginButton.setTitle(title, for: .normal)
-        loginButton.setTitleColor(StyleManager.wooSecondary, for: .normal)
-        loginButton.titleLabel?.font = StyleManager.headlineSemiBold
-        loginButton.backgroundColor = .white
-        loginButton.layer.cornerRadius = Settings.buttonCornerRadius
+        loginButton.accessibilityIdentifier = "login-prologue-login-with-jetpack"
+        loginButton.applySecondaryButtonStyle()
+        // This is an exception where we always show the Log In button in the Light color scheme to have a better constrast to the background.
+        if #available(iOS 13.0, *) {
+            loginButton.overrideUserInterfaceStyle = .light
+        }
     }
 }
 
@@ -134,7 +143,7 @@ extension LoginPrologueViewController {
     /// Opens SafariViewController at the specified URL.
     ///
     func displaySafariViewController(at url: URL) {
-        WooAnalytics.shared.track(.loginPrologueJetpackInstructions)
+        ServiceLocator.analytics.track(.loginPrologueJetpackInstructions)
         let safariViewController = SFSafariViewController(url: url)
 
         safariViewController.modalPresentationStyle = .pageSheet
@@ -144,8 +153,8 @@ extension LoginPrologueViewController {
     /// Proceeds with the Login Flow.
     ///
     @IBAction func loginWasPressed() {
-        WooAnalytics.shared.track(.loginPrologueContinueTapped)
-        let loginViewController = AppDelegate.shared.authenticationManager.loginForWordPressDotCom()
+        ServiceLocator.analytics.track(.loginPrologueContinueTapped)
+        let loginViewController = ServiceLocator.authenticationManager.loginForWordPressDotCom()
 
         navigationController?.pushViewController(loginViewController, animated: true)
         navigationController?.setNavigationBarHidden(false, animated: true)
@@ -172,8 +181,16 @@ private extension LoginPrologueViewController {
     /// Returns the Disclaimer Attributed Text (which contains a link to the Jetpack Setup URL).
     ///
     var disclaimerAttributedText: NSAttributedString {
-        let disclaimerText = NSLocalizedString("This app requires Jetpack to connect to your Store. <br /> Read the <a href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.",
-                             comment: "Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. Place the second sentence after the `<br />` tag. Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. If a literal translation of 'Read the configuration instructions' does not make sense in your language, please use a contextually appropriate substitution. For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language."
+        let disclaimerText = NSLocalizedString(
+            "This app requires Jetpack to connect to your Store. <br /> Read the <a " +
+                "href=\"https://jetpack.com/support/getting-started-with-jetpack/\">configuration instructions</a>.",
+            comment: "Login Disclaimer Text and Jetpack config instructions. It reads: 'This app requires Jetpack to connect to your Store. " +
+            "Read the configuration instructions.' and it links to a web page on the words 'configuration instructions'. " +
+            "Place the second sentence after the `<br />` tag. " +
+            "Place the noun, \'configuration instructions' between the opening `<a` tag and the closing `</a>` tags. " +
+            "If a literal translation of 'Read the configuration instructions' does not make sense in your language, " +
+            "please use a contextually appropriate substitution. " +
+            "For example, you can translate it to say 'See: instructions' or any alternative that sounds natural in your language."
         )
         let disclaimerAttributes: [NSAttributedString.Key: Any] = [
             .font: StyleManager.thinCaptionFont,

@@ -11,4 +11,10 @@ extension UITableViewCell {
     class var reuseIdentifier: String {
         return classNameWithoutNamespaces
     }
+
+    /// Applies the default background color
+    ///
+    func applyDefaultBackgroundStyle() {
+        backgroundColor = .listForeground
+    }
 }

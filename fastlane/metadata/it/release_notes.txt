@@ -1,1 +1,5 @@
-Niente di clamoroso! Solo alcuni miglioramenti e alcune correzioni di bug: non ti accorgerai di nulla, noterai solo un'app più veloce.
+- Ora puoi visualizzare i rimborsi di un ordine.
+- Il badge "ordini da evadere" ora raggiunge un massimo di 99, mostrando 99+ per qualsiasi valore superiore a 99. In precedenza era 9+.
+- Risolto un bug a causa del quale i nomi di prodotti lunghi potevano far scomparire la quantità di prodotto durante la visualizzazione di un ordine.
+- Ora i nomi di prodotto con caratteri escape HTML dovrebbero essere visualizzati correttamente.
+- Se in un ordine sono presenti più prodotti, toccando un prodotto qualsiasi, si dovrebbe aprire il prodotto corretto.

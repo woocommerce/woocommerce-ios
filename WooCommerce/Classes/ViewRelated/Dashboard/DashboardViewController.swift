@@ -10,25 +10,18 @@ class DashboardViewController: UIViewController {
 
     // MARK: Properties
 
-    @IBOutlet private weak var scrollView: UIScrollView!
-    @IBOutlet private weak var newOrdersContainerView: UIView!
-    @IBOutlet weak var newOrdersHeightConstraint: NSLayoutConstraint!
+    private var siteID: Int64?
 
-    private var storeStatsViewController: StoreStatsViewController!
-    private var newOrdersViewController: NewOrdersViewController!
-    private var topPerformersViewController: TopPerformersViewController!
+    private var dashboardUIFactory: DashboardUIFactory?
+    private var dashboardUI: DashboardUI?
 
-    private lazy var refreshControl: UIRefreshControl = {
-        let refreshControl = UIRefreshControl()
-        refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
-        return refreshControl
+    // MARK: Subviews
+
+    private lazy var containerView: UIView = {
+        return UIView(frame: .zero)
     }()
 
     // MARK: View Lifecycle
-
-    deinit {
-        stopListeningToNotifications()
-    }
 
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -40,33 +33,19 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         configureNavigation()
         configureView()
+        configureDashboardUIContainer()
     }
 
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         // Reset title to prevent it from being empty right after login
         configureTitle()
-        reloadData()
+        reloadDashboardUIStatsVersion()
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if let vc = segue.destination as? StoreStatsViewController, segue.identifier == Segues.storeStatsSegue {
-            storeStatsViewController = vc
-        }
-        if let vc = segue.destination as? NewOrdersViewController, segue.identifier == Segues.newOrdersSegue {
-            newOrdersViewController = vc
-            newOrdersViewController.delegate = self
-        }
-        if let vc = segue.destination as? TopPerformersViewController, segue.identifier == Segues.topPerformersSegue {
-            topPerformersViewController = vc
-        }
-    }
-
-    override func preferredContentSizeDidChange(forChildContentContainer container: UIContentContainer) {
-        super.preferredContentSizeDidChange(forChildContentContainer: container)
-        if let containerVC = container as? NewOrdersViewController {
-            newOrdersHeightConstraint?.constant = containerVC.preferredContentSize.height
-        }
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        dashboardUI?.view.frame = containerView.bounds
     }
 }
 
@@ -76,9 +55,7 @@ class DashboardViewController: UIViewController {
 private extension DashboardViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        scrollView.refreshControl = refreshControl
-        newOrdersContainerView.isHidden = true // Hide the new orders vc by default
+        view.backgroundColor = .listBackground
     }
 
     func configureNavigation() {
@@ -91,8 +68,9 @@ private extension DashboardViewController {
             "My store",
             comment: "Title of the bottom tab item that presents the user's store dashboard, and default title for the store dashboard"
         )
-        title = StoresManager.shared.sessionManager.defaultSite?.name ?? myStore
+        title = ServiceLocator.stores.sessionManager.defaultSite?.name ?? myStore
         tabBarItem.title = myStore
+        tabBarItem.accessibilityIdentifier = "tab-bar-my-store-item"
     }
 
     private func resetTitle() {
@@ -109,13 +87,13 @@ private extension DashboardViewController {
                                              style: .plain,
                                              target: self,
                                              action: #selector(settingsTapped))
-        rightBarButton.tintColor = .white
         rightBarButton.accessibilityLabel = NSLocalizedString("Settings", comment: "Accessibility label for the Settings button.")
         rightBarButton.accessibilityTraits = .button
         rightBarButton.accessibilityHint = NSLocalizedString(
             "Navigates to Settings.",
             comment: "VoiceOver accessibility hint, informing the user the button can be used to navigate to the Settings screen."
         )
+        rightBarButton.accessibilityIdentifier = "dashboard-settings-button"
         navigationItem.setRightBarButton(rightBarButton, animated: false)
 
         // Don't show the Dashboard title in the next-view's back button
@@ -126,8 +104,66 @@ private extension DashboardViewController {
 
         navigationItem.backBarButtonItem = backButton
     }
+
+    func configureDashboardUIContainer() {
+        // A container view is added to respond to safe area insets from the view controller.
+        // This is needed when the child view controller's view has to use a frame-based layout
+        // (e.g. when the child view controller is a `ButtonBarPagerTabStripViewController` subclass).
+        view.addSubview(containerView)
+        containerView.translatesAutoresizingMaskIntoConstraints = false
+        view.pinSubviewToSafeArea(containerView)
+    }
+
+    func reloadDashboardUIStatsVersion() {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        if siteID != self.siteID {
+            dashboardUIFactory = DashboardUIFactory(siteID: siteID)
+            self.siteID = siteID
+        }
+
+        dashboardUIFactory?.reloadDashboardUI(isFeatureFlagOn: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.stats),
+                                              onUIUpdate: { [weak self] dashboardUI in
+                                                self?.onDashboardUIUpdate(updatedDashboardUI: dashboardUI)
+        })
+    }
 }
 
+// MARK: - Updates
+//
+private extension DashboardViewController {
+    func onDashboardUIUpdate(updatedDashboardUI: DashboardUI) {
+        defer {
+            // Reloads data of the updated dashboard UI at the end.
+            reloadData()
+        }
+
+        // No need to continue replacing the dashboard UI child view controller if the updated dashboard UI is the same as the currently displayed one.
+        guard dashboardUI !== updatedDashboardUI else {
+            return
+        }
+
+        // Tears down the previous child view controller.
+        if let previousDashboardUI = dashboardUI {
+            remove(previousDashboardUI)
+        }
+
+        dashboardUI = updatedDashboardUI
+
+        let contentView = updatedDashboardUI.view!
+        addChild(updatedDashboardUI)
+        containerView.addSubview(contentView)
+        updatedDashboardUI.didMove(toParent: self)
+
+        updatedDashboardUI.onPullToRefresh = { [weak self] in
+            self?.pullToRefresh()
+        }
+        updatedDashboardUI.displaySyncingErrorNotice = { [weak self] in
+            self?.displaySyncingErrorNotice()
+        }
+    }
+}
 
 // MARK: - Notifications
 //
@@ -140,23 +176,15 @@ extension DashboardViewController {
         nc.addObserver(self, selector: #selector(defaultAccountWasUpdated), name: .defaultAccountWasUpdated, object: nil)
     }
 
-    /// Stops listening to all related Notifications
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     /// Runs whenever the default Account is updated.
     ///
     @objc func defaultAccountWasUpdated() {
-        guard storeStatsViewController != nil, StoresManager.shared.isAuthenticated == false else {
+        guard isViewLoaded, ServiceLocator.stores.isAuthenticated == false else {
             return
         }
 
         resetTitle()
-
-        storeStatsViewController.clearAllFields()
-        applyHideAnimation(for: newOrdersContainerView)
+        dashboardUI?.defaultAccountDidUpdate()
     }
 }
 
@@ -174,140 +202,37 @@ extension DashboardViewController {
 private extension DashboardViewController {
 
     @objc func settingsTapped() {
-        WooAnalytics.shared.track(.settingsTapped)
+        ServiceLocator.analytics.track(.settingsTapped)
         performSegue(withIdentifier: Segues.settingsSegue, sender: nil)
     }
 
-    @objc func pullToRefresh() {
-        WooAnalytics.shared.track(.dashboardPulledToRefresh)
-        applyHideAnimation(for: newOrdersContainerView)
-        reloadData()
-    }
-}
-
-
-// MARK: - NewOrdersDelegate Conformance
-//
-extension DashboardViewController: NewOrdersDelegate {
-    func didUpdateNewOrdersData(hasNewOrders: Bool) {
-        if hasNewOrders {
-            applyUnhideAnimation(for: newOrdersContainerView)
-            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "true"])
-        } else {
-            applyHideAnimation(for: newOrdersContainerView)
-            WooAnalytics.shared.track(.dashboardUnfulfilledOrdersLoaded, withProperties: ["has_unfulfilled_orders": "false"])
-        }
-    }
-}
-
-
-// MARK: - Private Helpers
-//
-private extension DashboardViewController {
-
-    func reloadData() {
-        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
-        let group = DispatchGroup()
-
-        var reloadError: Error? = nil
-
-        group.enter()
-        storeStatsViewController.syncAllStats() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.enter()
-        newOrdersViewController.syncNewOrders() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.enter()
-        topPerformersViewController.syncTopPerformers() { error in
-            if let error = error {
-                reloadError = error
-            }
-            group.leave()
-        }
-
-        group.notify(queue: .main) { [weak self] in
-            self?.refreshControl.endRefreshing()
-            self?.configureTitle()
-
-            if let error = reloadError {
-                DDLogError("⛔️ Error loading dashboard: \(error)")
-                self?.handleSyncError(error: error)
-            } else {
-                self?.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: true)
-            }
-        }
+    func pullToRefresh() {
+        ServiceLocator.analytics.track(.dashboardPulledToRefresh)
+        reloadDashboardUIStatsVersion()
     }
 
-    func applyUnhideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.showAnimationDuration,
-                       delay: 0,
-                       usingSpringWithDamping: Constants.showSpringDamping,
-                       initialSpringVelocity: Constants.showSpringVelocity,
-                       options: .curveEaseOut,
-                       animations: {
-                        view.isHidden = false
-                        view.alpha = UIKitConstants.alphaFull
-        }) { _ in
-            view.isHidden = false
-            view.alpha = UIKitConstants.alphaFull
-        }
-    }
-
-    func applyHideAnimation(for view: UIView) {
-        UIView.animate(withDuration: Constants.hideAnimationDuration, animations: {
-            view.isHidden = true
-            view.alpha = UIKitConstants.alphaZero
-        }, completion: { _ in
-            view.isHidden = true
-            view.alpha = UIKitConstants.alphaZero
-        })
-    }
-
-    private func handleSyncError(error: Error) {
-        switch error {
-        case let siteVisitStatsStoreError as SiteVisitStatsStoreError:
-            handleSiteVisitStatsStoreError(error: siteVisitStatsStoreError)
-        default:
-            displaySyncingErrorNotice()
-        }
-    }
-
-    private func handleSiteVisitStatsStoreError(error: SiteVisitStatsStoreError) {
-        switch error {
-        case .statsModuleDisabled:
-            updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: false)
-        default:
-            displaySyncingErrorNotice()
-        }
-    }
-
-    private func displaySyncingErrorNotice() {
+    func displaySyncingErrorNotice() {
         let title = NSLocalizedString("My store", comment: "My Store Notice Title for loading error")
         let message = NSLocalizedString("Unable to load content", comment: "Load Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title, message: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
-            self?.refreshControl.beginRefreshing()
             self?.reloadData()
         }
 
-        AppDelegate.shared.noticePresenter.enqueue(notice: notice)
-    }
-
-    private func updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: Bool) {
-        storeStatsViewController.updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
+        ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 }
 
+// MARK: - Private Helpers
+//
+private extension DashboardViewController {
+    func reloadData() {
+        DDLogInfo("♻️ Requesting dashboard data be reloaded...")
+        dashboardUI?.reloadData(completion: { [weak self] in
+            self?.configureTitle()
+        })
+    }
+}
 
 // MARK: - Constants
 //
@@ -315,15 +240,5 @@ private extension DashboardViewController {
 
     struct Segues {
         static let settingsSegue        = "ShowSettingsViewController"
-        static let storeStatsSegue      = "StoreStatsEmbedSegue"
-        static let newOrdersSegue       = "NewOrdersEmbedSegue"
-        static let topPerformersSegue   = "TopPerformersEmbedSegue"
-    }
-
-    struct Constants {
-        static let hideAnimationDuration: TimeInterval  = 0.25
-        static let showAnimationDuration: TimeInterval  = 0.50
-        static let showSpringDamping: CGFloat           = 0.7
-        static let showSpringVelocity: CGFloat          = 0.0
     }
 }

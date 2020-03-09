@@ -4,7 +4,7 @@ import Charts
 import XLPagerTabStrip
 
 
-class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
+class PeriodDataViewController: UIViewController {
 
     // MARK: - Public Properties
 
@@ -33,20 +33,22 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     @IBOutlet private weak var revenueData: UILabel!
     @IBOutlet private weak var barChartView: BarChartView!
     @IBOutlet private weak var lastUpdated: UILabel!
-    @IBOutlet private weak var borderView: UIView!
     @IBOutlet private weak var yAxisAccessibilityView: UIView!
     @IBOutlet private weak var xAxisAccessibilityView: UIView!
     @IBOutlet private weak var chartAccessibilityView: UIView!
 
     private var lastUpdatedDate: Date?
-    private var yAxisMinimum: String = Constants.chartYAxisMinimum.humanReadableString()
-    private var yAxisMaximum: String = ""
+
+    private var grossSales: [Double] {
+        (orderStats?.items ?? []).map(\.grossSales)
+    }
+
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
     ///
     private lazy var siteStatsResultsController: ResultsController<StorageSiteVisitStats> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
         let descriptor = NSSortDescriptor(keyPath: \StorageSiteVisitStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -56,7 +58,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     /// OrderStats ResultsController: Loads order stats from the Storage Layer
     ///
     private lazy var orderStatsResultsController: ResultsController<StorageOrderStats> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "granularity ==[c] %@", granularity.rawValue)
         let descriptor = NSSortDescriptor(keyPath: \StorageOrderStats.date, ascending: false)
         return ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
@@ -64,7 +66,7 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
 
     /// Placeholder: Mockup Charts View
     ///
-    private lazy var placehoderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
+    private lazy var placeholderChartsView: ChartPlaceholderView = ChartPlaceholderView.instantiateFromNib()
 
 
     // MARK: - Computed Properties
@@ -82,12 +84,13 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
     }
 
     private var summaryDateUpdated: String {
-        if let lastUpdatedDate = lastUpdatedDate {
-            return lastUpdatedDate.relativelyFormattedUpdateString
-        } else {
+        guard let lastUpdatedDate = lastUpdatedDate else {
             return ""
         }
+        return lastUpdatedDate.relativelyFormattedUpdateString
     }
+
+    // MARK: x/y-Axis Values
 
     private var xAxisMinimum: String {
         guard let item = orderStats?.items?.first else {
@@ -101,6 +104,22 @@ class PeriodDataViewController: UIViewController, IndicatorInfoProvider {
             return ""
         }
         return formattedAxisPeriodString(for: item)
+    }
+
+    private var yAxisMinimum: String {
+        guard let orderStats = orderStats else {
+            return ""
+        }
+        let min = grossSales.min() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(min), with: orderStats.currencyCode) ?? ""
+    }
+
+    private var yAxisMaximum: String {
+        guard let orderStats = orderStats else {
+            return ""
+        }
+        let max = grossSales.max() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(max), with: orderStats.currencyCode) ?? ""
     }
 
     // MARK: - Initialization
@@ -169,7 +188,7 @@ extension PeriodDataViewController {
     ///
     func displayGhostContent() {
         ensurePlaceholderIsVisible()
-        placehoderChartsView.startGhostAnimation()
+        placeholderChartsView.startGhostAnimation(style: .wooDefaultGhostStyle)
     }
 
     /// Removes the Placeholder Content.
@@ -177,20 +196,20 @@ extension PeriodDataViewController {
     /// placeholder animations from that spot!
     ///
     func removeGhostContent() {
-        placehoderChartsView.stopGhostAnimation()
-        placehoderChartsView.removeFromSuperview()
+        placeholderChartsView.stopGhostAnimation()
+        placeholderChartsView.removeFromSuperview()
     }
 
     /// Ensures the Placeholder Charts UI is onscreen.
     ///
     private func ensurePlaceholderIsVisible() {
-        guard placehoderChartsView.superview == nil else {
+        guard placeholderChartsView.superview == nil else {
             return
         }
 
-        placehoderChartsView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(placehoderChartsView)
-        view.pinSubviewToAllEdges(placehoderChartsView)
+        placeholderChartsView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(placeholderChartsView)
+        view.pinSubviewToAllEdges(placeholderChartsView)
     }
 
 }
@@ -220,8 +239,7 @@ private extension PeriodDataViewController {
     }
 
     func configureView() {
-        view.backgroundColor = StyleManager.wooWhite
-        borderView.backgroundColor = StyleManager.wooGreyBorder
+        view.backgroundColor = .listForeground
 
         // Titles
         visitorsTitle.text = NSLocalizedString("Visitors", comment: "Visitors stat label on dashboard - should be plural.")
@@ -238,7 +256,7 @@ private extension PeriodDataViewController {
 
         // Footer
         lastUpdated.font = UIFont.footnote
-        lastUpdated.textColor = StyleManager.wooGreyMid
+        lastUpdated.textColor = .textSubtle
 
         // Visibility
         updateSiteVisitStatsVisibility(shouldShowSiteVisitStats: shouldShowSiteVisitStats)
@@ -261,6 +279,8 @@ private extension PeriodDataViewController {
                               comment: "VoiceOver accessibility label for the store revenue chart. It reads: Store revenue chart {chart granularity}."),
             granularity.pluralizedString
         )
+
+        chartAccessibilityView.accessibilityIdentifier = "revenue-chart-" + granularity.accessibilityIdentifier
     }
 
     func configureBarChart() {
@@ -273,7 +293,7 @@ private extension PeriodDataViewController {
         barChartView.drawValueAboveBarEnabled = true
         barChartView.noDataText = NSLocalizedString("No data available", comment: "Text displayed when no data is available for revenue chart.")
         barChartView.noDataFont = StyleManager.chartLabelFont
-        barChartView.noDataTextColor = StyleManager.wooSecondary
+        barChartView.noDataTextColor = .textSubtle
         barChartView.extraRightOffset = Constants.chartExtraRightOffset
         barChartView.extraTopOffset = Constants.chartExtraTopOffset
         barChartView.delegate = self
@@ -282,9 +302,9 @@ private extension PeriodDataViewController {
         xAxis.labelPosition = .bottom
         xAxis.setLabelCount(2, force: true)
         xAxis.labelFont = StyleManager.chartLabelFont
-        xAxis.labelTextColor = StyleManager.wooSecondary
-        xAxis.axisLineColor = StyleManager.wooGreyBorder
-        xAxis.gridColor = StyleManager.wooGreyBorder
+        xAxis.labelTextColor = .textSubtle
+        xAxis.axisLineColor = .systemColor(.separator)
+        xAxis.gridColor = .systemColor(.separator)
         xAxis.drawLabelsEnabled = true
         xAxis.drawGridLinesEnabled = false
         xAxis.drawAxisLineEnabled = false
@@ -294,15 +314,14 @@ private extension PeriodDataViewController {
 
         let yAxis = barChartView.leftAxis
         yAxis.labelFont = StyleManager.chartLabelFont
-        yAxis.labelTextColor = StyleManager.wooSecondary
-        yAxis.axisLineColor = StyleManager.wooGreyBorder
-        yAxis.gridColor = StyleManager.wooGreyBorder
-        yAxis.zeroLineColor = StyleManager.wooGreyBorder
+        yAxis.labelTextColor = .textSubtle
+        yAxis.axisLineColor = .systemColor(.separator)
+        yAxis.gridColor = .systemColor(.separator)
+        yAxis.zeroLineColor = .systemColor(.separator)
         yAxis.drawLabelsEnabled = true
         yAxis.drawGridLinesEnabled = true
         yAxis.drawAxisLineEnabled = false
         yAxis.drawZeroLineEnabled = true
-        yAxis.axisMinimum = Constants.chartYAxisMinimum
         yAxis.valueFormatter = self
         yAxis.setLabelCount(3, force: true)
     }
@@ -318,9 +337,12 @@ private extension PeriodDataViewController {
 
 // MARK: - IndicatorInfoProvider Conformance (Tab Bar)
 //
-extension PeriodDataViewController {
+extension PeriodDataViewController: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
-        return IndicatorInfo(title: granularity.pluralizedString)
+        return IndicatorInfo(
+            title: granularity.pluralizedString,
+            accessibilityIdentifier: "period-data-" + granularity.accessibilityIdentifier + "-tab"
+        )
     }
 }
 
@@ -336,9 +358,9 @@ extension PeriodDataViewController: ChartViewDelegate {
         }
 
         let marker = ChartMarker(chartView: chartView,
-                                 color: StyleManager.wooSecondary,
+                                 color: .chartDataBarHighlighted,
                                  font: StyleManager.chartLabelFont,
-                                 textColor: StyleManager.wooWhite,
+                                 textColor: .systemColor(.systemGray6),
                                  insets: Constants.chartMarkerInsets)
         marker.minimumSize = Constants.chartMarkerMinimumSize
         marker.arrowSize = Constants.chartMarkerArrowSize
@@ -366,10 +388,10 @@ extension PeriodDataViewController: IAxisValueFormatter {
                 // Do not show the "0" label on the Y axis
                 return ""
             } else {
-                yAxisMaximum = value.humanReadableString()
-                return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
+                return CurrencyFormatter().formatCurrency(using: value.humanReadableString(),
                                                           at: CurrencySettings.shared.currencyPosition,
-                                                          with: currencySymbol)
+                                                          with: currencySymbol,
+                                                          isNegative: value.sign == .minus)
             }
         }
     }
@@ -384,7 +406,8 @@ private extension PeriodDataViewController {
         yAxisAccessibilityView.accessibilityValue = String.localizedStringWithFormat(
             NSLocalizedString(
                 "Minimum value %@, maximum value %@",
-                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. It reads: Minimum value {value}, maximum value {value}."
+                comment: "VoiceOver accessibility value, informs the user about the Y-axis min/max values. " +
+                "It reads: Minimum value {value}, maximum value {value}."
             ),
             yAxisMinimum,
             yAxisMaximum
@@ -419,7 +442,8 @@ private extension PeriodDataViewController {
             chartSummaryString += String.localizedStringWithFormat(
                 NSLocalizedString(
                     "Bar number %i, %@, ",
-                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. It reads: Bar number {bar number} {summary of bar}."
+                    comment: "VoiceOver accessibility value, informs the user about a specific bar in the revenue chart. " +
+                    "It reads: Bar number {bar number} {summary of bar}."
                 ),
                 i+1,
                 entrySummaryString
@@ -464,7 +488,7 @@ private extension PeriodDataViewController {
             isInitialLoad = false
             return
         }
-        WooAnalytics.shared.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardMainStatsDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }
 
@@ -547,7 +571,7 @@ private extension PeriodDataViewController {
                                                                                 with: orderStats.currencyCode,
                                                                                 roundSmallNumbers: false) ?? String()
             entry.accessibilityValue = "\(formattedChartMarkerPeriodString(for: item)): \(formattedAmount)"
-            barColors.append(StyleManager.wooGreyMid)
+            barColors.append(.chartDataBar)
             dataEntries.append(entry)
             barCount += 1
         }
@@ -555,7 +579,7 @@ private extension PeriodDataViewController {
         let dataSet =  BarChartDataSet(entries: dataEntries, label: "Data")
         dataSet.colors = barColors
         dataSet.highlightEnabled = true
-        dataSet.highlightColor = StyleManager.wooCommerceBrandColor
+        dataSet.highlightColor = .chartDataBarHighlighted
         dataSet.highlightAlpha = Constants.chartHighlightAlpha
         dataSet.drawValuesEnabled = false // Do not draw value labels on the top of the bars
         return BarChartData(dataSet: dataSet)
@@ -625,6 +649,5 @@ private extension PeriodDataViewController {
         static let chartMarkerArrowSize: CGSize         = CGSize(width: 8, height: 6)
 
         static let chartXAxisGranularity: Double        = 1.0
-        static let chartYAxisMinimum: Double            = 0.0
     }
 }

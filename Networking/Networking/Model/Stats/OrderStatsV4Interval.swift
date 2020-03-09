@@ -2,7 +2,9 @@
 /// v4 API
 public struct OrderStatsV4Interval: Decodable {
     public let interval: String
+    /// Interval start date string in the site time zone.
     public let dateStart: String
+    /// Interval end date string in the site time zone.
     public let dateEnd: String
     public let subtotals: OrderStatsV4Totals
 

@@ -1,6 +1,11 @@
 import Foundation
 import Storage
 
+extension Storage.Product {
+    var imagesArray: [Storage.ProductImage] {
+        return images?.toArray() ?? []
+    }
+}
 
 // MARK: - Storage.Product: ReadOnlyConvertible
 //
@@ -9,14 +14,16 @@ extension Storage.Product: ReadOnlyConvertible {
     /// Updates the Storage.Product with the ReadOnly.
     ///
     public func update(with product: Yosemite.Product) {
-        siteID = Int64(product.siteID)
-        productID = Int64(product.productID)
+        siteID = product.siteID
+        productID = product.productID
         productTypeKey = product.productTypeKey
         name = product.name
         slug = product.slug
         permalink = product.permalink
         dateCreated = product.dateCreated
         dateModified = product.dateModified
+        dateOnSaleStart = product.dateOnSaleStart
+        dateOnSaleEnd = product.dateOnSaleEnd
         statusKey = product.statusKey
         featured = product.featured
         catalogVisibilityKey = product.catalogVisibilityKey
@@ -39,7 +46,7 @@ extension Storage.Product: ReadOnlyConvertible {
         manageStock = product.manageStock
 
         var quantity: String? = nil
-        if let stockQuantity = stockQuantity {
+        if let stockQuantity = product.stockQuantity {
             quantity = String(stockQuantity)
         }
         stockQuantity = quantity
@@ -50,17 +57,17 @@ extension Storage.Product: ReadOnlyConvertible {
         shippingRequired = product.shippingRequired
         shippingTaxable = product.shippingTaxable
         shippingClass = product.shippingClass
-        shippingClassID = Int64(product.shippingClassID)
+        shippingClassID = product.shippingClassID
         reviewsAllowed = product.reviewsAllowed
         averageRating = product.averageRating
         ratingCount = Int64(product.ratingCount)
-        relatedIDs = product.relatedIDs.map { Int64($0) }
-        upsellIDs = product.upsellIDs.map { Int64($0) }
-        crossSellIDs = product.crossSellIDs.map { Int64($0) }
-        parentID = Int64(product.parentID)
+        relatedIDs = product.relatedIDs
+        upsellIDs = product.upsellIDs
+        crossSellIDs = product.crossSellIDs
+        parentID = product.parentID
         purchaseNote = product.purchaseNote
-        variations = product.variations.map { Int64($0) }
-        groupedProducts = product.groupedProducts.map { Int64($0) }
+        variations = product.variations
+        groupedProducts = product.groupedProducts
         menuOrder = Int64(product.menuOrder)
         backordersKey = product.backordersKey
         backordersAllowed = product.backordersAllowed
@@ -74,22 +81,25 @@ extension Storage.Product: ReadOnlyConvertible {
         let productCategories = categories?.map { $0.toReadOnly() } ?? [Yosemite.ProductCategory]()
         let productDownloads = downloads?.map { $0.toReadOnly() } ?? [Yosemite.ProductDownload]()
         let productTags = tags?.map { $0.toReadOnly() } ?? [Yosemite.ProductTag]()
-        let productImages = images?.map { $0.toReadOnly() } ?? [Yosemite.ProductImage]()
+        let productImages = imagesArray.map { $0.toReadOnly() }
         let productAttributes = attributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductAttribute]()
         let productDefaultAttributes = defaultAttributes?.map { $0.toReadOnly() } ?? [Yosemite.ProductDefaultAttribute]()
+        let productShippingClassModel = productShippingClass?.toReadOnly()
 
         var quantity: Int?
         if let stockQuantity = stockQuantity {
             quantity = Int(stockQuantity)
         }
 
-        return Product(siteID: Int(siteID),
-                       productID: Int(productID),
+        return Product(siteID: siteID,
+                       productID: productID,
                        name: name,
                        slug: slug,
                        permalink: permalink,
                        dateCreated: dateCreated,
                        dateModified: dateModified,
+                       dateOnSaleStart: dateOnSaleStart,
+                       dateOnSaleEnd: dateOnSaleEnd,
                        productTypeKey: productTypeKey,
                        statusKey: statusKey,
                        featured: featured,
@@ -123,22 +133,23 @@ extension Storage.Product: ReadOnlyConvertible {
                        shippingRequired: shippingRequired,
                        shippingTaxable: shippingTaxable,
                        shippingClass: shippingClass,
-                       shippingClassID: Int(shippingClassID),
+                       shippingClassID: shippingClassID,
+                       productShippingClass: productShippingClassModel,
                        reviewsAllowed: reviewsAllowed,
                        averageRating: averageRating,
                        ratingCount: Int(ratingCount),
                        relatedIDs: convertIDArray(relatedIDs),
                        upsellIDs: convertIDArray(upsellIDs),
                        crossSellIDs: convertIDArray(crossSellIDs),
-                       parentID: Int(parentID),
+                       parentID: parentID,
                        purchaseNote: purchaseNote,
                        categories: productCategories.sorted(),
                        tags: productTags.sorted(),
-                       images: productImages.sorted(),
+                       images: productImages,
                        attributes: productAttributes.sorted(),
                        defaultAttributes: productDefaultAttributes.sorted(),
-                       variations: convertIDArray(variations),
-                       groupedProducts: convertIDArray(groupedProducts),
+                       variations: variations ?? [],
+                       groupedProducts: groupedProducts ?? [],
                        menuOrder: Int(menuOrder))
     }
 
@@ -152,11 +163,11 @@ extension Storage.Product: ReadOnlyConvertible {
         return ProductDimensions(length: dimensions.length, width: dimensions.width, height: dimensions.height)
     }
 
-    private func convertIDArray(_ array: [Int64]? ) -> [Int] {
+    private func convertIDArray(_ array: [Int64]? ) -> [Int64] {
         guard let array = array else {
-            return [Int]()
+            return [Int64]()
         }
 
-        return array.map { Int($0) }
+        return array.map { Int64($0) }
     }
 }

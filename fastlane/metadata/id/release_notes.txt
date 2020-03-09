@@ -1,1 +1,5 @@
-Tidak ada yang istimewa di sini! Hanya beberapa peningkatan dan perbaikan bug — Anda tidak akan menemukan apa pun selain aplikasi yang berjalan dengan lancar.
+- Kini Anda dapat melihat pengembalian dana pesanan.
+- Kini lencana “pesanan untuk dipenuhi” memiliki batas maksimal 99 dan akan menunjukkan 99+ untuk pesanan lebih dari 99. Sebelumnya, lencana menunjukkan 9+.
+- Memperbaiki bug yang menyebabkan nama produk yang panjang membuat kuantitas produk menghilang saat melihat pesanan.
+- Nama produk dengan karakter HTML escape kini dapat ditampilkan dengan benar.
+- Jika sebuah pesanan memiliki beberapa produk, mengetuk produk apa pun akan membuka produk yang tepat.

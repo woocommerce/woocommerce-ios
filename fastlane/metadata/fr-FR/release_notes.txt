@@ -1,1 +1,5 @@
-Rien de crucial ici ! Seulement quelques améliorations et résolutions de bugs : vous ne remarquerez rien si ce n'est une application plus fluide.
+- Désormais, vous pouvez voir les remboursements sur une commande.
+- Le badge « commandes à exécuter » est désormais limité à 99. 99+ apparaît pour indiquer toute valeur supérieure. La valeur était précédemment de 9+.
+- Résolution d'un bug dans lequel les noms de produits longs pouvaient faire disparaître la quantité de produits lors de la visualisation d'une commande.
+- Les noms de produits intégrant les caractères d'échappement HTML devraient désormais s'afficher correctement.
+- Si une commande comprend plusieurs produits, appuyer sur un produit ouvre désormais le produit approprié.

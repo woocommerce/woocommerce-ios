@@ -6,43 +6,49 @@ extension UILabel {
     func applyHeadlineStyle() {
         adjustsFontForContentSizeCategory = true
         font = .headline
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
+    }
+
+    func applyLinkHeadlineStyle() {
+        adjustsFontForContentSizeCategory = true
+        font = .headline
+        textColor = .textLink
     }
 
     func applySubheadlineStyle() {
         adjustsFontForContentSizeCategory = true
         font = .subheadline
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
     }
 
     func applyBodyStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
     }
 
     func applySecondaryBodyStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body
-        textColor = StyleManager.wooGreyTextMin
+        textColor = .textSubtle
     }
 
     func applyFootnoteStyle() {
         adjustsFontForContentSizeCategory = true
         font = .footnote
-        textColor = StyleManager.defaultTextColor
+        textColor = .systemColor(.secondaryLabel)
     }
 
     func applySecondaryFootnoteStyle() {
         adjustsFontForContentSizeCategory = true
         font = .footnote
-        textColor = StyleManager.wooGreyTextMin
+        textColor = .textSubtle
     }
 
     func applyTitleStyle() {
         adjustsFontForContentSizeCategory = true
         font = .title1
-        textColor = StyleManager.defaultTextColor
+        textColor = .text
     }
 
     func applyPaddedLabelDefaultStyles() {
@@ -62,6 +68,16 @@ extension UILabel {
     func applyEmptyStateTitleStyle() {
         adjustsFontForContentSizeCategory = true
         font = .body
-        textColor = StyleManager.wooGreyMid
+        textColor = .textQuaternary
+    }
+
+    func applyActionableStyle() {
+        textColor = .accent
+    }
+
+    func applyCaption1Style() {
+        adjustsFontForContentSizeCategory = true
+        font = .caption1
+        textColor = .textSubtle
     }
 }

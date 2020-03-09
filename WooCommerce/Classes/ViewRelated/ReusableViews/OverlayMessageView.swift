@@ -29,6 +29,17 @@ class OverlayMessageView: UIView {
         }
     }
 
+    /// Overlay's Top Image Tint Color.
+    ///
+    var messageImageTintColor: UIColor? {
+        get {
+            return imageView.tintColor
+        }
+        set {
+            imageView.tintColor = newValue
+        }
+    }
+
     /// Message to be displayed below the Image.
     ///
     var messageText: String? {
@@ -80,7 +91,7 @@ class OverlayMessageView: UIView {
     override func awakeFromNib() {
         super.awakeFromNib()
 
-        backgroundColor = StyleManager.tableViewBackgroundColor
+        backgroundColor = .listBackground
         messageLabel.applyBodyStyle()
         actionButton.applySecondaryButtonStyle()
     }

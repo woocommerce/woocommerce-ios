@@ -1,0 +1,42 @@
+{
+    "data": {
+        "id": 173,
+        "date_created": "2019-08-20T06:06:29",
+        "date_created_gmt": "2019-08-20T06:06:29",
+        "product_id": 32,
+        "status": "approved",
+        "reviewer": "somereviewer",
+        "reviewer_email": "somewhere@intheinternet.com",
+        "review": "<p>The fancy chair gets only three stars</p>\n",
+        "rating": 3,
+        "verified": false,
+        "reviewer_avatar_urls": {
+            "24": "http://2.gravatar.com/avatar/b371b7de1e58a5dcc3fc3aa236784081?s=24&d=mm&r=g",
+            "48": "http://2.gravatar.com/avatar/b371b7de1e58a5dcc3fc3aa236784081?s=48&d=mm&r=g",
+            "96": "http://2.gravatar.com/avatar/b371b7de1e58a5dcc3fc3aa236784081?s=96&d=mm&r=g"
+        },
+        "_links": {
+            "self": [
+                {
+                    "href": "http://store.ctarda.com/wp-json/wc/v3/products/reviews/173"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "http://store.ctarda.com/wp-json/wc/v3/products/reviews"
+                }
+            ],
+            "up": [
+                {
+                    "href": "http://store.ctarda.com/wp-json/wc/v3/products/32"
+                }
+            ],
+            "reviewer": [
+                {
+                    "embeddable": true,
+                    "href": "http://store.ctarda.com/wp-json/wp/v2/users/1"
+                }
+            ]
+        }
+    }
+}

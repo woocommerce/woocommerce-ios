@@ -8,11 +8,11 @@ class ShipmentTrackingListMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 424242
+    private let dummySiteID: Int64 = 424242
 
     /// Dummy Order ID.
     ///
-    private let dummyOrderID = 99999999
+    private let dummyOrderID: Int64 = 99999999
 
     /// Verifies that all of the ShipmentTracking Fields are parsed correctly for multiple tracking JSON objects.
     ///

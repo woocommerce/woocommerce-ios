@@ -2,6 +2,11 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSAppTransportSecurity</key>
+	<dict>
+		<key>NSAllowsLocalNetworking</key>
+		<true/>
+	</dict>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -53,9 +58,9 @@
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
 	<key>NSCameraUsageDescription</key>
-	<string>To take photos or videos to add to your support tickets.</string>
+	<string>To take photos or videos to add to your Products or support tickets.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
-	<string>To add photos or videos to your support tickets.</string>
+	<string>To save photos from camera for Product images, or to add photos or videos to your Products or support tickets.</string>
 	<key>UIAppFonts</key>
 	<array>
 		<string>Noticons.ttf</string>

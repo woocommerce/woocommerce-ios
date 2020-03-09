@@ -1,10 +1,11 @@
+source 'https://cdn.cocoapods.org/'
+
 inhibit_all_warnings!
-use_frameworks!
+use_frameworks! # Defaulting to use_frameworks! See pre_install hook below for static linking.
+use_modular_headers!
 
 platform :ios, '12.0'
 workspace 'WooCommerce.xcworkspace'
-
-plugin 'cocoapods-repo-update'
 
 # Main Target!
 # ============
@@ -21,17 +22,20 @@ target 'WooCommerce' do
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4-beta.1'
   pod 'Automattic-Tracks-iOS', '~> 0.4.0'
 
-  pod 'Gridicons', '~> 0.18'
-  
+  pod 'Gridicons', '~> 0.19'
+
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
-  pod 'WordPressAuthenticator', '~> 1.5.2'
+  pod 'WordPressAuthenticator', '~> 1.10.6'
 
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
   pod 'WordPressShared', '~> 1.8.2'
   
-  pod 'WordPressUI', '~> 1.3.3'
+  pod 'WordPressUI', '~> 1.4'
 
+  pod 'WordPress-Editor-iOS', '~> 1.11.0'
+
+  pod 'WPMediaPicker', '~> 1.6.0'
 
   # External Libraries
   # ==================
@@ -42,7 +46,9 @@ target 'WooCommerce' do
   pod 'CocoaLumberjack/Swift', '~> 3.5'
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.3.0'
-  pod 'ZendeskSDK', '~> 2.3.1'
+  pod 'ZendeskSDK', '~> 4.0'
+  pod 'Kingfisher', '~> 5.11.0'
+  pod 'Wormholy', '~> 1.5.1', :configurations => ['Debug']
 
   # Unit Tests
   # ==========
@@ -131,7 +137,36 @@ end
 # Workarounds:
 # ============
 #
+
+# Static Frameworks:
+# ============
+#
+# Make all pods that are not shared across multiple targets into static frameworks by overriding the static_framework? function to return true
+# Linking the shared frameworks statically would lead to duplicate symbols
+# A future version of CocoaPods may make this easier to do. See https://github.com/CocoaPods/CocoaPods/issues/7428
+shared_targets = ['Storage', 'Networking', 'Yosemite']
+# Statically linking Sentry results in a conflict with `NSDictionary.objectAtKeyPath`, but dynamically
+# linking it resolves this.
+dynamic_pods = ['Sentry']
 pre_install do |installer|
+  static = []
+  dynamic = []
+  installer.pod_targets.each do |pod|
+    # If this pod is a dependency of one of our shared targets or its explicitly excluded, it must be linked dynamically
+    if pod.target_definitions.any? { |t| shared_targets.include? t.name } || dynamic_pods.include?(pod.name)
+      dynamic << pod
+      next
+    end
+    static << pod
+    def pod.static_framework?;
+      true
+    end
+  end
+
+  puts "Installing #{static.count} pods as static frameworks"
+  puts "Installing #{dynamic.count} pods as dynamic frameworks"
+
+  # Force CocoaLumberjack Swift version
   installer.analysis_result.specifications.each do |s|
     if s.name == 'CocoaLumberjack'
       s.swift_version = '5.0'

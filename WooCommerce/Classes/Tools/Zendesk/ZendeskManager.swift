@@ -1,8 +1,7 @@
 import Foundation
-#if !XCODE11
 import ZendeskSDK
 import ZendeskCoreSDK
-#endif
+import CommonUISDK // Zendesk UI SDK
 import WordPressShared
 import CoreTelephony
 import SafariServices
@@ -14,7 +13,7 @@ extension NSNotification.Name {
     static let ZDPNCleared = NSNotification.Name(rawValue: "ZDPNCleared")
 }
 
-#if !XCODE11
+
 /// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
 /// as well as displaying views for the Help Center, new tickets, and ticket list.
 ///
@@ -62,12 +61,6 @@ class ZendeskManager: NSObject {
     }
 
 
-    /// Deinitializer
-    ///
-    deinit {
-        stopListeningToNotifications()
-    }
-
     /// Designated Initialier
     ///
     private override init() {
@@ -87,9 +80,11 @@ class ZendeskManager: NSObject {
             return
         }
 
-        Zendesk.initialize(appId: ApiCredentials.zendeskAppId, clientId: ApiCredentials.zendeskClientId, zendeskUrl: ApiCredentials.zendeskUrl)
-        Support.initialize(withZendesk: Zendesk.instance)
-        Theme.currentTheme.primaryColor = StyleManager.wooCommerceBrandColor
+        Zendesk.initialize(appId: ApiCredentials.zendeskAppId,
+                           clientId: ApiCredentials.zendeskClientId,
+                           zendeskUrl: ApiCredentials.zendeskUrl)
+        SupportUI.initialize(withZendesk: Zendesk.instance)
+        CommonTheme.currentTheme.primaryColor = UIColor.primary
 
         haveUserIdentity = getUserProfile()
         zendeskEnabled = true
@@ -113,7 +108,7 @@ class ZendeskManager: NSObject {
         safariViewController.modalPresentationStyle = .pageSheet
         controller.present(safariViewController, animated: true, completion: nil)
 
-        WooAnalytics.shared.track(.supportHelpCenterViewed)
+        ServiceLocator.analytics.track(.supportHelpCenterViewed)
     }
 
     /// Displays the Zendesk New Request view from the given controller, for users to submit new tickets.
@@ -125,7 +120,7 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            WooAnalytics.shared.track(.supportNewRequestViewed)
+            ServiceLocator.analytics.track(.supportNewRequestViewed)
 
             let newRequestConfig = self.createRequest(supportSourceTag: sourceTag)
             let newRequestController = RequestUi.buildRequestUi(with: [newRequestConfig])
@@ -142,7 +137,7 @@ class ZendeskManager: NSObject {
                 return
             }
 
-            WooAnalytics.shared.track(.supportTicketListViewed)
+            ServiceLocator.analytics.track(.supportTicketListViewed)
 
             let requestConfig = self.createRequest(supportSourceTag: sourceTag)
             let requestListController = RequestUi.buildRequestList(with: [requestConfig])
@@ -162,7 +157,7 @@ class ZendeskManager: NSObject {
     /// Displays an alert allowing the user to change their Support email address.
     ///
     func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {
-        WooAnalytics.shared.track(.supportIdentityFormViewed)
+        ServiceLocator.analytics.track(.supportIdentityFormViewed)
         presentInController = controller
 
         // If the user hasn't already set a username, go ahead and ask for that too.
@@ -192,7 +187,7 @@ class ZendeskManager: NSObject {
     ///
     func getTags(supportSourceTag: String?) -> [String] {
         var tags = [Constants.platformTag, Constants.sdkTag, Constants.jetpackTag]
-        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return tags
         }
 
@@ -365,6 +360,7 @@ private extension ZendeskManager {
     }
 
     func getUserInformationAndShowPrompt(withName: Bool, from viewController: UIViewController, completion: @escaping onUserInformationCompletion) {
+        presentInController = viewController
         getUserInformationIfAvailable()
         promptUserForInformation(withName: withName, from: viewController) { (success, email) in
             guard success else {
@@ -389,10 +385,10 @@ private extension ZendeskManager {
     }
 
     func getUserInformationIfAvailable() {
-        userEmail = StoresManager.shared.sessionManager.defaultAccount?.email
-        userName = StoresManager.shared.sessionManager.defaultAccount?.username
+        userEmail = ServiceLocator.stores.sessionManager.defaultAccount?.email
+        userName = ServiceLocator.stores.sessionManager.defaultAccount?.username
 
-        if let displayName = StoresManager.shared.sessionManager.defaultAccount?.displayName,
+        if let displayName = ServiceLocator.stores.sessionManager.defaultAccount?.displayName,
             !displayName.isEmpty {
             userName = displayName
         }
@@ -431,17 +427,17 @@ private extension ZendeskManager {
 
         // Set form field values
         let ticketFields = [
-            ZDKCustomField(fieldId: TicketFieldIDs.appVersion as NSNumber, andValue: Bundle.main.version),
-            ZDKCustomField(fieldId: TicketFieldIDs.deviceFreeSpace as NSNumber, andValue: getDeviceFreeSpace()),
-            ZDKCustomField(fieldId: TicketFieldIDs.networkInformation as NSNumber, andValue: getNetworkInformation()),
-            ZDKCustomField(fieldId: TicketFieldIDs.logs as NSNumber, andValue: getLogFile()),
-            ZDKCustomField(fieldId: TicketFieldIDs.currentSite as NSNumber, andValue: getCurrentSiteDescription()),
-            ZDKCustomField(fieldId: TicketFieldIDs.sourcePlatform as NSNumber, andValue: Constants.sourcePlatform),
-            ZDKCustomField(fieldId: TicketFieldIDs.appLanguage as NSNumber, andValue: Locale.preferredLanguage),
-            ZDKCustomField(fieldId: TicketFieldIDs.subcategory as NSNumber, andValue: Constants.subcategory)
+            CustomField(fieldId: TicketFieldIDs.appVersion, value: Bundle.main.version),
+            CustomField(fieldId: TicketFieldIDs.deviceFreeSpace, value: getDeviceFreeSpace()),
+            CustomField(fieldId: TicketFieldIDs.networkInformation, value: getNetworkInformation()),
+            CustomField(fieldId: TicketFieldIDs.logs, value: getLogFile()),
+            CustomField(fieldId: TicketFieldIDs.currentSite, value: getCurrentSiteDescription()),
+            CustomField(fieldId: TicketFieldIDs.sourcePlatform, value: Constants.sourcePlatform),
+            CustomField(fieldId: TicketFieldIDs.appLanguage, value: Locale.preferredLanguage),
+            CustomField(fieldId: TicketFieldIDs.subcategory, value: Constants.subcategory)
         ].compactMap { $0 }
 
-        requestConfig.fields = ticketFields
+        requestConfig.customFields = ticketFields
 
         // Set tags
         requestConfig.tags = getTags(supportSourceTag: supportSourceTag)
@@ -546,17 +542,22 @@ private extension ZendeskManager {
 
     func getLogFile() -> String {
 
-        guard let logFileInformation = AppDelegate.shared.fileLogger.logFileManager.sortedLogFileInfos.first,
+        guard let logFileInformation = ServiceLocator.fileLogger.logFileManager.sortedLogFileInfos.first,
             let logData = try? Data(contentsOf: URL(fileURLWithPath: logFileInformation.filePath)),
             let logText = String(data: logData, encoding: .utf8) else {
                 return ""
+        }
+
+        // Truncates the log text so it fits in the ticket field.
+        if logText.count > Constants.logFieldCharacterLimit {
+            return String(logText.suffix(Constants.logFieldCharacterLimit))
         }
 
         return logText
     }
 
     func getCurrentSiteDescription() -> String {
-        guard let site = StoresManager.shared.sessionManager.defaultSite else {
+        guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return String()
         }
 
@@ -632,6 +633,7 @@ private extension ZendeskManager {
         // Email Text Field
         alertController.addTextField { textField in
             textField.clearButtonMode = .always
+            textField.keyboardType = .emailAddress
             textField.placeholder = LocalizedText.emailPlaceholder
             textField.text = self.userEmail
 
@@ -750,36 +752,30 @@ private extension ZendeskManager {
     }
 
 
-    /// Removes all of the Notification Hooks.
-    ///
-    func stopListeningToNotifications() {
-        NotificationCenter.default.removeObserver(self)
-    }
-
     /// Handles (all of the) Zendesk Notifications
     ///
     @objc func zendeskNotification(_ notification: Notification) {
         switch notification.name.rawValue {
         case ZDKAPI_RequestSubmissionSuccess:
-            WooAnalytics.shared.track(.supportNewRequestCreated)
+            ServiceLocator.analytics.track(.supportNewRequestCreated)
         case ZDKAPI_RequestSubmissionError:
-            WooAnalytics.shared.track(.supportNewRequestFailed)
+            ServiceLocator.analytics.track(.supportNewRequestFailed)
         case ZDKAPI_UploadAttachmentSuccess:
-            WooAnalytics.shared.track(.supportNewRequestFileAttached)
+            ServiceLocator.analytics.track(.supportNewRequestFileAttached)
         case ZDKAPI_UploadAttachmentError:
-            WooAnalytics.shared.track(.supportNewRequestFileAttachmentFailed)
+            ServiceLocator.analytics.track(.supportNewRequestFileAttachmentFailed)
         case ZDKAPI_CommentSubmissionSuccess:
-            WooAnalytics.shared.track(.supportTicketUserReplied)
+            ServiceLocator.analytics.track(.supportTicketUserReplied)
         case ZDKAPI_CommentSubmissionError:
-            WooAnalytics.shared.track(.supportTicketUserReplyFailed)
+            ServiceLocator.analytics.track(.supportTicketUserReplyFailed)
         case ZDKAPI_RequestsError:
-            WooAnalytics.shared.track(.supportTicketListViewFailed)
+            ServiceLocator.analytics.track(.supportTicketListViewFailed)
         case ZDKAPI_CommentListSuccess:
-            WooAnalytics.shared.track(.supportTicketUserViewed)
+            ServiceLocator.analytics.track(.supportTicketUserViewed)
         case ZDKAPI_CommentListError:
-            WooAnalytics.shared.track(.supportTicketViewFailed)
+            ServiceLocator.analytics.track(.supportTicketViewFailed)
         case ZD_HC_SearchSuccess:
-            WooAnalytics.shared.track(.supportHelpCenterUserSearched)
+            ServiceLocator.analytics.track(.supportHelpCenterUserSearched)
         default:
             break
         }
@@ -807,6 +803,7 @@ private extension ZendeskManager {
         static let blogSeperator = "\n----------\n"
         static let jetpackTag = "jetpack"
         static let wpComTag = "wpcom"
+        static let logFieldCharacterLimit = 64000
         static let networkWiFi = "WiFi"
         static let networkWWAN = "Mobile"
         static let networkTypeLabel = "Network Type:"
@@ -824,16 +821,16 @@ private extension ZendeskManager {
     // Zendesk expects these as NSNumber. However, they are defined as UInt64 to satisfy 32-bit devices (ex: iPhone 5).
     // Which means they then have to be converted to NSNumber when sending to Zendesk.
     struct TicketFieldIDs {
-        static let form: UInt64 = 360000010286
-        static let appVersion: UInt64 = 360000086866
-        static let allBlogs: UInt64 = 360000087183
-        static let deviceFreeSpace: UInt64 = 360000089123
-        static let networkInformation: UInt64 = 360000086966
-        static let logs: UInt64 = 22871957
-        static let currentSite: UInt64 = 360000103103
-        static let sourcePlatform: UInt64 = 360009311651
-        static let appLanguage: UInt64 = 360008583691
-        static let subcategory: UInt64 = 25176023
+        static let form: Int64 = 360000010286
+        static let appVersion: Int64 = 360000086866
+        static let allBlogs: Int64 = 360000087183
+        static let deviceFreeSpace: Int64 = 360000089123
+        static let networkInformation: Int64 = 360000086966
+        static let logs: Int64 = 22871957
+        static let currentSite: Int64 = 360000103103
+        static let sourcePlatform: Int64 = 360009311651
+        static let appLanguage: Int64 = 360008583691
+        static let subcategory: Int64 = 25176023
     }
 
     struct LocalizedText {
@@ -883,47 +880,3 @@ extension ZendeskManager: UITextFieldDelegate {
         return newLength <= Constants.nameFieldCharacterLimit
     }
 }
-
-#else
-/// This class provides the functionality to communicate with Zendesk for Help Center and support ticket interaction,
-/// as well as displaying views for the Help Center, new tickets, and ticket list.
-///
-class ZendeskManager: NSObject {
-    static let shared = ZendeskManager()
-    typealias onUserInformationCompletion = (_ success: Bool, _ email: String?) -> Void
-
-    private (set) var zendeskEnabled = false {
-        didSet {
-            DDLogInfo("Zendesk Enabled: \(zendeskEnabled)")
-        }
-    }
-
-    func initialize() {}
-    func reset() {}
-    func userSupportEmail() -> String? {
-        return nil
-    }
-
-    func showHelpCenter(from controller: UIViewController) {
-        let safariViewController = SFSafariViewController(url: WooConstants.helpCenterURL)
-        safariViewController.modalPresentationStyle = .pageSheet
-        controller.present(safariViewController, animated: true, completion: nil)
-
-        WooAnalytics.shared.track(.supportHelpCenterViewed)
-    }
-
-    func showNewRequestIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {}
-    func showTicketListIfPossible(from controller: UIViewController, with sourceTag: String? = nil) {}
-
-    func showSupportEmailPrompt(from controller: UIViewController, completion: @escaping onUserInformationCompletion) {}
-}
-
-// MARK: - ZendeskManager: SupportManagerAdapter Conformance
-//
-extension ZendeskManager: SupportManagerAdapter {
-    func deviceTokenWasReceived(deviceToken: String) {}
-    func unregisterForRemoteNotifications() {}
-    func displaySupportRequest(using userInfo: [AnyHashable: Any]) {}
-    func pushNotificationReceived() {}
-}
-#endif

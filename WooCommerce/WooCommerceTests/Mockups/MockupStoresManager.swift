@@ -5,7 +5,7 @@ import Yosemite
 
 /// MockupStoresManager: MockupStoresManager Mockup!
 ///
-class MockupStoresManager: StoresManager {
+class MockupStoresManager: DefaultStoresManager {
 
     /// Contains all of the dispatched Actions
     ///

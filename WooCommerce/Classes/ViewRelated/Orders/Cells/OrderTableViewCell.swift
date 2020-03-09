@@ -4,7 +4,8 @@ import Yosemite
 
 // MARK: - OrderTableViewCell
 //
-final class OrderTableViewCell: UITableViewCell {
+final class OrderTableViewCell: UITableViewCell & SearchResultCell {
+    typealias SearchModel = OrderSearchCellViewModel
 
     /// Order's Title
     ///
@@ -14,6 +15,10 @@ final class OrderTableViewCell: UITableViewCell {
     ///
     @IBOutlet private var totalLabel: UILabel!
 
+    /// Order's Creation Date
+    ///
+    @IBOutlet private var dateCreatedLabel: UILabel!
+
     /// Payment
     ///
     @IBOutlet private var paymentStatusLabel: PaddedLabel!
@@ -22,11 +27,21 @@ final class OrderTableViewCell: UITableViewCell {
     ///
     @IBOutlet weak var contentStackView: UIStackView!
 
+    static func register(for tableView: UITableView) {
+        tableView.register(loadNib(), forCellReuseIdentifier: reuseIdentifier)
+    }
+
+    func configureCell(searchModel: OrderSearchCellViewModel) {
+        configureCell(viewModel: searchModel.orderDetailsViewModel,
+                      orderStatus: searchModel.orderStatus)
+    }
+
     /// Renders the specified Order ViewModel
     ///
     func configureCell(viewModel: OrderDetailsViewModel, orderStatus: OrderStatus?) {
         titleLabel.text = viewModel.summaryTitle
         totalLabel.text = viewModel.totalFriendlyString
+        dateCreatedLabel.text = viewModel.formattedDateCreated
 
         if let orderStatus = orderStatus {
             paymentStatusLabel.applyStyle(for: orderStatus.status)
@@ -54,6 +69,7 @@ final class OrderTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
         configureLabels()
     }
 
@@ -92,13 +108,21 @@ private extension OrderTableViewCell {
         paymentStatusLabel.layer.borderColor = borderColor
     }
 
+    func configureBackground() {
+        backgroundColor = .listForeground
+        selectedBackgroundView = UIView()
+        selectedBackgroundView?.backgroundColor = .listBackground
+    }
+
     /// Setup: Labels
     ///
     func configureLabels() {
-        titleLabel.applyHeadlineStyle()
+        titleLabel.applyBodyStyle()
         totalLabel.applyBodyStyle()
         totalLabel.numberOfLines = 0
         paymentStatusLabel.applyFootnoteStyle()
         paymentStatusLabel.numberOfLines = 0
+
+        dateCreatedLabel.applyCaption1Style()
     }
 }

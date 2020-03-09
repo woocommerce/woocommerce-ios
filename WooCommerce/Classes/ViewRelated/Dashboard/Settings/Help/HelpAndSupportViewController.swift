@@ -23,7 +23,7 @@ class HelpAndSupportViewController: UIViewController {
         }
 
         // If no preferred ZD email exists, try the account email
-        if let mainEmail = StoresManager.shared.sessionManager.defaultAccount?.email {
+        if let mainEmail = ServiceLocator.stores.sessionManager.defaultAccount?.email {
             return mainEmail
         }
 
@@ -76,7 +76,7 @@ private extension HelpAndSupportViewController {
     /// Apply Woo styles.
     ///
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     /// Configure common table properties.
@@ -84,7 +84,7 @@ private extension HelpAndSupportViewController {
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
     }
 
     /// Disable Zendesk if configuration on ZD init fails.
@@ -261,7 +261,7 @@ private extension HelpAndSupportViewController {
             self.warnDeveloperIfNeeded()
 
             // Tracking when the dialog's "OK" button is pressed, not necessarily if the value changed.
-            WooAnalytics.shared.track(.supportIdentitySet)
+            ServiceLocator.analytics.track(.supportIdentitySet)
             self.tableView.reloadData()
         }
     }

@@ -5,7 +5,7 @@ import XLPagerTabStrip
 import WordPressUI
 
 
-class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
+class TopPerformerDataViewController: UIViewController {
 
     // MARK: - Properties
 
@@ -20,7 +20,7 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
     /// ResultsController: Loads TopEarnerStats for the current granularity from the Storage Layer
     ///
     private lazy var resultsController: ResultsController<StorageTopEarnerStats> = {
-        let storageManager = AppDelegate.shared.storageManager
+        let storageManager = ServiceLocator.storageManager
         let formattedDateString = StatsStore.buildDateString(from: Date(), with: granularity)
         let predicate = NSPredicate(format: "granularity = %@ AND date = %@", granularity.rawValue, formattedDateString)
         let descriptor = NSSortDescriptor(key: "date", ascending: true)
@@ -29,6 +29,8 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
     }()
 
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
+
+    private let imageService: ImageService = ServiceLocator.imageService
 
     // MARK: - Computed Properties
 
@@ -87,7 +89,7 @@ class TopPerformerDataViewController: UIViewController, IndicatorInfoProvider {
 extension TopPerformerDataViewController {
 
     func syncTopPerformers(onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -103,12 +105,12 @@ extension TopPerformerDataViewController {
             if let error = error {
                 DDLogError("⛔️ Dashboard (Top Performers) — Error synchronizing top earner stats: \(error)")
             } else {
-                WooAnalytics.shared.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self.granularity.rawValue])
+                ServiceLocator.analytics.track(.dashboardTopPerformersLoaded, withProperties: ["granularity": self.granularity.rawValue])
             }
             onCompletion?(error)
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     /// Renders Placeholder Content.
@@ -116,8 +118,11 @@ extension TopPerformerDataViewController {
     /// We coordinate multiple placeholder animations from that spot!
     ///
     func displayGhostContent() {
-        let options = GhostOptions(reuseIdentifier: ProductTableViewCell.reuseIdentifier, rowsPerSection: Constants.placeholderRowsPerSection)
-        tableView.displayGhostContent(options: options)
+        let options = GhostOptions(displaysSectionHeader: false,
+                                   reuseIdentifier: ProductTableViewCell.reuseIdentifier,
+                                   rowsPerSection: Constants.placeholderRowsPerSection)
+        tableView.displayGhostContent(options: options,
+                                      style: .wooDefaultGhostStyle)
     }
 
     /// Removes the Placeholder Content.
@@ -135,15 +140,13 @@ extension TopPerformerDataViewController {
 private extension TopPerformerDataViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .basicBackground
     }
 
     func configureTableView() {
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
-        tableView.separatorColor = StyleManager.cellSeparatorColor
-        tableView.allowsSelection = false
+        tableView.backgroundColor = .basicBackground
+        tableView.separatorColor = .systemColor(.separator)
         tableView.estimatedRowHeight = Constants.estimatedRowHeight
-        tableView.estimatedSectionHeaderHeight = Constants.estimatedSectionHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.tableFooterView = Constants.emptyView
     }
@@ -178,7 +181,7 @@ private extension TopPerformerDataViewController {
 
 // MARK: - IndicatorInfoProvider Conformance (Tab Bar)
 //
-extension TopPerformerDataViewController {
+extension TopPerformerDataViewController: IndicatorInfoProvider {
     func indicatorInfo(for pagerTabStripController: PagerTabStripViewController) -> IndicatorInfo {
         return IndicatorInfo(title: tabDescription)
     }
@@ -218,7 +221,7 @@ extension TopPerformerDataViewController: UITableViewDataSource {
             fatalError()
         }
 
-        cell.configure(statsItem)
+        cell.configure(statsItem, imageService: imageService)
         return cell
     }
 }
@@ -227,6 +230,17 @@ extension TopPerformerDataViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension TopPerformerDataViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        guard let statsItem = statsItem(at: indexPath), let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+            return
+        }
+        presentProductDetails(for: statsItem.productID, siteID: siteID)
+    }
+
+    func tableView(_ tableView: UITableView, estimatedHeightForHeaderInSection section: Int) -> CGFloat {
+        return Constants.estimatedSectionHeight
+    }
 
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
         return UITableView.automaticDimension
@@ -238,6 +252,23 @@ extension TopPerformerDataViewController: UITableViewDelegate {
     }
 }
 
+// MARK: Navigation Actions
+//
+
+private extension TopPerformerDataViewController {
+
+    /// Presents the ProductDetailsViewController or the ProductFormViewController, as a childViewController, for a given Product.
+    ///
+    func presentProductDetails(for productID: Int64, siteID: Int64) {
+        let currencyCode = CurrencySettings.shared.currencyCode
+        let currency = CurrencySettings.shared.symbol(from: currencyCode)
+        let loaderViewController = ProductLoaderViewController(productID: productID,
+                                                               siteID: siteID,
+                                                               currency: currency)
+        let navController = WooNavigationController(rootViewController: loaderViewController)
+        present(navController, animated: true, completion: nil)
+    }
+}
 
 // MARK: - Private Helpers
 //
@@ -249,7 +280,7 @@ private extension TopPerformerDataViewController {
             isInitialLoad = false
             return
         }
-        WooAnalytics.shared.track(.dashboardTopPerformersDate, withProperties: ["range": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardTopPerformersDate, withProperties: ["range": granularity.rawValue])
         isInitialLoad = false
     }
 

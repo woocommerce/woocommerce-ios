@@ -25,7 +25,7 @@ class MockupApplicationAdapter: ApplicationAdapter {
 
     /// Notification Identifiers received via the `presentNotificationDetails` method.
     ///
-    var presentDetailsNoteIDs = [Int]()
+    var presentDetailsNoteIDs = [Int64]()
 
 
 
@@ -43,7 +43,7 @@ class MockupApplicationAdapter: ApplicationAdapter {
 
     /// Innocuous `displayNotificationDetails`
     ///
-    func presentNotificationDetails(for noteID: Int) {
+    func presentNotificationDetails(for noteID: Int64) {
         presentDetailsNoteIDs.append(noteID)
     }
 

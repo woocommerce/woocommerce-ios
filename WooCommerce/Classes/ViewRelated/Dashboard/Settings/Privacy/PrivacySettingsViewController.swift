@@ -69,7 +69,7 @@ class PrivacySettingsViewController: UIViewController {
 private extension PrivacySettingsViewController {
 
     func loadAccountSettings(completion: (()-> Void)? = nil) {
-        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
             return
         }
 
@@ -87,7 +87,7 @@ private extension PrivacySettingsViewController {
             completion?()
         }
 
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -108,13 +108,13 @@ private extension PrivacySettingsViewController {
     }
 
     func configureMainView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
+        view.backgroundColor = .listBackground
     }
 
     func configureTableView() {
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.backgroundColor = StyleManager.tableViewBackgroundColor
+        tableView.backgroundColor = .listBackground
 
         tableView.refreshControl = refreshControl
     }
@@ -162,7 +162,7 @@ private extension PrivacySettingsViewController {
     func configureCollectInfo(cell: SwitchTableViewCell) {
         // image
         cell.imageView?.image = .statsImage
-        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        cell.imageView?.tintColor = .text
 
         // text
         cell.title = NSLocalizedString(
@@ -180,7 +180,7 @@ private extension PrivacySettingsViewController {
     func configureShareInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .white
+        cell.imageView?.tintColor = .listForeground
         cell.textLabel?.text = NSLocalizedString(
             "Share information with our analytics tool about your use of services while logged in to your WordPress.com account.",
             comment: "Settings > Privacy Settings > collect info section. Explains what the 'collect information' toggle is collecting"
@@ -190,17 +190,18 @@ private extension PrivacySettingsViewController {
     func configureCookiePolicy(cell: BasicTableViewCell) {
         // To align the 'Learn more' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .white
+        cell.imageView?.tintColor = .listForeground
         cell.textLabel?.text = NSLocalizedString("Learn more", comment: "Settings > Privacy Settings. A text link to the cookie policy.")
-        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+        cell.textLabel?.textColor = .accent
     }
 
     func configurePrivacyInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .white
+        cell.imageView?.tintColor = .listForeground
         cell.textLabel?.text = NSLocalizedString(
-            "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, and more as detailed in our privacy policy.",
+            "This information helps us improve our products, make marketing to you more relevant, personalize your WordPress.com experience, " +
+            "and more as detailed in our privacy policy.",
             comment: "Settings > Privacy Settings > privacy info section. Explains what we do with the information we collect."
         )
     }
@@ -208,18 +209,18 @@ private extension PrivacySettingsViewController {
     func configurePrivacyPolicy(cell: BasicTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .white
+        cell.imageView?.tintColor = .listForeground
         cell.textLabel?.text = NSLocalizedString(
             "Read privacy policy",
             comment: "Settings > Privacy Settings > privacy policy info section. A text link to the privacy policy."
         )
-        cell.textLabel?.textColor = StyleManager.wooCommerceBrandColor
+        cell.textLabel?.textColor = .accent
     }
 
     func configureCookieInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .white
+        cell.imageView?.tintColor = .listForeground
         cell.textLabel?.text = NSLocalizedString(
             "We use other tracking tools, including some from third parties. Read about these and how to control them.",
             comment: "Settings > Privacy Settings > cookie info section. Explains what we do with the cookie information we collect."
@@ -229,7 +230,7 @@ private extension PrivacySettingsViewController {
     func configureReportCrashes(cell: SwitchTableViewCell) {
         // image
         cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = StyleManager.defaultTextColor
+        cell.imageView?.tintColor = .text
 
         // text
         cell.title = NSLocalizedString(
@@ -247,7 +248,7 @@ private extension PrivacySettingsViewController {
     func configureCrashInfo(cell: TopLeftImageTableViewCell) {
         // To align the 'Read privacy policy' cell to the others, add an "invisible" image.
         cell.imageView?.image = .invisibleImage
-        cell.imageView?.tintColor = .white
+        cell.imageView?.tintColor = .listForeground
         cell.textLabel?.text = NSLocalizedString(
             "To help us improve the app’s performance and fix the occasional bug, enable automatic crash reports.",
             comment: "Settings > Privacy Settings > report crashes section. Explains what the 'report crashes' toggle does"
@@ -260,7 +261,7 @@ private extension PrivacySettingsViewController {
     func collectInfoWasUpdated(newValue: Bool) {
         let userOptedOut = !newValue
 
-        guard let defaultAccount = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let defaultAccount = ServiceLocator.stores.sessionManager.defaultAccount else {
             return
         }
 
@@ -269,20 +270,20 @@ private extension PrivacySettingsViewController {
         let action = AccountAction.updateAccountSettings(userID: userID, tracksOptOut: userOptedOut) { error in
 
             guard let _ = error else {
-                WooAnalytics.shared.setUserHasOptedOut(userOptedOut)
+                ServiceLocator.analytics.setUserHasOptedOut(userOptedOut)
 
                 return
             }
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
 
         // This event will only report if the user has turned tracking back on
-        WooAnalytics.shared.track(.settingsCollectInfoToggled)
+        ServiceLocator.analytics.track(.settingsCollectInfoToggled)
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {
         // This event will only report if the user has Analytics currently on
-        WooAnalytics.shared.track(.settingsReportCrashesToggled)
+        ServiceLocator.analytics.track(.settingsReportCrashesToggled)
     }
 
     /// Display Automattic's Cookie Policy web page
@@ -360,13 +361,13 @@ extension PrivacySettingsViewController: UITableViewDelegate {
 
         switch sections[indexPath.section].rows[indexPath.row] {
         case .shareInfoPolicy:
-            WooAnalytics.shared.track(.settingsShareInfoLearnMoreTapped)
+            ServiceLocator.analytics.track(.settingsShareInfoLearnMoreTapped)
             presentCookiePolicyWebView()
         case .thirdPartyPolicy:
-            WooAnalytics.shared.track(.settingsThirdPartyLearnMoreTapped)
+            ServiceLocator.analytics.track(.settingsThirdPartyLearnMoreTapped)
             presentCookiePolicyWebView()
         case .privacyPolicy:
-            WooAnalytics.shared.track(.settingsPrivacyPolicyTapped)
+            ServiceLocator.analytics.track(.settingsPrivacyPolicyTapped)
             presentPrivacyPolicyWebView()
         default:
             break

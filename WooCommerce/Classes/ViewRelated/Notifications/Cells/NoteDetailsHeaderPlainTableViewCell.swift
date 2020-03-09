@@ -4,7 +4,7 @@ import UIKit
 
 // MARK: - NoteDetailsHeaderPlainTableViewCell
 //
-class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
+final class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
 
     /// Accessory's Image View
     ///
@@ -48,11 +48,36 @@ class NoteDetailsHeaderPlainTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
+        configureImages()
+        configureLabels()
+    }
+}
 
-        imageView?.tintColor = StyleManager.wooGreyTextMin
-        accessoryImageView.tintColor = StyleManager.wooCommerceBrandColor
+
+// MARK: - Private Methods
+//
+private extension NoteDetailsHeaderPlainTableViewCell {
+
+    /// Setup: Cell background
+    ///
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    /// Setup: Images
+    ///
+    func configureImages() {
+        imageView?.tintColor = .textSubtle
+        accessoryImageView.tintColor = .accent
         accessoryView = accessoryImageView
+    }
+
+    /// Setup: Labels
+    ///
+    func configureLabels() {
         textLabel?.font = UIFont.body
+        textLabel?.textColor = .text
     }
 }
 

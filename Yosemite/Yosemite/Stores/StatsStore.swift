@@ -85,7 +85,7 @@ private extension StatsStore {
 
     /// Retrieves the order stats associated with the provided Site ID (if any!).
     ///
-    func retrieveOrderStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
+    func retrieveOrderStats(siteID: Int64, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
 
         let remote = OrderStatsRemote(network: network)
         let formattedDateString = StatsStore.buildDateString(from: latestDateToInclude, with: granularity)
@@ -103,7 +103,11 @@ private extension StatsStore {
 
     /// Retrieves the site visit stats associated with the provided Site ID (if any!).
     ///
-    func retrieveSiteVisitStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, quantity: Int, onCompletion: @escaping (Error?) -> Void) {
+    func retrieveSiteVisitStats(siteID: Int64,
+                                granularity: StatGranularity,
+                                latestDateToInclude: Date,
+                                quantity: Int,
+                                onCompletion: @escaping (Error?) -> Void) {
 
         let remote = SiteVisitStatsRemote(network: network)
 
@@ -112,10 +116,9 @@ private extension StatsStore {
                                     latestDateToInclude: latestDateToInclude,
                                     quantity: quantity) { [weak self] (siteVisitStats, error) in
             guard let siteVisitStats = siteVisitStats else {
-                onCompletion(error.flatMap({ SiteVisitStatsStoreError(error: $0) }))
+                onCompletion(error.map({ SiteVisitStatsStoreError(error: $0) }))
                 return
             }
-
 
             self?.upsertStoredSiteVisitStats(readOnlyStats: siteVisitStats)
             onCompletion(nil)
@@ -124,7 +127,7 @@ private extension StatsStore {
 
     /// Retrieves the top earner stats associated with the provided Site ID (if any!).
     ///
-    func retrieveTopEarnerStats(siteID: Int, granularity: StatGranularity, latestDateToInclude: Date, onCompletion: @escaping (Error?) -> Void) {
+    func retrieveTopEarnerStats(siteID: Int64, granularity: StatGranularity, latestDateToInclude: Date, onCompletion: @escaping (Error?) -> Void) {
 
         let remote = TopEarnersStatsRemote(network: network)
         let formattedDateString = StatsStore.buildDateString(from: latestDateToInclude, with: granularity)
@@ -145,7 +148,7 @@ private extension StatsStore {
 
     /// Retrieves current order totals for the given site & status
     ///
-    func retrieveOrderTotals(siteID: Int, statusEnum: OrderStatusEnum, onCompletion: @escaping (Int?, Error?) -> Void) {
+    func retrieveOrderTotals(siteID: Int64, statusEnum: OrderStatusEnum, onCompletion: @escaping (Int?, Error?) -> Void) {
         let remote = ReportRemote(network: network)
         remote.loadOrderTotals(for: siteID) { (orderTotals, error) in
             onCompletion(orderTotals?[statusEnum], error)
@@ -285,23 +288,15 @@ extension StatsStore {
 }
 
 /// An error that occurs while fetching site visit stats.
-/// API documentation of possible errors:
-/// https://developer.wordpress.com/docs/api/1.1/get/sites/%24site/stats/
 ///
+/// - noPermission: the user has no permission to view site stats.
 /// - statsModuleDisabled: Jetpack site stats module is disabled for the site.
 /// - unknown: other error cases.
 ///
 public enum SiteVisitStatsStoreError: Error {
     case statsModuleDisabled
+    case noPermission
     case unknown
-
-    private enum ErrorIdentifiers {
-        static let invalidBlog: String = "invalid_blog"
-    }
-
-    private enum ErrorMessages {
-        static let statsModuleDisabled: String = "This blog does not have the Stats module enabled"
-    }
 
     init(error: Error) {
         guard let dotcomError = error as? DotcomError else {
@@ -309,12 +304,10 @@ public enum SiteVisitStatsStoreError: Error {
             return
         }
         switch dotcomError {
-        case .unknown(let code, let message):
-            if code == ErrorIdentifiers.invalidBlog && message == ErrorMessages.statsModuleDisabled {
-                self = .statsModuleDisabled
-            } else {
-                self = .unknown
-            }
+        case .noStatsPermission:
+            self = .noPermission
+        case .statsModuleDisabled:
+            self = .statsModuleDisabled
         default:
             self = .unknown
         }

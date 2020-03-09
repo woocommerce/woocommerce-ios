@@ -28,11 +28,11 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Dummy Site ID
     ///
-    private let sampleSiteID = 123
+    private let sampleSiteID: Int64 = 123
 
     /// Dummy Order ID
     ///
-    private let sampleOrderID = 963
+    private let sampleOrderID: Int64 = 963
 
     /// Dummy author string
     ///
@@ -178,7 +178,7 @@ class OrderNoteStoreTests: XCTestCase {
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
 
         let remoteOrderNote = sampleCustomerNote()
-        XCTAssertNil(viewStorage.loadAccount(userId: remoteOrderNote.noteID))
+        XCTAssertNil(viewStorage.loadAccount(userID: remoteOrderNote.noteID))
 
         let expectation = self.expectation(description: "Stored Order Note")
         orderNoteStore.upsertStoredOrderNoteInBackground(readOnlyOrderNote: remoteOrderNote, orderID: sampleOrderID) {
@@ -238,7 +238,7 @@ class OrderNoteStoreTests: XCTestCase {
 //
 private extension OrderNoteStoreTests {
     func sampleCustomerNote() -> Networking.OrderNote {
-        return OrderNote(noteId: 2261,
+        return OrderNote(noteID: 2261,
                          dateCreated: date(with: "2018-06-23T17:06:55"),
                          note: "I love your products!",
                          isCustomerNote: true,
@@ -246,7 +246,7 @@ private extension OrderNoteStoreTests {
     }
 
     func sampleCustomerNoteMutated() -> Networking.OrderNote {
-        return OrderNote(noteId: 2261,
+        return OrderNote(noteID: 2261,
                          dateCreated: date(with: "2018-06-23T18:07:55"),
                          note: "I HATE your products!",
                          isCustomerNote: true,
@@ -254,7 +254,7 @@ private extension OrderNoteStoreTests {
     }
 
     func sampleSellerNote() -> Networking.OrderNote {
-        return OrderNote(noteId: 2260,
+        return OrderNote(noteID: 2260,
                          dateCreated: date(with: "2018-06-23T16:05:55"),
                          note: "This order is going to be a problem.",
                          isCustomerNote: false,
@@ -262,7 +262,7 @@ private extension OrderNoteStoreTests {
     }
 
     func sampleSystemNote() -> Networking.OrderNote {
-        return OrderNote(noteId: 2099,
+        return OrderNote(noteID: 2099,
                          dateCreated: date(with: "2018-05-29T03:07:46"),
                          note: "Order status changed from Completed to Processing.",
                          isCustomerNote: false,
@@ -291,7 +291,17 @@ private extension OrderNoteStoreTests {
                      items: [],
                      billingAddress: sampleAddress(),
                      shippingAddress: sampleAddress(),
-                     coupons: [])
+                     shippingLines: sampleShippingLines(),
+                     coupons: [],
+                     refunds: [])
+    }
+
+    func sampleShippingLines() -> [Networking.ShippingLine] {
+        return [ShippingLine(shippingID: 123,
+        methodTitle: "International Priority Mail Express Flat Rate",
+        methodID: "usps",
+        total: "133.00",
+        totalTax: "0.00")]
     }
 
     func sampleAddress() -> Networking.Address {

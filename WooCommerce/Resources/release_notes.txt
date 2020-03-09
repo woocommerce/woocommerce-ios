@@ -1,1 +1,2 @@
-This version of the app does a better job adjust large font sizes for little phone screens — if you use iOS’s dynamic type settings, you won’t see any more comically large text.
+- In the dashboard, tapping on a product in the “Top Performers” section opens the product detail.
+- The orders tab now localizes both item quantities and the order badge.

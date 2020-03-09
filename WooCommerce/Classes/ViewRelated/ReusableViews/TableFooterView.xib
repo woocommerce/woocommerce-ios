@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-    <device id="retina4_7" orientation="portrait">
-        <adaptation id="fullscreen"/>
-    </device>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="15505" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait" appearance="light"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="15510"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -24,26 +22,27 @@
                         <constraint firstAttribute="width" secondItem="qck-6N-xeW" secondAttribute="height" multiplier="1:1" id="weW-Ke-vLj"/>
                     </constraints>
                 </imageView>
-                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="255" text="Label" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="RGI-pq-sH5">
-                    <rect key="frame" x="20" y="46" width="335" height="24"/>
-                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                    <nil key="textColor"/>
-                    <nil key="highlightedColor"/>
-                </label>
+                <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" bouncesZoom="NO" editable="NO" text="textview" textAlignment="center" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rC7-Y4-ujS">
+                    <rect key="frame" x="20" y="48" width="335" height="22"/>
+                    <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
+                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                    <dataDetectorType key="dataDetectorTypes" link="YES"/>
+                </textView>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="qck-6N-xeW" firstAttribute="top" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="3mL-e7-4IU"/>
                 <constraint firstItem="qck-6N-xeW" firstAttribute="centerX" secondItem="iN0-l3-epB" secondAttribute="centerX" id="4mN-2A-P26"/>
-                <constraint firstItem="RGI-pq-sH5" firstAttribute="top" secondItem="qck-6N-xeW" secondAttribute="bottom" constant="2" id="N7c-ii-O7x"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="RGI-pq-sH5" secondAttribute="bottom" constant="20" id="WrQ-Om-baO"/>
-                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="RGI-pq-sH5" secondAttribute="trailing" constant="20" id="lIo-kI-xxg"/>
-                <constraint firstItem="RGI-pq-sH5" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="nYW-ya-Vu0"/>
+                <constraint firstItem="rC7-Y4-ujS" firstAttribute="top" secondItem="qck-6N-xeW" secondAttribute="bottom" constant="4" id="6QX-Rw-ukm"/>
+                <constraint firstItem="rC7-Y4-ujS" firstAttribute="top" relation="greaterThanOrEqual" secondItem="vUN-kp-3ea" secondAttribute="top" constant="20" id="G4n-zX-VFc"/>
+                <constraint firstItem="rC7-Y4-ujS" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" constant="20" id="VCe-0w-MuS"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="bottom" secondItem="rC7-Y4-ujS" secondAttribute="bottom" constant="20" id="Y7B-XW-EQ0"/>
+                <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="rC7-Y4-ujS" secondAttribute="trailing" constant="20" id="gR3-Ym-ZLn"/>
             </constraints>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <connections>
-                <outlet property="footnote" destination="RGI-pq-sH5" id="Ego-sT-zU8"/>
+                <outlet property="footnote" destination="rC7-Y4-ujS" id="YTn-cq-hj4"/>
                 <outlet property="icon" destination="qck-6N-xeW" id="1n6-wT-2wz"/>
                 <outlet property="iconHeight" destination="6vf-8G-WP0" id="aqq-7v-Dbe"/>
                 <outlet property="iconWidth" destination="92h-oq-4J9" id="zSS-WZ-CGW"/>

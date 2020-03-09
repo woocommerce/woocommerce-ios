@@ -2,7 +2,27 @@
   "images" : [
     {
       "idiom" : "universal",
-      "filename" : "prologue-bubbles.pdf"
+      "filename" : "Bubbles-light-1.pdf"
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "Bubbles-light.pdf",
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "light"
+        }
+      ]
+    },
+    {
+      "idiom" : "universal",
+      "filename" : "Bubbles-dark.pdf",
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ]
     }
   ],
   "info" : {

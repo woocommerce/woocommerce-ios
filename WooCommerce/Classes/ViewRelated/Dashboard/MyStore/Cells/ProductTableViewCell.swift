@@ -45,13 +45,14 @@ class ProductTableViewCell: UITableViewCell {
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
         productImage.contentMode = .scaleAspectFit
+        contentView.backgroundColor = .listForeground
     }
 }
 
 // MARK: - Public Methods
 //
 extension ProductTableViewCell {
-    func configure(_ statsItem: TopEarnerStatsItem?) {
+    func configure(_ statsItem: TopEarnerStatsItem?, imageService: ImageService) {
         nameText = statsItem?.productName
         detailText = String.localizedStringWithFormat(
             NSLocalizedString("Total orders: %ld",
@@ -60,10 +61,10 @@ extension ProductTableViewCell {
         )
         priceText = statsItem?.formattedTotalString
 
-        if let productURLString = statsItem?.imageUrl {
-            productImage.downloadImage(from: URL(string: productURLString), placeholderImage: UIImage.productPlaceholderImage)
-        } else {
-            productImage.image = .productPlaceholderImage
-        }
+        imageService.downloadAndCacheImageForImageView(productImage,
+                                                       with: statsItem?.imageUrl,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
     }
 }

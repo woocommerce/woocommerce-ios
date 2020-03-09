@@ -37,6 +37,34 @@ public class AppSettingsStore: Store {
         return documents!.appendingPathComponent(Constants.customShipmentProvidersFileName)
     }()
 
+    /// URL to the plist file that we use to determine the visibility for stats version banner.
+    ///
+    private lazy var statsVersionBannerVisibilityURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.statsVersionBannerVisibilityFileName)
+    }()
+
+    /// URL to the plist file that we use to store the eligible stats version.
+    ///
+    private lazy var statsVersionEligibleURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.statsVersionEligibleFileName)
+    }()
+
+    /// URL to the plist file that we use to store the stats version displayed on Dashboard UI.
+    ///
+    private lazy var statsVersionLastShownURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.statsVersionLastShownFileName)
+    }()
+
+    /// URL to the plist file that we use to determine the visibility for Product features.
+    ///
+    private lazy var productsVisibilityURL: URL = {
+        let documents = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        return documents!.appendingPathComponent(Constants.productsVisibilityFileName)
+    }()
+
     /// Registers for supported Actions.
     ///
     override public func registerSupportedActions(in dispatcher: Dispatcher) {
@@ -73,6 +101,24 @@ public class AppSettingsStore: Store {
                                         onCompletion: onCompletion)
         case .resetStoredProviders(let onCompletion):
             resetStoredProviders(onCompletion: onCompletion)
+        case .loadStatsVersionEligible(let siteID, let onCompletion):
+            loadStatsVersionEligible(siteID: siteID, onCompletion: onCompletion)
+        case .setStatsVersionEligible(let siteID, let statsVersion):
+            setStatsVersionEligible(siteID: siteID, statsVersion: statsVersion)
+        case .setStatsVersionLastShown(let siteID, let statsVersion), .setStatsVersionPreference(let siteID, let statsVersion):
+            setStatsVersionLastShownOrFromUserPreference(siteID: siteID, statsVersion: statsVersion)
+        case .loadInitialStatsVersionToShow(let siteID, let onCompletion):
+            loadInitialStatsVersionToShow(siteID: siteID, onCompletion: onCompletion)
+        case .loadStatsVersionBannerVisibility(let banner, let onCompletion):
+            loadStatsVersionBannerVisibility(banner: banner, onCompletion: onCompletion)
+        case .setStatsVersionBannerVisibility(let banner, let shouldShowBanner):
+            setStatsVersionBannerVisibility(banner: banner, shouldShowBanner: shouldShowBanner)
+        case .loadProductsVisibility(let onCompletion):
+            loadProductsVisibility(onCompletion: onCompletion)
+        case .setProductsVisibility(let isVisible, let onCompletion):
+            setProductsVisibility(isVisible: isVisible, onCompletion: onCompletion)
+        case .resetStatsVersionStates:
+            resetStatsVersionStates()
         }
     }
 }
@@ -81,7 +127,7 @@ public class AppSettingsStore: Store {
 // MARK: - Shipment tracking providers!
 //
 private extension AppSettingsStore {
-    func addTrackingProvider(siteID: Int,
+    func addTrackingProvider(siteID: Int64,
                              providerName: String,
                              onCompletion: (Error?) -> Void) {
         addProvider(siteID: siteID,
@@ -91,7 +137,7 @@ private extension AppSettingsStore {
 
     }
 
-    func addCustomTrackingProvider(siteID: Int,
+    func addCustomTrackingProvider(siteID: Int64,
                              providerName: String,
                              providerURL: String?,
                              onCompletion: (Error?) -> Void) {
@@ -102,7 +148,7 @@ private extension AppSettingsStore {
                     onCompletion: onCompletion)
     }
 
-    func addProvider(siteID: Int,
+    func addProvider(siteID: Int64,
                      providerName: String,
                      providerURL: String? = nil,
                      fileURL: URL,
@@ -134,9 +180,9 @@ private extension AppSettingsStore {
         }
     }
 
-    func loadTrackingProvider(siteID: Int,
+    func loadTrackingProvider(siteID: Int64,
                               onCompletion: (ShipmentTrackingProvider?, ShipmentTrackingProviderGroup?, Error?) -> Void) {
-        guard let allSavedProviders = read(from: selectedProvidersURL) else {
+        guard let allSavedProviders = read(from: selectedProvidersURL) as [PreselectedProvider]? else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
             onCompletion(nil, nil, error)
             return
@@ -160,9 +206,9 @@ private extension AppSettingsStore {
         onCompletion(provider?.toReadOnly(), provider?.group?.toReadOnly(), nil)
     }
 
-    func loadCustomTrackingProvider(siteID: Int,
+    func loadCustomTrackingProvider(siteID: Int64,
                               onCompletion: (ShipmentTrackingProvider?, Error?) -> Void) {
-        guard let allSavedProviders = read(from: customSelectedProvidersURL) else {
+        guard let allSavedProviders = read(from: customSelectedProvidersURL) as [PreselectedProvider]? else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
             onCompletion(nil, error)
             return
@@ -188,7 +234,7 @@ private extension AppSettingsStore {
         onCompletion(customProvider, nil)
     }
 
-    func upsertTrackingProvider(siteID: Int,
+    func upsertTrackingProvider(siteID: Int64,
                                 providerName: String,
                                 providerURL: String? = nil,
                                 preselectedData: [PreselectedProvider],
@@ -210,7 +256,7 @@ private extension AppSettingsStore {
         write(dataToSave, to: toFileURL, onCompletion: onCompletion)
     }
 
-    func insertNewProvider(siteID: Int,
+    func insertNewProvider(siteID: Int64,
                            providerName: String,
                            providerURL: String? = nil,
                            toFileURL: URL,
@@ -220,29 +266,6 @@ private extension AppSettingsStore {
                                                       providerURL: providerURL)
 
         write([preselectedProvider], to: toFileURL, onCompletion: onCompletion)
-    }
-
-    func write(_ data: [PreselectedProvider], to fileURL: URL, onCompletion: (Error?) -> Void) {
-        let encoder = PropertyListEncoder()
-        encoder.outputFormat = .xml
-        do {
-            let encodedData = try encoder.encode(data)
-            try fileStorage.write(encodedData, to: fileURL)
-            onCompletion(nil)
-        } catch {
-            let error = AppSettingsStoreErrors.writePreselectedProvider
-            onCompletion(error)
-        }
-    }
-
-    func read(from url: URL) -> [PreselectedProvider]? {
-        do {
-            let data = try fileStorage.data(for: url)
-            let decoder = PropertyListDecoder()
-            return try decoder.decode([PreselectedProvider].self, from: data)
-        } catch {
-            return nil
-        }
     }
 
     func resetStoredProviders(onCompletion: ((Error?) -> Void)? = nil) {
@@ -257,6 +280,139 @@ private extension AppSettingsStore {
     }
 }
 
+// MARK: - Stats version
+//
+private extension AppSettingsStore {
+    func setStatsVersionLastShownOrFromUserPreference(siteID: Int64,
+                                                      statsVersion: StatsVersion) {
+        set(statsVersion: statsVersion, for: siteID, to: statsVersionLastShownURL, onCompletion: { error in
+            if let error = error {
+                DDLogError("⛔️ Saving the last shown stats version failed: siteID \(siteID). Error: \(error)")
+            }
+        })
+    }
+
+    func setStatsVersionEligible(siteID: Int64,
+                                 statsVersion: StatsVersion) {
+        set(statsVersion: statsVersion, for: siteID, to: statsVersionEligibleURL, onCompletion: { error in
+            if let error = error {
+                DDLogError("⛔️ Saving the eligible stats version to \(statsVersion) failed: siteID \(siteID). Error: \(error)")
+            }
+        })
+    }
+
+    func loadInitialStatsVersionToShow(siteID: Int64, onCompletion: (StatsVersion?) -> Void) {
+        guard let existingData: StatsVersionBySite = read(from: statsVersionLastShownURL),
+            let statsVersion = existingData.statsVersionBySite[siteID] else {
+            onCompletion(nil)
+            return
+        }
+        onCompletion(statsVersion)
+    }
+
+    func loadStatsVersionEligible(siteID: Int64, onCompletion: (StatsVersion?) -> Void) {
+        guard let existingData: StatsVersionBySite = read(from: statsVersionEligibleURL),
+            let statsVersion = existingData.statsVersionBySite[siteID] else {
+                onCompletion(nil)
+                return
+        }
+        onCompletion(statsVersion)
+    }
+
+    func set(statsVersion: StatsVersion, for siteID: Int64, to fileURL: URL, onCompletion: (Error?) -> Void) {
+        guard let existingData: StatsVersionBySite = read(from: fileURL) else {
+            let statsVersionBySite: StatsVersionBySite = StatsVersionBySite(statsVersionBySite: [siteID: statsVersion])
+            write(statsVersionBySite, to: fileURL, onCompletion: onCompletion)
+            onCompletion(nil)
+            return
+        }
+
+        var statsVersionBySite = existingData.statsVersionBySite
+        statsVersionBySite[siteID] = statsVersion
+        write(StatsVersionBySite(statsVersionBySite: statsVersionBySite), to: fileURL, onCompletion: onCompletion)
+    }
+
+    func loadStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner,
+                                         onCompletion: (Bool) -> Void) {
+        guard let existingData: StatsVersionBannerVisibility = read(from: statsVersionBannerVisibilityURL),
+            let shouldShowBanner = existingData.visibilityByBanner[banner] else {
+                onCompletion(true)
+                return
+        }
+        onCompletion(shouldShowBanner)
+    }
+
+    func setStatsVersionBannerVisibility(banner: StatsVersionBannerVisibility.StatsVersionBanner,
+                                         shouldShowBanner: Bool) {
+        let fileURL = statsVersionBannerVisibilityURL
+        guard let existingData: StatsVersionBannerVisibility = read(from: statsVersionBannerVisibilityURL) else {
+            let statsVersionBySite: StatsVersionBannerVisibility = StatsVersionBannerVisibility(visibilityByBanner: [banner: shouldShowBanner])
+            write(statsVersionBySite, to: fileURL, onCompletion: { _ in })
+            return
+        }
+
+        var visibilityByBanner = existingData.visibilityByBanner
+        visibilityByBanner[banner] = shouldShowBanner
+        write(StatsVersionBannerVisibility(visibilityByBanner: visibilityByBanner), to: fileURL, onCompletion: { _ in })
+    }
+
+    func loadProductsVisibility(onCompletion: (Bool) -> Void) {
+        guard let existingData: ProductsVisibilityPListWrapper = read(from: productsVisibilityURL) else {
+            onCompletion(false)
+            return
+        }
+        onCompletion(existingData.isVisible)
+    }
+
+    func setProductsVisibility(isVisible: Bool, onCompletion: () -> Void) {
+        let fileURL = productsVisibilityURL
+        let visibilityWrapper = ProductsVisibilityPListWrapper(isVisible: isVisible)
+        write(visibilityWrapper, to: fileURL) { error in
+            if let error = error {
+                DDLogError("⛔️ Saving the Products visibility to \(isVisible) failed: \(error)")
+            }
+            onCompletion()
+        }
+    }
+
+    func resetStatsVersionStates() {
+        do {
+            try fileStorage.deleteFile(at: statsVersionBannerVisibilityURL)
+            try fileStorage.deleteFile(at: statsVersionEligibleURL)
+            try fileStorage.deleteFile(at: statsVersionLastShownURL)
+        } catch {
+            let error = AppSettingsStoreErrors.deleteStatsVersionStates
+            DDLogError("⛔️ Deleting the stats version files failed. Error: \(error)")
+        }
+    }
+}
+
+// MARK: - PList decoding/encoding from and to file storage
+//
+private extension AppSettingsStore {
+    func read<T: Decodable>(from url: URL) -> T? {
+        do {
+            let data = try fileStorage.data(for: url)
+            let decoder = PropertyListDecoder()
+            return try decoder.decode(T.self, from: data)
+        } catch {
+            return nil
+        }
+    }
+
+    func write<T: Encodable>(_ data: T, to fileURL: URL, onCompletion: (Error?) -> Void) {
+        let encoder = PropertyListEncoder()
+        encoder.outputFormat = .xml
+        do {
+            let encodedData = try encoder.encode(data)
+            try fileStorage.write(encodedData, to: fileURL)
+            onCompletion(nil)
+        } catch {
+            onCompletion(error)
+        }
+    }
+}
+
 
 // MARK: - Errors
 
@@ -267,6 +423,9 @@ enum AppSettingsStoreErrors: Error {
     case writePreselectedProvider
     case readPreselectedProvider
     case deletePreselectedProvider
+    case readPListFromFileStorage
+    case writePListToFileStorage
+    case deleteStatsVersionStates
 }
 
 
@@ -277,4 +436,8 @@ enum AppSettingsStoreErrors: Error {
 private enum Constants {
     static let shipmentProvidersFileName = "shipment-providers.plist"
     static let customShipmentProvidersFileName = "custom-shipment-providers.plist"
+    static let statsVersionBannerVisibilityFileName = "stats-version-banner-visibility.plist"
+    static let statsVersionEligibleFileName = "stats-version-eligible.plist"
+    static let statsVersionLastShownFileName = "stats-version-last-shown.plist"
+    static let productsVisibilityFileName = "products-visibility.plist"
 }

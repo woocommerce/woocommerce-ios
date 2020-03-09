@@ -3,10 +3,30 @@ import UIKit
 import WordPressUI
 import Gridicons
 
+private extension UIButton {
+    func applyNoteDetailsActionStyle(icon: UIImage) {
+        setImage(icon, for: .normal)
+        backgroundColor = .systemColor(.systemGray5)
+        imageView?.tintColor = .primary
+        setTitleColor(.primary, for: .normal)
+        accessibilityTraits = .button
+    }
+
+    func updateNoteDetailsActionStyle(isSelected: Bool) {
+        let bgColor = isSelected ? UIColor.primary : UIColor.systemColor(.systemGray5)
+        let textColor = isSelected ? UIColor.white : UIColor.primary
+
+        backgroundColor = bgColor
+        tintColor = textColor
+        imageView?.tintColor = textColor
+        setTitleColor(textColor, for: .normal)
+    }
+}
+
 
 // MARK: - NoteDetailsCommentTableViewCell
 //
-class NoteDetailsCommentTableViewCell: UITableViewCell {
+final class NoteDetailsCommentTableViewCell: UITableViewCell {
 
     /// Gravatar ImageView.
     ///
@@ -162,7 +182,11 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        configureBackground()
         configureActionButtons()
+        configureTitleLabel()
+        configureDetailsLabel()
+        configureTextView()
         configureStarView()
         configureDefaultAppearance()
     }
@@ -173,24 +197,43 @@ class NoteDetailsCommentTableViewCell: UITableViewCell {
 //
 private extension NoteDetailsCommentTableViewCell {
 
+    /// Setup: Cell background
+    ///
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
     /// Setup: Actions!
     ///
     func configureActionButtons() {
-        spamButton.setImage(.spamImage, for: .normal)
+        spamButton.applyNoteDetailsActionStyle(icon: .spamImage)
         spamButton.setTitle(Spam.normalTitle, for: .normal)
         spamButton.accessibilityLabel = Spam.normalLabel
-        spamButton.accessibilityTraits = .button
+        spamButton.accessibilityIdentifier = "single-review-spam-button"
 
-        trashButton.setImage(.trashImage, for: .normal)
+        trashButton.applyNoteDetailsActionStyle(icon: .trashImage)
         trashButton.setTitle(Trash.normalTitle, for: .normal)
         trashButton.accessibilityLabel = Trash.normalLabel
-        trashButton.accessibilityTraits = .button
+        trashButton.accessibilityIdentifier = "single-review-trash-button"
 
-        approvalButton.setImage(.checkmarkImage, for: .normal)
+        approvalButton.applyNoteDetailsActionStyle(icon: .checkmarkImage)
         approvalButton.setTitle(Approve.normalTitle, for: .normal)
         approvalButton.setTitle(Approve.selectedTitle, for: .selected)
         approvalButton.accessibilityLabel = Approve.normalLabel
-        approvalButton.accessibilityTraits = .button
+        approvalButton.accessibilityIdentifier = "single-review-approval-button"
+
+    }
+
+    func configureTitleLabel() {
+        titleLabel.textColor = .systemColor(.label)
+    }
+
+    func configureDetailsLabel() {
+        detailsLabel.textColor = .systemColor(.secondaryLabel)
+    }
+
+    func configureTextView() {
+        textView.backgroundColor = .listForeground
     }
 
     /// Setup: Default Action(s) Style
@@ -206,6 +249,7 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Star rating view
     ///
     func configureStarView() {
+        starRatingView.configureStarColors(fullStarTintColor: Star.filledColor, emptyStarTintColor: Star.emptyColor)
         starRatingView.starImage = Star.filledImage
         starRatingView.emptyStarImage = Star.emptyImage
         starRatingView.isHidden = (starRating == nil)
@@ -214,12 +258,7 @@ private extension NoteDetailsCommentTableViewCell {
     /// Setup: Button Appearance
     ///
     func refreshAppearance(button: UIButton) {
-        let bgColor = button.isSelected ? StyleManager.wooCommerceBrandColor : StyleManager.wooGreyLight
-        let textColor = button.isSelected ? StyleManager.wooGreyLight : StyleManager.wooCommerceBrandColor
-
-        button.backgroundColor = bgColor
-        button.tintColor = textColor
-        button.setTitleColor(textColor, for: .normal)
+        button.updateNoteDetailsActionStyle(isSelected: button.isSelected)
     }
 
     /// Refreshes the ApprovalButton's Accessibility Label
@@ -292,8 +331,8 @@ private struct Approve {
 //
 private struct Star {
     static let size        = Double(18)
-    static let filledImage = UIImage.starImage(size: Star.size,
-                                               tintColor: StyleManager.goldStarColor)
-    static let emptyImage = UIImage.starImage(size: Star.size,
-                                              tintColor: StyleManager.wooGreyLight)
+    static let filledImage = UIImage.starImage(size: Star.size)
+    static let emptyImage = UIImage.starImage(size: Star.size)
+    static let filledColor = UIColor.ratingStarFilled
+    static let emptyColor = UIColor.ratingStarEmpty
 }

@@ -6,6 +6,10 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.addOutlineImage)
     }
 
+    func testNoticeImageIsNotNil() {
+        XCTAssertNotNil(UIImage.noticeImage)
+    }
+
     func testAsideIconIsNotNil() {
         XCTAssertNotNil(UIImage.asideImage)
     }
@@ -14,8 +18,16 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.bellImage)
     }
 
+    func testBriefDescriptionImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.briefDescriptionImage)
+    }
+
     func testCameraIconIsNotNil() {
         XCTAssertNotNil(UIImage.cameraImage)
+    }
+
+    func testAddImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.addImage)
     }
 
     func testCheckmarkImageIconIsNotNil() {
@@ -38,8 +50,16 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.chevronUpImage)
     }
 
+    func testCloseButtonIconIsNotNil() {
+        XCTAssertNotNil(UIImage.closeButton)
+    }
+
     func testCogImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.cogImage)
+    }
+
+    func testCommentImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.commentImage)
     }
 
     func testDeleteImageIconIsNotNil() {
@@ -48,6 +68,14 @@ final class IconsTests: XCTestCase {
 
     func testEllipsisImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.ellipsisImage)
+    }
+
+    func testEmptyProductsImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.emptyProductsImage)
+    }
+
+    func testEmptyReviewsImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.emptyReviewsImage)
     }
 
     func testErrorStateImageIconIsNotNil() {
@@ -62,8 +90,20 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.filterImage)
     }
 
+    func testGiftWithTopRightRedDotImageIsNotNil() {
+        XCTAssertNotNil(UIImage.giftWithTopRightRedDotImage)
+    }
+
     func testHeartOutlineImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.heartOutlineImage)
+    }
+
+    func testIconImageIsNotNil() {
+        XCTAssertNotNil(UIImage.infoImage)
+    }
+
+    func testSlantedRectangleIsNotNil() {
+        XCTAssertNotNil(UIImage.slantedRectangle)
     }
 
     func testJetpackLogoImageIconIsNotNil() {
@@ -74,6 +114,18 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.invisibleImage)
     }
 
+    func testInventoryImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.inventoryImage)
+    }
+
+    func testLoginMagicLinkImageIsNotNil() {
+        XCTAssertNotNil(UIImage.loginMagicLinkImage)
+    }
+
+    func testLoginSiteAddressInfoImageIsNotNil() {
+        XCTAssertNotNil(UIImage.loginSiteAddressInfoImage)
+    }
+
     func testMailImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.mailImage)
     }
@@ -82,12 +134,20 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.moreImage)
     }
 
+    func testPriceImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.priceImage)
+    }
+
     func testProductPlaceholderImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.productPlaceholderImage)
     }
 
     func testProductImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.productImage)
+    }
+
+    func testProductsTabWorkInProgressBannerIconIsNotNil() {
+        XCTAssertNotNil(UIImage.workInProgressBanner)
     }
 
     func testPencilImageIconIsNotNil() {
@@ -106,23 +166,31 @@ final class IconsTests: XCTestCase {
         XCTAssertNotNil(UIImage.searchImage)
     }
 
+    func testShippingImageIconIsNotNil() {
+        XCTAssertNotNil(UIImage.shippingImage)
+    }
+
+    func testShippingClassListSelectorEmptyImageIsNotNil() {
+        XCTAssertNotNil(UIImage.shippingClassListSelectorEmptyImage)
+    }
+
     func testSpamImageIconIsNotNil() {
         XCTAssertNotNil(UIImage.spamImage)
     }
 
     func testStarImageIconIsNotNil() {
-        XCTAssertNotNil(UIImage.starImage(size: 1, tintColor: .clear))
+        XCTAssertNotNil(UIImage.starImage(size: 1))
     }
 
     func testStarImageMatchesExpectedSize() {
         let size = Double(1)
-        let starImage = UIImage.starImage(size: size, tintColor: .clear)
+        let starImage = UIImage.starImage(size: size)
         XCTAssertEqual(starImage.size, CGSize(width: size, height: size))
     }
 
     func testStarOutlineImageMatchesExpectedSize() {
         let size = Double(1)
-        let starOutlineImage = UIImage.starOutlineImage(size: size, tintColor: .clear)
+        let starOutlineImage = UIImage.starOutlineImage(size: size)
         XCTAssertEqual(starOutlineImage.size, CGSize(width: size, height: size))
     }
 

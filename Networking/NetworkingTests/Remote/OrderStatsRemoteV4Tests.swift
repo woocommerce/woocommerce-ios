@@ -11,7 +11,7 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
     /// Dummy Site ID
     ///
-    let sampleSiteID = 1234
+    let sampleSiteID: Int64 = 1234
 
     /// Repeat always!
     ///
@@ -30,6 +30,7 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
         remote.loadOrderStats(for: sampleSiteID,
                               unit: .hourly,
+                              earliestDateToInclude: "1955-11-05",
                               latestDateToInclude: "1955-11-05",
                               quantity: 24) { (orderStatsV4, error) in
                                 XCTAssertNil(error)
@@ -52,6 +53,7 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
 
         remote.loadOrderStats(for: sampleSiteID,
                               unit: .weekly,
+                              earliestDateToInclude: "1955-11-05",
                               latestDateToInclude: "1955-11-05",
                               quantity: 2) { (orderStatsV4, error) in
                                 XCTAssertNil(error)
@@ -69,7 +71,11 @@ final class OrderStatsRemoteV4Tests: XCTestCase {
         let remote = OrderStatsRemoteV4(network: network)
         let expectation = self.expectation(description: "Load order stats contains errors")
 
-        remote.loadOrderStats(for: sampleSiteID, unit: .daily, latestDateToInclude: "1955-11-05", quantity: 31) { (orderStats, error) in
+        remote.loadOrderStats(for: sampleSiteID,
+                              unit: .daily,
+                              earliestDateToInclude: "1955-11-05",
+                              latestDateToInclude: "1955-11-05",
+                              quantity: 31) { (orderStats, error) in
             XCTAssertNil(orderStats)
             XCTAssertNotNil(error)
             expectation.fulfill()

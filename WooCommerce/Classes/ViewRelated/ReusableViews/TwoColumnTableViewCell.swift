@@ -12,7 +12,23 @@ final class TwoColumnTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         stackView.isLayoutMarginsRelativeArrangement = true
+        configureBackground()
+        configureLeftLabel()
+        configureRightLabel()
+    }
+}
+
+
+private extension TwoColumnTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureLeftLabel() {
         leftLabel.applyBodyStyle()
+    }
+
+    func configureRightLabel() {
         rightLabel.applyBodyStyle()
     }
 }

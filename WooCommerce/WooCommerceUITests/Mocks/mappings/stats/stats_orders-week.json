@@ -1,0 +1,52 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "/wpcom/v2/sites/161477129/stats/orders/",
+        "queryParameters": {
+            "unit": {
+                "equalTo": "week"
+            },
+            "quantity": {
+                "matches": "[0-9]+"
+            },
+            "date": {
+                "matches": "(.*)"
+            },
+            "_fields": {
+                "matches": "date,unit,quantity,fields,data,total_gross_sales,total_net_sales,total_orders,total_products,avg_gross_sales,avg_net_sales,avg_orders,avg_products"
+            }
+        }
+    },
+    "response": {
+        "status": 200,
+        "jsonBody": {
+            "date": "{{now format='yyyy-MM-dd'}}",
+            "unit": "week",
+            "quantity": "13",
+            "fields": ["period", "orders", "products", "coupons", "coupon_discount", "total_sales", "total_tax", "total_shipping", "total_shipping_tax", "total_refund", "total_tax_refund", "total_shipping_refund", "total_shipping_tax_refund", "currency", "gross_sales", "net_sales", "avg_order_value", "avg_products_per_order"],
+            "data": [
+                ["2019-W45", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2019-W46", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2019-W47", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2019-W48", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2019-W49", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2019-W50", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2019-W51", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2019-W52", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2020-W01", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2020-W02", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2020-W03", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2020-W04", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0],
+                ["2020-W05", 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, "USD", 0, 0, 0, 0]
+            ],
+            "total_gross_sales": 0,
+            "total_net_sales": 0,
+            "total_orders": 0,
+            "total_products": 0,
+            "avg_gross_sales": 0,
+            "avg_net_sales": 0,
+            "avg_orders": 0,
+            "avg_products": 0
+        }
+    }
+}

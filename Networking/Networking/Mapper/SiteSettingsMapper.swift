@@ -9,7 +9,7 @@ struct SiteSettingsMapper: Mapper {
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't really return the SiteID in any of the
     /// settings endpoints.
     ///
-    let siteID: Int
+    let siteID: Int64
 
     /// Group name associated to the settings that will be parsed.
     /// We're injecting this field via `JSONDecoder.userInfo` because the remote endpoints don't return the group in any of the setting endpoints.

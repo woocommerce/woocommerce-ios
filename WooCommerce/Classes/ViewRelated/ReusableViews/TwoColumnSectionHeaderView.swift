@@ -21,6 +21,7 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
         }
         set {
             leftColumn.text = newValue?.uppercased()
+            leftColumn.isHidden = newValue == nil || newValue?.isEmpty == true
         }
     }
 
@@ -32,6 +33,7 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
         }
         set {
             rightColumn.text = newValue?.uppercased()
+            rightColumn.isHidden = newValue == nil || newValue?.isEmpty == true
         }
     }
 
@@ -42,10 +44,19 @@ class TwoColumnSectionHeaderView: UITableViewHeaderFooterView {
 
         tintColor = .clear
 
-        leftColumn.applyFootnoteStyle()
-        rightColumn.applyFootnoteStyle()
+        configureLabels()
+    }
+}
 
-        leftColumn.textColor = StyleManager.sectionTitleColor
-        rightColumn.textColor = StyleManager.sectionTitleColor
+/// Private methods
+///
+private extension TwoColumnSectionHeaderView {
+    func configureLabels() {
+        leftColumn.applyFootnoteStyle()
+        leftColumn.numberOfLines = 0
+        leftColumn.textColor = .listIcon
+        rightColumn.numberOfLines = 0
+        rightColumn.textColor = .listIcon
+        rightColumn.applyFootnoteStyle()
     }
 }

@@ -234,7 +234,7 @@ class PushNotificationsManagerTests: XCTestCase {
     ///
     func testHandleNotificationUpdatesApplicationsBadgeNumber() {
         let updatedBadgeNumber = 10
-        let userInfo = notificationPayload(badgeCount: updatedBadgeNumber)
+        let userInfo = notificationPayload(badgeCount: updatedBadgeNumber, type: .comment)
 
         XCTAssertEqual(application.applicationIconBadgeNumber, Int.min)
 
@@ -330,13 +330,14 @@ private extension PushNotificationsManagerTests {
 
     /// Returns a Sample Notification Payload
     ///
-    func notificationPayload(badgeCount: Int = 0, noteID: Int = 1234) -> [String: Any] {
+    func notificationPayload(badgeCount: Int = 0, noteID: Int64 = 1234, type: Note.Kind = .comment) -> [String: Any] {
         return [
             "aps": [
                 "badge": badgeCount,
                 "alert": Sample.defaultMessage
             ],
-            "note_id": noteID
+            "note_id": noteID,
+            "type": type.rawValue
         ]
     }
 }
@@ -356,7 +357,7 @@ private struct Sample {
 
     /// Sample StoreID
     ///
-    static let defaultStoreID = 9999
+    static let defaultStoreID: Int64 = 9999
 
     /// UserDefaults Suite Name
     ///

@@ -32,7 +32,25 @@ final class HeadlineLabelTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
+        configureHeadline()
+        configureBody()
+    }
+}
+
+
+private extension HeadlineLabelTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
+    }
+
+    func configureHeadline() {
         headlineLabel?.applyHeadlineStyle()
+        headlineLabel?.accessibilityIdentifier = "headline-label"
+    }
+
+    func configureBody() {
         bodyLabel?.applyBodyStyle()
+        bodyLabel?.accessibilityIdentifier = "body-label"
     }
 }

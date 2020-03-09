@@ -8,7 +8,7 @@ class OrderMapperTests: XCTestCase {
 
     /// Dummy Site ID.
     ///
-    private let dummySiteID = 424242
+    private let dummySiteID: Int64 = 424242
 
 
     /// Verifies that all of the Order Fields are parsed correctly.
@@ -99,7 +99,7 @@ class OrderMapperTests: XCTestCase {
 
         let secondItem = order.items[1]
         XCTAssertEqual(secondItem.itemID, 891)
-        XCTAssertEqual(secondItem.quantity, NSDecimalNumber(decimal: 1.5))
+        XCTAssertEqual(secondItem.quantity, 1.5)
     }
 
     /// Verifies that an Order in a broken state does [gets default values] | [gets skipped while parsing]
@@ -119,6 +119,82 @@ class OrderMapperTests: XCTestCase {
 
         let orderModifiedString = format.string(from: brokenOrder.dateModified)
         XCTAssertEqual(orderModifiedString, todayCreatedString)
+    }
+
+    /// Verifies that the coupon fields for an Order are correctly parsed.
+    ///
+    func testOrderCouponFieldsAreCorrectlyParsed() {
+        guard let order = mapLoadOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertNotNil(order.coupons)
+        XCTAssertEqual(order.coupons.count, 1)
+
+        guard let coupon = order.coupons.first else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(coupon.couponID, 894)
+        XCTAssertEqual(coupon.code, "30$off")
+        XCTAssertEqual(coupon.discount, "30")
+        XCTAssertEqual(coupon.discountTax, "1.2")
+    }
+
+    /// Verifies that an Order with no refunds is correctly parsed to an empty array.
+    ///
+    func testOrderRefundCondensedFieldsDoNotExistAreParsedCorrectly() {
+        guard let order = mapLoadOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(order.refunds, [])
+    }
+
+    /// Verifies that an Order with refund fields are correctly parsed.
+    ///
+    func testOrderFullRefundFieldsAreParsedCorrectly() {
+        guard let order = mapLoadFullyRefundedOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        let refunds = order.refunds
+        XCTAssertEqual(refunds.count, 1)
+
+        guard let fullRefund = refunds.first else {
+            XCTFail()
+            return
+        }
+
+        XCTAssertEqual(fullRefund.refundID, 622)
+        XCTAssertEqual(fullRefund.reason, "Order fully refunded")
+        XCTAssertEqual(fullRefund.total, "-223.71")
+    }
+
+    /// Verifies that an Order with multiple, partial refunds have the refunds fields correctly parsed.
+    ///
+    func testOrderPartialRefundFieldsAreParsedCorrectly() {
+        guard let order = mapLoadPartiallRefundedOrderResponse() else {
+            XCTFail()
+            return
+        }
+
+        let refunds = order.refunds
+        XCTAssertEqual(refunds.count, 2)
+
+        let partialRefund1 = refunds[0]
+        XCTAssertEqual(partialRefund1.refundID, 549)
+        XCTAssertEqual(partialRefund1.reason, "Sold out")
+        XCTAssertEqual(partialRefund1.total, "-16.20")
+
+        let partialRefund2 = refunds[1]
+        XCTAssertEqual(partialRefund2.refundID, 547)
+        XCTAssertEqual(partialRefund2.reason, "")
+        XCTAssertEqual(partialRefund2.total, "-8.10")
     }
 }
 
@@ -147,5 +223,17 @@ private extension OrderMapperTests {
     ///
     func mapLoadBrokenOrderResponse() -> Order? {
         return mapOrder(from: "broken-order")
+    }
+
+    /// Returns the OrderMapper output upon receiving `order-fully-refunded`
+    ///
+    func mapLoadFullyRefundedOrderResponse() -> Order? {
+        return mapOrder(from: "order-fully-refunded")
+    }
+
+    /// Returns the OrderMapper output upon receiving `order-details-partially-refunded`
+    ///
+    func mapLoadPartiallRefundedOrderResponse() -> Order? {
+        return mapOrder(from: "order-details-partially-refunded")
     }
 }

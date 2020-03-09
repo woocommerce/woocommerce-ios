@@ -1,0 +1,191 @@
+{
+    "data": {
+        "id": 847,
+        "name": "This is my new product name!",
+        "slug": "chocolate-3",
+        "permalink": "https://funtesting.com/product/chocolate-3/",
+        "date_created": "2019-10-02T10:03:50",
+        "date_created_gmt": "2019-10-02T07:33:50",
+        "date_modified": "2019-11-05T09:34:43",
+        "date_modified_gmt": "2019-11-05T07:04:43",
+        "type": "simple",
+        "status": "publish",
+        "featured": false,
+        "catalog_visibility": "visible",
+        "description": "Learn something!",
+        "short_description": "<blockquote>HEllloo!!!!</blockquote>",
+        "sku": "94115",
+        "price": "",
+        "regular_price": "12.00",
+        "sale_price": "10.00",
+        "date_on_sale_from": null,
+        "date_on_sale_from_gmt": "2019-10-15T21:30:11",
+        "date_on_sale_to": null,
+        "date_on_sale_to_gmt": "2019-10-27T21:29:50",
+        "price_html": "",
+        "on_sale": false,
+        "purchasable": false,
+        "total_sales": 0,
+        "virtual": false,
+        "downloadable": false,
+        "downloads": [],
+        "download_limit": -1,
+        "download_expiry": -1,
+        "external_url": "",
+        "button_text": "",
+        "tax_status": "taxable",
+        "tax_class": "reduced-rate",
+        "manage_stock": true,
+        "stock_quantity" : 99,
+        "stock_status": "instock",
+        "backorders" : "yes",
+        "backorders_allowed": false,
+        "backordered": false,
+        "sold_individually": false,
+        "weight": "",
+        "dimensions": {
+            "length": "",
+            "width": "",
+            "height": ""
+        },
+        "shipping_required": true,
+        "shipping_taxable": true,
+        "shipping_class": "two-days",
+        "shipping_class_id": 96987515,
+        "reviews_allowed": true,
+        "average_rating": "0",
+        "rating_count": 0,
+        "related_ids": [],
+        "upsell_ids": [],
+        "cross_sell_ids": [],
+        "parent_id": 0,
+        "purchase_note": "",
+        "categories": [],
+        "tags": [],
+        "images": [
+            {
+                "id": 1043,
+                "date_created": "2019-10-30T16:55:45",
+                "date_created_gmt": "2019-10-30T12:25:45",
+                "date_modified": "2019-10-30T16:55:45",
+                "date_modified_gmt": "2019-10-30T12:25:45",
+                "src": "https://i1.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/10/img_0111-4.jpeg?fit=4032%2C3024&ssl=1",
+                "name": "img_0111-4",
+                "alt": ""
+            },
+            {
+                "id": 1064,
+                "date_created": "2019-11-01T08:45:34",
+                "date_created_gmt": "2019-11-01T04:15:34",
+                "date_modified": "2019-11-01T08:45:34",
+                "date_modified_gmt": "2019-11-01T04:15:34",
+                "src": "https://i0.wp.com/funtestingusa.wpcomstaging.com/wp-content/uploads/2019/11/img_0001-1.jpeg?fit=4288%2C2848&ssl=1",
+                "name": "DSC_0001",
+                "alt": ""
+            }
+        ],
+        "attributes": [
+            {
+                "id": 0,
+                "name": "Color 2",
+                "position": 0,
+                "visible": true,
+                "variation": true,
+                "options": [
+                    "Orange!",
+                    "Red",
+                    "Rad"
+                ]
+            },
+            {
+                "id": 0,
+                "name": "Type",
+                "position": 0,
+                "visible": true,
+                "variation": true,
+                "options": [
+                    "Original",
+                    "Print"
+                ]
+            },
+            {
+                "id": 0,
+                "name": "Canvas",
+                "position": 1,
+                "visible": false,
+                "variation": true,
+                "options": [
+                    "paper",
+                    "soil",
+                    "plastic",
+                    "map"
+                ]
+            },
+            {
+                "id": 0,
+                "name": "size",
+                "position": 2,
+                "visible": false,
+                "variation": true,
+                "options": [
+                    "Small",
+                    "Medium",
+                    "Large"
+                ]
+            },
+            {
+                "id": 0,
+                "name": "Has logo",
+                "position": 3,
+                "visible": true,
+                "variation": true,
+                "options": [
+                    "Yes",
+                    "No",
+                    "Maybe"
+                ]
+            }
+        ],
+        "default_attributes": [],
+        "variations": [],
+        "grouped_products": [],
+        "menu_order": 0,
+        "meta_data": [
+            {
+                "id": 3979,
+                "key": "_created_via",
+                "value": "rest-api-v3"
+            },
+            {
+                "id": 3980,
+                "key": "_wpas_done_all",
+                "value": "1"
+            },
+            {
+                "id": 4687,
+                "key": "_yoast_wpseo_content_score",
+                "value": "60"
+            },
+            {
+                "id": 4690,
+                "key": "_yoast_wpseo_primary_product_cat",
+                "value": ""
+            }
+        ],
+        "jetpack_publicize_connections": [],
+        "jetpack_likes_enabled": true,
+        "jetpack_sharing_enabled": true,
+        "_links": {
+            "self": [
+                {
+                    "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products/847"
+                }
+            ],
+            "collection": [
+                {
+                    "href": "https://funtestingusa.wpcomstaging.com/wp-json/wc/v3/products"
+                }
+            ]
+        }
+    }
+}

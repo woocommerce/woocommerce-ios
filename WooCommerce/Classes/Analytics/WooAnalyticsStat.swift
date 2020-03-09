@@ -74,6 +74,13 @@ public enum WooAnalyticsStat: String {
     case dashboardTopPerformersLoaded           = "dashboard_top_performers_loaded"
     case dashboardUnfulfilledOrdersLoaded       = "dashboard_unfulfilled_orders_loaded"
 
+    // Dashboard Stats v3/v4 Events
+    //
+    case dashboardNewStatsAvailabilityBannerCancelTapped = "dashboard_new_stats_availability_banner_cancel_tapped"
+    case dashboardNewStatsAvailabilityBannerTryTapped = "dashboard_new_stats_availability_banner_try_tapped"
+    case dashboardNewStatsRevertedBannerDismissTapped = "dashboard_new_stats_reverted_banner_dismiss_tapped"
+    case dashboardNewStatsRevertedBannerLearnMoreTapped = "dashboard_new_stats_reverted_banner_learn_more_tapped"
+
     // Site picker. Can be triggered by login epilogue or settings.
     //
     case sitePickerContinueTapped               = "site_picker_continue_tapped"
@@ -106,6 +113,10 @@ public enum WooAnalyticsStat: String {
     case settingsSelectedStoreTapped            = "settings_selected_site_tapped"
     case settingsContactSupportTapped           = "main_menu_contact_support_tapped"
 
+    case settingsBetaFeaturesButtonTapped       = "settings_beta_features_button_tapped"
+    case settingsBetaFeaturesNewStatsUIToggled  = "settings_beta_features_new_stats_ui_toggled"
+    case settingsBetaFeaturesProductsToggled    = "settings_beta_features_products_toggled"
+
     case settingsPrivacySettingsTapped          = "settings_privacy_settings_button_tapped"
     case settingsCollectInfoToggled             = "privacy_settings_collect_info_toggled"
     case settingsReportCrashesToggled           = "privacy_settings_crash_reporting_toggled"
@@ -117,6 +128,7 @@ public enum WooAnalyticsStat: String {
 
     case settingsLogoutTapped                   = "settings_logout_button_tapped"
     case settingsLogoutConfirmation             = "settings_logout_confirmation_dialog_result"
+    case settingsWereHiringTapped               = "settings_we_are_hiring_button_tapped"
 
     // Order View Events
     //
@@ -130,25 +142,27 @@ public enum WooAnalyticsStat: String {
     case orderDetailPulledToRefresh             = "order_detail_pulled_to_refresh"
     case orderNoteAddButtonTapped               = "add_order_note_add_button_tapped"
     case orderNoteEmailCustomerToggled          = "add_order_note_email_note_to_customer_toggled"
-    case orderDetailAddTrackingButtonTapped = "order_detail_tracking_add_tracking_button_tapped"
+    case orderDetailAddTrackingButtonTapped     = "order_detail_tracking_add_tracking_button_tapped"
     case orderDetailShowBillingTapped           = "order_detail_customer_info_show_billing_tapped"
-    case orderDetailHideBillingTapped           = "order_detail_customer_info_hide_billing_tapped"
     case orderDetailFulfillButtonTapped         = "order_detail_fulfill_order_button_tapped"
     case orderDetailCustomerEmailTapped         = "order_detail_customer_info_email_menu_email_tapped"
+    case orderDetailCustomerEmailMenuTapped     = "order_detail_customer_info_email_menu_tapped"
     case orderDetailCustomerPhoneMenuTapped     = "order_detail_customer_info_phone_menu_tapped"
     case orderDetailCustomerPhoneOptionTapped   = "order_detail_customer_info_phone_menu_phone_tapped"
     case orderDetailCustomerSMSOptionTapped     = "order_detail_customer_info_phone_menu_sms_tapped"
     case orderDetailOrderStatusEditButtonTapped = "order_detail_order_status_edit_button_tapped"
     case orderDetailProductDetailTapped         = "order_detail_product_detail_button_tapped"
+    case orderDetailRefundDetailTapped          = "order_detail_refund_detail_tapped"
+    case refundedProductsDetailTapped           = "order_detail_refunded_products_detail_tapped"
     case orderDetailTrackPackageButtonTapped    = "order_detail_track_package_button_tapped"
-    case orderDetailTrackingDeleteButtonTapped    = "order_detail_tracking_delete_button_tapped"
+    case orderDetailTrackingDeleteButtonTapped  = "order_detail_tracking_delete_button_tapped"
     case orderFulfillmentCompleteButtonTapped   = "order_fulfillment_mark_order_complete_button_tapped"
     case orderFulfillmentAddTrackingButtonTapped = "order_fulfillment_tracking_add_tracking_button_tapped"
     case orderFulfillmentDeleteTrackingButtonTapped = "order_fulfillment_tracking_delete_button_tapped"
     case orderMarkedCompleteUndoButtonTapped    = "snack_order_marked_complete_undo_button_tapped"
     case orderShareStoreButtonTapped            = "orders_list_share_your_store_button_tapped"
-    case orderShipmentTrackingAddButtonTapped = "order_shipment_tracking_add_button_tapped"
-    case orderShipmentTrackingCarrierSelected = "order_shipment_tracking_carrier_selected"
+    case orderShipmentTrackingAddButtonTapped   = "order_shipment_tracking_add_button_tapped"
+    case orderShipmentTrackingCarrierSelected   = "order_shipment_tracking_carrier_selected"
     case orderShipmentTrackingCustomProviderSelected = "order_shipment_tracking_custom_provider_selected"
     case orderStatusDialogApplyButtonTapped     = "set_order_status_dialog_apply_button_tapped"
 
@@ -197,14 +211,73 @@ public enum WooAnalyticsStat: String {
     case notificationReviewSpamTapped           = "review_detail_spam_button_tapped"
     case notificationShareStoreButtonTapped     = "notifications_share_your_store_button_tapped"
 
+    // Review View Events
+    //
+    case reviewsListPulledToRefresh             = "reviews_list_pulled_to_refresh"
+    case reviewsListReadAllTapped               = "reviews_list_menu_mark_read_button_tapped"
+    case reviewsShareStoreButtonTapped          = "reviews_share_your_store_button_tapped"
+
     // Notification Data/Action Events
     //
     case notificationListLoaded                 = "notifications_loaded"
+    case notificationsLoadFailed                = "notifications_load_failed"
     case notificationListFilter                 = "notifications_filter"
     case notificationReviewAction               = "review_action"
     case notificationReviewActionSuccess        = "review_action_success"
     case notificationReviewActionFailed         = "review_action_failed"
     case notificationReviewActionUndo           = "review_action_undo"
+
+    // Review Data/Action Events
+    case reviewLoaded                           = "review_loaded"
+    case reviewLoadFailed                       = "review_load_failed"
+    case reviewMarkRead                         = "review_mark_read"
+    case reviewMarkReadSuccess                  = "review_mark_read_success"
+    case reviewMarkReadFailed                   = "review_mark_read_failed"
+    case reviewsListLoaded                      = "reviews_loaded"
+    case reviewsListLoadFailed                  = "reviews_load_failed"
+    case reviewsMarkAllRead                     = "reviews_mark_all_read"
+    case reviewsMarkAllReadSuccess              = "reviews_mark_all_read_success"
+    case reviewsMarkAllReadFailed               = "reviews_mark_all_read_failed"
+    case reviewsProductsLoaded                  = "reviews_products_loaded"
+    case reviewsProductsLoadFailed              = "reviews_products_load_failed"
+
+    // Product List Events
+    //
+    case productListSelected                    = "main_tab_products_selected"
+    case productListReselected                  = "main_tab_products_reselected"
+    case productListLoaded                      = "product_list_loaded"
+    case productListLoadError                   = "product_list_load_error"
+    case productListProductTapped               = "product_list_product_tapped"
+    case productListPulledToRefresh             = "product_list_pulled_to_refresh"
+    case productListSearched                    = "product_list_searched"
+    case productListMenuSearchTapped            = "product_list_menu_search_tapped"
+
+    // Edit Product Events
+    //
+    case productDetailUpdateButtonTapped        = "product_detail_update_button_tapped"
+    case productDetailUpdateSuccess             = "product_detail_update_success"
+    case productDetailUpdateError               = "product_detail_update_error"
+    case productDetailViewProductNameTapped     = "product_detail_view_product_name_tapped"
+    case productDetailViewProductDescriptionTapped = "product_detail_view_product_description_tapped"
+    case productDetailViewPriceSettingsTapped   = "product_detail_view_price_settings_tapped"
+    case productDetailViewShippingSettingsTapped = "product_detail_view_shipping_settings_tapped"
+    case productDetailViewInventorySettingsTapped = "product_detail_view_inventory_settings_tapped"
+    case productNameDoneButtonTapped            = "product_name_done_button_tapped"
+    case productDescriptionDoneButtonTapped     = "product_description_done_button_tapped"
+    case productPriceSettingsDoneButtonTapped   = "product_price_settings_done_button_tapped"
+    case productShippingSettingsDoneButtonTapped = "product_shipping_settings_done_button_tapped"
+    case productInventorySettingsDoneButtonTapped = "product_inventory_settings_done_button_tapped"
+
+    // Readonly Product Variations Events
+    //
+    case productDetailsProductVariantsTapped    = "product_detail_view_product_variants_tapped"
+    case productVariationListLoaded             = "product_variants_loaded"
+    case productVariationListLoadError          = "product_variants_load_error"
+    case productVariationListPulledToRefresh    = "product_variants_pulled_to_refresh"
+
+    // Azted editor
+    //
+    case aztecEditorDoneButtonTapped            = "aztec_editor_done_button_tapped"
 
     // Jetpack Tunnel Events
     //

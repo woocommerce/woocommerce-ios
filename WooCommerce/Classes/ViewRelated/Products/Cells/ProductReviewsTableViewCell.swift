@@ -24,8 +24,16 @@ final class ProductReviewsTableViewCell: UITableViewCell {
     override func awakeFromNib() {
         super.awakeFromNib()
 
+        configureBackground()
         configureLabels()
         configureStarView()
+    }
+}
+
+
+private extension ProductReviewsTableViewCell {
+    func configureBackground() {
+        applyDefaultBackgroundStyle()
     }
 
     func configureLabels() {
@@ -45,9 +53,7 @@ final class ProductReviewsTableViewCell: UITableViewCell {
 private extension ProductReviewsTableViewCell {
     enum Star {
         static let size = Double(20)
-        static let filledImage = UIImage.starImage(size: Star.size,
-                                                   tintColor: StyleManager.grayStarColor)
-        static let emptyImage = UIImage.starOutlineImage(size: Star.size,
-                                                         tintColor: StyleManager.grayStarColor)
+        static let filledImage = UIImage.starImage(size: Star.size)
+        static let emptyImage = UIImage.starOutlineImage(size: Star.size)
     }
 }

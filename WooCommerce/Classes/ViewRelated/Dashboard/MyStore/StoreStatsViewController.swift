@@ -41,6 +41,12 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
         ensureGhostContentIsAnimated()
     }
 
+    /// Note: Overrides this function to always trigger `updateContent()` to ensure the child view controller fills the container width.
+    /// This is probably only an issue when not using `ButtonBarPagerTabStripViewController` with Storyboard.
+    override func updateIfNeeded() {
+        updateContent()
+    }
+
     // MARK: - RTL support
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -63,6 +69,7 @@ class StoreStatsViewController: ButtonBarPagerTabStripViewController {
         /// Hide the ImageView:
         /// We don't use it, and if / when "Ghostified" produces a quite awful placeholder UI!
         cell.imageView.isHidden = true
+        cell.accessibilityIdentifier = indicatorInfo.accessibilityIdentifier
 
         /// Flip the cells back to their proper state for RTL languages.
         if traitCollection.layoutDirection == .rightToLeft {
@@ -143,7 +150,7 @@ private extension StoreStatsViewController {
     ///
     func displayGhostContent() {
         view.isUserInteractionEnabled = false
-        buttonBarView.startGhostAnimation()
+        buttonBarView.startGhostAnimation(style: .wooDefaultGhostStyle)
         visibleChildViewController.displayGhostContent()
     }
 
@@ -158,7 +165,7 @@ private extension StoreStatsViewController {
     /// If the Ghost Content was previously onscreen, this method will restart the animations.
     ///
     func ensureGhostContentIsAnimated() {
-        view.restartGhostAnimation()
+        view.restartGhostAnimation(style: .wooDefaultGhostStyle)
     }
 }
 
@@ -168,10 +175,10 @@ private extension StoreStatsViewController {
 private extension StoreStatsViewController {
 
     func configureView() {
-        view.backgroundColor = StyleManager.tableViewBackgroundColor
-        topBorder.backgroundColor = StyleManager.wooGreyBorder
-        middleBorder.backgroundColor = StyleManager.wooGreyBorder
-        bottomBorder.backgroundColor = StyleManager.wooGreyBorder
+        view.backgroundColor = .listForeground
+        topBorder.backgroundColor = .systemColor(.separator)
+        middleBorder.backgroundColor = .systemColor(.separator)
+        bottomBorder.backgroundColor = .systemColor(.separator)
     }
 
     func configurePeriodViewControllers() {
@@ -187,12 +194,12 @@ private extension StoreStatsViewController {
     }
 
     func configureTabStrip() {
-        settings.style.buttonBarBackgroundColor = StyleManager.wooWhite
-        settings.style.buttonBarItemBackgroundColor = StyleManager.wooWhite
-        settings.style.selectedBarBackgroundColor = StyleManager.wooCommerceBrandColor
+        settings.style.buttonBarBackgroundColor = .listForeground
+        settings.style.buttonBarItemBackgroundColor = .listForeground
+        settings.style.selectedBarBackgroundColor = .primary
         settings.style.buttonBarItemFont = StyleManager.subheadlineFont
         settings.style.selectedBarHeight = TabStrip.selectedBarHeight
-        settings.style.buttonBarItemTitleColor = StyleManager.defaultTextColor
+        settings.style.buttonBarItemTitleColor = .text
         settings.style.buttonBarItemsShouldFillAvailableWidth = false
         settings.style.buttonBarItemLeftRightMargin = TabStrip.buttonLeftRightMargin
 
@@ -204,8 +211,8 @@ private extension StoreStatsViewController {
             animated: Bool) -> Void in
 
             guard changeCurrentIndex == true else { return }
-            oldCell?.label.textColor = StyleManager.defaultTextColor
-            newCell?.label.textColor = StyleManager.wooCommerceBrandColor
+            oldCell?.label.textColor = .textSubtle
+            newCell?.label.textColor = .primary
         }
     }
 }
@@ -216,7 +223,7 @@ private extension StoreStatsViewController {
 private extension StoreStatsViewController {
 
     func syncVisitorStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -230,11 +237,11 @@ private extension StoreStatsViewController {
             }
             onCompletion?(error)
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 
     func syncOrderStats(for granularity: StatGranularity, onCompletion: ((Error?) -> Void)? = nil) {
-        guard let siteID = StoresManager.shared.sessionManager.defaultStoreID else {
+        guard let siteID = ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion?(nil)
             return
         }
@@ -248,7 +255,7 @@ private extension StoreStatsViewController {
             }
             onCompletion?(error)
         }
-        StoresManager.shared.dispatch(action)
+        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -270,11 +277,11 @@ private extension StoreStatsViewController {
     }
 
     func trackStatsLoaded(for granularity: StatGranularity) {
-        guard StoresManager.shared.isAuthenticated else {
+        guard ServiceLocator.stores.isAuthenticated else {
             return
         }
 
-        WooAnalytics.shared.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
+        ServiceLocator.analytics.track(.dashboardMainStatsLoaded, withProperties: ["granularity": granularity.rawValue])
     }
 }
 

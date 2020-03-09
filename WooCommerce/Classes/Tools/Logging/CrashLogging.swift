@@ -16,7 +16,7 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     var currentUser: TracksUser? {
 
-        guard let account = StoresManager.shared.sessionManager.defaultAccount else {
+        guard let account = ServiceLocator.stores.sessionManager.defaultAccount else {
             return nil
         }
 
@@ -44,7 +44,8 @@ class WCCrashLoggingDataProvider: CrashLoggingDataProvider {
 struct CrashLoggingSettings {
     static var didOptIn: Bool {
         get {
-            return UserDefaults.standard.object(forKey: .userOptedInCrashLogging) ?? false
+            // By default, opt the user into crash reporting
+            return UserDefaults.standard.object(forKey: .userOptedInCrashLogging) ?? true
         }
         set {
             if newValue {

@@ -33,7 +33,7 @@ final class ProductsViewController: UIViewController {
 
     /// Top banner that shows that the Products feature is still work in progress.
     ///
-    private lazy var topBannerView: TopBannerView = {
+    private lazy var topBannerView: UIView = {
         return createTopBannerView()
     }()
 
@@ -228,7 +228,7 @@ private extension ProductsViewController {
         tableView.tableHeaderView = headerContainer
     }
 
-    func createTopBannerView() -> TopBannerView {
+    func createTopBannerView() -> UIView {
         let title: String
         let infoText: String
 
@@ -251,7 +251,17 @@ private extension ProductsViewController {
         }
         let topBannerView = TopBannerView(viewModel: viewModel)
         topBannerView.translatesAutoresizingMaskIntoConstraints = false
-        return topBannerView
+
+        let inventoryScannerButton = UIButton(frame: .zero)
+        inventoryScannerButton.setTitle(NSLocalizedString("📷 Scan inventory", comment: ""), for: .normal)
+        inventoryScannerButton.applyLinkButtonStyle()
+        inventoryScannerButton.addTarget(self, action: #selector(inventoryScannerButtonTapped), for: .touchUpInside)
+
+        let stackView = UIStackView(arrangedSubviews: [topBannerView, inventoryScannerButton])
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        stackView.axis = .vertical
+
+        return stackView
     }
 
     /// Setup: Sync'ing Coordinator
@@ -264,6 +274,17 @@ private extension ProductsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: ProductsTabProductTableViewCell.reuseIdentifier)
+    }
+}
+
+// MARL: - Inventory scanner
+//
+private extension ProductsViewController {
+    @objc func inventoryScannerButtonTapped() {
+        // TODO-jc
+        let viewController = InventoryScannerViewController()
+        let navigationController = WooNavigationController(rootViewController: viewController)
+        present(navigationController, animated: true, completion: nil)
     }
 }
 

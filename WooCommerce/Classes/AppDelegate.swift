@@ -1,6 +1,7 @@
 import UIKit
 import CoreData
 import Storage
+import Yosemite
 
 import CocoaLumberjack
 import WordPressUI
@@ -87,11 +88,27 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        guard let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-            return
-        }
+        //        guard let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
+        //            return
+        //        }
+        //
+        //        ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
+                
+                
+                            let storageManager = ServiceLocator.storageManager
+                                let predicate = NSPredicate(format: "isWooCommerceActive == YES")
+                                let descriptor = NSSortDescriptor(key: "name", ascending: true)
 
-        ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
+                    let resultsController: ResultsController<StorageSite> = ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+
+                    try? resultsController.performFetch()
+
+                        print("arriva qui", resultsController.numberOfObjects)
+                        for site in resultsController.fetchedObjects {
+                            print("Registered for a lot of device", site.siteID, site.name)
+                            ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: site.siteID)
+                        }
+                
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {

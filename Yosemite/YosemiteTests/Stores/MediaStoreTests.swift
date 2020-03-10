@@ -50,7 +50,6 @@ final class MediaStoreTests: XCTestCase {
                                   width: nil)
 
         let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
-                                                      pageFirstIndex: 1,
                                                       pageNumber: 1,
                                                       pageSize: 20) { mediaItems, error in
                                                         XCTAssertNil(error)
@@ -75,7 +74,6 @@ final class MediaStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "media", filename: "generic_error")
         let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
-                                                      pageFirstIndex: 1,
                                                       pageNumber: 1,
                                                       pageSize: 20) { mediaItems, error in
                                                         XCTAssertNotNil(error)
@@ -97,7 +95,6 @@ final class MediaStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve media library")
 
         let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
-                                                      pageFirstIndex: 1,
                                                       pageNumber: 1,
                                                       pageSize: 20) { mediaItems, error in
                                                         XCTAssertNotNil(error)

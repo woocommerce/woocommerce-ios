@@ -34,8 +34,8 @@ public final class MediaStore: Store {
         }
 
         switch action {
-        case .retrieveMediaLibrary(let siteID, let pageFirstIndex, let pageNumber, let pageSize, let onCompletion):
-            retrieveMediaLibrary(siteID: siteID, pageFirstIndex: pageFirstIndex, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveMediaLibrary(let siteID, let pageNumber, let pageSize, let onCompletion):
+            retrieveMediaLibrary(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .uploadMedia(let siteID, let mediaAsset, let onCompletion):
             uploadMedia(siteID: siteID, mediaAsset: mediaAsset, onCompletion: onCompletion)
         }
@@ -44,13 +44,11 @@ public final class MediaStore: Store {
 
 private extension MediaStore {
     func retrieveMediaLibrary(siteID: Int64,
-                              pageFirstIndex: Int,
                               pageNumber: Int,
                               pageSize: Int,
                               onCompletion: @escaping (_ mediaItems: [Media], _ error: Error?) -> Void) {
         let remote = MediaRemote(network: network)
         remote.loadMediaLibrary(for: siteID,
-                                pageFirstIndex: pageFirstIndex,
                                 pageNumber: pageNumber,
                                 pageSize: pageSize) { (mediaItems, error) in
                                     onCompletion(mediaItems ?? [], error)

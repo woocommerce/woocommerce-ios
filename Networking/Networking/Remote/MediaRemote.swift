@@ -8,21 +8,19 @@ public class MediaRemote: Remote {
     ///
     /// - Parameters:
     ///   - siteID: Site for which we'll load the media from.
-    ///   - pageFirstIndex: The index of the first page from the caller's perspective, which `pageNumber` is based on.
-    ///   - pageNumber: The index of the page of media data to load from.
+    ///   - pageNumber: The index of the page of media data to load from, starting from 1.
     ///   - pageSize: The number of media items to return.
     ///   - completion: Closure to be executed upon completion.
     ///
     public func loadMediaLibrary(for siteID: Int64,
-                                 pageFirstIndex: Int = Constants.pageFirstIndex,
-                                 pageNumber: Int = Constants.pageFirstIndex,
+                                 pageNumber: Int = Default.pageNumber,
                                  pageSize: Int = 25,
                                  context: String = Default.context,
                                  completion: @escaping (_ mediaItems: [Media]?, _ error: Error?) -> Void) {
         let parameters: [String: Any] = [
             ParameterKey.contextKey: context,
             ParameterKey.pageSize: pageSize,
-            ParameterKey.pageNumber: pageNumber - pageFirstIndex + Constants.pageFirstIndex,
+            ParameterKey.pageNumber: pageNumber,
             ParameterKey.fields: "ID,date,URL,thumbnails,title,alt,extension,mime_type",
             ParameterKey.mimeType: "image"
         ]
@@ -78,10 +76,7 @@ public class MediaRemote: Remote {
 public extension MediaRemote {
     enum Default {
         public static let context: String = "display"
-    }
-
-    enum Constants {
-        public static let pageFirstIndex = 1
+        public static let pageNumber = 1
     }
 
     private enum ParameterKey {

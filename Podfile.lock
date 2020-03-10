@@ -38,6 +38,7 @@ PODS:
   - lottie-ios (2.5.2)
   - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
+  - PanModal (1.2.5)
   - Reachability (3.2)
   - Sentry (4.4.3):
     - Sentry/Core (= 4.4.3)
@@ -93,6 +94,7 @@ DEPENDENCIES:
   - Gridicons (~> 0.19)
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
+  - PanModal (= 1.2.5)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (~> 1.10.6)
   - WordPressShared (~> 1.8.2)
@@ -119,6 +121,7 @@ SPEC REPOS:
     - lottie-ios
     - NSObject-SafeExpectations
     - "NSURL+IDN"
+    - PanModal
     - Reachability
     - Sentry
     - SVProgressHUD
@@ -151,6 +154,7 @@ SPEC CHECKSUMS:
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
+  PanModal: 7c5af3ad4fe22b91508040965bebffb89fb607ae
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Sentry: 14bdd673870e8cf64932b149fad5bbbf39a9b390
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
@@ -167,6 +171,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: 99679d8420a6d862773e2ddef0ebcc51b282317d
 
-PODFILE CHECKSUM: e4231e9f0d566658171c431802f78085afec88e1
+PODFILE CHECKSUM: 2018d48d7cd3aa4cb3ceb76944ceb60136f645fa
 
 COCOAPODS: 1.8.4

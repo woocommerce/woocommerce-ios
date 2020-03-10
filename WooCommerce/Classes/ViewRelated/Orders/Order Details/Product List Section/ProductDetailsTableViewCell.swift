@@ -156,3 +156,18 @@ extension ProductDetailsTableViewCell {
         sku = item.sku
     }
 }
+
+extension ProductDetailsTableViewCell {
+    func configureForInventoryScannerResult(product: Product, imageService: ImageService) {
+        imageService.downloadAndCacheImageForImageView(productImageView,
+                                                       with: product.images.first?.src,
+                                                       placeholder: .productPlaceholderImage,
+                                                       progressBlock: nil,
+                                                       completion: nil)
+
+        name = product.name
+        quantity = "\(0)" // TODO-jc
+        price = product.price
+        sku = product.sku
+    }
+}

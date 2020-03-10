@@ -1,6 +1,8 @@
 import AVFoundation
+import PanModal
 import UIKit
 import Vision
+import Yosemite
 
 enum BoxAnchorLocation {
     case bottomLeft
@@ -24,7 +26,12 @@ final class InventoryScannerViewController: UIViewController {
 
     private var totalNumberOfTextBoxes: Int = 0
 
-    init() {
+    private lazy var resultsNavigationController: InventoryScannerResultsNavigationController = InventoryScannerResultsNavigationController()
+
+    private let siteID: Int64
+
+    init(siteID: Int64) {
+        self.siteID = siteID
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -36,10 +43,10 @@ final class InventoryScannerViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigation()
+        startLiveVideo()
     }
 
     override func viewWillAppear(_ animated: Bool) {
-        startLiveVideo()
         startBarcodeDetection()
     }
 
@@ -167,8 +174,28 @@ final class InventoryScannerViewController: UIViewController {
             }
             for (barcodeContent, barcodeObservation) in barcodeObservations {
                 self.drawTextBox(barcodeObservation: barcodeObservation, content: barcodeContent)
+                self.searchProductBySKU(barcode: barcodeContent)
             }
         }
+    }
+
+    private func searchProductBySKU(barcode: String) {
+        let action = ProductAction.searchProductBySKU(siteID: siteID, sku: barcode) { [weak self] result in
+            guard let self = self else {
+                return
+            }
+            switch result {
+            case .success(let product):
+                guard self.resultsNavigationController.isPresented == false else {
+                    return
+                }
+                self.resultsNavigationController.present(by: self)
+                self.resultsNavigationController.productScanned(product: product)
+            case .failure(let error):
+                print("No product matched: \(error)")
+            }
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     // Draw a box around each QRCode
@@ -182,7 +209,7 @@ final class InventoryScannerViewController: UIViewController {
 
         // We are inserting the highlights at the beginning of the sublayer queue
         // To avoid overlapping with the textboxes
-        videoOutputImageView.layer.insertSublayer(outline, at: 1)
+        videoOutputImageView.layer.addSublayer(outline)
     }
 
     func drawTextBox(barcodeObservation: VNBarcodeObservation, content: String) {

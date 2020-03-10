@@ -14,6 +14,7 @@ PODS:
   - CocoaLumberjack/Core (3.5.3)
   - CocoaLumberjack/Swift (3.5.3):
     - CocoaLumberjack/Core
+  - FloatingPanel (1.7.4)
   - FormatterKit/Resources (1.8.2)
   - FormatterKit/TimeIntervalFormatter (1.8.2):
     - FormatterKit/Resources
@@ -38,7 +39,6 @@ PODS:
   - lottie-ios (2.5.2)
   - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
-  - PanModal (1.2.5)
   - Reachability (3.2)
   - Sentry (4.4.3):
     - Sentry/Core (= 4.4.3)
@@ -91,10 +91,10 @@ DEPENDENCIES:
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
+  - FloatingPanel (= 1.7.4)
   - Gridicons (~> 0.19)
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
-  - PanModal (= 1.2.5)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (~> 1.10.6)
   - WordPressShared (~> 1.8.2)
@@ -111,6 +111,7 @@ SPEC REPOS:
     - Automattic-Tracks-iOS
     - Charts
     - CocoaLumberjack
+    - FloatingPanel
     - FormatterKit
     - GoogleSignIn
     - GoogleToolboxForMac
@@ -121,7 +122,6 @@ SPEC REPOS:
     - lottie-ios
     - NSObject-SafeExpectations
     - "NSURL+IDN"
-    - PanModal
     - Reachability
     - Sentry
     - SVProgressHUD
@@ -144,6 +144,7 @@ SPEC CHECKSUMS:
   Automattic-Tracks-iOS: a176848be4c95aa208184fe96d0322594ce230eb
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
+  FloatingPanel: 3c9d0e30fe350e1613157557769d2ec97f76b96b
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: 800648f8b3127618c1b59c7f97684427630c5ea3
@@ -154,7 +155,6 @@ SPEC CHECKSUMS:
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
-  PanModal: 7c5af3ad4fe22b91508040965bebffb89fb607ae
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Sentry: 14bdd673870e8cf64932b149fad5bbbf39a9b390
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
@@ -171,6 +171,6 @@ SPEC CHECKSUMS:
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskSDK: 99679d8420a6d862773e2ddef0ebcc51b282317d
 
-PODFILE CHECKSUM: 2018d48d7cd3aa4cb3ceb76944ceb60136f645fa
+PODFILE CHECKSUM: 25606fe2ba3b76ee328af90f9f64eaf6b02ce1c9
 
 COCOAPODS: 1.8.4

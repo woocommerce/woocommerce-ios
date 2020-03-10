@@ -49,7 +49,7 @@ target 'WooCommerce' do
   pod 'ZendeskSDK', '~> 4.0'
   pod 'Kingfisher', '~> 5.11.0'
   pod 'Wormholy', '~> 1.5.1', :configurations => ['Debug']
-  pod 'PanModal', '1.2.5'
+  pod 'FloatingPanel', '1.7.4'
 
   # Unit Tests
   # ==========

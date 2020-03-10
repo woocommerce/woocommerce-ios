@@ -1,4 +1,3 @@
-import PanModal
 import UIKit
 import Yosemite
 
@@ -91,13 +90,5 @@ extension ScannedProductsViewController: UITableViewDataSource {
 extension ScannedProductsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // TODO-jc
-    }
-}
-
-// MARK: - Pan Modal Presentable
-//
-extension ScannedProductsViewController: PanModalPresentable {
-    var panScrollable: UIScrollView? {
-        return tableView
     }
 }

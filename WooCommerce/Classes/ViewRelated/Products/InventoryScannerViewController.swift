@@ -1,5 +1,4 @@
 import AVFoundation
-import PanModal
 import UIKit
 import Vision
 import Yosemite
@@ -186,9 +185,6 @@ final class InventoryScannerViewController: UIViewController {
             }
             switch result {
             case .success(let product):
-                guard self.resultsNavigationController.isPresented == false else {
-                    return
-                }
                 self.resultsNavigationController.present(by: self)
                 self.resultsNavigationController.productScanned(product: product)
             case .failure(let error):

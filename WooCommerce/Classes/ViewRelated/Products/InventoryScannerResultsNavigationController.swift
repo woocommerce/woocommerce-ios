@@ -1,11 +1,16 @@
-import PanModal
+import FloatingPanel
 import UIKit
 import Yosemite
 
 final class InventoryScannerResultsNavigationController: UINavigationController {
     private let scannedProductsViewController = ScannedProductsViewController()
+    private lazy var floatingPanelController: FloatingPanelController = {
+        let fpc = FloatingPanelController(delegate: self)
+        fpc.set(contentViewController: self)
+        return fpc
+    }()
 
-    private(set) var isPresented: Bool = false
+    private var isPresented: Bool = false
 
     init() {
         super.init(nibName: nil, bundle: nil)
@@ -17,7 +22,12 @@ final class InventoryScannerResultsNavigationController: UINavigationController 
     }
 
     func present(by viewController: UIViewController) {
-        viewController.presentPanModal(self)
+        guard isPresented == false else {
+            floatingPanelController.move(to: .half, animated: true)
+            return
+        }
+
+        viewController.present(floatingPanelController, animated: true, completion: nil)
         isPresented = true
     }
 
@@ -26,26 +36,6 @@ final class InventoryScannerResultsNavigationController: UINavigationController 
     }
 }
 
-// MARK: - Pan Modal Presentable
-extension InventoryScannerResultsNavigationController: PanModalPresentable {
-    var panScrollable: UIScrollView? {
-        return (topViewController as? PanModalPresentable)?.panScrollable
-    }
+extension InventoryScannerResultsNavigationController: FloatingPanelControllerDelegate {
 
-    var panModalBackgroundColor: UIColor {
-        return .clear
-    }
-
-    var longFormHeight: PanModalHeight {
-        return .maxHeight
-    }
-
-    var shortFormHeight: PanModalHeight {
-        let topInset = view.bounds.height * 0.7
-        return .maxHeightWithTopInset(topInset)
-    }
-
-    func panModalDidDismiss() {
-        isPresented = false
-    }
 }

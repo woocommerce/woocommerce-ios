@@ -212,6 +212,8 @@ private extension OrdersViewController {
         tableView.estimatedSectionHeaderHeight = Settings.estimatedHeaderHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = UITableView.automaticDimension
     }
 
     /// Setup: Ghostable TableView
@@ -480,7 +482,7 @@ extension OrdersViewController: UITableViewDataSource {
         let viewModel = detailsViewModel(at: indexPath)
         let orderStatus = lookUpOrderStatus(for: viewModel.order)
         cell.configureCell(viewModel: viewModel, orderStatus: orderStatus)
-
+        cell.layoutIfNeeded()
         return cell
     }
 
@@ -504,13 +506,6 @@ extension OrdersViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension OrdersViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return estimatedRowHeights[indexPath] ?? Settings.estimatedRowHeight
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)

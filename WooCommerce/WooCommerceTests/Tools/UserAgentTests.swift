@@ -15,6 +15,7 @@ final class UserAgentTests: XCTestCase {
     }
 
     func testUserAgentIsNeverEmpty() {
-        XCTAssertFalse(UserAgent.webkitUserAgent.isEmpty, "This method for retrieveing the user agent seems to be no longer working. We need to figure out an alternative.")
+        let message = "This method for retrieveing the user agent seems to be no longer working. We need to figure out an alternative."
+        XCTAssertFalse(UserAgent.webkitUserAgent.isEmpty, message)
     }
 }

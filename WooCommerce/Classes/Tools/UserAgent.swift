@@ -47,7 +47,7 @@ private extension UserAgent {
         ///
         static let woocommerceIdentifier = "wc-ios"
 
-        /// Load User Agent JS Script
+        /// User Agent Key
         ///
         static let userAgentKey = "_userAgent"
 

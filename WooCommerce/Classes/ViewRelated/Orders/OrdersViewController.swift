@@ -76,10 +76,6 @@ class OrdersViewController: UIViewController {
         return statusResultsController.fetchedObjects
     }
 
-    /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
-    ///
-    private var estimatedRowHeights = [IndexPath: CGFloat]()
-
     /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
@@ -526,13 +522,6 @@ extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let orderIndex = resultsController.objectIndex(from: indexPath)
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
-
-        // Preserve the Cell Height
-        // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
-        // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
-        // the actual value. AKA no flicker!
-        //
-        estimatedRowHeights[indexPath] = cell.frame.height
     }
 }
 

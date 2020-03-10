@@ -27,6 +27,8 @@ final class InventoryScannerViewController: UIViewController {
 
     private lazy var resultsNavigationController: InventoryScannerResultsNavigationController = InventoryScannerResultsNavigationController()
 
+    private lazy var throttler: Throttler = Throttler(seconds: 0.5)
+
     private let siteID: Int64
 
     init(siteID: Int64) {
@@ -179,19 +181,26 @@ final class InventoryScannerViewController: UIViewController {
     }
 
     private func searchProductBySKU(barcode: String) {
-        let action = ProductAction.searchProductBySKU(siteID: siteID, sku: barcode) { [weak self] result in
-            guard let self = self else {
-                return
-            }
-            switch result {
-            case .success(let product):
-                self.resultsNavigationController.present(by: self)
-                self.resultsNavigationController.productScanned(product: product)
-            case .failure(let error):
-                print("No product matched: \(error)")
+        throttler.throttle {
+            DispatchQueue.main.async {
+                let action = ProductAction.searchProductBySKU(siteID: self.siteID, sku: barcode) { [weak self] result in
+                    guard let self = self else {
+                        return
+                    }
+                    switch result {
+                    case .success(let product):
+                        let generator = UINotificationFeedbackGenerator()
+                        generator.notificationOccurred(.success)
+
+                        self.resultsNavigationController.present(by: self)
+                        self.resultsNavigationController.productScanned(product: product)
+                    case .failure(let error):
+                        print("No product matched: \(error)")
+                    }
+                }
+                ServiceLocator.stores.dispatch(action)
             }
         }
-        ServiceLocator.stores.dispatch(action)
     }
 
     // Draw a box around each QRCode

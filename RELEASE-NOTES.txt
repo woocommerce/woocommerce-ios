@@ -1,3 +1,7 @@
+3.9
+-----
+- bugfix: now in the Order List the order status label is no more clipped
+
 3.8
 -----
 - Dashboard stats: any negative revenue (from refunds for example) for a time period are shown now.

@@ -2,6 +2,10 @@ import Foundation
 import Networking
 import Storage
 
+enum DefaultError: Error {
+    case unknown
+}
+
 
 // MARK: - ProductStore
 //
@@ -34,6 +38,8 @@ public class ProductStore: Store {
             retrieveProducts(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
         case .searchProducts(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchProducts(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .searchProductBySKU(let siteID, let sku, let onCompletion):
+            searchProductBySKU(siteID: siteID, sku: sku, onCompletion: onCompletion)
         case .synchronizeProducts(let siteID, let pageNumber, let pageSize, let onCompletion):
             synchronizeProducts(siteID: siteID, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .requestMissingProducts(let order, let onCompletion):
@@ -80,6 +86,23 @@ private extension ProductStore {
                                                                       readOnlyProducts: products) {
                                     onCompletion(nil)
                                 }
+        }
+    }
+
+    /// Searches all of the products that contain a given SKU.
+    ///
+    func searchProductBySKU(siteID: Int64, sku: String, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+        let remote = ProductsRemote(network: network)
+        remote.searchProductsBySKU(for: siteID,
+                                   sku: sku) { [weak self] (products, error) in
+                                    guard let products = products, let product = products.first else {
+                                        onCompletion(.failure(error ?? DefaultError.unknown))
+                                        return
+                                    }
+
+                                    self?.upsertStoredProductsInBackground(readOnlyProducts: [product]) {
+                                        onCompletion(.success(product))
+                                    }
         }
     }
 

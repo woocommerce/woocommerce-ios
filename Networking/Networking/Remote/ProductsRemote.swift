@@ -106,6 +106,31 @@ public class ProductsRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Retrieves all of the `Product`s that match the SKU.
+    ///
+    /// - Parameters:
+    ///     - siteID: Site for which we'll fetch remote products.
+    ///     - keyword: Search string that should be matched by the products - title, excerpt and content (description).
+    ///     - pageNumber: Number of page that should be retrieved.
+    ///     - pageSize: Number of products to be retrieved per page.
+    ///     - completion: Closure to be executed upon completion.
+    ///
+    public func searchProductsBySKU(for siteID: Int64,
+                                    sku: String,
+                                    limit: Int = 1,
+                                    completion: @escaping ([Product]?, Error?) -> Void) {
+        let parameters = [
+            ParameterKey.sku: sku,
+            ParameterKey.perPage: String(limit)
+        ]
+
+        let path = Path.products
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .get, siteID: siteID, path: path, parameters: parameters)
+        let mapper = ProductListMapper(siteID: siteID)
+
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Retrieves a product SKU if available.
     ///
     /// - Parameters:

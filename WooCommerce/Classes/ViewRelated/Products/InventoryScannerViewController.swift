@@ -69,6 +69,7 @@ final class InventoryScannerViewController: UIViewController {
         // What we will display on the screen
         session.addOutput(deviceOutput)
 
+        // TODO-jc: update orientation; support rotation
         // Show the video as it's being captured
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
         let deviceOrientation: UIDeviceOrientation = UIDevice.current.orientation
@@ -78,6 +79,10 @@ final class InventoryScannerViewController: UIViewController {
             previewLayer.connection?.videoOrientation = .landscapeRight
         case .landscapeRight:
             previewLayer.connection?.videoOrientation = .landscapeLeft
+        case .portrait:
+            previewLayer.connection?.videoOrientation = .portrait
+        case .portraitUpsideDown:
+            previewLayer.connection?.videoOrientation = .portraitUpsideDown
         default:
             previewLayer.connection?.videoOrientation = .landscapeRight
         }
@@ -149,6 +154,11 @@ final class InventoryScannerViewController: UIViewController {
                 guard let barcodeString = barcode.payloadStringValue else {
                     continue
                 }
+
+                if let existingObservation = barcodeObservations[barcodeString], existingObservation.confidence > barcode.confidence {
+                    continue
+                }
+
                 barcodeObservations[barcodeString] = barcode
             }
 
@@ -300,7 +310,7 @@ extension InventoryScannerViewController: AVCaptureVideoDataOutputSampleBufferDe
             return
         }
 
-        var requestOptions: [VNImageOption : Any] = [:]
+        var requestOptions: [VNImageOption: Any] = [:]
 
         if let camData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) {
             requestOptions = [.cameraIntrinsics: camData]

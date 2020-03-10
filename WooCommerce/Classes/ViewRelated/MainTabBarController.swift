@@ -110,6 +110,10 @@ final class MainTabBarController: UITabBarController {
         return WooNavigationController(rootViewController: rootViewController)
     }()
 
+    private lazy var reviewsTabViewController: UIViewController = {
+        let rootViewController = ReviewsViewController()
+        return WooNavigationController(rootViewController: rootViewController)
+    }()
 
     // MARK: - Overridden Methods
 
@@ -117,11 +121,16 @@ final class MainTabBarController: UITabBarController {
         super.viewDidLoad()
         setNeedsStatusBarAppearanceUpdate() // call this to refresh status bar changes happening at runtime
 
-        // Add the Orders tab
+        // Add the Orders and Reviews tab
         viewControllers = {
-            let index = WooTab.orders.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
             var controllers = viewControllers ?? []
-            controllers.insert(ordersTabViewController, at: index)
+
+            let ordersTabIndex = WooTab.orders.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
+            controllers.insert(ordersTabViewController, at: ordersTabIndex)
+
+            let reviewsTabIndex = WooTab.reviews.visibleIndex(isProductListFeatureOn: isProductsTabVisible)
+            controllers.insert(reviewsTabViewController, at: reviewsTabIndex)
+
             return controllers
         }()
     }

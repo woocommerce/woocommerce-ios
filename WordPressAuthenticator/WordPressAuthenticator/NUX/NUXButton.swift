@@ -41,6 +41,14 @@ import WordPressUI
         }
     }
 
+    open override func tintColorDidChange() {
+        // Update colors when toggling light/dark mode.
+        super.tintColorDidChange()
+        configureBackgrounds()
+        configureTitleColors()
+    }
+
+
     // MARK: - Instance Methods
 
 

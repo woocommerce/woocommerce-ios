@@ -13,6 +13,7 @@ final class ProductStockSettingsViewController: UIViewController {
     @IBOutlet private weak var tableView: UITableView!
 
     private let product: Product
+    private let originalStockQuantity: Int?
 
     // Editable data - shared.
     //
@@ -39,6 +40,7 @@ final class ProductStockSettingsViewController: UIViewController {
 
         self.manageStockEnabled = product.manageStock
 
+        self.originalStockQuantity = stockQuantity ?? product.stockQuantity
         self.stockQuantity = stockQuantity ?? product.stockQuantity
         self.backordersSetting = product.backordersSetting
         self.stockStatus = product.productStockStatus
@@ -124,10 +126,11 @@ private extension ProductStockSettingsViewController {
 // MARK: - Navigation actions handling
 //
 extension ProductStockSettingsViewController {
-
     override func shouldPopOnBackButton() -> Bool {
         if manageStockEnabled != product.manageStock ||
-            stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting || stockStatus != product.productStockStatus {
+            stockQuantity != originalStockQuantity ||
+            backordersSetting != product.backordersSetting ||
+            stockStatus != product.productStockStatus {
             presentBackNavigationActionSheet()
             return false
         }

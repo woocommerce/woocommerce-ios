@@ -22,7 +22,7 @@ class UserAgent {
     ///
     static var webkitUserAgent: String {
         guard let userAgent = WKWebView().value(forKey: Constants.userAgentKey) as? String,
-            userAgent.count > 0 else {
+            userAgent.isNotEmpty else {
                 return ""
         }
         return userAgent

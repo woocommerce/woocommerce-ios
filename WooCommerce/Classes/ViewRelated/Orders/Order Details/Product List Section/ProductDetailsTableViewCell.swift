@@ -174,6 +174,8 @@ extension ProductDetailsTableViewCell {
             return
         }
 
+        priceLabel.text = ""
+
         let originalQuantity = product.stockQuantity ?? 0
         if let updatedQuantity = updatedQuantity {
             quantity = "\(originalQuantity) → \(updatedQuantity)"

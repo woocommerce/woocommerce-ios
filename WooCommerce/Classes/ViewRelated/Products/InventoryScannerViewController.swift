@@ -13,6 +13,7 @@ enum BoxAnchorLocation {
 
 final class InventoryScannerViewController: UIViewController {
     @IBOutlet private weak var videoOutputImageView: UIImageView!
+    private var previewLayer: AVCaptureVideoPreviewLayer?
 
     private let textBoxSize: CGSize = CGSize(width: 200.0, height: 200.0)
     private let contentFormatting: [NSAttributedString.Key: Any] = [
@@ -25,13 +26,16 @@ final class InventoryScannerViewController: UIViewController {
 
     private var totalNumberOfTextBoxes: Int = 0
 
+    private var lastBufferOrientation: CGImagePropertyOrientation?
+    private var bufferSize: CGSize?
+
     private lazy var resultsNavigationController: InventoryScannerResultsNavigationController = {
         return InventoryScannerResultsNavigationController { [weak self] in
             self?.cancelButtonTapped()
         }
     }()
 
-    private lazy var throttler: Throttler = Throttler(seconds: 0.5)
+    private lazy var throttler: Throttler = Throttler(seconds: 1)
 
     private let siteID: Int64
 
@@ -48,6 +52,7 @@ final class InventoryScannerViewController: UIViewController {
         super.viewDidLoad()
 
         configureNavigation()
+        configureVideoOutputImageView()
         startLiveVideo()
     }
 
@@ -56,18 +61,40 @@ final class InventoryScannerViewController: UIViewController {
     }
 
     override func viewDidLayoutSubviews() {
-        self.videoOutputImageView.layer.sublayers?[0].frame = videoOutputImageView.bounds
-    }
+        super.viewDidLayoutSubviews()
 
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
+        if let connection = self.previewLayer?.connection  {
+            let orientation = UIApplication.shared.statusBarOrientation
+            let previewLayerConnection: AVCaptureConnection = connection
+            if previewLayerConnection.isVideoOrientationSupported {
+                switch (orientation) {
+                case .portrait:
+                    updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
+                    break
+                case .landscapeRight:
+                    updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeRight)
+                    break
+                case .landscapeLeft:
+                    updatePreviewLayer(layer: previewLayerConnection, orientation: .landscapeLeft)
+                    break
+                case .portraitUpsideDown:
+                    updatePreviewLayer(layer: previewLayerConnection, orientation: .portraitUpsideDown)
+                    break
+                default:
+                    updatePreviewLayer(layer: previewLayerConnection, orientation: .portrait)
+                    break
+                }
+            }
+        }
+
+        previewLayer?.frame = videoOutputImageView.bounds
     }
 
     func startLiveVideo() {
         // Enable live stream video
         session.sessionPreset = AVCaptureSession.Preset.photo
 
-        guard let captureDevice = AVCaptureDevice.default(for: AVMediaType.video),
+        guard let captureDevice = AVCaptureDevice.default(for: .video),
             let deviceInput = try? AVCaptureDeviceInput(device: captureDevice) else {
                 return
         }
@@ -84,6 +111,7 @@ final class InventoryScannerViewController: UIViewController {
         // TODO-jc: update orientation; support rotation
         // Show the video as it's being captured
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
+        self.previewLayer = previewLayer
         let deviceOrientation: UIDeviceOrientation = UIDevice.current.orientation
         // Orientation is reversed
         switch (deviceOrientation) {
@@ -144,6 +172,9 @@ final class InventoryScannerViewController: UIViewController {
             print(error)
         }
         guard let barcodes = request.results, barcodes.isNotEmpty else {
+            DispatchQueue.main.async { [weak self] in
+                self?.videoOutputImageView.layer.sublayers?.removeSubrange(1...)
+            }
             return
         }
 
@@ -211,10 +242,18 @@ final class InventoryScannerViewController: UIViewController {
     func highlightQRCode(barcode: VNBarcodeObservation) {
         let barcodeBounds = self.adjustBoundsToScreen(barcode: barcode)
 
+        let borderWidth: CGFloat = 4.0
         let outline = CALayer()
-        outline.frame = barcodeBounds
-        outline.borderWidth = 2.0
-        outline.borderColor = UIColor.red.cgColor
+        outline.frame = barcodeBounds.insetBy(dx: -borderWidth, dy: -borderWidth)
+        outline.borderWidth = borderWidth
+
+        let colorAnimation = CABasicAnimation(keyPath: "borderColor")
+        colorAnimation.fromValue = UIColor.success.cgColor
+        colorAnimation.toValue = UIColor.white.cgColor
+        colorAnimation.duration = 0.5
+        colorAnimation.repeatCount = .infinity
+
+        outline.add(colorAnimation, forKey: "borderColor")
 
         // We are inserting the highlights at the beginning of the sublayer queue
         // To avoid overlapping with the textboxes
@@ -271,7 +310,10 @@ final class InventoryScannerViewController: UIViewController {
         yCord += height
         height *= -1
 
-        return CGRect(x: xCord, y: yCord, width: width, height: height)
+        let updatedFrame = CGRect(x: xCord, y: yCord, width: width, height: height)
+        print("barcode bounds: \(barcode.boundingBox) --> \(updatedFrame)")
+
+        return updatedFrame
     }
 
     // Re-adjusts the given box's location based on other boxes that exist on other layers, so that boxes don't overlap
@@ -329,6 +371,10 @@ private extension InventoryScannerViewController {
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
     }
+
+    func configureVideoOutputImageView() {
+        videoOutputImageView.contentMode = .scaleAspectFit
+    }
 }
 
 // MARK: Navigation
@@ -345,6 +391,14 @@ private extension InventoryScannerViewController {
     }
 }
 
+// MARK: - Orientation
+//
+private extension InventoryScannerViewController {
+    private func updatePreviewLayer(layer: AVCaptureConnection, orientation: AVCaptureVideoOrientation) {
+        layer.videoOrientation = orientation
+    }
+}
+
 extension InventoryScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     // Run Vision code with live stream
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
@@ -358,12 +412,57 @@ extension InventoryScannerViewController: AVCaptureVideoDataOutputSampleBufferDe
             requestOptions = [.cameraIntrinsics: camData]
         }
 
-        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: .up, options: requestOptions)
+        let imageOrientation = imageOrientationFromDeviceOrientation()
+
+        // For object detection, keeping track of the image buffer size
+        // to know how to draw bounding boxes based on relative values.
+        // https://developer.apple.com/documentation/coreml/understanding_a_dice_roll_with_vision_and_object_detection
+        // TODO-jc: remove if not needed eventually
+        if bufferSize == nil || lastBufferOrientation != imageOrientation {
+            self.lastBufferOrientation = imageOrientation
+            let pixelBufferWidth = CVPixelBufferGetWidth(pixelBuffer)
+            let pixelBufferHeight = CVPixelBufferGetHeight(pixelBuffer)
+            if [.up, .down].contains(imageOrientation) {
+                bufferSize = CGSize(width: pixelBufferWidth,
+                                         height: pixelBufferHeight)
+            } else {
+                bufferSize = CGSize(width: pixelBufferHeight,
+                                         height: pixelBufferWidth)
+            }
+            print("video buffer size: \(bufferSize)")
+        }
+
+        // CGImagePropertyOrientation(rawValue: 6)
+        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: imageOrientation, options: requestOptions)
 
         do {
             try imageRequestHandler.perform(self.requests)
         } catch {
             print(error)
         }
+    }
+
+    private func imageOrientationFromDeviceOrientation() -> CGImagePropertyOrientation {
+        let orientation = UIDevice.current.orientation
+
+        let imageOrientation: CGImagePropertyOrientation
+        switch orientation {
+        case .portrait:
+            imageOrientation = .right
+        case .portraitUpsideDown:
+            imageOrientation = .left
+        case .landscapeLeft:
+            imageOrientation = .up
+        case .landscapeRight:
+            imageOrientation = .down
+        case .unknown:
+            print("The device orientation is unknown, the predictions may be affected")
+            fallthrough
+        default:
+            // By default keep the last orientation
+            // This applies for faceUp and faceDown
+            imageOrientation = .right
+        }
+        return imageOrientation
     }
 }

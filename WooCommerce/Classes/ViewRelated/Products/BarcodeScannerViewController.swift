@@ -1,7 +1,6 @@
 import AVFoundation
 import UIKit
 import Vision
-import Yosemite
 
 enum BoxAnchorLocation {
     case bottomLeft
@@ -29,18 +28,11 @@ final class BarcodeScannerViewController: UIViewController {
     private var lastBufferOrientation: CGImagePropertyOrientation?
     private var bufferSize: CGSize?
 
-    private lazy var resultsNavigationController: InventoryScannerResultsNavigationController = {
-        return InventoryScannerResultsNavigationController { [weak self] in
-            self?.cancelButtonTapped()
-        }
-    }()
+    private let onBarcodeScanned: ([String], Error?) -> Void
 
-    private lazy var throttler: Throttler = Throttler(seconds: 1)
-
-    private let siteID: Int64
-
-    init(siteID: Int64) {
-        self.siteID = siteID
+    // TODO-jc: maybe let the user to pick a Barcode if multiple are available
+    init(onBarcodeScanned: @escaping ([String], Error?) -> Void) {
+        self.onBarcodeScanned = onBarcodeScanned
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -51,7 +43,6 @@ final class BarcodeScannerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        configureNavigation()
         configureVideoOutputImageView()
         startLiveVideo()
     }
@@ -139,41 +130,16 @@ final class BarcodeScannerViewController: UIViewController {
         self.requests = [barcodeRequest]
     }
 
-    // TODO-jc: remove?
-    @IBAction func handleVideoTapGesture(recognizer: UITapGestureRecognizer) {
-        let touchPoint: CGPoint = recognizer.location(in: videoOutputImageView)
-        let sublayers: [CALayer] = videoOutputImageView.layer.sublayers!
-        let textBoxLayers: [CALayer] = Array(sublayers[(sublayers.count - totalNumberOfTextBoxes)...])
-
-        for textBox in textBoxLayers {
-            if textBox.frame.contains(touchPoint) {
-                if session.isRunning {
-                    session.stopRunning()
-                }
-                return
-            }
-        }
-
-        toggleSession()
-    }
-
-    // TODO-jc: remove?
-    func toggleSession() {
-        if session.isRunning {
-            session.stopRunning()
-        } else {
-            session.startRunning()
-        }
-    }
-
     // Handles barcode detection requests
     func detectBarcodeHandler(request: VNRequest, error: Error?) {
-        if let error = error {
-            print(error)
-        }
         guard let barcodes = request.results, barcodes.isNotEmpty else {
             DispatchQueue.main.async { [weak self] in
                 self?.videoOutputImageView.layer.sublayers?.removeSubrange(1...)
+
+                if let error = error {
+                    print(error)
+                    self?.onBarcodeScanned([], error)
+                }
             }
             return
         }
@@ -212,31 +178,10 @@ final class BarcodeScannerViewController: UIViewController {
             }
             for (barcodeContent, barcodeObservation) in barcodeObservations {
                 self.drawTextBox(barcodeObservation: barcodeObservation, content: barcodeContent)
-                self.searchProductBySKU(barcode: barcodeContent)
             }
-        }
-    }
 
-    private func searchProductBySKU(barcode: String) {
-        throttler.throttle {
-            DispatchQueue.main.async {
-                let action = ProductAction.searchProductBySKU(siteID: self.siteID, sku: barcode) { [weak self] result in
-                    guard let self = self else {
-                        return
-                    }
-                    switch result {
-                    case .success(let product):
-                        let generator = UINotificationFeedbackGenerator()
-                        generator.notificationOccurred(.success)
-
-                        self.resultsNavigationController.present(by: self)
-                        self.resultsNavigationController.productScanned(product: product)
-                    case .failure(let error):
-                        print("No product matched: \(error)")
-                    }
-                }
-                ServiceLocator.stores.dispatch(action)
-            }
+            let barcodes = Array(barcodeObservations.keys)
+            self.onBarcodeScanned(barcodes, nil)
         }
     }
 
@@ -368,28 +313,8 @@ final class BarcodeScannerViewController: UIViewController {
 // MARK: Configurations
 //
 private extension BarcodeScannerViewController {
-    func configureNavigation() {
-        title = NSLocalizedString("Inventory scanner", comment: "")
-
-        navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
-    }
-
     func configureVideoOutputImageView() {
         videoOutputImageView.contentMode = .scaleAspectFit
-    }
-}
-
-// MARK: Navigation
-//
-private extension BarcodeScannerViewController {
-    @objc func cancelButtonTapped() {
-        if resultsNavigationController.isPresented {
-            resultsNavigationController.dismiss(animated: true) {
-                self.dismiss(animated: true, completion: nil)
-            }
-        } else {
-            dismiss(animated: true, completion: nil)
-        }
     }
 }
 

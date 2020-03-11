@@ -30,7 +30,14 @@ final class InventoryScannerResultsNavigationController: UINavigationController 
 
     func present(by viewController: UIViewController) {
         guard isPresented == false else {
-            floatingPanelController.move(to: .half, animated: true)
+            switch traitCollection.verticalSizeClass {
+            case .compact:
+                floatingPanelController.move(to: .tip, animated: true)
+            case .regular:
+                floatingPanelController.move(to: .half, animated: true)
+            @unknown default:
+                break
+            }
             return
         }
 

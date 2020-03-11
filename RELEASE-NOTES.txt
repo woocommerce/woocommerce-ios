@@ -1,6 +1,7 @@
 3.9
 -----
 - bugfix: now in the Order List the order status label is no more clipped
+- bugfix: now the launch screen is no more stretched
 
 3.8
 -----

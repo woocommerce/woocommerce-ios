@@ -20,6 +20,7 @@ final class TopBannerView: UIView {
     private lazy var infoLabel: UILabel = {
         let label = UILabel(frame: .zero)
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.accessibilityIdentifier = "top-banner-view-info-label"
         return label
     }()
 
@@ -33,6 +34,7 @@ final class TopBannerView: UIView {
     private lazy var expandCollapseButton: UIButton = {
         let button = UIButton(frame: .zero)
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.accessibilityIdentifier = "top-banner-view-expand-collapse-button"
         return button
     }()
 

@@ -329,7 +329,7 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
   lane :take_screenshots do | options |
 
     # By default, clear previous screenshots
-    languages = "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
+    languages = ios_locales
 
     if options[:languages] != nil
       languages = languages & options[:languages].split(",")
@@ -451,12 +451,9 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       "app_store_screenshot-3"    => {desc: "app_store_screenshot_3.txt"},
       "app_store_screenshot-4"    => {desc: "app_store_screenshot_4.txt"},
       "app_store_screenshot-5"    => {desc: "app_store_screenshot_5.txt"},
-      "app_store_screenshot-6"    => {desc: "app_store_screenshot_6.txt"},
-      "app_store_screenshot-7"    => {desc: "app_store_screenshot_7.txt"},
-      "app_store_screenshot-8"    => {desc: "app_store_screenshot_8.txt"},
     }
 
-    metadata_locales = get_required_env("MAGNIFICENT_16").split().map { |locale| locale.downcase }
+    metadata_locales = glotpress_locales
 
     gp_downloadmetadata(project_url: "https://translate.wordpress.com/projects/woocommerce%2Fwoocommerce-ios%2Frelease-notes/", 
       target_files: files,
@@ -576,6 +573,15 @@ ENV["APP_STORE_STRINGS_FILE_NAME"]="AppStoreStrings.pot"
       file.close unless file.nil?
     end
   end
+
+  def ios_locales
+    "ar de-DE es-ES fr-FR he id it ja ko nl-NL pt-BR ru sv tr zh-Hans zh-Hant en-US".split()
+  end
+
+  def glotpress_locales
+    "ar de es fr he id it ja ko nl pt-br ru sv tr zh-cn zh-tw".split()
+  end
+
 end
 
   def fastlane_directory()

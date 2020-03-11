@@ -23,8 +23,11 @@ final class MyStoreScreen: BaseScreen {
         topBannerCloseButton = XCUIApplication().buttons[ElementStringIDs.topBannerCloseButton]
 
         super.init(element: settingsButton)
+
+        XCTAssert(settingsButton.waitForExistence(timeout: 3))
     }
 
+    @discardableResult
     func dismissTopBannerIfNeeded() -> MyStoreScreen {
 
         if topBannerCloseButton.waitForExistence(timeout: 3) {
@@ -34,9 +37,9 @@ final class MyStoreScreen: BaseScreen {
         return self
     }
 
-    func goToSettings() -> SettingsScreen {
+    @discardableResult
+    func openSettingsPane() -> SettingsScreen {
         settingsButton.tap()
-
         return SettingsScreen()
     }
 }

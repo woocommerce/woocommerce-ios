@@ -286,7 +286,7 @@ private extension ProductsViewController {
             assertionFailure("No valid site ID for Products tab")
             return
         }
-        let viewController = InventoryScannerViewController(siteID: siteID)
+        let viewController = BarcodeScannerViewController(siteID: siteID)
         let navigationController = WooNavigationController(rootViewController: viewController)
         present(navigationController, animated: true, completion: nil)
     }

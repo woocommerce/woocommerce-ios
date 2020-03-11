@@ -11,7 +11,7 @@ enum BoxAnchorLocation {
     case none
 }
 
-final class InventoryScannerViewController: UIViewController {
+final class BarcodeScannerViewController: UIViewController {
     @IBOutlet private weak var videoOutputImageView: UIImageView!
     private var previewLayer: AVCaptureVideoPreviewLayer?
 
@@ -205,6 +205,8 @@ final class InventoryScannerViewController: UIViewController {
                 barcodeObservations[barcodeString] = barcode
             }
 
+            print("~~~ \(barcodeObservations)")
+
             for (_, barcodeObservation) in barcodeObservations {
                 self.highlightQRCode(barcode: barcodeObservation)
             }
@@ -365,7 +367,7 @@ final class InventoryScannerViewController: UIViewController {
 
 // MARK: Configurations
 //
-private extension InventoryScannerViewController {
+private extension BarcodeScannerViewController {
     func configureNavigation() {
         title = NSLocalizedString("Inventory scanner", comment: "")
 
@@ -379,7 +381,7 @@ private extension InventoryScannerViewController {
 
 // MARK: Navigation
 //
-private extension InventoryScannerViewController {
+private extension BarcodeScannerViewController {
     @objc func cancelButtonTapped() {
         if resultsNavigationController.isPresented {
             resultsNavigationController.dismiss(animated: true) {
@@ -393,13 +395,13 @@ private extension InventoryScannerViewController {
 
 // MARK: - Orientation
 //
-private extension InventoryScannerViewController {
+private extension BarcodeScannerViewController {
     private func updatePreviewLayer(layer: AVCaptureConnection, orientation: AVCaptureVideoOrientation) {
         layer.videoOrientation = orientation
     }
 }
 
-extension InventoryScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
+extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     // Run Vision code with live stream
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {

@@ -25,7 +25,11 @@ final class InventoryScannerViewController: UIViewController {
 
     private var totalNumberOfTextBoxes: Int = 0
 
-    private lazy var resultsNavigationController: InventoryScannerResultsNavigationController = InventoryScannerResultsNavigationController()
+    private lazy var resultsNavigationController: InventoryScannerResultsNavigationController = {
+        return InventoryScannerResultsNavigationController { [weak self] in
+            self?.cancelButtonTapped()
+        }
+    }()
 
     private lazy var throttler: Throttler = Throttler(seconds: 0.5)
 
@@ -331,7 +335,13 @@ private extension InventoryScannerViewController {
 //
 private extension InventoryScannerViewController {
     @objc func cancelButtonTapped() {
-        dismiss(animated: true, completion: nil)
+        if resultsNavigationController.isPresented {
+            resultsNavigationController.dismiss(animated: true) {
+                self.dismiss(animated: true, completion: nil)
+            }
+        } else {
+            dismiss(animated: true, completion: nil)
+        }
     }
 }
 

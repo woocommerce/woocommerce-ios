@@ -176,6 +176,8 @@
 		02B296A722FA6DB500FD7A4C /* Date+StartAndEnd.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B296A622FA6DB500FD7A4C /* Date+StartAndEnd.swift */; };
 		02B296A922FA6E0000FD7A4C /* DateStartAndEndTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02B296A822FA6E0000FD7A4C /* DateStartAndEndTests.swift */; };
 		02BA23C022EE9DAF009539E7 /* AsyncDictionaryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BA23BF22EE9DAF009539E7 /* AsyncDictionaryTests.swift */; };
+		02BC0BEC2417694A00B4EDC7 /* ProductStockSettingsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02BC0BEA2417694A00B4EDC7 /* ProductStockSettingsViewController.swift */; };
+		02BC0BED2417694A00B4EDC7 /* ProductStockSettingsViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02BC0BEB2417694A00B4EDC7 /* ProductStockSettingsViewController.xib */; };
 		02C0CD2A23B5BB1C00F880B1 /* ImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2923B5BB1C00F880B1 /* ImageService.swift */; };
 		02C0CD2C23B5BC9600F880B1 /* DefaultImageService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */; };
 		02C0CD2E23B5E3AE00F880B1 /* DefaultImageServiceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */; };
@@ -924,6 +926,8 @@
 		02B296A622FA6DB500FD7A4C /* Date+StartAndEnd.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Date+StartAndEnd.swift"; sourceTree = "<group>"; };
 		02B296A822FA6E0000FD7A4C /* DateStartAndEndTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateStartAndEndTests.swift; sourceTree = "<group>"; };
 		02BA23BF22EE9DAF009539E7 /* AsyncDictionaryTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AsyncDictionaryTests.swift; sourceTree = "<group>"; };
+		02BC0BEA2417694A00B4EDC7 /* ProductStockSettingsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockSettingsViewController.swift; sourceTree = "<group>"; };
+		02BC0BEB2417694A00B4EDC7 /* ProductStockSettingsViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductStockSettingsViewController.xib; sourceTree = "<group>"; };
 		02C0CD2923B5BB1C00F880B1 /* ImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImageService.swift; sourceTree = "<group>"; };
 		02C0CD2B23B5BC9600F880B1 /* DefaultImageService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageService.swift; sourceTree = "<group>"; };
 		02C0CD2D23B5E3AE00F880B1 /* DefaultImageServiceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DefaultImageServiceTests.swift; sourceTree = "<group>"; };
@@ -2148,6 +2152,8 @@
 				0294E6B0241722A40031C7C6 /* InventoryScannerResultsNavigationController.swift */,
 				0294E6B22417236C0031C7C6 /* ScannedProductsViewController.swift */,
 				0294E6B32417236C0031C7C6 /* ScannedProductsViewController.xib */,
+				02BC0BEA2417694A00B4EDC7 /* ProductStockSettingsViewController.swift */,
+				02BC0BEB2417694A00B4EDC7 /* ProductStockSettingsViewController.xib */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -3670,6 +3676,7 @@
 				CE21B3E120FFC59700A259D5 /* ProductDetailsTableViewCell.xib in Resources */,
 				CE35F11C2343F3B1007B2A6B /* TwoColumnHeadlineFootnoteTableViewCell.xib in Resources */,
 				451A04E72386CE8700E368C9 /* ProductImagesHeaderTableViewCell.xib in Resources */,
+				02BC0BED2417694A00B4EDC7 /* ProductStockSettingsViewController.xib in Resources */,
 				02357B2B23CDB3E300147C2B /* ProductImageViewController.xib in Resources */,
 				CE85FD5320F677770080B73E /* Dashboard.storyboard in Resources */,
 				B56DB3CF2049BFAA00D4AA8E /* Main.storyboard in Resources */,
@@ -4238,6 +4245,7 @@
 				D8C2A28F231BD00500F503E9 /* ReviewsViewModel.swift in Sources */,
 				021AEF9E2407F55C00029D28 /* PHAssetImageLoader.swift in Sources */,
 				0294E6B42417236C0031C7C6 /* ScannedProductsViewController.swift in Sources */,
+				02BC0BEC2417694A00B4EDC7 /* ProductStockSettingsViewController.swift in Sources */,
 				020BE74D23B1F5EB007FE54C /* TitleAndTextFieldTableViewCell.swift in Sources */,
 				D81F2D37225F0D160084BF9C /* EmptyListMessageWithActionView.swift in Sources */,
 				B55BC1F121A878A30011A0C0 /* String+HTML.swift in Sources */,

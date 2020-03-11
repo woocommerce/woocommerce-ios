@@ -21,4 +21,16 @@ extension Product {
                                   inputFormatter: IntegerInputFormatter(),
                                   onInputChange: onInputChange)
     }
+
+    // TODO-jc: move this
+    static func createDiffableStockQuantityViewModel(originalStockQuantity: Int?, stockQuantity: Int?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
+        let title = NSLocalizedString("Quantity (Original: \(originalStockQuantity ?? 0))", comment: "Title of the cell in Product Inventory Settings > Quantity")
+        return UnitInputViewModel(title: title,
+                                  unit: "",
+                                  value: "\(stockQuantity ?? 0)",
+                                  placeholder: "0",
+                                  keyboardType: .numberPad,
+                                  inputFormatter: IntegerInputFormatter(),
+                                  onInputChange: onInputChange)
+    }
 }

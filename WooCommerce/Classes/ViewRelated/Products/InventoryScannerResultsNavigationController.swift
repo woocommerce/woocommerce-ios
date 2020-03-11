@@ -3,16 +3,23 @@ import UIKit
 import Yosemite
 
 final class InventoryScannerResultsNavigationController: UINavigationController {
-    private let scannedProductsViewController = ScannedProductsViewController()
+    private lazy var scannedProductsViewController: ScannedProductsViewController = {
+        return ScannedProductsViewController { [weak self] in
+            self?.onSaveCompletion()
+        }
+    }()
+
     private lazy var floatingPanelController: FloatingPanelController = {
         let fpc = FloatingPanelController(delegate: self)
         fpc.set(contentViewController: self)
         return fpc
     }()
 
-    private var isPresented: Bool = false
+    private(set) var isPresented: Bool = false
+    private let onSaveCompletion: () -> Void
 
-    init() {
+    init(onSaveCompletion: @escaping () -> Void) {
+        self.onSaveCompletion = onSaveCompletion
         super.init(nibName: nil, bundle: nil)
         viewControllers = [scannedProductsViewController]
     }

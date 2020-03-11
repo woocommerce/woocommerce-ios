@@ -8,9 +8,13 @@ final class ScannedProductsViewController: UIViewController {
     private let imageService: ImageService
 
     private var scannedProducts: [Product] = []
+    private var stockQuantitiesByProductID: [Int64: Int] = [:]
 
-    init(imageService: ImageService = ServiceLocator.imageService) {
+    private let onSaveCompletion: () -> Void
+
+    init(imageService: ImageService = ServiceLocator.imageService, onSaveCompletion: @escaping () -> Void) {
         self.imageService = imageService
+        self.onSaveCompletion = onSaveCompletion
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -26,8 +30,27 @@ final class ScannedProductsViewController: UIViewController {
     }
 
     func productScanned(product: Product) {
+        if let matchedProduct = scannedProducts.first(where: { $0.sku == product.sku }),
+            let quantity = stockQuantitiesByProductID[matchedProduct.productID] {
+            stockQuantitiesByProductID[matchedProduct.productID] = quantity + 1
+
+            reloadDataIfPossible()
+
+            return
+        }
+
         scannedProducts.append(product)
 
+        guard product.manageStock else {
+            // TODO-jc: handle when product stock managemnet isn't enabled
+            return
+        }
+        stockQuantitiesByProductID[product.productID] = (product.stockQuantity ?? 0) + 1
+
+        reloadDataIfPossible()
+    }
+
+    private func reloadDataIfPossible() {
         guard isViewLoaded else {
             return
         }
@@ -40,6 +63,26 @@ final class ScannedProductsViewController: UIViewController {
 private extension ScannedProductsViewController {
     @objc func saveButtonTapped() {
         // TODO-jc
+        let group = DispatchGroup()
+        
+        scannedProducts.forEach { product in
+            group.enter()
+            let stockQuantity = stockQuantitiesByProductID[product.productID]
+            let product = product.inventorySettingsUpdated(sku: product.sku,
+                                                                  manageStock: product.manageStock,
+                                                                  soldIndividually: product.soldIndividually,
+                                                                  stockQuantity: stockQuantity,
+                                                                  backordersSetting: product.backordersSetting,
+                                                                  stockStatus: product.productStockStatus)
+            let action = ProductAction.updateProduct(product: product) { (updatedProduct, error) in
+                group.leave()
+            }
+            ServiceLocator.stores.dispatch(action)
+        }
+
+        group.notify(queue: .main) { [weak self] in
+            self?.onSaveCompletion()
+        }
     }
 }
 
@@ -64,6 +107,8 @@ private extension ScannedProductsViewController {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
 
+        tableView.tableFooterView = UIView()
+
         tableView.reloadData()
     }
 }
@@ -82,7 +127,8 @@ extension ScannedProductsViewController: UITableViewDataSource {
             fatalError()
         }
         let product = scannedProducts[indexPath.row]
-        cell.configureForInventoryScannerResult(product: product, imageService: imageService)
+        cell.configureForInventoryScannerResult(product: product, updatedQuantity: stockQuantitiesByProductID[product.productID], imageService: imageService)
+        cell.accessoryType = .disclosureIndicator
         return cell
     }
 }
@@ -90,5 +136,22 @@ extension ScannedProductsViewController: UITableViewDataSource {
 extension ScannedProductsViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // TODO-jc
+        let product = scannedProducts[indexPath.row]
+        let inventorySettingsViewController =
+            ProductStockSettingsViewController(product: product,
+                                               stockQuantity: stockQuantitiesByProductID[product.productID]) {
+                                                [weak self] stockData in
+                                                let updatedProduct = product.inventorySettingsUpdated(sku: product.sku,
+                                                                                                      manageStock: stockData.manageStock,
+                                                                                                      soldIndividually: product.soldIndividually,
+                                                                                                      stockQuantity: product.stockQuantity,
+                                                                                                      backordersSetting: stockData.backordersSetting,
+                                                                                                      stockStatus: stockData.stockStatus)
+                                                self?.scannedProducts[indexPath.row] = updatedProduct
+                                                self?.stockQuantitiesByProductID[updatedProduct.productID] = stockData.stockQuantity ?? product.stockQuantity ?? 0
+                                                self?.reloadDataIfPossible()
+                                                self?.navigationController?.popViewController(animated: true)
+        }
+        navigationController?.pushViewController(inventorySettingsViewController, animated: true)
     }
 }

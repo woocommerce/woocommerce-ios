@@ -158,7 +158,7 @@ extension ProductDetailsTableViewCell {
 }
 
 extension ProductDetailsTableViewCell {
-    func configureForInventoryScannerResult(product: Product, imageService: ImageService) {
+    func configureForInventoryScannerResult(product: Product, updatedQuantity: Int?, imageService: ImageService) {
         imageService.downloadAndCacheImageForImageView(productImageView,
                                                        with: product.images.first?.src,
                                                        placeholder: .productPlaceholderImage,
@@ -166,8 +166,19 @@ extension ProductDetailsTableViewCell {
                                                        completion: nil)
 
         name = product.name
-        quantity = "\(0)" // TODO-jc
-        price = product.price
         sku = product.sku
+
+        guard product.manageStock else {
+            priceLabel.text = NSLocalizedString("⚠️ Stock management is disabled", comment: "")
+            quantity = ""
+            return
+        }
+
+        let originalQuantity = product.stockQuantity ?? 0
+        if let updatedQuantity = updatedQuantity {
+            quantity = "\(originalQuantity) → \(updatedQuantity)"
+        } else {
+            quantity = "\(originalQuantity)"
+        }
     }
 }

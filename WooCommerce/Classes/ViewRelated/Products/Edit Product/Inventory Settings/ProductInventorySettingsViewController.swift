@@ -385,6 +385,12 @@ private extension ProductInventorySettingsViewController {
             break
         }
         cell.configure(viewModel: viewModel)
+
+        let button = UIButton(type: .detailDisclosure)
+        button.setImage(.cameraImage, for: .normal)
+        button.addTarget(self, action: #selector(skuCameraButtonTapped), for: .touchUpInside)
+
+        cell.accessoryView = button
     }
 
     func configureManageStock(cell: SwitchTableViewCell) {
@@ -425,6 +431,14 @@ private extension ProductInventorySettingsViewController {
         let title = NSLocalizedString("Stock status", comment: "Title of the cell in Product Inventory Settings > Stock status")
         cell.updateUI(title: title, value: stockStatus?.description)
         cell.accessoryType = .disclosureIndicator
+    }
+}
+
+// MARK: - SKU from camera
+//
+private extension ProductInventorySettingsViewController {
+    @objc func skuCameraButtonTapped() {
+        // TODO-jc
     }
 }
 

@@ -172,6 +172,8 @@
 		02A275C823FEA102005C560F /* DefaultProductFormTableViewModel+EditProductsM2Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A275C723FEA102005C560F /* DefaultProductFormTableViewModel+EditProductsM2Tests.swift */; };
 		02A685402418A94200B7E79E /* ProductStockScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A6853E2418A94200B7E79E /* ProductStockScannerViewController.swift */; };
 		02A685412418A94200B7E79E /* ProductStockScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A6853F2418A94200B7E79E /* ProductStockScannerViewController.xib */; };
+		02A685442418AEAB00B7E79E /* ProductSKUInputScannerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A685422418AEAB00B7E79E /* ProductSKUInputScannerViewController.swift */; };
+		02A685452418AEAB00B7E79E /* ProductSKUInputScannerViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 02A685432418AEAB00B7E79E /* ProductSKUInputScannerViewController.xib */; };
 		02ADC7CC239762E0008D4BED /* PaginatedListSelectorViewProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */; };
 		02ADC7CE23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */; };
 		02ADC7D02398C8EB008D4BED /* UIColor+SystemColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02ADC7CF2398C8EB008D4BED /* UIColor+SystemColors.swift */; };
@@ -924,6 +926,8 @@
 		02A275C723FEA102005C560F /* DefaultProductFormTableViewModel+EditProductsM2Tests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "DefaultProductFormTableViewModel+EditProductsM2Tests.swift"; sourceTree = "<group>"; };
 		02A6853E2418A94200B7E79E /* ProductStockScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductStockScannerViewController.swift; sourceTree = "<group>"; };
 		02A6853F2418A94200B7E79E /* ProductStockScannerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductStockScannerViewController.xib; sourceTree = "<group>"; };
+		02A685422418AEAB00B7E79E /* ProductSKUInputScannerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductSKUInputScannerViewController.swift; sourceTree = "<group>"; };
+		02A685432418AEAB00B7E79E /* ProductSKUInputScannerViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = ProductSKUInputScannerViewController.xib; sourceTree = "<group>"; };
 		02ADC7CB239762E0008D4BED /* PaginatedListSelectorViewProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedListSelectorViewProperties.swift; sourceTree = "<group>"; };
 		02ADC7CD23978EAA008D4BED /* PaginatedProductShippingClassListSelectorDataSourceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PaginatedProductShippingClassListSelectorDataSourceTests.swift; sourceTree = "<group>"; };
 		02ADC7CF2398C8EB008D4BED /* UIColor+SystemColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+SystemColors.swift"; sourceTree = "<group>"; };
@@ -2160,6 +2164,8 @@
 				02BC0BEB2417694A00B4EDC7 /* ProductStockSettingsViewController.xib */,
 				02A6853E2418A94200B7E79E /* ProductStockScannerViewController.swift */,
 				02A6853F2418A94200B7E79E /* ProductStockScannerViewController.xib */,
+				02A685422418AEAB00B7E79E /* ProductSKUInputScannerViewController.swift */,
+				02A685432418AEAB00B7E79E /* ProductSKUInputScannerViewController.xib */,
 			);
 			path = Products;
 			sourceTree = "<group>";
@@ -3650,6 +3656,7 @@
 				0294E6B52417236C0031C7C6 /* ScannedProductsViewController.xib in Resources */,
 				D8915DBF23729CFB00F63762 /* ColorPalette.xcassets in Resources */,
 				CE24BCD0212DE8A6001CD12E /* HeadlineLabelTableViewCell.xib in Resources */,
+				02A685452418AEAB00B7E79E /* ProductSKUInputScannerViewController.xib in Resources */,
 				B559EBB020A0BF8F00836CD4 /* LICENSE in Resources */,
 				74EC34A9225FE69C004BBC2E /* ProductDetailsViewController.xib in Resources */,
 				CE32B10B20BEDE05006FBCF4 /* TwoColumnSectionHeaderView.xib in Resources */,
@@ -4036,6 +4043,7 @@
 				02F4F50B237AEB8A00E13A9C /* ProductFormTableViewDataSource.swift in Sources */,
 				B57C5C9621B80E5500FF82B2 /* Dictionary+Woo.swift in Sources */,
 				CE27257F21925AE8002B22EB /* ValueOneTableViewCell.swift in Sources */,
+				02A685442418AEAB00B7E79E /* ProductSKUInputScannerViewController.swift in Sources */,
 				028296EC237D28B600E84012 /* TextViewViewController.swift in Sources */,
 				454B28BE23BF63C600CD2091 /* DateIntervalFormatter+Helpers.swift in Sources */,
 				024DF3052372ADCD006658FE /* KeyboardScrollable.swift in Sources */,

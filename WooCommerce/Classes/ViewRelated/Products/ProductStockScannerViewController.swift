@@ -86,9 +86,7 @@ private extension ProductStockScannerViewController {
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
     }
-}
 
-private extension ProductStockScannerViewController {
     func configureBarcodeScannerChildViewController() {
         let contentView = barcodeScannerChildViewController.view!
         addChild(barcodeScannerChildViewController)

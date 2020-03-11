@@ -438,7 +438,19 @@ private extension ProductInventorySettingsViewController {
 //
 private extension ProductInventorySettingsViewController {
     @objc func skuCameraButtonTapped() {
-        // TODO-jc
+        let scannerViewController = ProductSKUInputScannerViewController(onBarcodeScanned: { [weak self] (barcode) in
+            self?.onSKUBarcodeScanned(barcode: barcode)
+            self?.dismiss(animated: true, completion: nil)
+        }, onCancelled: { [weak self] in
+            self?.dismiss(animated: true, completion: nil)
+        })
+        present(WooNavigationController(rootViewController: scannerViewController), animated: true, completion: nil)
+    }
+
+    func onSKUBarcodeScanned(barcode: String) {
+        sku = barcode
+        reloadSections()
+        handleSKUChange(sku)
     }
 }
 

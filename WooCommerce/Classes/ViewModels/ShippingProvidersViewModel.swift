@@ -10,8 +10,8 @@ final class ShippingProvidersViewModel {
     let order: Order
 
     /// Title of view displaying all available Shipment Tracking Providers
-    let title = NSLocalizedString("Shipping Providers",
-                                  comment: "Title of view displaying all available Shipment Tracking Providers")
+    let title = NSLocalizedString("Shipping Carriers",
+                                  comment: "Title of view displaying all available Shipment Tracking Carriers")
 
     /// The currently selected tracking provider.
     private let selectedProvider: ShipmentTrackingProvider?

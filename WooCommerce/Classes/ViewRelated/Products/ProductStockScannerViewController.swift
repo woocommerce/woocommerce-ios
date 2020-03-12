@@ -27,7 +27,7 @@ final class ProductStockScannerViewController: UIViewController {
         return fpc
     }()
 
-    private var isPresented: Bool = false
+    private var areSearchResultsPresented: Bool = false
 
     private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
         let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: { [weak self] keyboardFrame in
@@ -95,7 +95,7 @@ private extension ProductStockScannerViewController {
     }
 
     func presentSearchResults() {
-        guard isPresented == false else {
+        guard areSearchResultsPresented == false else {
             switch traitCollection.verticalSizeClass {
             case .compact:
                 floatingPanelController.move(to: .tip, animated: true)
@@ -108,7 +108,7 @@ private extension ProductStockScannerViewController {
         }
 
         present(floatingPanelController, animated: true, completion: nil)
-        isPresented = true
+        areSearchResultsPresented = true
     }
 }
 
@@ -116,7 +116,7 @@ private extension ProductStockScannerViewController {
 //
 private extension ProductStockScannerViewController {
     @objc func cancelButtonTapped() {
-        if isPresented {
+        if areSearchResultsPresented {
             resultsNavigationController.dismiss(animated: true) {
                 self.dismiss(animated: true, completion: nil)
             }

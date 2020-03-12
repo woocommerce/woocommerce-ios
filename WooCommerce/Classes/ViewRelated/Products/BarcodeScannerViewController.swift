@@ -10,6 +10,27 @@ enum BoxAnchorLocation {
     case none
 }
 
+// TODO-jc: remove if not needed / not working
+extension AVCaptureDevice {
+    func set(frameRate: Double) {
+        guard let range = activeFormat.videoSupportedFrameRateRanges.first,
+            range.minFrameRate...range.maxFrameRate ~= frameRate
+            else {
+                print("Requested FPS is not supported by the device's activeFormat !")
+                return
+        }
+
+        do {
+            try lockForConfiguration()
+            activeVideoMinFrameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate))
+            activeVideoMaxFrameDuration = CMTimeMake(value: 1, timescale: Int32(frameRate))
+            unlockForConfiguration()
+        } catch {
+            print("LockForConfiguration failed with error: \(error.localizedDescription)")
+        }
+    }
+}
+
 final class BarcodeScannerViewController: UIViewController {
     @IBOutlet private weak var videoOutputImageView: UIImageView!
     private var previewLayer: AVCaptureVideoPreviewLayer?
@@ -24,6 +45,9 @@ final class BarcodeScannerViewController: UIViewController {
     private var requests = [VNRequest]()
 
     private var totalNumberOfTextBoxes: Int = 0
+
+    private lazy var throttler: Throttler = Throttler(seconds: 0.2)
+    private let thresholdFilter = PresenceThresholdSequence<[String]>(threshold: 0.05, outOf: 20)
 
     private var lastBufferOrientation: CGImagePropertyOrientation?
     private var bufferSize: CGSize?
@@ -43,6 +67,7 @@ final class BarcodeScannerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .basicBackground
         configureVideoOutputImageView()
         startLiveVideo()
     }
@@ -90,6 +115,8 @@ final class BarcodeScannerViewController: UIViewController {
                 return
         }
 
+        captureDevice.set(frameRate: 2)
+
         let deviceOutput = AVCaptureVideoDataOutput()
         deviceOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
         // Set the quality of the video
@@ -132,19 +159,12 @@ final class BarcodeScannerViewController: UIViewController {
 
     // Handles barcode detection requests
     func detectBarcodeHandler(request: VNRequest, error: Error?) {
-        guard let barcodes = request.results, barcodes.isNotEmpty else {
-            DispatchQueue.main.async { [weak self] in
-                self?.videoOutputImageView.layer.sublayers?.removeSubrange(1...)
-
-                if let error = error {
-                    print(error)
-                    self?.onBarcodeScanned([], error)
-                }
-            }
+        guard let barcodeObservations = request.results?.compactMap({ $0 as? VNBarcodeObservation }) else {
             return
         }
 
-        // Perform UI updates on the main thread
+        let barcodes = barcodeObservations.compactMap({ $0.payloadStringValue }).uniqued()
+
         DispatchQueue.main.async { [weak self] in
             guard let self = self else {
                 return
@@ -154,33 +174,50 @@ final class BarcodeScannerViewController: UIViewController {
                 return
             }
 
+            guard let filteredBarcodes = self.thresholdFilter.append(value: barcodes) else {
+                print(".... same: \(barcodes)")
+                self.videoOutputImageView.layer.sublayers?.removeSubrange(1...)
+                return
+            }
+
+            guard filteredBarcodes.isNotEmpty else {
+                print(".... nothing")
+                self.videoOutputImageView.layer.sublayers?.removeSubrange(1...)
+
+                if let error = error {
+                    print(error)
+                    self.onBarcodeScanned([], error)
+                }
+
+                return
+            }
+
             self.videoOutputImageView.layer.sublayers?.removeSubrange(1...)
             self.totalNumberOfTextBoxes = 0
 
             // This will be used to eliminate duplicate findings
-            var barcodeObservations: [String: VNBarcodeObservation] = [:]
-            for barcode in barcodes.compactMap({ $0 as? VNBarcodeObservation }) {
-                guard let barcodeString = barcode.payloadStringValue else {
+            var filteredBarcodeObservations: [String: VNBarcodeObservation] = [:]
+            for barcode in barcodeObservations {
+                guard let barcodeString = barcode.payloadStringValue, filteredBarcodes.contains(barcodeString) else {
                     continue
                 }
 
-                if let existingObservation = barcodeObservations[barcodeString], existingObservation.confidence > barcode.confidence {
+                if let existingObservation = filteredBarcodeObservations[barcodeString], existingObservation.confidence > barcode.confidence {
                     continue
                 }
 
-                barcodeObservations[barcodeString] = barcode
+                filteredBarcodeObservations[barcodeString] = barcode
             }
 
             print("~~~ \(barcodeObservations)")
 
-            for (_, barcodeObservation) in barcodeObservations {
+            for (_, barcodeObservation) in filteredBarcodeObservations {
                 self.highlightQRCode(barcode: barcodeObservation)
             }
-            for (barcodeContent, barcodeObservation) in barcodeObservations {
+            for (barcodeContent, barcodeObservation) in filteredBarcodeObservations {
                 self.drawTextBox(barcodeObservation: barcodeObservation, content: barcodeContent)
             }
 
-            let barcodes = Array(barcodeObservations.keys)
             self.onBarcodeScanned(barcodes, nil)
         }
     }
@@ -329,43 +366,45 @@ private extension BarcodeScannerViewController {
 extension BarcodeScannerViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     // Run Vision code with live stream
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
-            return
-        }
-
-        var requestOptions: [VNImageOption: Any] = [:]
-
-        if let camData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) {
-            requestOptions = [.cameraIntrinsics: camData]
-        }
-
-        let imageOrientation = imageOrientationFromDeviceOrientation()
-
-        // For object detection, keeping track of the image buffer size
-        // to know how to draw bounding boxes based on relative values.
-        // https://developer.apple.com/documentation/coreml/understanding_a_dice_roll_with_vision_and_object_detection
-        // TODO-jc: remove if not needed eventually
-        if bufferSize == nil || lastBufferOrientation != imageOrientation {
-            self.lastBufferOrientation = imageOrientation
-            let pixelBufferWidth = CVPixelBufferGetWidth(pixelBuffer)
-            let pixelBufferHeight = CVPixelBufferGetHeight(pixelBuffer)
-            if [.up, .down].contains(imageOrientation) {
-                bufferSize = CGSize(width: pixelBufferWidth,
-                                         height: pixelBufferHeight)
-            } else {
-                bufferSize = CGSize(width: pixelBufferHeight,
-                                         height: pixelBufferWidth)
+        throttler.throttle {
+            guard let pixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
+                return
             }
-            print("video buffer size: \(bufferSize)")
-        }
 
-        // CGImagePropertyOrientation(rawValue: 6)
-        let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: imageOrientation, options: requestOptions)
+            var requestOptions: [VNImageOption: Any] = [:]
 
-        do {
-            try imageRequestHandler.perform(self.requests)
-        } catch {
-            print(error)
+            if let camData = CMGetAttachment(sampleBuffer, key: kCMSampleBufferAttachmentKey_CameraIntrinsicMatrix, attachmentModeOut: nil) {
+                requestOptions = [.cameraIntrinsics: camData]
+            }
+
+            let imageOrientation = self.imageOrientationFromDeviceOrientation()
+
+            // For object detection, keeping track of the image buffer size
+            // to know how to draw bounding boxes based on relative values.
+            // https://developer.apple.com/documentation/coreml/understanding_a_dice_roll_with_vision_and_object_detection
+            // TODO-jc: remove if not needed eventually
+            if self.bufferSize == nil || self.lastBufferOrientation != imageOrientation {
+                self.lastBufferOrientation = imageOrientation
+                let pixelBufferWidth = CVPixelBufferGetWidth(pixelBuffer)
+                let pixelBufferHeight = CVPixelBufferGetHeight(pixelBuffer)
+                if [.up, .down].contains(imageOrientation) {
+                    self.bufferSize = CGSize(width: pixelBufferWidth,
+                                             height: pixelBufferHeight)
+                } else {
+                    self.bufferSize = CGSize(width: pixelBufferHeight,
+                                             height: pixelBufferWidth)
+                }
+                print("video buffer size: \(self.bufferSize)")
+            }
+
+            // CGImagePropertyOrientation(rawValue: 6)
+            let imageRequestHandler = VNImageRequestHandler(cvPixelBuffer: pixelBuffer, orientation: imageOrientation, options: requestOptions)
+
+            do {
+                try imageRequestHandler.perform(self.requests)
+            } catch {
+                print(error)
+            }
         }
     }
 

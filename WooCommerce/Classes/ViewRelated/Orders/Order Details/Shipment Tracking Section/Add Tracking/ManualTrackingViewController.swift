@@ -230,7 +230,7 @@ extension ManualTrackingViewController: UITableViewDataSource {
     private func configureShippingProvider(cell: TitleAndEditableValueTableViewCell) {
         cell.title.text = NSLocalizedString("Shipping carrier", comment: "Add / Edit shipping carrier. Title of cell presenting name")
         cell.value.text = viewModel.providerCellName
-        cell.value.placeholder = NSLocalizedString("Select Carrier", comment: "Add the shipping carrier. Placeholder of cell presenting carrier name")
+        cell.value.placeholder = NSLocalizedString("Select carrier", comment: "Add the shipping carrier. Placeholder of cell presenting carrier name")
 
         cell.value.isEnabled = false
         cell.accessoryType = viewModel.providerCellAccessoryType

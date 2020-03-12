@@ -102,6 +102,8 @@ final class MainTabBarController: UITabBarController {
         navController.tabBarItem = UITabBarItem(title: navigationTitle,
                                                 image: UIImage.productImage,
                                                 tag: 0)
+        navController.tabBarItem.accessibilityIdentifier = "tab-bar-products-item"
+
         return navController
     }()
 

@@ -182,6 +182,7 @@ private extension ProductsViewController {
                 "Retrieves a list of products that contain a given keyword.",
                 comment: "VoiceOver accessibility hint, informing the user the button can be used to search products."
             )
+            button.accessibilityIdentifier = "product-search-button"
 
             return button
         }()

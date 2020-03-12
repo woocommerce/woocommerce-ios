@@ -24,7 +24,7 @@ class LoginTests: XCTestCase {
         .continueWithSelectedSite()
 
         // Log out
-        .goToSettings()
+        .openSettingsPane()
         .verifySelectedStoreDisplays(siteUrl: TestCredentials.siteUrl, displayName: TestCredentials.displayName)
         .logOut()
 

@@ -177,10 +177,12 @@ extension ProductDetailsTableViewCell {
         priceLabel.text = ""
 
         let originalQuantity = product.stockQuantity ?? 0
-        if let updatedQuantity = updatedQuantity {
+        if let updatedQuantity = updatedQuantity, updatedQuantity != originalQuantity {
             quantity = "\(originalQuantity) → \(updatedQuantity)"
+            quantityLabel.textColor = .warning
         } else {
             quantity = "\(originalQuantity)"
+            quantityLabel.textColor = .text
         }
     }
 }

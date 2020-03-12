@@ -9,6 +9,7 @@ final class SettingTitleAndValueTableViewCell: UITableViewCell {
         super.awakeFromNib()
 
         configureLabels()
+        applyDefaultBackgroundStyle()
     }
 }
 

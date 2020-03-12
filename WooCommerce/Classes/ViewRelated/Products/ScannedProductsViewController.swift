@@ -25,6 +25,7 @@ final class ScannedProductsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        view.backgroundColor = .basicBackground
         configureNavigation()
         configureTableView()
     }
@@ -107,6 +108,15 @@ private extension ScannedProductsViewController {
             tableView.register(cell.loadNib(), forCellReuseIdentifier: cell.reuseIdentifier)
         }
 
+        let headersAndFooters = [
+            TwoColumnSectionHeaderView.self
+        ]
+
+        for kind in headersAndFooters {
+            tableView.register(kind.loadNib(), forHeaderFooterViewReuseIdentifier: kind.reuseIdentifier)
+        }
+
+        tableView.estimatedSectionHeaderHeight = 80
         tableView.tableFooterView = UIView()
 
         tableView.reloadData()
@@ -153,5 +163,20 @@ extension ScannedProductsViewController: UITableViewDelegate {
                                                 self?.navigationController?.popViewController(animated: true)
         }
         navigationController?.pushViewController(inventorySettingsViewController, animated: true)
+    }
+
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        guard let headerView = tableView.dequeueReusableHeaderFooterView(withIdentifier: TwoColumnSectionHeaderView.reuseIdentifier) as? TwoColumnSectionHeaderView else {
+            fatalError()
+        }
+
+        headerView.leftText = NSLocalizedString("PRODUCT", comment: "Product section title")
+        headerView.rightText = NSLocalizedString("QUANTITY", comment: "Quantity abbreviation for section title")
+
+        return headerView
+    }
+
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return UITableView.automaticDimension
     }
 }

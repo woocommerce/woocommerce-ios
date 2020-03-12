@@ -1,4 +1,3 @@
-import FloatingPanel
 import UIKit
 import Yosemite
 
@@ -8,14 +7,7 @@ final class InventoryScannerResultsNavigationController: UINavigationController 
             self?.onSaveCompletion()
         }
     }()
-
-    private lazy var floatingPanelController: FloatingPanelController = {
-        let fpc = FloatingPanelController(delegate: self)
-        fpc.set(contentViewController: self)
-        return fpc
-    }()
-
-    private(set) var isPresented: Bool = false
+    
     private let onSaveCompletion: () -> Void
 
     init(onSaveCompletion: @escaping () -> Void) {
@@ -28,28 +20,7 @@ final class InventoryScannerResultsNavigationController: UINavigationController 
         fatalError()
     }
 
-    func present(by viewController: UIViewController) {
-        guard isPresented == false else {
-            switch traitCollection.verticalSizeClass {
-            case .compact:
-                floatingPanelController.move(to: .tip, animated: true)
-            case .regular:
-                floatingPanelController.move(to: .half, animated: true)
-            @unknown default:
-                break
-            }
-            return
-        }
-
-        viewController.present(floatingPanelController, animated: true, completion: nil)
-        isPresented = true
-    }
-
     func productScanned(product: Product) {
         scannedProductsViewController.productScanned(product: product)
     }
-}
-
-extension InventoryScannerResultsNavigationController: FloatingPanelControllerDelegate {
-
 }

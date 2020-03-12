@@ -1,0 +1,12 @@
+VOIR ET GÉRER LES COMMANDES
+Parcourez, filtrez ou recherchez des commandes spécifiques. Appuyez pour voir les informations sur la commande, notamment le ou les produits, la valeur, les données client, les détails d'expédition et les remarques.
+
+SUIVRE VOTRE BOUTIQUE
+Découvrez les produits les plus performants. Vérifiez vos revenus globaux et consultez les données inhérentes aux commandes et aux visiteurs par semaine, mois et année.
+
+ALERTES DE COMMANDE EN TEMPS RÉEL
+Recevez des notifications sur l'activité de votre boutique, notamment sur les nouvelles commandes et les avis sur les produits.
+
+WooCommerce est la plateforme de eCommerce la plus personnalisable pour créer votre entreprise en ligne. Tirez profit de WordPress. Cette application est intégrée aux meilleurs outils de gestion de contenu au monde. Abonnements de café, leçons d'espagnol, adhésions à un club de sport, eCommerce professionnel complexe : visitez WooCommerce.com/start pour lancer une nouvelle boutique et commercialiser votre idée.
+
+Conditions : WooCommerce v3.5+, extension de Jetpack.

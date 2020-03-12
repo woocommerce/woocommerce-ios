@@ -22,7 +22,7 @@ final class ReviewsScreen: BaseScreen {
 
     @discardableResult
     func selectReview(atIndex index: Int) -> SingleReviewScreen {
-        XCUIApplication().cells.element(boundBy: index).tap()
+        XCUIApplication().tables.cells.element(boundBy: index).tap()
         return SingleReviewScreen()
     }
 }

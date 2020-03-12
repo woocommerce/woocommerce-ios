@@ -78,7 +78,11 @@ final class ProductFormViewController: UIViewController {
 private extension ProductFormViewController {
     func configureNavigationBar() {
         let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))]
+
+        let updateButtonItem = UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
+        updateButtonItem.accessibilityIdentifier = "single-product-update-button"
+
+        navigationItem.rightBarButtonItems = [updateButtonItem]
 
         if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
             navigationItem.rightBarButtonItems?.insert(createMoreOptionsBarButtonItem(), at: 0)

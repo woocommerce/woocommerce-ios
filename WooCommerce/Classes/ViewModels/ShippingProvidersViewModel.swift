@@ -343,7 +343,7 @@ private enum Constants {
     static let customSectionIndex = 1
     static let specialSectionsCount = 2
     static let customGroup = NSLocalizedString("Custom",
-                                               comment: "Name of the section for custom shipment tracking providers")
-    static let customProvider = NSLocalizedString("Custom Provider",
-                                                  comment: "Placeholder name of a custom shipment tracking provider")
+                                               comment: "Name of the section for custom shipment tracking carriers")
+    static let customProvider = NSLocalizedString("Custom Carrier",
+                                                  comment: "Placeholder name of a custom shipment tracking carrier")
 }

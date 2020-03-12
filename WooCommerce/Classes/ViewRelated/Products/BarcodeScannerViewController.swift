@@ -47,7 +47,7 @@ final class BarcodeScannerViewController: UIViewController {
     private var totalNumberOfTextBoxes: Int = 0
 
     private lazy var throttler: Throttler = Throttler(seconds: 0.2)
-    private let thresholdFilter = PresenceThresholdSequence<[String]>(threshold: 0.05, outOf: 20)
+    private let thresholdFilter = PresenceThresholdFilter<[String]>(threshold: 0.05, outOf: 20)
 
     private var lastBufferOrientation: CGImagePropertyOrientation?
     private var bufferSize: CGSize?

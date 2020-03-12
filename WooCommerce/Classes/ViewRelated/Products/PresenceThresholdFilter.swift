@@ -1,6 +1,6 @@
 import Foundation
 
-final class PresenceThresholdSequence<T: Equatable> {
+final class PresenceThresholdFilter<T: Equatable> {
     private var values: [T]
     private let threshold: Double
     private let numberOfPastValues: Int

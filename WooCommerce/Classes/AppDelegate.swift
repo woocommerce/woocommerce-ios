@@ -94,20 +94,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         //
         //        ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
                 
-                
-                            let storageManager = ServiceLocator.storageManager
-                                let predicate = NSPredicate(format: "isWooCommerceActive == YES")
-                                let descriptor = NSSortDescriptor(key: "name", ascending: true)
-
-                    let resultsController: ResultsController<StorageSite> = ResultsController(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
-
-                    try? resultsController.performFetch()
-
-                        print("arriva qui", resultsController.numberOfObjects)
-                        for site in resultsController.fetchedObjects {
-                            print("Registered for a lot of device", site.siteID, site.name)
-                            ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: site.siteID)
-                        }
+           
+                  ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: site.siteID)
                 
     }
 

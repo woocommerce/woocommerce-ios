@@ -27,10 +27,9 @@ public class DevicesRemote: Remote {
             ParameterKeys.deviceToken: device.token,
             ParameterKeys.deviceModel: device.model,
             ParameterKeys.deviceName: device.name,
-            ParameterKeys.deviceOSVersion: device.iOSVersion
+            ParameterKeys.deviceOSVersion: device.iOSVersion,
+            ParameterKeys.defaultStoreID: ""
         ]
-        
-        //ParameterKeys.defaultStoreID: String(defaultStoreID)
 
         if let deviceUUID = device.identifierForVendor {
             parameters[ParameterKeys.deviceUUID] = deviceUUID

@@ -40,7 +40,7 @@ final class ScannedProductsViewController: UIViewController {
             return
         }
 
-        scannedProducts.append(product)
+        scannedProducts.insert(product, at: 0)
 
         guard product.manageStock else {
             // TODO-jc: handle when product stock managemnet isn't enabled
@@ -63,6 +63,20 @@ final class ScannedProductsViewController: UIViewController {
 //
 private extension ScannedProductsViewController {
     @objc func saveButtonTapped() {
+        let title = NSLocalizedString("Saving...", comment: "Title of the in-progress UI while updating the Product remotely")
+        let message = NSLocalizedString("Please wait while we save the inventory settings to your products",
+                                        comment: "Message of the in-progress UI while updating the Product remotely")
+        let viewProperties = InProgressViewProperties(title: title, message: message)
+        let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
+
+        // Before iOS 13, a modal with transparent background requires certain
+        // `modalPresentationStyle` to prevent the view from turning dark after being presented.
+        if #available(iOS 13.0, *) {} else {
+            inProgressViewController.modalPresentationStyle = .overCurrentContext
+        }
+
+        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+
         // TODO-jc
         let group = DispatchGroup()
         
@@ -82,6 +96,7 @@ private extension ScannedProductsViewController {
         }
 
         group.notify(queue: .main) { [weak self] in
+            self?.navigationController?.dismiss(animated: true, completion: nil)
             self?.onSaveCompletion()
         }
     }
@@ -94,6 +109,8 @@ private extension ScannedProductsViewController {
         title = NSLocalizedString("Scanned Products", comment: "")
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveButtonTapped))
+
+        removeNavigationBackBarButtonText()
     }
 
     func configureTableView() {

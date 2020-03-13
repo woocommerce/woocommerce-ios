@@ -46,8 +46,8 @@ final class BarcodeScannerViewController: UIViewController {
 
     private var totalNumberOfTextBoxes: Int = 0
 
-    private lazy var throttler: Throttler = Throttler(seconds: 0.2)
-    private let thresholdFilter = PresenceThresholdFilter<[String]>(threshold: 0.05, outOf: 20)
+    private lazy var throttler: Throttler = Throttler(seconds: 0.1)
+    private let thresholdFilter = PresenceThresholdFilter<[String]>(threshold: 0.05, outOf: 10)
 
     private var lastBufferOrientation: CGImagePropertyOrientation?
     private var bufferSize: CGSize?
@@ -115,7 +115,7 @@ final class BarcodeScannerViewController: UIViewController {
                 return
         }
 
-        captureDevice.set(frameRate: 2)
+//        captureDevice.set(frameRate: 2)
 
         let deviceOutput = AVCaptureVideoDataOutput()
         deviceOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as String: Int(kCVPixelFormatType_32BGRA)]
@@ -176,13 +176,14 @@ final class BarcodeScannerViewController: UIViewController {
 
             guard let filteredBarcodes = self.thresholdFilter.append(value: barcodes) else {
                 print(".... same: \(barcodes)")
-                self.videoOutputImageView.layer.sublayers?.removeSubrange(1...)
+                if barcodes.isEmpty {
+                    self.videoOutputImageView.layer.sublayers?.removeSubrange(1...)
+                }
                 return
             }
 
             guard filteredBarcodes.isNotEmpty else {
                 print(".... nothing")
-                self.videoOutputImageView.layer.sublayers?.removeSubrange(1...)
 
                 if let error = error {
                     print(error)
@@ -215,7 +216,7 @@ final class BarcodeScannerViewController: UIViewController {
                 self.highlightQRCode(barcode: barcodeObservation)
             }
             for (barcodeContent, barcodeObservation) in filteredBarcodeObservations {
-                self.drawTextBox(barcodeObservation: barcodeObservation, content: barcodeContent)
+//                self.drawTextBox(barcodeObservation: barcodeObservation, content: barcodeContent)
             }
 
             self.onBarcodeScanned(barcodes, nil)

@@ -73,7 +73,7 @@ final class ProductStockScannerViewController: UIViewController {
         super.viewDidAppear(animated)
 
         // TODO-jc: remove. this is just for testing
-        searchProductBySKU(barcode: "9789863210887")
+//        searchProductBySKU(barcode: "9789863210887")
     }
 }
 

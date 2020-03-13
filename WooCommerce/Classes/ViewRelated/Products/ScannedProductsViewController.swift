@@ -43,6 +43,7 @@ final class ScannedProductsViewController: UIViewController {
         scannedProducts.insert(product, at: 0)
 
         guard product.manageStock else {
+            reloadDataIfPossible()
             // TODO-jc: handle when product stock managemnet isn't enabled
             return
         }

@@ -253,7 +253,7 @@ private extension ProductsViewController {
         topBannerView.translatesAutoresizingMaskIntoConstraints = false
 
         let inventoryScannerButton = UIButton(frame: .zero)
-        inventoryScannerButton.setTitle(NSLocalizedString("📷 Scan inventory", comment: ""), for: .normal)
+        inventoryScannerButton.setTitle(NSLocalizedString("📷 Scan barcodes", comment: ""), for: .normal)
         inventoryScannerButton.applyLinkButtonStyle()
         inventoryScannerButton.addTarget(self, action: #selector(inventoryScannerButtonTapped), for: .touchUpInside)
 

@@ -46,7 +46,7 @@ target 'WooCommerce' do
   pod 'CocoaLumberjack/Swift', '~> 3.5'
   pod 'XLPagerTabStrip', '~> 9.0'
   pod 'Charts', '~> 3.3.0'
-  pod 'ZendeskSDK', '~> 4.0'
+  pod 'ZendeskSupportSDK', '~> 5.0'
   pod 'Kingfisher', '~> 5.11.0'
   pod 'Wormholy', '~> 1.5.1', :configurations => ['Debug']
 

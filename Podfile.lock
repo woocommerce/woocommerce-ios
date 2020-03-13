@@ -1,11 +1,11 @@
 PODS:
   - 1PasswordExtension (1.8.5)
   - Alamofire (4.7.3)
-  - Automattic-Tracks-iOS (0.4.1):
+  - Automattic-Tracks-iOS (0.4.3):
     - CocoaLumberjack (~> 3.5.2)
     - Reachability (~> 3.1)
     - Sentry (~> 4)
-    - UIDeviceIdentifier (~> 1.1.4)
+    - UIDeviceIdentifier (~> 1)
   - Charts (3.3.0):
     - Charts/Core (= 3.3.0)
   - Charts/Core (3.3.0)
@@ -39,9 +39,9 @@ PODS:
   - NSObject-SafeExpectations (0.0.3)
   - "NSURL+IDN (0.3)"
   - Reachability (3.2)
-  - Sentry (4.4.3):
-    - Sentry/Core (= 4.4.3)
-  - Sentry/Core (4.4.3)
+  - Sentry (4.5.0):
+    - Sentry/Core (= 4.5.0)
+  - Sentry/Core (4.5.0)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.1.4)
   - WordPress-Aztec-iOS (1.11.0)
@@ -138,7 +138,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: a176848be4c95aa208184fe96d0322594ce230eb
+  Automattic-Tracks-iOS: 5515b3e6a5e55183a244ca6cb013df26810fa994
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
@@ -152,7 +152,7 @@ SPEC CHECKSUMS:
   NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
-  Sentry: 14bdd673870e8cf64932b149fad5bbbf39a9b390
+  Sentry: ab6c209f23700d1460691dbc90e19ed0a05d496b
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348

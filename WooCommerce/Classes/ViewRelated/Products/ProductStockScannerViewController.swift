@@ -40,6 +40,12 @@ final class ProductStockScannerViewController: UIViewController {
         return keyboardFrameObserver
     }()
 
+    private lazy var statusLabel: PaddedLabel = {
+        let label = PaddedLabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        return label
+    }()
+
     private lazy var throttler: Throttler = Throttler(seconds: 1)
 
     private let siteID: Int64
@@ -60,6 +66,7 @@ final class ProductStockScannerViewController: UIViewController {
         keyboardFrameObserver.startObservingKeyboardFrame()
         configureNavigation()
         configureBarcodeScannerChildViewController()
+        configureStatusLabel()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -75,6 +82,10 @@ final class ProductStockScannerViewController: UIViewController {
 private extension ProductStockScannerViewController {
     func searchProductBySKU(barcode: String) {
         DispatchQueue.main.async {
+            self.statusLabel.applyStyle(for: .refunded)
+            self.statusLabel.text = NSLocalizedString("Searching for product by the SKU...", comment: "")
+            self.showStatusLabel()
+
             let action = ProductAction.searchProductBySKU(siteID: self.siteID, sku: barcode) { [weak self] result in
                 guard let self = self else {
                     return
@@ -84,9 +95,19 @@ private extension ProductStockScannerViewController {
                     let generator = UINotificationFeedbackGenerator()
                     generator.notificationOccurred(.success)
 
+                    self.statusLabel.applyStyle(for: .processing)
+                    self.statusLabel.text = NSLocalizedString("Product found!", comment: "")
+                    self.showStatusLabel()
+
                     self.presentSearchResults()
                     self.resultsNavigationController.productScanned(product: product)
                 case .failure(let error):
+                    let generator = UINotificationFeedbackGenerator()
+                    generator.notificationOccurred(.error)
+
+                    self.statusLabel.applyStyle(for: .failed)
+                    self.statusLabel.text = NSLocalizedString("Product not found", comment: "")
+                    self.showStatusLabel()
                     print("No product matched: \(error)")
                 }
             }
@@ -128,7 +149,7 @@ private extension ProductStockScannerViewController {
 
 private extension ProductStockScannerViewController {
     func configureNavigation() {
-        title = NSLocalizedString("Inventory scanner", comment: "")
+        title = NSLocalizedString("SKU scanner", comment: "")
 
         navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(cancelButtonTapped))
     }
@@ -141,5 +162,31 @@ private extension ProductStockScannerViewController {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(contentView)
+    }
+
+    func configureStatusLabel() {
+        view.addSubview(statusLabel)
+
+        NSLayoutConstraint.activate([
+            statusLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor, constant: 0),
+            statusLabel.topAnchor.constraint(equalTo: view.safeTopAnchor, constant: 20)
+        ])
+
+        hideStatusLabel()
+    }
+}
+
+// MARK: Status UI
+//
+private extension ProductStockScannerViewController {
+    func showStatusLabel() {
+        statusLabel.isHidden = false
+        Timer.scheduledTimer(withTimeInterval: 2.0, repeats: false) { [weak self] _ in
+            self?.hideStatusLabel()
+        }
+    }
+
+    func hideStatusLabel() {
+        statusLabel.isHidden = true
     }
 }

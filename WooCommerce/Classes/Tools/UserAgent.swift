@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import WebKit
 
 
 /// WooCommerce User Agent!
@@ -20,7 +21,11 @@ class UserAgent {
     /// Returns the WebKit User Agent
     ///
     static var webkitUserAgent: String {
-        return UIWebView().stringByEvaluatingJavaScript(from: Constants.loadUserAgentScript) ?? String()
+        guard let userAgent = WKWebView().value(forKey: Constants.userAgentKey) as? String,
+            userAgent.isNotEmpty else {
+                return ""
+        }
+        return userAgent
     }
 
     /// Returns the Bundle Version ID
@@ -42,9 +47,9 @@ private extension UserAgent {
         ///
         static let woocommerceIdentifier = "wc-ios"
 
-        /// Load User Agent JS Script
+        /// User Agent Key
         ///
-        static let loadUserAgentScript = "navigator.userAgent"
+        static let userAgentKey = "_userAgent"
 
         /// Short Version Key
         ///

@@ -300,6 +300,9 @@ private extension AppDelegate {
 
         if ProcessInfo.processInfo.arguments.contains("disable-animations") {
             UIView.setAnimationsEnabled(false)
+
+            /// Trick found at: https://twitter.com/twannl/status/1232966604142653446
+            UIApplication.shared.keyWindow?.layer.speed = 100
         }
     }
 }

@@ -1,8 +1,15 @@
+3.9
+-----
+- bugfix: now in the Order List the order status label is no more clipped
+- bugfix: now the launch screen is no more stretched
+
+ 
 3.8
 -----
 - Dashboard stats: any negative revenue (from refunds for example) for a time period are shown now.
 - Redesigned Orders List: Processing and All Orders are now shown in front. Filtering was moved to the Search view.
 - Fix Reviews sometimes failing to load on some WooCommerce configurations
+- Experimental: a Products feature switch is visible in Settings > Experimental Features that shows/hides the Products tab, and allow to edit a product.
  
 3.7
 -----

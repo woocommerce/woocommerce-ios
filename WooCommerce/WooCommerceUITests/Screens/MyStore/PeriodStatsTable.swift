@@ -33,6 +33,12 @@ final class PeriodStatsTable: BaseScreen {
     }
 
     @discardableResult
+       func switchToWeeksTab() -> Self {
+           weeksTab.tap()
+           return self
+       }
+
+    @discardableResult
     func switchToYearsTab() -> Self {
         yearsTab.tap()
         return self

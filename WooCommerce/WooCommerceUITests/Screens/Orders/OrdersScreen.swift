@@ -24,11 +24,13 @@ final class OrdersScreen: BaseScreen {
         super.init(element: searchButton)
     }
 
+    @discardableResult
     func selectOrder(atIndex index: Int) -> SingleOrderScreen {
-        XCUIApplication().cells.element(boundBy: index).tap()
+        XCUIApplication().tables.cells.element(boundBy: index).tap()
         return SingleOrderScreen()
     }
 
+    @discardableResult
     func openSearchPane() -> OrderSearchScreen {
         searchButton.tap()
         return OrderSearchScreen()

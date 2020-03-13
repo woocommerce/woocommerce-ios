@@ -29,6 +29,85 @@ final class MediaStoreTests: XCTestCase {
         network = MockupNetwork()
     }
 
+    // MARK: test cases for `MediaAction.retrieveMediaLibrary`
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response.
+    ///
+    func testRetrieveMediaLibraryUponSuccessfulResponse() {
+        let expectation = self.expectation(description: "Retrieve media library")
+
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
+
+        let expectedMedia = Media(mediaID: 2352,
+                                  date: date(with: "2020-02-21T12:15:38+08:00"),
+                                  fileExtension: "jpeg",
+                                  mimeType: "image/jpeg",
+                                  src: "https://test.com/wp-content/uploads/2020/02/img_0002-8.jpeg",
+                                  thumbnailURL: "https://test.com/wp-content/uploads/2020/02/img_0002-8-150x150.jpeg",
+                                  name: "DSC_0010",
+                                  alt: "",
+                                  height: nil,
+                                  width: nil)
+
+        let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
+                                                      pageNumber: 1,
+                                                      pageSize: 20) { mediaItems, error in
+                                                        XCTAssertNil(error)
+                                                        XCTAssertEqual(mediaItems.count, 5)
+                                                        XCTAssertEqual(mediaItems.first, expectedMedia)
+
+
+                                                        expectation.fulfill()
+        }
+
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+        mediaStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is an error response from the backend.
+    ///
+    func testRetrieveMediaLibraryReturnsErrorUponReponseError() {
+        let expectation = self.expectation(description: "Retrieve media library")
+
+        network.simulateResponse(requestUrlSuffix: "media", filename: "generic_error")
+        let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
+                                                      pageNumber: 1,
+                                                      pageSize: 20) { mediaItems, error in
+                                                        XCTAssertNotNil(error)
+                                                        XCTAssertNotNil(mediaItems)
+                                                        XCTAssertTrue(mediaItems.isEmpty)
+                                                        expectation.fulfill()
+        }
+
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+        mediaStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is no backend response.
+    ///
+    func testRetrieveMediaLibraryReturnsErrorUponEmptyResponse() {
+        let expectation = self.expectation(description: "Retrieve media library")
+
+        let action = MediaAction.retrieveMediaLibrary(siteID: sampleSiteID,
+                                                      pageNumber: 1,
+                                                      pageSize: 20) { mediaItems, error in
+                                                        XCTAssertNotNil(error)
+                                                        expectation.fulfill()
+        }
+
+        let mediaStore = MediaStore(dispatcher: dispatcher,
+                                    storageManager: storageManager,
+                                    network: network)
+        mediaStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     // MARK: test cases for `MediaAction.uploadMedia`
 
     func testUploadingMedia() {
@@ -125,5 +204,12 @@ private extension MediaStoreTests {
         return UploadableMedia(localURL: targetURL,
                                filename: "test.jpg",
                                mimeType: "image/jpeg")
+    }
+
+    func date(with dateString: String) -> Date {
+        guard let date = DateFormatter.Defaults.iso8601.date(from: dateString) else {
+            return Date()
+        }
+        return date
     }
 }

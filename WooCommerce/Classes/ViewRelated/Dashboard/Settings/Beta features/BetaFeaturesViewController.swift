@@ -174,6 +174,8 @@ private extension BetaFeaturesViewController {
         configureCommonStylesForDescriptionCell(cell)
         cell.textLabel?.text = NSLocalizedString("Try the new stats available with the WooCommerce Admin plugin",
                                                  comment: "My Store > Settings > Experimental features > Stats version description")
+
+        cell.accessibilityIdentifier = "beta-features-improved-stats-cell"
     }
 
     // MARK: - Product List feature
@@ -205,6 +207,7 @@ private extension BetaFeaturesViewController {
             }
             ServiceLocator.stores.dispatch(action)
         }
+        cell.accessibilityIdentifier = "beta-features-products-cell"
     }
 
     func configureProductsDescription(cell: BasicTableViewCell) {

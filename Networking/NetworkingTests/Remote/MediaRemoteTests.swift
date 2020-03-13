@@ -17,6 +17,41 @@ final class MediaRemoteTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
+    // MARK: - Load Media From Media Library `loadMediaLibrary`
+
+    /// Verifies that `loadMediaLibrary` properly parses the `media-library` sample response.
+    ///
+    func testLoadMediaLibraryProperlyReturnsParsedMedia() {
+        let remote = MediaRemote(network: network)
+        let expectation = self.expectation(description: "Load Media Library")
+
+        network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
+
+        remote.loadMediaLibrary(for: sampleSiteID) { mediaItems, error in
+            XCTAssertNil(error)
+            XCTAssertNotNil(mediaItems)
+            XCTAssertEqual(mediaItems!.count, 5)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
+    /// Verifies that `loadMediaLibrary` properly relays Networking Layer errors.
+    ///
+    func testLoadMediaLibraryProperlyRelaysNetwokingErrors() {
+        let remote = MediaRemote(network: network)
+        let expectation = self.expectation(description: "Load Media Library")
+
+        remote.loadMediaLibrary(for: sampleSiteID) { mediaItems, error in
+            XCTAssertNil(mediaItems)
+            XCTAssertNotNil(error)
+            expectation.fulfill()
+        }
+
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     // MARK: - uploadMedia
 
     /// Verifies that `uploadMedia` properly parses the `media-upload` sample response.

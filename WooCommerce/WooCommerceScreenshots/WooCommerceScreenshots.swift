@@ -3,7 +3,7 @@ import XCTest
 class WooCommerceScreenshots: XCTestCase {
 
     override func setUp() {
-
+        super.setUp()
         continueAfterFailure = false
 
         XCUIDevice.shared.orientation = UIDeviceOrientation.portrait
@@ -23,33 +23,54 @@ class WooCommerceScreenshots: XCTestCase {
             .proceedWithPassword()
             .proceedWith(password: ScreenshotCredentials.password)
             .continueWithSelectedSite()
+
+            // Enable Products
+            .openSettingsPane().openBetaFeatures()
+            .enableProducts()
+            .goBackToSettingsScreen().goBackToMyStore()
+
+            // My Store
             .dismissTopBannerIfNeeded()
             .then { ($0 as! MyStoreScreen).periodStatsTable.switchToYearsTab() }
-            .thenTakeScreenshot(4, named: "view-store-data")
+            .thenTakeScreenshot(named: "order-dashboard")
 
             // Orders
             .tabBar.gotoOrdersScreen()
-            .thenTakeScreenshot(1, named: "view-and-manage-orders")
+            .thenTakeScreenshot(named: "order-list")
             .selectOrder(atIndex: 0)
-            .thenTakeScreenshot(2, named: "track-order-status")
+            .thenTakeScreenshot(named: "order-detail")
             .goBackToOrdersScreen()
 
             .openSearchPane()
-            .thenTakeScreenshot(3, named: "look-up-specific-orders")
+            .thenTakeScreenshot(named: "order-search")
             .cancel()
 
+            // Reviews
             .tabBar.gotoReviewsScreen()
+            .thenTakeScreenshot(named: "review-list")
             .selectReview(atIndex: 3)
-            .thenTakeScreenshot(5, named: "get-notified-about-customer-reviews")
+            .thenTakeScreenshot(named: "review-details")
             .goBackToReviewsScreen()
 
+            // Products
+            .tabBar.gotoProductsScreen()
+            .collapseTopBannerIfNeeded()
+            .thenTakeScreenshot(named: "product-list")
+            .selectProduct(atIndex: 1)
+            .thenTakeScreenshot(named: "product-details")
     }
 }
 
+fileprivate var screenshotCount = 0
+
 extension BaseScreen {
-    func thenTakeScreenshot(_ index: Int, named title: String) -> Self {
+
+    @discardableResult
+    func thenTakeScreenshot(named title: String) -> Self {
+        screenshotCount += 1
+
         let mode = isDarkMode ? "dark" : "light"
-        let filename = "\(index)-\(mode)-\(title)"
+        let filename = "\(screenshotCount)-\(mode)-\(title)"
 
         snapshot(filename)
 

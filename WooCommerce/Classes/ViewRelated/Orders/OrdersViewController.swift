@@ -76,10 +76,6 @@ class OrdersViewController: UIViewController {
         return statusResultsController.fetchedObjects
     }
 
-    /// Keep track of the (Autosizing Cell's) Height. This helps us prevent UI flickers, due to sizing recalculations.
-    ///
-    private var estimatedRowHeights = [IndexPath: CGFloat]()
-
     /// Indicates if there are no results onscreen.
     ///
     private var isEmpty: Bool {
@@ -212,6 +208,8 @@ private extension OrdersViewController {
         tableView.estimatedSectionHeaderHeight = Settings.estimatedHeaderHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
+        tableView.rowHeight = UITableView.automaticDimension
+        tableView.estimatedRowHeight = UITableView.automaticDimension
     }
 
     /// Setup: Ghostable TableView
@@ -480,7 +478,7 @@ extension OrdersViewController: UITableViewDataSource {
         let viewModel = detailsViewModel(at: indexPath)
         let orderStatus = lookUpOrderStatus(for: viewModel.order)
         cell.configureCell(viewModel: viewModel, orderStatus: orderStatus)
-
+        cell.layoutIfNeeded()
         return cell
     }
 
@@ -504,13 +502,6 @@ extension OrdersViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension OrdersViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-        return estimatedRowHeights[indexPath] ?? Settings.estimatedRowHeight
-    }
-
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return UITableView.automaticDimension
-    }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
@@ -531,13 +522,6 @@ extension OrdersViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let orderIndex = resultsController.objectIndex(from: indexPath)
         syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: orderIndex)
-
-        // Preserve the Cell Height
-        // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
-        // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
-        // the actual value. AKA no flicker!
-        //
-        estimatedRowHeights[indexPath] = cell.frame.height
     }
 }
 

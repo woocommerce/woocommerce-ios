@@ -1,0 +1,5 @@
+- You can now view refunds on an order.
+- The “orders to fulfill” badge now maxes at 99, showing 99+ for anything over 99. Previously, it was 9+.
+- Fixed a bug where long product names could make the product quantity disappear when viewing an order.
+- Product names with HTML escape characters should display correctly now.
+- If an order has multiple products, tapping on any product should open the correct product.

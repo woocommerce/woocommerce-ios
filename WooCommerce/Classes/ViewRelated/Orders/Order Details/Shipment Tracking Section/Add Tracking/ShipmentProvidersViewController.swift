@@ -255,8 +255,8 @@ extension ShipmentProvidersViewController: UISearchControllerDelegate {
 private extension ShipmentProvidersViewController {
     func presentNotice(_ error: Error) {
         let title = NSLocalizedString(
-            "Unable to load Shipment Providers",
-            comment: "Content of error presented when loading the list of shipment providers failed. It reads: Unable to load Shipment Providers"
+            "Unable to load Shipment Carriers",
+            comment: "Content of error presented when loading the list of shipment carriers failed. It reads: Unable to load Shipment Carriers"
         )
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: title,
@@ -294,10 +294,10 @@ private extension ShipmentProvidersViewController {
         }
 
         let emptyState: EmptyListMessageWithActionView = EmptyListMessageWithActionView.instantiateFromNib()
-        emptyState.messageText = NSLocalizedString("No results found for \(term)\nAdd a custom provider",
-            comment: "Empty state for the list of shipment providers. It reads: 'No results for DHL. Add a custom provider'")
-        emptyState.actionText = NSLocalizedString("Custom Provider",
-                                                  comment: "Title of button to add a custom tracking provider if filtering the list yields no results."
+        emptyState.messageText = NSLocalizedString("No results found for \(term)\nAdd a custom carrier",
+            comment: "Empty state for the list of shipment carriers. It reads: 'No results for DHL. Add a custom carrier'")
+        emptyState.actionText = NSLocalizedString("Custom Carrier",
+                                                  comment: "Title of button to add a custom tracking carrier if filtering the list yields no results."
         )
 
         emptyState.onAction = { [weak self] in

@@ -88,15 +88,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
 
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
-        //        guard let defaultStoreID = ServiceLocator.stores.sessionManager.defaultStoreID else {
-        //            return
-        //        }
-        //
-        //        ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: defaultStoreID)
-                
-           
-                  ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken, defaultStoreID: site.siteID)
-                
+        ServiceLocator.pushNotesManager.registerDeviceToken(with: deviceToken)
     }
 
     func application(_ application: UIApplication, didFailToRegisterForRemoteNotificationsWithError error: Error) {

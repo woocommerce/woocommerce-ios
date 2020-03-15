@@ -12,7 +12,6 @@ public enum NotificationAction: Action {
     case registerDevice(device: APNSDevice,
                         applicationId: String,
                         applicationVersion: String,
-                        defaultStoreID: Int64,
                         onCompletion: (DotcomDevice?, Error?) -> Void)
 
     /// Unregisters a device for Push Notifications Delivery.

@@ -18,7 +18,6 @@ public class DevicesRemote: Remote {
     public func registerDevice(device: APNSDevice,
                                applicationId: String,
                                applicationVersion: String,
-                               defaultStoreID: Int64,
                                completion: @escaping (DotcomDevice?, Error?) -> Void) {
         var parameters = [
             ParameterKeys.applicationId: applicationId,

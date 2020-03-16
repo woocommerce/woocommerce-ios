@@ -75,7 +75,7 @@ class NUXLinkMailViewController: LoginViewController {
 
         usePasswordButton?.isHidden = emailMagicLinkSource == .signup
 
-        label?.text = NSLocalizedString("Check your email on this device, and tap the link in the email you receive from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.", comment: "Instructional text on how to open the email containing a magic link.")
+        label?.text = NSLocalizedString("Check your email on this device, and tap the link in the email you received from WordPress.com.\n\nNot seeing the email? Check your Spam or Junk Mail folder.", comment: "Instructional text on how to open the email containing a magic link.")
 
         label?.textColor = WordPressAuthenticator.shared.style.instructionColor
     }

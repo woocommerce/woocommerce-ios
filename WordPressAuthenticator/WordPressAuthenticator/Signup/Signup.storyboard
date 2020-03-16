@@ -188,10 +188,10 @@
             </objects>
             <point key="canvasLocation" x="-358" y="190"/>
         </scene>
-        <!--emailEntry-->
+        <!--LoginEmailViewController-->
         <scene sceneID="JU2-CA-QR6">
             <objects>
-                <viewControllerPlaceholder storyboardName="Login" referencedIdentifier="emailEntry" id="J8B-jx-UJD" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Login" referencedIdentifier="LoginEmailViewController" id="J8B-jx-UJD" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Y5k-uW-muf" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-346" y="-127"/>

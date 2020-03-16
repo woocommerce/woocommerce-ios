@@ -184,10 +184,10 @@ extension WPStyleGuide {
     /// - Note: This button is only used during Jetpack setup, not the usual flows
     ///
     class func wpcomSignupButton() -> UIButton {
+        let style = WordPressAuthenticator.shared.style
         let baseString = NSLocalizedString("Don't have an account? _Sign up_", comment: "Label for button to log in using your site address. The underscores _..._ denote underline")
-        let attrStrNormal = baseString.underlined(color: WPStyleGuide.greyDarken20(), underlineColor: WPStyleGuide.wordPressBlue())
-        let attrStrHighlight = baseString.underlined(color: WPStyleGuide.greyDarken20(), underlineColor: WPStyleGuide.lightBlue())
-
+        let attrStrNormal = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonColor)
+        let attrStrHighlight = baseString.underlined(color: style.subheadlineColor, underlineColor: style.textButtonHighlightColor)
         let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
 
         return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font)

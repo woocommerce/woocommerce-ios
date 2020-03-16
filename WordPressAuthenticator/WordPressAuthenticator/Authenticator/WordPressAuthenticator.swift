@@ -164,8 +164,7 @@ import AuthenticationServices
             trackOpenedLogin()
         }
 
-        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
-        guard let controller = storyboard.instantiateViewController(withIdentifier: "emailEntry") as? LoginEmailViewController else {
+        guard let controller = LoginEmailViewController.instantiate(from: .login) else {
             return
         }
 
@@ -231,8 +230,7 @@ import AuthenticationServices
     /// This allows the host app to configure the controller's features.
     ///
     public class func signinForWPCom() -> LoginEmailViewController {
-        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
-        guard let controller = storyboard.instantiateViewController(withIdentifier: "emailEntry") as? LoginEmailViewController else {
+        guard let controller = LoginEmailViewController.instantiate(from: .login) else {
             fatalError()
         }
 

@@ -142,13 +142,18 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
         let remote = AccountServiceRemoteREST(
             wordPressComRestApi: WordPressComRestApi(baseUrlString: WordPressAuthenticator.shared.configuration.wpcomAPIBaseURL))
 
-        remote.isEmailAvailable(loginFields.emailAddress, success: { available in
+        remote.isEmailAvailable(loginFields.emailAddress, success: { [weak self] available in
             if !available {
                 defer {
                     WordPressAuthenticator.track(.signupEmailToLogin)
                 }
                 // If the user has already signed up redirect to the Login flow
-                self.performSegue(withIdentifier: .showEmailLogin, sender: self)
+                guard let vc = LoginEmailViewController.instantiate(from: .login) else {
+                    DDLogError("Failed to navigate to LoginEmailViewController from SignupEmailViewController")
+                    return
+                }
+
+                self?.navigationController?.pushViewController(vc, animated: true)
             }
             completion(available)
         }, failure: { error in

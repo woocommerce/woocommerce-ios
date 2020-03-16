@@ -63,7 +63,12 @@ class LoginPrologueViewController: LoginViewController {
             vc.transitioningDelegate = self
             
             vc.emailTapped = { [weak self] in
-                self?.performSegue(withIdentifier: .showEmailLogin, sender: self)
+                guard let vc = LoginEmailViewController.instantiate(from: .login) else {
+                    DDLogError("Failed to navigate to LoginEmailViewController")
+                    return
+                }
+
+                self?.navigationController?.pushViewController(vc, animated: true)
             }
             vc.googleTapped = { [weak self] in
                 self?.googleLoginTapped(withDelegate: self)

@@ -403,29 +403,29 @@
                                         <rect key="frame" x="0.0" y="0.0" width="383" height="559"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wnq-Hk-jIw" userLabel="Header" customClass="SiteInfoHeaderView" customModule="WordPressAuthenticator">
-                                                <rect key="frame" x="20" y="197.5" width="343" height="40"/>
+                                                <rect key="frame" x="20" y="201.5" width="343" height="36"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="rFl-BX-tKE" userLabel="Header Stack View">
-                                                        <rect key="frame" x="0.0" y="0.0" width="343" height="40"/>
+                                                        <rect key="frame" x="0.0" y="0.0" width="343" height="36"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="750" verticalHuggingPriority="750" image="icon-url-field" translatesAutoresizingMaskIntoConstraints="NO" id="Dfh-U3-cvf" userLabel="Icon">
-                                                                <rect key="frame" x="0.0" y="0.0" width="36" height="40"/>
+                                                                <rect key="frame" x="0.0" y="7" width="18" height="22"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="width" relation="lessThanOrEqual" constant="40" id="F6S-wN-1Jp"/>
                                                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="40" id="Z7H-Ud-llZ"/>
                                                                 </constraints>
                                                             </imageView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="uN1-Al-ygf">
-                                                                <rect key="frame" x="46" y="2" width="297" height="36"/>
+                                                                <rect key="frame" x="28" y="0.0" width="315" height="36"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ehh-92-XG8" userLabel="Title">
-                                                                        <rect key="frame" x="0.0" y="0.0" width="297" height="18"/>
+                                                                        <rect key="frame" x="0.0" y="0.0" width="315" height="18"/>
                                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                                         <color key="textColor" red="0.18039215689999999" green="0.2666666667" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="UL4-G6-7G6" userLabel="Subtitle">
-                                                                        <rect key="frame" x="0.0" y="18" width="297" height="18"/>
+                                                                        <rect key="frame" x="0.0" y="18" width="315" height="18"/>
                                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                                         <color key="textColor" red="0.1803921568627451" green="0.26666666666666666" blue="0.32549019607843138" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>

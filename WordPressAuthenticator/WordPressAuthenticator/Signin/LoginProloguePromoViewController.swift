@@ -8,7 +8,7 @@ class LoginProloguePromoViewController: UIViewController {
     fileprivate let stackView: UIStackView
     fileprivate let headingLabel: UILabel
     fileprivate let animationHolder: UIView
-    fileprivate var animationView: LOTAnimationView
+    fileprivate var animationView: AnimationView
 
     fileprivate struct Constants {
         static let stackSpacing: CGFloat = 36.0
@@ -41,7 +41,7 @@ class LoginProloguePromoViewController: UIViewController {
             case .notifications:
                 return NSLocalizedString("Your notifications travel with you — see comments and likes as they happen.", comment: "shown in promotional screens during first launch")
             case .jetpack:
-                return NSLocalizedString("Manage your Jetpack-powered site on the go — you‘ve got WordPress in your pocket.", comment: "shown in promotional screens during first launch")
+                return NSLocalizedString("Manage your Jetpack-powered site on the go — you've got WordPress in your pocket.", comment: "shown in promotional screens during first launch")
             }
         }
 
@@ -57,7 +57,7 @@ class LoginProloguePromoViewController: UIViewController {
         animationHolder = UIView()
 
         let bundle = WordPressAuthenticator.bundle
-        animationView = LOTAnimationView(name: type.animationKey, bundle: bundle)
+        animationView = AnimationView(name: type.animationKey, bundle: bundle)
 
         super.init(nibName: nil, bundle: nil)
     }
@@ -96,7 +96,7 @@ class LoginProloguePromoViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        animationView.animationProgress = 0.0
+        animationView.currentProgress = 0.0
     }
 
     override func viewDidAppear(_ animated: Bool) {

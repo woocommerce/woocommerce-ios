@@ -168,9 +168,14 @@ extension ProductPriceSettingsViewController {
 
     override func shouldPopOnBackButton() -> Bool {
         let newSalePrice = salePrice == "0" ? nil : salePrice
+
+        // Since an empty string and the standard tax class's slug both represent the standard tax class, the original and new
+        // tax classes are converted to empty string whenever the value matches the standard tax class's slug.
         let newTaxClass = taxClass?.slug == standardTaxClass.slug ? "" : taxClass?.slug
+        let originalTaxClass = product.taxClass == standardTaxClass.slug ? "": product.taxClass
+        
         if regularPrice != product.regularPrice || newSalePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart ||
-            dateOnSaleEnd != product.dateOnSaleEnd || taxStatus.rawValue != product.taxStatusKey || newTaxClass != product.taxClass {
+            dateOnSaleEnd != product.dateOnSaleEnd || taxStatus.rawValue != product.taxStatusKey || newTaxClass != originalTaxClass {
             presentBackNavigationActionSheet()
             return false
         }

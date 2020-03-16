@@ -6,6 +6,7 @@ final class ProductFormViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    private var originalProduct: Product
     private var product: Product {
         didSet {
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
@@ -34,6 +35,7 @@ final class ProductFormViewController: UIViewController {
 
     init(product: Product, currency: String) {
         self.currency = currency
+        self.originalProduct = product
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
@@ -160,6 +162,7 @@ private extension ProductFormViewController {
                 }
                 return
             }
+            self?.originalProduct = product
             self?.product = product
 
             ServiceLocator.analytics.track(.productDetailUpdateSuccess)
@@ -329,8 +332,24 @@ extension ProductFormViewController: TextViewViewControllerDelegate {
         return NSLocalizedString("Please add a title",
                                  comment: "Product title error notice message, when the title is empty")
     }
+}
 
+// MARK: - Navigation actions handling
+//
+extension ProductFormViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        if product != originalProduct {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
+    }
 
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
+    }
 }
 
 // MARK: Action - Edit Product Parameters

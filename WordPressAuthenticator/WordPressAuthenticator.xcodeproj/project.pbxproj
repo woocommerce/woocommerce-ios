@@ -118,6 +118,7 @@
 		CE30A2AD2257CECC00DF3CDA /* AuthenticatorCredentials.swift in Sources */ = {isa = PBXBuildFile; fileRef = CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */; };
 		CEDE0D93242011E000CB3345 /* NSObject+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */; };
 		CEDE0D952420121D00CB3345 /* UIStoryboard+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */; };
+		CEDE0D972420126900CB3345 /* UIViewController+Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */; };
 		E8AF6B9EF50902F2117DFAF9 /* Pods_WordPressAuthenticatorTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5A441EC80D2B8D2209C2E228 /* Pods_WordPressAuthenticatorTests.framework */; };
 		FF629D9622393500004C4106 /* WordPressAuthenticator.podspec in Resources */ = {isa = PBXBuildFile; fileRef = FF629D9522393500004C4106 /* WordPressAuthenticator.podspec */; };
 /* End PBXBuildFile section */
@@ -274,6 +275,7 @@
 		CE30A2AC2257CECC00DF3CDA /* AuthenticatorCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticatorCredentials.swift; sourceTree = "<group>"; };
 		CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "NSObject+Helpers.swift"; sourceTree = "<group>"; };
 		CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIStoryboard+Helpers.swift"; sourceTree = "<group>"; };
+		CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIViewController+Helpers.swift"; sourceTree = "<group>"; };
 		E9414A95E29F3297555AC92B /* Pods-WordPressAuthenticator.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticator.debug.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticator/Pods-WordPressAuthenticator.debug.xcconfig"; sourceTree = "<group>"; };
 		FF475C5056EB60A277696BA9 /* Pods-WordPressAuthenticatorTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WordPressAuthenticatorTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-WordPressAuthenticatorTests/Pods-WordPressAuthenticatorTests.release.xcconfig"; sourceTree = "<group>"; };
 		FF629D9522393500004C4106 /* WordPressAuthenticator.podspec */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = WordPressAuthenticator.podspec; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.ruby; };
@@ -517,6 +519,7 @@
 				B5CDBED320B4714500BC1EF2 /* UIImage+Assets.swift */,
 				CEDE0D92242011E000CB3345 /* NSObject+Helpers.swift */,
 				CEDE0D942420121D00CB3345 /* UIStoryboard+Helpers.swift */,
+				CEDE0D962420126900CB3345 /* UIViewController+Helpers.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -924,6 +927,7 @@
 				B56090E2208A4F9D00399AE4 /* WPNUXSecondaryButton.m in Sources */,
 				B56090E6208A4F9D00399AE4 /* WPNUXPrimaryButton.m in Sources */,
 				B5609135208A563800399AE4 /* LoginWPComViewController.swift in Sources */,
+				CEDE0D972420126900CB3345 /* UIViewController+Helpers.swift in Sources */,
 				B5609119208A555600399AE4 /* SiteInfoHeaderView.swift in Sources */,
 				B560913E208A563800399AE4 /* SigninEditingState.swift in Sources */,
 				B56090CF208A4F5400399AE4 /* NUXCollectionViewController.swift in Sources */,

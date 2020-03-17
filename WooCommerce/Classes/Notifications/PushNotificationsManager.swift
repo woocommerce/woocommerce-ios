@@ -92,20 +92,20 @@ extension PushNotificationsManager {
     /// Unregisters the Application from WordPress.com Push Notifications Service.
     ///
     func unregisterForRemoteNotifications() {
-        DDLogInfo("📱 Unregistering For Remote Notifications...")
-
-        unregisterSupportDevice()
-
-        unregisterDotcomDeviceIfPossible() { error in
-            if let error = error {
-                DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
-                return
-            }
-
-            DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
-            self.deviceID = nil
-            self.deviceToken = nil
-        }
+//        DDLogInfo("📱 Unregistering For Remote Notifications...")
+//
+//        unregisterSupportDevice()
+//
+//        unregisterDotcomDeviceIfPossible() { error in
+//            if let error = error {
+//                DDLogError("⛔️ Unable to unregister from WordPress.com Push Notifications: \(error)")
+//                return
+//            }
+//
+//            DDLogInfo("📱 Successfully unregistered from WordPress.com Push Notifications!")
+//            self.deviceID = nil
+//            self.deviceToken = nil
+//        }
     }
 
 
@@ -123,29 +123,29 @@ extension PushNotificationsManager {
     ///     - defaultStoreID: Default WooCommerce Store ID
     ///
     func registerDeviceToken(with tokenData: Data, defaultStoreID: Int64) {
-        let newToken = tokenData.hexString
-
-        if let _ = deviceToken, deviceToken != newToken {
-            DDLogInfo("📱 Device Token Changed! OLD: [\(String(describing: deviceToken))] NEW: [\(newToken)]")
-        } else {
-            DDLogInfo("📱 Device Token Received: [\(newToken)]")
-        }
-
-        deviceToken = newToken
-
-        // Register in Support's Infrasturcture
-        registerSupportDevice(with: newToken)
-
-        // Register in the Dotcom's Infrastructure
-        registerDotcomDevice(with: newToken, defaultStoreID: defaultStoreID) { (device, error) in
-            guard let deviceID = device?.deviceID else {
-                DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
-                return
-            }
-
-            DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
-            self.deviceID = deviceID
-        }
+//        let newToken = tokenData.hexString
+//
+//        if let _ = deviceToken, deviceToken != newToken {
+//            DDLogInfo("📱 Device Token Changed! OLD: [\(String(describing: deviceToken))] NEW: [\(newToken)]")
+//        } else {
+//            DDLogInfo("📱 Device Token Received: [\(newToken)]")
+//        }
+//
+//        deviceToken = newToken
+//
+//        // Register in Support's Infrasturcture
+//        registerSupportDevice(with: newToken)
+//
+//        // Register in the Dotcom's Infrastructure
+//        registerDotcomDevice(with: newToken, defaultStoreID: defaultStoreID) { (device, error) in
+//            guard let deviceID = device?.deviceID else {
+//                DDLogError("⛔️ Dotcom Push Notifications Registration Failure: \(error.debugDescription)")
+//                return
+//            }
+//
+//            DDLogVerbose("📱 Successfully registered Device ID \(deviceID) for Push Notifications")
+//            self.deviceID = deviceID
+//        }
     }
 
 

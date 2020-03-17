@@ -29,7 +29,7 @@ PODS:
     - GoogleToolboxForMac/Defines (= 2.2.2)
     - "GoogleToolboxForMac/NSString+URLArguments (= 2.2.2)"
   - "GoogleToolboxForMac/NSString+URLArguments (2.2.2)"
-  - Gridicons (0.19)
+  - Gridicons (0.20-beta.1)
   - GTMSessionFetcher/Core (1.3.1)
   - KeychainAccess (3.2.1)
   - Kingfisher (5.11.0):
@@ -95,7 +95,7 @@ DEPENDENCIES:
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
-  - Gridicons (~> 0.19)
+  - Gridicons (~> 0.20-beta)
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
   - WordPress-Editor-iOS (~> 1.11.0)
@@ -155,7 +155,7 @@ SPEC CHECKSUMS:
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
   GoogleSignIn: 7ff245e1a7b26d379099d3243a562f5747e23d39
   GoogleToolboxForMac: 800648f8b3127618c1b59c7f97684427630c5ea3
-  Gridicons: dc92efbe5fd60111d2e8ea051d84a60cca552abc
+  Gridicons: a89c04840b560895223a2c5c1e1299b518e0fc6f
   GTMSessionFetcher: cea130bbfe5a7edc8d06d3f0d17288c32ffe9925
   KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
   Kingfisher: 4569606189149e19c7d9439f47e885d0679b7a90
@@ -184,6 +184,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 1d9f3d6ba48bfacae6912a9bdb570dea34ea4f9b
+PODFILE CHECKSUM: adf5800c2f5404904f0f77eddc4cdace9e9c91fd
 
 COCOAPODS: 1.9.1

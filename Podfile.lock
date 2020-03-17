@@ -1,7 +1,7 @@
 PODS:
   - 1PasswordExtension (1.8.5)
   - Alamofire (4.7.3)
-  - Automattic-Tracks-iOS (0.4.3):
+  - Automattic-Tracks-iOS (0.4.4-beta.2):
     - CocoaLumberjack (~> 3.5.2)
     - Reachability (~> 3.1)
     - Sentry (~> 4)
@@ -43,7 +43,7 @@ PODS:
     - Sentry/Core (= 4.5.0)
   - Sentry/Core (4.5.0)
   - SVProgressHUD (2.2.5)
-  - UIDeviceIdentifier (1.1.4)
+  - UIDeviceIdentifier (1.4.0)
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
@@ -91,7 +91,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.7)
-  - Automattic-Tracks-iOS (~> 0.4.0)
+  - Automattic-Tracks-iOS (~> 0.4.4-beta)
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
@@ -149,7 +149,7 @@ SPEC REPOS:
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
   Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
-  Automattic-Tracks-iOS: 5515b3e6a5e55183a244ca6cb013df26810fa994
+  Automattic-Tracks-iOS: 6d382b8a75dd107c6d73f8f539e734ff5064ec69
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
@@ -165,7 +165,7 @@ SPEC CHECKSUMS:
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Sentry: ab6c209f23700d1460691dbc90e19ed0a05d496b
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
-  UIDeviceIdentifier: 8f8a24b257a4d978c8d40ad1e7355b944ffbfa8c
+  UIDeviceIdentifier: 44f805037d21b94394821828f4fcaba34b38c2d0
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
   WordPressAuthenticator: 9141ea5a2e2b227252f3da6b3282a467f62588ba
@@ -184,6 +184,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 523e2f130846d16274b8c23cb9234911d6e88d4d
+PODFILE CHECKSUM: 1d9f3d6ba48bfacae6912a9bdb570dea34ea4f9b
 
 COCOAPODS: 1.9.1

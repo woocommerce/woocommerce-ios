@@ -13,19 +13,27 @@ extension UITabBar {
 
         /// iOS 13.1 don't render the tabbar shadow color correcly while in dark mode.
         /// To fix it, we have to specifically set it in the `standardAppearance` object.
-        /// Which forces us to set other properties like `badgeBackgroundColor` and `badgeTextAttributes` in the `UITabBarItemAppearance` layouts.
         ///
         if #available(iOS 13.0, *) {
-            let standardAppearance = UITabBarAppearance()
-            standardAppearance.backgroundColor = .appTabBar
-            standardAppearance.shadowColor = .systemColor(.separator)
-            applyWooAppearance(to: standardAppearance.inlineLayoutAppearance)
-            applyWooAppearance(to: standardAppearance.stackedLayoutAppearance)
-            applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance)
-            appearance.standardAppearance = standardAppearance
+            appearance.standardAppearance = createWooTabBarAppearance()
         }
     }
 
+    /// Creates an iOS 13+ appearance object for a tabbar with the default WC style.
+    ///
+    @available(iOS 13.0, *)
+    private static func createWooTabBarAppearance() -> UITabBarAppearance {
+        let standardAppearance = UITabBarAppearance()
+        standardAppearance.backgroundColor = .appTabBar
+        standardAppearance.shadowColor = .systemColor(.separator)
+        applyWooAppearance(to: standardAppearance.inlineLayoutAppearance)
+        applyWooAppearance(to: standardAppearance.stackedLayoutAppearance)
+        applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance)
+        return standardAppearance
+    }
+
+    /// Configures the appearance object for a tabbar's items with the default WC style.
+    ///
     @available(iOS 13.0, *)
     private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance) {
         tabBarItemAppearance.normal.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]

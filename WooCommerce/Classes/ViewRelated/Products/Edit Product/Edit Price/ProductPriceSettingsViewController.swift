@@ -174,8 +174,12 @@ extension ProductPriceSettingsViewController {
         let newTaxClass = taxClass?.slug == standardTaxClass.slug ? "" : taxClass?.slug
         let originalTaxClass = product.taxClass == standardTaxClass.slug ? "": product.taxClass
 
-        if regularPrice != product.regularPrice || newSalePrice != product.salePrice || dateOnSaleStart != product.dateOnSaleStart ||
-            dateOnSaleEnd != product.dateOnSaleEnd || taxStatus.rawValue != product.taxStatusKey || newTaxClass != originalTaxClass {
+        if getDecimalPrice(regularPrice) != getDecimalPrice(product.regularPrice) ||
+            getDecimalPrice(newSalePrice) != getDecimalPrice(product.salePrice) ||
+            dateOnSaleStart != product.dateOnSaleStart ||
+            dateOnSaleEnd != product.dateOnSaleEnd ||
+            taxStatus.rawValue != product.taxStatusKey ||
+            newTaxClass != originalTaxClass {
             presentBackNavigationActionSheet()
             return false
         }

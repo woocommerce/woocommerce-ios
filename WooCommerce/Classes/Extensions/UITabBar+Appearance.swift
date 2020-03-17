@@ -19,20 +19,20 @@ extension UITabBar {
             let standardAppearance = UITabBarAppearance()
             standardAppearance.backgroundColor = .appTabBar
             standardAppearance.shadowColor = .systemColor(.separator)
-            applyItemWooAppearance(to: standardAppearance.inlineLayoutAppearance)
-            applyItemWooAppearance(to: standardAppearance.stackedLayoutAppearance)
-            applyItemWooAppearance(to: standardAppearance.compactInlineLayoutAppearance)
+            applyWooAppearance(to: standardAppearance.inlineLayoutAppearance)
+            applyWooAppearance(to: standardAppearance.stackedLayoutAppearance)
+            applyWooAppearance(to: standardAppearance.compactInlineLayoutAppearance)
             appearance.standardAppearance = standardAppearance
         }
     }
 
     @available(iOS 13.0, *)
-    private class func applyItemWooAppearance(to layoutAppearance: UITabBarItemAppearance) {
-        layoutAppearance.normal.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
-        layoutAppearance.selected.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
-        layoutAppearance.disabled.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
-        layoutAppearance.normal.badgeBackgroundColor = .primary
-        layoutAppearance.selected.badgeBackgroundColor = .primary
-        layoutAppearance.disabled.badgeBackgroundColor = .primary
+    private static func applyWooAppearance(to tabBarItemAppearance: UITabBarItemAppearance) {
+        tabBarItemAppearance.normal.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
+        tabBarItemAppearance.selected.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
+        tabBarItemAppearance.disabled.badgeTextAttributes = [.foregroundColor: UIColor.textInverted]
+        tabBarItemAppearance.normal.badgeBackgroundColor = .primary
+        tabBarItemAppearance.selected.badgeBackgroundColor = .primary
+        tabBarItemAppearance.disabled.badgeBackgroundColor = .primary
     }
 }

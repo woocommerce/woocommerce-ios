@@ -26,10 +26,10 @@ target 'WooCommerce' do
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
-  pod 'WordPressAuthenticator', '~> 1.10.6'
+  pod 'WordPressAuthenticator', '~> 1.11.0-beta'
 
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
-  pod 'WordPressShared', '~> 1.8.2'
+  pod 'WordPressShared', '~> 1.8.16-beta'
   
   pod 'WordPressUI', '~> 1.5.2-beta'
 
@@ -40,7 +40,7 @@ target 'WooCommerce' do
   # External Libraries
   # ==================
   #
-  pod 'Alamofire', '~> 4.7'
+  pod 'Alamofire', '~> 4.8'
   pod 'KeychainAccess', '~> 3.2'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
@@ -63,7 +63,7 @@ end
 # ===============
 #
 def yosemite_pods
-  pod 'Alamofire', '~> 4.7'
+  pod 'Alamofire', '~> 4.8'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 end
@@ -88,7 +88,7 @@ end
 # =================
 #
 def networking_pods
-  pod 'Alamofire', '~> 4.7'
+  pod 'Alamofire', '~> 4.8'
   pod 'CocoaLumberjack', '~> 3.5'
   pod 'CocoaLumberjack/Swift', '~> 3.5'
 end

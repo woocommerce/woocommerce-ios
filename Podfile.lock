@@ -1,6 +1,6 @@
 PODS:
   - 1PasswordExtension (1.8.5)
-  - Alamofire (4.7.3)
+  - Alamofire (4.8.0)
   - Automattic-Tracks-iOS (0.4.4-beta.2):
     - CocoaLumberjack (~> 3.5.2)
     - Reachability (~> 3.1)
@@ -36,7 +36,7 @@ PODS:
     - Kingfisher/Core (= 5.11.0)
   - Kingfisher/Core (5.11.0)
   - lottie-ios (2.5.2)
-  - NSObject-SafeExpectations (0.0.3)
+  - NSObject-SafeExpectations (0.0.4)
   - "NSURL+IDN (0.3)"
   - Reachability (3.2)
   - Sentry (4.5.0):
@@ -47,32 +47,32 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (1.10.7):
+  - WordPressAuthenticator (1.11.0-beta.1):
     - 1PasswordExtension (= 1.8.5)
-    - Alamofire (= 4.7.3)
+    - Alamofire (= 4.8)
     - CocoaLumberjack (~> 3.5)
     - GoogleSignIn (~> 4.4)
     - Gridicons (~> 0.15)
     - lottie-ios (= 2.5.2)
     - "NSURL+IDN (= 0.3)"
     - SVProgressHUD (= 2.2.5)
-    - WordPressKit (~> 4.5.6-beta.1)
-    - WordPressShared (~> 1.8)
+    - WordPressKit (~> 4.6.0-beta.1)
+    - WordPressShared (~> 1.8.13-beta)
     - WordPressUI (~> 1.4-beta.1)
-  - WordPressKit (4.5.6):
-    - Alamofire (~> 4.7.3)
+  - WordPressKit (4.6.0-beta.7):
+    - Alamofire (~> 4.8.0)
     - CocoaLumberjack (~> 3.4)
-    - NSObject-SafeExpectations (= 0.0.3)
+    - NSObject-SafeExpectations (= 0.0.4)
     - UIDeviceIdentifier (~> 1)
-    - WordPressShared (~> 1.8.0)
-    - wpxmlrpc (= 0.8.4)
-  - WordPressShared (1.8.10):
+    - WordPressShared (~> 1.8.15-beta)
+    - wpxmlrpc (= 0.8.5-beta.1)
+  - WordPressShared (1.8.16-beta.1):
     - CocoaLumberjack (~> 3.4)
     - FormatterKit/TimeIntervalFormatter (= 1.8.2)
   - WordPressUI (1.5.2-beta.1)
   - Wormholy (1.5.1)
   - WPMediaPicker (1.6.0)
-  - wpxmlrpc (0.8.4)
+  - wpxmlrpc (0.8.5-beta.1)
   - XLPagerTabStrip (9.0.0)
   - ZendeskCommonUISDK (4.2.0):
     - ZendeskSDKConfigurationsSDK (~> 1.1.2)
@@ -90,7 +90,7 @@ PODS:
     - ZendeskSupportProvidersSDK (~> 5.0.1)
 
 DEPENDENCIES:
-  - Alamofire (~> 4.7)
+  - Alamofire (~> 4.8)
   - Automattic-Tracks-iOS (~> 0.4.4-beta)
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
@@ -99,8 +99,8 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (~> 1.10.6)
-  - WordPressShared (~> 1.8.2)
+  - WordPressAuthenticator (~> 1.11.0-beta)
+  - WordPressShared (~> 1.8.16-beta)
   - WordPressUI (~> 1.5.2-beta)
   - Wormholy (~> 1.5.1)
   - WPMediaPicker (~> 1.6.0)
@@ -148,7 +148,7 @@ SPEC REPOS:
 
 SPEC CHECKSUMS:
   1PasswordExtension: 0e95bdea64ec8ff2f4f693be5467a09fac42a83d
-  Alamofire: c7287b6e5d7da964a70935e5db17046b7fde6568
+  Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
   Automattic-Tracks-iOS: 6d382b8a75dd107c6d73f8f539e734ff5064ec69
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
@@ -160,7 +160,7 @@ SPEC CHECKSUMS:
   KeychainAccess: d5470352939ced6d6f7fb51cb2e67aae51fc294f
   Kingfisher: 4569606189149e19c7d9439f47e885d0679b7a90
   lottie-ios: 3fef45d3fabe63e3c7c2eb603dd64ddfffc73062
-  NSObject-SafeExpectations: b989b68a8a9b7b9f2b264a8b52ba9d7aab8f3129
+  NSObject-SafeExpectations: ab8fe623d36b25aa1f150affa324e40a2f3c0374
   "NSURL+IDN": 82355a0afd532fe1de08f6417c134b49b1a1c4b3
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Sentry: ab6c209f23700d1460691dbc90e19ed0a05d496b
@@ -168,13 +168,13 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 44f805037d21b94394821828f4fcaba34b38c2d0
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 9141ea5a2e2b227252f3da6b3282a467f62588ba
-  WordPressKit: 5b37877f273fc4bc7289eb736df3bd3122535bd4
-  WordPressShared: 5561910e9b6635874abeb10e450b7d2a29f23838
+  WordPressAuthenticator: c69b217614533d91e449fb54c3a813e544464922
+  WordPressKit: af813ac74d5248bbc2b89e274dc023b6e960e000
+  WordPressShared: ddcb40e608bc0f0162cce5e8df006584febcec50
   WordPressUI: 77907b59f39530af1003a30e6148a3ad0d2b179f
   Wormholy: f01b096b449a9fcab864a10f7e5b5693b1225c88
   WPMediaPicker: e5d28197da6b467d4e5975d64a49255977e39455
-  wpxmlrpc: 6ba55c773cfa27083ae4a2173e69b19f46da98e2
+  wpxmlrpc: d758b6ad17723d31d06493acc932f6d9b340de95
   XLPagerTabStrip: 61c57fd61f611ee5f01ff1495ad6fbee8bf496c5
   ZendeskCommonUISDK: afbee7c58c04cf88012a48c079599ec0d1590d16
   ZendeskCoreSDK: 86513e62c1ab68913416c9044463d9b687ca944f
@@ -184,6 +184,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 319e08b3ab1a4c06462aebba97ec16d10b2b4836
+PODFILE CHECKSUM: 16e2eb969da87f3c034f687957dc2d753409b8d1
 
 COCOAPODS: 1.9.1

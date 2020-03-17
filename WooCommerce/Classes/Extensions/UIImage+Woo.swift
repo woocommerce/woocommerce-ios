@@ -329,10 +329,10 @@ extension UIImage {
     /// Returns a star outline icon with the given size
     ///
     /// - Parameters:
-    ///   - size: desired size of the resulting star icon
+    ///   - size: desired size of the resulting star icon, defaults to `Gridicon.defaultSize.height`
     /// - Returns: a bitmap image
     ///
-    static func starOutlineImage(size: Double) -> UIImage {
+    static func starOutlineImage(size: Double = Double(Gridicon.defaultSize.height)) -> UIImage {
         let starSize = CGSize(width: size, height: size)
         return Gridicon.iconOfType(.starOutline,
                                    withSize: starSize)

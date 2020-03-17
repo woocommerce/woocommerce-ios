@@ -11,7 +11,7 @@ extension UITabBar {
         appearance.barTintColor = .appTabBar
         appearance.tintColor = .text
 
-        /// Some iOS 13.x versions don't render the tabbar shadow color correcly while in dark mode.
+        /// iOS 13.1 don't render the tabbar shadow color correcly while in dark mode.
         /// To fix it, we have to specifically set it in the `standardAppearance` object.
         /// Which forces us to set other properties like `badgeBackgroundColor` and `badgeTextAttributes` in the `UITabBarItemAppearance` layouts.
         ///

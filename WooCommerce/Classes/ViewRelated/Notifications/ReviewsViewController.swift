@@ -156,7 +156,7 @@ private extension ReviewsViewController {
     ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
-        tabBarItem.image = .commentImage
+        tabBarItem.image = .starOutlineImage()
         tabBarItem.accessibilityIdentifier = "tab-bar-reviews-item"
     }
 

@@ -21,6 +21,8 @@ final class ProductFormViewController: UIViewController {
             })
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
+
+            updateNavigationBar(isUpdateEnabled: product != originalProduct)
         }
     }
 
@@ -82,23 +84,8 @@ final class ProductFormViewController: UIViewController {
 
 private extension ProductFormViewController {
     func configureNavigationBar() {
-        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
-        navigationItem.rightBarButtonItems = [UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))]
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
-            navigationItem.rightBarButtonItems?.insert(createMoreOptionsBarButtonItem(), at: 0)
-        }
+        updateNavigationBar(isUpdateEnabled: originalProduct != product)
         removeNavigationBackBarButtonText()
-    }
-
-    func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
-        let moreButton = UIBarButtonItem(image: .moreImage,
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(presentMoreOptionsActionSheet))
-        moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
-        moreButton.accessibilityIdentifier = "edit-product-more-options-button"
-        return moreButton
     }
 
     func configureMainView() {
@@ -207,6 +194,37 @@ private extension ProductFormViewController {
     func displayProductSettings() {
         let viewController = ProductSettingsViewController(product: product)
         navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+private extension ProductFormViewController {
+    func updateNavigationBar(isUpdateEnabled: Bool) {
+        var rightBarButtonItems = [UIBarButtonItem]()
+
+        if isUpdateEnabled {
+            rightBarButtonItems.append(createUpdateBarButtonItem())
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
+            rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
+        }
+
+        navigationItem.rightBarButtonItems = rightBarButtonItems
+    }
+
+    func createUpdateBarButtonItem() -> UIBarButtonItem {
+        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
+        return UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
+    }
+
+    func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
+        let moreButton = UIBarButtonItem(image: .moreImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentMoreOptionsActionSheet))
+        moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
+        moreButton.accessibilityIdentifier = "edit-product-more-options-button"
+        return moreButton
     }
 }
 

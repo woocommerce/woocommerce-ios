@@ -8,6 +8,7 @@ struct AztecUIConfigurator {
                              textViewDelegate: UITextViewDelegate,
                              textViewAttachmentDelegate: TextViewAttachmentDelegate) {
         editorView.clipsToBounds = false
+        editorView.htmlStorage.textColor = .text
         configureHTMLTextView(editorView.htmlTextView, textViewDelegate: textViewDelegate)
         configureRichTextView(editorView.richTextView,
                               textViewDelegate: textViewDelegate,
@@ -77,6 +78,9 @@ private extension AztecUIConfigurator {
         textView.textAttachmentDelegate = textViewAttachmentDelegate
         textView.backgroundColor = .basicBackground
         textView.textColor = .systemColor(.label)
+        textView.blockquoteBackgroundColor = .neutral(.shade5)
+        textView.blockquoteBorderColor = .listIcon
+        textView.preBackgroundColor = .neutral(.shade5)
         textView.linkTextAttributes = linkAttributes
 
         // We need this false to be able to set negative `scrollInset` values.

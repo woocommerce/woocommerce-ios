@@ -396,8 +396,8 @@ private extension ProductFormViewController {
         }
 
         let hasChangedData: Bool = {
-            regularPrice != product.regularPrice ||
-                salePrice != product.salePrice ||
+                getDecimalPrice(regularPrice) != getDecimalPrice(product.regularPrice) ||
+                getDecimalPrice(salePrice) != getDecimalPrice(product.salePrice) ||
                 dateOnSaleStart != product.dateOnSaleStart ||
                 dateOnSaleEnd != product.dateOnSaleEnd ||
                 taxStatus != product.productTaxStatus ||
@@ -497,6 +497,18 @@ private extension ProductFormViewController {
             return
         }
         self.product = productUpdater.briefDescriptionUpdated(briefDescription: newBriefDescription)
+    }
+}
+
+// MARK: Convenience Methods
+//
+private extension ProductFormViewController {
+    func getDecimalPrice(_ price: String?) -> NSDecimalNumber? {
+        guard let price = price else {
+            return nil
+        }
+        let currencyFormatter = CurrencyFormatter()
+        return currencyFormatter.convertToDecimal(from: price)
     }
 }
 

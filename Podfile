@@ -20,9 +20,9 @@ target 'WooCommerce' do
 
   # Use the latest bugfix for coretelephony
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4-beta.1'
-  pod 'Automattic-Tracks-iOS', '~> 0.4.0'
+  pod 'Automattic-Tracks-iOS', '~> 0.4.4-beta'
 
-  pod 'Gridicons', '~> 0.19'
+  pod 'Gridicons', '~> 0.20-beta'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
   #pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'task/wc-support-site-url-login'
@@ -31,7 +31,7 @@ target 'WooCommerce' do
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  
   pod 'WordPressShared', '~> 1.8.16-beta'
   
-  pod 'WordPressUI', '~> 1.5.1'
+  pod 'WordPressUI', '~> 1.5.2-beta'
 
   pod 'WordPress-Editor-iOS', '~> 1.11.0'
 

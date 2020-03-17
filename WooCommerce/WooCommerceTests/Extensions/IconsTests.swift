@@ -1,4 +1,5 @@
 import XCTest
+import Gridicons
 @testable import WooCommerce
 
 final class IconsTests: XCTestCase {
@@ -192,6 +193,11 @@ final class IconsTests: XCTestCase {
         let size = Double(1)
         let starOutlineImage = UIImage.starOutlineImage(size: size)
         XCTAssertEqual(starOutlineImage.size, CGSize(width: size, height: size))
+    }
+
+    func testStarOutlineImageDefaultSize() {
+        let starOutlineImage = UIImage.starOutlineImage()
+        XCTAssertEqual(starOutlineImage.size, Gridicon.defaultSize)
     }
 
     func testStatsImageIconIsNotNil() {

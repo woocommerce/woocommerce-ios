@@ -6,7 +6,10 @@ final class ProductFormViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    /// The product model before any potential edits; reset after a remote update.
     private var originalProduct: Product
+
+    /// The product model with potential edits; reset after a remote update.
     private var product: Product {
         didSet {
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)

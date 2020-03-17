@@ -162,9 +162,9 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
             
             switch error {
             case AccountServiceRemoteError.emailAddressInvalid:
-                fallthrough
-            case AccountServiceRemoteError.emailAddressTaken:
                 self.displayError(message: error.localizedDescription)
+                completion(false)
+            case AccountServiceRemoteError.emailAddressTaken:
                 completion(false)
             default:
                 self.displayError(message: ErrorMessage.availabilityCheckFail.description())

@@ -153,7 +153,13 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
                     return
                 }
 
-                self?.navigationController?.pushViewController(vc, animated: true)
+                guard let self = self else {
+                    return
+                }
+
+                vc.loginFields = self.loginFields
+
+                self.navigationController?.pushViewController(vc, animated: true)
             }
             completion(available)
         }, failure: { error in

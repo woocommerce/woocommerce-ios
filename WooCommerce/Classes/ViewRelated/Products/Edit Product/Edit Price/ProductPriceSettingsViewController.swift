@@ -438,12 +438,12 @@ private extension ProductPriceSettingsViewController {
             guard let self = self else {
                 return
             }
-            if date > dateOnSaleEnd {
-                cell.getPicker().setDate(dateOnSaleStart, animated: true)
+            self.dateOnSaleStart = date.startOfDay(timezone: self.timezoneForScheduleSaleDates)
+
+            if dateOnSaleEnd < date {
+                self.dateOnSaleEnd = date.endOfDay(timezone: self.timezoneForScheduleSaleDates)
             }
-            else {
-                self.dateOnSaleStart = date.startOfDay(timezone: self.timezoneForScheduleSaleDates)
-            }
+
             self.refreshViewContent()
         }
     }

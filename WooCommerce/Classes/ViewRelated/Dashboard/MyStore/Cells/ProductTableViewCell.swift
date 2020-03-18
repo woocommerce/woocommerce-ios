@@ -46,8 +46,16 @@ class ProductTableViewCell: UITableViewCell {
         nameLabel.applyBodyStyle()
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
-        productImage.contentMode = .scaleAspectFit
+        applyProductImageStyle()
         contentView.backgroundColor = .listForeground
+    }
+
+    private func applyProductImageStyle() {
+        productImage.layer.cornerRadius = Constants.cornerRadius
+        productImage.layer.borderWidth = Constants.borderWidth
+        productImage.layer.borderColor = Colors.imageBorderColor.cgColor
+        productImage.clipsToBounds = true
+        productImage.contentMode = .scaleAspectFill
     }
 }
 
@@ -68,5 +76,18 @@ extension ProductTableViewCell {
                                                        placeholder: .productPlaceholderImage,
                                                        progressBlock: nil,
                                                        completion: nil)
+    }
+}
+
+/// Constants
+///
+private extension ProductTableViewCell {
+    enum Constants {
+        static let cornerRadius = CGFloat(2.0)
+        static let borderWidth = CGFloat(0.5)
+    }
+
+    enum Colors {
+        static let imageBorderColor = UIColor.border
     }
 }

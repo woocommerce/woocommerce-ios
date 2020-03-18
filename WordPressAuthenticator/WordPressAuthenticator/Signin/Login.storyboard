@@ -1020,7 +1020,6 @@
                         <outlet property="label" destination="CmN-ir-1YK" id="Xhc-3L-kvy"/>
                         <outlet property="sendLinkButton" destination="iIy-Sm-1r0" id="9My-fJ-l9S"/>
                         <outlet property="usePasswordButton" destination="B6x-b7-hU9" id="mB8-03-VBa"/>
-                        <segue destination="Aii-0z-zLC" kind="show" identifier="showLinkMailView" id="xs3-qG-RaP"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="cja-vu-y88" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1182,14 +1181,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="WlT-Oa-AoS" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="794" y="1179"/>
-        </scene>
-        <!--LinkMailView-->
-        <scene sceneID="UUd-M2-Fvg">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="LinkMailView" storyboardName="EmailMagicLink" referencedIdentifier="LinkMailView" id="Aii-0z-zLC" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="WTT-3e-E71" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="3355" y="255"/>
         </scene>
         <!--Login Username Password View Controller-->
         <scene sceneID="b9v-Sc-w6J">
@@ -1471,7 +1462,7 @@
         <segue reference="N3P-wt-Rn3"/>
         <segue reference="Njv-lY-Lyi"/>
         <segue reference="2Of-BA-xqb"/>
-        <segue reference="UV4-XI-c0q"/>
+        <segue reference="0ao-yi-yZI"/>
         <segue reference="4SK-mG-U33"/>
         <segue reference="nCA-u7-fKm"/>
         <segue reference="swV-lc-6gI"/>

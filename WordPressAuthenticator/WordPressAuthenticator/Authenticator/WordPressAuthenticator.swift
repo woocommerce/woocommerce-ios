@@ -147,7 +147,7 @@ import AuthenticationServices
             trackOpenedLogin()
         }
 
-        let storyboard = UIStoryboard(name: "Login", bundle: bundle)
+        let storyboard = Storyboard.login.instance
         if let controller = storyboard.instantiateInitialViewController() {
             if let childController = controller.children.first as? LoginPrologueViewController {
                 childController.loginFields.restrictToWPCom = restrictToWPCom

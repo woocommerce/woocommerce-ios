@@ -78,9 +78,9 @@ private extension AztecUIConfigurator {
         textView.textAttachmentDelegate = textViewAttachmentDelegate
         textView.backgroundColor = .basicBackground
         textView.textColor = .systemColor(.label)
-        textView.blockquoteBackgroundColor = .neutral(.shade5)
-        textView.blockquoteBorderColor = .listIcon
-        textView.preBackgroundColor = .neutral(.shade5)
+        textView.blockquoteBackgroundColor = .wooCommercePurple(.shade5)
+        textView.blockquoteBorderColor = .wooCommercePurple(.shade50)
+        textView.preBackgroundColor = .wooCommercePurple(.shade5)
         textView.linkTextAttributes = linkAttributes
 
         // We need this false to be able to set negative `scrollInset` values.

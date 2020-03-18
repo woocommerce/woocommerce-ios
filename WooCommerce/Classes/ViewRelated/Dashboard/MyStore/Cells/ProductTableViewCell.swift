@@ -11,6 +11,7 @@ class ProductTableViewCell: UITableViewCell {
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var detailLabel: UILabel!
     @IBOutlet private var priceLabel: UILabel!
+    @IBOutlet private var stackView: UIStackView!
 
     var nameText: String? {
         get {
@@ -41,6 +42,7 @@ class ProductTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
+        stackView.alignment = .leading
         nameLabel.applyBodyStyle()
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()

@@ -77,6 +77,7 @@
                 <outlet property="nameLabel" destination="B98-58-fIv" id="Hh5-mS-u6w"/>
                 <outlet property="priceLabel" destination="2yh-4i-vuE" id="Pe0-nm-XVK"/>
                 <outlet property="productImage" destination="yk6-X3-NSJ" id="Kva-Sx-kub"/>
+                <outlet property="stackView" destination="VJh-YT-pnW" id="BOT-fW-0lU"/>
             </connections>
             <point key="canvasLocation" x="-609.60000000000002" y="-173.61319340329837"/>
         </tableViewCell>

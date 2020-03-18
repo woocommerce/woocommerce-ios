@@ -158,7 +158,7 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
                 }
 
                 vc.loginFields.restrictToWPCom = true
-                vc.loginFields.username = self.loginFields.emailAddress
+                vc.loginFields.username = self.loginFields.username
 
                 self.navigationController?.pushViewController(vc, animated: true)
             }

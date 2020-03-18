@@ -10,10 +10,6 @@ public enum TaxClassAction: Action {
     ///
     case retrieveTaxClasses(siteID: Int64, onCompletion: ([TaxClass]?, Error?) -> Void)
 
-    /// Deletes all of the cached tax classes.
-    ///
-    case resetStoredTaxClasses(onCompletion: () -> Void)
-
     /// Request the Tax Class found in a specified Product.
     ///
     case requestMissingTaxClasses(for: Product, onCompletion: (TaxClass?, Error?) -> Void)

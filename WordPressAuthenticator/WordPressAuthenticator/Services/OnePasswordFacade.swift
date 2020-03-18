@@ -133,8 +133,8 @@ enum OnePasswordError: Error {
     case unknown
 
     init(error: NSError) {
-        switch error.code {
-        case Int(AppExtensionErrorCodeCancelledByUser):
+        switch AppExtensionErrorCode.init(rawValue: UInt(error.code)) {
+        case .cancelledByUser:
             self = .cancelledByUser
         default:
             self = .unknown

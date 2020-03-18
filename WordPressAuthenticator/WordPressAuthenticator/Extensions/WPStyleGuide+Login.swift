@@ -21,7 +21,9 @@ extension WPStyleGuide {
         static let buttonMinHeight: CGFloat = 50.0
 
         static let textButtonMinHeight: CGFloat = 40.0
-        static let googleIconOffset: CGFloat = -1.0
+        static let googleIconHyperlinkOffset: CGFloat = -1.0
+        static let googleIconButtonOffset: CGFloat = -2.0
+        static let googleIconButtonSize: CGFloat = 15.0
         static let domainsIconPaddingToRemove: CGFloat = 2.0
         static let domainsIconSize = CGSize(width: 18, height: 18)
         static let verticalLabelSpacing: CGFloat = 10.0
@@ -111,7 +113,7 @@ extension WPStyleGuide {
 
     // MARK: - Login Button Methods
 
-    /// Creates a button for Google Sign-in
+    /// Creates a button for Google Sign-in with hyperlink style.
     ///
     /// - Returns: A properly styled UIButton
     ///
@@ -126,6 +128,43 @@ extension WPStyleGuide {
         return textButton(normal: attrStrNormal, highlighted: attrStrHighlight, font: font)
     }
 
+    /// Creates an attributed string that includes the Google logo.
+    ///
+    /// - Parameters:
+    ///     - forHyperlink: Indicates if the string will be displayed in a hyperlink.
+    ///                     Otherwise, it will be styled to be displayed on a NUXButton.
+    /// - Returns: A properly styled NSAttributedString
+    ///
+    class func formattedGoogleString(forHyperlink: Bool = false) -> NSAttributedString {
+        
+        let googleAttachment = NSTextAttachment()
+        let googleIcon = UIImage.googleIcon
+        googleAttachment.image = googleIcon
+        
+        if forHyperlink {
+            // Create an attributed string that contains the Google icon.
+            let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
+            googleAttachment.bounds = CGRect(x: 0,
+                                             y: font.descender + Constants.googleIconHyperlinkOffset,
+                                             width: googleIcon.size.width,
+                                             height: googleIcon.size.height)
+
+            return NSAttributedString(attachment: googleAttachment)
+        } else {
+            // Create an attributed string that contains the Google icon + button text.
+            googleAttachment.bounds = CGRect(x: 0,
+                                             y: Constants.googleIconButtonOffset,
+                                             width: Constants.googleIconButtonSize,
+                                             height: Constants.googleIconButtonSize)
+
+            let buttonString = NSMutableAttributedString(attachment: googleAttachment)
+            let googleTitle = NSLocalizedString(" Continue with Google", comment: "Button title. Tapping begins log in using Google. There is a leading space to separate it from the Google logo.")
+            buttonString.append(NSAttributedString(string: googleTitle))
+
+            return buttonString
+        }
+    }
+    
     /// Creates a button for Apple Sign-in
     ///
     /// - Returns: A properly styled UIControl
@@ -235,7 +274,6 @@ extension WPStyleGuide {
 
     private class func googleButtonString(_ baseString: String, linkColor: UIColor) -> NSAttributedString {
         let labelParts = baseString.components(separatedBy: "{G}")
-        let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
 
         let firstPart = labelParts[0]
         // 👇 don't want to crash when a translation lacks "{G}"
@@ -244,12 +282,7 @@ extension WPStyleGuide {
         let labelString = NSMutableAttributedString(string: firstPart, attributes: [.foregroundColor: WPStyleGuide.greyDarken30()])
 
         if lastPart != "" {
-            let googleIcon = UIImage.googleIcon
-            let googleAttachment = NSTextAttachment()
-            googleAttachment.image = googleIcon
-            googleAttachment.bounds = CGRect(x: 0.0, y: font.descender + Constants.googleIconOffset, width: googleIcon.size.width, height: googleIcon.size.height)
-            let iconString = NSAttributedString(attachment: googleAttachment)
-            labelString.append(iconString)
+            labelString.append(formattedGoogleString(forHyperlink: true))
         }
 
         labelString.append(NSAttributedString(string: lastPart, attributes: [.foregroundColor: linkColor]))

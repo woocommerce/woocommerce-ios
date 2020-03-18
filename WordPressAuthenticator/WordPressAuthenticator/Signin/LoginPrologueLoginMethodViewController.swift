@@ -45,16 +45,8 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
             self?.dismiss(animated: true)
             self?.emailTapped?()
         }
-
-        let googleTitle = NSLocalizedString("Continue with Google", comment: "Button title. Tapping begins log in using Google.")
-        buttonViewController.setupBottomButton(title: googleTitle, isPrimary: false, accessibilityIdentifier: "Log in with Google Button") { [weak self] in
-            defer {
-                WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "google"])
-            }
-
-            self?.dismiss(animated: true)
-            self?.googleTapped?()
-        }
+        
+        buttonViewController.setupButtomButtonFor(socialService: .google, onTap: handleGoogleButtonTapped)
 
         if !LoginFields().restrictToWPCom && selfHostedTapped != nil {
             let selfHostedLoginButton = WPStyleGuide.selfHostedLoginButton(alignment: .center)
@@ -89,6 +81,13 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
         appleTapped?()
     }
 
+    @objc func handleGoogleButtonTapped() {
+        WordPressAuthenticator.track(.loginSocialButtonClick, properties: ["source": "google"])
+
+        dismiss(animated: true)
+        googleTapped?()
+    }
+    
     // MARK: - Accessibility
 
     private func configureForAccessibility() {

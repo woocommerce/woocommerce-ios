@@ -128,8 +128,6 @@
                         <outlet property="errorLabel" destination="EYw-oM-W1K" id="P2j-f2-bLo"/>
                         <outlet property="instructionLabel" destination="CPF-7g-0y5" id="Urr-Xa-YNp"/>
                         <outlet property="submitButton" destination="4Su-Zc-Omp" id="amJ-9P-tcO"/>
-                        <segue destination="Je3-5O-NYu" kind="show" identifier="showLinkMailView" id="Yop-RV-xJa"/>
-                        <segue destination="J8B-jx-UJD" kind="show" identifier="SignupEmailViewController" id="1cg-nu-IEn"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OAN-7g-PQl" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -179,22 +177,6 @@
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5UK-0h-9ZC" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-938" y="791"/>
-        </scene>
-        <!--LinkMailView-->
-        <scene sceneID="lKY-0n-z5h">
-            <objects>
-                <viewControllerPlaceholder storyboardIdentifier="LinkMailView" storyboardName="EmailMagicLink" referencedIdentifier="LinkMailView" id="Je3-5O-NYu" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="DAI-Ik-KtV" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-358" y="190"/>
-        </scene>
-        <!--LoginEmailViewController-->
-        <scene sceneID="JU2-CA-QR6">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Login" referencedIdentifier="LoginEmailViewController" id="J8B-jx-UJD" sceneMemberID="viewController"/>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="Y5k-uW-muf" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-346" y="-127"/>
         </scene>
     </scenes>
     <resources>

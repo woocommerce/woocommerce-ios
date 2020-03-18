@@ -1,4 +1,5 @@
 import UIKit
+import WordPressKit
 
 @objc public protocol NUXButtonViewControllerDelegate {
     func primaryButtonPressed()
@@ -9,13 +10,15 @@ import UIKit
 private struct NUXButtonConfig {
     typealias CallBackType = () -> Void
 
-    let title: String
+    let title: String?
+    let attributedTitle: NSAttributedString?
     let isPrimary: Bool
     let accessibilityIdentifier: String?
     let callback: CallBackType?
 
-    init(title: String, isPrimary: Bool, accessibilityIdentifier: String? = nil, callback: CallBackType?) {
+    init(title: String? = nil, attributedTitle: NSAttributedString? = nil, isPrimary: Bool, accessibilityIdentifier: String? = nil, callback: CallBackType?) {
         self.title = title
+        self.attributedTitle = attributedTitle
         self.isPrimary = isPrimary
         self.accessibilityIdentifier = accessibilityIdentifier
         self.callback = callback
@@ -61,7 +64,13 @@ open class NUXButtonViewController: UIViewController {
 
     private func configure(button: NUXButton?, withConfig buttonConfig: NUXButtonConfig?) {
         if let buttonConfig = buttonConfig, let button = button {
-            button.setTitle(buttonConfig.title, for: .normal)
+            
+            if let attributedTitle = buttonConfig.attributedTitle {
+                button.setAttributedTitle(attributedTitle, for: .normal)
+            } else {
+                button.setTitle(buttonConfig.title, for: .normal)
+            }
+            
             button.accessibilityIdentifier = buttonConfig.accessibilityIdentifier ?? accessibilityIdentifier(for: buttonConfig.title)
             button.isPrimary = buttonConfig.isPrimary
             button.isHidden = false
@@ -98,6 +107,26 @@ open class NUXButtonViewController: UIViewController {
 
     func setupBottomButton(title: String, isPrimary: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {
         bottomButtonConfig = NUXButtonConfig(title: title, isPrimary: isPrimary, accessibilityIdentifier: accessibilityIdentifier, callback: callback)
+    }
+    
+    func setupButtomButtonFor(socialService: SocialServiceName, onTap callback: @escaping CallBackType) {
+
+        var attributedTitle = NSAttributedString()
+        var accessibilityIdentifier = String()
+        
+        switch socialService {
+        case .google:
+            attributedTitle = WPStyleGuide.formattedGoogleString()
+            accessibilityIdentifier = "Continue with Google Button"
+        default:
+            // TODO: add Apple support when add custom SIWA button.
+            DDLogInfo("Apple not yet supported.")
+        }
+
+        bottomButtonConfig = NUXButtonConfig(attributedTitle: attributedTitle,
+                                             isPrimary: false,
+                                             accessibilityIdentifier: accessibilityIdentifier,
+                                             callback: callback)
     }
 
     func setupTertiaryButton(title: String, isPrimary: Bool = false, accessibilityIdentifier: String? = nil, onTap callback: @escaping CallBackType) {

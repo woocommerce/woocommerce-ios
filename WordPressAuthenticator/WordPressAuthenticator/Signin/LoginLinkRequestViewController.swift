@@ -139,7 +139,13 @@ class LoginLinkRequestViewController: LoginViewController {
     @objc func didRequestAuthenticationLink() {
         WordPressAuthenticator.track(.loginMagicLinkRequested)
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
-        performSegue(withIdentifier: .showLinkMailView, sender: self)
+
+        guard let vc = NUXLinkMailViewController.instantiate(from: .signup) else {
+            DDLogError("Failed to navigate to NUXLinkMailViewController")
+            return
+        }
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     @IBAction func handleUsePasswordTapped(_ sender: UIButton) {

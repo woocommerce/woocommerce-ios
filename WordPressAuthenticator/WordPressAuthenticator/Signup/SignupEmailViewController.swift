@@ -217,7 +217,13 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
     private func didRequestSignupLink() {
         WordPressAuthenticator.track(.signupMagicLinkRequested)
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
-        performSegue(withIdentifier: "showLinkMailView", sender: nil)
+
+        guard let vc = NUXLinkMailViewController.instantiate(from: .signup) else {
+            DDLogError("Failed to navigate to NUXLinkMailViewController")
+            return
+        }
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     // MARK: - Action Handling

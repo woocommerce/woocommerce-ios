@@ -51,6 +51,7 @@ class ProductTableViewCell: UITableViewCell {
     }
 
     private func applyProductImageStyle() {
+        productImage.backgroundColor = Colors.imageBackgroundColor
         productImage.layer.cornerRadius = Constants.cornerRadius
         productImage.layer.borderWidth = Constants.borderWidth
         productImage.layer.borderColor = Colors.imageBorderColor.cgColor
@@ -93,5 +94,6 @@ private extension ProductTableViewCell {
 
     enum Colors {
         static let imageBorderColor = UIColor.border
+        static let imageBackgroundColor = UIColor.systemColor(.systemGray6)
     }
 }

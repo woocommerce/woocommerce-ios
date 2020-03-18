@@ -55,7 +55,6 @@ class ProductTableViewCell: UITableViewCell {
         productImage.layer.borderWidth = Constants.borderWidth
         productImage.layer.borderColor = Colors.imageBorderColor.cgColor
         productImage.clipsToBounds = true
-        productImage.contentMode = .scaleAspectFill
     }
 }
 
@@ -71,11 +70,16 @@ extension ProductTableViewCell {
         )
         priceText = statsItem?.formattedTotalString
 
+        /// Set `center` contentMode to not distort the placeholder aspect ratio.
+        /// After a sucessfull image download set the contentMode to `scaleAspectFill`
+        productImage.contentMode = .center
         imageService.downloadAndCacheImageForImageView(productImage,
                                                        with: statsItem?.imageUrl,
                                                        placeholder: .productPlaceholderImage,
-                                                       progressBlock: nil,
-                                                       completion: nil)
+                                                       progressBlock: nil) { [productImage] (image, error) in
+                                                        guard image != nil, error == nil else { return }
+                                                        productImage?.contentMode = .scaleAspectFill
+        }
     }
 }
 

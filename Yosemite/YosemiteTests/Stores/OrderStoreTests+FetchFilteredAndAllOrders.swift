@@ -34,7 +34,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
         XCTAssertEqual(countOrders(), 1)
 
-        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
 
         // Act
         executeActionAndWait(using: createOrderStore(), deleteAllBeforeSaving: true)
@@ -43,7 +43,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // The previously saved order should be deleted
         XCTAssertNil(findOrder(withID: Fixtures.order.orderID))
         // There should be records saved from the GET /orders query
-        XCTAssertEqual(countOrders(), 4)
+        XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.expectedOrdersCount)
     }
 
     func testItCanSkipDeletingAllOrdersBeforeSaving() {
@@ -53,7 +53,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
         XCTAssertEqual(countOrders(), 1)
 
-        network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
+        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
 
         // Act
         executeActionAndWait(using: createOrderStore(), deleteAllBeforeSaving: false)
@@ -62,7 +62,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // The previously saved order should still be there
         XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
         // There should be records saved from the GET /orders query
-        XCTAssertEqual(countOrders(), 5)
+        XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.expectedOrdersCount + 1)
     }
 }
 
@@ -109,6 +109,13 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
 // MARK: - Fixtures
 
 private enum Fixtures {
+    /// Properties for the orders-load-all.json
+    ///
+    static let ordersLoadAllJSON = (
+        fileName: "orders-load-all",
+        expectedOrdersCount: 4
+    )
+
     static let siteID: Int64 = 1_987
     static let order = Networking.Order(
         siteID: siteID,

@@ -49,10 +49,10 @@ class ProductTableViewCell: UITableViewCell {
     }
 
     private func applyProductImageStyle() {
-        productImage.backgroundColor = Colors.imageBackgroundColor
-        productImage.layer.cornerRadius = Constants.cornerRadius
-        productImage.layer.borderWidth = Constants.borderWidth
-        productImage.layer.borderColor = Colors.imageBorderColor.cgColor
+        productImage.backgroundColor = ProductImage.backgroundColor
+        productImage.layer.cornerRadius = ProductImage.cornerRadius
+        productImage.layer.borderWidth = ProductImage.borderWidth
+        productImage.layer.borderColor = ProductImage.borderColor.cgColor
         productImage.clipsToBounds = true
     }
 }
@@ -84,16 +84,13 @@ extension ProductTableViewCell {
     }
 }
 
-/// Constants
+/// Style Constants
 ///
 private extension ProductTableViewCell {
-    enum Constants {
+    enum ProductImage {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
-    }
-
-    enum Colors {
-        static let imageBorderColor = UIColor.border
-        static let imageBackgroundColor = UIColor.systemColor(.systemGray6)
+        static let borderColor = UIColor.border
+        static let backgroundColor = UIColor.systemColor(.systemGray6)
     }
 }

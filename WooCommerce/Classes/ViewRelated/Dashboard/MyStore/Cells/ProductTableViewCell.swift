@@ -75,7 +75,7 @@ extension ProductTableViewCell {
         imageService.downloadAndCacheImageForImageView(productImage,
                                                        with: statsItem?.imageUrl,
                                                        placeholder: .productPlaceholderImage,
-                                                       progressBlock: nil) { [productImage] (image, _) in
+                                                       progressBlock: nil) { [weak productImage] (image, _) in
                                                         guard image != nil else {
                                                             return
                                                         }

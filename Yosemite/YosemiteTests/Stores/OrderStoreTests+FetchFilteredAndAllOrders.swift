@@ -64,6 +64,19 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // There should be records saved from the GET /orders query
         XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount + 1)
     }
+
+    func testWhenGivenAFilterItFetchesBothTheFilteredListAndTheAllOrdersList() {
+        // Arrange
+        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAll2JSON.fileName)
+
+        // Act
+        executeActionAndWait(using: createOrderStore(), deleteAllBeforeSaving: true)
+
+        // Assert
+        XCTAssertEqual(countOrders(),
+                       Fixtures.ordersLoadAllJSON.ordersCount + Fixtures.ordersLoadAll2JSON.ordersCount)
+    }
 }
 
 // MARK: - Private
@@ -116,7 +129,15 @@ private enum Fixtures {
         ordersCount: 4
     )
 
+    /// Information about the orders-load-all-2.json
+    ///
+    static let ordersLoadAll2JSON = (
+        fileName: "orders-load-all-2",
+        ordersCount: 4
+    )
+
     static let siteID: Int64 = 1_987
+
     static let order = Networking.Order(
         siteID: siteID,
         orderID: 8_963,

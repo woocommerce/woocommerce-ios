@@ -75,8 +75,10 @@ extension ProductTableViewCell {
         imageService.downloadAndCacheImageForImageView(productImage,
                                                        with: statsItem?.imageUrl,
                                                        placeholder: .productPlaceholderImage,
-                                                       progressBlock: nil) { [productImage] (image, error) in
-                                                        guard image != nil, error == nil else { return }
+                                                       progressBlock: nil) { [productImage] (image, _) in
+                                                        guard image != nil else {
+                                                            return
+                                                        }
                                                         productImage?.contentMode = .scaleAspectFill
         }
     }

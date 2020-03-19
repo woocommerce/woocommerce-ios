@@ -23,7 +23,7 @@ final class OrdersViewModel {
                                pageSize: Int,
                                reason: SyncReason?,
                                completionHandler: @escaping (Error?) -> Void) -> OrderAction {
-        if pageNumber == Defaults.pageFirstIndex, let statusKey = statusKey {
+        if pageNumber == Defaults.pageFirstIndex {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
 
             return OrderAction.fetchFilteredAndAllOrders(

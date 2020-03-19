@@ -46,9 +46,9 @@ final class OrdersViewModelTests: XCTestCase {
         XCTAssertEqual(statusKey, OrderStatusEnum.processing.rawValue)
     }
 
-    // Test that when fetching the first page for reasons other than pull-to-refresh
-    // (e.g. `viewWillAppear`), the action returned will only be for dual fetching of the
-    // filtered list and the all orders list.
+    // Test that when fetching the first page of a filtered list (e.g. Processing) for reasons
+    // other than pull-to-refresh (e.g. `viewWillAppear`), the action returned will only be for
+    // dual fetching of the filtered list and the all orders list.
     //
     func testFirstPageLoadOnFilteredListWithNonPullToRefreshReasonsWillOnlyPerformDualFetch() {
         // Arrange
@@ -69,7 +69,7 @@ final class OrdersViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertFalse(deleteAllBeforeSaving)
+        XCTAssertFalse(deleteAllBeforeSaving, "Existing orders will not be deleted.")
         XCTAssertEqual(statusKey, OrderStatusEnum.processing.rawValue)
     }
 
@@ -78,7 +78,7 @@ final class OrdersViewModelTests: XCTestCase {
     // 1. Deleting all the orders
     // 2. Fetching the first page of all orders (any status)
     //
-    func testPullingToRefreshOnAllOrdersListDeletesAndFetchesFirstPage() {
+    func testPullingToRefreshOnAllOrdersListDeletesAndFetchesFirstPageOfAllOrdersOnly() {
         // Arrange
         let viewModel = OrdersViewModel()
 
@@ -97,7 +97,34 @@ final class OrdersViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertTrue(deleteAllBeforeSaving)
-        XCTAssertNil(statusKey)
+        XCTAssertTrue(deleteAllBeforeSaving, "All existing orders will be deleted.")
+        XCTAssertNil(statusKey, "No filtered list will be fetched.")
+    }
+
+    // Test that when fetching the first page of the All Orders list for reasons other than
+    // pull-to-refresh (e.g. `viewWillAppear`), the action returned will only be for fetching the
+    // all the orders (any status).
+    //
+    func testFirstPageLoadOnAllOrdersListWithNonPullToRefreshReasonsWillOnlyPerformSingleFetch() {
+        // Arrange
+        let viewModel = OrdersViewModel()
+
+        // Act
+        let action = viewModel.synchronizationAction(
+            siteID: siteID,
+            statusKey: nil,
+            pageNumber: Defaults.pageFirstIndex,
+            pageSize: pageSize,
+            reason: nil,
+            completionHandler: unimportantCompletionHandler)
+
+        // Assert
+        guard case .fetchFilteredAndAllOrders(_, let statusKey, let deleteAllBeforeSaving, _, _) = action else {
+            XCTFail("Unexpected OrderAction type: \(action)")
+            return
+        }
+
+        XCTAssertFalse(deleteAllBeforeSaving, "Existing orders will not be deleted")
+        XCTAssertNil(statusKey, "No filtered list will be fetched.")
     }
 }

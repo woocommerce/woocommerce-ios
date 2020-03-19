@@ -60,18 +60,27 @@ final class PriceInputFormatterTests: XCTestCase {
     }
 
     func testFormattingInputWithLeadingZeros() {
+        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 3)
+        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+
         let input = "00123.91"
-        XCTAssertEqual(formatter.format(input: input), "123.91".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
+        XCTAssertEqual(formatter.format(input: input), "123.91")
     }
 
     func testFormattingDecimalInputWithPoint() {
+        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 3)
+        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+
         let input = "0.314"
-        XCTAssertEqual(formatter.format(input: input), "0.314".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
+        XCTAssertEqual(formatter.format(input: input), "0.314")
     }
 
     func testFormattingDecimalInputWithComma() {
+        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 3)
+        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+
         let input = "0,314"
-        XCTAssertEqual(formatter.format(input: input), "0.314".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
+        XCTAssertEqual(formatter.format(input: input), "0.314")
     }
 
     func testFormattingIntegerInput() {
@@ -80,12 +89,18 @@ final class PriceInputFormatterTests: XCTestCase {
     }
 
     func testFormattingBigPriceInput() {
+        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 3)
+        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+
         let input = "189293891203.20"
-        XCTAssertEqual(formatter.format(input: input), "189293891203.20".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
+        XCTAssertEqual(formatter.format(input: input), "189293891203.20")
     }
 
     func testFormattingBigPriceInputWithThousandSeparators() {
+        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: ",", decimalSeparator: ".", numberOfDecimals: 3)
+        let formatter = PriceInputFormatter(currencySettings: currencySettings)
+
         let input = "189,293,891,203.20"
-        XCTAssertEqual(formatter.format(input: input), "189293891203.20".replacingOccurrences(of: ".", with: CurrencySettings.shared.decimalSeparator))
+        XCTAssertEqual(formatter.format(input: input), "189293891203.20")
     }
 }

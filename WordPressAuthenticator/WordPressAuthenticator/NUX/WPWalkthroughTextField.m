@@ -110,8 +110,8 @@ NSInteger const LeftImageSpacing = 8;
     if (self.showSecureTextEntryToggle == NO) {
         return;
     }
-    self.secureTextEntryImageVisible = [Gridicon iconOfType:GridiconTypeVisible];
-    self.secureTextEntryImageHidden = [Gridicon iconOfType:GridiconTypeNotVisible];
+    self.secureTextEntryImageVisible = [UIImage gridiconOfType:GridiconTypeVisible];
+    self.secureTextEntryImageHidden = [UIImage gridiconOfType:GridiconTypeNotVisible];
 
     self.secureTextEntryToggle = [UIButton buttonWithType:UIButtonTypeCustom];
     self.secureTextEntryToggle.clipsToBounds = true;

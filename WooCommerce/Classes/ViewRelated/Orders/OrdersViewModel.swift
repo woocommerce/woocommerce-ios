@@ -23,7 +23,7 @@ final class OrdersViewModel {
                                pageSize: Int,
                                reason: SyncReason?,
                                completionHandler: @escaping (Error?) -> Void) -> OrderAction {
-        if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex, let statusKey = statusKey {
+        if pageNumber == Defaults.pageFirstIndex, let statusKey = statusKey {
             let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh
 
             return OrderAction.fetchFilteredAndAllOrders(
@@ -43,5 +43,10 @@ final class OrdersViewModel {
             onCompletion: completionHandler
         )
     }
+}
 
+extension OrdersViewModel {
+    enum Defaults {
+        static let pageFirstIndex = SyncingCoordinator.Defaults.pageFirstIndex
+    }
 }

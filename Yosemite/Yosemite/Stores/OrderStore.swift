@@ -80,7 +80,7 @@ private extension OrderStore {
     }
 
     func fetchFilteredAndAllOrders(siteID: Int64,
-                                   statusKey: String,
+                                   statusKey: String?,
                                    deleteAllBeforeSaving: Bool,
                                    pageSize: Int,
                                    onCompletion: @escaping (Error?) -> Void) {
@@ -126,11 +126,16 @@ private extension OrderStore {
             }
         }
 
+        // Perform dual fetch and wait for both of them to finish.
         let group = DispatchGroup()
-        group.enter()
-        loadAllOrders(statusKey) {
-            group.leave()
+
+        if let statusKey = statusKey {
+            group.enter()
+            loadAllOrders(statusKey) {
+                group.leave()
+            }
         }
+
         group.enter()
         loadAllOrders(OrdersRemote.Defaults.statusAny) {
             group.leave()

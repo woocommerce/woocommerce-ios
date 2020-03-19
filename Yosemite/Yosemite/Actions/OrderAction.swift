@@ -11,9 +11,16 @@ public enum OrderAction: Action {
     ///
     case searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
+    /// Performs a dual fetch for the first pages of a filtered list and the all orders list.
+    ///
+    /// - Parameters:
+    ///     - statusKey: The status to use for the filtered list. If this is not provided, only the
+    ///                  all orders list will be fetched. See `OrderStatusEnum` for possible values.
+    ///     - deleteAllBeforeSaving: If true, all the orders in the db will be deleted before any
+    ///                  order from the fetch requests will be saved.
     case fetchFilteredAndAllOrders(
         siteID: Int64,
-        statusKey: String,
+        statusKey: String?,
         deleteAllBeforeSaving: Bool,
         pageSize: Int,
         onCompletion: (Error?) -> Void

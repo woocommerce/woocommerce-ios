@@ -44,8 +44,16 @@ class ProductTableViewCell: UITableViewCell {
         nameLabel.applyBodyStyle()
         priceLabel.applyBodyStyle()
         detailLabel.applyFootnoteStyle()
-        productImage.contentMode = .scaleAspectFit
+        applyProductImageStyle()
         contentView.backgroundColor = .listForeground
+    }
+
+    private func applyProductImageStyle() {
+        productImage.backgroundColor = ProductImage.backgroundColor
+        productImage.layer.cornerRadius = ProductImage.cornerRadius
+        productImage.layer.borderWidth = ProductImage.borderWidth
+        productImage.layer.borderColor = ProductImage.borderColor.cgColor
+        productImage.clipsToBounds = true
     }
 }
 
@@ -61,10 +69,28 @@ extension ProductTableViewCell {
         )
         priceText = statsItem?.formattedTotalString
 
+        /// Set `center` contentMode to not distort the placeholder aspect ratio.
+        /// After a sucessfull image download set the contentMode to `scaleAspectFill`
+        productImage.contentMode = .center
         imageService.downloadAndCacheImageForImageView(productImage,
                                                        with: statsItem?.imageUrl,
                                                        placeholder: .productPlaceholderImage,
-                                                       progressBlock: nil,
-                                                       completion: nil)
+                                                       progressBlock: nil) { [weak productImage] (image, _) in
+                                                        guard image != nil else {
+                                                            return
+                                                        }
+                                                        productImage?.contentMode = .scaleAspectFill
+        }
+    }
+}
+
+/// Style Constants
+///
+private extension ProductTableViewCell {
+    enum ProductImage {
+        static let cornerRadius = CGFloat(2.0)
+        static let borderWidth = CGFloat(0.5)
+        static let borderColor = UIColor.border
+        static let backgroundColor = UIColor.systemColor(.systemGray6)
     }
 }

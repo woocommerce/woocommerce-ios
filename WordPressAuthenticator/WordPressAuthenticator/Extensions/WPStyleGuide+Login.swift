@@ -20,7 +20,7 @@ extension WPStyleGuide {
         static let textButtonMinHeight: CGFloat = 40.0
         static let googleIconOffset: CGFloat = -1.0
         static let googleIconButtonSize: CGFloat = 15.0
-        static let appleIconSizeModifier: CGFloat = 0.8
+        static let appleIconSizeModifier: CGFloat = 0.66
         static let domainsIconPaddingToRemove: CGFloat = 2.0
         static let domainsIconSize = CGSize(width: 18, height: 18)
         static let verticalLabelSpacing: CGFloat = 10.0
@@ -153,7 +153,7 @@ extension WPStyleGuide {
                                             width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
 
             let buttonString = NSMutableAttributedString(attachment: googleAttachment)
-            let googleTitle = NSLocalizedString(" Continue with Google", comment: "Button title. Tapping begins log in using Google. There is a leading space to separate it from the Google logo.")
+            let googleTitle = NSLocalizedString("  Continue with Google", comment: "Button title. Tapping begins log in using Google. There are leading spaces to separate it from the Google logo.")
             buttonString.append(NSAttributedString(string: googleTitle))
 
             return buttonString
@@ -172,14 +172,14 @@ extension WPStyleGuide {
         
         let imageSize = CGSize(width: appleIcon.size.width * Constants.appleIconSizeModifier,
                                height: appleIcon.size.height * Constants.appleIconSizeModifier)
-        
+
         appleAttachment.bounds = CGRect(x: 0, y: (NUXButton.titleFont.capHeight - imageSize.height) / 2,
                                         width: imageSize.width, height: imageSize.height)
-        
+
         let buttonString = NSMutableAttributedString(attachment: appleAttachment)
-        let appleTitle = NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple.")
+        let appleTitle = NSLocalizedString(" Continue with Apple", comment: "Button title. Tapping begins log in using Apple. There is a leading space to separate it from the Apple logo.")
         buttonString.append(NSAttributedString(string: appleTitle))
-        
+
         return buttonString
     }
     

@@ -12,13 +12,15 @@ private struct NUXButtonConfig {
 
     let title: String?
     let attributedTitle: NSAttributedString?
+    let socialService: SocialServiceName?
     let isPrimary: Bool
     let accessibilityIdentifier: String?
     let callback: CallBackType?
 
-    init(title: String? = nil, attributedTitle: NSAttributedString? = nil, isPrimary: Bool, accessibilityIdentifier: String? = nil, callback: CallBackType?) {
+    init(title: String? = nil, attributedTitle: NSAttributedString? = nil, socialService: SocialServiceName? = nil, isPrimary: Bool, accessibilityIdentifier: String? = nil, callback: CallBackType?) {
         self.title = title
         self.attributedTitle = attributedTitle
+        self.socialService = socialService
         self.isPrimary = isPrimary
         self.accessibilityIdentifier = accessibilityIdentifier
         self.callback = callback
@@ -66,10 +68,11 @@ open class NUXButtonViewController: UIViewController {
             
             if let attributedTitle = buttonConfig.attributedTitle {
                 button.setAttributedTitle(attributedTitle, for: .normal)
+                button.socialService = buttonConfig.socialService
             } else {
                 button.setTitle(buttonConfig.title, for: .normal)
             }
-            
+
             button.accessibilityIdentifier = buttonConfig.accessibilityIdentifier ?? accessibilityIdentifier(for: buttonConfig.title)
             button.isPrimary = buttonConfig.isPrimary
             button.isHidden = false

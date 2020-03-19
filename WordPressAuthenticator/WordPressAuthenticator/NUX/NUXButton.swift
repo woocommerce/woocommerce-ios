@@ -1,6 +1,7 @@
 import UIKit
 import WordPressShared
 import WordPressUI
+import WordPressKit
 
 /// A stylized button used by Login controllers. It also can display a `UIActivityIndicatorView`.
 @objc open class NUXButton: UIButton {
@@ -48,6 +49,10 @@ import WordPressUI
         super.tintColorDidChange()
         configureBackgrounds()
         configureTitleColors()
+        
+        if socialService == .apple {
+            setAttributedTitle(WPStyleGuide.formattedAppleString(), for: .normal)
+        }
     }
 
 
@@ -81,6 +86,7 @@ import WordPressUI
         }
     }
 
+    var socialService: SocialServiceName?
 
     // MARK: - LifeCycle Methods
 

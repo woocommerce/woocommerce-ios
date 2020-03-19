@@ -308,7 +308,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
                 if let error = error {
                     DDLogError("⛔️ Error synchronizing orders: \(error)")
-                    self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
+                    self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
                 } else {
                     ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
                 }
@@ -383,7 +383,7 @@ private extension OrdersViewController {
 
     /// Displays the Error Notice.
     ///
-    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int) {
+    func displaySyncingErrorNotice(pageNumber: Int, pageSize: Int, reason: String?) {
         let message = NSLocalizedString("Unable to refresh list", comment: "Refresh Action Failed")
         let actionTitle = NSLocalizedString("Retry", comment: "Retry Action")
         let notice = Notice(title: message, feedbackType: .error, actionTitle: actionTitle) { [weak self] in
@@ -392,7 +392,7 @@ private extension OrdersViewController {
             }
 
             self.delegate?.ordersViewControllerWillSynchronizeOrders(self)
-            self.sync(pageNumber: pageNumber, pageSize: pageSize)
+            self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason)
         }
 
         ServiceLocator.noticePresenter.enqueue(notice: notice)

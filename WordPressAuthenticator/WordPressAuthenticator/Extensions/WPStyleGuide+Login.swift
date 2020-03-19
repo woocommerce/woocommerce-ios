@@ -17,13 +17,10 @@ final class SubheadlineButton: UIButton {
 extension WPStyleGuide {
 
     private struct Constants {
-        // This matches the button height in NUXButtonView.storyboard
-        static let buttonMinHeight: CGFloat = 50.0
-
         static let textButtonMinHeight: CGFloat = 40.0
-        static let googleIconHyperlinkOffset: CGFloat = -1.0
-        static let googleIconButtonOffset: CGFloat = -2.0
+        static let googleIconOffset: CGFloat = -1.0
         static let googleIconButtonSize: CGFloat = 15.0
+        static let appleIconSizeModifier: CGFloat = 0.8
         static let domainsIconPaddingToRemove: CGFloat = 2.0
         static let domainsIconSize = CGSize(width: 18, height: 18)
         static let verticalLabelSpacing: CGFloat = 10.0
@@ -145,17 +142,15 @@ extension WPStyleGuide {
             // Create an attributed string that contains the Google icon.
             let font = WPStyleGuide.mediumWeightFont(forStyle: .subheadline)
             googleAttachment.bounds = CGRect(x: 0,
-                                             y: font.descender + Constants.googleIconHyperlinkOffset,
+                                             y: font.descender + Constants.googleIconOffset,
                                              width: googleIcon.size.width,
                                              height: googleIcon.size.height)
 
             return NSAttributedString(attachment: googleAttachment)
         } else {
             // Create an attributed string that contains the Google icon + button text.
-            googleAttachment.bounds = CGRect(x: 0,
-                                             y: Constants.googleIconButtonOffset,
-                                             width: Constants.googleIconButtonSize,
-                                             height: Constants.googleIconButtonSize)
+            googleAttachment.bounds = CGRect(x: 0, y: (NUXButton.titleFont.capHeight - Constants.googleIconButtonSize) / 2,
+                                            width: Constants.googleIconButtonSize, height: Constants.googleIconButtonSize)
 
             let buttonString = NSMutableAttributedString(attachment: googleAttachment)
             let googleTitle = NSLocalizedString(" Continue with Google", comment: "Button title. Tapping begins log in using Google. There is a leading space to separate it from the Google logo.")
@@ -165,23 +160,27 @@ extension WPStyleGuide {
         }
     }
     
-    /// Creates a button for Apple Sign-in
+    /// Creates an attributed string that includes the Apple logo.
     ///
-    /// - Returns: A properly styled UIControl
+    /// - Returns: A properly styled NSAttributedString to be displayed on a NUXButton.
     ///
-    
-    class func appleLoginButton() -> UIControl {
-        if #available(iOS 13.0, *) {
-            let traits = UITraitCollection.current
-            let buttonStyle: ASAuthorizationAppleIDButton.Style = (traits.userInterfaceStyle == .dark) ? .white : .black
-
-            let appleButton = ASAuthorizationAppleIDButton(authorizationButtonType: .continue, authorizationButtonStyle: buttonStyle)
-            appleButton.translatesAutoresizingMaskIntoConstraints = false
-            appleButton.heightAnchor.constraint(greaterThanOrEqualToConstant: Constants.buttonMinHeight).isActive = true
-            return appleButton
-        }
+    class func formattedAppleString() -> NSAttributedString {
         
-        return UIControl()
+        let appleAttachment = NSTextAttachment()
+        let appleIcon = UIImage.appleIcon
+        appleAttachment.image = appleIcon
+        
+        let imageSize = CGSize(width: appleIcon.size.width * Constants.appleIconSizeModifier,
+                               height: appleIcon.size.height * Constants.appleIconSizeModifier)
+        
+        appleAttachment.bounds = CGRect(x: 0, y: (NUXButton.titleFont.capHeight - imageSize.height) / 2,
+                                        width: imageSize.width, height: imageSize.height)
+        
+        let buttonString = NSMutableAttributedString(attachment: appleAttachment)
+        let appleTitle = NSLocalizedString("Continue with Apple", comment: "Button title. Tapping begins log in using Apple.")
+        buttonString.append(NSAttributedString(string: appleTitle))
+        
+        return buttonString
     }
     
     /// Creates a button for Self-hosted Login

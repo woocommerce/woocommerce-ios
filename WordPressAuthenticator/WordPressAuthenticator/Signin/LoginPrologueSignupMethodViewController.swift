@@ -69,9 +69,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
 
         if WordPressAuthenticator.shared.configuration.enableSignInWithApple {
             if #available(iOS 13.0, *) {
-                let appleButton = WPStyleGuide.appleLoginButton()
-                appleButton.addTarget(self, action: #selector(handleAppleButtonTapped), for: .touchDown)
-                buttonViewController.stackView?.insertArrangedSubview(appleButton, at: 3)
+                buttonViewController.setupTertiaryButtonFor(socialService: .apple, onTap: handleAppleButtonTapped)
             }
         }
 

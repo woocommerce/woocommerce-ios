@@ -60,7 +60,11 @@ final class PriceInputFormatterTests: XCTestCase {
     }
 
     func testFormattingInputWithLeadingZeros() {
-        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 3)
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
         let formatter = PriceInputFormatter(currencySettings: currencySettings)
 
         let input = "00123.91"
@@ -68,7 +72,11 @@ final class PriceInputFormatterTests: XCTestCase {
     }
 
     func testFormattingDecimalInputWithPoint() {
-        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 3)
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
         let formatter = PriceInputFormatter(currencySettings: currencySettings)
 
         let input = "0.314"
@@ -76,7 +84,11 @@ final class PriceInputFormatterTests: XCTestCase {
     }
 
     func testFormattingDecimalInputWithComma() {
-        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 3)
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
         let formatter = PriceInputFormatter(currencySettings: currencySettings)
 
         let input = "0,314"
@@ -89,7 +101,11 @@ final class PriceInputFormatterTests: XCTestCase {
     }
 
     func testFormattingBigPriceInput() {
-        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: "", decimalSeparator: ".", numberOfDecimals: 3)
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
         let formatter = PriceInputFormatter(currencySettings: currencySettings)
 
         let input = "189293891203.20"
@@ -97,7 +113,11 @@ final class PriceInputFormatterTests: XCTestCase {
     }
 
     func testFormattingBigPriceInputWithThousandSeparators() {
-        let currencySettings = CurrencySettings(currencyCode: .USD, currencyPosition: .leftSpace, thousandSeparator: ",", decimalSeparator: ".", numberOfDecimals: 3)
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .leftSpace,
+                                                thousandSeparator: "",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 3)
         let formatter = PriceInputFormatter(currencySettings: currencySettings)
 
         let input = "189,293,891,203.20"

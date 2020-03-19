@@ -261,6 +261,7 @@
 		57C503DC23E8C70C00EC0790 /* OrdersMasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DB23E8C70C00EC0790 /* OrdersMasterViewController.swift */; };
 		57C503DE23E8CE0D00EC0790 /* OrdersMasterViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */; };
 		57C503E023E8D4D600EC0790 /* OrdersMasterViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */; };
+		57F34AA12423D45A00E38AFB /* OrdersViewModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 57F34AA02423D45A00E38AFB /* OrdersViewModelTests.swift */; };
 		74036CC0211B882100E462C2 /* PeriodDataViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74036CBF211B882100E462C2 /* PeriodDataViewController.swift */; };
 		740382DB2267D94100A627F4 /* LargeImageTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */; };
 		740382DC2267D94100A627F4 /* LargeImageTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 740382DA2267D94100A627F4 /* LargeImageTableViewCell.xib */; };
@@ -1015,6 +1016,7 @@
 		57C503DB23E8C70C00EC0790 /* OrdersMasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersMasterViewController.swift; sourceTree = "<group>"; };
 		57C503DD23E8CE0D00EC0790 /* OrdersMasterViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = OrdersMasterViewController.xib; sourceTree = "<group>"; };
 		57C503DF23E8D4D600EC0790 /* OrdersMasterViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersMasterViewModel.swift; sourceTree = "<group>"; };
+		57F34AA02423D45A00E38AFB /* OrdersViewModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OrdersViewModelTests.swift; sourceTree = "<group>"; };
 		6DC4526F9A7357761197EBF0 /* Pods_WooCommerceTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WooCommerceTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		74036CBF211B882100E462C2 /* PeriodDataViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodDataViewController.swift; sourceTree = "<group>"; };
 		740382D92267D94100A627F4 /* LargeImageTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LargeImageTableViewCell.swift; sourceTree = "<group>"; };
@@ -2040,6 +2042,14 @@
 				45FBDF3B238D4EA800127F77 /* ExtendedAddProductImageCollectionViewCellTests.swift */,
 			);
 			path = "Collection View Cells";
+			sourceTree = "<group>";
+		};
+		57F34A9F2423D44000E38AFB /* Orders */ = {
+			isa = PBXGroup;
+			children = (
+				57F34AA02423D45A00E38AFB /* OrdersViewModelTests.swift */,
+			);
+			path = Orders;
 			sourceTree = "<group>";
 		};
 		74036CBE211B87FD00E462C2 /* MyStore */ = {
@@ -3259,6 +3269,7 @@
 		D816DDBA22265D8000903E59 /* ViewRelated */ = {
 			isa = PBXGroup;
 			children = (
+				57F34A9F2423D44000E38AFB /* Orders */,
 				0290E27C238E5B4A00B5C466 /* ListSelector */,
 				0227958E237A5D5200787C63 /* Editor */,
 				0269576B237263F3001BA0BF /* Keyboard */,
@@ -4380,6 +4391,7 @@
 				020BE76D23B4A404007FE54C /* AztecStrikethroughFormatBarCommandTests.swift in Sources */,
 				02404EE02314FE5900FF1170 /* DashboardUIFactoryTests.swift in Sources */,
 				D8F82AC522AF903700B67E4B /* IconsTests.swift in Sources */,
+				57F34AA12423D45A00E38AFB /* OrdersViewModelTests.swift in Sources */,
 				02A275C623FE9EFC005C560F /* MockFeatureFlagService.swift in Sources */,
 				B517EA1A218B2D2600730EC4 /* StringFormatterTests.swift in Sources */,
 				45B9C64523A945C0007FC4C5 /* PriceInputFormatterTests.swift in Sources */,

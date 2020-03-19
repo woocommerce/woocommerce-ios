@@ -292,10 +292,7 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
 
-        let action = OrderAction.synchronizeOrders(siteID: siteID,
-                                                   statusKey: statusFilter?.slug,
-                                                   pageNumber: pageNumber,
-                                                   pageSize: pageSize) { [weak self] error in
+        let completionHandler: (Error?) -> Void = { [weak self] error in
             guard let self = self else {
                 return
             }
@@ -310,6 +307,30 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
             self.transitionToResultsUpdatedState()
             onCompletion?(error == nil)
         }
+
+        let action: OrderAction = {
+            let statusKey = statusFilter?.slug
+
+            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex, let statusKey = statusKey {
+                let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh.rawValue
+
+                return OrderAction.fetchFilteredAndAllOrders(
+                    siteID: siteID,
+                    statusKey: statusKey,
+                    deleteAllBeforeSaving: deleteAllBeforeSaving,
+                    pageSize: pageSize,
+                    onCompletion: completionHandler
+                )
+            }
+
+            return OrderAction.synchronizeOrders(
+                siteID: siteID,
+                statusKey: statusKey,
+                pageNumber: pageNumber,
+                pageSize: pageSize,
+                onCompletion: completionHandler
+            )
+        }()
 
         ServiceLocator.stores.dispatch(action)
     }

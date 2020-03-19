@@ -327,7 +327,11 @@ extension MainTabBarController {
             guard let note = note else {
                 return
             }
-            presentNotificationDetails(for: note)
+            let siteID = note.meta.identifier(forKey: .site) ?? Int.min
+            StorePickerCoordinator.switchStore(with: Int64(siteID)) {
+                presentNotificationDetails(for: note)
+                print("entra qui")
+            }
         }
         ServiceLocator.stores.dispatch(action)
     }

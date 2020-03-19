@@ -272,7 +272,7 @@ extension OrdersViewController {
     @objc func pullToRefresh(sender: UIRefreshControl) {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.ordersViewControllerWillSynchronizeOrders(self)
-        syncingCoordinator.synchronizeFirstPage {
+        syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }
     }
@@ -618,6 +618,9 @@ extension OrdersViewController: IndicatorInfoProvider {
 // MARK: - Nested Types
 //
 private extension OrdersViewController {
+    enum SyncReason: String {
+        case pullToRefresh = "pull_to_refresh"
+    }
 
     enum Settings {
         static let estimatedHeaderHeight = CGFloat(43)

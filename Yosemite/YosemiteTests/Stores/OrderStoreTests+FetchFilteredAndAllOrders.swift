@@ -43,7 +43,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // The previously saved order should be deleted
         XCTAssertNil(findOrder(withID: Fixtures.order.orderID))
         // There should be records saved from the GET /orders query
-        XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.expectedOrdersCount)
+        XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount)
     }
 
     func testItCanSkipDeletingAllOrdersBeforeSaving() {
@@ -62,7 +62,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // The previously saved order should still be there
         XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
         // There should be records saved from the GET /orders query
-        XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.expectedOrdersCount + 1)
+        XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount + 1)
     }
 }
 
@@ -109,11 +109,11 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
 // MARK: - Fixtures
 
 private enum Fixtures {
-    /// Properties for the orders-load-all.json
+    /// Information about the orders-load-all.json
     ///
     static let ordersLoadAllJSON = (
         fileName: "orders-load-all",
-        expectedOrdersCount: 4
+        ordersCount: 4
     )
 
     static let siteID: Int64 = 1_987

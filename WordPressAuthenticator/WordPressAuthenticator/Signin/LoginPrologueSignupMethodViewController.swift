@@ -73,7 +73,7 @@ class LoginPrologueSignupMethodViewController: NUXViewController {
             }
         }
 
-        buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+        buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.buttonViewBackgroundColor
     }
 
     @IBAction func dismissTapped() {

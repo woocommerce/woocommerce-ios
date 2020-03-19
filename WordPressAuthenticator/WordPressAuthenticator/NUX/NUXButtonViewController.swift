@@ -57,9 +57,8 @@ open class NUXButtonViewController: UIViewController {
         configure(button: bottomButton, withConfig: bottomButtonConfig)
         configure(button: topButton, withConfig: topButtonConfig)
         configure(button: tertiaryButton, withConfig: tertiaryButtonConfig)
-        if let bgColor = backgroundColor, let holder = buttonHolder {
-            holder.backgroundColor = bgColor
-        }
+        
+        buttonHolder?.backgroundColor = backgroundColor
     }
 
     private func configure(button: NUXButton?, withConfig buttonConfig: NUXButtonConfig?) {

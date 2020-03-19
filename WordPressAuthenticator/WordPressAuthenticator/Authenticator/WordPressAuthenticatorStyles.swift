@@ -59,6 +59,9 @@ public struct WordPressAuthenticatorStyle {
 
     public let textFieldBackgroundColor: UIColor
 
+    // If not specified, falls back to viewControllerBackgroundColor.
+    public let buttonViewBackgroundColor: UIColor
+
     /// Style: nav bar
     ///
     public let navBarImage: UIImage
@@ -79,7 +82,7 @@ public struct WordPressAuthenticatorStyle {
 
     /// Designated initializer
     ///
-    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor?, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor?, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, textButtonColor: UIColor, textButtonHighlightColor: UIColor, instructionColor: UIColor, subheadlineColor: UIColor, placeholderColor: UIColor, viewControllerBackgroundColor: UIColor, textFieldBackgroundColor: UIColor, navBarImage: UIImage, navBarBadgeColor: UIColor, prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(), prologueTitleColor: UIColor = .white, statusBarStyle: UIStatusBarStyle = .lightContent) {
+    public init(primaryNormalBackgroundColor: UIColor, primaryNormalBorderColor: UIColor?, primaryHighlightBackgroundColor: UIColor, primaryHighlightBorderColor: UIColor?, secondaryNormalBackgroundColor: UIColor, secondaryNormalBorderColor: UIColor, secondaryHighlightBackgroundColor: UIColor, secondaryHighlightBorderColor: UIColor, disabledBackgroundColor: UIColor, disabledBorderColor: UIColor, primaryTitleColor: UIColor, secondaryTitleColor: UIColor, disabledTitleColor: UIColor, textButtonColor: UIColor, textButtonHighlightColor: UIColor, instructionColor: UIColor, subheadlineColor: UIColor, placeholderColor: UIColor, viewControllerBackgroundColor: UIColor, textFieldBackgroundColor: UIColor, buttonViewBackgroundColor: UIColor? = nil, navBarImage: UIImage, navBarBadgeColor: UIColor, prologueBackgroundColor: UIColor = WPStyleGuide.wordPressBlue(), prologueTitleColor: UIColor = .white, statusBarStyle: UIStatusBarStyle = .lightContent) {
         self.primaryNormalBackgroundColor = primaryNormalBackgroundColor
         self.primaryNormalBorderColor = primaryNormalBorderColor
         self.primaryHighlightBackgroundColor = primaryHighlightBackgroundColor
@@ -100,6 +103,7 @@ public struct WordPressAuthenticatorStyle {
         self.placeholderColor = placeholderColor
         self.viewControllerBackgroundColor = viewControllerBackgroundColor
         self.textFieldBackgroundColor = textFieldBackgroundColor
+        self.buttonViewBackgroundColor = buttonViewBackgroundColor ?? viewControllerBackgroundColor
         self.navBarImage = navBarImage
         self.navBarBadgeColor = navBarBadgeColor
         self.prologueBackgroundColor = prologueBackgroundColor

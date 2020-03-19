@@ -59,8 +59,8 @@ class LoginPrologueLoginMethodViewController: NUXViewController {
                 buttonViewController.setupTertiaryButtonFor(socialService: .apple, onTap: handleAppleButtonTapped)
             }
         }
-        
-        buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.viewControllerBackgroundColor
+
+        buttonViewController.backgroundColor = WordPressAuthenticator.shared.style.buttonViewBackgroundColor
     }
 
     @IBAction func dismissTapped() {

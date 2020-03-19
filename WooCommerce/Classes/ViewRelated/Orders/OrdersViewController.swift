@@ -8,6 +8,8 @@ import StoreKit
 // Used for protocol conformance of IndicatorInfoProvider only.
 import XLPagerTabStrip
 
+private typealias SyncReason = OrdersViewModel.SyncReason
+
 protocol OrdersViewControllerDelegate: class {
     /// Called when `OrdersViewController` is about to fetch Orders from the API.
     ///
@@ -639,9 +641,6 @@ extension OrdersViewController: IndicatorInfoProvider {
 // MARK: - Nested Types
 //
 private extension OrdersViewController {
-    enum SyncReason: String {
-        case pullToRefresh = "pull_to_refresh"
-    }
 
     enum Settings {
         static let estimatedHeaderHeight = CGFloat(43)

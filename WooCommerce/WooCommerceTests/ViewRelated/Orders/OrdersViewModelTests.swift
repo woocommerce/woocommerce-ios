@@ -10,7 +10,6 @@ private typealias Defaults = OrdersViewModel.Defaults
 final class OrdersViewModelTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000
-    /// The `pageSize` value doesn't matter.
     private let pageSize = 50
 
     private let unimportantCompletionHandler: ((Error?) -> Void) = { _ in
@@ -126,5 +125,53 @@ final class OrdersViewModelTests: XCTestCase {
 
         XCTAssertFalse(deleteAllBeforeSaving, "Existing orders will not be deleted")
         XCTAssertNil(statusKey, "No filtered list will be fetched.")
+    }
+
+    func testSubsequentPageLoadsOnFilteredListWillFetchTheGivenPageOnThatList() {
+        // Arrange
+        let viewModel = OrdersViewModel()
+
+        // Act
+        let action = viewModel.synchronizationAction(
+            siteID: siteID,
+            statusKey: OrderStatusEnum.pending.rawValue,
+            pageNumber: Defaults.pageFirstIndex + 3,
+            pageSize: pageSize,
+            reason: nil,
+            completionHandler: unimportantCompletionHandler)
+
+        // Assert
+        guard case .synchronizeOrders(_, let statusKey, let pageNumber, let pageSize, _) = action else {
+            XCTFail("Unexpected OrderAction type: \(action)")
+            return
+        }
+
+        XCTAssertEqual(statusKey, OrderStatusEnum.pending.rawValue)
+        XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 3)
+        XCTAssertEqual(pageSize, self.pageSize)
+    }
+
+    func testSubsequentPageLoadsOnAllOrdersListWillFetchTheGivenPageOnThatList() {
+        // Arrange
+        let viewModel = OrdersViewModel()
+
+        // Act
+        let action = viewModel.synchronizationAction(
+            siteID: siteID,
+            statusKey: nil,
+            pageNumber: Defaults.pageFirstIndex + 5,
+            pageSize: pageSize,
+            reason: nil,
+            completionHandler: unimportantCompletionHandler)
+
+        // Assert
+        guard case .synchronizeOrders(_, let statusKey, let pageNumber, let pageSize, _) = action else {
+            XCTFail("Unexpected OrderAction type: \(action)")
+            return
+        }
+
+        XCTAssertNil(statusKey, "Orders of any type will be loaded.")
+        XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 5)
+        XCTAssertEqual(pageSize, self.pageSize)
     }
 }

@@ -28,6 +28,8 @@ import WordPressUI
         return indicator
     }()
 
+    static let titleFont = WPStyleGuide.mediumWeightFont(forStyle: .title3)
+    
     override open func layoutSubviews() {
         super.layoutSubviews()
 
@@ -103,16 +105,9 @@ import WordPressUI
     /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]
     ///
     private func configureAppearance() {
-        configureInsets()
         configureBackgrounds()
         configureTitleColors()
         configureTitleLabel()
-    }
-
-    /// Setup: NUXButton's Default Settings
-    ///
-    private func configureInsets() {
-        contentEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
     }
 
     /// Setup: BackgroundImage
@@ -150,7 +145,7 @@ import WordPressUI
     /// Setup: TitleLabel
     ///
     private func configureTitleLabel() {
-        titleLabel?.font = WPFontManager.systemSemiBoldFont(ofSize: 17.0)
+        titleLabel?.font = NUXButton.titleFont
         titleLabel?.adjustsFontForContentSizeCategory = true
         titleLabel?.textAlignment = .center
     }
@@ -164,9 +159,5 @@ extension NUXButton {
         if previousTraitCollection?.preferredContentSizeCategory != traitCollection.preferredContentSizeCategory {
             didChangePreferredContentSize()
         }
-    }
-
-    private struct Metrics {
-        static let maxFontSize = CGFloat(22)
     }
 }

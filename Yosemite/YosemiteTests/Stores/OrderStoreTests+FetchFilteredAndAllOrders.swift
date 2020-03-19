@@ -18,7 +18,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockupStorageManager()
-        network = MockupNetwork()
+        network = MockupNetwork(useResponseQueue: true)
     }
 
     override func tearDown() {

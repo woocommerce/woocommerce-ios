@@ -12,7 +12,7 @@ struct AztecFormatBarFactory {
         toolbar.selectedTintColor = .primary
         toolbar.disabledTintColor = .textTertiary
         toolbar.dividerTintColor = .divider
-        toolbar.overflowToggleIcon = Gridicon.iconOfType(.ellipsis)
+        toolbar.overflowToggleIcon = UIImage.gridicon(.ellipsis)
         toolbar.backgroundColor = .systemColor(.secondarySystemBackground)
 
         updateToolbar(toolbar)

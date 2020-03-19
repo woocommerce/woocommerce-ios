@@ -298,7 +298,7 @@ extension WPStyleGuide {
 
         let labelString = NSMutableAttributedString(string: "")
 
-        if let originalDomainsIcon = Gridicon.iconOfType(.domains).imageWithTintColor(WordPressAuthenticator.shared.style.placeholderColor) {
+        if let originalDomainsIcon = UIImage.gridicon(.domains).imageWithTintColor(WordPressAuthenticator.shared.style.placeholderColor) {
             var domainsIcon = originalDomainsIcon.cropping(to: CGRect(x: Constants.domainsIconPaddingToRemove,
                                                                       y: Constants.domainsIconPaddingToRemove,
                                                                       width: originalDomainsIcon.size.width - Constants.domainsIconPaddingToRemove * 2,

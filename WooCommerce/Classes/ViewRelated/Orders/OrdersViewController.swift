@@ -22,6 +22,8 @@ class OrdersViewController: UIViewController {
 
     weak var delegate: OrdersViewControllerDelegate?
 
+    private lazy var viewModel = OrdersViewModel()
+
     /// Main TableView.
     ///
     @IBOutlet private var tableView: UITableView!
@@ -294,45 +296,26 @@ extension OrdersViewController: SyncingCoordinatorDelegate {
 
         transitionToSyncingState()
 
-        let completionHandler: (Error?) -> Void = { [weak self] error in
-            guard let self = self else {
-                return
-            }
+        let action = viewModel.synchronizationAction(
+            siteID: siteID,
+            statusKey: statusFilter?.slug,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            reason: SyncReason(rawValue: reason ?? "")) { [weak self] error in
+                guard let self = self else {
+                    return
+                }
 
-            if let error = error {
-                DDLogError("⛔️ Error synchronizing orders: \(error)")
-                self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
-            } else {
-                ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
-            }
+                if let error = error {
+                    DDLogError("⛔️ Error synchronizing orders: \(error)")
+                    self.displaySyncingErrorNotice(pageNumber: pageNumber, pageSize: pageSize)
+                } else {
+                    ServiceLocator.analytics.track(.ordersListLoaded, withProperties: ["status": self.statusFilter?.slug ?? String()])
+                }
 
-            self.transitionToResultsUpdatedState()
-            onCompletion?(error == nil)
+                self.transitionToResultsUpdatedState()
+                onCompletion?(error == nil)
         }
-
-        let action: OrderAction = {
-            let statusKey = statusFilter?.slug
-
-            if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex, let statusKey = statusKey {
-                let deleteAllBeforeSaving = reason == SyncReason.pullToRefresh.rawValue
-
-                return OrderAction.fetchFilteredAndAllOrders(
-                    siteID: siteID,
-                    statusKey: statusKey,
-                    deleteAllBeforeSaving: deleteAllBeforeSaving,
-                    pageSize: pageSize,
-                    onCompletion: completionHandler
-                )
-            }
-
-            return OrderAction.synchronizeOrders(
-                siteID: siteID,
-                statusKey: statusKey,
-                pageNumber: pageNumber,
-                pageSize: pageSize,
-                onCompletion: completionHandler
-            )
-        }()
 
         ServiceLocator.stores.dispatch(action)
     }

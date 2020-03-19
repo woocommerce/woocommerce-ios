@@ -22,10 +22,10 @@ target 'WooCommerce' do
   #pod 'Automattic-Tracks-iOS', :git => 'https://github.com/Automattic/Automattic-Tracks-iOS.git', :tag => '0.2.4-beta.1'
   pod 'Automattic-Tracks-iOS', '~> 0.4.4-beta'
 
-  pod 'Gridicons', '~> 0.20-beta'
+  pod 'Gridicons', '~> 1.0-beta'
 
   # To allow pod to pick up beta versions use -beta. E.g., 1.1.7-beta.1
-  pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :branch => 'issue/204-remove-showLoginEmail'
+  pod 'WordPressAuthenticator', :git => 'https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git', :commit => '6a5018eb50fdc6a627c0ed7691798e07bb8a517d' #:branch => 'issue/204-remove-showLoginEmail'
   #pod 'WordPressAuthenticator', '~> 1.11.0-beta.14'
 
   # pod 'WordPressShared', :git => 'https://github.com/wordpress-mobile/WordPress-iOS-Shared.git', :branch => 'task/support-swift-5'  

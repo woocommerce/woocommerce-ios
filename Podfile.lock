@@ -91,17 +91,17 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.4.4-beta.2)
+  - Automattic-Tracks-iOS (~> 0.4.4-beta)
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
-  - Gridicons (~> 0.20-beta.1)
+  - Gridicons (~> 0.20-beta)
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
   - WordPress-Editor-iOS (~> 1.11.0)
   - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/204-remove-showLoginEmail`)
-  - WordPressShared (~> 1.8.16-beta.1)
-  - WordPressUI (~> 1.5.2-beta.1)
+  - WordPressShared (~> 1.8.16-beta)
+  - WordPressUI (~> 1.5.2-beta)
   - Wormholy (~> 1.5.1)
   - WPMediaPicker (~> 1.6.0)
   - XLPagerTabStrip (~> 9.0)
@@ -193,6 +193,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: a66f14dca777595e757464026fb4091fcb7a3af8
+PODFILE CHECKSUM: 5ebbb13c96d05d99a8541d94dad7d9eefee1c18c
 
 COCOAPODS: 1.9.1

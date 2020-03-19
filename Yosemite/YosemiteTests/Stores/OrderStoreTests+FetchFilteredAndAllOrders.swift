@@ -37,7 +37,9 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
 
         // Act
-        executeActionAndWait(using: createOrderStore(), deleteAllBeforeSaving: true)
+        executeActionAndWait(using: createOrderStore(),
+                             statusKey: OrderStatusEnum.processing.rawValue,
+                             deleteAllBeforeSaving: true)
 
         // Assert
         // The previously saved order should be deleted
@@ -56,7 +58,9 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
 
         // Act
-        executeActionAndWait(using: createOrderStore(), deleteAllBeforeSaving: false)
+        executeActionAndWait(using: createOrderStore(),
+                             statusKey: OrderStatusEnum.processing.rawValue,
+                             deleteAllBeforeSaving: false)
 
         // Assert
         // The previously saved order should still be there
@@ -71,11 +75,27 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAll2JSON.fileName)
 
         // Act
-        executeActionAndWait(using: createOrderStore(), deleteAllBeforeSaving: true)
+        executeActionAndWait(using: createOrderStore(),
+                             statusKey: OrderStatusEnum.completed.rawValue,
+                             deleteAllBeforeSaving: true)
 
         // Assert
         XCTAssertEqual(countOrders(),
                        Fixtures.ordersLoadAllJSON.ordersCount + Fixtures.ordersLoadAll2JSON.ordersCount)
+    }
+
+    func testWhenNotGivenAFilterItFetchesTheAllOrdersListOnly() {
+        // Arrange
+        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAll2JSON.fileName)
+
+        // Act
+        executeActionAndWait(using: createOrderStore(),
+                             statusKey: nil,
+                             deleteAllBeforeSaving: true)
+
+        // Assert
+        XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount)
     }
 }
 
@@ -86,12 +106,12 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
         OrderStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
     }
 
-    func executeActionAndWait(using store: OrderStore, deleteAllBeforeSaving: Bool) {
+    func executeActionAndWait(using store: OrderStore, statusKey: String?, deleteAllBeforeSaving: Bool) {
         let expectation = self.expectation(description: "fetch")
 
         let action = OrderAction.fetchFilteredAndAllOrders(
             siteID: Fixtures.siteID,
-            statusKey: OrderStatusEnum.processing.rawValue,
+            statusKey: statusKey,
             deleteAllBeforeSaving: deleteAllBeforeSaving,
             pageSize: 50) { _ in
                 expectation.fulfill()

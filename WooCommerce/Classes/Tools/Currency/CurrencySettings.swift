@@ -118,8 +118,6 @@ public class CurrencySettings {
         self.thousandSeparator = thousandSeparator
         self.decimalSeparator = decimalSeparator
         self.numberOfDecimals = numberOfDecimals
-
-        configureResultsController()
     }
 
 
@@ -132,6 +130,7 @@ public class CurrencySettings {
                   thousandSeparator: CurrencySettings.Default.thousandSeparator,
                   decimalSeparator: CurrencySettings.Default.decimalSeparator,
                   numberOfDecimals: CurrencySettings.Default.decimalPosition)
+        configureResultsController()
     }
 
     /// Convenience Initializer:

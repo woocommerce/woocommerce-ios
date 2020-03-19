@@ -34,6 +34,8 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .fetchFilteredAndAllOrders(let siteID, let statusKey, let deleteAllBeforeSaving, let pageSize, let onCompletion):
+            fetchFilteredAndAllOrders(siteID: siteID, statusKey: statusKey, deleteAllBeforeSaving: deleteAllBeforeSaving, pageSize: pageSize, onCompletion: onCompletion)
         case .synchronizeOrders(let siteID, let statusKey, let pageNumber, let pageSize, let onCompletion):
             synchronizeOrders(siteID: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let statusKey, let onCompletion):
@@ -74,6 +76,68 @@ private extension OrderStore {
             self?.upsertSearchResultsInBackground(keyword: keyword, readOnlyOrders: orders) {
                 onCompletion(nil)
             }
+        }
+    }
+
+    func fetchFilteredAndAllOrders(siteID: Int64,
+                                   statusKey: String,
+                                   deleteAllBeforeSaving: Bool,
+                                   pageSize: Int,
+                                   onCompletion: @escaping (Error?) -> Void) {
+
+        let remote = OrdersRemote(network: network)
+        let pageNumber = OrdersRemote.Defaults.pageNumber
+
+        var fetchErrors = [Error]()
+        var hasDeletedAllOrders = false
+        let serialQueue = DispatchQueue(label: "orders_sync", qos: .userInitiated)
+
+        let deleteAllOrdersOnce = {
+            guard hasDeletedAllOrders == false else {
+                return
+            }
+
+            DispatchQueue.main.sync { [weak self] in
+                self?.resetStoredOrders { }
+            }
+
+            hasDeletedAllOrders = true
+        }
+
+        let loadAllOrders: (String?, @escaping (() -> Void)) -> Void = { statusKey, completion in
+            remote.loadAllOrders(for: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize) { orders, error in
+                serialQueue.async { [weak self] in
+                    guard let self = self else {
+                        completion()
+                        return
+                    }
+
+                    if let orders = orders {
+                        if deleteAllBeforeSaving {
+                            deleteAllOrdersOnce()
+                        }
+
+                        self.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: completion)
+                    } else if let error = error {
+                        fetchErrors.append(error)
+                        completion()
+                    }
+                }
+            }
+        }
+
+        let group = DispatchGroup()
+        group.enter()
+        loadAllOrders(statusKey) {
+            group.leave()
+        }
+        group.enter()
+        loadAllOrders(OrdersRemote.Defaults.statusAny) {
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            onCompletion(fetchErrors.first)
         }
     }
 

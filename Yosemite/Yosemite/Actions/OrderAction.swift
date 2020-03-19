@@ -11,6 +11,14 @@ public enum OrderAction: Action {
     ///
     case searchOrders(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)
 
+    case fetchFilteredAndAllOrders(
+        siteID: Int64,
+        statusKey: String,
+        deleteAllBeforeSaving: Bool,
+        pageSize: Int,
+        onCompletion: (Error?) -> Void
+    )
+
     /// Synchronizes the Orders matching the specified criteria.
     ///
     case synchronizeOrders(siteID: Int64, statusKey: String?, pageNumber: Int, pageSize: Int, onCompletion: (Error?) -> Void)

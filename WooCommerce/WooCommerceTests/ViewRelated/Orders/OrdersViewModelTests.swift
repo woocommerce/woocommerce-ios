@@ -7,6 +7,8 @@ import Yosemite
 private typealias SyncReason = OrdersViewModel.SyncReason
 private typealias Defaults = OrdersViewModel.Defaults
 
+/// Tests for `OrdersViewModel`.
+///
 final class OrdersViewModelTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000
@@ -68,7 +70,7 @@ final class OrdersViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertFalse(deleteAllBeforeSaving, "Existing orders will not be deleted.")
+        XCTAssertFalse(deleteAllBeforeSaving)
         XCTAssertEqual(statusKey, OrderStatusEnum.processing.rawValue)
     }
 
@@ -96,7 +98,7 @@ final class OrdersViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertTrue(deleteAllBeforeSaving, "All existing orders will be deleted.")
+        XCTAssertTrue(deleteAllBeforeSaving)
         XCTAssertNil(statusKey, "No filtered list will be fetched.")
     }
 
@@ -123,7 +125,7 @@ final class OrdersViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertFalse(deleteAllBeforeSaving, "Existing orders will not be deleted")
+        XCTAssertFalse(deleteAllBeforeSaving)
         XCTAssertNil(statusKey, "No filtered list will be fetched.")
     }
 
@@ -170,7 +172,7 @@ final class OrdersViewModelTests: XCTestCase {
             return
         }
 
-        XCTAssertNil(statusKey, "Orders of any type will be loaded.")
+        XCTAssertNil(statusKey)
         XCTAssertEqual(pageNumber, Defaults.pageFirstIndex + 5)
         XCTAssertEqual(pageSize, self.pageSize)
     }

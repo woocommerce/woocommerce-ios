@@ -159,19 +159,19 @@ extension LoginSocialErrorViewController {
         switch index {
         case Buttons.tryEmail.rawValue:
             buttonText = NSLocalizedString("Try with another email", comment: "When social login fails, this button offers to let the user try again with a differen email address")
-            buttonIcon = Gridicon.iconOfType(.undo)
+            buttonIcon = .gridicon(.undo)
         case Buttons.tryAddress.rawValue:
             if loginFields.restrictToWPCom {
                 fallthrough
             } else {
                 buttonText = NSLocalizedString("Try with the site address", comment: "When social login fails, this button offers to let them try tp login using a URL")
-                buttonIcon = Gridicon.iconOfType(.domains)
+                buttonIcon = .gridicon(.domains)
             }
         case Buttons.signup.rawValue:
             fallthrough
         default:
             buttonText = NSLocalizedString("Sign up", comment: "When social login fails, this button offers to let them signup for a new WordPress.com account")
-            buttonIcon = Gridicon.iconOfType(.mySites)
+            buttonIcon = .gridicon(.mySites)
         }
         cell.textLabel?.text = buttonText
         cell.textLabel?.textColor = WPStyleGuide.darkGrey()

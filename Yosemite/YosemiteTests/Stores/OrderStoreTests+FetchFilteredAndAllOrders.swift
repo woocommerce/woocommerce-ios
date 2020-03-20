@@ -141,11 +141,9 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    @discardableResult
-    func insert(order: Networking.Order) -> Storage.Order {
+    func insert(order: Networking.Order) {
         let storageOrder = viewStorage.insertNewObject(ofType: Storage.Order.self)
         storageOrder.update(with: Fixtures.order)
-        return storageOrder
     }
 
     func findOrder(withID orderID: Int64) -> Storage.Order? {

@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-03-05 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-03-19 00:54:48+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ko_KR */
@@ -54,6 +54,9 @@
 /* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
 "99+" = "99+";
 
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "간단한 제품 요약문";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "인증 링크를 메일로 발송하려면 유효한 이메일 주소가 필요합니다. 이전 화면으로 돌아가서 유효한 이메일 주소를 입력하세요.";
 
@@ -102,8 +105,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "앱 상태를 검토하는 고급 도구";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "모든";
+/* Title for the second page in the Orders tab. */
+"All Orders" = "모든 주문";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "모든 리뷰가 읽음으로 표시됨";
@@ -230,7 +233,8 @@
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "제품을 업데이트할 수 없음";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "이미지를 업로드할 수 없습니다.";
 
 /* Catalog Visibility label in Product Settings */
@@ -498,12 +502,6 @@
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "비밀번호 관리자로 채우기";
-
-/* Filter the orders list. */
-"Filter orders" = "주문에 필터 적용";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "결제 상태별로 주문 목록에 필터를 적용합니다.";
 
 /* User role badge */
 "Follower" = "팔로워";
@@ -951,11 +949,8 @@
 "Ordered List" = "순서 있는 목록";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "주문";
-
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "주문: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "기타";
@@ -1044,6 +1039,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "이메일 앱을 열고 워드프레스닷컴에서 보낸 이메일을 찾으세요.";
 
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "다시 시도하세요.";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "이 제품을 회원님의 스토어에 게시하는 동안 기다려주세요...";
 
@@ -1066,6 +1064,9 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "비공개 메모";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "처리 중";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1177,9 +1178,6 @@
 
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "제거";
-
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "필터 제거";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "이미지 삭제";
@@ -1333,6 +1331,10 @@
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "배송 업체";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the Short Description row on Product main screen */
+"Short description" = "간단한 설명";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "이 주문에 대해 환불된 주문 항목 목록을 표시합니다.";

@@ -18,6 +18,7 @@ public enum OrderAction: Action {
     ///                  all orders list will be fetched. See `OrderStatusEnum` for possible values.
     ///     - deleteAllBeforeSaving: If true, all the orders in the db will be deleted before any
     ///                  order from the fetch requests will be saved.
+    ///
     case fetchFilteredAndAllOrders(
         siteID: Int64,
         statusKey: String?,

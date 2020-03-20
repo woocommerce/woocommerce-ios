@@ -79,6 +79,18 @@ private extension OrderStore {
         }
     }
 
+    /// Performs a dual fetch for the first pages of a filtered list and the all orders list.
+    ///
+    /// If `deleteAllBeforeSaving` is true, all the orders will be deleted before saving any newly
+    /// fetched `Order`. The deletion only happens once, regardless of the which fetch request
+    /// finishes first.
+    ///
+    /// The orders will only be deleted if one of the executed `GET` requests succeed.
+    ///
+    /// - Parameter statusKey The status to use for the filtered list. If this is not provided,
+    ///                       only the all orders list will be fetched. See `OrderStatusEnum`
+    ///                       for possible values.
+    ///
     func fetchFilteredAndAllOrders(siteID: Int64,
                                    statusKey: String?,
                                    deleteAllBeforeSaving: Bool,
@@ -88,15 +100,24 @@ private extension OrderStore {
         let remote = OrdersRemote(network: network)
         let pageNumber = OrdersRemote.Defaults.pageNumber
 
+        // Synchronous variables.
+        //
+        // The variables `fetchErrors` and `hasDeletedAllOrders` should only be accessed
+        // **inside** the `serialQueue` (e.g. `serialQueue.async()`). The only exception is in
+        // the `group.notify()` call below which only _reads_ `fetchErrors` and all the _writes_
+        // have finished.
         var fetchErrors = [Error]()
         var hasDeletedAllOrders = false
         let serialQueue = DispatchQueue(label: "orders_sync", qos: .userInitiated)
 
+        // Delete all the orders if we haven't yet.
+        // This should only be called inside a `serialQueue` block.
         let deleteAllOrdersOnce = {
             guard hasDeletedAllOrders == false else {
                 return
             }
 
+            // Use the main thread because `resetStoredOrders` uses `viewStorage`.
             DispatchQueue.main.sync { [weak self] in
                 self?.resetStoredOrders { }
             }
@@ -104,6 +125,7 @@ private extension OrderStore {
             hasDeletedAllOrders = true
         }
 
+        // The handler for both dual fetch requests.
         let loadAllOrders: (String?, @escaping (() -> Void)) -> Void = { statusKey, completion in
             remote.loadAllOrders(for: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize) { orders, error in
                 serialQueue.async { [weak self] in
@@ -126,7 +148,7 @@ private extension OrderStore {
             }
         }
 
-        // Perform dual fetch and wait for both of them to finish.
+        // Perform dual fetch and wait for both of them to finish before calling `onCompletion`.
         let group = DispatchGroup()
 
         if let statusKey = statusKey {

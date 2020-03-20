@@ -34,7 +34,7 @@ final class StorePickerCoordinator: Coordinator {
     func start() {
         showStorePicker()
     }
-    
+
     static func switchStore(with storeID: Int64, onCompletion: @escaping SelectStoreClosure) {
         guard storeID != ServiceLocator.stores.sessionManager.defaultStoreID else {
             onCompletion()
@@ -42,11 +42,11 @@ final class StorePickerCoordinator: Coordinator {
         }
 
         let storePicker = StorePickerCoordinator(UINavigationController(), config: .switchingStores)
-        
+
         storePicker.logOutOfCurrentStore {
             storePicker.finalizeStoreSelection(storeID)
             storePicker.presentStoreSwitchedNotice()
-            
+
             // Reload orders badge
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             onCompletion()

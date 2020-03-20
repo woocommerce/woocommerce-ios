@@ -9,6 +9,9 @@ protocol SyncingCoordinatorDelegate: class {
     /// The receiver is expected to synchronize the pageNumber. On completion, it should indicate if the sync was
     /// successful or not.
     ///
+    /// - Parameter reason A value passed from `resynchronize` or `synchronizeFirstPage`. This can
+    ///                    be used to decide how to perform the sync.
+    ///
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: ((Bool) -> Void)?)
 }
 
@@ -92,12 +95,20 @@ class SyncingCoordinator {
 
     /// Resets Internal State + (RE)synchronizes the first page in the collection.
     ///
+    /// - Parameter reason A value passed back to the `delegate`. This can be used to provide
+    ///                    additional information for the `delegate` and is not used internally
+    ///                    by `SyncCoordinator`.
+    ///
     func resynchronize(reason: String? = nil, onCompletion: (() -> Void)? = nil) {
         resetInternalState()
         synchronizeFirstPage(reason: reason, onCompletion: onCompletion)
     }
 
     /// Synchronizes the First Page in the collection.
+    ///
+    /// - Parameter reason A value passed back to the `delegate`. This can be used to provide
+    ///                    additional information for the `delegate` and is not used internally
+    ///                    by `SyncCoordinator`.
     ///
     func synchronizeFirstPage(reason: String? = nil, onCompletion: (() -> Void)? = nil) {
         synchronize(pageNumber: pageFirstIndex, reason: reason, onCompletion: onCompletion)

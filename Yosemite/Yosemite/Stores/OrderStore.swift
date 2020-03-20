@@ -35,7 +35,11 @@ public class OrderStore: Store {
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .fetchFilteredAndAllOrders(let siteID, let statusKey, let deleteAllBeforeSaving, let pageSize, let onCompletion):
-            fetchFilteredAndAllOrders(siteID: siteID, statusKey: statusKey, deleteAllBeforeSaving: deleteAllBeforeSaving, pageSize: pageSize, onCompletion: onCompletion)
+            fetchFilteredAndAllOrders(siteID: siteID,
+                                      statusKey: statusKey,
+                                      deleteAllBeforeSaving: deleteAllBeforeSaving,
+                                      pageSize: pageSize,
+                                      onCompletion: onCompletion)
         case .synchronizeOrders(let siteID, let statusKey, let pageNumber, let pageSize, let onCompletion):
             synchronizeOrders(siteID: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let statusKey, let onCompletion):

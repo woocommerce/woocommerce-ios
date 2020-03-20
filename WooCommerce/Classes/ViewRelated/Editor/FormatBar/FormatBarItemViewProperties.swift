@@ -14,49 +14,49 @@ extension FormattingIdentifier: FormatBarItemViewProperties {
     var iconImage: UIImage {
         switch self {
         case .media:
-            return Gridicon.iconOfType(.addOutline)
+            return UIImage.gridicon(.addOutline)
         case .p:
-            return Gridicon.iconOfType(.heading)
+            return UIImage.gridicon(.heading)
         case .bold:
-            return Gridicon.iconOfType(.bold)
+            return UIImage.gridicon(.bold)
         case .italic:
-            return Gridicon.iconOfType(.italic)
+            return UIImage.gridicon(.italic)
         case .underline:
-            return Gridicon.iconOfType(.underline)
+            return UIImage.gridicon(.underline)
         case .strikethrough:
-            return Gridicon.iconOfType(.strikethrough)
+            return UIImage.gridicon(.strikethrough)
         case .blockquote:
-            return Gridicon.iconOfType(.quote)
+            return UIImage.gridicon(.quote)
         case .orderedlist:
             if layoutDirection == .leftToRight {
-                return Gridicon.iconOfType(.listOrdered)
+                return UIImage.gridicon(.listOrdered)
             } else {
-                return Gridicon.iconOfType(.listOrderedRtl)
+                return UIImage.gridicon(.listOrderedRtl)
             }
         case .unorderedlist:
-            return Gridicon.iconOfType(.listUnordered).imageFlippedForRightToLeftLayoutDirection()
+            return UIImage.gridicon(.listUnordered).imageFlippedForRightToLeftLayoutDirection()
         case .link:
-            return Gridicon.iconOfType(.link)
+            return UIImage.gridicon(.link)
         case .horizontalruler:
-            return Gridicon.iconOfType(.minusSmall)
+            return UIImage.gridicon(.minusSmall)
         case .sourcecode:
-            return Gridicon.iconOfType(.code)
+            return UIImage.gridicon(.code)
         case .more:
-            return Gridicon.iconOfType(.readMore)
+            return UIImage.gridicon(.readMore)
         case .header1:
-            return Gridicon.iconOfType(.headingH1)
+            return UIImage.gridicon(.headingH1)
         case .header2:
-            return Gridicon.iconOfType(.headingH2)
+            return UIImage.gridicon(.headingH2)
         case .header3:
-            return Gridicon.iconOfType(.headingH3)
+            return UIImage.gridicon(.headingH3)
         case .header4:
-            return Gridicon.iconOfType(.headingH4)
+            return UIImage.gridicon(.headingH4)
         case .header5:
-            return Gridicon.iconOfType(.headingH5)
+            return UIImage.gridicon(.headingH5)
         case .header6:
-            return Gridicon.iconOfType(.headingH6)
+            return UIImage.gridicon(.headingH6)
         default:
-            return Gridicon.iconOfType(.help)
+            return UIImage.gridicon(.help)
         }
     }
 

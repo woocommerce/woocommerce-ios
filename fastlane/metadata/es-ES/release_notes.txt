@@ -1,2 +1,5 @@
-- En el escritorio, se abre la información del producto al tocar en “Mejor rendimiento”.
-- Ahora, en la pestaña de pedidos se localizan las cantidades de los artículos y la insignia del pedido.
+Para ofrecerte una visión más completa de tus ganancias, las estadísticas del escritorio ahora también incluyen ingresos negativos (por ejemplo: reembolsos).
+
+- Hemos rediseñado la lista de pedidos para dar más visibilidad a las vistas Todos los pedidos y Procesando. ¿Quieres filtrar pedidos por un estado distinto? No te preocupes: encontrarás otras opciones en la vista Búsqueda.
+- Las reseñas son muy importantes para las tiendas en línea, pero a veces no se cargan en algunas configuraciones de WooCommerce. Ya lo hemos solucionado.
+- Levanta la mano si te gustaría editar productos en cualquier momento y lugar. Prueba las opciones de edición disponibles en tus sencillos productos, pero primero debes activarlas. Para ello, accede a Configuración > Funciones experimentales > Productos.

@@ -1,2 +1,5 @@
-- Tocar em um produto na seção “Melhores desempenhos” no painel abre os detalhes do produto.
-- A guia Pedidos agora localiza tanto a quantidade de itens quanto o selo do pedido.
+Para ter um panorama mais completo dos seus lucros, agora as estatísticas de painel incluem receita negativa, como reembolsos.
+
+- Novo design da Lista de pedidos para tornar as visualizações Processamento e Todos os pedidos mais proeminentes. Quer filtrar pedidos por outro status? Sem problemas: há outras opções na visualização Pesquisar.
+- Avaliações são vitais para lojas online, mas em raras vezes falhavam ao carregar algumas configurações do WooCommerce. Não mais.
+- Levante a mão quem gostaria de editar produtos de onde estiver! Experimente opções de edição em produtos simples. Para ativá-las, acesse: Configurações > Funcionalidades experimentais > Produtos.

@@ -3,6 +3,7 @@
 - bugfix: now in the Order List the order status label is no more clipped
 - bugfix: now the launch screen is no more stretched
 - The Shipping Provider flow, will be called now Shipping Carrier.
+- Fix pulling to refresh on the Processing tab sometimes will not show the up-to-date orders.
  
 3.8
 -----

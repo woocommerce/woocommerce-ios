@@ -67,7 +67,6 @@
                     </view>
                     <connections>
                         <outlet property="dismissButton" destination="gpM-nW-lFQ" id="8iA-TH-TF4"/>
-                        <segue destination="fwZ-QE-5et" kind="show" identifier="showEmailLogin" id="1xT-tL-sp6"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="fbD-KM-2nK" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -120,7 +119,6 @@
                         <segue destination="IwV-3R-6dB" kind="presentation" identifier="showSignupMethod" id="gD5-d0-X3t"/>
                         <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="nCA-u7-fKm"/>
                         <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="aSC-hU-lzE"/>
-                        <segue destination="fwZ-QE-5et" kind="show" identifier="showEmailLogin" id="D3h-Su-Jwk"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="N3P-wt-Rn3"/>
                         <segue destination="anK-hg-K4j" kind="show" identifier="showSelfHostedLogin" id="Njv-lY-Lyi"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="UV4-XI-c0q"/>
@@ -158,7 +156,7 @@
         <!--Signup Email Entry-->
         <scene sceneID="gjg-iE-qSx">
             <objects>
-                <viewControllerPlaceholder storyboardName="Signup" referencedIdentifier="emailEntry" id="klu-4U-PyL" userLabel="Signup Email Entry" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Signup" referencedIdentifier="SignupEmailViewController" id="klu-4U-PyL" userLabel="Signup Email Entry" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="OWM-SL-SwW" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="2387" y="-231"/>
@@ -166,7 +164,7 @@
         <!--Login Email View Controller-->
         <scene sceneID="w6Y-pB-a3f">
             <objects>
-                <viewController storyboardIdentifier="emailEntry" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fwZ-QE-5et" customClass="LoginEmailViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="LoginEmailViewController" extendedLayoutIncludesOpaqueBars="YES" useStoryboardIdentifierAsRestorationIdentifier="YES" id="fwZ-QE-5et" customClass="LoginEmailViewController" customModule="WordPressAuthenticator" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="bn3-aC-RIM"/>
                         <viewControllerLayoutGuide type="bottom" id="tip-gy-Hwr"/>
@@ -176,10 +174,10 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ozJ-hT-OEw">
-                                <rect key="frame" x="0.0" y="44" width="383" height="632"/>
+                                <rect key="frame" x="0.0" y="0.0" width="383" height="676"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalCompressionResistancePriority="749" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OZC-xf-OAn" customClass="NUXButton" customModule="WordPressAuthenticator">
-                                        <rect key="frame" x="327" y="568" width="36" height="44"/>
+                                        <rect key="frame" x="327" y="612" width="36" height="44"/>
                                         <accessibility key="accessibilityConfiguration" identifier="nextButton"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="44" id="PgU-lW-anB"/>
@@ -196,7 +194,7 @@
                                         </connections>
                                     </button>
                                     <textField opaque="NO" alpha="0.10000000000000001" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="usY-bV-fpM" customClass="WPWalkthroughTextField">
-                                        <rect key="frame" x="1" y="630" width="1" height="1"/>
+                                        <rect key="frame" x="1" y="674" width="1" height="1"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="1" id="JlK-kU-NkS"/>
                                             <constraint firstAttribute="width" constant="1" id="gg9-4D-yft"/>
@@ -208,10 +206,10 @@
                                         </connections>
                                     </textField>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="KAn-ug-oE6">
-                                        <rect key="frame" x="0.0" y="0.0" width="383" height="582"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="383" height="626"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="JdU-yW-tzf">
-                                                <rect key="frame" x="0.0" y="211" width="383" height="167"/>
+                                                <rect key="frame" x="0.0" y="233" width="383" height="167"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" text="Log in to your WordPress.com account with your email address." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DKR-9c-zZQ">
                                                         <rect key="frame" x="20" y="0.0" width="343" height="38"/>
@@ -376,10 +374,10 @@
             </objects>
             <point key="canvasLocation" x="1674" y="188"/>
         </scene>
-        <!--emailEntry-->
+        <!--SignupEmailViewController-->
         <scene sceneID="CQL-qu-sjW">
             <objects>
-                <viewControllerPlaceholder storyboardName="Signup" referencedIdentifier="emailEntry" id="T5n-nb-cOW" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardName="Signup" referencedIdentifier="SignupEmailViewController" id="T5n-nb-cOW" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="UdV-y0-6AN" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-530" y="760"/>
@@ -393,17 +391,17 @@
                         <viewControllerLayoutGuide type="bottom" id="Ktl-It-Kmo"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="HTO-Y8-god">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="dSZ-FR-Cdo">
-                                <rect key="frame" x="-4" y="44" width="383" height="623"/>
+                                <rect key="frame" x="-4" y="0.0" width="383" height="647"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="y8j-4r-VXw">
-                                        <rect key="frame" x="0.0" y="0.0" width="383" height="559"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="383" height="583"/>
                                         <subviews>
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Wnq-Hk-jIw" userLabel="Header" customClass="SiteInfoHeaderView" customModule="WordPressAuthenticator">
-                                                <rect key="frame" x="20" y="201.5" width="343" height="36"/>
+                                                <rect key="frame" x="20" y="213.5" width="343" height="36"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="rFl-BX-tKE" userLabel="Header Stack View">
                                                         <rect key="frame" x="0.0" y="0.0" width="343" height="36"/>
@@ -449,7 +447,7 @@
                                                 </connections>
                                             </view>
                                             <stackView opaque="NO" contentMode="scaleToFill" verticalCompressionResistancePriority="1000" axis="vertical" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="tW0-In-DwC">
-                                                <rect key="frame" x="0.0" y="257.5" width="383" height="88"/>
+                                                <rect key="frame" x="0.0" y="269.5" width="383" height="88"/>
                                                 <subviews>
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username / Email" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="ESh-DI-dtB" customClass="LoginTextField" customModule="WordPressAuthenticator">
                                                         <rect key="frame" x="0.0" y="0.0" width="383" height="44"/>
@@ -489,7 +487,7 @@
                                                 </constraints>
                                             </stackView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Dmn-nh-HTH">
-                                                <rect key="frame" x="20" y="365.5" width="343" height="0.0"/>
+                                                <rect key="frame" x="20" y="377.5" width="343" height="0.0"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                 <color key="textColor" red="0.85098039219999999" green="0.30980392159999998" blue="0.30980392159999998" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
@@ -509,7 +507,7 @@
                                         </constraints>
                                     </view>
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="zbk-h0-lpE">
-                                        <rect key="frame" x="20" y="559" width="343" height="44"/>
+                                        <rect key="frame" x="20" y="583" width="343" height="44"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Gzk-TE-YfP" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
                                                 <rect key="frame" x="0.0" y="7" width="141" height="30"/>
@@ -611,22 +609,22 @@
                                         <rect key="frame" x="0.0" y="0.0" width="383" height="559"/>
                                         <subviews>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" placeholderIntrinsicWidth="343" placeholderIntrinsicHeight="48" text="Enter the password for your WordPress.com account." textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="bBi-2N-RAh">
-                                                <rect key="frame" x="20" y="169.5" width="343" height="48"/>
+                                                <rect key="frame" x="20" y="176.5" width="343" height="48"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                 <color key="textColor" red="0.18039215689999999" green="0.2274509804" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" distribution="equalSpacing" alignment="center" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="3be-99-g62">
-                                                <rect key="frame" x="0.0" y="249.5" width="383" height="88"/>
+                                                <rect key="frame" x="0.0" y="256.5" width="383" height="74"/>
                                                 <subviews>
                                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="Xgi-ZQ-8YL">
-                                                        <rect key="frame" x="20" y="0.0" width="343" height="36"/>
+                                                        <rect key="frame" x="20" y="0.0" width="343" height="22"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="1000" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" image="icon-username-field" translatesAutoresizingMaskIntoConstraints="NO" id="e88-X2-Rh2">
-                                                                <rect key="frame" x="0.0" y="0.0" width="36" height="36"/>
+                                                                <rect key="frame" x="0.0" y="2" width="18" height="18"/>
                                                             </imageView>
                                                             <textField opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" enabled="NO" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Label" textAlignment="natural" adjustsFontForContentSizeCategory="YES" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="sx0-OR-XAf">
-                                                                <rect key="frame" x="46" y="7" width="297" height="22"/>
+                                                                <rect key="frame" x="28" y="0.0" width="315" height="22"/>
                                                                 <color key="textColor" red="0.18039215689999999" green="0.2274509804" blue="0.32549019610000002" alpha="1" colorSpace="custom" customColorSpace="calibratedRGB"/>
                                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                                                 <textInputTraits key="textInputTraits" textContentType="username"/>
@@ -637,7 +635,7 @@
                                                         </subviews>
                                                     </stackView>
                                                     <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="BtS-3D-CIU" customClass="LoginTextField" customModule="WordPressAuthenticator">
-                                                        <rect key="frame" x="0.0" y="44" width="383" height="44"/>
+                                                        <rect key="frame" x="0.0" y="30" width="383" height="44"/>
                                                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                                         <accessibility key="accessibilityConfiguration" identifier="passwordField"/>
                                                         <constraints>
@@ -661,7 +659,7 @@
                                                 </constraints>
                                             </stackView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" verticalCompressionResistancePriority="1000" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="ZqY-I8-yWG">
-                                                <rect key="frame" x="20" y="357.5" width="343" height="18"/>
+                                                <rect key="frame" x="20" y="350.5" width="343" height="18"/>
                                                 <accessibility key="accessibilityConfiguration" identifier="pswdErrorLabel"/>
                                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                 <color key="textColor" red="0.85098039219999999" green="0.30980392159999998" blue="0.30980392159999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -940,11 +938,11 @@
                         <viewControllerLayoutGuide type="bottom" id="h4a-j8-84P"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="HnR-5a-suO">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="647"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" alignment="center" spacing="30" translatesAutoresizingMaskIntoConstraints="NO" id="Mq6-n0-6iO">
-                                <rect key="frame" x="36" y="184.5" width="303" height="258.5"/>
+                                <rect key="frame" x="36" y="174.5" width="303" height="258.5"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Ukv-qo-ql4" customClass="CircularImageView" customModule="WordPressAuthenticator">
                                         <rect key="frame" x="101.5" y="0.0" width="100" height="100"/>
@@ -992,7 +990,7 @@
                                 </variation>
                             </stackView>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="B6x-b7-hU9" customClass="SubheadlineButton" customModule="WordPressAuthenticator">
-                                <rect key="frame" x="0.0" y="617" width="375" height="30"/>
+                                <rect key="frame" x="0.0" y="597" width="375" height="30"/>
                                 <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                 <state key="normal" title="Enter your password instead"/>
                                 <connections>
@@ -1262,10 +1260,10 @@
                                 <rect key="frame" x="-4" y="64" width="383" height="539"/>
                                 <subviews>
                                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vkO-HN-aFE" userLabel="Header" customClass="SiteInfoHeaderView" customModule="WordPressAuthenticator">
-                                        <rect key="frame" x="20" y="23" width="343" height="204.5"/>
+                                        <rect key="frame" x="20" y="27" width="343" height="200.5"/>
                                         <subviews>
                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="20" translatesAutoresizingMaskIntoConstraints="NO" id="Ak2-b4-JSG">
-                                                <rect key="frame" x="8" y="98.5" width="327" height="98"/>
+                                                <rect key="frame" x="8" y="98.5" width="327" height="94"/>
                                                 <subviews>
                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="750" verticalCompressionResistancePriority="1000" text="Log in with your WordPress.com account to manage your WooCommerce stores" textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="au1-mY-r58">
                                                         <rect key="frame" x="0.0" y="0.0" width="327" height="38"/>
@@ -1274,17 +1272,17 @@
                                                         <nil key="highlightedColor"/>
                                                     </label>
                                                     <stackView opaque="NO" contentMode="scaleToFill" alignment="center" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="IMk-aA-1GF" userLabel="Header Stack View">
-                                                        <rect key="frame" x="0.0" y="58" width="327" height="40"/>
+                                                        <rect key="frame" x="0.0" y="58" width="327" height="36"/>
                                                         <subviews>
                                                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="750" verticalHuggingPriority="750" image="icon-url-field" translatesAutoresizingMaskIntoConstraints="NO" id="Gak-2q-wul" userLabel="Icon">
-                                                                <rect key="frame" x="0.0" y="0.0" width="36" height="40"/>
+                                                                <rect key="frame" x="0.0" y="7" width="36" height="22"/>
                                                                 <constraints>
                                                                     <constraint firstAttribute="height" relation="lessThanOrEqual" constant="40" id="c8o-Eq-kBi"/>
                                                                     <constraint firstAttribute="width" relation="lessThanOrEqual" constant="40" id="r0G-JB-SfD"/>
                                                                 </constraints>
                                                             </imageView>
                                                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="DWy-yy-er4">
-                                                                <rect key="frame" x="46" y="2" width="281" height="36"/>
+                                                                <rect key="frame" x="46" y="0.0" width="281" height="36"/>
                                                                 <subviews>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="cCX-uI-ruO" userLabel="Title">
                                                                         <rect key="frame" x="0.0" y="0.0" width="281" height="18"/>
@@ -1294,6 +1292,10 @@
                                                                     </label>
                                                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hUi-aQ-0SQ" userLabel="Subtitle">
                                                                         <rect key="frame" x="0.0" y="18" width="281" height="18"/>
+                                                                        <constraints>
+                                                                            <constraint firstAttribute="height" constant="18" id="foE-iJ-913"/>
+                                                                            <constraint firstAttribute="width" constant="281" id="tCN-vg-9C3"/>
+                                                                        </constraints>
                                                                         <fontDescription key="fontDescription" style="UICTFontTextStyleSubhead"/>
                                                                         <color key="textColor" red="0.18039215689999999" green="0.2666666667" blue="0.32549019610000002" alpha="1" colorSpace="calibratedRGB"/>
                                                                         <nil key="highlightedColor"/>
@@ -1472,7 +1474,6 @@
         <segue reference="UV4-XI-c0q"/>
         <segue reference="4SK-mG-U33"/>
         <segue reference="nCA-u7-fKm"/>
-        <segue reference="D3h-Su-Jwk"/>
         <segue reference="swV-lc-6gI"/>
         <segue reference="gD5-d0-X3t"/>
         <segue reference="aSC-hU-lzE"/>

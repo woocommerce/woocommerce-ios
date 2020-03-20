@@ -33,7 +33,7 @@ final class TextFieldTableViewCell: UITableViewCell {
 private extension TextFieldTableViewCell {
     func configureTextField() {
         textField.clearButtonMode = .whileEditing
-        textField.applyBodyStyle()
+        textField.applyHeadlineStyle()
     }
 }
 

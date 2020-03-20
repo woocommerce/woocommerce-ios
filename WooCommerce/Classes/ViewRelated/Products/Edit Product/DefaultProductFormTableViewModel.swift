@@ -15,34 +15,33 @@ struct DefaultProductFormTableViewModel: ProductFormTableViewModel {
     private let isEditProductsRelease2Enabled: Bool
 
     init(product: Product,
-         productName: String,
          currency: String,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(),
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.currency = currency
         self.currencyFormatter = currencyFormatter
         self.isEditProductsRelease2Enabled = featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)
-        configureSections(product: product, productName: productName)
+        configureSections(product: product)
     }
 }
 
 private extension DefaultProductFormTableViewModel {
-    mutating func configureSections(product: Product, productName: String) {
-        sections = [.primaryFields(rows: primaryFieldRows(product: product, productName: productName)),
+    mutating func configureSections(product: Product) {
+        sections = [.primaryFields(rows: primaryFieldRows(product: product)),
                     .settings(rows: settingsRows(product: product))]
     }
 
-    func primaryFieldRows(product: Product, productName: String) -> [ProductFormSection.PrimaryFieldRow] {
+    func primaryFieldRows(product: Product) -> [ProductFormSection.PrimaryFieldRow] {
         guard isEditProductsRelease2Enabled || product.images.isEmpty == false else {
             return [
-                .name(name: productName),
+                .name(name: product.name),
                 .description(description: product.trimmedFullDescription)
             ]
         }
 
         return [
             .images(product: product),
-            .name(name: productName),
+            .name(name: product.name),
             .description(description: product.trimmedFullDescription)
         ]
     }

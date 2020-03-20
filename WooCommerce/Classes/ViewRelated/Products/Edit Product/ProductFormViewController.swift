@@ -13,7 +13,11 @@ final class ProductFormViewController: UIViewController {
 
     private var product: Product {
         didSet {
-            viewModel = DefaultProductFormTableViewModel(product: product, productName: productName, currency: currency)
+            if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
+                return
+            }
+
+            viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                  productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                  productUIImageLoader: productUIImageLoader)
@@ -31,9 +35,6 @@ final class ProductFormViewController: UIViewController {
         return product
     }
 
-    // Product name has its own state because this field is editable on this view.
-    private var productName: String
-
     private var viewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
 
@@ -45,8 +46,7 @@ final class ProductFormViewController: UIViewController {
     init(product: Product, currency: String) {
         self.currency = currency
         self.product = product
-        self.productName = product.name
-        self.viewModel = DefaultProductFormTableViewModel(product: product, productName: productName, currency: currency)
+        self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                          product: product)
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler)
@@ -159,8 +159,6 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     @objc func updateProduct() {
-        product = productUpdater.nameUpdated(name: productName)
-
         ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
         let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
         let message = NSLocalizedString("Please wait while we publish this product to your store",
@@ -334,7 +332,12 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     func onEditProductNameCompletion(newName: String) {
-        self.productName = newName
+        product = productUpdater.nameUpdated(name: newName)
+    }
+
+    func isNameTheOnlyChange(oldProduct: Product, newProduct: Product) -> Bool {
+        let oldProductWithNewName = oldProduct.nameUpdated(name: newProduct.name)
+        return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
     }
 }
 

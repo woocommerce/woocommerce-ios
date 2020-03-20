@@ -141,10 +141,10 @@ class OrdersViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
 
-        syncingCoordinator.synchronizeFirstPage()
+        syncingCoordinator.resynchronize()
 
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
-        // a different location.
+        // a different location (or Orders tab).
         tableView.reloadData()
     }
 }

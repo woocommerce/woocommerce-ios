@@ -6,13 +6,20 @@ final class ProductFormViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        return keyboardFrameObserver
+    }()
+
     private var product: Product {
         didSet {
-            viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
+            viewModel = DefaultProductFormTableViewModel(product: product, productName: productName, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                  productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                  productUIImageLoader: productUIImageLoader)
-            tableViewDataSource.configureActions(onAddImage: { [weak self] in
+            tableViewDataSource.configureActions(onNameChange: { [weak self] name in
+                self?.onEditProductNameCompletion(newName: name ?? "")
+            }, onAddImage: { [weak self] in
                 self?.showProductImages()
             })
             tableView.dataSource = tableViewDataSource
@@ -23,6 +30,9 @@ final class ProductFormViewController: UIViewController {
     private var productUpdater: ProductUpdater {
         return product
     }
+
+    // Product name has its own state because this field is editable on this view.
+    private var productName: String
 
     private var viewModel: ProductFormTableViewModel
     private var tableViewDataSource: ProductFormTableViewDataSource
@@ -35,7 +45,8 @@ final class ProductFormViewController: UIViewController {
     init(product: Product, currency: String) {
         self.currency = currency
         self.product = product
-        self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
+        self.productName = product.name
+        self.viewModel = DefaultProductFormTableViewModel(product: product, productName: productName, currency: currency)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
                                                          product: product)
         self.productUIImageLoader = DefaultProductUIImageLoader(productImageActionHandler: productImageActionHandler)
@@ -43,7 +54,9 @@ final class ProductFormViewController: UIViewController {
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
         super.init(nibName: nil, bundle: nil)
-        tableViewDataSource.configureActions(onAddImage: { [weak self] in
+        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
+            self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onAddImage: { [weak self] in
             self?.showProductImages()
         })
     }
@@ -59,6 +72,8 @@ final class ProductFormViewController: UIViewController {
         configureMainView()
         configureTableView()
 
+        startListeningToNotifications()
+
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
                 return
@@ -72,6 +87,12 @@ final class ProductFormViewController: UIViewController {
 
             self.product = self.productUpdater.imagesUpdated(images: productImageStatuses.images)
         }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        view.endEditing(true)
     }
 }
 
@@ -138,6 +159,8 @@ private extension ProductFormViewController {
 //
 private extension ProductFormViewController {
     @objc func updateProduct() {
+        product = productUpdater.nameUpdated(name: productName)
+
         ServiceLocator.analytics.track(.productDetailUpdateButtonTapped)
         let title = NSLocalizedString("Publishing your product...", comment: "Title of the in-progress UI while updating the Product remotely")
         let message = NSLocalizedString("Please wait while we publish this product to your store",
@@ -220,8 +243,7 @@ extension ProductFormViewController: UITableViewDelegate {
             case .images:
                 break
             case .name:
-                ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
-                editProductName()
+                break
             case .description:
                 ServiceLocator.analytics.track(.productDetailViewProductDescriptionTapped)
                 editProductDescription()
@@ -269,6 +291,22 @@ extension ProductFormViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - Keyboard management
+//
+private extension ProductFormViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
+
+extension ProductFormViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
+    }
+}
+
 // MARK: Action - Edit Product Images
 //
 private extension ProductFormViewController {
@@ -295,32 +333,8 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Name
 //
 private extension ProductFormViewController {
-    func editProductName() {
-        let placeholder = NSLocalizedString("Enter a title...", comment: "The text placeholder for the Text Editor screen")
-        let navigationTitle = NSLocalizedString("Title", comment: "The navigation bar title of the Text editor screen.")
-        let textViewController = TextViewViewController(text: product.name,
-                                                        placeholder: placeholder,
-                                                        navigationTitle: navigationTitle
-        ) { [weak self] (newProductName) in
-            self?.onEditProductNameCompletion(newName: newProductName ?? "")
-        }
-        textViewController.delegate = self
-
-        navigationController?.pushViewController(textViewController, animated: true)
-    }
-
     func onEditProductNameCompletion(newName: String) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
-
-        let hasChangedData = newName != product.name
-        ServiceLocator.analytics.track(.productNameDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
-
-        guard hasChangedData else {
-            return
-        }
-        self.product = productUpdater.nameUpdated(name: newName)
+        self.productName = newName
     }
 }
 
@@ -333,8 +347,6 @@ extension ProductFormViewController: TextViewViewControllerDelegate {
         return NSLocalizedString("Please add a title",
                                  comment: "Product title error notice message, when the title is empty")
     }
-
-
 }
 
 // MARK: Action - Edit Product Parameters

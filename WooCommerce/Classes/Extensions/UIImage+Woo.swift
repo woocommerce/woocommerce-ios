@@ -33,6 +33,12 @@ extension UIImage {
         return Gridicon.iconOfType(.bell)
     }
 
+    /// Brief Description Icon
+    ///
+    static var briefDescriptionImage: UIImage {
+        return Gridicon.iconOfType(.alignLeft, withSize: CGSize(width: 24, height: 24))
+    }
+
     /// Camera Icon
     ///
     static var cameraImage: UIImage {

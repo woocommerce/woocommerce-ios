@@ -117,7 +117,7 @@ private extension OrderTableViewCell {
     /// Setup: Labels
     ///
     func configureLabels() {
-        titleLabel.applyHeadlineStyle()
+        titleLabel.applyBodyStyle()
         totalLabel.applyBodyStyle()
         totalLabel.numberOfLines = 0
         paymentStatusLabel.applyFootnoteStyle()

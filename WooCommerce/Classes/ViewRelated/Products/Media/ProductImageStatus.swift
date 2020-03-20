@@ -13,6 +13,19 @@ enum ProductImageStatus {
     case remote(image: ProductImage)
 }
 
+extension Collection where Element == ProductImageStatus {
+    var images: [ProductImage] {
+        compactMap { status in
+            switch status {
+            case .remote(let productImage):
+                return productImage
+            default:
+                return nil
+            }
+        }
+    }
+}
+
 extension ProductImageStatus {
     var cellReuseIdentifier: String {
         return cellClass.reuseIdentifier

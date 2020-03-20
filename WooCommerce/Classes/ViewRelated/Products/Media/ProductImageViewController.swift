@@ -9,16 +9,16 @@ final class ProductImageViewController: UIViewController {
     @IBOutlet private weak var imageView: UIImageView!
 
     private let productImage: ProductImage
-    private let imageService: ImageService
+    private let productUIImageLoader: ProductUIImageLoader
     private let onDeletion: Deletion
 
     private var previousBarTintColor: UIColor?
 
     init(productImage: ProductImage,
-         imageService: ImageService = ServiceLocator.imageService,
+         productUIImageLoader: ProductUIImageLoader,
          onDeletion: @escaping Deletion) {
         self.productImage = productImage
-        self.imageService = imageService
+        self.productUIImageLoader = productUIImageLoader
         self.onDeletion = onDeletion
         super.init(nibName: nil, bundle: nil)
     }
@@ -63,11 +63,9 @@ private extension ProductImageViewController {
         imageView.contentMode = Constants.imageContentMode
         imageView.clipsToBounds = Constants.clipToBounds
 
-        imageService.downloadAndCacheImageForImageView(imageView,
-                                                       with: productImage.src,
-                                                       placeholder: .productImage,
-                                                       progressBlock: nil,
-                                                       completion: nil)
+        productUIImageLoader.requestImage(productImage: productImage) { [weak imageView] image in
+            imageView?.image = image
+        }
     }
 }
 

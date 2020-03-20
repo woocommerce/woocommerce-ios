@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-03-05 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-03-20 00:54:04+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: fr */
@@ -54,6 +54,9 @@
 /* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
 "99+" = "Plus de 99";
 
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "Un bref extrait sur le produit";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Une adresse e-mail valide est nécessaire pour envoyer un lien d’authentification. Veuillez retourner sur l’écran précédent et fournir une adresse e-mail valide.";
 
@@ -102,8 +105,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Outil avancé de contrôle de l'état de l'application";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "Toutes";
+/* Title for the second page in the Orders tab. */
+"All Orders" = "Toutes les commandes";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Tous les avis marqués comme lus";
@@ -230,7 +233,8 @@
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Impossible de mettre le produit à jour";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Impossible de charger l'image";
 
 /* Catalog Visibility label in Product Settings */
@@ -498,12 +502,6 @@
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Remplir à l'aide du gestionnaire de mots de passe";
-
-/* Filter the orders list. */
-"Filter orders" = "Filtrer les commandes";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "Filtre la liste des commandes par état de paiement.";
 
 /* User role badge */
 "Follower" = "Abonné";
@@ -951,11 +949,8 @@
 "Ordered List" = "Liste ordonnée";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "Commandes";
-
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "Commandes : %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "Autre";
@@ -1044,6 +1039,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Merci d'ouvrir votre boîte de réception et de rechercher un e-mail de WordPress.com.";
 
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "Veuillez réessayer.";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Veuillez patienter pendant que nous publions ce produit dans votre boutique.";
 
@@ -1066,6 +1064,9 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Note privée";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "En cours";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1177,9 +1178,6 @@
 
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Supprimer";
-
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "Supprimer les filtres";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Supprimer l'image";
@@ -1333,6 +1331,10 @@
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Transporteur";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the Short Description row on Product main screen */
+"Short description" = "Courte description";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Afficher la liste des articles remboursés pour cette commande.";

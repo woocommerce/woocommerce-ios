@@ -1,0 +1,69 @@
+{
+    "data": [
+        {
+            "id": 173,
+            "date_created": "2019-08-20T06:06:29",
+            "date_created_gmt": "2019-08-20T06:06:29",
+            "product_id": 32,
+            "status": "approved",
+            "reviewer": "somereviewer",
+            "reviewer_email": "somewhere@intheinternet.com",
+            "review": "<p>The fancy chair gets only three stars</p>\n",
+            "rating": 3,
+            "verified": false,
+            "_links": {
+                "self": [
+                    {
+                        "href": "http://store.ctarda.com/wp-json/wc/v3/products/reviews/173"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "http://store.ctarda.com/wp-json/wc/v3/products/reviews"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "http://store.ctarda.com/wp-json/wc/v3/products/32"
+                    }
+                ],
+                "reviewer": [
+                    {
+                        "embeddable": true,
+                        "href": "http://store.ctarda.com/wp-json/wp/v2/users/1"
+                    }
+                ]
+            }
+        },
+        {
+            "id": 169,
+            "date_created": "2019-08-20T06:02:21",
+            "date_created_gmt": "2019-08-20T06:02:21",
+            "product_id": 11,
+            "status": "approved",
+            "reviewer": "Software Engineer",
+            "reviewer_email": "somewhereelse@theinternet.com",
+            "review": "<p>A glowing review with a five star rating for the Colourful dress</p>\n",
+            "rating": 5,
+            "verified": false,
+            "reviewer_avatar_urls": null,
+            "_links": {
+                "self": [
+                    {
+                        "href": "http://store.ctarda.com/wp-json/wc/v3/products/reviews/169"
+                    }
+                ],
+                "collection": [
+                    {
+                        "href": "http://store.ctarda.com/wp-json/wc/v3/products/reviews"
+                    }
+                ],
+                "up": [
+                    {
+                        "href": "http://store.ctarda.com/wp-json/wc/v3/products/11"
+                    }
+                ]
+            }
+        }
+    ]
+}

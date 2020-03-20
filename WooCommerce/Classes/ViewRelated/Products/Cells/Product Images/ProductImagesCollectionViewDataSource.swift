@@ -1,14 +1,16 @@
+import Photos
 import UIKit
 import Kingfisher
+import Yosemite
 
 final class ProductImagesCollectionViewDataSource: NSObject {
     private let viewModel: ProductImagesViewModel
-    private let imageService: ImageService
+    private let productUIImageLoader: ProductUIImageLoader
 
     init(viewModel: ProductImagesViewModel,
-         imageService: ImageService = ServiceLocator.imageService) {
+         productUIImageLoader: ProductUIImageLoader) {
         self.viewModel = viewModel
-        self.imageService = imageService
+        self.productUIImageLoader = productUIImageLoader
         super.init()
     }
 }
@@ -34,51 +36,67 @@ extension ProductImagesCollectionViewDataSource: UICollectionViewDataSource {
 //
 private extension ProductImagesCollectionViewDataSource {
     func configure(collectionView: UICollectionView, _ cell: UICollectionViewCell, for item: ProductImagesItem, at indexPath: IndexPath) {
-        switch cell {
-        case let cell as ProductImageCollectionViewCell where item == .image:
-            configureImageCell(collectionView: collectionView, cell: cell, at: indexPath, imageService: imageService)
-        case _ as AddProductImageCollectionViewCell where item == .addImage:
-            break
-        case _ as ExtendedAddProductImageCollectionViewCell where item == .extendedAddImage:
-            break
+        switch item {
+        case .image(let status):
+            configureImageCell(cell, productImageStatus: status)
         default:
-            fatalError("Unidentified product image item type: \(item)")
+            break
         }
     }
 
-    /// Cell configuration
-    ///
-    func configureImageCell(collectionView: UICollectionView,
-                            cell: ProductImageCollectionViewCell,
-                            at indexPath: IndexPath,
-                            imageService: ImageService) {
-        let image = viewModel.product.images[indexPath.item]
+    func configureImageCell(_ cell: UICollectionViewCell, productImageStatus: ProductImageStatus) {
+        switch productImageStatus {
+        case .remote(let image):
+            configureRemoteImageCell(cell, productImage: image)
+        case .uploading(let asset):
+            configureUploadingImageCell(cell, asset: asset)
+        }
+    }
 
-        imageService.downloadAndCacheImageForImageView(cell.imageView,
-                                                       with: image.src,
-                                                       placeholder: .productPlaceholderImage,
-                                                       progressBlock: nil) { (image, error) in
-                                                        let success = image != nil && error == nil
-                                                        if success {
-                                                            cell.imageView.contentMode = .scaleAspectFit
-                                                        }
-                                                        else {
-                                                            cell.imageView.contentMode = .center
-                                                        }
+    func configureRemoteImageCell(_ cell: UICollectionViewCell, productImage: ProductImage) {
+        guard let cell = cell as? ProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .center
+        cell.imageView.image = .productsTabProductCellPlaceholderImage
+
+        productUIImageLoader.requestImage(productImage: productImage) { [weak cell] image in
+            cell?.imageView.contentMode = .scaleAspectFit
+            cell?.imageView.image = image
+        }
+    }
+
+    func configureUploadingImageCell(_ cell: UICollectionViewCell, asset: PHAsset) {
+        guard let cell = cell as? InProgressProductImageCollectionViewCell else {
+            fatalError()
+        }
+
+        cell.imageView.contentMode = .center
+        cell.imageView.image = .productsTabProductCellPlaceholderImage
+
+        productUIImageLoader.requestImage(asset: asset, targetSize: cell.bounds.size) { [weak cell] image in
+            cell?.imageView.contentMode = .scaleAspectFit
+            cell?.imageView.image = image
         }
     }
 
 }
 
 enum ProductImagesItem {
-    case image
+    case image(status: ProductImageStatus)
     case addImage
     case extendedAddImage
 
     var reuseIdentifier: String {
         switch self {
-        case .image:
-            return ProductImageCollectionViewCell.reuseIdentifier
+        case .image(let status):
+            switch status {
+            case .remote:
+                return ProductImageCollectionViewCell.reuseIdentifier
+            case .uploading:
+                return InProgressProductImageCollectionViewCell.reuseIdentifier
+            }
         case .addImage:
             return AddProductImageCollectionViewCell.reuseIdentifier
         case .extendedAddImage:

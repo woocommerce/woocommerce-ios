@@ -20,6 +20,7 @@ class AccountHeaderView: UIView {
     @IBOutlet private var fullnameLabel: UILabel! {
         didSet {
             fullnameLabel.textColor = .systemColor(.label)
+            fullnameLabel.accessibilityIdentifier = "full-name-label"
         }
     }
 
@@ -28,6 +29,7 @@ class AccountHeaderView: UIView {
     @IBOutlet private var usernameLabel: UILabel! {
         didSet {
             usernameLabel.textColor = .systemColor(.secondaryLabel)
+            usernameLabel.accessibilityIdentifier = "username-label"
         }
     }
 

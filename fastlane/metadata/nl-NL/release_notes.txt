@@ -1,2 +1,5 @@
-- Door in het dashboard op een product te tikken in het gedeelte 'Toppresteerders' worden de productgegevens geopend.
-- Het tabblad Bestellingen lokaliseert nu zowel het aantal artikelen en de bestellingsbadge.
+Om je een vollediger overzicht van je inkomsten te geven, bevatten dashboardstatistieken nu ook de negatieve omzet (bijvoorbeeld: restituties).
+
+- We hebben de Bestellijst bijgewerkt om de weergaven Verwerking en Alle bestellingen duidelijker naar voren te laten komen. Wil je bestellingen filteren op een andere status? Dit is geen enkel probleem: de andere opties vind je in de weergave Zoeken.
+- Beoordelingen zijn zeer belangrijk voor webwinkels, maar soms werden ze niet geladen op bepaalde WooCommerce-configuraties. We hebben dit probleem nu verholpen.
+- Steek je hand op als je producten onderweg wilt bewerken! Probeer mogelijke bewerkingsopties eens uit op je eenvoudige producten (je moet dit eerst inschakelen: ga naar Instellingen > Experimentele functies > Producten).

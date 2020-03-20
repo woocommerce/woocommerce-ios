@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-03-04 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-03-19 00:54:48+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -54,6 +54,9 @@
 /* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
 "99+" = "Более 99";
 
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "Короткое описание продукта";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Чтобы отправить ссылку для аутентификации, необходим действительный адрес эл. почты. Вернитесь на предыдущий экран и укажите действительный адрес эл. почты.";
 
@@ -102,8 +105,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Специальный инструмент для анализа состояния приложения";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "Все";
+/* Title for the second page in the Orders tab. */
+"All Orders" = "Все заказы";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Все отзывы помечены как прочитанные";
@@ -230,7 +233,8 @@
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Не удается обновить продукт";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Невозможно загрузить изображение";
 
 /* Catalog Visibility label in Product Settings */
@@ -498,12 +502,6 @@
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Заполнить с помощью диспетчера паролей";
-
-/* Filter the orders list. */
-"Filter orders" = "Фильтровать заказы";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "Отфильтровать список заказов по статусу оплаты.";
 
 /* User role badge */
 "Follower" = "Читатель";
@@ -951,11 +949,8 @@
 "Ordered List" = "Упорядоченный список";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "Заказы";
-
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "Заказы: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "Прочее";
@@ -1044,6 +1039,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Пожалуйста, откройте ваше приложение email и найдите сообщение от WordPress.com.";
 
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "Повторите попытку.";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Подождите, пока мы не опубликуем этот продукт в вашем магазине";
 
@@ -1066,6 +1064,9 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Конфиденциальное примечание";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "В обработке";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1177,9 +1178,6 @@
 
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Удалить";
-
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "Удалить фильтры";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Удалить изображение";
@@ -1333,6 +1331,10 @@
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Служба доставки";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the Short Description row on Product main screen */
+"Short description" = "Короткое описание";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Показать список элементов заказа, по которым возвращены средства.";

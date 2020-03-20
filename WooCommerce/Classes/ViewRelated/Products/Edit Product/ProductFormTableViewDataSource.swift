@@ -18,10 +18,17 @@ final class ProductFormTableViewDataSource: NSObject {
     private let canEditImages: Bool
     private var onAddImage: (() -> Void)?
 
+    private let productImageStatuses: [ProductImageStatus]
+    private let productUIImageLoader: ProductUIImageLoader
+
     init(viewModel: ProductFormTableViewModel,
+         productImageStatuses: [ProductImageStatus],
+         productUIImageLoader: ProductUIImageLoader,
          canEditImages: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2)) {
         self.viewModel = viewModel
         self.canEditImages = canEditImages
+        self.productImageStatuses = productImageStatuses
+        self.productUIImageLoader = productUIImageLoader
         super.init()
     }
 
@@ -85,15 +92,17 @@ private extension ProductFormTableViewDataSource {
         }
 
         guard canEditImages else {
-            cell.configure(with: product, config: .images)
+            cell.configure(with: productImageStatuses,
+                           config: .images,
+                           productUIImageLoader: productUIImageLoader)
             return
         }
 
-        if product.images.count > 0 {
-            cell.configure(with: product, config: .addImages)
+        if productImageStatuses.count > 0 {
+            cell.configure(with: productImageStatuses, config: .addImages, productUIImageLoader: productUIImageLoader)
         }
         else {
-            cell.configure(with: product, config: .extendedAddImages)
+            cell.configure(with: productImageStatuses, config: .extendedAddImages, productUIImageLoader: productUIImageLoader)
         }
 
         cell.onImageSelected = { (productImage, indexPath) in
@@ -117,7 +126,7 @@ private extension ProductFormTableViewDataSource {
             guard let cell = cell as? BasicTableViewCell else {
                 fatalError()
             }
-            let placeholder = NSLocalizedString("Title (required)", comment: "Placeholder in the Product Title row on Product form screen.")
+            let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
             cell.textLabel?.text = placeholder
             cell.textLabel?.applyBodyStyle()
             cell.textLabel?.textColor = .textSubtle
@@ -155,7 +164,7 @@ private extension ProductFormTableViewDataSource {
             fatalError()
         }
         switch row {
-        case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel):
+        case .price(let viewModel), .inventory(let viewModel), .shipping(let viewModel), .briefDescription(let viewModel):
             configureSettings(cell: cell, viewModel: viewModel)
         }
     }

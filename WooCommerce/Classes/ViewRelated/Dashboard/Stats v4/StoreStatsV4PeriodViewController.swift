@@ -71,8 +71,15 @@ class StoreStatsV4PeriodViewController: UIViewController {
     @IBOutlet private weak var timeRangeBarBottomBorderView: UIView!
 
     private var lastUpdatedDate: Date?
-    private var yAxisMinimum: String = Constants.chartYAxisMinimum.humanReadableString()
-    private var yAxisMaximum: String = ""
+
+    private var currencyCode: String {
+        return CurrencySettings.shared.symbol(from: CurrencySettings.shared.currencyCode)
+    }
+
+    private var revenueItems: [Double] {
+        return orderStatsIntervals.map({ ($0.revenueValue as NSDecimalNumber).doubleValue })
+    }
+
     private var isInitialLoad: Bool = true  // Used in trackChangedTabIfNeeded()
 
     /// SiteVisitStats ResultsController: Loads site visit stats from the Storage Layer
@@ -108,6 +115,8 @@ class StoreStatsV4PeriodViewController: UIViewController {
         return lastUpdatedDate.relativelyFormattedUpdateString
     }
 
+    // MARK: x/y-Axis Values
+
     private var xAxisMinimum: String {
         guard let item = orderStatsIntervals.first else {
             return ""
@@ -120,6 +129,20 @@ class StoreStatsV4PeriodViewController: UIViewController {
             return ""
         }
         return formattedAxisPeriodString(for: item)
+    }
+
+    private var yAxisMinimum: String {
+        let min = revenueItems.min() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(min),
+                                                             with: currencyCode,
+                                                             roundSmallNumbers: false) ?? String()
+    }
+
+    private var yAxisMaximum: String {
+        let max = revenueItems.max() ?? 0
+        return CurrencyFormatter().formatHumanReadableAmount(String(max),
+                                                             with: currencyCode,
+                                                             roundSmallNumbers: false) ?? String()
     }
 
     // MARK: - Initialization
@@ -339,7 +362,6 @@ private extension StoreStatsV4PeriodViewController {
         yAxis.drawGridLinesEnabled = true
         yAxis.drawAxisLineEnabled = false
         yAxis.drawZeroLineEnabled = true
-        yAxis.axisMinimum = Constants.chartYAxisMinimum
         yAxis.valueFormatter = self
         yAxis.setLabelCount(3, force: true)
     }
@@ -507,8 +529,7 @@ extension StoreStatsV4PeriodViewController: IAxisValueFormatter {
                 // Do not show the "0" label on the Y axis
                 return ""
             } else {
-                yAxisMaximum = value.humanReadableString()
-                return CurrencyFormatter().formatCurrency(using: yAxisMaximum,
+                return CurrencyFormatter().formatCurrency(using: value.humanReadableString(),
                                                           at: CurrencySettings.shared.currencyPosition,
                                                           with: currencySymbol,
                                                           isNegative: value.sign == .minus)
@@ -688,8 +709,7 @@ private extension StoreStatsV4PeriodViewController {
     }
 
     func hasRevenue() -> Bool {
-        let totalRevenue = orderStatsIntervals.map({ $0.revenueValue }).reduce(0, +)
-        return totalRevenue > 0
+        return revenueItems.contains { $0 != 0 }
     }
 
     func reloadLastUpdatedField() {
@@ -753,6 +773,5 @@ private extension StoreStatsV4PeriodViewController {
         static let chartMarkerArrowSize: CGSize         = CGSize(width: 8, height: 6)
 
         static let chartXAxisGranularity: Double        = 1.0
-        static let chartYAxisMinimum: Double            = 0.0
     }
 }

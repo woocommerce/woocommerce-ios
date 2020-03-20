@@ -1,2 +1,5 @@
-- Wenn du im Dashboard im Abschnitt „Bestseller“ auf ein Produkt tippst, werden die Produktdetails geöffnet.
-- Auf dem Tab „Bestellungen“ werden jetzt sowohl die Artikelmenge als auch das Bestell-Badge lokalisiert.
+Um dir ein umfassenderes Bild von deinen Einkünften zu geben, enthalten Statistiken im Dashboard nun auch negative Einnahmen (z. B. Rückerstattungen).
+
+- Wir haben die Bestellliste überarbeitet: Die Ansichten für in Bearbeitung befindliche und alle Bestellungen sind besser hervorgehoben. Du möchtest Bestellungen nach einem anderen Status filtern? Kein Problem. In der Suchansicht findest du weitere Optionen.
+- Bewertungen sind für Onlineshops so wichtig, aber manchmal wurden sie bei einigen WooCommerce-Konfigurationen nicht geladen. Dieses Problem haben wir behoben.
+- Wer würde Produkte nicht gerne unterwegs bearbeiten können? Probiere verfügbare Bearbeitungsoptionen an deinen einfachen Produkten aus (zuerst musst du die Funktion aber aktivieren: Wechsle zu „Einstellungen“ > „Experimentelle Funktionen“ > „Produkte“).

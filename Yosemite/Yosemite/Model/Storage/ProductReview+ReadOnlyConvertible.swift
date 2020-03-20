@@ -32,7 +32,7 @@ extension Storage.ProductReview: ReadOnlyConvertible {
                              statusKey: statusKey ?? "",
                              reviewer: reviewer ?? "" ,
                              reviewerEmail: reviewerEmail ?? "",
-                             reviewerAvatarURL: reviewerAvatarURL ?? "",
+                             reviewerAvatarURL: reviewerAvatarURL,
                              review: review ?? "",
                              rating: Int(rating),
                              verified: verified)

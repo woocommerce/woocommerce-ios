@@ -105,6 +105,15 @@ final class Product_UpdaterTestCases: XCTestCase {
         // Images.
         XCTAssertEqual(updatedProduct.images, newImages)
     }
+
+    func testUpdatingBriefDescription() {
+        let product = sampleProduct()
+        let newBriefDescription = "<p> deal of the day! </p>"
+        let updatedProduct = product.briefDescriptionUpdated(briefDescription: newBriefDescription)
+        XCTAssertEqual(updatedProduct.briefDescription, newBriefDescription)
+        XCTAssertEqual(updatedProduct.fullDescription, product.fullDescription)
+        XCTAssertEqual(updatedProduct.name, product.name)
+    }
 }
 
 // MARK: - Private Helpers

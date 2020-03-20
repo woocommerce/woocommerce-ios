@@ -20,11 +20,20 @@ extension UIAlertController {
             onCancel?()
         }
 
-        let popoverController = actionSheet.popoverPresentationController
-        popoverController?.sourceView = viewController.view
-        popoverController?.sourceRect = viewController.view.bounds
+        if let popoverController = actionSheet.popoverPresentationController {
+            popoverController.sourceView = viewController.view
+            popoverController.sourceRect = viewController.view.bounds
+            popoverController.permittedArrowDirections = []
+        }
 
         viewController.present(actionSheet, animated: true)
+    }
+
+    open override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        if let window = UIApplication.shared.keyWindow {
+            popoverPresentationController?.sourceRect = CGRect(x: window.bounds.midX, y: window.bounds.midY, width: 0, height: 0)
+        }
     }
 }
 

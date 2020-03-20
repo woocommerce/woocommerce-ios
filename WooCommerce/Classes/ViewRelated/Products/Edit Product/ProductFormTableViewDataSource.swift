@@ -126,7 +126,7 @@ private extension ProductFormTableViewDataSource {
             guard let cell = cell as? BasicTableViewCell else {
                 fatalError()
             }
-            let placeholder = NSLocalizedString("Title (required)", comment: "Placeholder in the Product Title row on Product form screen.")
+            let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
             cell.textLabel?.text = placeholder
             cell.textLabel?.applyBodyStyle()
             cell.textLabel?.textColor = .textSubtle

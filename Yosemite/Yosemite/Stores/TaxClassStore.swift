@@ -28,8 +28,6 @@ public class TaxClassStore: Store {
         switch action {
         case .retrieveTaxClasses(let siteID, let onCompletion):
             retrieveTaxClasses(siteID: siteID, onCompletion: onCompletion)
-        case .resetStoredTaxClasses(let onCompletion):
-            resetStoredTaxClasses(onCompletion: onCompletion)
         case .requestMissingTaxClasses(let product, let onCompletion):
             requestMissingTaxClasses(for: product, onCompletion: onCompletion)
         }
@@ -57,17 +55,6 @@ private extension TaxClassStore {
                 onCompletion(taxClasses, nil)
             }
         }
-    }
-
-    /// Deletes all of the Stored TaxClasses.
-    ///
-    func resetStoredTaxClasses(onCompletion: () -> Void) {
-        let storage = storageManager.viewStorage
-        storage.deleteAllObjects(ofType: Storage.TaxClass.self)
-        storage.saveIfNeeded()
-        DDLogDebug("Tax Classes deleted")
-
-        onCompletion()
     }
 
     /// Synchronizes the Tax Class found in a specified Product.
@@ -127,12 +114,10 @@ private extension TaxClassStore {
     ///     - storage: Where we should save all the things!
     ///
     func upsertStoredTaxClasses(readOnlyTaxClasses: [Networking.TaxClass], in storage: StorageType) {
-        resetStoredTaxClasses {
-            for readOnlyTaxClass in readOnlyTaxClasses {
-                let storageTaxClass = storage.loadTaxClass(slug: readOnlyTaxClass.slug) ?? storage.insertNewObject(ofType: Storage.TaxClass.self)
-
-                storageTaxClass.update(with: readOnlyTaxClass)
-            }
+        storage.deleteAllObjects(ofType: Storage.TaxClass.self)
+        for readOnlyTaxClass in readOnlyTaxClasses {
+            let storageTaxClass = storage.insertNewObject(ofType: Storage.TaxClass.self)
+            storageTaxClass.update(with: readOnlyTaxClass)
         }
     }
 

@@ -123,7 +123,7 @@ private extension ProductFormTableViewDataSource {
         cell.accessoryType = .none
 
         let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
-        
+
         let viewModel = TextFieldTableViewCell.ViewModel(text: name, placeholder: placeholder) { [weak self] newName in
             self?.onNameChange?(newName)
         }

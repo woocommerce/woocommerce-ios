@@ -97,6 +97,23 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Assert
         XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount)
     }
+
+    func testWhenAnErrorHappensItWillNotDeleteAllOrders() {
+        // Arrange
+        insert(order: Fixtures.order)
+
+        network.simulateError(requestUrlSuffix: "orders", error: NetworkError.timeout)
+
+        // Act
+        executeActionAndWait(using: createOrderStore(),
+                             statusKey: OrderStatusEnum.processing.rawValue,
+                             deleteAllBeforeSaving: true)
+
+        // Assert
+        // The previously saved order should still exist
+        XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
+        XCTAssertEqual(countOrders(), 1)
+    }
 }
 
 // MARK: - Private

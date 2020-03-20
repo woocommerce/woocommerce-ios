@@ -9,7 +9,6 @@ import XCTest
 ///
 final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
     private var storageManager: MockupStorageManager!
-    private var network: MockupNetwork!
 
     private var viewStorage: StorageType {
         storageManager.viewStorage
@@ -18,11 +17,9 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
     override func setUp() {
         super.setUp()
         storageManager = MockupStorageManager()
-        network = MockupNetwork(useResponseQueue: true)
     }
 
     override func tearDown() {
-        network = nil
         storageManager = nil
         super.tearDown()
     }
@@ -34,10 +31,11 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
         XCTAssertEqual(countOrders(), 1)
 
+        let network = MockupNetwork()
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
 
         // Act
-        executeActionAndWait(using: createOrderStore(),
+        executeActionAndWait(using: createOrderStore(using: network),
                              statusKey: OrderStatusEnum.processing.rawValue,
                              deleteAllBeforeSaving: true)
 
@@ -55,10 +53,11 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertNotNil(findOrder(withID: Fixtures.order.orderID))
         XCTAssertEqual(countOrders(), 1)
 
+        let network = MockupNetwork()
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
 
         // Act
-        executeActionAndWait(using: createOrderStore(),
+        executeActionAndWait(using: createOrderStore(using: network),
                              statusKey: OrderStatusEnum.processing.rawValue,
                              deleteAllBeforeSaving: false)
 
@@ -71,11 +70,12 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
     func testWhenGivenAFilterItFetchesBothTheFilteredListAndTheAllOrdersList() {
         // Arrange
+        let network = MockupNetwork(useResponseQueue: true)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAll2JSON.fileName)
 
         // Act
-        executeActionAndWait(using: createOrderStore(),
+        executeActionAndWait(using: createOrderStore(using: network),
                              statusKey: OrderStatusEnum.completed.rawValue,
                              deleteAllBeforeSaving: true)
 
@@ -86,11 +86,12 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 
     func testWhenNotGivenAFilterItFetchesTheAllOrdersListOnly() {
         // Arrange
+        let network = MockupNetwork(useResponseQueue: true)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
         network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAll2JSON.fileName)
 
         // Act
-        executeActionAndWait(using: createOrderStore(),
+        executeActionAndWait(using: createOrderStore(using: network),
                              statusKey: nil,
                              deleteAllBeforeSaving: true)
 
@@ -102,10 +103,11 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         // Arrange
         insert(order: Fixtures.order)
 
+        let network = MockupNetwork()
         network.simulateError(requestUrlSuffix: "orders", error: NetworkError.timeout)
 
         // Act
-        executeActionAndWait(using: createOrderStore(),
+        executeActionAndWait(using: createOrderStore(using: network),
                              statusKey: OrderStatusEnum.processing.rawValue,
                              deleteAllBeforeSaving: true)
 
@@ -119,7 +121,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 // MARK: - Private
 
 private extension OrderStoreTests_FetchFilteredAndAllOrders {
-    func createOrderStore() -> OrderStore {
+    func createOrderStore(using network: Network) -> OrderStore {
         OrderStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
     }
 

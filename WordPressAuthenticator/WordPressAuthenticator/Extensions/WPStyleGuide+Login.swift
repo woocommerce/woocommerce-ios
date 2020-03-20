@@ -173,7 +173,7 @@ extension WPStyleGuide {
         let imageSize = CGSize(width: appleIcon.size.width * Constants.appleIconSizeModifier,
                                height: appleIcon.size.height * Constants.appleIconSizeModifier)
 
-        appleAttachment.bounds = CGRect(x: 0, y: (NUXButton.titleFont.capHeight - imageSize.height) / 2,
+        appleAttachment.bounds = CGRect(x: 0, y: floor((NUXButton.titleFont.capHeight - imageSize.height) / 2),
                                         width: imageSize.width, height: imageSize.height)
 
         let buttonString = NSMutableAttributedString(attachment: appleAttachment)

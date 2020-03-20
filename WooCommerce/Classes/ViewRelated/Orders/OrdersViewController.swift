@@ -142,6 +142,10 @@ class OrdersViewController: UIViewController {
         super.viewWillAppear(animated)
 
         syncingCoordinator.synchronizeFirstPage()
+
+        // Fix any _incomplete_ animation if the orders were deleted and refetched from
+        // a different location.
+        tableView.reloadData()
     }
 }
 

@@ -251,6 +251,7 @@ private extension SettingsViewController {
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Experimental Features", comment: "Navigates to experimental features screen")
+        cell.accessibilityIdentifier = "settings-beta-features-button"
     }
 
     func configureFeatureSuggestions(cell: BasicTableViewCell) {
@@ -289,7 +290,7 @@ private extension SettingsViewController {
         cell.textLabel?.textAlignment = .center
         cell.textLabel?.textColor = .error
         cell.textLabel?.text = NSLocalizedString("Log Out", comment: "Log out button title")
-        cell.accessibilityIdentifier = "log-out-button"
+        cell.accessibilityIdentifier = "settings-log-out-button"
     }
 }
 

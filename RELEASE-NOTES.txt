@@ -1,5 +1,8 @@
 3.9
 -----
+- bugfix: now in the Order List the order status label is no more clipped
+- bugfix: now the launch screen is no more stretched
+- The Shipping Provider flow, will be called now Shipping Carrier.
  
 3.8
 -----

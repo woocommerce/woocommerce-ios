@@ -7,12 +7,14 @@ final class TabNavComponent: BaseScreen {
         static let myStoreTabBarItem = "tab-bar-my-store-item"
         static let ordersTabBarItem = "tab-bar-orders-item"
         static let reviewsTabBarItem = "tab-bar-reviews-item"
+        static let productsTabBarItem = "tab-bar-products-item"
     }
 
 
     private let myStoreTabButton: XCUIElement
     private let ordersTabButton: XCUIElement
     private let reviewsTabButton: XCUIElement
+    let productsTabButton: XCUIElement
 
     init() {
         let tabBar = XCUIApplication().tabBars.firstMatch
@@ -20,6 +22,7 @@ final class TabNavComponent: BaseScreen {
         myStoreTabButton = tabBar.buttons[ElementStringIDs.myStoreTabBarItem]
         ordersTabButton = tabBar.buttons[ElementStringIDs.ordersTabBarItem]
         reviewsTabButton = tabBar.buttons[ElementStringIDs.reviewsTabBarItem]
+        productsTabButton = tabBar.buttons[ElementStringIDs.productsTabBarItem]
 
         super.init(element: myStoreTabButton)
 
@@ -44,6 +47,15 @@ final class TabNavComponent: BaseScreen {
         }
 
         return OrdersScreen()
+    }
+
+    @discardableResult
+    func gotoProductsScreen() -> ProductsScreen {
+        if !ProductsScreen.isVisible {
+            productsTabButton.tap()
+        }
+
+        return ProductsScreen()
     }
 
     @discardableResult

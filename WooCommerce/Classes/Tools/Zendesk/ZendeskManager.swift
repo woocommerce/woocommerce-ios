@@ -1,5 +1,5 @@
 import Foundation
-import ZendeskSDK
+import SupportSDK
 import ZendeskCoreSDK
 import CommonUISDK // Zendesk UI SDK
 import WordPressShared
@@ -83,7 +83,7 @@ class ZendeskManager: NSObject {
         Zendesk.initialize(appId: ApiCredentials.zendeskAppId,
                            clientId: ApiCredentials.zendeskClientId,
                            zendeskUrl: ApiCredentials.zendeskUrl)
-        SupportUI.initialize(withZendesk: Zendesk.instance)
+        Support.initialize(withZendesk: Zendesk.instance)
         CommonTheme.currentTheme.primaryColor = UIColor.primary
 
         haveUserIdentity = getUserProfile()

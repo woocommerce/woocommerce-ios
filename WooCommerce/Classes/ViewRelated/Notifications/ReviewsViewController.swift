@@ -1,10 +1,4 @@
 import UIKit
-import Gridicons
-import Yosemite
-import WordPressUI
-import SafariServices
-import Gridicons
-import StoreKit
 
 
 // MARK: - ReviewsViewController
@@ -13,15 +7,15 @@ final class ReviewsViewController: UIViewController {
 
     /// Main TableView.
     ///
-    @IBOutlet private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
 
     /// Mark all as read nav bar button
     ///
     private lazy var rightBarButton: UIBarButtonItem = {
         let item = UIBarButtonItem(image: .checkmarkImage,
-                               style: .plain,
-                               target: self,
-                               action: #selector(markAllAsRead))
+                                   style: .plain,
+                                   target: self,
+                                   action: #selector(markAllAsRead))
         item.accessibilityIdentifier = "reviews-mark-all-as-read-button"
 
         return item
@@ -95,11 +89,15 @@ final class ReviewsViewController: UIViewController {
 
     // MARK: - View Lifecycle
 
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+    init() {
+        super.init(nibName: nil, bundle: nil)
 
         // This 👇 should be called in init so the tab is correctly localized when the app launches
         configureTabBarItem()
+    }
+
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
 
     override func viewDidLoad() {
@@ -158,7 +156,7 @@ private extension ReviewsViewController {
     ///
     func configureTabBarItem() {
         tabBarItem.title = NSLocalizedString("Reviews", comment: "Title of the Reviews tab — plural form of Review")
-        tabBarItem.image = .commentImage
+        tabBarItem.image = .starOutlineImage()
         tabBarItem.accessibilityIdentifier = "tab-bar-reviews-item"
     }
 
@@ -175,7 +173,7 @@ private extension ReviewsViewController {
         rightBarButton.accessibilityTraits = .button
         rightBarButton.accessibilityLabel = NSLocalizedString("Mark All as Read", comment: "Accessibility label for the Mark All Reviews as Read Button")
         rightBarButton.accessibilityHint = NSLocalizedString("Marks Every Review as Read",
-                                                            comment: "VoiceOver accessibility hint for the Mark All Reviews as Read Action")
+                                                             comment: "VoiceOver accessibility hint for the Mark All Reviews as Read Action")
         navigationItem.rightBarButtonItem = rightBarButton
     }
 

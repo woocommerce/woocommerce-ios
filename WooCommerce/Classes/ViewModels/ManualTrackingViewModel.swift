@@ -162,7 +162,7 @@ private extension AddTrackingViewModel {
                 return
             }
 
-            DDLogError("⛔️ Save selected Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
+            DDLogError("⛔️ Save selected Tracking Carrier Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -178,7 +178,7 @@ private extension AddTrackingViewModel {
                 return
             }
 
-            DDLogError("⛔️ Read selected Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
+            DDLogError("⛔️ Read selected Tracking Carrier Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -228,7 +228,7 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
     var shipmentProviderGroupName: String?
 
     var providerCellName: String {
-        return NSLocalizedString("Custom Provider", comment: "Add custom shipping provider. Content of cell titled Shipping Provider")
+        return NSLocalizedString("Custom Carrier", comment: "Add custom shipping carrier. Content of cell titled Shipping Carrier")
     }
 
     let providerCellAccessoryType = UITableViewCell.AccessoryType.none
@@ -275,7 +275,7 @@ private extension AddCustomTrackingViewModel {
                 return
             }
 
-            DDLogError("⛔️ Save selected Custom Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
+            DDLogError("⛔️ Save selected Custom Tracking Carrier Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
         ServiceLocator.stores.dispatch(action)
@@ -291,7 +291,7 @@ private extension AddCustomTrackingViewModel {
                 return
             }
 
-            DDLogError("⛔️ Read selected Custom Tracking Provider Failure: [siteID = \(siteID)]. Error: \(error)")
+            DDLogError("⛔️ Read selected Custom Tracking Carrier Failure: [siteID = \(siteID)]. Error: \(error)")
         }
 
         ServiceLocator.stores.dispatch(action)

@@ -20,22 +20,11 @@
                     </tabBar>
                     <connections>
                         <segue destination="jeN-XS-2qG" kind="relationship" relationship="viewControllers" id="SC7-CG-XND"/>
-                        <segue destination="VMd-nd-2gL" kind="relationship" relationship="viewControllers" id="I5c-0D-HBd"/>
                     </connections>
                 </tabBarController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="nhY-3q-fRh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-724" y="134"/>
-        </scene>
-        <!--Notifications-->
-        <scene sceneID="HkD-nF-E4c">
-            <objects>
-                <viewControllerPlaceholder storyboardName="Notifications" id="VMd-nd-2gL" sceneMemberID="viewController">
-                    <tabBarItem key="tabBarItem" title="Item" id="8Hc-T2-dpT"/>
-                </viewControllerPlaceholder>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="lNt-Bh-d2U" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="-54" y="133"/>
         </scene>
         <!--Dashboard-->
         <scene sceneID="jh0-Br-aHk">

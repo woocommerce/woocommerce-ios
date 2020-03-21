@@ -1,2 +1,5 @@
-- In the dashboard, tapping on a product in the “Top Performers” section opens the product detail.
-- The orders tab now localizes both item quantities and the order badge.
+To offer a more complete picture of your earnings, dashboard stats now also include negative revenue (for example: refunds).
+
+- We’ve redesigned the Orders List to make the Processing and All Orders views more prominent. Want to filter orders by a different status? No worries: you’ll find other options in the Search view.
+- Reviews are so important for online stores, but they would occasionally fail to load on some WooCommerce configurations. We fixed it.
+- Raise your hand if you’d like to edit products on the go! Give available editing options a try on your simple products (but first, you’ll need to enable it: go to Settings > Experimental Features > Products).

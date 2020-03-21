@@ -168,8 +168,23 @@ extension ProductInventorySettingsViewController {
             return true
         }
 
-        if sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually ||
-            stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting || stockStatus != product.productStockStatus {
+        // Checks general settings regardless of whether stock management is enabled.
+        let hasChangesInGeneralSettings = sku != product.sku || manageStockEnabled != product.manageStock || soldIndividually != product.soldIndividually
+
+        if hasChangesInGeneralSettings {
+            presentBackNavigationActionSheet()
+            return false
+        }
+
+        // Checks stock settings depending on whether stock management is enabled.
+        let hasChangesInStockSettings: Bool
+        if manageStockEnabled {
+            hasChangesInStockSettings = stockQuantity != product.stockQuantity || backordersSetting != product.backordersSetting
+        } else {
+            hasChangesInStockSettings = stockStatus != product.productStockStatus
+        }
+
+        if hasChangesInStockSettings {
             presentBackNavigationActionSheet()
             return false
         }

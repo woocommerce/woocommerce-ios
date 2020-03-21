@@ -4,6 +4,7 @@
 - bugfix: now the launch screen is no more stretched
 - The Shipping Provider flow, will be called now Shipping Carrier.
 - Fix pulling to refresh on the Processing tab sometimes will not show the up-to-date orders.
+- [internal] The signup and login flows have code changes. See https://git.io/Jv1Me for testing details.
  
 3.8
 -----

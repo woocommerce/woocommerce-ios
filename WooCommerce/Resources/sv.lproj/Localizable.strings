@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-03-06 00:54:34+0000 */
+/* Translation-Revision-Date: 2020-03-19 00:54:48+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -54,6 +54,9 @@
 /* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
 "99+" = "99+";
 
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "Ett kort utdrag om produkten";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Det krävs en giltig e-postadress för att skicka en autentiseringslänk. Gå tillbaka till föregående sida och ange en giltig e‑postadress.";
 
@@ -102,8 +105,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Avancerat verktyg för att granska appens status";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "Alla";
+/* Title for the second page in the Orders tab. */
+"All Orders" = "Alla ordrar";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alla recensioner har markerats som lästa";
@@ -230,7 +233,8 @@
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Kan inte uppdatera produkten";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "Det går inte att ladda upp bilden";
 
 /* Catalog Visibility label in Product Settings */
@@ -385,7 +389,7 @@
 "Dimensions: %1$@%2$@" = "Dimensioner: %1$@%2$@";
 
 /* Button title Discard Changes in Discard Changes Action Sheet */
-"Discard changes" = "Åsidosätt ändringarna";
+"Discard changes" = "Förkasta ändringarna";
 
 /* Discount label for payment view */
 "Discount" = "Rabatt";
@@ -498,12 +502,6 @@
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Fyll i med lösenordshanteraren";
-
-/* Filter the orders list. */
-"Filter orders" = "Filtrera beställningar";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "Filtrera orderlistan efter betalningsstatus.";
 
 /* User role badge */
 "Follower" = "Följare";
@@ -655,7 +653,7 @@
 "It seems like you've entered an incorrect password. Want to give it another try?" = "Du verkar ha skrivit fel lösenord. Vill du försöka en gång till?";
 
 /* Accessibility label for italic button on formatting toolbar. */
-"Italic" = "Kursivering";
+"Italic" = "Kursiv";
 
 /* Last 24 hours section header */
 "Last 24 hours" = "Senaste 24 timmarna";
@@ -951,11 +949,8 @@
 "Ordered List" = "Sorterad lista";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "Ordrar";
-
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "Ordrar: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "Andra";
@@ -1044,6 +1039,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Öppna ditt e-postprogram och hitta ett brev från WordPress.com.";
 
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "Försök igen.";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Vänta tills vi publicerar den här produkten i din butik";
 
@@ -1066,6 +1064,9 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privat notering";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "Behandlas";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1177,9 +1178,6 @@
 
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Ta bort";
-
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "Ta bort filter";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Ta bort bild";
@@ -1333,6 +1331,10 @@
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Transportleverantör";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the Short Description row on Product main screen */
+"Short description" = "Kort beskrivning";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Visa en lista över återbetalda orderartiklar för den här ordern.";

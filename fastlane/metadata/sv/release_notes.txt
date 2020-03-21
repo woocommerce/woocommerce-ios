@@ -1,2 +1,5 @@
-– På instrumentpanelen öppnar du produktinformationen genom att trycka lätt på en produkt i avsnittet för ”toppresterare”.
-– Beställningsfliken visar nu både artikelantalet och beställningsikonen.
+För att ge en mer fullständig bild av dina intäkter inkluderar instrumentpanelen nu även negativa intäkter (till exempel: återbetalningar).
+
+- Vi har gjort om orderlistan för att göra vyerna Behandlas och Alla ordrar mer framträdande. Vill du filtrera ordrar efter en annan status? Inga problem: du kan hitta fler alternativ i sökvyn.
+- Recensioner är oerhört viktiga för onlinebutiker, men ibland gick de inte att ladda med vissa WooCommerce-konfigurationer. Vi har löst det.
+- Räck upp handen om du vill kunna redigera produkter när du är på språng! Prova de tillgängliga redigeringsalternativen på dina enkla produkter (först måste dock aktivera funktionen: gå till Inställningar > Experimentella funktioner > Produkter).

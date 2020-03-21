@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-03-05 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-03-20 00:54:04+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -54,6 +54,9 @@
 /* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
 "99+" = "99+";
 
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "商品に関する簡単な抜粋";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "認証リンクをメールで送信するには、有効なメールアドレスが必要です。前の画面に戻り、有効なメールアドレスを入力してください。";
 
@@ -102,8 +105,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Advanced tool to review the app status";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "すべて";
+/* Title for the second page in the Orders tab. */
+"All Orders" = "すべての注文";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "すべての既読レビュー";
@@ -230,7 +233,8 @@
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "商品を更新できません";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "画像をアップロードできません";
 
 /* Catalog Visibility label in Product Settings */
@@ -498,12 +502,6 @@
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "パスワードマネージャーで入力";
-
-/* Filter the orders list. */
-"Filter orders" = "注文を絞り込み";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "支払いステータスで注文リストを絞り込みます。";
 
 /* User role badge */
 "Follower" = "フォロワー";
@@ -951,11 +949,8 @@
 "Ordered List" = "順序付きリスト";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "注文";
-
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "注文:%@";
 
 /* My Store > Settings > Other app section */
 "Other" = "その他";
@@ -1044,6 +1039,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "メールアプリを開いて、WordPress.com からのメールを探してください。";
 
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "もう一度お試しください。";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "この製品をストアに公開するまでしばらくお待ちください";
 
@@ -1066,6 +1064,9 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "プライベートメモ";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "処理中";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1177,9 +1178,6 @@
 
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "削除";
-
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "フィルターを削除";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "画像を削除";
@@ -1333,6 +1331,10 @@
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "配送業者";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the Short Description row on Product main screen */
+"Short description" = "簡単な説明";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "この注文で返金された注文アイテムのリストを表示します。";

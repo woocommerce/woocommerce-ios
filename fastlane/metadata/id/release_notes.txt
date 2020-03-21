@@ -1,2 +1,5 @@
-- Ketuk produk di “Performa Tertinggi” di dasbor untuk detail.
-- Pelokalan jumlah item dan lencana pesanan di tab pesanan.
+Untuk menawarkan gambaran penghasilan yang lebih lengkap, statistik dasbor kini juga menyertakan pendapatan negatif (misalnya: pengembalian dana.)
+
+- Kami telah merancang ulang Daftar Pesanan untuk membuat tampilan Pemrosesan dan Semua Pesanan lebih menonjol. Ingin menyaring pesanan menurut status yang berbeda? Jangan khawatir: Anda akan menemukan opsi lainnya di tampilan Pencarian.
+- Ulasan sangatlah penting bagi toko online, tetapi terkadang mereka tidak bisa memuat di beberapa konfigurasi WooCommerce. Kami telah memperbaikinya.
+- Angkat tangan bila Anda ingin menyunting produk di mana saja! Coba opsi penyuntingan yang tersedia pada produk sederhana Anda (tetapi Anda perlu mengaktifkannya terlebih dahulu: buka Pengaturan > Fitur Eksperimental > Produk).

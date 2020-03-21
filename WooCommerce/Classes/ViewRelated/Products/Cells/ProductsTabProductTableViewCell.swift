@@ -119,7 +119,8 @@ private extension ProductsTabProductTableViewCell {
         productImageView.clipsToBounds = true
 
         NSLayoutConstraint.activate([
-            productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),
+            // This multiplier matches the required size(48pt) for a 375pt(349pt contentView) screen
+            productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.137),
             productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor)
             ])
     }
@@ -140,6 +141,6 @@ private extension ProductsTabProductTableViewCell {
     enum Colors {
         static let imageBorderColor = UIColor.border
         static let imagePlaceholderTintColor = UIColor.systemColor(.systemGray2)
-        static let imageBackgroundColor = UIColor.systemColor(.systemGray6)
+        static let imageBackgroundColor = UIColor.listForeground
     }
 }

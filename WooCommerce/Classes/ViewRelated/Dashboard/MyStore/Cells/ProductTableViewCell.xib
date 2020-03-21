@@ -21,22 +21,22 @@
                         <rect key="frame" x="16" y="16" width="256" height="72"/>
                         <subviews>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="yk6-X3-NSJ">
-                                <rect key="frame" x="0.0" y="0.0" width="29" height="29"/>
+                                <rect key="frame" x="0.0" y="0.0" width="37" height="37"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="yk6-X3-NSJ" secondAttribute="height" multiplier="1:1" id="52Z-Kf-0Bw"/>
                                 </constraints>
                             </imageView>
                             <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="wbD-Qx-IG5">
-                                <rect key="frame" x="45" y="0.0" width="145" height="58.5"/>
+                                <rect key="frame" x="53" y="0.0" width="137" height="58.5"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=" " textAlignment="natural" lineBreakMode="tailTruncation" numberOfLines="2" baselineAdjustment="alignBaselines" adjustsFontForContentSizeCategory="YES" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="B98-58-fIv">
-                                        <rect key="frame" x="0.0" y="0.0" width="145" height="42.5"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="137" height="42.5"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" horizontalCompressionResistancePriority="1000" verticalCompressionResistancePriority="1000" text="     " textAlignment="natural" lineBreakMode="wordWrap" baselineAdjustment="alignBaselines" minimumScaleFactor="0.5" adjustsLetterSpacingToFitWidth="YES" adjustsFontForContentSizeCategory="YES" translatesAutoresizingMaskIntoConstraints="NO" id="hrx-8V-5Ga">
-                                        <rect key="frame" x="0.0" y="42.5" width="145" height="16"/>
+                                        <rect key="frame" x="0.0" y="42.5" width="137" height="16"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleFootnote"/>
                                         <nil key="textColor"/>
                                         <nil key="highlightedColor"/>
@@ -66,7 +66,7 @@
                     <constraint firstAttribute="trailing" secondItem="VJh-YT-pnW" secondAttribute="trailing" constant="16" id="EuK-Sc-fLf"/>
                     <constraint firstItem="VJh-YT-pnW" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="16" id="ZfX-mu-zvg"/>
                     <constraint firstAttribute="bottom" secondItem="VJh-YT-pnW" secondAttribute="bottom" constant="16" id="hC4-B8-Gtj"/>
-                    <constraint firstItem="yk6-X3-NSJ" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.1" id="p6g-et-9ff"/>
+                    <constraint firstItem="yk6-X3-NSJ" firstAttribute="width" secondItem="H2p-sc-9uM" secondAttribute="width" multiplier="0.128" id="p6g-et-9ff"/>
                     <constraint firstItem="VJh-YT-pnW" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" constant="16" id="ymu-ST-LOb"/>
                 </constraints>
             </tableViewCellContentView>

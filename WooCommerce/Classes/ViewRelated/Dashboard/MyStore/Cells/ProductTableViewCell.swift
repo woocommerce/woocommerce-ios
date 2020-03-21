@@ -91,6 +91,6 @@ private extension ProductTableViewCell {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
         static let borderColor = UIColor.border
-        static let backgroundColor = UIColor.systemColor(.systemGray6)
+        static let backgroundColor = UIColor.listForeground
     }
 }

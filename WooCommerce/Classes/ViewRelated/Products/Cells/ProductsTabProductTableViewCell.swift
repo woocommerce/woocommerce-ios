@@ -17,6 +17,10 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         return label
     }()
 
+    private let bottomBorderView: UIView = {
+        return UIView(frame: .zero)
+    }()
+
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureBackground()
@@ -24,7 +28,7 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         configureNameLabel()
         configureDetailsLabel()
         configureProductImageView()
-        configureAccessoryType()
+        configureBottomBorderView()
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -81,8 +85,17 @@ private extension ProductsTabProductTableViewCell {
         stackView.alignment = .leading
 
         stackView.translatesAutoresizingMaskIntoConstraints = false
+        bottomBorderView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackView)
+        contentView.addSubview(bottomBorderView)
         contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
+
+        NSLayoutConstraint.activate([
+            bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            bottomBorderView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            bottomBorderView.leadingAnchor.constraint(equalTo: contentStackView.leadingAnchor),
+            bottomBorderView.heightAnchor.constraint(equalToConstant: 0.5)
+        ])
     }
 
     func createContentStackView() -> UIView {
@@ -119,14 +132,14 @@ private extension ProductsTabProductTableViewCell {
         productImageView.clipsToBounds = true
 
         NSLayoutConstraint.activate([
-            // This multiplier matches the required size(48pt) for a 375pt(349pt contentView) screen
-            productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.137),
+            // This multiplier matches the required size(48pt) for a 375pt(as per designs) content view width
+            productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.128),
             productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor)
             ])
     }
 
-    func configureAccessoryType() {
-        accessoryType = .disclosureIndicator
+    func configureBottomBorderView() {
+        bottomBorderView.backgroundColor = .systemColor(.separator)
     }
 }
 

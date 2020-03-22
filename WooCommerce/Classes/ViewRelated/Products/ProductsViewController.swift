@@ -215,6 +215,7 @@ private extension ProductsViewController {
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
+        tableView.separatorStyle = .none
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
         headerContainer.addSubview(topBannerView)

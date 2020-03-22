@@ -11,6 +11,7 @@ class ProductTableViewCell: UITableViewCell {
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var detailLabel: UILabel!
     @IBOutlet private var priceLabel: UILabel!
+    @IBOutlet private var bottomBorderView: UIView!
 
     var nameText: String? {
         get {
@@ -46,6 +47,7 @@ class ProductTableViewCell: UITableViewCell {
         detailLabel.applyFootnoteStyle()
         applyProductImageStyle()
         contentView.backgroundColor = .listForeground
+        bottomBorderView.backgroundColor = .systemColor(.separator)
     }
 
     private func applyProductImageStyle() {

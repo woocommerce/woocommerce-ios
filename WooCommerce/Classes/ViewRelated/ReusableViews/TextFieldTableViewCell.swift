@@ -38,6 +38,7 @@ private extension TextFieldTableViewCell {
     func configureTextField() {
         textField.clearButtonMode = .whileEditing
         textField.applyHeadlineStyle()
+        textField.delegate = self
     }
 }
 
@@ -48,5 +49,12 @@ private extension TextFieldTableViewCell {
 
     @objc func textFieldDidBegin(textField: UITextField) {
         onTextDidBeginEditing?()
+    }
+}
+
+extension TextFieldTableViewCell: UITextFieldDelegate {
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
 }

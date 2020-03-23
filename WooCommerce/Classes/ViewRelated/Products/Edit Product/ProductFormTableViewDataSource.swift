@@ -124,9 +124,11 @@ private extension ProductFormTableViewDataSource {
 
         let placeholder = NSLocalizedString("Title", comment: "Placeholder in the Product Title row on Product form screen.")
 
-        let viewModel = TextFieldTableViewCell.ViewModel(text: name, placeholder: placeholder) { [weak self] newName in
+        let viewModel = TextFieldTableViewCell.ViewModel(text: name, placeholder: placeholder, onTextChange: { [weak self] newName in
             self?.onNameChange?(newName)
-        }
+            }, onTextDidBeginEditing: {
+                ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
+        })
         cell.configure(viewModel: viewModel)
     }
 

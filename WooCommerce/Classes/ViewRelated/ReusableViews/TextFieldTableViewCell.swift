@@ -20,6 +20,7 @@ final class TextFieldTableViewCell: UITableViewCell {
 
         configureTextField()
         applyDefaultBackgroundStyle()
+        selectionStyle = .none
     }
 
     func configure(viewModel: ViewModel) {

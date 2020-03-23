@@ -260,13 +260,11 @@ extension ProductFormViewController: UITableViewDelegate {
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
-            case .images:
-                break
-            case .name:
-                break
             case .description:
                 ServiceLocator.analytics.track(.productDetailViewProductDescriptionTapped)
                 editProductDescription()
+            default:
+                break
             }
         case .settings(let rows):
             let row = rows[indexPath.row]

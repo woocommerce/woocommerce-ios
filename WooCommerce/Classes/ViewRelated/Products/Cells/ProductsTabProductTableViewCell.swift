@@ -88,7 +88,7 @@ private extension ProductsTabProductTableViewCell {
         bottomBorderView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackView)
         contentView.addSubview(bottomBorderView)
-        contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16))
+        contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
 
         NSLayoutConstraint.activate([
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
@@ -102,9 +102,7 @@ private extension ProductsTabProductTableViewCell {
         let contentStackView = UIStackView(arrangedSubviews: [nameLabel, detailsLabel])
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .vertical
-        contentStackView.spacing = 2
-        contentStackView.layoutMargins = .init(top: 3, left: 0, bottom: 3, right: 0)
-        contentStackView.isLayoutMarginsRelativeArrangement = true
+        contentStackView.spacing = 3
         return contentStackView
     }
 
@@ -135,8 +133,8 @@ private extension ProductsTabProductTableViewCell {
         productImageView.clipsToBounds = true
 
         NSLayoutConstraint.activate([
-            // This multiplier matches the required size(48pt) for a 375pt(as per designs) content view width
-            productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.128),
+            // This multiplier matches the required size(37.5pt) for a 375pt(as per designs) content view width
+            productImageView.widthAnchor.constraint(equalTo: contentView.widthAnchor, multiplier: 0.1),
             productImageView.widthAnchor.constraint(equalTo: productImageView.heightAnchor)
             ])
     }

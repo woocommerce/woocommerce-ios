@@ -88,7 +88,7 @@ private extension ProductsTabProductTableViewCell {
         bottomBorderView.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(stackView)
         contentView.addSubview(bottomBorderView)
-        contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 16, left: 16, bottom: 16, right: 16))
+        contentView.pinSubviewToAllEdges(stackView, insets: UIEdgeInsets(top: 6, left: 16, bottom: 6, right: 16))
 
         NSLayoutConstraint.activate([
             bottomBorderView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
@@ -102,6 +102,9 @@ private extension ProductsTabProductTableViewCell {
         let contentStackView = UIStackView(arrangedSubviews: [nameLabel, detailsLabel])
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .vertical
+        contentStackView.spacing = 2
+        contentStackView.layoutMargins = .init(top: 3, left: 0, bottom: 3, right: 0)
+        contentStackView.isLayoutMarginsRelativeArrangement = true
         return contentStackView
     }
 

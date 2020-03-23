@@ -153,23 +153,6 @@ final class TaxClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
-    // MARK: - TaxClassAction.resetStoredTaxClasses
-
-    /// Verifies that `TaxClassAction.resetStoredTaxClasses` deletes the Tax Classes from Storage
-    ///
-    func testResetStoredTaxClassesEffectivelyNukesTheTaxClassesCache() {
-        let expectation = self.expectation(description: "Stored Tax Classes Reset")
-
-        let action = TaxClassAction.resetStoredTaxClasses {
-            self.store.upsertStoredTaxClass(readOnlyTaxClass: self.sampleTaxClass(), in: self.viewStorage)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TaxClass.self), 1)
-            expectation.fulfill()
-        }
-
-        store.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-    }
-
     // MARK: - TaxClassAction.requestMissingTaxClasses
 
     /// Verifies that `TaxClassAction.requestMissingTaxClasses` request the Tax Class found in a specified Product.

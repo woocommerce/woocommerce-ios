@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-03-05 00:54:04+0000 */
+/* Translation-Revision-Date: 2020-03-18 00:54:54+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: nl */
@@ -54,6 +54,9 @@
 /* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
 "99+" = "99+";
 
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "Een korte samenvatting van het product";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "Er is een geldig e-mailadres vereist om een verificatielink te mailen. Ga terug naar het vorige scherm en voer een geldig e-mailadres in.";
 
@@ -102,8 +105,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "Geavanceerde tool om de app-status te controleren";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "Alles";
+/* Title for the second page in the Orders tab. */
+"All Orders" = "Alle bestellingen";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "Alle beoordelingen zijn gemarkeerd als gelezen";
@@ -230,7 +233,8 @@
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "Kan product niet bijwerken";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "De afbeelding kan niet geüpload worden";
 
 /* Catalog Visibility label in Product Settings */
@@ -498,12 +502,6 @@
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "Invullen met wachtwoordmanager";
-
-/* Filter the orders list. */
-"Filter orders" = "Bestellingen filteren";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "Filtert de bestellijst op betaalstatus.";
 
 /* User role badge */
 "Follower" = "Volger";
@@ -951,11 +949,8 @@
 "Ordered List" = "Geordende lijst";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "Bestellingen";
-
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "Bestellingen: %@";
 
 /* My Store > Settings > Other app section */
 "Other" = "Overige";
@@ -1044,6 +1039,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "Open jouw e-mail app en kijk naar een e-mail van WordPress.com.";
 
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "Probeer het nog eens.";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "Een moment geduld terwijl we dit product in je winkel publiceren";
 
@@ -1066,6 +1064,9 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "Privébericht";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "Bezig met verwerken";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1177,9 +1178,6 @@
 
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "Verwijderen";
-
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "Filters verwijderen";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "Afbeelding verwijderen";
@@ -1333,6 +1331,10 @@
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "Bezorgservice";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the Short Description row on Product main screen */
+"Short description" = "Korte beschrijving";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "Toon een lijst van terugbetaalde bestelde artikelen voor deze bestelling.";

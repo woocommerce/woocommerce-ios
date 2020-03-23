@@ -1,2 +1,5 @@
-- Nella bacheca, toccando un prodotto nella sezione di quelli con il migliore andamento si aprono i dettagli del prodotto.
-- La scheda degli ordini ora localizza sia le quantità degli articoli sia il badge dell'ordine.
+Per offrire un'immagine più completa dei tuoi guadagni, le statistiche della bacheca ora comprendono anche il fatturato negativo (ad esempio i rimborsi).
+
+- Abbiamo riprogettato l'elenco degli ordini per rendere le viste Elaborazione e Tutti gli ordini più prominenti. Desideri filtrare gli ordini per un diverso stato? Non preoccuparti: troverai altre opzioni nella vista Cerca.
+- Le recensioni sono molto importanti per i negozi online, ma a volte il loro caricamento non riusciva su alcune configurazioni WooCommerce. Abbiamo risolto il problema.
+- Alza la mano se vorresti modificare i prodotti in viaggio! Prova le opzioni di modifica disponibili sui tuoi semplici prodotti (ma prima di tutto devi abilitarle: vai a Impostazioni > Funzionalità in fase sperimentale > Prodotti).

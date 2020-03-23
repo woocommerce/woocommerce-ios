@@ -86,7 +86,7 @@ private extension TopBannerView {
         infoLabel.numberOfLines = 0
 
         if isActionEnabled {
-            dismissButton.setImage(Gridicon.iconOfType(.cross, withSize: CGSize(width: 24, height: 24)), for: .normal)
+            dismissButton.setImage(UIImage.gridicon(.cross, size: CGSize(width: 24, height: 24)), for: .normal)
             dismissButton.tintColor = .textSubtle
             dismissButton.addTarget(self, action: #selector(onDismissButtonTapped), for: .touchUpInside)
 

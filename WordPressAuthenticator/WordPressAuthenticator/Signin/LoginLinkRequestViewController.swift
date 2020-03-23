@@ -145,6 +145,8 @@ class LoginLinkRequestViewController: LoginViewController {
             return
         }
 
+        vc.loginFields = self.loginFields
+        vc.loginFields.restrictToWPCom = true
         navigationController?.pushViewController(vc, animated: true)
     }
 

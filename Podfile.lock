@@ -1,10 +1,11 @@
 PODS:
   - 1PasswordExtension (1.8.6)
   - Alamofire (4.8.0)
-  - Automattic-Tracks-iOS (0.4.4-beta.2):
-    - CocoaLumberjack (~> 3.5.2)
-    - Reachability (~> 3.1)
+  - Automattic-Tracks-iOS (0.4.4):
+    - CocoaLumberjack (~> 3)
+    - Reachability (~> 3)
     - Sentry (~> 4)
+    - Sodium (~> 0.8.0)
     - UIDeviceIdentifier (~> 1)
   - Charts (3.3.0):
     - Charts/Core (= 3.3.0)
@@ -42,6 +43,7 @@ PODS:
   - Sentry (4.5.0):
     - Sentry/Core (= 4.5.0)
   - Sentry/Core (4.5.0)
+  - Sodium (0.8.0)
   - SVProgressHUD (2.2.5)
   - UIDeviceIdentifier (1.4.0)
   - WordPress-Aztec-iOS (1.11.0)
@@ -91,7 +93,7 @@ PODS:
 
 DEPENDENCIES:
   - Alamofire (~> 4.8)
-  - Automattic-Tracks-iOS (~> 0.4.4-beta)
+  - Automattic-Tracks-iOS (~> 0.4.4)
   - Charts (~> 3.3.0)
   - CocoaLumberjack (~> 3.5)
   - CocoaLumberjack/Swift (~> 3.5)
@@ -126,6 +128,7 @@ SPEC REPOS:
     - "NSURL+IDN"
     - Reachability
     - Sentry
+    - Sodium
     - SVProgressHUD
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
@@ -158,7 +161,7 @@ CHECKOUT OPTIONS:
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
   Alamofire: 3ec537f71edc9804815215393ae2b1a8ea33a844
-  Automattic-Tracks-iOS: 6d382b8a75dd107c6d73f8f539e734ff5064ec69
+  Automattic-Tracks-iOS: dbe6301bebdc1e444972475bae19299491702cef
   Charts: e0dd4cd8f257bccf98407b58183ddca8e8d5b578
   CocoaLumberjack: 2f44e60eb91c176d471fdba43b9e3eae6a721947
   FormatterKit: 4b8f29acc9b872d5d12a63efb560661e8f2e1b98
@@ -173,6 +176,7 @@ SPEC CHECKSUMS:
   "NSURL+IDN": afc873e639c18138a1589697c3add197fe8679ca
   Reachability: 33e18b67625424e47b6cde6d202dce689ad7af96
   Sentry: ab6c209f23700d1460691dbc90e19ed0a05d496b
+  Sodium: 63c0ca312a932e6da481689537d4b35568841bdc
   SVProgressHUD: 1428aafac632c1f86f62aa4243ec12008d7a51d6
   UIDeviceIdentifier: 44f805037d21b94394821828f4fcaba34b38c2d0
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
@@ -193,6 +197,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 7a621a849d7ebba2524a045108d7f85c5d265d02
+PODFILE CHECKSUM: ceb80100f483af451e35e26e59fcabbd6ad194d8
 
 COCOAPODS: 1.9.1

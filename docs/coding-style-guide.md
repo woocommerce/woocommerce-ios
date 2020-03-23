@@ -12,7 +12,7 @@ Closing braces should always be placed on a new line regardless of the number of
 
 ```swift
 guard condition else {
-   return
+    return
 }
 
 if condition {
@@ -38,7 +38,7 @@ Parentheses around conditionals are not required and should be omitted.
 
 ```swift
 if name == "Hello" {
-  print("World")
+    print("World")
 }
 ```
 
@@ -46,7 +46,7 @@ if name == "Hello" {
 
 ```swift
 if (name == "Hello") {
-  print("World")
+    print("World")
 }
 ```
 

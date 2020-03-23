@@ -11,6 +11,10 @@ final class ProductFormViewController: UIViewController {
         return keyboardFrameObserver
     }()
 
+    /// The product model before any potential edits; reset after a remote update.
+    private var originalProduct: Product
+
+    /// The product model with potential edits; reset after a remote update.
     private var product: Product {
         didSet {
             if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
@@ -28,6 +32,8 @@ final class ProductFormViewController: UIViewController {
             })
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
+
+            updateNavigationBar(isUpdateEnabled: product != originalProduct)
         }
     }
 
@@ -45,6 +51,7 @@ final class ProductFormViewController: UIViewController {
 
     init(product: Product, currency: String) {
         self.currency = currency
+        self.originalProduct = product
         self.product = product
         self.viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
         self.productImageActionHandler = ProductImageActionHandler(siteID: product.siteID,
@@ -98,27 +105,8 @@ final class ProductFormViewController: UIViewController {
 
 private extension ProductFormViewController {
     func configureNavigationBar() {
-        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
-
-        let updateButtonItem = UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
-        updateButtonItem.accessibilityIdentifier = "single-product-update-button"
-
-        navigationItem.rightBarButtonItems = [updateButtonItem]
-
-        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
-            navigationItem.rightBarButtonItems?.insert(createMoreOptionsBarButtonItem(), at: 0)
-        }
+        updateNavigationBar(isUpdateEnabled: originalProduct != product)
         removeNavigationBackBarButtonText()
-    }
-
-    func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
-        let moreButton = UIBarButtonItem(image: .moreImage,
-                                     style: .plain,
-                                     target: self,
-                                     action: #selector(presentMoreOptionsActionSheet))
-        moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
-        moreButton.accessibilityIdentifier = "edit-product-more-options-button"
-        return moreButton
     }
 
     func configureMainView() {
@@ -185,6 +173,7 @@ private extension ProductFormViewController {
                 }
                 return
             }
+            self?.originalProduct = product
             self?.product = product
 
             ServiceLocator.analytics.track(.productDetailUpdateSuccess)
@@ -195,7 +184,7 @@ private extension ProductFormViewController {
     }
 
     func displayError(error: ProductUpdateError?) {
-        let title = NSLocalizedString("Cannot update Product", comment: "The title of the alert when there is an error updating the product")
+        let title = NSLocalizedString("Cannot update product", comment: "The title of the alert when there is an error updating the product")
 
         let message = error?.alertMessage
 
@@ -226,6 +215,37 @@ private extension ProductFormViewController {
     func displayProductSettings() {
         let viewController = ProductSettingsViewController(product: product)
         navigationController?.pushViewController(viewController, animated: true)
+    }
+}
+
+private extension ProductFormViewController {
+    func updateNavigationBar(isUpdateEnabled: Bool) {
+        var rightBarButtonItems = [UIBarButtonItem]()
+
+        if isUpdateEnabled {
+            rightBarButtonItems.append(createUpdateBarButtonItem())
+        }
+
+        if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.editProductsRelease2) {
+            rightBarButtonItems.insert(createMoreOptionsBarButtonItem(), at: 0)
+        }
+
+        navigationItem.rightBarButtonItems = rightBarButtonItems
+    }
+
+    func createUpdateBarButtonItem() -> UIBarButtonItem {
+        let updateTitle = NSLocalizedString("Update", comment: "Action for updating a Product remotely")
+        return UIBarButtonItem(title: updateTitle, style: .done, target: self, action: #selector(updateProduct))
+    }
+
+    func createMoreOptionsBarButtonItem() -> UIBarButtonItem {
+        let moreButton = UIBarButtonItem(image: .moreImage,
+                                     style: .plain,
+                                     target: self,
+                                     action: #selector(presentMoreOptionsActionSheet))
+        moreButton.accessibilityLabel = NSLocalizedString("More options", comment: "Accessibility label for the Edit Product More Options action sheet")
+        moreButton.accessibilityIdentifier = "edit-product-more-options-button"
+        return moreButton
     }
 }
 
@@ -341,16 +361,25 @@ private extension ProductFormViewController {
     }
 }
 
-extension ProductFormViewController: TextViewViewControllerDelegate {
-    func validate(text: String) -> Bool {
-        return !text.isEmpty
+
+// MARK: - Navigation actions handling
+//
+extension ProductFormViewController {
+    override func shouldPopOnBackButton() -> Bool {
+        if product != originalProduct {
+            presentBackNavigationActionSheet()
+            return false
+        }
+        return true
     }
 
-    func validationErrorMessage() -> String {
-        return NSLocalizedString("Please add a title",
-                                 comment: "Product title error notice message, when the title is empty")
+    private func presentBackNavigationActionSheet() {
+        UIAlertController.presentDiscardChangesActionSheet(viewController: self, onDiscard: { [weak self] in
+            self?.navigationController?.popViewController(animated: true)
+        })
     }
 }
+
 
 // MARK: Action - Edit Product Parameters
 //
@@ -403,8 +432,8 @@ private extension ProductFormViewController {
         }
 
         let hasChangedData: Bool = {
-            regularPrice != product.regularPrice ||
-                salePrice != product.salePrice ||
+                getDecimalPrice(regularPrice) != getDecimalPrice(product.regularPrice) ||
+                getDecimalPrice(salePrice) != getDecimalPrice(product.salePrice) ||
                 dateOnSaleStart != product.dateOnSaleStart ||
                 dateOnSaleEnd != product.dateOnSaleEnd ||
                 taxStatus != product.productTaxStatus ||
@@ -504,6 +533,18 @@ private extension ProductFormViewController {
             return
         }
         self.product = productUpdater.briefDescriptionUpdated(briefDescription: newBriefDescription)
+    }
+}
+
+// MARK: Convenience Methods
+//
+private extension ProductFormViewController {
+    func getDecimalPrice(_ price: String?) -> NSDecimalNumber? {
+        guard let price = price else {
+            return nil
+        }
+        let currencyFormatter = CurrencyFormatter()
+        return currencyFormatter.convertToDecimal(from: price)
     }
 }
 

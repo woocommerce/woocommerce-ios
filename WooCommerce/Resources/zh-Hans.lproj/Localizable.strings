@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2020-03-04 03:54:04+0000 */
+/* Translation-Revision-Date: 2020-03-18 00:54:56+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -54,6 +54,9 @@
 /* Content of the badge presented over the Orders icon when there are more than 99 orders processing */
 "99+" = "99+";
 
+/* Placeholder of the Product Short Description row on Product main screen */
+"A brief excerpt about the product" = "产品简介摘录";
+
 /* An error message. */
 "A valid email address is needed to mail an authentication link. Please return to the previous screen and provide a valid email address." = "必须提供有效电子邮件地址才能发送身份验证链接。请返回上一屏幕并提供有效电子邮件地址。";
 
@@ -102,8 +105,8 @@
 /* Cell subtitle explaining why you might want to navigate to view the application log. */
 "Advanced tool to review the app status" = "用于查看应用程序状态的高级工具";
 
-/* Name of the All filter on the Order List screen - it means all orders will be displayed. */
-"All" = "全部";
+/* Title for the second page in the Orders tab. */
+"All Orders" = "所有订单";
 
 /* Mark all reviews as read notice */
 "All reviews marked as read" = "所有评论均已标记为已读";
@@ -230,7 +233,8 @@
 /* The title of the alert when there is an error updating the product */
 "Cannot update Product" = "无法更新产品";
 
-/* Title of the alert when there is an error uploading image(s) */
+/* The title of the alert when there is an error uploading an image
+   Title of the alert when there is an error uploading image(s) */
 "Cannot upload image" = "无法上传图像";
 
 /* Catalog Visibility label in Product Settings */
@@ -498,12 +502,6 @@
 
 /* The password manager button in login pages. The button opens a dialog showing which password manager to use (e.g. 1Password, LastPass). */
 "Fill with password manager" = "使用密码管理器填写";
-
-/* Filter the orders list. */
-"Filter orders" = "过滤订单";
-
-/* VoiceOver accessibility hint, informing the user the button can be used to filter the order list. */
-"Filters the order list by payment status." = "按付款状态过滤订单列表。";
 
 /* User role badge */
 "Follower" = "粉丝";
@@ -951,11 +949,8 @@
 "Ordered List" = "有序列表";
 
 /* Default title for Orders List shown when tapping on the Search filter.
-   Orders stat label on dashboard - should be plural. - The title of the Orders tab. - Title that appears on top of the Order List screen when there is no filter applied to the list (plural form of the word Order). */
+   Orders stat label on dashboard - should be plural. - The title of the Orders tab. */
 "Orders" = "订单";
-
-/* Title that appears on top of the Order List screen when a filter is applied. It reads: Orders: {name of filter} */
-"Orders: %@" = "订单：%@";
 
 /* My Store > Settings > Other app section */
 "Other" = "其他";
@@ -1044,6 +1039,9 @@
 /* Message to ask the user to check their email and look for a WordPress.com email. */
 "Please open your email app and look for an email from WordPress.com." = "请打开电子邮件应用程序，查找来自 WordPress.com 的电子邮件。";
 
+/* The message of the alert when there is an error uploading an image */
+"Please try again." = "请重试。";
+
 /* Message of the in-progress UI while updating the Product remotely */
 "Please wait while we publish this product to your store" = "我们正在将此产品发布到您的商店，请稍候";
 
@@ -1066,6 +1064,9 @@
 
 /* Spoken accessibility label for an icon image that indicates it's a private note and is not seen by the customer. */
 "Private note" = "私人备注";
+
+/* Title for the first page in the Orders tab. */
+"Processing" = "正在处理";
 
 /* Description for Top Performers left column header
    Product section title - Section header title for the product */
@@ -1177,9 +1178,6 @@
 
 /* Confirm button on the alert when the user taps to delete a Product image */
 "Remove" = "删除";
-
-/* Action: Opens the Store in a browser */
-"Remove Filters" = "删除过滤器";
 
 /* Title on the alert when the user taps to delete a Product image */
 "Remove Image" = "删除图片";
@@ -1333,6 +1331,10 @@
 
 /* Add / Edit shipping provider. Title of cell presenting name */
 "Shipping provider" = "配送服务提供商";
+
+/* The navigation bar title of the edit short description screen.
+   Title of the Short Description row on Product main screen */
+"Short description" = "简短说明";
 
 /* VoiceOver accessibility hint, informing the user that the button can be used to view billing information. */
 "Show a list of refunded order items for this order." = "显示此订单的退款订单项列表。";

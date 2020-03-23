@@ -2,11 +2,6 @@ import Yosemite
 
 extension Product {
 
-    // Regex that match all the occurrences of the thousand separators.
-    // All the points or comma (but not the last `.` or `,`)
-    //
-    private static let regexThousandSeparators = "(?:[.,](?=.*[.,])|)+"
-
     private static let placeholder = "0"
 
     static func createRegularPriceViewModel(regularPrice: String?,

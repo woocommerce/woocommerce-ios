@@ -51,8 +51,17 @@ final class UnitInputTableViewCell: UITableViewCell {
         inputFormatter = viewModel.inputFormatter
         onInputChange = viewModel.onInputChange
 
+        rearrangeInputAndUnitStackViewSubviews(using: viewModel.unitPosition)
+    }
+}
+
+// MARK: - UI Updates
+//
+private extension UnitInputTableViewCell {
+    func rearrangeInputAndUnitStackViewSubviews(using position: UnitInputViewModel.UnitPosition) {
         inputAndUnitStackView.removeAllArrangedSubviews()
-        switch viewModel.unitPosition {
+
+        switch position {
         case .beforeInput, .beforeInputWithoutSpace:
             inputAndUnitStackView.addArrangedSubviews([unitLabel, inputTextField])
         case .afterInput, .afterInputWithoutSpace:
@@ -61,7 +70,7 @@ final class UnitInputTableViewCell: UITableViewCell {
             inputAndUnitStackView.addArrangedSubviews([inputTextField])
         }
 
-        switch viewModel.unitPosition {
+        switch position {
         case .beforeInput, .afterInput:
             inputAndUnitStackView.spacing = Constants.stackViewSpacing
         case .afterInputWithoutSpace, .beforeInputWithoutSpace:
@@ -72,6 +81,8 @@ final class UnitInputTableViewCell: UITableViewCell {
     }
 }
 
+// MARK: - Configurations
+//
 private extension UnitInputTableViewCell {
     func configureSelectionStyle() {
         selectionStyle = .none
@@ -83,7 +94,7 @@ private extension UnitInputTableViewCell {
     }
 
     func configureInputAndUnitStackView() {
-        inputAndUnitStackView.spacing = 6
+        inputAndUnitStackView.spacing = Constants.stackViewSpacing
         inputAndUnitStackView.distribution = .fill
     }
 

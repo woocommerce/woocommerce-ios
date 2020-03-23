@@ -4,7 +4,7 @@ extension UIStackView {
     /// Removes all the arranged subviews in the stack view.
     ///
     func removeAllArrangedSubviews() {
-        arrangedSubviews.forEach({ removeArrangedSubview($0) })
+        arrangedSubviews.forEach(removeArrangedSubview(_:))
     }
 
     /// Adds an array of arranged subviews to the stack view.

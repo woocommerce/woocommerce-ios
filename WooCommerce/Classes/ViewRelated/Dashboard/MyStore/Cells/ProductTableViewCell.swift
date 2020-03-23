@@ -11,6 +11,8 @@ class ProductTableViewCell: UITableViewCell {
     @IBOutlet private var nameLabel: UILabel!
     @IBOutlet private var detailLabel: UILabel!
     @IBOutlet private var priceLabel: UILabel!
+
+    /// We use a custom view isntead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
     @IBOutlet private var bottomBorderView: UIView!
 
     var nameText: String? {

@@ -17,6 +17,7 @@ final class ProductsTabProductTableViewCell: UITableViewCell {
         return label
     }()
 
+    /// We use a custom view isntead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
     private let bottomBorderView: UIView = {
         return UIView(frame: .zero)
     }()

@@ -183,15 +183,6 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
         })
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-        // Configure login flow to allow only .com login and prefill the email
-        if let destination = segue.destination as? LoginEmailViewController {
-            destination.loginFields.restrictToWPCom = true
-            destination.loginFields.username = loginFields.emailAddress
-        }
-    }
-
     // MARK: - Send email
 
     /// Makes the call to request a magic signup link be emailed to the user.

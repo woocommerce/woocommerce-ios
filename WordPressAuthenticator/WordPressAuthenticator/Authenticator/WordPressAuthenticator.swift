@@ -269,7 +269,7 @@ import AuthenticationServices
             return false
         }
 
-        let storyboard = UIStoryboard(name: "EmailMagicLink", bundle: bundle)
+        let storyboard = Storyboard.emailMagicLink.instance
         guard let loginController = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
             DDLogInfo("App opened with authentication link but couldn't create login screen.")
             return false

@@ -95,3 +95,6 @@ default.profraw
 
 # WireMock (UI Tests)
 WooCommerce/WooCommerceScreenshots/Mocks/vendor/
+
+# AppCode
+.idea

@@ -17,6 +17,10 @@ final class ProductFormViewController: UIViewController {
     /// The product model with potential edits; reset after a remote update.
     private var product: Product {
         didSet {
+            defer {
+                updateNavigationBar(isUpdateEnabled: product != originalProduct)
+            }
+
             if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
                 return
             }
@@ -32,8 +36,6 @@ final class ProductFormViewController: UIViewController {
             })
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
-
-            updateNavigationBar(isUpdateEnabled: product != originalProduct)
         }
     }
 

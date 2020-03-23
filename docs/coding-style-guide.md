@@ -8,7 +8,7 @@ We also use [SwiftLint](https://github.com/realm/SwiftLint) to enforce as many o
 
 Closing braces should always be placed on a new line regardless of the number of enclosed statements.
 
-#### Preferred
+**Preferred:**
 
 ```swift
 guard condition else {
@@ -22,10 +22,30 @@ if condition {
 }
 ```
 
-#### Not Preferred
+**Not Preferred:**
 
 ```swift
 guard condition else { return }
 
 if condition { } else { }
+```
+
+## Parentheses
+
+Parentheses around conditionals are not required and should be omitted.
+
+**Preferred:**
+
+```swift
+if name == "Hello" {
+  print("World")
+}
+```
+
+**Not Preferred:**
+
+```swift
+if (name == "Hello") {
+  print("World")
+}
 ```

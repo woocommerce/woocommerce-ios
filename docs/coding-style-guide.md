@@ -17,7 +17,7 @@ guard condition else {
 
 if condition {
 
-} else  {
+} else {
 
 }
 ```

@@ -102,7 +102,7 @@ private extension ProductsTabProductTableViewCell {
         let contentStackView = UIStackView(arrangedSubviews: [nameLabel, detailsLabel])
         contentStackView.translatesAutoresizingMaskIntoConstraints = false
         contentStackView.axis = .vertical
-        contentStackView.spacing = 3
+        contentStackView.spacing = 4
         return contentStackView
     }
 

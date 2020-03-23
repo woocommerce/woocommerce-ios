@@ -7,34 +7,49 @@ extension UIImage {
     /// Returns the Link Image.
     ///
     static var linkFieldImage: UIImage {
-        return UIImage(named: "icon-url-field", in: bundle, compatibleWith: nil)!
+        return UIImage(named: "icon-url-field", in: bundle, compatibleWith: nil) ?? UIImage()
     }
 
     /// Returns the Default Magic Link Image.
     ///
     static var magicLinkImage: UIImage {
-        return UIImage(named: "login-magic-link", in: bundle, compatibleWith: nil)!
+        return UIImage(named: "login-magic-link", in: bundle, compatibleWith: nil) ?? UIImage()
     }
 
     /// Returns the Default Site Icon Placeholder Image.
     ///
     @objc
     public static var siteAddressModalPlaceholder: UIImage {
-        return UIImage(named: "site-address", in: bundle, compatibleWith: nil)!
+        return UIImage(named: "site-address", in: bundle, compatibleWith: nil) ?? UIImage()
     }
 
     /// Returns the Default Gravatar Placeholder Image.
     ///
     @objc
     public static var onePasswordImage: UIImage {
-        return UIImage(named: "onepassword-button", in: bundle, compatibleWith: nil)!
+        return UIImage(named: "onepassword-button", in: bundle, compatibleWith: nil) ?? UIImage()
     }
 
     /// Returns the Link Image.
     ///
     @objc
     public static var googleIcon: UIImage {
-        return UIImage(named: "google", in: bundle, compatibleWith: nil)!
+        return UIImage(named: "google", in: bundle, compatibleWith: nil) ?? UIImage()
+    }
+
+    /// Returns the Apple Logo Image.
+    ///
+    public static var appleIcon: UIImage {
+
+        let imageName: String = {
+            if #available(iOS 13, *) {
+                return UITraitCollection.current.userInterfaceStyle == .dark ? "apple-white" : "apple-black"
+            }
+
+            return "apple-black"
+        }()
+
+        return UIImage(named: imageName, in: bundle, compatibleWith: nil) ?? UIImage()
     }
 
     /// Returns WordPressAuthenticator's Bundle

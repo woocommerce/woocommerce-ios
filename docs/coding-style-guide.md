@@ -49,3 +49,27 @@ if (name == "Hello") {
   print("World")
 }
 ```
+
+## Forced Downcasts and Unwrapping
+
+Avoid using `as!` to force a downcast, or `!` to force unwrap. Prefer using `as?` to attempt the cast, then deal with the failure case explicitly.
+
+**Preferred:**
+
+```swift
+func process(someObject: Any) {
+    guard let element = someObject as? Element else {
+        // Optional error handling goes here
+        return
+    }
+    process(element)
+}
+```
+
+**Not Preferred:**
+
+```swift
+func process(someObject: Any) {
+    process(someObject as! Element)
+}
+```

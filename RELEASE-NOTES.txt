@@ -1,3 +1,7 @@
+4.0
+-----
+- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
+
 3.9
 -----
 - bugfix: now in the Order List the order status label is no more clipped

@@ -111,16 +111,9 @@ import WordPressKit
     /// Setup: Everything = [Insets, Backgrounds, titleColor(s), titleLabel]
     ///
     private func configureAppearance() {
-        configureInsets()
         configureBackgrounds()
         configureTitleColors()
         configureTitleLabel()
-    }
-
-    /// Setup: NUXButton's Default Settings
-    ///
-    private func configureInsets() {
-        contentEdgeInsets = UIImage.DefaultRenderMetrics.contentInsets
     }
 
     /// Setup: BackgroundImage

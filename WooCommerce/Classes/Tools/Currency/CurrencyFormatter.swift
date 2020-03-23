@@ -5,6 +5,12 @@ import Yosemite
 // MARK: - Manual currency formatting
 //
 public class CurrencyFormatter {
+    private let currencySettings: CurrencySettings
+
+    init(currencySettings: CurrencySettings = CurrencySettings.shared) {
+        self.currencySettings = currencySettings
+    }
+
     /// Returns a decimal value from a given string.
     /// - Parameters:
     ///   - stringValue: the string received from the API
@@ -13,13 +19,13 @@ public class CurrencyFormatter {
 
         // NSDecimalNumber use by default the local decimal separator to evaluate a decimal amount.
         // We substitute the current decimal separator with the locale decimal separator.
-        let localeDecimalSeparator = Locale.current.decimalSeparator ?? CurrencySettings.shared.decimalSeparator
+        let localeDecimalSeparator = Locale.current.decimalSeparator ?? currencySettings.decimalSeparator
         var newStringValue = stringValue.replacingOccurrences(of: ",", with: localeDecimalSeparator)
         newStringValue = newStringValue.replacingOccurrences(of: ".", with: localeDecimalSeparator)
 
         // Removes the currency symbol, if any.
-        let currencyCode = CurrencySettings.shared.currencyCode
-        let unit = CurrencySettings.shared.symbol(from: currencyCode)
+        let currencyCode = currencySettings.currencyCode
+        let unit = currencySettings.symbol(from: currencyCode)
         newStringValue = newStringValue.replacingOccurrences(of: unit, with: "")
 
         let decimalValue = NSDecimalNumber(string: newStringValue, locale: Locale.current)
@@ -176,9 +182,9 @@ public class CurrencyFormatter {
 
         // If we are here, the human readable version of the amount param is a "large" number *OR* a small number but rounding has been requested,
         // so let's just put the currency symbol on the correct side of the string with proper spacing (based on the site settings).
-        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
-        let symbol = CurrencySettings.shared.symbol(from: code)
-        let position = CurrencySettings.shared.currencyPosition
+        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
+        let symbol = currencySettings.symbol(from: code)
+        let position = currencySettings.currencyPosition
         let isNegative = amount.isNegative()
 
         return formatCurrency(using: humanReadableAmount,
@@ -194,13 +200,13 @@ public class CurrencyFormatter {
     ///
     func formatAmount(_ decimalAmount: NSDecimalNumber, with currency: String = CurrencySettings.shared.currencyCode.rawValue) -> String? {
         // Get the currency code
-        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? CurrencySettings.shared.currencyCode
+        let code = CurrencySettings.CurrencyCode(rawValue: currency) ?? currencySettings.currencyCode
         // Grab the read-only currency options. These are set by the user in Site > Settings.
-        let symbol = CurrencySettings.shared.symbol(from: code)
-        let separator = CurrencySettings.shared.decimalSeparator
-        let numberOfDecimals = CurrencySettings.shared.numberOfDecimals
-        let position = CurrencySettings.shared.currencyPosition
-        let thousandSeparator = CurrencySettings.shared.thousandSeparator
+        let symbol = currencySettings.symbol(from: code)
+        let separator = currencySettings.decimalSeparator
+        let numberOfDecimals = currencySettings.numberOfDecimals
+        let position = currencySettings.currencyPosition
+        let thousandSeparator = currencySettings.thousandSeparator
 
         // Put all the pieces of user preferences on currency formatting together
         // and spit out a string that has the formatted amount.

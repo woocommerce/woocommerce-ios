@@ -22,6 +22,10 @@ enum FeatureFlag: Int {
     ///
     case readonlyProductVariants
 
+    /// Manage product categories
+    ///
+    case manageProductCategories
+
     /// Store stats
     ///
     case stats

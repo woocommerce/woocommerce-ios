@@ -6,7 +6,11 @@ import Yosemite
 public class CurrencySettings {
     /// Shared Instance
     ///
-    static let shared = CurrencySettings()
+    static let shared: CurrencySettings = {
+        let currencySettings = CurrencySettings()
+        currencySettings.configureResultsController()
+        return currencySettings
+    }()
 
 
     // MARK: - Enums
@@ -130,7 +134,6 @@ public class CurrencySettings {
                   thousandSeparator: CurrencySettings.Default.thousandSeparator,
                   decimalSeparator: CurrencySettings.Default.decimalSeparator,
                   numberOfDecimals: CurrencySettings.Default.decimalPosition)
-        configureResultsController()
     }
 
     /// Convenience Initializer:

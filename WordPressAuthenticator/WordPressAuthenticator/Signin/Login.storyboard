@@ -365,7 +365,6 @@
                         <segue destination="klu-4U-PyL" kind="show" identifier="showSignupEmail" id="dh4-9P-l8W"/>
                         <segue destination="IwV-3R-6dB" kind="presentation" identifier="showSignupMethod" id="EmH-Av-vhT"/>
                         <segue destination="T5n-nb-cOW" kind="show" identifier="showSigninV2" id="sIC-Hv-FJw"/>
-                        <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="HMT-Z5-QHr"/>
                         <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="4SK-mG-U33"/>
                     </connections>
                 </viewController>
@@ -1466,6 +1465,5 @@
         <segue reference="nCA-u7-fKm"/>
         <segue reference="swV-lc-6gI"/>
         <segue reference="gD5-d0-X3t"/>
-        <segue reference="pe1-D0-Mpg"/>
     </inferredMetricsTieBreakers>
 </document>

@@ -101,7 +101,7 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/211-remove-showLinkMailView`)
+  - WordPressAuthenticator (~> 1.11.2-beta.1)
   - WordPressShared (~> 1.8.16)
   - WordPressUI (~> 1.5.2)
   - Wormholy (~> 1.5.1)
@@ -133,6 +133,7 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
+    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -147,16 +148,6 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
-
-EXTERNAL SOURCES:
-  WordPressAuthenticator:
-    :branch: issue/211-remove-showLinkMailView
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
-
-CHECKOUT OPTIONS:
-  WordPressAuthenticator:
-    :commit: 8c8170675e2bfa686ebb9fa7620704623d006432
-    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -197,6 +188,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: ceb80100f483af451e35e26e59fcabbd6ad194d8
+PODFILE CHECKSUM: 1fc6543e12a66555e1cd794c166c41693dcab3b5
 
 COCOAPODS: 1.9.1

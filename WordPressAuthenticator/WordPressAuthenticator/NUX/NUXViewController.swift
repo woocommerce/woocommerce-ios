@@ -27,7 +27,6 @@ open class NUXViewController: UIViewController, NUXViewControllerBase, UIViewCon
     public enum SegueIdentifier: String {
         case showSignupMethod
         case showSigninV2
-        case showGoogle
         case showURLUsernamePassword
         case showWPUsernamePassword
         case showSelfHostedLogin

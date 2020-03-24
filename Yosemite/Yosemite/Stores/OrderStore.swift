@@ -147,6 +147,9 @@ private extension OrderStore {
                     } else if let error = error {
                         fetchErrors.append(error)
                         completion()
+                    } else {
+                        // This shouldn't happen but we're adding it just in case.
+                        completion()
                     }
                 }
             }

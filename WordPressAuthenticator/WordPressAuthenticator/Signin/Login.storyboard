@@ -7,10 +7,10 @@
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
     <scenes>
-        <!--googleSignup-->
+        <!--SignupGoogleViewController-->
         <scene sceneID="GBa-1v-wvb">
             <objects>
-                <viewControllerPlaceholder storyboardIdentifier="Signup" storyboardName="Signup" referencedIdentifier="googleSignup" id="MEg-KS-Afs" sceneMemberID="viewController"/>
+                <viewControllerPlaceholder storyboardIdentifier="SignupGoogleViewController" storyboardName="Signup" referencedIdentifier="SignupGoogleViewController" id="MEg-KS-Afs" sceneMemberID="viewController"/>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bjg-XU-5Rh" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="1384" y="-231"/>

@@ -397,7 +397,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         })
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
-    
+
     func testCompletingUpdatingWithZeroSalePrice() {
         // Arrange
         let product = MockProduct().product()

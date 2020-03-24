@@ -1,13 +1,34 @@
 import Yosemite
 
+/// Provides data needed for price settings.
+///
 protocol ProductPriceSettingsViewModelOutput {
-    var product: Product { get }
     var regularPrice: String? { get }
     var salePrice: String? { get }
     var dateOnSaleStart: Date? { get }
     var dateOnSaleEnd: Date? { get }
     var taxStatus: ProductTaxStatus { get }
     var taxClass: TaxClass? { get }
+}
+
+/// Handles actions related to the price settings data.
+///
+protocol ProductPriceSettingsActionHandler {
+    // Initialization
+    func retrieveProductTaxClass(completion: @escaping () -> Void)
+
+    // Input field actions
+    func handleRegularPriceChange(_ regularPrice: String?)
+    func handleSalePriceChange(_ salePrice: String?)
+    func handleTaxClassChange(_ taxClass: TaxClass?)
+    func handleTaxStatusChange(_ taxStatus: ProductTaxStatus)
+    func handleScheduleSaleChange(isEnabled: Bool)
+    func handleSaleStartDateChange(_ date: Date)
+    func handleSaleEndDateChange(_ date: Date)
+
+    // Navigation actions
+    func completeUpdating(onCompletion: ProductPriceSettingsViewController.Completion, onError: (ProductPriceSetingsError) -> Void)
+    func hasUnsavedChanges() -> Bool
 }
 
 enum ProductPriceSetingsError: Error {
@@ -72,11 +93,17 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         }
         taxStatus = product.productTaxStatus
     }
+}
 
+extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     // MARK: - Initialization
 
-    func handleRetrievedTaxClass(_ taxClass: TaxClass?) {
-        self.taxClass = taxClass ?? standardTaxClass
+    func retrieveProductTaxClass(completion: @escaping () -> Void) {
+        let action = TaxClassAction.requestMissingTaxClasses(for: product) { [weak self] (taxClass, error) in
+            self?.taxClass = taxClass ?? self?.standardTaxClass
+            completion()
+        }
+        ServiceLocator.stores.dispatch(action)
     }
 
     // MARK: - UI changes

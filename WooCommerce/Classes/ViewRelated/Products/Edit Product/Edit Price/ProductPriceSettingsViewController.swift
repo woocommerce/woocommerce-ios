@@ -7,7 +7,9 @@ final class ProductPriceSettingsViewController: UIViewController {
 
     @IBOutlet weak private var tableView: UITableView!
 
-    private let viewModel: ProductPriceSettingsViewModel
+    private let siteID: Int64
+
+    private let viewModel: ProductPriceSettingsViewModelOutput & ProductPriceSettingsActionHandler
 
     // Timezone of the website
     //
@@ -40,6 +42,7 @@ final class ProductPriceSettingsViewController: UIViewController {
     /// Init
     ///
     init(product: Product, completion: @escaping Completion) {
+        self.siteID = product.siteID
         self.viewModel = ProductPriceSettingsViewModel(product: product)
         self.onCompletion = completion
         super.init(nibName: nil, bundle: nil)
@@ -114,11 +117,9 @@ private extension ProductPriceSettingsViewController {
     }
 
     func retrieveProductTaxClass() {
-        let action = TaxClassAction.requestMissingTaxClasses(for: viewModel.product) { [weak self] (taxClass, error) in
-            self?.viewModel.handleRetrievedTaxClass(taxClass)
+        viewModel.retrieveProductTaxClass { [weak self] in
             self?.refreshViewContent()
         }
-        ServiceLocator.stores.dispatch(action)
     }
 }
 
@@ -229,7 +230,7 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             }
             navigationController?.pushViewController(listSelectorViewController, animated: true)
         case .taxClass:
-            let dataSource = ProductTaxClassListSelectorDataSource(product: viewModel.product, selected: viewModel.taxClass)
+            let dataSource = ProductTaxClassListSelectorDataSource(siteID: siteID, selected: viewModel.taxClass)
             let navigationBarTitle = NSLocalizedString("Tax classes", comment: "Navigation bar title of the Product tax class selector screen")
             let noResultsPlaceholderText = NSLocalizedString("No tax classes yet",
             comment: "The text on the placeholder overlay when there are no tax classes on the Tax Class list picker")

@@ -7,25 +7,46 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
     // MARK: - Initialization
 
     func testHandlingNilRetrievedTaxClass() {
+        // Arrange
+        let mockStoresManager = MockTaxClassStoresManager(missingTaxClass: nil, sessionManager: SessionManager.testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
         let originalTaxClass = "zero"
         let product = MockProduct().product(taxClass: originalTaxClass)
         let viewModel = ProductPriceSettingsViewModel(product: product)
         XCTAssertEqual(viewModel.taxClass?.slug, originalTaxClass)
 
-        // A nil tax class defaults to the standard tax class.
-        viewModel.handleRetrievedTaxClass(nil)
+        // Act
+        let expectation = self.expectation(description: "Wait for retrieving product tax class")
+        viewModel.retrieveProductTaxClass {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Assert
         XCTAssertEqual(viewModel.taxClass?.slug, "standard")
     }
 
     func testHandlingNonNilRetrievedTaxClass() {
+        // Arrange
+        let taxClass = TaxClass(siteID: 18, name: "Lowest tax", slug: "nice-tax-class")
+        let mockStoresManager = MockTaxClassStoresManager(missingTaxClass: taxClass, sessionManager: SessionManager.testingInstance)
+        ServiceLocator.setStores(mockStoresManager)
+
         let originalTaxClass = ""
         let product = MockProduct().product(taxClass: originalTaxClass)
         let viewModel = ProductPriceSettingsViewModel(product: product)
         // An empty tax class slug defaults to the standard tax class.
         XCTAssertEqual(viewModel.taxClass?.slug, "standard")
 
-        let taxClass = TaxClass(siteID: 18, name: "Lowest tax", slug: "nice-tax-class")
-        viewModel.handleRetrievedTaxClass(taxClass)
+        // Act
+        let expectation = self.expectation(description: "Wait for retrieving product tax class")
+        viewModel.retrieveProductTaxClass {
+            expectation.fulfill()
+        }
+        waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
+
+        // Assert
         XCTAssertEqual(viewModel.taxClass?.slug, taxClass.slug)
     }
 

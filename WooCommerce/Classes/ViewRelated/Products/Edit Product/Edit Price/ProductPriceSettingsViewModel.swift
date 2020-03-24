@@ -77,9 +77,12 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     //
     private let standardTaxClass: TaxClass
 
-    init(product: Product, timezoneForScheduleSaleDates: TimeZone = TimeZone.siteTimezone) {
+    private let currencyFormatter: CurrencyFormatter
+
+    init(product: Product, currencySettings: CurrencySettings = CurrencySettings.shared, timezoneForScheduleSaleDates: TimeZone = TimeZone.siteTimezone) {
         self.product = product
         self.timezoneForScheduleSaleDates = timezoneForScheduleSaleDates
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
         regularPrice = product.regularPrice
         salePrice = product.salePrice
@@ -211,7 +214,6 @@ private extension ProductPriceSettingsViewModel {
         guard let price = price else {
             return nil
         }
-        let currencyFormatter = CurrencyFormatter()
         return currencyFormatter.convertToDecimal(from: price)
     }
 }

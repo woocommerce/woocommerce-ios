@@ -177,6 +177,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     // Sale start date
 
+    // TODO-2020: support sale dates without an end date
+    /*
     func testHandlingSaleStartDateWithoutSaleEndDate() {
         let timezone = TimeZone(secondsFromGMT: 0)!
         let originalSaleStartDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
@@ -191,6 +193,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.dateOnSaleStart, saleStartDate)
         XCTAssertEqual(viewModel.dateOnSaleEnd, originalSaleEndDate)
     }
+    */
 
     func testHandlingSaleStartDateWithAnEarlierSaleEndDate() {
         let timezone = TimeZone(secondsFromGMT: 0)!
@@ -228,6 +231,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     // Sale end date
 
+    // TODO-2020: support sale dates without a start date
+    /*
     func testHandlingSaleEndDateWithoutSaleStartDate() {
         let timezone = TimeZone(secondsFromGMT: 0)!
         let originalSaleStartDate: Date? = nil
@@ -244,6 +249,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.dateOnSaleStart, expectedStartDate)
         XCTAssertEqual(viewModel.dateOnSaleEnd, expectedEndDate)
     }
+    */
 
     func testHandlingSaleEndDateWithAnEarlierSaleStartDate() {
         let timezone = TimeZone(secondsFromGMT: 0)!
@@ -321,6 +327,8 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
 
+    // TODO-2021: support zero price.
+    /*
     func testCompletingUpdatingWithZeroSalePrice() {
         let product = MockProduct().product()
         let viewModel = ProductPriceSettingsViewModel(product: product)
@@ -340,6 +348,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         })
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
     }
+    */
 
     // `hasUnsavedChanges`
 

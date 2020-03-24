@@ -31,13 +31,17 @@ protocol ProductPriceSettingsActionHandler {
     func hasUnsavedChanges() -> Bool
 }
 
+/// Error cases that could occur in product price settings.
+///
 enum ProductPriceSetingsError: Error {
     case salePriceWithoutRegularPrice
     case salePriceHigherThanRegularPrice
 }
 
+/// Provides view data for price settings, and handles init/UI/navigation actions needed in product price settings.
+///
 final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
-    let product: Product
+    private let product: Product
 
     // Editable data
     //

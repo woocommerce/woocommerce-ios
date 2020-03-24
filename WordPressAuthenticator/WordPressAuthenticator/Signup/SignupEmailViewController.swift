@@ -183,15 +183,6 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
         })
     }
 
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        super.prepare(for: segue, sender: sender)
-        // Configure login flow to allow only .com login and prefill the email
-        if let destination = segue.destination as? LoginEmailViewController {
-            destination.loginFields.restrictToWPCom = true
-            destination.loginFields.username = loginFields.emailAddress
-        }
-    }
-
     // MARK: - Send email
 
     /// Makes the call to request a magic signup link be emailed to the user.
@@ -217,7 +208,16 @@ class SignupEmailViewController: LoginViewController, NUXKeyboardResponder {
     private func didRequestSignupLink() {
         WordPressAuthenticator.track(.signupMagicLinkRequested)
         WordPressAuthenticator.storeLoginInfoForTokenAuth(loginFields)
-        performSegue(withIdentifier: "showLinkMailView", sender: nil)
+
+        guard let vc = NUXLinkMailViewController.instantiate(from: .emailMagicLink) else {
+            DDLogError("Failed to navigate to NUXLinkMailViewController")
+            return
+        }
+
+        vc.loginFields = loginFields
+        vc.loginFields.restrictToWPCom = true
+
+        navigationController?.pushViewController(vc, animated: true)
     }
 
     // MARK: - Action Handling

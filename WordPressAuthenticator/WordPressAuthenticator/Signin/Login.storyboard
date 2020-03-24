@@ -1172,7 +1172,6 @@
                         <segue destination="SZS-o3-1P7" kind="show" identifier="showURLUsernamePassword" id="TkG-0R-c3i"/>
                         <segue destination="iMi-vX-AxR" kind="show" identifier="showWPUsernamePassword" id="dtm-iK-PLb"/>
                         <segue destination="hed-vB-osh" kind="presentation" identifier="showLoginMethod" id="5hL-j3-eMs"/>
-                        <segue destination="MEg-KS-Afs" kind="show" identifier="showGoogle" id="pe1-D0-Mpg"/>
                         <segue destination="lmD-c6-SLs" kind="show" identifier="showWPComLogin" id="8p6-rS-9Ml"/>
                     </connections>
                 </viewController>

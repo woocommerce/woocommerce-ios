@@ -3,11 +3,14 @@
 - [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
 
  
+- Fix pulling to refresh on the Processing tab sometimes will not show the up-to-date orders.
+
 3.9
 -----
 - bugfix: now in the Order List the order status label is no more clipped
 - bugfix: now the launch screen is no more stretched
 - The Shipping Provider flow, will be called now Shipping Carrier.
+- Edit Products: in price settings, the order of currency and price field follows the store currency options under wp-admin > WooCommerce > Settings > General.
 - [internal] The signup and login flows have code changes. See https://git.io/Jv1Me for testing details.
  
 3.8

@@ -181,7 +181,7 @@ where DataSource.StorageModel == StorageModel, Model == DataSource.StorageModel.
 
     // MARK: SyncingCoordinatorDelegate
     //
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState(pageNumber: pageNumber)
         dataSource.sync(pageNumber: pageNumber, pageSize: pageSize) { [weak self] isCompleted in
             guard let self = self else {

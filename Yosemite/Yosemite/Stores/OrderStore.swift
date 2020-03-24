@@ -34,6 +34,12 @@ public class OrderStore: Store {
             retrieveOrder(siteID: siteID, orderID: orderID, onCompletion: onCompletion)
         case .searchOrders(let siteID, let keyword, let pageNumber, let pageSize, let onCompletion):
             searchOrders(siteID: siteID, keyword: keyword, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .fetchFilteredAndAllOrders(let siteID, let statusKey, let deleteAllBeforeSaving, let pageSize, let onCompletion):
+            fetchFilteredAndAllOrders(siteID: siteID,
+                                      statusKey: statusKey,
+                                      deleteAllBeforeSaving: deleteAllBeforeSaving,
+                                      pageSize: pageSize,
+                                      onCompletion: onCompletion)
         case .synchronizeOrders(let siteID, let statusKey, let pageNumber, let pageSize, let onCompletion):
             synchronizeOrders(siteID: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
         case .updateOrder(let siteID, let orderID, let statusKey, let onCompletion):
@@ -74,6 +80,98 @@ private extension OrderStore {
             self?.upsertSearchResultsInBackground(keyword: keyword, readOnlyOrders: orders) {
                 onCompletion(nil)
             }
+        }
+    }
+
+    /// Performs a dual fetch for the first pages of a filtered list and the all orders list.
+    ///
+    /// If `deleteAllBeforeSaving` is true, all the orders will be deleted before saving any newly
+    /// fetched `Order`. The deletion only happens once, regardless of the which fetch request
+    /// finishes first.
+    ///
+    /// The orders will only be deleted if one of the executed `GET` requests succeed.
+    ///
+    /// - Parameter statusKey The status to use for the filtered list. If this is not provided,
+    ///                       only the all orders list will be fetched. See `OrderStatusEnum`
+    ///                       for possible values.
+    ///
+    func fetchFilteredAndAllOrders(siteID: Int64,
+                                   statusKey: String?,
+                                   deleteAllBeforeSaving: Bool,
+                                   pageSize: Int,
+                                   onCompletion: @escaping (Error?) -> Void) {
+
+        let remote = OrdersRemote(network: network)
+        let pageNumber = OrdersRemote.Defaults.pageNumber
+
+        // Synchronous variables.
+        //
+        // The variables `fetchErrors` and `hasDeletedAllOrders` should only be accessed
+        // **inside** the `serialQueue` (e.g. `serialQueue.async()`). The only exception is in
+        // the `group.notify()` call below which only _reads_ `fetchErrors` and all the _writes_
+        // have finished.
+        var fetchErrors = [Error]()
+        var hasDeletedAllOrders = false
+        let serialQueue = DispatchQueue(label: "orders_sync", qos: .userInitiated)
+
+        // Delete all the orders if we haven't yet.
+        // This should only be called inside a `serialQueue` block.
+        let deleteAllOrdersOnce = {
+            guard hasDeletedAllOrders == false else {
+                return
+            }
+
+            // Use the main thread because `resetStoredOrders` uses `viewStorage`.
+            DispatchQueue.main.sync { [weak self] in
+                self?.resetStoredOrders { }
+            }
+
+            hasDeletedAllOrders = true
+        }
+
+        // The handler for both dual fetch requests.
+        let loadAllOrders: (String?, @escaping (() -> Void)) -> Void = { statusKey, completion in
+            remote.loadAllOrders(for: siteID, statusKey: statusKey, pageNumber: pageNumber, pageSize: pageSize) { orders, error in
+                serialQueue.async { [weak self] in
+                    guard let self = self else {
+                        completion()
+                        return
+                    }
+
+                    if let orders = orders {
+                        if deleteAllBeforeSaving {
+                            deleteAllOrdersOnce()
+                        }
+
+                        self.upsertStoredOrdersInBackground(readOnlyOrders: orders, onCompletion: completion)
+                    } else if let error = error {
+                        fetchErrors.append(error)
+                        completion()
+                    } else {
+                        // This shouldn't happen but we're adding it just in case.
+                        completion()
+                    }
+                }
+            }
+        }
+
+        // Perform dual fetch and wait for both of them to finish before calling `onCompletion`.
+        let group = DispatchGroup()
+
+        if let statusKey = statusKey {
+            group.enter()
+            loadAllOrders(statusKey) {
+                group.leave()
+            }
+        }
+
+        group.enter()
+        loadAllOrders(OrdersRemote.Defaults.statusAny) {
+            group.leave()
+        }
+
+        group.notify(queue: .main) {
+            onCompletion(fetchErrors.first)
         }
     }
 

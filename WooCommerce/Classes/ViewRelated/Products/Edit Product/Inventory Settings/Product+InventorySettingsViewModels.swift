@@ -13,10 +13,13 @@ extension Product {
 
     static func createStockQuantityViewModel(stockQuantity: Int?, onInputChange: @escaping (_ input: String?) -> Void) -> UnitInputViewModel {
         let title = NSLocalizedString("Quantity", comment: "Title of the cell in Product Inventory Settings > Quantity")
+        let value = "\(stockQuantity ?? 0)"
+
         return UnitInputViewModel(title: title,
                                   unit: "",
-                                  value: "\(stockQuantity ?? 0)",
+                                  value: value,
                                   placeholder: "0",
+                                  unitPosition: .none,
                                   keyboardType: .numberPad,
                                   inputFormatter: IntegerInputFormatter(),
                                   onInputChange: onInputChange)

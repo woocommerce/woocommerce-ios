@@ -49,7 +49,7 @@ PODS:
   - WordPress-Aztec-iOS (1.11.0)
   - WordPress-Editor-iOS (1.11.0):
     - WordPress-Aztec-iOS (= 1.11.0)
-  - WordPressAuthenticator (1.11.2-beta.1):
+  - WordPressAuthenticator (1.11.2-beta.2):
     - 1PasswordExtension (= 1.8.6)
     - Alamofire (= 4.8)
     - CocoaLumberjack (~> 3.5)
@@ -101,7 +101,7 @@ DEPENDENCIES:
   - KeychainAccess (~> 3.2)
   - Kingfisher (~> 5.11.0)
   - WordPress-Editor-iOS (~> 1.11.0)
-  - WordPressAuthenticator (~> 1.11.2-beta.1)
+  - WordPressAuthenticator (from `https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git`, branch `issue/218-remove-showGoogle`)
   - WordPressShared (~> 1.8.16)
   - WordPressUI (~> 1.5.2)
   - Wormholy (~> 1.5.1)
@@ -133,7 +133,6 @@ SPEC REPOS:
     - UIDeviceIdentifier
     - WordPress-Aztec-iOS
     - WordPress-Editor-iOS
-    - WordPressAuthenticator
     - WordPressKit
     - WordPressShared
     - WordPressUI
@@ -148,6 +147,16 @@ SPEC REPOS:
     - ZendeskSDKConfigurationsSDK
     - ZendeskSupportProvidersSDK
     - ZendeskSupportSDK
+
+EXTERNAL SOURCES:
+  WordPressAuthenticator:
+    :branch: issue/218-remove-showGoogle
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
+
+CHECKOUT OPTIONS:
+  WordPressAuthenticator:
+    :commit: 9bf49014ee696c0cfafff1d7aa75759500762a7f
+    :git: https://github.com/wordpress-mobile/WordPressAuthenticator-iOS.git
 
 SPEC CHECKSUMS:
   1PasswordExtension: f97cc80ae58053c331b2b6dc8843ba7103b33794
@@ -172,7 +181,7 @@ SPEC CHECKSUMS:
   UIDeviceIdentifier: 44f805037d21b94394821828f4fcaba34b38c2d0
   WordPress-Aztec-iOS: 050b34d4c3adfb7c60363849049b13d60683b348
   WordPress-Editor-iOS: 304098424f1051cb271546c99f906aac296b1b81
-  WordPressAuthenticator: 0cbfb9fbcafe7da388a4a2ac52cc509131645b9b
+  WordPressAuthenticator: 26bde9ebfdbd902bc9021eb1487db95614020801
   WordPressKit: 767cc17ae08894f73f08c852fe124c865a62fb3d
   WordPressShared: 1bc316ed162f42af4e0fa2869437e9e28b532b01
   WordPressUI: 70cc58a253c352330b23cd8fa6dd6a2021570e18
@@ -188,6 +197,6 @@ SPEC CHECKSUMS:
   ZendeskSupportProvidersSDK: e183d32abac888c448469e2005c4a5a8c3ed73f0
   ZendeskSupportSDK: e52f37fa8bcba91f024b81025869fe5a2860f741
 
-PODFILE CHECKSUM: 1fc6543e12a66555e1cd794c166c41693dcab3b5
+PODFILE CHECKSUM: 17b79d0ecfd6f8671dfd58911cc7e4835da100aa
 
 COCOAPODS: 1.9.1

@@ -6,23 +6,36 @@ final class ProductFormViewController: UIViewController {
 
     @IBOutlet private weak var tableView: UITableView!
 
+    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
+        let keyboardFrameObserver = KeyboardFrameObserver(onKeyboardFrameUpdate: handleKeyboardFrameUpdate(keyboardFrame:))
+        return keyboardFrameObserver
+    }()
+
     /// The product model before any potential edits; reset after a remote update.
     private var originalProduct: Product
 
     /// The product model with potential edits; reset after a remote update.
     private var product: Product {
         didSet {
+            defer {
+                updateNavigationBar(isUpdateEnabled: product != originalProduct)
+            }
+
+            if isNameTheOnlyChange(oldProduct: oldValue, newProduct: product) {
+                return
+            }
+
             viewModel = DefaultProductFormTableViewModel(product: product, currency: currency)
             tableViewDataSource = ProductFormTableViewDataSource(viewModel: viewModel,
                                                                  productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                  productUIImageLoader: productUIImageLoader)
-            tableViewDataSource.configureActions(onAddImage: { [weak self] in
+            tableViewDataSource.configureActions(onNameChange: { [weak self] name in
+                self?.onEditProductNameCompletion(newName: name ?? "")
+            }, onAddImage: { [weak self] in
                 self?.showProductImages()
             })
             tableView.dataSource = tableViewDataSource
             tableView.reloadData()
-
-            updateNavigationBar(isUpdateEnabled: product != originalProduct)
         }
     }
 
@@ -50,7 +63,9 @@ final class ProductFormViewController: UIViewController {
                                                                   productImageStatuses: productImageActionHandler.productImageStatuses,
                                                                   productUIImageLoader: productUIImageLoader)
         super.init(nibName: nil, bundle: nil)
-        tableViewDataSource.configureActions(onAddImage: { [weak self] in
+        tableViewDataSource.configureActions(onNameChange: { [weak self] name in
+            self?.onEditProductNameCompletion(newName: name ?? "")
+        }, onAddImage: { [weak self] in
             self?.showProductImages()
         })
     }
@@ -66,6 +81,8 @@ final class ProductFormViewController: UIViewController {
         configureMainView()
         configureTableView()
 
+        startListeningToNotifications()
+
         productImageActionHandler.addUpdateObserver(self) { [weak self] (productImageStatuses, error) in
             guard let self = self else {
                 return
@@ -79,6 +96,12 @@ final class ProductFormViewController: UIViewController {
 
             self.product = self.productUpdater.imagesUpdated(images: productImageStatuses.images)
         }
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        view.endEditing(true)
     }
 }
 
@@ -237,14 +260,11 @@ extension ProductFormViewController: UITableViewDelegate {
         case .primaryFields(let rows):
             let row = rows[indexPath.row]
             switch row {
-            case .images:
-                break
-            case .name:
-                ServiceLocator.analytics.track(.productDetailViewProductNameTapped)
-                editProductName()
             case .description:
                 ServiceLocator.analytics.track(.productDetailViewProductDescriptionTapped)
                 editProductDescription()
+            default:
+                break
             }
         case .settings(let rows):
             let row = rows[indexPath.row]
@@ -289,6 +309,22 @@ extension ProductFormViewController: UITableViewDelegate {
     }
 }
 
+// MARK: - Keyboard management
+//
+private extension ProductFormViewController {
+    /// Registers for all of the related Notifications
+    ///
+    func startListeningToNotifications() {
+        keyboardFrameObserver.startObservingKeyboardFrame()
+    }
+}
+
+extension ProductFormViewController: KeyboardScrollable {
+    var scrollable: UIScrollView {
+        return tableView
+    }
+}
+
 // MARK: Action - Edit Product Images
 //
 private extension ProductFormViewController {
@@ -315,31 +351,13 @@ private extension ProductFormViewController {
 // MARK: Action - Edit Product Name
 //
 private extension ProductFormViewController {
-    func editProductName() {
-        let placeholder = NSLocalizedString("Enter a title...", comment: "The text placeholder for the Text Editor screen")
-        let navigationTitle = NSLocalizedString("Title", comment: "The navigation bar title of the Text editor screen.")
-        let textViewController = TextViewViewController(text: product.name,
-                                                        placeholder: placeholder,
-                                                        navigationTitle: navigationTitle
-        ) { [weak self] (newProductName) in
-            self?.onEditProductNameCompletion(newName: newProductName ?? "")
-        }
-
-        navigationController?.pushViewController(textViewController, animated: true)
+    func onEditProductNameCompletion(newName: String) {
+        product = productUpdater.nameUpdated(name: newName)
     }
 
-    func onEditProductNameCompletion(newName: String) {
-        defer {
-            navigationController?.popViewController(animated: true)
-        }
-
-        let hasChangedData = newName != product.name
-        ServiceLocator.analytics.track(.productNameDoneButtonTapped, withProperties: ["has_changed_data": hasChangedData])
-
-        guard hasChangedData else {
-            return
-        }
-        self.product = productUpdater.nameUpdated(name: newName)
+    func isNameTheOnlyChange(oldProduct: Product, newProduct: Product) -> Bool {
+        let oldProductWithNewName = oldProduct.nameUpdated(name: newProduct.name)
+        return oldProductWithNewName == newProduct && newProduct.name != oldProduct.name
     }
 }
 

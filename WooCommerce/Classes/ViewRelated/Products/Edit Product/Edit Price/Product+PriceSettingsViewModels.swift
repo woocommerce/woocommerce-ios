@@ -2,6 +2,11 @@ import Yosemite
 
 extension Product {
 
+    // Regex that match all the occurrences of the thousand separators.
+    // All the points or comma (but not the last `.` or `,`)
+    //
+    private static let regexThousandSeparators = "(?:[.,](?=.*[.,])|)+"
+
     private static let placeholder = "0"
 
     static func createRegularPriceViewModel(regularPrice: String?,
@@ -12,8 +17,10 @@ extension Product {
         let currencyFormatter = CurrencyFormatter()
         let currencyCode = CurrencySettings.shared.currencyCode
         let unit = CurrencySettings.shared.symbol(from: currencyCode)
-        let decimalValue = regularPrice.map { currencyFormatter.convertToDecimal(from: $0) ?? 0 }
-        let value = decimalValue.map { "\($0)" } ?? ""
+        var value = currencyFormatter.formatAmount(regularPrice ?? "", with: unit) ?? ""
+        value = value
+            .replacingOccurrences(of: unit, with: "")
+            .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,
@@ -32,8 +39,10 @@ extension Product {
         let currencyFormatter = CurrencyFormatter()
         let currencyCode = CurrencySettings.shared.currencyCode
         let unit = CurrencySettings.shared.symbol(from: currencyCode)
-        let decimalValue = salePrice.map { currencyFormatter.convertToDecimal(from: $0) ?? 0 }
-        let value = decimalValue.map { "\($0)" } ?? ""
+        var value = currencyFormatter.formatAmount(salePrice ?? "", with: unit) ?? ""
+        value = value
+            .replacingOccurrences(of: unit, with: "")
+            .replacingOccurrences(of: regexThousandSeparators, with: "$1", options: .regularExpression)
         return UnitInputViewModel(title: title,
                                   unit: unit,
                                   value: value,

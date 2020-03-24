@@ -132,8 +132,8 @@ private extension MockupNetwork {
     func filename(for request: URLRequestConvertible) -> String? {
         let searchPath = path(for: request)
         if useResponseQueue {
-            if var queue = responseQueue.filter({ searchPath.hasSuffix($0.key) }).first?.value {
-                return queue.dequeue()
+            if let keyAndQueue = responseQueue.first(where: { searchPath.hasSuffix($0.key) }) {
+                return responseQueue[keyAndQueue.key]?.dequeue()
             }
         } else {
             if let filename = responseMap.filter({ searchPath.hasSuffix($0.key) }).first?.value {

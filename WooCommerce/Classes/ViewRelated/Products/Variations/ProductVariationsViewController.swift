@@ -302,7 +302,7 @@ extension ProductVariationsViewController: SyncingCoordinatorDelegate {
 
     /// Synchronizes the Product Variations for the Default Store (if any).
     ///
-    func sync(pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)? = nil) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)? = nil) {
         transitionToSyncingState(pageNumber: pageNumber)
 
         let action = ProductVariationAction

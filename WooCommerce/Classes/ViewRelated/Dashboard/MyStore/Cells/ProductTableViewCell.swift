@@ -12,6 +12,9 @@ class ProductTableViewCell: UITableViewCell {
     @IBOutlet private var detailLabel: UILabel!
     @IBOutlet private var priceLabel: UILabel!
 
+    /// We use a custom view isntead of the default separator as it's width varies depending on the image size, which varies depending on the screen size.
+    @IBOutlet private var bottomBorderView: UIView!
+
     var nameText: String? {
         get {
             return nameLabel.text
@@ -46,6 +49,7 @@ class ProductTableViewCell: UITableViewCell {
         detailLabel.applyFootnoteStyle()
         applyProductImageStyle()
         contentView.backgroundColor = .listForeground
+        bottomBorderView.backgroundColor = .systemColor(.separator)
     }
 
     private func applyProductImageStyle() {
@@ -91,6 +95,6 @@ private extension ProductTableViewCell {
         static let cornerRadius = CGFloat(2.0)
         static let borderWidth = CGFloat(0.5)
         static let borderColor = UIColor.border
-        static let backgroundColor = UIColor.systemColor(.systemGray6)
+        static let backgroundColor = UIColor.listForeground
     }
 }

@@ -218,6 +218,7 @@ extension ProductPriceSettingsViewController: UITableViewDelegate {
             datePickerSaleToVisible = !datePickerSaleToVisible
             refreshViewContent()
         case .removeSaleTo:
+            datePickerSaleToVisible = false
             viewModel.handleSaleEndDateChange(nil)
             refreshViewContent()
         case .taxStatus:

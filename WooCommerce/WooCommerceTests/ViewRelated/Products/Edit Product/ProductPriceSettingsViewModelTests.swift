@@ -555,4 +555,32 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
     }
+
+    func testUnsavedChangesWithSaleEndDateInThePastAndNilSaleStartDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let saleStartDate: Date? = nil
+        let saleEndDate = DateFormatter.Defaults.dateTimeFormatter.date(from: "2019-10-15T21:30:00")
+        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+
+        // Act
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+
+        // Assert
+        XCTAssertFalse(viewModel.hasUnsavedChanges())
+    }
+
+    func testUnsavedChangesWithSaleEndDateInTheFutureAndNilSaleStartDate() {
+        // Arrange
+        let timezone = TimeZone(secondsFromGMT: 0)!
+        let saleStartDate: Date? = nil
+        let saleEndDate = Date().addingTimeInterval(numberOfSecondsPerDay)
+        let product = MockProduct().product(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate)
+
+        // Act
+        let viewModel = ProductPriceSettingsViewModel(product: product, timezoneForScheduleSaleDates: timezone)
+
+        // Assert
+        XCTAssertFalse(viewModel.hasUnsavedChanges())
+    }
 }

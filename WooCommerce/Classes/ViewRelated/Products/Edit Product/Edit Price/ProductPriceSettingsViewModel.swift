@@ -51,6 +51,8 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     private(set) var dateOnSaleStart: Date?
     private(set) var dateOnSaleEnd: Date?
 
+    private let originalDateOnSaleStart: Date?
+
     // Timezone of the website
     //
     private let timezoneForScheduleSaleDates: TimeZone
@@ -94,6 +96,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
         } else {
             dateOnSaleStart = product.dateOnSaleStart
         }
+        originalDateOnSaleStart = dateOnSaleStart
         dateOnSaleEnd = product.dateOnSaleEnd
 
         let taxClassName = NSLocalizedString("Standard rate", comment: "The name of the default Tax Class in Product Price Settings")
@@ -197,7 +200,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
 
         if getDecimalPrice(regularPrice) != getDecimalPrice(product.regularPrice) ||
             getDecimalPrice(newSalePrice) != getDecimalPrice(product.salePrice) ||
-            dateOnSaleStart != product.dateOnSaleStart ||
+            dateOnSaleStart != originalDateOnSaleStart ||
             dateOnSaleEnd != product.dateOnSaleEnd ||
             taxStatus.rawValue != product.taxStatusKey ||
             newTaxClass != originalTaxClass {

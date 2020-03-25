@@ -11,12 +11,12 @@ class ResultsControllerTests: XCTestCase {
 
     /// InMemory Storage!
     ///
-    private var storage: MockupStorageManager!
+    private var storageManager: MockupStorageManager!
 
     /// Returns the NSMOC associated to the Main Thread
     ///
     private var viewContext: NSManagedObjectContext {
-        return storage.persistentContainer.viewContext
+        return storageManager.persistentContainer.viewContext
     }
 
     /// Returns a sample NSSortDescriptor
@@ -30,11 +30,11 @@ class ResultsControllerTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storage = MockupStorageManager()
+        storageManager = MockupStorageManager()
     }
 
     override func tearDown() {
-        storage = nil
+        storageManager = nil
         super.tearDown()
     }
 
@@ -53,7 +53,7 @@ class ResultsControllerTests: XCTestCase {
     /// Verifies that ResultsController does pick up pre-existant entities, right after performFetch runs.
     ///
     func testResultsControllerPicksUpEntitiesAvailablePriorToInstantiation() {
-        storage.insertSampleAccount()
+        storageManager.insertSampleAccount()
         viewContext.saveIfNeeded()
 
         let resultsController = ResultsController<Storage.Account>(viewStorage: viewContext, sortedBy: [sampleSortDescriptor])
@@ -70,7 +70,7 @@ class ResultsControllerTests: XCTestCase {
         let resultsController = ResultsController<Storage.Account>(viewStorage: viewContext, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
 
-        storage.insertSampleAccount()
+        storageManager.insertSampleAccount()
         viewContext.saveIfNeeded()
 
         XCTAssertEqual(resultsController.sections.count, 1)
@@ -89,7 +89,7 @@ class ResultsControllerTests: XCTestCase {
 
         let numberOfAccounts = 100
         for _ in 0 ..< numberOfAccounts {
-            storage.insertSampleAccount()
+            storageManager.insertSampleAccount()
         }
 
         viewContext.saveIfNeeded()
@@ -111,7 +111,7 @@ class ResultsControllerTests: XCTestCase {
                                                                    sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
 
-        let mutableAccount = storage.insertSampleAccount()
+        let mutableAccount = storageManager.insertSampleAccount()
         viewContext.saveIfNeeded()
 
         let indexPath = IndexPath(row: 0, section: 0)
@@ -139,7 +139,7 @@ class ResultsControllerTests: XCTestCase {
             didChangeObjectWasCalled = true
         }
 
-        storage.insertSampleAccount()
+        storageManager.insertSampleAccount()
         viewContext.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -162,7 +162,7 @@ class ResultsControllerTests: XCTestCase {
             expectation.fulfill()
         }
 
-        storage.insertSampleAccount()
+        storageManager.insertSampleAccount()
         viewContext.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -184,7 +184,7 @@ class ResultsControllerTests: XCTestCase {
             expectation.fulfill()
         }
 
-        storage.insertSampleAccount()
+        storageManager.insertSampleAccount()
         viewContext.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -206,7 +206,7 @@ class ResultsControllerTests: XCTestCase {
             expectation.fulfill()
         }
 
-        storage.insertSampleAccount()
+        storageManager.insertSampleAccount()
         viewContext.saveIfNeeded()
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -220,8 +220,8 @@ class ResultsControllerTests: XCTestCase {
         let resultsController = ResultsController<Storage.Account>(viewStorage: viewContext, sortedBy: [sortDescriptor])
         try? resultsController.performFetch()
 
-        let first = storage.insertSampleAccount().toReadOnly()
-        let second = storage.insertSampleAccount().toReadOnly()
+        let first = storageManager.insertSampleAccount().toReadOnly()
+        let second = storageManager.insertSampleAccount().toReadOnly()
         let expected = [first.userID: first, second.userID: second]
 
         viewContext.saveIfNeeded()
@@ -239,8 +239,8 @@ class ResultsControllerTests: XCTestCase {
         let resultsController = ResultsController<Storage.Account>(viewStorage: viewContext, sortedBy: [sortDescriptor])
         try? resultsController.performFetch()
 
-        storage.insertSampleAccount()
-        storage.insertSampleAccount()
+        storageManager.insertSampleAccount()
+        storageManager.insertSampleAccount()
 
         viewContext.saveIfNeeded()
         XCTAssertEqual(resultsController.fetchedObjects.count, 2)
@@ -250,7 +250,7 @@ class ResultsControllerTests: XCTestCase {
             expectation.fulfill()
         }
 
-        storage.reset()
+        storageManager.reset()
         XCTAssertTrue(resultsController.isEmpty)
 
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -283,7 +283,7 @@ class ResultsControllerTests: XCTestCase {
 
         for section in 0..<numberOfSections {
             for row in 0..<numberOfObjectsPerSection {
-                let account = storage.insertSampleAccount()
+                let account = storageManager.insertSampleAccount()
 
                 // We're sorting by Username (and grouping by  displayName
                 let plainIndex = section * numberOfObjectsPerSection + row

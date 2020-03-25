@@ -1,9 +1,8 @@
 4.0
 -----
-- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
-
- 
+- Products is now available with limited editing for simple products!
 - Fix pulling to refresh on the Processing tab sometimes will not show the up-to-date orders.
+- [internal] the signup and login Magic Link flows have code changes. See https://git.io/JvyB3 for testing details.
 
 3.9
 -----
